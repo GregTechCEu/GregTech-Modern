@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
-import com.gregtechceu.gtceu.api.mui.base.IPacketWriter;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 
@@ -12,28 +11,26 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * This sync handler is used to update a widget dynamically. The update can be called from client and server side.
- * To use it add a widget provider with {@link #widgetProvider(IWidgetProvider)} and link this sync handler to a
- * {@link com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget DynamicSyncedWidget}. When you want the widget to be
- * updated call
- * {@link #notifyUpdate(IPacketWriter)}. The passed in packed writer will write a packet, which can the be read inside
- * the widget provider.
- * The widget provider as ran on both sides. Inside the provider sync handlers can be registered with variants of
- * {@link ISyncRegistrar#getOrCreateSyncHandler(String, int, Class, Supplier)}.
- */
-public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotifiable {
+public class DynamicLinkedSyncHandler<S extends ValueSyncHandler<?>> extends SyncHandler
+                                     implements IDynamicSyncNotifiable {
 
-    private IWidgetProvider widgetProvider;
+    private IWidgetProvider<S> widgetProvider;
     private Consumer<IWidget> onWidgetUpdate;
 
-    private IPacketWriter lastRejectedPacket;
+    private boolean updateQueued;
     private IWidget lastRejectedWidget;
+
+    private final S linkedValue;
+
+    public DynamicLinkedSyncHandler(S linkedValue) {
+        this.linkedValue = linkedValue;
+        linkedValue.setChangeListener(() -> notifyUpdate(false));
+    }
 
     @Override
     public void readOnClient(int id, FriendlyByteBuf buf) {
         if (id == 0) {
-            updateWidget(parseWidget(buf));
+            updateWidget(parseWidget());
         }
     }
 
@@ -41,22 +38,22 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
     public void readOnServer(int id, FriendlyByteBuf buf) {
         if (id == 0) {
             // do nothing with the widget on server side
-            parseWidget(buf);
+            parseWidget();
         }
     }
 
     @Override
     public void init(String key, PanelSyncManager syncManager) {
         super.init(key, syncManager);
-        if (this.lastRejectedPacket != null) {
-            notifyUpdate(this.lastRejectedPacket);
-            this.lastRejectedPacket = null;
+        if (this.updateQueued) {
+            notifyUpdate(true);
+            this.updateQueued = false;
         }
     }
 
-    private IWidget parseWidget(FriendlyByteBuf buf) {
+    private IWidget parseWidget() {
         getSyncManager().allowTemporarySyncHandlerRegistration(true);
-        IWidget widget = this.widgetProvider.createWidget(getSyncManager(), buf);
+        IWidget widget = this.widgetProvider.createWidget(getSyncManager(), this.linkedValue);
         getSyncManager().allowTemporarySyncHandlerRegistration(false);
         // collects any unregistered sync handlers
         // since the sync manager is currently locked and we no longer allow bypassing the lock it will crash if it
@@ -64,8 +61,8 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
         int unregistered = WidgetTree.countUnregisteredSyncHandlers(widget);
         if (unregistered > 0) {
             throw new IllegalStateException(
-                    "Widgets created by DynamicSyncHandler can't have implicitly registered sync" +
-                            " handlers. All sync handlers must be regisered witha  variant of 'PanelSyncManager#getOrCreateSyncHandler(...)'.");
+                    "Widgets created by DynamicSyncHandler can't have implicitly registered sync handlers. All" +
+                            "sync handlers must be registered with a variant of 'PanelSyncManager#getOrCreateSyncHandler(...)'.");
         }
         return widget;
     }
@@ -87,22 +84,18 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
      * The packet will be cached until the sync handler is initialised. Only the last call of this method, while this
      * sync handler is not
      * initialised is effective.
-     *
-     * @param packetWriter data to pass to the function
      */
-    public void notifyUpdate(IPacketWriter packetWriter) {
+    private void notifyUpdate(boolean sync) {
         if (!isValid()) {
             // sync handler not yet initialised
-            // store for later
-            // also ignore previous stored packet
-            this.lastRejectedPacket = packetWriter;
+            this.updateQueued = true;
             return;
         }
-        IWidget widget = parseWidget(packetWriter.toPacket());
+        IWidget widget = parseWidget();
         if (getSyncManager().isClient()) {
             updateWidget(widget);
         }
-        sync(0, packetWriter);
+        if (sync) sync(0, b -> {});
     }
 
     /**
@@ -116,7 +109,7 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
      * @return this
      * @see IWidgetProvider
      */
-    public DynamicSyncHandler widgetProvider(IWidgetProvider widgetProvider) {
+    public DynamicLinkedSyncHandler<S> widgetProvider(IWidgetProvider<S> widgetProvider) {
         this.widgetProvider = widgetProvider;
         return this;
     }
@@ -134,7 +127,7 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
         }
     }
 
-    public interface IWidgetProvider {
+    public interface IWidgetProvider<S extends ValueSyncHandler<?>> {
 
         /**
          * This is the function which creates a widget on client and server.
@@ -142,10 +135,10 @@ public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotif
          * {@link PanelSyncManager#getOrCreateSyncHandler(String, int, Class, Supplier)}.
          *
          * @param syncManager the sync manager of the current panel
-         * @param buf         data which was passed in the notify method
+         * @param value       the linked sync value
          * @return a new widget or null if widget shouldn't be updated
          */
         @Nullable
-        IWidget createWidget(PanelSyncManager syncManager, FriendlyByteBuf buf);
+        IWidget createWidget(PanelSyncManager syncManager, S value);
     }
 }

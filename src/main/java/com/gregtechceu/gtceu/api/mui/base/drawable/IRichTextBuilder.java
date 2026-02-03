@@ -18,6 +18,16 @@ public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {
     IRichTextBuilder<?> getRichText();
 
     /**
+     * Removes all text and style.
+     *
+     * @return this
+     */
+    default T reset() {
+        getRichText().reset();
+        return getThis();
+    }
+
+    /**
      * Adds a component to the current line
      *
      * @param c component to add

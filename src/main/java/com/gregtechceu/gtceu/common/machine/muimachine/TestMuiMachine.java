@@ -37,6 +37,7 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Fox;
@@ -83,6 +84,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     private final int duration = 80;
     private int progress = 0;
     private int cycleState = 0;
+    private List<Integer> serverInts = new ArrayList<>();
     private ItemStack displayItem = new ItemStack(Items.DIAMOND);
     private final IItemHandlerModifiable inventory = new ItemStackHandler(2) {
 
@@ -123,6 +125,14 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         IntSyncValue cycleStateValue = new IntSyncValue(() -> this.cycleState, val -> this.cycleState = val);
         syncManager.getHyperVisor().syncValue("cycle_state", cycleStateValue);
         syncManager.syncValue("display_item", GenericSyncValue.forItem(() -> this.displayItem, null));
+        GenericListSyncHandler<Integer> numberListSyncHandler = GenericListSyncHandler.<Integer>builder()
+                .getter(() -> this.serverInts)
+                .setter(v -> this.serverInts = v)
+                .serializer(FriendlyByteBuf::writeInt)
+                .deserializer(FriendlyByteBuf::readInt)
+                .immutableCopy()
+                .build();
+        syncManager.syncValue("number_list", numberListSyncHandler);
         syncManager.bindPlayerInventory(data.getPlayer());
 
         DynamicSyncHandler dynamicSyncHandler = new DynamicSyncHandler()
@@ -141,6 +151,16 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         () -> new ItemSlotSyncHandler(new ModularSlot(handler, finalI)))));
                     }
                     return flow;
+                });
+
+        DynamicLinkedSyncHandler<GenericListSyncHandler<Integer>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                numberListSyncHandler)
+                .widgetProvider((syncManager1, value1) -> {
+                    List<Integer> vals = value1.getValue();
+                    return new Column()
+                            .widthRel(1f)
+                            .coverChildrenHeight()
+                            .children(vals.size(), i -> IKey.str(String.valueOf(vals.get(i))).asWidget().padding(2));
                 });
 
         // disable spotless on the menu layout code so it won't insert random line breaks
@@ -505,7 +525,11 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         }))))
                                                         .child(new DynamicSyncedWidget<>()
                                                                 .widthRel(1f)
-                                                                .syncHandler(dynamicSyncHandler))))
+                                                                .syncHandler(dynamicSyncHandler))
+                                                .child(new DynamicSyncedWidget<>()
+                                                        .widthRel(1f)
+                                                        .coverChildrenHeight()
+                                                        .syncHandler(dynamicLinkedSyncHandler))))
                                         .addPage(createSchemaPage(data))))
                         .child(SlotGroupWidget.playerInventory(false)));
         /*
@@ -653,6 +677,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
             Collection<Item> vals = ForgeRegistries.ITEMS.getValues();
             Item item = vals.stream().skip(new Random().nextInt(vals.size())).findFirst().orElse(Items.DIAMOND);
             this.displayItem = new ItemStack(item, 26735987);
+
+            Random rnd = new Random();
+            this.serverInts.clear();
+            for (int i = 0; i < 5; i++) {
+                this.serverInts.add(rnd.nextInt(100));
+            }
         }
         if (++this.progress == this.duration) {
             this.progress = 0;
