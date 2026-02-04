@@ -85,7 +85,7 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
         this.maxAmount = maxAmount;
         this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
-        this.autoOutput = AutoOutputTrait.FLUIDS(this, cache);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
@@ -145,7 +145,7 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        autoOutput.setAutoOutputFluids(isWorkingAllowed);
+        autoOutput.setAllowAutoOutputFluids(isWorkingAllowed);
     }
 
     //////////////////////////////////////
@@ -219,7 +219,7 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this.autoOutput::isAutoOutputFluids,
-                        this.autoOutput::setAutoOutputFluids)
+                        this.autoOutput::setAllowAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .addWidget(new ToggleButtonWidget(22, 41, 18, 18,

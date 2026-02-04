@@ -75,7 +75,7 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine, IMac
         super(info, tier);
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
-        this.autoOutput = AutoOutputTrait.FLUIDS(this, cache);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
         autoOutput.setNeverAllowInputFromOutputSide(true);
     }
 
@@ -546,7 +546,7 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine, IMac
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this.autoOutput::isAutoOutputFluids,
-                        this.autoOutput::setAutoOutputFluids)
+                        this.autoOutput::setAllowAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));

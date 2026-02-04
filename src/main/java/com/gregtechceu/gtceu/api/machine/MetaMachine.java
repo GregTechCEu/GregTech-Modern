@@ -833,7 +833,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var io = IO.BOTH;
         var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getItemOutputDirection() == side &&
-                !autoOutputTrait.isAllowItemInputFromOutputSide()) {
+                !autoOutputTrait.allowsItemInputFromOutputSide()) {
             io = IO.OUT;
         }
 
@@ -858,7 +858,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var io = IO.BOTH;
         var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getFluidOutputDirection() == side &&
-                !autoOutputTrait.isAllowFluidInputFromOutputSide()) {
+                !autoOutputTrait.allowsFluidInputFromOutputSide()) {
             io = IO.OUT;
         }
 

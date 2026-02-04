@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.utils.data;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-public class TagCompatibilityFixer {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TagCompatibilityFixer {
 
     public static void fixMachineAutoOutputTag(CompoundTag machineTag) {
         if (!machineTag.contains("autoOutput")) {

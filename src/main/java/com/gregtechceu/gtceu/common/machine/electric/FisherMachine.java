@@ -122,7 +122,7 @@ public class FisherMachine extends TieredEnergyMachine
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
-        autoOutput = AutoOutputTrait.ITEMS(this, cache);
+        autoOutput = AutoOutputTrait.ofItems(this, cache);
     }
 
     public void setWorkingEnabled(boolean enabled) {

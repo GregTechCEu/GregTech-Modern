@@ -47,12 +47,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait {
 
-    public static MachineTraitType<AutoOutputTrait> TYPE = new MachineTraitType<>(AutoOutputTrait.class);
-
-    @Override
-    public MachineTraitType<AutoOutputTrait> getTraitType() {
-        return TYPE;
-    }
+    public static final MachineTraitType<AutoOutputTrait> TYPE = new MachineTraitType<>(AutoOutputTrait.class);
 
     @Getter
     protected final List<IItemHandler> itemHandlers;
@@ -89,8 +84,9 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     protected Predicate<@Nullable Direction> fluidOutputDirectionValidator = $ -> true;
     @Setter
     protected boolean neverAllowInputFromOutputSide = false;
-    protected @Nullable TickableSubscription outputSub;
-    protected List<ISubscription> itemSubs, fluidSubs;
+    protected @Nullable TickableSubscription itemOutputSub, fluidOutputSub;
+    protected List<ISubscription> itemSubs = new ArrayList<>();
+    protected List<ISubscription> fluidSubs = new ArrayList<>();
 
     public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
         super(machine);
@@ -108,41 +104,48 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
             if (h instanceof ICapabilityTrait cap) return cap.canCapOutput();
             return true;
         }).toList();
-
-        itemSubs = new ArrayList<>();
-        fluidSubs = new ArrayList<>();
     }
 
-    public static AutoOutputTrait ITEMS(MetaMachine machine, IItemHandler... itemHandlers) {
-        return new AutoOutputTrait(machine, Arrays.stream(itemHandlers).toList(), List.of());
+    @Override
+    public MachineTraitType<AutoOutputTrait> getTraitType() {
+        return TYPE;
     }
 
-    public static AutoOutputTrait FLUIDS(MetaMachine machine, IFluidHandler... fluidHandlers) {
-        return new AutoOutputTrait(machine, List.of(), Arrays.stream(fluidHandlers).toList());
+    public static AutoOutputTrait ofItems(MetaMachine machine, IItemHandler... itemHandlers) {
+        return new AutoOutputTrait(machine, Arrays.asList(itemHandlers), List.of());
+    }
+
+    public static AutoOutputTrait ofFluids(MetaMachine machine, IFluidHandler... fluidHandlers) {
+        return new AutoOutputTrait(machine, List.of(), Arrays.asList(fluidHandlers));
     }
 
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
+            serverLevel.getServer().tell(new TickTask(0, this::updateFluidOutputSubscription));
+            serverLevel.getServer().tell(new TickTask(0, this::updateItemOutputSubscription));
         }
         for (var handler : itemHandlers) {
             if (handler instanceof NotifiableItemStackHandler notifiable)
-                itemSubs.add(notifiable.addChangedListener(this::updateAutoOutputSubscription));
+                itemSubs.add(notifiable.addChangedListener(this::updateItemOutputSubscription));
         }
 
         for (var handler : fluidHandlers) {
             if (handler instanceof NotifiableFluidTank notifiable)
-                fluidSubs.add(notifiable.addChangedListener(this::updateAutoOutputSubscription));
+                fluidSubs.add(notifiable.addChangedListener(this::updateFluidOutputSubscription));
         }
     }
 
     @Override
     public void onMachineUnload() {
-        if (outputSub != null) {
-            outputSub.unsubscribe();
-            outputSub = null;
+        if (itemOutputSub != null) {
+            itemOutputSub.unsubscribe();
+            itemOutputSub = null;
+        }
+        if (fluidOutputSub != null) {
+            fluidOutputSub.unsubscribe();
+            fluidOutputSub = null;
         }
         itemSubs.forEach(ISubscription::unsubscribe);
         itemSubs.clear();
@@ -153,7 +156,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     @Override
     public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        updateAutoOutputSubscription();
+        updateItemOutputSubscription();
+        updateFluidOutputSubscription();
     }
 
     public boolean supportsAutoOutputItems() {
@@ -172,27 +176,27 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         return supportsAutoOutputFluids() ? fluidOutputDirection : null;
     }
 
-    public boolean isAllowItemInputFromOutputSide() {
+    public boolean allowsItemInputFromOutputSide() {
         return !neverAllowInputFromOutputSide && allowItemInputFromOutputSide;
     }
 
-    public boolean isAllowFluidInputFromOutputSide() {
+    public boolean allowsFluidInputFromOutputSide() {
         return !neverAllowInputFromOutputSide && allowFluidInputFromOutputSide;
     }
 
-    public void setAutoOutputItems(boolean allow) {
+    public void setAllowAutoOutputItems(boolean allow) {
         if (supportsAutoOutputItems()) {
             this.autoOutputItems = allow;
             syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-            updateAutoOutputSubscription();
+            updateItemOutputSubscription();
         }
     }
 
-    public void setAutoOutputFluids(boolean allow) {
+    public void setAllowAutoOutputFluids(boolean allow) {
         if (supportsAutoOutputFluids()) {
             this.autoOutputFluids = allow;
             syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
-            updateAutoOutputSubscription();
+            updateFluidOutputSubscription();
         }
     }
 
@@ -203,7 +207,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                 return;
             this.fluidOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
-            updateAutoOutputSubscription();
+            updateFluidOutputSubscription();
         }
     }
 
@@ -214,42 +218,58 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                 return;
             this.itemOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-            updateAutoOutputSubscription();
+            updateItemOutputSubscription();
         }
     }
 
-    private boolean shouldKeepSubscription() {
-        if (!supportsAutoOutputItems() && !supportsAutoOutputFluids()) return false;
+    private boolean shouldKeepItemSubscription() {
+        if (!supportsAutoOutputItems()) return false;
 
         if (!isAutoOutputItems() || getItemOutputDirection() == null ||
                 !GTTransferUtils.hasAdjacentItemHandler(getLevel(), machine.getBlockPos(), getItemOutputDirection()))
             return false;
-        if (!isAutoOutputFluids() || getFluidOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), machine.getBlockPos(), getFluidOutputDirection()))
-            return false;
-
         return true;
     }
 
-    protected void updateAutoOutputSubscription() {
-        if (shouldKeepSubscription()) {
-            outputSub = machine.subscribeServerTick(outputSub, this::autoOutput);
-        } else if (outputSub != null) {
-            outputSub.unsubscribe();
-            outputSub = null;
+    private boolean shouldKeepFluidSubscription() {
+        if (!supportsAutoOutputFluids()) return false;
+        if (!isAutoOutputFluids() || getFluidOutputDirection() == null ||
+                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), machine.getBlockPos(), getFluidOutputDirection()))
+            return false;
+        return true;
+    }
+
+    protected void updateItemOutputSubscription() {
+        if (shouldKeepItemSubscription()) {
+            itemOutputSub = machine.subscribeServerTick(itemOutputSub, this::autoOutputItems);
+        } else if (itemOutputSub != null) {
+            itemOutputSub.unsubscribe();
+            itemOutputSub = null;
         }
     }
 
-    protected void autoOutput() {
-        if (machine.getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getFluidOutputDirection() != null) {
-                fluidHandlers.forEach(this::exportFluidToNearby);
-            }
-            if (isAutoOutputItems() && getItemOutputDirection() != null) {
-                itemHandlers.forEach(this::exportItemToNearby);
-            }
+    protected void updateFluidOutputSubscription() {
+        if (shouldKeepFluidSubscription()) {
+            fluidOutputSub = machine.subscribeServerTick(fluidOutputSub, this::autoOutputFluids);
+        } else if (fluidOutputSub != null) {
+            fluidOutputSub.unsubscribe();
+            fluidOutputSub = null;
         }
-        updateAutoOutputSubscription();
+
+    }
+
+    protected void autoOutputItems() {
+        if (machine.getOffsetTimer() % ticksPerCycle == 0 && getItemOutputDirection() != null) {
+            itemHandlers.forEach(this::exportItemToNearby);
+        }
+        updateItemOutputSubscription();
+    }
+
+    protected void autoOutputFluids() {
+        if (machine.getOffsetTimer() % ticksPerCycle == 0 && getFluidOutputDirection() != null) {
+            fluidHandlers.forEach(this::exportFluidToNearby);
+        }
+        updateFluidOutputSubscription();
     }
 
     private void exportFluidToNearby(IFluidHandler handler) {
@@ -272,7 +292,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @Override
     public boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held,
                                            Set<GTToolType> toolTypes) {
-        return toolTypes.contains(GTToolType.SCREWDRIVER);
+        return toolTypes.contains(GTToolType.SCREWDRIVER) || toolTypes.contains(GTToolType.WRENCH);
     }
 
     @Override
@@ -317,7 +337,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                                             BlockHitResult hitResult) {
         var itemStack = player.getItemInHand(hand);
         var tagCompound = getBehaviorsTag(itemStack);
-        ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.values()[tagCompound
+        ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.VALUES[tagCompound
                 .getByte("Mode")];
 
         if (type.isItem()) {
@@ -340,27 +360,27 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         if (player.isShiftKeyDown()) {
             if (neverAllowInputFromOutputSide) return InteractionResult.PASS;
             if (getItemOutputDirection() == gridSide) {
-                setAllowItemInputFromOutputSide(!isAllowItemInputFromOutputSide());
+                setAllowItemInputFromOutputSide(!allowsItemInputFromOutputSide());
                 player.displayClientMessage(Component
                         .translatable("gtceu.machine.basic.input_from_output_side." +
-                                (isAllowItemInputFromOutputSide() ? "allow" : "disallow"))
+                                (allowsItemInputFromOutputSide() ? "allow" : "disallow"))
                         .append(Component.translatable("gtceu.creative.chest.item")), true);
             }
 
             if (getFluidOutputDirection() == gridSide) {
-                setAllowFluidInputFromOutputSide(!isAllowFluidInputFromOutputSide());
+                setAllowFluidInputFromOutputSide(!allowsFluidInputFromOutputSide());
                 player.displayClientMessage(Component
                         .translatable("gtceu.machine.basic.input_from_output_side." +
-                                (isAllowFluidInputFromOutputSide() ? "allow" : "disallow"))
+                                (allowsFluidInputFromOutputSide() ? "allow" : "disallow"))
                         .append(Component.translatable("gtceu.creative.tank.fluid")), true);
             }
 
         } else {
             if (getItemOutputDirection() == gridSide) {
-                setAutoOutputItems(!isAutoOutputItems());
+                setAllowAutoOutputItems(!isAutoOutputItems());
             }
             if (getFluidOutputDirection() == gridSide) {
-                setAutoOutputFluids(!isAutoOutputFluids());
+                setAllowAutoOutputFluids(!isAutoOutputFluids());
             }
         }
         return InteractionResult.sidedSuccess(player.level().isClientSide);

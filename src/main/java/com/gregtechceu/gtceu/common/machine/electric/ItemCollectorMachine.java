@@ -113,7 +113,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         this.output = createOutputItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
-        this.autoOutput = AutoOutputTrait.ITEMS(this, output);
+        this.autoOutput = AutoOutputTrait.ofItems(this, output);
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
     }

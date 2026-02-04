@@ -78,7 +78,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
         group.addWidget(new ToggleButtonWidget(
                 19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
-                trait::isAllowFluidInputFromOutputSide, trait::setAllowFluidInputFromOutputSide)
+                trait::allowsFluidInputFromOutputSide, trait::setAllowFluidInputFromOutputSide)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));
 
         return group;
@@ -89,9 +89,9 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
             return;
 
         if (trait.getFluidOutputDirection() == this.side) {
-            trait.setAutoOutputFluids(!trait.isAutoOutputFluids());
+            trait.setAllowAutoOutputFluids(!trait.isAutoOutputFluids());
         } else {
-            trait.setAutoOutputFluids(false);
+            trait.setAllowAutoOutputFluids(false);
             trait.setFluidOutputDirection(this.side);
         }
     }
@@ -113,9 +113,9 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
         if (trait.getFluidOutputDirection() != side) {
             trait.setFluidOutputDirection(side);
-            trait.setAutoOutputFluids(false);
+            trait.setAllowAutoOutputFluids(false);
         } else {
-            trait.setAutoOutputFluids(!trait.isAutoOutputFluids());
+            trait.setAllowAutoOutputFluids(!trait.isAutoOutputFluids());
         }
     }
 

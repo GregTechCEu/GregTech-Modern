@@ -192,14 +192,14 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 outputTrait.getItemOutputDirection() != null) {
             tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
             tag.putBoolean(ITEM_AUTO_OUTPUT, outputTrait.isAutoOutputItems());
-            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.isAllowItemInputFromOutputSide());
+            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.allowsItemInputFromOutputSide());
         }
 
         if (outputTrait != null && outputTrait.supportsAutoOutputFluids() &&
                 outputTrait.getFluidOutputDirection() != null) {
             tag.putString(FLUID_OUTPUT_SIDE, directionToString(outputTrait.getFluidOutputDirection()));
             tag.putBoolean(FLUID_AUTO_OUTPUT, outputTrait.isAutoOutputFluids());
-            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.isAllowFluidInputFromOutputSide());
+            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.allowsFluidInputFromOutputSide());
         }
 
         if (machine instanceof IMufflableMachine mufflableMachine) {
@@ -226,12 +226,12 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
                 outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
-            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
             if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
                 outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
             if (tag.contains(FLUID_OUTPUT_SIDE))
                 outputTrait.setFluidOutputDirection(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
-            if (tag.contains(FLUID_AUTO_OUTPUT)) outputTrait.setAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+            if (tag.contains(FLUID_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
                 outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
         }

@@ -95,7 +95,7 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler();
         this.lockedItem = new CustomItemStackHandler();
-        this.autoOutput = AutoOutputTrait.ITEMS(this, cache);
+        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
         lockedItem.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("lockedItem"));
     }
 
@@ -167,7 +167,7 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        autoOutput.setAutoOutputItems(isWorkingAllowed);
+        autoOutput.setAllowAutoOutputItems(isWorkingAllowed);
     }
 
     //////////////////////////////////////
@@ -273,7 +273,7 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
                         .setMaxStackSize(1))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this.autoOutput::isAutoOutputItems,
-                        this.autoOutput::setAutoOutputItems)
+                        this.autoOutput::setAllowAutoOutputItems)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
                 .addWidget(new ToggleButtonWidget(22, 41, 18, 18,

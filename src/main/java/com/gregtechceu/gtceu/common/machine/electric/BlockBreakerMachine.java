@@ -83,7 +83,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
 
-        this.autoOutput = AutoOutputTrait.ITEMS(this, cache);
+        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
     }
 
     public static float getEfficiencyMultiplier(int tier) {

@@ -175,7 +175,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON,
                 "gtceu.gui.fluid_auto_output",
                 this.autoOutput::isAutoOutputFluids,
-                (cd, nextState) -> this.autoOutput.setAutoOutputFluids(nextState));
+                (cd, nextState) -> this.autoOutput.setAllowAutoOutputFluids(nextState));
     }
 
     private IFancyConfigurator createAutoOutputItemConfigurator() {
@@ -183,7 +183,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON,
                 "gtceu.gui.item_auto_output",
                 this.autoOutput::isAutoOutputItems,
-                (cd, nextState) -> this.autoOutput.setAutoOutputItems(nextState));
+                (cd, nextState) -> this.autoOutput.setAllowAutoOutputItems(nextState));
     }
 
     private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture,

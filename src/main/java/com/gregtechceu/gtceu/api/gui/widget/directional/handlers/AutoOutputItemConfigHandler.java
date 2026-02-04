@@ -78,7 +78,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
         group.addWidget(new ToggleButtonWidget(
                 19, 0, 18, 18, GuiTextures.BUTTON_ITEM_OUTPUT,
-                trait::isAllowItemInputFromOutputSide, trait::setAllowItemInputFromOutputSide)
+                trait::allowsItemInputFromOutputSide, trait::setAllowItemInputFromOutputSide)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.item_auto_output.allow_input"));
 
         return group;
@@ -89,9 +89,9 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
             return;
 
         if (trait.getItemOutputDirection() == this.side) {
-            trait.setAutoOutputItems(!trait.isAutoOutputItems());
+            trait.setAllowAutoOutputItems(!trait.isAutoOutputItems());
         } else {
-            trait.setAutoOutputItems(false);
+            trait.setAllowAutoOutputItems(false);
             trait.setItemOutputDirection(this.side);
         }
     }
@@ -113,9 +113,9 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
         if (trait.getItemOutputDirection() != side) {
             trait.setItemOutputDirection(side);
-            trait.setAutoOutputItems(false);
+            trait.setAllowAutoOutputItems(false);
         } else {
-            trait.setAutoOutputItems(!trait.isAutoOutputItems());
+            trait.setAllowAutoOutputItems(!trait.isAutoOutputItems());
         }
     }
 
