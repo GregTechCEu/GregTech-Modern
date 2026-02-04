@@ -180,9 +180,8 @@ public abstract class LevelRendererMixin {
         boolean renderColoredOutline = false;
 
         // spotless:off
-        // if it's translucent and a material block, always do the colored outline
         MaterialEntry materialEntry = gtceu$getBlockMaterial(state);
-        if (!materialEntry.isEmpty()) {
+        if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
