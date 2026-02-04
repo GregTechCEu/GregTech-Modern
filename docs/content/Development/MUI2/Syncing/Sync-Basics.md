@@ -243,3 +243,26 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 This is very similar to method 2, but instead of a `DynamicLinkedSyncHandler` we use a normal `DynamicSyncHandler` where we have to manually let it know when to update. We do this in the change listener of our two `SyncValue`s by calling notifyUpdate. 
 
 Do note there's also a buffer where you can serialize data to, to be consumed in the `.widgetProvider(...)` in the spot where in a `DynamicLinkedSyncHandler` our syncValue would be. It is usually not needed to put anything in this buffer.
+
+## Other sync information
+
+### SyncHandler panel separation
+
+SyncValues are separated across panels. So if you do `mainPanelSyncManager.syncValue("rows", rowsSyncValue);` in one panel, you can't just call `popupSyncManager.getSyncHandlerFromMapKey("rows:0")`.   
+You can, however, call `syncManager.getModularSyncManager().getPanelSyncManager("panel name here").getSyncHandlerFromMapKey("rows:0");`.  
+
+### Value.Dynamic
+Sometimes you need to quickly create a Value for something that already exists client side. For this you can use `new [Type]Value.Dynamic(...)`.  
+For example, if you have a client-only value that's affected by a button, you could do   
+`panel.child(new ToggleButton().value(new BoolValue.Dynamic(() -> this.toggled, (newValue) -> this.toggled = newValue)));`  
+
+Another reason to use a dynamic value is if you want to change the type of a variable, e.g. `.value(new DoubleValue.Dynamic(() -> (double) this.x, val -> this.x = (double) val)` where x is an int.  
+
+The third reason is if you want to use a `SyncHandler` in two separate widgets that would both auto-register it.  
+```
+        var boolSyncValue = new BooleanSyncValue(() -> this.toggled, (newValue) -> this.toggled = newValue);
+        panel.child(new ToggleButton().value(boolSyncValue));
+        panel.child(new ToggleButton().value(BoolValue.wrap(boolSyncValue)).left(32));
+```
+Without the wrap around the second boolSyncValue call, it would complain of registration of an already registered SyncValue.
+
