@@ -23,7 +23,7 @@ If you try to access values on the client that aren't synced or don't have a `Sy
 
 
 ## Method 1: Dynamic Widgets
-The first method is using dynamic widgets, which update every frame regardless of what happens. 
+The first method is using dynamic widgets, which update every frame regardless of what happens.
 This method is easiest if you just need to sync some data over and display or edit it in a single widget. 
 Some examples are:
 
@@ -81,6 +81,8 @@ If the value returned by the getter changed on the server, the value gets serial
 
 Then, the value on the client (being set every time the server sends an update) is retrieved every frame by the lambdas used in the dynamic widgets.
 
+If you want to update the value from the client, you can call `syncValue.setValue()` on the client. This will also update the value on the server side.
+
 ## Method 2: DynamicLinkedSyncHandler
 
 This method is great for widgets whose structure and layout can change depending on your synced values.
@@ -133,6 +135,10 @@ The second step is creating a `DynamicLinkedSyncHandler` based on the first `Syn
 The third step is creating a `DynamicSyncedWidget` with that `DynamicLinkedSyncHandler` as its `SyncHandler`.  
 
 This effectively lets us create a new "version" of the widget whenever our value (in this case the `ticks` int) changes. Furthermore, in this example we have the actual values of the things we want to sync when constructing our widget tree on the client, allowing for much greater customization.
+
+
+!!! note
+    For even more complex systems where you need to dynamically register sync handlers within the `DynamicLinkedSyncHandler`'s `.widgetProvider(...)`, this can be done by calling `.getOrCreateSyncHandler(...)` on the `widgetSyncManager` parameter of the lambda.
 
 ## Method 3: Types that take SyncHandlers
 There are some widgets that have built in support for working directly with SyncHandlers.
@@ -236,4 +242,4 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 
 This is very similar to method 2, but instead of a `DynamicLinkedSyncHandler` we use a normal `DynamicSyncHandler` where we have to manually let it know when to update. We do this in the change listener of our two `SyncValue`s by calling notifyUpdate. 
 
-Do note there's also a buffer where you can serialize data to, to be consumed in the `.widgetProvider(...)` in the spot where in a `DynamicLinkedSyncHandler` our syncValue would be.
+Do note there's also a buffer where you can serialize data to, to be consumed in the `.widgetProvider(...)` in the spot where in a `DynamicLinkedSyncHandler` our syncValue would be. It is usually not needed to put anything in this buffer.
