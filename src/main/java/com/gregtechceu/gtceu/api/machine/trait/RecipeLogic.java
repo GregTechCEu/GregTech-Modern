@@ -344,6 +344,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (checkMatchedRecipeAvailable(match))
                 return;
 
+            if (!matchRecipe(match).isSuccess()) {
+                continue;
+            }
+
             // cache matching recipes.
             if (lastFailedMatches == null) {
                 lastFailedMatches = new ArrayList<>();

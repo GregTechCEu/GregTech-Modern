@@ -52,6 +52,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -67,6 +68,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     @SuppressWarnings("UnstableApiUsage")
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
