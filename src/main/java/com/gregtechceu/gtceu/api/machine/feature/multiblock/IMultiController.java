@@ -1,24 +1,16 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
-import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
-public interface IMultiController extends IMachineFeature, IInteractedMachine {
+public interface IMultiController extends IMachineFeature {
 
     BooleanProperty IS_FORMED_PROPERTY = GTMachineModelProperties.IS_FORMED;
 
@@ -194,22 +186,6 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     default Comparator<IMultiPart> getPartSorter() {
         return self().getDefinition().getPartSorter().apply(self());
-    }
-
-    /**
-     * Show the preview of structure.
-     */
-    @Override
-    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                    BlockHitResult hit) {
-        if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
-            if (world.isClientSide()) {
-                MultiblockInWorldPreviewRenderer.showPreview(pos, self(),
-                        ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 
     default boolean allowCircuitSlots() {

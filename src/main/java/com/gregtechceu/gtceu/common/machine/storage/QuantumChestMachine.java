@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
@@ -57,7 +56,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @NotNullByDefault
-public class QuantumChestMachine extends TieredMachine implements IInteractedMachine, IControllable,
+public class QuantumChestMachine extends TieredMachine implements IControllable,
                                  IDropSaveMachine, IFancyUIMachine {
 
     /**
@@ -188,6 +187,13 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
                 var remaining = cache.insertItem(0, held, false);
                 player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
                 return InteractionResult.SUCCESS;
+            } else if (held.isEmpty()) {
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
+                if (!drained.isEmpty()) {
+                    if (!player.addItem(drained)) {
+                        Block.popResourceFromFace(world, getBlockPos(), getFrontFacing(), drained);
+                    }
+                }
             } else if (isDoubleHit(player.getUUID())) {
                 for (var stack : player.getInventory().items) {
                     if (!stack.isEmpty() && cache.canInsert(stack)) {
@@ -198,27 +204,11 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
             INTERACTION_LOGGER.put(player.getUUID(), System.currentTimeMillis());
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     private static boolean isDoubleHit(UUID uuid) {
         return (System.currentTimeMillis() - INTERACTION_LOGGER.getLong(uuid)) < 300;
-    }
-
-    @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
-        if (direction == getFrontFacing() && !isRemote()) {
-            if (GTToolType.WRENCH.matchTags.stream().anyMatch(player.getItemInHand(hand)::is)) return false;
-            if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
-                if (!drained.isEmpty()) {
-                    if (!player.addItem(drained)) {
-                        Block.popResourceFromFace(world, getBlockPos(), getFrontFacing(), drained);
-                    }
-                }
-            }
-        }
-        return IInteractedMachine.super.onLeftClick(player, world, hand, pos, direction);
     }
 
     public boolean isLocked() {

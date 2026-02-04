@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
@@ -43,7 +42,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IRotorHolderMachine, IInteractedMachine {
+                                    implements IRotorHolderMachine {
 
     @SaveField
     public final NotifiableItemStackHandler inventory;
@@ -217,8 +216,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
         inventory.onContentsChanged();
     }
 
+    @Override
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
+        var superResult = super.onUse(state, level, pos, player, hand, hit);
+        if (superResult != InteractionResult.PASS) return superResult;
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
             TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
             if (behaviour != null) {

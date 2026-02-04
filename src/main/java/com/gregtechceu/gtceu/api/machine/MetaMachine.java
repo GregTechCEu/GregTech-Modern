@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -390,6 +391,36 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
         if (isRemote()) return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when a machine is clicked.
+     */
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        ItemStack itemStack = player.getItemInHand(hand);
+
+        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
+        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
+            var result = onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
+                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
+                }
+            }
+            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
+        }
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof IInteractionTrait interactionTrait) {
+                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
+                if (result != InteractionResult.PASS) return result;
+            }
+        }
+
         return InteractionResult.PASS;
     }
 
