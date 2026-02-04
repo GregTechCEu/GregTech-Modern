@@ -50,7 +50,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             T result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                    getInnerElemContext(null, context));
+                    getInnerElemContext(current[i], context));
             if (result == null) return current;
             current[i] = result;
         }
