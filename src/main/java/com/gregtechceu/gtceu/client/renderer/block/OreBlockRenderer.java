@@ -106,7 +106,8 @@ public class OreBlockRenderer {
                 .getAsJsonObject("base_stone")
                 .addProperty("parent", oreType.baseModelLocation().toString());
 
-        GTDynamicResourcePack.addBlockModel(GTCEu.id(ORE_MODEL_NAME_FORMAT.formatted(iconSet.name, tagPrefix.name, iconType.name())), newJson);
+        GTDynamicResourcePack.addBlockModel(
+                GTCEu.id(ORE_MODEL_NAME_FORMAT.formatted(iconSet.name, tagPrefix.name, iconType.name())), newJson);
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {
