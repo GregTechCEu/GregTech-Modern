@@ -553,20 +553,4 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine, IMac
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
     }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
-    }
 }
