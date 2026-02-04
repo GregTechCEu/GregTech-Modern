@@ -52,10 +52,9 @@ public class DraggablePanelWrapper implements IDraggable {
             float x = this.panel.getContext().getAbsMouseX() - this.relativeClickX;
             y = y / (this.panel.getScreen().getScreenArea().height - this.panel.getArea().height);
             x = x / (this.panel.getScreen().getScreenArea().width - this.panel.getArea().width);
-            this.panel.flex().resetPosition();
-            this.panel.flex().relativeToScreen();
-            this.panel.flex().topRelAnchor(y, y)
-                    .leftRelAnchor(x, x);
+            this.panel.resizer().resetPosition();
+            this.panel.resizer().relativeToScreen();
+            this.panel.resizer().topRelAnchor(y, y).leftRelAnchor(x, x);
             this.panel.scheduleResize();
         }
     }

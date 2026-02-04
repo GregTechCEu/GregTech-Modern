@@ -22,6 +22,7 @@ import java.util.function.Supplier;
  * The widget provider as ran on both sides. Inside the provider sync handlers can be registered with variants of
  * {@link ISyncRegistrar#getOrCreateSyncHandler(String, int, Class, Supplier)}.
  */
+@ApiStatus.Obsolete
 public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotifiable {
 
     private IWidgetProvider widgetProvider;

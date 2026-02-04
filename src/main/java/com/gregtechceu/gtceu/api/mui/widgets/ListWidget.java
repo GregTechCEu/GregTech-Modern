@@ -61,7 +61,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     public void beforeResize(boolean onOpen) {
         super.beforeResize(onOpen);
         if (this.mainAxisMaxSize != null) {
-            flex().setUnit(this.mainAxisMaxSize, getAxis(), Unit.State.SIZE);
+            resizer().setUnit(this.mainAxisMaxSize, getAxis(), Unit.State.SIZE);
         }
     }
 
@@ -102,7 +102,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
                 widget.resizer().updateResized();
                 continue;
             }
-            if (widget.flex().hasPos(axis)) {
+            if (widget.resizer().hasPos(axis)) {
                 // this is required when the widget has a pos on the main axis, but not on the cross axis
                 widget.resizer().updateResized();
                 continue;
@@ -116,9 +116,11 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
             widget.resizer().setMarginPaddingApplied(true);
             this.separatorPositions.add(p);
             p += separatorSize;
-            if (isValid()) {
-                widget.flex().applyPos(widget);
-            }
+            /*
+             * if (isValid()) {
+             * widget.flex().applyPos(widget);
+             * }
+             */
         }
         int size = p + getArea().getPadding().getEnd(axis);
         getScrollData().setScrollSize(size);

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
@@ -17,11 +16,8 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ISyncRegistrar;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Flex;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.IUnResizeable;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Bounds;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.StandardResizer;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
@@ -48,52 +44,13 @@ import java.util.function.Predicate;
  *
  * @param <W> the type of this widget. This is used for proper return types in builder like methodsY
  */
-public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITooltip<W>, ISynced<W> {
+public class Widget<W extends Widget<W>> extends AbstractWidget implements IPositioned<W>, ITooltip<W>, ISynced<W> {
 
     // other
-    @Nullable
-    @Getter
-    private String name;
-    /**
-     * Returns if this widget is currently enabled. Disabled widgets (and all its children) are not rendered and can't
-     * be interacted with.
-     */
-    @Getter
-    private boolean enabled = true;
-    private int timeHovered = -1;
-    private int timeBelowMouse = -1;
     @Getter
     private boolean excludeAreaInXei = false;
-    // gui context
-    /**
-     * Returns if this widget is currently part of an open panel. Only if this is true information about parent, panel
-     * and gui context can
-     * be obtained.
-     */
-    @Getter
-    private boolean valid = false;
-    private IWidget parent = null;
-    private ModularPanel panel = null;
-    private ModularGuiContext context = null;
     // sizing
-    /**
-     * Returns the area of this widget. This contains information such as position, size, relative position to parent,
-     * padding and margin.
-     * Even tho this is a mutable object, you should refrain from modifying the values.
-     */
-    @Getter
-    private final Area area = new Area();
-    /**
-     * Returns the flex of this widget. This is responsible for calculating size, pos and relative pos.
-     * Originally this was intended to be modular for custom flex class. May come back to this in the future.
-     * Same as {@link #flex()}.
-     */
-    @Getter
-    private final Flex flex = new Flex(this);
-    private IResizeable resizer = this.flex;
-
     private BiConsumer<W, IViewportStack> transform;
-    private boolean requiresResize = false;
     // syncing
     /**
      * Returns the value handler of this widget. Value handlers can provide and update any kind of objects like numbers
@@ -113,6 +70,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Nullable
     private SyncHandler syncHandler;
     // rendering
+    @Nullable
+    private IDrawable shadow = null;
     /**
      * The current set background. This is not an accurate representation of what is actually being displayed currently.
      * Usually background is handled by the theme, which is when this is null.
@@ -153,65 +112,33 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Nullable
     private Consumer<W> onUpdateListener;
 
+    public Widget() {
+        resizer(new StandardResizer(this));
+    }
+
     // -----------------
     // === Lifecycle ===
     // -----------------
 
-    /**
-     * Called when a panel is opened. Use {@link #onInit()} and {@link #afterInit()} for custom logic.
-     *
-     * @param parent the parent this element belongs to
-     * @param late   true if this is called some time after the widget tree of the parent has been initialised
-     */
-    @ApiStatus.Internal
     @Override
-    public void initialise(@NotNull IWidget parent, boolean late) {
-        this.timeHovered = -1;
-        this.timeBelowMouse = -1;
-        if (!(this instanceof ModularPanel)) {
-            this.parent = parent;
-            this.panel = parent.getPanel();
-            this.context = parent.getContext();
-            getArea().z(parent.getArea().z() + 1);
-            if (this.guiActionListeners != null) {
-                for (IGuiAction action : this.guiActionListeners) {
-                    this.context.getScreen().registerGuiActionListener(action);
-                }
+    void onInitInternal(boolean late) {
+        if (this.guiActionListeners != null) {
+            for (IGuiAction action : this.guiActionListeners) {
+                getContext().getScreen().registerGuiActionListener(action);
             }
         }
+
         if (this.value != null && this.syncKey != null) {
             throw new IllegalStateException(
                     "Widget has a value and a sync key for a synced value. This is not allowed!");
         }
-        this.valid = true;
         if (!getScreen().isClientOnly()) {
             initialiseSyncHandler(getScreen().getSyncManager(), late);
         }
         if (isExcludeAreaInXei()) {
             getContext().getXeiSettings().addExclusionArea(this);
         }
-        onInit();
-        if (hasChildren()) {
-            for (IWidget child : getChildren()) {
-                child.initialise(this, false);
-            }
-        }
-        afterInit();
-        onUpdate();
-        this.requiresResize = false;
     }
-
-    /**
-     * Called after this widget is initialised and before the children are initialised.
-     */
-    @ApiStatus.OverrideOnly
-    public void onInit() {}
-
-    /**
-     * Called after this widget is initialised and after the children are initialised.
-     */
-    @ApiStatus.OverrideOnly
-    public void afterInit() {}
 
     /**
      * Retrieves, verifies and initialises a linked sync handler.
@@ -244,26 +171,14 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         if (isValid()) {
             if (this.guiActionListeners != null) {
                 for (IGuiAction action : this.guiActionListeners) {
-                    this.context.getScreen().removeGuiActionListener(action);
+                    getScreen().removeGuiActionListener(action);
                 }
             }
             if (isExcludeAreaInXei()) {
                 getContext().getXeiSettings().removeExclusionArea(this);
             }
         }
-        if (hasChildren()) {
-            for (IWidget child : getChildren()) {
-                child.dispose();
-            }
-        }
-        if (!(this instanceof ModularPanel)) {
-            this.panel = null;
-            this.parent = null;
-            this.context = null;
-        }
-        this.timeHovered = -1;
-        this.timeBelowMouse = -1;
-        this.valid = false;
+        super.dispose();
     }
 
     // -----------------
@@ -281,7 +196,11 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @Override
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IDrawable bg = getCurrentBackground(context.getTheme(), widgetTheme);
+        if (this.shadow != null) {
+            this.shadow.drawAtZero(context, getArea().width, getArea().height,
+                    getActiveWidgetTheme(widgetTheme, isHovering()));
+        }
+        IDrawable bg = getCurrentBackground(getPanel().getTheme(), widgetTheme);
         if (bg != null) {
             bg.drawAtZero(context, getArea().width, getArea().height, getActiveWidgetTheme(widgetTheme, isHovering()));
         }
@@ -311,7 +230,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @Override
     public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IDrawable bg = getCurrentOverlay(context.getTheme(), widgetTheme);
+        IDrawable bg = getCurrentOverlay(getPanel().getTheme(), widgetTheme);
         if (bg != null) {
             bg.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
@@ -395,7 +314,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * {@link ITooltip#tooltipDynamic(Consumer)}.
      * It will invalidate the current tooltip and be caused to rebuild.
      */
-    @Override
     public void markTooltipDirty() {
         if (this.tooltip != null) {
             this.tooltip.markDirty();
@@ -582,8 +500,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @MustBeInvokedByOverriders
     @Override
     public void onUpdate() {
-        if (isHovering()) this.timeHovered++;
-        if (isBelowMouse()) this.timeBelowMouse++;
+        super.onUpdate();
         if (this.onUpdateListener != null) {
             this.onUpdateListener.accept(getThis());
         }
@@ -608,7 +525,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         }
         this.guiActionListeners.add(action);
         if (isValid()) {
-            this.context.getScreen().registerGuiActionListener(action);
+            getScreen().registerGuiActionListener(action);
         }
         return getThis();
     }
@@ -662,73 +579,21 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // === Resizing ===
     // ----------------
 
+    public void estimateSize(Bounds bounds) {}
+
     @Override
     public int getDefaultWidth() {
-        return isValid() ? getWidgetTheme(getContext().getTheme()).getTheme().getDefaultWidth() : 18;
+        return isValid() ? getWidgetTheme(getPanel().getTheme()).getTheme().getDefaultWidth() : 18;
     }
 
     @Override
     public int getDefaultHeight() {
-        return isValid() ? getWidgetTheme(getContext().getTheme()).getTheme().getDefaultHeight() : 18;
-    }
-
-    @Override
-    public void scheduleResize() {
-        this.requiresResize = true;
-    }
-
-    @Override
-    public boolean requiresResize() {
-        return this.requiresResize;
-    }
-
-    @MustBeInvokedByOverriders
-    @Override
-    public void onResized() {
-        this.requiresResize = false;
-    }
-
-    /**
-     * Returns the flex of this widget. This is responsible for calculating size, pos and relative pos.
-     * Originally this was intended to be modular for custom flex class. May come back to this in the future.
-     * Same as {@link #getFlex()}.
-     *
-     * @return flex of this widget
-     */
-    @Override
-    public Flex flex() {
-        return getFlex();
-    }
-
-    /**
-     * Returns the resizer of this widget. This is actually the field responsible for resizing this widget.
-     * Within MUI this is always the same as {@link #flex()}. Custom resizer have not been tested.
-     * The relevance of separating flex and resizer is left to be investigated in the future.
-     *
-     * @return the resizer of this widget
-     */
-    @NotNull
-    @Override
-    public IResizeable resizer() {
-        return this.resizer;
-    }
-
-    /**
-     * Sets the resizer of this widget, which is responsible for resizing this widget.
-     * Within MUI this setter is never used. Custom resizer have not been tested.
-     * The relevance of separating flex and resizer is left to be investigated in the future.
-     *
-     * @param resizer resizer
-     */
-    @ApiStatus.Experimental
-    @Override
-    public void resizer(IResizeable resizer) {
-        this.resizer = resizer != null ? resizer : IUnResizeable.INSTANCE;
+        return isValid() ? getWidgetTheme(getPanel().getTheme()).getTheme().getDefaultHeight() : 18;
     }
 
     @Override
     public void transform(IViewportStack stack) {
-        IWidget.super.transform(stack);
+        super.transform(stack);
         if (this.transform != null) {
             this.transform.accept(getThis(), stack);
         }
@@ -737,72 +602,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     public W transform(BiConsumer<W, IViewportStack> transform) {
         this.transform = transform;
         return getThis();
-    }
-
-    // -------------------
-    // === Gui context ===
-    // -------------------
-
-    /**
-     * Returns the screen of the panel of this widget is being opened in.
-     *
-     * @return the screen of this widget
-     * @throws IllegalStateException if {@link #isValid()} returns false
-     */
-    @Override
-    public ModularScreen getScreen() {
-        return getPanel().getScreen();
-    }
-
-    /**
-     * Returns the panel of this widget is being opened in.
-     *
-     * @return the screen of this widget
-     * @throws IllegalStateException if {@link #isValid()} returns false
-     */
-    @Override
-    public @NotNull ModularPanel getPanel() {
-        if (!isValid()) {
-            throw new IllegalStateException(this + " is not in a valid state!");
-        }
-        return this.panel;
-    }
-
-    /**
-     * Returns the parent of this widget. If this is a {@link ModularPanel} this will always return null contrary to the
-     * annotation.
-     *
-     * @return the screen of this widget
-     * @throws IllegalStateException if {@link #isValid()} returns false
-     */
-    @Override
-    public @NotNull IWidget getParent() {
-        if (!isValid()) {
-            throw new IllegalStateException(this + " is not in a valid state!");
-        }
-        return this.parent;
-    }
-
-    /**
-     * Returns the gui context of the screen this widget is part of.
-     *
-     * @return the screen of this widget
-     * @throws IllegalStateException if {@link #isValid()} returns false
-     */
-    @Override
-    public ModularGuiContext getContext() {
-        if (!isValid()) {
-            throw new IllegalStateException(this + " is not in a valid state!");
-        }
-        return this.context;
-    }
-
-    /**
-     * Used to set the gui context on panels internally.
-     */
-    @ApiStatus.Internal
-    protected final void setContext(ModularGuiContext context) {
-        this.context = context;
     }
 
     // ---------------
@@ -844,16 +643,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     public W syncHandler(String name, int id) {
         this.syncKey = ISyncRegistrar.makeSyncKey(name, id);
         return getThis();
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        if (this.enabled != enabled) {
-            this.enabled = enabled;
-            if (this.isValid() && getParent() instanceof INotifyEnabled notifyEnabled) {
-                notifyEnabled.onChildChangeEnabled(this, enabled);
-            }
-        }
     }
 
     /**
@@ -914,48 +703,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         return getThis();
     }
 
-    @MustBeInvokedByOverriders
-    @Override
-    public void onMouseStartHover() {
-        this.timeHovered = 0;
-    }
-
-    @MustBeInvokedByOverriders
-    @Override
-    public void onMouseEndHover() {
-        this.timeHovered = -1;
-    }
-
-    @MustBeInvokedByOverriders
-    @Override
-    public void onMouseEnterArea() {
-        this.timeBelowMouse = 0;
-    }
-
-    @MustBeInvokedByOverriders
-    @Override
-    public void onMouseLeaveArea() {
-        this.timeBelowMouse = -1;
-    }
-
-    @Override
-    public boolean isHoveringFor(int ticks) {
-        return timeHovered >= ticks;
-    }
-
-    @Override
-    public boolean isBelowMouseFor(int ticks) {
-        return timeBelowMouse >= ticks;
-    }
-
-    public int getTicksHovered() {
-        return timeHovered;
-    }
-
-    public int getTicksBelowMouse() {
-        return timeBelowMouse;
-    }
-
     @Override
     public Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
         if (this instanceof IDragResizeable dragResizeable) {
@@ -981,7 +728,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @return this
      */
     public W name(String name) {
-        this.name = name;
+        setName(name);
         return getThis();
     }
 
@@ -994,25 +741,5 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public W getThis() {
         return (W) this;
-    }
-
-    /**
-     * This is only used in {@link #toString()}.
-     *
-     * @return the simple class name or other fitting name
-     */
-    protected String getTypeName() {
-        return getClass().getSimpleName();
-    }
-
-    /**
-     * @return the simple class plus the debug name, if set
-     */
-    @Override
-    public String toString() {
-        if (getName() != null) {
-            return getTypeName() + "#" + getName();
-        }
-        return getTypeName();
     }
 }

@@ -906,5 +906,59 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+
+        @Configurable
+        public DeveloperConfigs.MuiConfigs mui = new DeveloperConfigs.MuiConfigs();
+
+        public static class MuiConfigs {
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String textColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String outlineColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for cursor in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String cursorColor = "#ff4cAf50";
+
+            @Configurable
+            @Configurable.Comment({ "Scale of debug text",
+                    "Default: 0.8f" })
+            @Configurable.DecimalRange(min = 0.1f, max = 10.0f)
+            public float scale = 0.8f;
+
+            @Configurable
+            public boolean showHovered = true;
+            @Configurable
+            public boolean showPos = true;
+            @Configurable
+            public boolean showSize = true;
+            @Configurable
+            public boolean showWidgetTheme = true;
+            @Configurable
+            public boolean showExtra = true;
+            @Configurable
+            public boolean showOutline = true;
+
+            @Configurable
+            public boolean showParent = true;
+            @Configurable
+            public boolean showParentPos = true;
+            @Configurable
+            public boolean showParentSize = true;
+            @Configurable
+            public boolean showParentWidgetTheme = true;
+            @Configurable
+            public boolean showParentOutline = true;
+        }
     }
 }
