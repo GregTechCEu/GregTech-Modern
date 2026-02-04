@@ -155,10 +155,6 @@ public class DimensionSizer {
         return unit.isRelative() && unit.getAnchor() != 0;
     }
 
-    public boolean test() {
-        return resizer != null && axis.isVertical() && resizer.toString().contains("menu_list");
-    }
-
     public void apply(Area area, ResizeNode relativeTo, IntSupplier defaultSize) {
         boolean sizeCalculated = isSizeCalculated();
         boolean posCalculated = isPosCalculated();

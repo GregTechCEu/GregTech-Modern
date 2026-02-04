@@ -43,10 +43,25 @@ public interface IResizeable extends IResizeParent {
 
     void setLayoutDone(boolean done);
 
+    default void setAxisResized(GuiAxis axis, boolean pos, boolean size) {
+        if (axis.isHorizontal()) {
+            setXAxisResized(pos, size);
+        } else {
+            setYAxisResized(pos, size);
+        }
+    }
+
+    void setXAxisResized(boolean pos, boolean size);
+
+    void setYAxisResized(boolean pos, boolean size);
+
     /**
      * Marks position and size as calculated.
      */
-    void setResized(boolean x, boolean y, boolean w, boolean h);
+    default void setResized(boolean x, boolean y, boolean w, boolean h) {
+        setXAxisResized(x, w);
+        setYAxisResized(y, h);
+    }
 
     default void setPosResized(boolean x, boolean y) {
         setResized(x, y, isWidthCalculated(), isHeightCalculated());
@@ -57,11 +72,11 @@ public interface IResizeable extends IResizeParent {
     }
 
     default void setXResized(boolean v) {
-        setResized(v, isYCalculated(), isWidthCalculated(), isHeightCalculated());
+        setXAxisResized(v, isWidthCalculated());
     }
 
     default void setYResized(boolean v) {
-        setResized(isXCalculated(), v, isWidthCalculated(), isHeightCalculated());
+        setYAxisResized(v, isHeightCalculated());
     }
 
     default void setPosResized(GuiAxis axis, boolean v) {
@@ -73,11 +88,11 @@ public interface IResizeable extends IResizeParent {
     }
 
     default void setWidthResized(boolean v) {
-        setResized(isXCalculated(), isYCalculated(), v, isHeightCalculated());
+        setXAxisResized(isXCalculated(), v);
     }
 
     default void setHeightResized(boolean v) {
-        setResized(isXCalculated(), isYCalculated(), isWidthCalculated(), v);
+        setYAxisResized(isYCalculated(), v);
     }
 
     default void setSizeResized(GuiAxis axis, boolean v) {

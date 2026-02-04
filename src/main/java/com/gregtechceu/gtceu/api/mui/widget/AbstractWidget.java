@@ -325,6 +325,14 @@ public abstract class AbstractWidget implements IWidget {
         this.name = name;
     }
 
+    public boolean isName(String name) {
+        return Objects.equals(name, this.name);
+    }
+
+    public boolean nameContains(String part) {
+        return this.name != null && this.name.contains(part);
+    }
+
     /**
      * This is only used in {@link #toString()}.
      *
