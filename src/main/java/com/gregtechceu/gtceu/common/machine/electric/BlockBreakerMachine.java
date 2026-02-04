@@ -16,13 +16,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -189,7 +187,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                             if (autoOutput.getItemOutputDirection() == null) {
                                 Block.popResource(getLevel(), getBlockPos(), remainder);
                             } else {
-                                Block.popResource(getLevel(), getBlockPos().relative(autoOutput.getItemOutputDirection()),
+                                Block.popResource(getLevel(),
+                                        getBlockPos().relative(autoOutput.getItemOutputDirection()),
                                         remainder);
                             }
                         }

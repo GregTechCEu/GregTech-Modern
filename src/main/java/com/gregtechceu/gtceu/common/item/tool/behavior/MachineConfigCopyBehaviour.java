@@ -188,13 +188,15 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
         var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
-        if (outputTrait != null && outputTrait.supportsAutoOutputItems() && outputTrait.getItemOutputDirection() != null) {
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
+                outputTrait.getItemOutputDirection() != null) {
             tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
             tag.putBoolean(ITEM_AUTO_OUTPUT, outputTrait.isAutoOutputItems());
             tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.isAllowItemInputFromOutputSide());
         }
 
-        if (outputTrait != null && outputTrait.supportsAutoOutputFluids() && outputTrait.getFluidOutputDirection() != null) {
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids() &&
+                outputTrait.getFluidOutputDirection() != null) {
             tag.putString(FLUID_OUTPUT_SIDE, directionToString(outputTrait.getFluidOutputDirection()));
             tag.putBoolean(FLUID_AUTO_OUTPUT, outputTrait.isAutoOutputFluids());
             tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.isAllowFluidInputFromOutputSide());
@@ -220,7 +222,6 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
-
         var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))

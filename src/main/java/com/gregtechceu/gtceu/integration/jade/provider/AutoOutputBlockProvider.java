@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +24,8 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
     }
 
     @Override
-    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (data.contains("autoOutputItem", Tag.TAG_COMPOUND)) {
             var tag = data.getCompound("autoOutputItem");
             addAutoOutputInfo(tooltip, block, tag, "gtceu.top.item_auto_output");
