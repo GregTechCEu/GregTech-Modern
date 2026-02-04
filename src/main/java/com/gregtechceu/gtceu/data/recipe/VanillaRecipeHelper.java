@@ -224,7 +224,7 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
@@ -232,7 +232,7 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
@@ -240,7 +240,7 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
@@ -248,7 +248,7 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              @NotNull String regName,
@@ -257,11 +257,36 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, false, regName, result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
+                                                 @NotNull String regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, false, regName, result, recipe);
     }
 
     /**
@@ -284,17 +309,20 @@ public class VanillaRecipeHelper {
      * <li>{@code 'w'} - {@code craftingToolWrench}</li>
      * <li>{@code 'x'} - {@code craftingToolWireCutter}</li>
      * </ul>
-     *
+     * 
      * @param setMaterialInfoData whether to add material decomposition information to the recipe output
+     *
+     * @param matchSize
      * @param regName             the registry name for the recipe
      * @param result              the output for the recipe
      * @param recipe              the contents of the recipe
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
-                                       @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                       boolean matchSize, @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
         var builder = new ShapedRecipeBuilder(regName).output(result);
         builder.isStrict(isStrict);
+        builder.matchSize(matchSize);
         final CharSet tools = ToolHelper.getToolSymbols();
         CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
@@ -354,7 +382,7 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull String regName, @NotNull ItemStack result, @NotNull Object... recipe) {
@@ -362,21 +390,30 @@ public class VanillaRecipeHelper {
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
-        addShapedRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, false, false, regName, result, recipe);
     }
 
     /**
-     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                              @NotNull Object... recipe) {
-        addShapedRecipe(provider, setMaterialInfoData, true, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, true, false, regName, result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
+                                                 @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                                 @NotNull Object... recipe) {
+        addShapedRecipe(provider, setMaterialInfoData, true, true, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,

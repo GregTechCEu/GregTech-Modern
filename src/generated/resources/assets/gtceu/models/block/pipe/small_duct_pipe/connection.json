@@ -43,6 +43,7 @@
   ],
   "textures": {
     "end": "gtceu:block/pipe/pipe_duct_in",
+    "particle": "#side",
     "side": "gtceu:block/pipe/pipe_duct_side"
   }
 }

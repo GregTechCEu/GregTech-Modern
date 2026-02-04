@@ -73,6 +73,7 @@
   ],
   "textures": {
     "end": "gtceu:block/pipe/pipe_laser_in",
+    "particle": "#side",
     "side": "gtceu:block/pipe/pipe_laser_side",
     "side_overlay": "gtceu:block/pipe/pipe_laser_side_overlay"
   }
