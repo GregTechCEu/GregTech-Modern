@@ -485,16 +485,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void onPaintingColorChanged(int color) {}
 
-    public void clearInventory(IItemHandlerModifiable inventory) {
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            ItemStack stackInSlot = inventory.getStackInSlot(i);
-            if (!stackInSlot.isEmpty()) {
-                inventory.setStackInSlot(i, ItemStack.EMPTY);
-                Block.popResource(getLevel(), getBlockPos(), stackInSlot);
-            }
-        }
-    }
-
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {

@@ -99,7 +99,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(itemStackHandler);
+        itemStackHandler.dropInventoryInWorld();
     }
 
     @Override

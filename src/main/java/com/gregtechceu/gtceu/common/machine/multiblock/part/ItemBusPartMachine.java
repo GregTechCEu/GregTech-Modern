@@ -105,10 +105,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(getInventory().storage);
+        getInventory().dropInventoryInWorld();
 
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
@@ -148,7 +148,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public void addedToController(IMultiController controller) {
         if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
+                circuitInventory.dropInventoryInWorld();
             } else {
                 circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
             }

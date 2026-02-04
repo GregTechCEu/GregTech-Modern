@@ -118,7 +118,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(importItems.storage);
+        importItems.dropInventoryInWorld();
     }
 
     private void rebuildData(boolean isDataBank) {

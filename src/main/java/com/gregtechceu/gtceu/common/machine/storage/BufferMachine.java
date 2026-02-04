@@ -107,6 +107,6 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(inventory.storage);
+        inventory.dropInventoryInWorld();
     }
 }

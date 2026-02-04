@@ -139,7 +139,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(fuelHandler.storage);
-        clearInventory(ashHandler.storage);
+        fuelHandler.dropInventoryInWorld();
+        ashHandler.dropInventoryInWorld();
     }
 }
