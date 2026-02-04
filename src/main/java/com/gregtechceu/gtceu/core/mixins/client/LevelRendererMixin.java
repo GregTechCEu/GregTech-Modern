@@ -19,7 +19,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -180,7 +179,7 @@ public abstract class LevelRendererMixin {
         boolean renderColoredOutline = false;
 
         // spotless:off
-        MaterialEntry materialEntry = gtceu$getBlockMaterial(state);
+        MaterialEntry materialEntry = ChemicalHelper.getMaterialEntry(state.getBlock());
         if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
@@ -217,15 +216,5 @@ public abstract class LevelRendererMixin {
             return;
         }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);
-    }
-
-    @Unique
-    private @NotNull MaterialEntry gtceu$getBlockMaterial(BlockState state) {
-        assert level != null;
-        // skip blocks from other mods (like vanilla ice blocks)
-        if (!(state.getBlock() instanceof MaterialBlock)) {
-            return MaterialEntry.NULL_ENTRY;
-        }
-        return ChemicalHelper.getMaterialEntry(state.getBlock());
     }
 }
