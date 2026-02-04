@@ -283,9 +283,9 @@ public class GCYMMachines {
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     Component.translatable("gtceu.assembler")))
+            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
