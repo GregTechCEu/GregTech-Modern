@@ -38,8 +38,7 @@ public class GTMultiblockPanelUtil {
                 .background(GTGuiTextures.MUI_DISPLAY);
 
         if (controller instanceof IWorkableMultiController rlMachine) {
-            listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager)
-                    .alignX(Alignment.CenterLeft));
+            listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager));
 
             if (rlMachine instanceof WorkableElectricMultiblockMachine workableElectricMachine) {
                 listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager));
