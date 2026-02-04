@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,20 +42,6 @@ public interface ValueTransformer<T> {
             throw new ClassCastException("Sync: Invalid tag type: expected %s, got %s [%s, field %s]"
                     .formatted(cls.toString(), tag.getClass().getName(), ctx.holder(), ctx.fieldName));
         }
-    }
-
-    /**
-     * Extracts the actual data tag from an LDLib tag structure which is present in some serialized objects.
-     */
-    static Tag stripLdlibWrapper(Tag t) {
-        if (!(t instanceof CompoundTag tag)) return t;
-        if (tag.contains("p") && tag.contains("t")) {
-            return tag.getCompound("p");
-        }
-        if (tag.contains("t", Tag.TAG_COMPOUND)) {
-            return tag.getCompound("t").getCompound("p");
-        }
-        return tag;
     }
 
     /**
