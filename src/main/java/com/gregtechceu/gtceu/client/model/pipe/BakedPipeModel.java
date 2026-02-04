@@ -58,7 +58,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         Integer connectionMask = modelData.get(GTModelProperties.PIPE_CONNECTION_MASK);
         Integer blockedMask = modelData.get(GTModelProperties.PIPE_BLOCKED_MASK);
 
-        if (level == null || pos == null || state == null) {
+        if (state == null) {
             connectionMask = ITEM_CONNECTIONS;
             blockedMask = Node.ALL_CLOSED;
         }
