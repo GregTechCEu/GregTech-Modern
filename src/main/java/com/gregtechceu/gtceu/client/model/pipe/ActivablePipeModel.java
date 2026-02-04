@@ -140,7 +140,8 @@ public class ActivablePipeModel extends PipeModel {
 
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"))
-                .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY));
+                .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))
+                .renderType(RENDERTYPE_CUTOUT_MIPPED);
 
         ResourceLocation side = this.sideActive != null ? this.sideActive : this.side;
         ResourceLocation end = this.endActive != null ? this.endActive : this.end;

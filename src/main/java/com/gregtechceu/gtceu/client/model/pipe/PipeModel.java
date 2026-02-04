@@ -88,6 +88,7 @@ public class PipeModel {
             SIDE_OVERLAY_KEY   = "side_overlay",
             END_OVERLAY_KEY    = "end_overlay";
     // spotless:on
+    protected static final ResourceLocation RENDERTYPE_CUTOUT_MIPPED = new ResourceLocation("cutout_mipped");
 
     public static final Set<PipeModel> DYNAMIC_MODELS = new HashSet<>();
 
@@ -314,7 +315,8 @@ public class PipeModel {
 
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"))
-                .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY));
+                .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))
+                .renderType(RENDERTYPE_CUTOUT_MIPPED);
         makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.side, this.end, SIDE_KEY, END_KEY);
         makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,

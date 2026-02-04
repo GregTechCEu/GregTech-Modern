@@ -71,6 +71,7 @@
       ]
     }
   ],
+  "render_type": "minecraft:cutout_mipped",
   "textures": {
     "end": "gtceu:block/pipe/pipe_optical_in",
     "particle": "#side",

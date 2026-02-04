@@ -91,6 +91,7 @@
       ]
     }
   ],
+  "render_type": "minecraft:cutout_mipped",
   "textures": {
     "end": "gtceu:block/pipe/pipe_laser_in",
     "particle": "#side",
