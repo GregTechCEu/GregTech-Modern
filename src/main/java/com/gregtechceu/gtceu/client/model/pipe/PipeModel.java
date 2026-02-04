@@ -99,7 +99,7 @@ public class PipeModel {
     }
 
     @Getter
-    private final PipeBlock<?, ?, ?> block;
+    protected final PipeBlock<?, ?, ?> block;
     public final @NotNull ResourceLocation blockId;
     protected final GTBlockstateProvider provider;
 

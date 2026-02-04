@@ -58,7 +58,7 @@ public class ActivablePipeModel extends PipeModel {
     }
 
     /**
-     * Override this to change the actual model {@link #block this.block} will use.
+     * Override this to change the active model {@link #block this.block} will use.
      *
      * @return A model builder for the block's actual model.
      * @see #getOrCreateBlockModel()
