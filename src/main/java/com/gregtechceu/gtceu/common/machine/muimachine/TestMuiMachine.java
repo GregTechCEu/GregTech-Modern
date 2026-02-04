@@ -58,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 public class TestMuiMachine extends MetaMachine implements IMuiMachine {
@@ -160,7 +161,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     return new Column()
                             .widthRel(1f)
                             .coverChildrenHeight()
-                            .children(vals.size(), i -> IKey.str(String.valueOf(vals.get(i))).asWidget().padding(2));
+                            .children(vals.size(), i -> IKey.str(String.valueOf(vals.get(i))).asWidget().padding(2))
+                            .name("synced number col");
                 });
 
         // disable spotless on the menu layout code so it won't insert random line breaks
@@ -176,7 +178,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                          .rightRel(1f),
                 true);
         PagedWidget.Controller tabController = new PagedWidget.Controller();
-        panel.flex()                        // returns object which is responsible for sizing
+        panel.resizer()                        // returns object which is responsible for sizing
                 .size(176, 220)       // set a static size for the main panel
                 .align(Alignment.Center);    // center the panel in the screen
 
@@ -231,6 +233,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .margin(5, 5, 20, 5).name("crafting"))))
 
                 .child(Flow.column()
+                        .name("main col")
                         .sizeRel(1f)
                         .paddingBottom(7)
                         .child(new ParentWidget<>()
@@ -514,6 +517,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                 .name("page 4 storage")
                                                 .sizeRel(1f)
                                                 .child(new Column()
+                                                        .name("page 4 col, dynamic widgets")
                                                         .padding(7)
                                                         .child(new ItemSlot()
                                                                 .slot(new ModularSlot(this.storageInventory0, 0)
@@ -526,10 +530,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                         .child(new DynamicSyncedWidget<>()
                                                                 .widthRel(1f)
                                                                 .syncHandler(dynamicSyncHandler))
-                                                .child(new DynamicSyncedWidget<>()
+                                                /*.child(new DynamicSyncedWidget<>()
                                                         .widthRel(1f)
                                                         .coverChildrenHeight()
-                                                        .syncHandler(dynamicLinkedSyncHandler))))
+                                                        .syncHandler(dynamicLinkedSyncHandler))*/))
                                         .addPage(createSchemaPage(data))))
                         .child(SlotGroupWidget.playerInventory(false)));
         /*
@@ -634,6 +638,21 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .asWidget()
                         .pos(5, 17));
         return panel;
+    }
+
+    public void buildDialog(Dialog<String> dialog) {
+        AtomicReference<String> value = new AtomicReference<>("");
+        dialog.setDraggable(true);
+        dialog.child(new TextFieldWidget()
+                .resizer(flex -> flex.size(100, 20).align(Alignment.Center))
+                .value(new StringValue.Dynamic(value::get, value::set)))
+                .child(new ButtonWidget<>()
+                        .resizer(flex -> flex.size(8, 8).top(5).right(5))
+                        .overlay(IKey.str("x"))
+                        .onMousePressed((x, y, mouseButton) -> {
+                            dialog.closeWith(value.get());
+                            return true;
+                        }));
     }
 
     @Override

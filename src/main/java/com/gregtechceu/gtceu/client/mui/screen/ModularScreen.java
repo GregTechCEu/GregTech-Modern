@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.ScreenResizeNode;
 import com.gregtechceu.gtceu.api.mui.widget.wrapper.WidgetWrapper;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
@@ -36,10 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -100,10 +98,15 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     private final Map<Class<?>, List<IGuiAction>> guiActionListeners = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectArrayMap<IWidget, Runnable> frameUpdates = new Object2ObjectArrayMap<>();
     @Getter
+    private final ScreenResizeNode resizeNode = new ScreenResizeNode(this);
+    @Getter
     private boolean pauseScreen = false;
     @Getter
     private boolean openParentOnClose = false;
 
+    @Getter
+    @Nullable
+    private String themeOverride;
     private ITheme currentTheme;
     @Getter
     private IMuiScreen screenWrapper;
@@ -114,12 +117,16 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     private boolean overlay = false;
 
     /**
-     * Creates a new screen with a ModularUI as its owner and a given {@link ModularPanel}.
-     *
-     * @param mainPanel main panel of this screen
+     * @deprecated use the other constructor
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
     public ModularScreen(@NotNull ModularPanel mainPanel) {
         this(GTCEu.MOD_ID, mainPanel);
+        if (GTCEu.isDev()) {
+            GTCEu.LOGGER.warn("The single arg ModularScreen constructor should not be used. " +
+                    "Use the any of the other ones and pass in your mod id.");
+        }
     }
 
     /**
@@ -214,9 +221,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         }
 
         this.context.pushViewport(null, this.context.getScreenArea());
-        for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
-            WidgetTree.resizeInternal(panel, true);
-        }
+        WidgetTree.verifyTree(this.resizeNode, new ReferenceOpenHashSet<>());
+        WidgetTree.resizeInternal(this.resizeNode, true);
 
         this.context.popViewport(null);
         if (!isOverlay()) {
@@ -729,7 +735,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
     public ITheme getCurrentTheme() {
         if (this.currentTheme == null) {
-            useTheme(null);
+            useTheme(this.themeOverride);
         }
         return this.currentTheme;
     }
@@ -743,7 +749,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @return this for builder like usage
      */
     public ModularScreen useTheme(String theme) {
-        this.currentTheme = IThemeApi.get().getThemeForScreen(this, theme);
+        this.themeOverride = theme;
+        this.currentTheme = IThemeApi.get().getThemeForScreen(this, this.themeOverride);
         return this;
     }
 

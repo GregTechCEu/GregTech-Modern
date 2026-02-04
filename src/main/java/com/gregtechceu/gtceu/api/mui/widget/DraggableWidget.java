@@ -50,7 +50,7 @@ public class DraggableWidget<W extends DraggableWidget<W>> extends Widget<W> imp
     @Override
     public void onDragEnd(boolean successful) {
         if (successful) {
-            flex().top(getContext().getAbsMouseY() - this.relativeClickY)
+            resizer().top(getContext().getAbsMouseY() - this.relativeClickY)
                     .left(getContext().getAbsMouseX() - this.relativeClickX);
             this.movingArea.x = getArea().x;
             this.movingArea.y = getArea().y;

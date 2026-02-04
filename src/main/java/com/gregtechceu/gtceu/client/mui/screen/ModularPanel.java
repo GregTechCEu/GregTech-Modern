@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -25,8 +27,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.Util;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -70,7 +70,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private State state = State.IDLE;
     private boolean cantDisposeNow = false;
     @Getter
-    private final @NotNull ObjectArrayList<LocatedWidget> hovering = new ObjectArrayList<>();
+    private final @NotNull ObjectList<LocatedWidget> hovering = ObjectList.create();
     private final Input keyboard = new Input();
     private final Input mouse = new Input();
 
@@ -86,6 +86,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private Animator animator;
 
     private boolean resizeable = false;
+    private String themeOverride;
+    private ITheme theme;
 
     private Runnable onCloseAction;
 
@@ -241,6 +243,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public void onOpen(ModularScreen screen) {
         this.screen = screen;
         getArea().z(1);
+        resizer().initialize(this.screen.getResizeNode(), this.screen.getResizeNode());
         initialise(this, false);
         WidgetTree.onUpdate(this);
         // TODO: NEA handles main panel
@@ -269,7 +272,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @Override
     public boolean isExcludeAreaInXei() {
-        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !flex().isFullSize());
+        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !resizer().isFullSize());
     }
 
     @MustBeInvokedByOverriders
@@ -813,6 +816,13 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         }
     }
 
+    public ITheme getTheme() {
+        if (this.theme == null) {
+            this.theme = IThemeApi.get().getThemeForScreen(this, this.themeOverride);
+        }
+        return this.theme;
+    }
+
     public ModularPanel bindPlayerInventory() {
         return child(SlotGroupWidget.playerInventory(true));
     }
@@ -838,6 +848,12 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     public ModularPanel onCloseAction(Runnable onCloseAction) {
         this.onCloseAction = onCloseAction;
+        return this;
+    }
+
+    public ModularPanel themeOverride(String id) {
+        this.themeOverride = id;
+        this.theme = null;
         return this;
     }
 
@@ -877,7 +893,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
      */
     private static class Input {
 
-        private final ObjectList<Interactable> acceptedInteractions = new ObjectArrayList<>();
+        private final ObjectList<Interactable> acceptedInteractions = ObjectList.create();
         @Nullable
         private LocatedWidget lastPressed;
         private boolean held;
