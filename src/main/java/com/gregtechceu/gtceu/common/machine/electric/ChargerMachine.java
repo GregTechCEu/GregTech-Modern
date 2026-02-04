@@ -190,11 +190,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     protected static class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
-        private ChargerMachine machine;
+        private final ChargerMachine machine;
 
         protected EnergyBatteryTrait(ChargerMachine machine, int inventorySize) {
             super(machine, GTValues.V[machine.tier] * inventorySize * 32L, GTValues.V[machine.tier],
                     inventorySize * AMPS_PER_ITEM, 0L, 0L);
+            this.machine = machine;
             this.setSideInputCondition(side -> machine.isWorkingEnabled());
             this.setSideOutputCondition(side -> false);
         }
