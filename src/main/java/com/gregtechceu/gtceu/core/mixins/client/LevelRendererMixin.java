@@ -212,7 +212,7 @@ public abstract class LevelRendererMixin {
             float blue = FastColor.ARGB32.blue(rgb) / 255f;
             renderShape(poseStack, consumer, blockShape,
                     pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
-                    red, green, blue, 1f);
+                    red, green, blue, 0.4f);
             return;
         }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);
