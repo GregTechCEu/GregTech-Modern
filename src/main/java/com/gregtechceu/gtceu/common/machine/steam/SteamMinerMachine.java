@@ -47,8 +47,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine,
-                               IUIMachine, IMachineLife, IDataInfoProvider {
+public class SteamMinerMachine extends SteamWorkableMachine implements IControllable, IExhaustVentMachine,
+                               IUIMachine, IDataInfoProvider, IMiner {
 
     @Getter
     @SaveField
@@ -89,7 +89,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
     }
@@ -211,6 +212,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         textList.add(Component.translatable("gtceu.machine.miner.minez", this.getRecipeLogic().getMineZ()));
     }
 
+    @Override
     public boolean drainInput(boolean simulate) {
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {

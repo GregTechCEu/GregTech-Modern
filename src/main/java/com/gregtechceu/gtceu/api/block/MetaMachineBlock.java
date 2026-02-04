@@ -248,7 +248,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
                 if (machine != null) {
-                    machine.onRemoved();
+                    machine.onMachineDestroyed();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -40,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-                                  implements IControllable, IFancyUIMachine, IMachineLife, IMonitorComponent {
+                                  implements IControllable, IFancyUIMachine, IMonitorComponent {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -191,7 +190,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(batteryInventory);
     }
 

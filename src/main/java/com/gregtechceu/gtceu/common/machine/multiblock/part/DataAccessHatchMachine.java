@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -48,7 +47,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
@@ -117,7 +116,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(importItems.storage);
     }
 
