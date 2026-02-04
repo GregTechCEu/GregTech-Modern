@@ -137,6 +137,6 @@ public class CrateMachine extends MetaMachine implements IUIMachine,
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        if (!isTaped) clearInventory(inventory.storage);
+        if (!isTaped) inventory.dropInventoryInWorld();
     }
 }
