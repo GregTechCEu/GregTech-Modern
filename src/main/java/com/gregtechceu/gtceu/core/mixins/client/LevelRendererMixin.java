@@ -177,21 +177,26 @@ public abstract class LevelRendererMixin {
         assert level != null;
         var rendererCfg = ConfigHolder.INSTANCE.client.renderer;
         int rgb = 0;
-        boolean doRenderColoredOutline = false;
+        boolean renderColoredOutline = false;
 
         // spotless:off
-        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
+        // if it's translucent and a material block, always do the colored outline
+        MaterialEntry materialEntry = gtceu$getBlockMaterial(state);
+        if (!materialEntry.isEmpty()) {
+            renderColoredOutline = true;
+            rgb = materialEntry.material().getMaterialRGB();
+        } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
             if (rendererCfg.coloredTieredMachineOutline) {
                 if (mbe.getMetaMachine() instanceof SteamMachine steam) {
-                    doRenderColoredOutline = true;
+                    renderColoredOutline = true;
                     rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
                 } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
-                    doRenderColoredOutline = true;
+                    renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
             }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
-            doRenderColoredOutline = true;
+            renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
@@ -203,7 +208,7 @@ public abstract class LevelRendererMixin {
         // spotless:on
         VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));
 
-        if (doRenderColoredOutline) {
+        if (renderColoredOutline) {
             float red = FastColor.ARGB32.red(rgb) / 255f;
             float green = FastColor.ARGB32.green(rgb) / 255f;
             float blue = FastColor.ARGB32.blue(rgb) / 255f;
@@ -213,5 +218,15 @@ public abstract class LevelRendererMixin {
             return;
         }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);
+    }
+
+    @Unique
+    private @NotNull MaterialEntry gtceu$getBlockMaterial(BlockState state) {
+        assert level != null;
+        // skip blocks from other mods (like vanilla ice blocks)
+        if (!(state.getBlock() instanceof MaterialBlock)) {
+            return MaterialEntry.NULL_ENTRY;
+        }
+        return ChemicalHelper.getMaterialEntry(state.getBlock());
     }
 }
