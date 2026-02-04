@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
@@ -290,8 +289,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      *         animations will be played
      */
     @Override
-    public final Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, ItemStack itemStack,
-                                                                 UseOnContext context) {
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType,
+                                                                           ItemStack itemStack,
+                                                                           UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
@@ -303,7 +303,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
-        Pair<GTToolType, InteractionResult> result = null;
+        Pair<@Nullable GTToolType, InteractionResult> result = null;
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
         if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
@@ -970,12 +970,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                     return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
                 }
             }
-        } else if (cap == GTCapability.CAPABILITY_RECIPE_LOGIC) {
-            for (MachineTrait trait : machine.traitHolder.getAllTraits()) {
-                if (trait instanceof RecipeLogic recipeLogic) {
-                    return GTCapability.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
-                }
-            }
         } else if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
             if (machine instanceof IEnergyContainer energyContainer) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
@@ -995,20 +989,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
             }
-        } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
-            if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
-                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap,
-                        LazyOptional.of(() -> cleanroomReceiver));
-            }
         } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
             if (machine instanceof IMaintenanceMachine maintenanceMachine) {
                 return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
                         LazyOptional.of(() -> maintenanceMachine));
-            }
-        } else if (cap == GTCapability.CAPABILITY_TURBINE_MACHINE) {
-            if (machine instanceof ITurbineMachine turbineMachine) {
-                return GTCapability.CAPABILITY_TURBINE_MACHINE.orEmpty(cap,
-                        LazyOptional.of(() -> turbineMachine));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var handler = machine.getItemHandlerCap(side, true);
@@ -1063,14 +1047,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IMonitorComponent.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
-            }
-        } else if (cap == GTCapability.CAPABILITY_CENTRAL_MONITOR) {
-            if (machine instanceof ICentralMonitor centralMonitor) {
-                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> centralMonitor));
-            }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, ICentralMonitor.class);
-            if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         }
         if (GTCEu.Mods.isAE2Loaded()) {

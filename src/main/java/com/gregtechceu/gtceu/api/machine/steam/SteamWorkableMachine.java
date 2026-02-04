@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -45,10 +44,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine, IMachineLife {
 
-    @Nullable
     @Getter
-    @Setter
-    private ICleanroomProvider cleanroom;
+    protected final CleanroomReceiverTrait cleanroomReceiver;
     @Getter
     @SaveField
     @SyncToClient
@@ -77,9 +74,10 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
                                 Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier,
                                 Function<SteamMachine, NotifiableFluidTank> steamTankFactory) {
-        super(info, isHighPressure);
+        super(info, isHighPressure, steamTankFactory);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);

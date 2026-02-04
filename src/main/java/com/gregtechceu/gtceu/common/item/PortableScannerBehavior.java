@@ -317,10 +317,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Recipe logic for EU production/consumption
-                Optional<RecipeLogic> recipeLogicCap = tileEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC)
-                        .resolve();
-                if (recipeLogicCap.isPresent()) {
-                    RecipeLogic recipeLogic = recipeLogicCap.get();
+                RecipeLogic recipeLogic = machine.getTraitHolder().getTrait(RecipeLogic.TYPE);
+                if (recipeLogic != null) {
                     GTRecipe recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
