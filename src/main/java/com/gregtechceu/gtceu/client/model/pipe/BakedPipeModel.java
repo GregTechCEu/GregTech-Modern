@@ -123,16 +123,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
-        ModelData.Builder builder = modelData.derive()
-                .with(GTModelProperties.LEVEL, level)
-                .with(GTModelProperties.POS, pos);
-
-        if (!(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> blockEntity)) {
-            return builder.build();
-        }
-        return builder.with(GTModelProperties.PIPE_CONNECTION_MASK, blockEntity.getVisualConnections())
-                .with(GTModelProperties.PIPE_BLOCKED_MASK, blockEntity.getBlockedConnections())
-                .build();
+        return modelData;
     }
 
     @SuppressWarnings("deprecation")
