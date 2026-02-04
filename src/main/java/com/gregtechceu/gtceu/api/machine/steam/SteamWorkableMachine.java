@@ -45,7 +45,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine, IMachineLife {
 
     @Getter
-    protected final CleanroomReceiverTrait cleanroomReciever;
+    protected final CleanroomReceiverTrait cleanroomReceiver;
     @Getter
     @SaveField
     @SyncToClient
@@ -77,7 +77,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         super(info, isHighPressure, steamTankFactory);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.cleanroomReciever = new CleanroomReceiverTrait(this);
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);

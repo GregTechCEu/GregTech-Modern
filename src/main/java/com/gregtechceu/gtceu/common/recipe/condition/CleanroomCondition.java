@@ -56,9 +56,9 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
         if (!ConfigHolder.INSTANCE.machines.enableCleanroom) return true;
         if (ConfigHolder.INSTANCE.machines.cleanMultiblocks && machine instanceof IMultiController) return true;
 
-        CleanroomReceiverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
+        CleanroomReceiverTrait receiverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
 
-        if (recieverTrait != null && this.cleanroom != null) return recieverTrait.hasActiveCleanroom(cleanroom);
+        if (receiverTrait != null && this.cleanroom != null) return receiverTrait.hasActiveCleanroom(cleanroom);
         return true;
     }
 

@@ -40,7 +40,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @SaveField
     public int activeRecipeType;
     @Getter
-    protected final CleanroomReceiverTrait cleanroomReciever;
+    protected final CleanroomReceiverTrait cleanroomReceiver;
     @SaveField
     public final NotifiableItemStackHandler importItems, exportItems;
     @SaveField
@@ -72,7 +72,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
-        this.cleanroomReciever = new CleanroomReceiverTrait(this);
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN, IO.BOTH);
         this.exportItems = new NotifiableItemStackHandler(this, exportSlots, IO.OUT);
@@ -92,7 +92,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
-        this.cleanroomReciever = new CleanroomReceiverTrait(this);
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
         this.recipeLogic = new RecipeLogic(this);
         this.importItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
                 IO.IN);

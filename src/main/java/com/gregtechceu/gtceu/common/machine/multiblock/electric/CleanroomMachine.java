@@ -421,8 +421,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return false;
                 }
-                CleanroomReceiverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
-                if (recieverTrait != null) receivers.add(recieverTrait);
+                CleanroomReceiverTrait receiverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
+                if (receiverTrait != null) receivers.add(receiverTrait);
             }
             return true;
         }, null) {
