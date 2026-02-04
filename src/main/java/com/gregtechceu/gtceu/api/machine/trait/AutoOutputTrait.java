@@ -67,16 +67,26 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected boolean autoOutputItems, autoOutputFluids = false;
+    protected boolean autoOutputItems = false;
+    @Getter
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
+    protected boolean autoOutputFluids = false;
     @Setter
     @SaveField
-    protected boolean allowItemInputFromOutputSide, allowFluidInputFromOutputSide = false;
+    protected boolean allowItemInputFromOutputSide = false;
+    @Setter
+    @SaveField
+    protected boolean allowFluidInputFromOutputSide = false;
 
     @Setter
     @Getter
     protected int ticksPerCycle = 5;
     @Setter
-    protected Predicate<@Nullable Direction> itemOutputDirectionValidator, fluidOutputDirectionValidator = $ -> true;
+    protected Predicate<@Nullable Direction> itemOutputDirectionValidator = $ -> true;
+    @Setter
+    protected Predicate<@Nullable Direction> fluidOutputDirectionValidator = $ -> true;
     @Setter
     protected boolean neverAllowInputFromOutputSide = false;
     protected @Nullable TickableSubscription outputSub;
