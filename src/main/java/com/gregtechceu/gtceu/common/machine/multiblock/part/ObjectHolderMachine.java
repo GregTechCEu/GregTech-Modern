@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -32,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder, IMachineLife {
+public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder {
 
     // purposefully not exposed to automation or capabilities
     @SaveField
@@ -87,7 +86,8 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(this.heldItems.storage);
     }
 

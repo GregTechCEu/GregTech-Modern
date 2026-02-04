@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
-                                            IMachineLife, IMufflableMachine, IOverclockMachine {
+                                            IMufflableMachine, IOverclockMachine {
 
     @Getter
     @SaveField
@@ -144,7 +144,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(importItems.storage);
         clearInventory(exportItems.storage);
     }
