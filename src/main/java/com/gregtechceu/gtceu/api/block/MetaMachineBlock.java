@@ -278,18 +278,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
-            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
-            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
-                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
-
-                if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
-                }
-            }
-            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
-        }
+        InteractionResult machineInteractResult = machine.onUse(state, world, pos, player, hand, hit);
+        if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
 
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
             return itemStack.getItem().use(world, player, hand).getResult();
@@ -299,17 +289,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-        for (var trait : machine.getTraitHolder().getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
-                if (result != InteractionResult.PASS) return result;
-            }
-        }
-
-        if (machine instanceof IInteractedMachine interactedMachine) {
-            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
-            if (result != InteractionResult.PASS) return result;
-        }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
             return uiMachine.tryToOpenUI(player, hand, hit);
