@@ -340,23 +340,27 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.VALUES[tagCompound
                 .getByte("Mode")];
 
+        boolean hasChanged = false;
         if (type.isItem()) {
             if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) &&
                     itemOutputDirectionValidator.test(gridSide)) {
                 setItemOutputDirection(gridSide);
+                hasChanged = true;
             }
         }
         if (type.isFluid()) {
             if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) &&
                     fluidOutputDirectionValidator.test(gridSide)) {
                 setFluidOutputDirection(gridSide);
+                hasChanged = true;
             }
         }
-        return InteractionResult.sidedSuccess(machine.isRemote());
+        return hasChanged ? InteractionResult.sidedSuccess(machine.isRemote()) : InteractionResult.PASS;
     }
 
     private InteractionResult onScrewdriverClick(Player player, InteractionHand hand, Direction gridSide,
                                                  BlockHitResult hitResult) {
+        boolean hasChanged = false;
         if (player.isShiftKeyDown()) {
             if (neverAllowInputFromOutputSide) return InteractionResult.PASS;
             if (getItemOutputDirection() == gridSide) {
@@ -365,6 +369,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                         .translatable("gtceu.machine.basic.input_from_output_side." +
                                 (allowsItemInputFromOutputSide() ? "allow" : "disallow"))
                         .append(Component.translatable("gtceu.creative.chest.item")), true);
+                hasChanged = true;
             }
 
             if (getFluidOutputDirection() == gridSide) {
@@ -373,16 +378,19 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                         .translatable("gtceu.machine.basic.input_from_output_side." +
                                 (allowsFluidInputFromOutputSide() ? "allow" : "disallow"))
                         .append(Component.translatable("gtceu.creative.tank.fluid")), true);
+                hasChanged = true;
             }
 
         } else {
             if (getItemOutputDirection() == gridSide) {
                 setAllowAutoOutputItems(!isAutoOutputItems());
+                hasChanged = true;
             }
             if (getFluidOutputDirection() == gridSide) {
                 setAllowAutoOutputFluids(!isAutoOutputFluids());
+                hasChanged = true;
             }
         }
-        return InteractionResult.sidedSuccess(player.level().isClientSide);
+        return hasChanged ? InteractionResult.sidedSuccess(player.level().isClientSide) : InteractionResult.PASS;
     }
 }
