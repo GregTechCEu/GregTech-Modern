@@ -261,26 +261,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
-        this.beforeWorking = beforeWorking;
-        return getThis();
-    }
-
-    public TYPE onWorking(Predicate<IRecipeLogicMachine> onWorking) {
-        this.onWorking = onWorking;
-        return getThis();
-    }
-
-    public TYPE onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
-        this.onWaiting = onWaiting;
-        return getThis();
-    }
-
-    public TYPE afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
-        this.afterWorking = afterWorking;
-        return getThis();
-    }
-
     public TYPE regressWhenWaiting(boolean regressWhenWaiting) {
         this.regressWhenWaiting = regressWhenWaiting;
         return getThis();
@@ -686,10 +666,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         });
         definition.setRecipeModifier(recipeModifier);
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
-        definition.setBeforeWorking(this.beforeWorking);
-        definition.setOnWorking(this.onWorking);
-        definition.setOnWaiting(this.onWaiting);
-        definition.setAfterWorking(this.afterWorking);
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
         definition.setAllowCoverOnFront(this.allowCoverOnFront);
 
