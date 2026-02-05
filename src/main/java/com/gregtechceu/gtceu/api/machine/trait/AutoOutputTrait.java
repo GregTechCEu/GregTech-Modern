@@ -255,7 +255,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
             fluidOutputSub.unsubscribe();
             fluidOutputSub = null;
         }
-
     }
 
     protected void autoOutputItems() {

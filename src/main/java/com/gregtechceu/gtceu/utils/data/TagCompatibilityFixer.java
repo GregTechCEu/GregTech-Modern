@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.utils.data;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TagCompatibilityFixer {

@@ -123,7 +123,6 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     @Getter
     public enum WrenchModeType {
 
-
         ITEM(Component.translatable("gtceu.mode.item")),
         FLUID(Component.translatable("gtceu.mode.fluid")),
         BOTH(Component.translatable("gtceu.mode.both"));

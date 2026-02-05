@@ -231,7 +231,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
             if (tag.contains(FLUID_OUTPUT_SIDE))
                 outputTrait.setFluidOutputDirection(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
-            if (tag.contains(FLUID_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+            if (tag.contains(FLUID_AUTO_OUTPUT))
+                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
                 outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
         }
