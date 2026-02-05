@@ -82,12 +82,10 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     protected Predicate<@Nullable Direction> itemOutputDirectionValidator = $ -> true;
     @Setter
     protected Predicate<@Nullable Direction> fluidOutputDirectionValidator = $ -> true;
-    @Setter
-    protected boolean neverAllowInputFromOutputSide = false;
     protected @Nullable TickableSubscription itemOutputSub, fluidOutputSub;
     protected List<ISubscription> itemSubs = new ArrayList<>();
     protected List<ISubscription> fluidSubs = new ArrayList<>();
-    private boolean useDefaultToolHandlers;
+    private final boolean useDefaultToolHandlers;
 
     public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers, boolean useDefaultToolHandlers) {
         super(machine);
@@ -183,11 +181,11 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     public boolean allowsItemInputFromOutputSide() {
-        return !neverAllowInputFromOutputSide && allowItemInputFromOutputSide;
+        return allowItemInputFromOutputSide;
     }
 
     public boolean allowsFluidInputFromOutputSide() {
-        return !neverAllowInputFromOutputSide && allowFluidInputFromOutputSide;
+        return allowFluidInputFromOutputSide;
     }
 
     public void setAllowAutoOutputItems(boolean allow) {
@@ -368,7 +366,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                                                  BlockHitResult hitResult) {
         boolean hasChanged = false;
         if (player.isShiftKeyDown()) {
-            if (neverAllowInputFromOutputSide) return InteractionResult.PASS;
             if (getItemOutputDirection() == gridSide) {
                 setAllowItemInputFromOutputSide(!allowsItemInputFromOutputSide());
                 player.displayClientMessage(Component

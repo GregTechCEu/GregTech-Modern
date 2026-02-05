@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +32,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -58,10 +60,9 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine, IInter
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler();
-        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
+        this.autoOutput = new AutoOutputTrait(this, List.of(), List.of(cache), false);
         autoOutput.setFluidOutputDirection(Direction.DOWN);
         autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
-        autoOutput.setNeverAllowInputFromOutputSide(ConfigHolder.INSTANCE.machines.allowDrumsInputFluidsFromOutputSide);
     }
 
     //////////////////////////////////////
@@ -133,6 +134,12 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine, IInter
             }
         }
         return world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    }
+
+    @Override
+    protected InteractionResult onScrewdriverClick(Player player, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
