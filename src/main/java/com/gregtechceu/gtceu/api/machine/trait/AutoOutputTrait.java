@@ -87,8 +87,9 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     protected @Nullable TickableSubscription itemOutputSub, fluidOutputSub;
     protected List<ISubscription> itemSubs = new ArrayList<>();
     protected List<ISubscription> fluidSubs = new ArrayList<>();
+    private boolean useDefaultToolHandlers;
 
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
+    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers, boolean useDefaultToolHandlers) {
         super(machine);
 
         this.itemOutputDirection = machine.hasFrontFacing() ? machine.getFrontFacing().getOpposite() : Direction.UP;
@@ -104,6 +105,11 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
             if (h instanceof ICapabilityTrait cap) return cap.canCapOutput();
             return true;
         }).toList();
+        this.useDefaultToolHandlers = useDefaultToolHandlers;
+    }
+
+    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
+        this(machine, itemHandlers, fluidHandlers, true);
     }
 
     @Override
@@ -322,13 +328,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, Player player,
                                                            InteractionHand hand, Direction gridSide,
                                                            BlockHitResult hitResult) {
-        if (toolType.contains(GTToolType.WRENCH)) {
-            return Pair.of(GTToolType.WRENCH, onWrenchClick(player, hand, gridSide, hitResult));
+        if (useDefaultToolHandlers) {
+            if (toolType.contains(GTToolType.WRENCH)) {
+                return Pair.of(GTToolType.WRENCH, onWrenchClick(player, hand, gridSide, hitResult));
+            }
+            if (toolType.contains(GTToolType.SCREWDRIVER)) {
+                return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(player, hand, gridSide, hitResult));
+            }
         }
-        if (toolType.contains(GTToolType.SCREWDRIVER)) {
-            return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(player, hand, gridSide, hitResult));
-        }
-
         return IInteractionTrait.super.onToolClick(toolType, player, hand, gridSide, hitResult);
     }
 
