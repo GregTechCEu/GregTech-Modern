@@ -119,8 +119,8 @@ public class SyncDataHolder {
             } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
             } else {
-                GTCEu.LOGGER.error("Sync: Failed to serialize field {}: Missing value transformer for {}",
-                        field.fieldName, field.type);
+                GTCEu.LOGGER.error("Sync: Failed to serialize field {} in class {}: Missing value transformer for {}",
+                        field.fieldName, holder.getClass().getName(), field.type);
             }
 
         } catch (Exception e) {
@@ -167,8 +167,8 @@ public class SyncDataHolder {
                 if (currentVal instanceof ISyncManaged syncObj)
                     syncObj.getSyncDataHolder().deserializeNBT(compound, readingClientFields);
             } else {
-                GTCEu.LOGGER.error("Sync: Failed to deserialize field {}: Missing value transformer for {}",
-                        field.fieldName, field.type);
+                GTCEu.LOGGER.error("Sync: Failed to deserialize field {} in class {}: Missing value transformer for {}",
+                        field.fieldName, holder.getClass().getName(), field.type);
             }
         } catch (Exception e) {
             GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName);
