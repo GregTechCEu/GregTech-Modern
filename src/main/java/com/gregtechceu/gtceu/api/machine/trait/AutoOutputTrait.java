@@ -87,7 +87,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     protected List<ISubscription> fluidSubs = new ArrayList<>();
     private final boolean useDefaultToolHandlers;
 
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers, boolean useDefaultToolHandlers) {
+    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers,
+                           boolean useDefaultToolHandlers) {
         super(machine);
 
         this.itemOutputDirection = machine.hasFrontFacing() ? machine.getFrontFacing().getOpposite() : Direction.UP;
