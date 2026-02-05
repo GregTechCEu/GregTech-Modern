@@ -4,17 +4,17 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
@@ -24,17 +24,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TieredEnergyMachine extends TieredMachine implements ITieredMachine, IExplosionMachine {
+public class TieredEnergyMachine extends TieredMachine implements ITieredMachine {
 
     @SaveField
     @SyncToClient
     public final NotifiableEnergyContainer energyContainer;
-    protected TickableSubscription explosionSub;
+    @Getter
+    protected final ExplodableMachineTrait explodableMachineTrait;
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
                                Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
         super(info, tier);
         energyContainer = energyContainerSupplier.apply(this);
+        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
     }
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
@@ -48,6 +50,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             energyContainer = NotifiableEnergyContainer.receiverContainer(this,
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
         }
+        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
     }
 
     //////////////////////////////////////
@@ -57,29 +60,11 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!isRemote() && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion &&
-                shouldWeatherOrTerrainExplosion()) {
-            explosionSub = subscribeServerTick(this::checkExplosion);
-            checkExplosion();
-        }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (explosionSub != null) {
-            explosionSub.unsubscribe();
-            explosionSub = null;
-        }
-    }
-
-    //////////////////////////////////////
-    // ******** Explosion ********//
-    //////////////////////////////////////
-    protected void checkExplosion() {
-        if (energyContainer.getEnergyStored() > 0) {
-            checkWeatherOrTerrainExplosion(tier, tier * 10);
-        }
     }
 
     //////////////////////////////////////
