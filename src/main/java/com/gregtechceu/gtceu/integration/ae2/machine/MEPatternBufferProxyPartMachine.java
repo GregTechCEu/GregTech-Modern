@@ -56,9 +56,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel level) {
-            level.getServer().tell(new TickTask(0, () -> this.setBuffer(bufferPos)));
-        }
+        if (!isRemote()) this.setBuffer(bufferPos);
     }
 
     @Override

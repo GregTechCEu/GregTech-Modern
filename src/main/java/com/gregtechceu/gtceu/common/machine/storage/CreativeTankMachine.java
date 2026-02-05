@@ -56,8 +56,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel slvl)
-            slvl.getServer().tell(new TickTask(0, () -> autoOutput.setTicksPerCycle(ticksPerCycle)));
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
     @Override

@@ -159,17 +159,15 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(1, () -> {
-                for (int i = 0; i < patternInventory.getSlots(); i++) {
-                    var pattern = patternInventory.getStackInSlot(i);
-                    var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
-                    if (patternDetails != null) {
-                        this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
-                    }
+        if (!isRemote()) {
+            for (int i = 0; i < patternInventory.getSlots(); i++) {
+                var pattern = patternInventory.getStackInSlot(i);
+                var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
+                if (patternDetails != null) {
+                    this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
                 }
-                needPatternSync = true;
-            }));
+            }
+            needPatternSync = true;
         }
     }
 
