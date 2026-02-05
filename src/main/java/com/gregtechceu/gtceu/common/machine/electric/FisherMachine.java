@@ -123,6 +123,7 @@ public class FisherMachine extends TieredEnergyMachine
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
         autoOutput = AutoOutputTrait.ofItems(this, cache);
+        explodableMachineTrait.setShouldExplodeInWeatherAndWater(false);
     }
 
     public void setWorkingEnabled(boolean enabled) {
@@ -159,11 +160,6 @@ public class FisherMachine extends TieredEnergyMachine
             baitSubs.unsubscribe();
             baitSubs = null;
         }
-    }
-
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
     }
 
     @Override

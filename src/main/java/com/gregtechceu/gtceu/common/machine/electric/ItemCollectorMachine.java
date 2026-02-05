@@ -113,6 +113,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         this.output = createOutputItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
+        explodableMachineTrait.setShouldExplodeInWeatherAndWater(false);
         this.autoOutput = AutoOutputTrait.ofItems(this, output);
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
@@ -165,11 +166,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             energySubs.unsubscribe();
             energySubs = null;
         }
-    }
-
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
     }
 
     @Override

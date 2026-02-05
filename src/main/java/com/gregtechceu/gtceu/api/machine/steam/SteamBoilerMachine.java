@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -67,8 +67,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IUIMachine, IExplosionMachine, IDataInfoProvider,
-                                         IInteractedMachine {
+                                         implements IUIMachine, IDataInfoProvider, IInteractedMachine {
 
     @SaveField
     public final NotifiableFluidTank waterTank;
@@ -196,7 +195,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
-                    doExplosion(2.0f);
+                    ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), 2.0f);
                 } else this.hasNoWater = !hasDrainedWater;
                 if (filledSteam == 0 && hasDrainedWater && getLevel() instanceof ServerLevel serverLevel) {
                     final float x = getBlockPos().getX() + 0.5F;
