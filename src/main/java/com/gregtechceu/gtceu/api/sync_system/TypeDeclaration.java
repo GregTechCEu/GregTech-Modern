@@ -46,4 +46,9 @@ public class TypeDeclaration {
                 "Attempted to get array component for non-array type %s".formatted(rawType));
         return arrayComponentType;
     }
+
+    @Override
+    public String toString() {
+        return rawType.toString();
+    }
 }
