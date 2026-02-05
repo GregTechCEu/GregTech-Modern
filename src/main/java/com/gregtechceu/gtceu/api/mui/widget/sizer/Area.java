@@ -231,6 +231,10 @@ public class Area extends Rectangle implements IAnimatable<Area> {
         return axis.isHorizontal() ? requestedWidth() : requestedHeight();
     }
 
+    public int paddedSize(GuiAxis axis) {
+        return axis.isHorizontal() ? paddedWidth() : paddedHeight();
+    }
+
     public int relativeEndX() {
         return this.rx + this.width;
     }

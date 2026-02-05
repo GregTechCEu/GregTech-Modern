@@ -78,7 +78,10 @@ public abstract class StaticResizer extends ResizeNode {
     public void setLayoutDone(boolean done) {}
 
     @Override
-    public void setResized(boolean x, boolean y, boolean w, boolean h) {}
+    public void setXAxisResized(boolean pos, boolean size) {}
+
+    @Override
+    public void setYAxisResized(boolean pos, boolean size) {}
 
     @Override
     public void setXMarginPaddingApplied(boolean b) {}

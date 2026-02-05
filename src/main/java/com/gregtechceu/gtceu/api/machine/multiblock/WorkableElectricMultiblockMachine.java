@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -255,7 +255,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -270,6 +270,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 return highestVoltage;
             }
         }
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**

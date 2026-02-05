@@ -227,6 +227,7 @@ public class InternalWidgetTree {
 
             if (isLayout && shouldLayout) {
                 layoutSuccessful &= resizer.postLayoutChildren();
+                if (!selfFullyCalculated) resizer.postResize();
             }
             if (shouldLayout) resizer.setLayoutDone(layoutSuccessful);
             checkFullyCalculated(anotherResize, state, isLayout);

@@ -28,6 +28,14 @@ import java.util.List;
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
+    public static final MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
+            NotifiableComputationContainer.class);
+
+    @Override
+    public MachineTraitType<NotifiableComputationContainer> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     protected IO handlerIO;
     @Getter
@@ -67,7 +75,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.requestCWUt(cwut, simulate, seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.requestCWUt(cwut, simulate, seen);
                             }
@@ -111,7 +119,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.getMaxCWUt(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.getMaxCWUt(seen);
                             }
@@ -154,7 +162,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.canBridge(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.canBridge(seen);
                             }

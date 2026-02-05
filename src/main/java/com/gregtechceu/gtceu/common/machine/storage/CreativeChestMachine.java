@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -128,7 +128,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
      * new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
      * new TextTexture("gtceu.creative.activity.on")))
      * .setPressed(isWorkingEnabled()));
-     * 
+     *
      * return group;
      * }
      */

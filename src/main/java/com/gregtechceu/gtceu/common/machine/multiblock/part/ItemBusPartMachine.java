@@ -24,6 +24,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -32,9 +34,6 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.FieldDataModifier;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -42,8 +41,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
@@ -189,16 +186,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
-    }
-
-    @FieldDataModifier(fieldName = "inventory", target = FieldDataModifier.ModifyTarget.LOAD_NBT)
-    private void checkInventoryNBTCompat(Tag tag, boolean loadClientFields) {
-        if (tag instanceof CompoundTag compound) {
-            // todo: delete for 1.8
-            // fix to preserve distinctness from pre 1.7 versions
-            isDistinct = compound.getBoolean("isDistinct");
-
-        }
     }
 
     public void setCircuitSlotEnabled(boolean enabled) {

@@ -138,7 +138,7 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         // calculate x, y, width and height if possible
         this.x.apply(area, relativeTo, () -> getWidget().getDefaultWidth());
         this.y.apply(area, relativeTo, () -> getWidget().getDefaultHeight());
-        return isFullyCalculated(isParentLayout);
+        return isSelfFullyCalculated(isParentLayout);
     }
 
     @Override
@@ -360,9 +360,13 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     }
 
     @Override
-    public void setResized(boolean x, boolean y, boolean w, boolean h) {
-        this.x.setResized(x, w);
-        this.y.setResized(y, h);
+    public void setXAxisResized(boolean pos, boolean size) {
+        this.x.setResized(pos, size);
+    }
+
+    @Override
+    public void setYAxisResized(boolean pos, boolean size) {
+        this.y.setResized(pos, size);
     }
 
     @Override

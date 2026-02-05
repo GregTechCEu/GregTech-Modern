@@ -71,7 +71,15 @@ public class IntProviderIngredientTest {
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
         CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_centrifuge_tests",
                 GTRecipeTypes.CENTRIFUGE_RECIPES);
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+        var LCRHandler = LCR_RECIPE_TYPE.getAdditionHandler();
+        LCRHandler.beginStaging();
+        var centHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
+        centHandler.beginStaging();
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
                 .inputItemsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -80,7 +88,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(CR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -88,7 +96,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
                 .inputItemsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -97,7 +105,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
                 .inputItems(LCR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -105,7 +113,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
                 .inputItemsRanged(LCENT_IN, UniformInt.of(0, 4))
                 .inputItems(COBBLE)
@@ -114,13 +122,17 @@ public class IntProviderIngredientTest {
                 .duration(4)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(LCENT_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
+
+        CRHandler.completeStaging();
+        LCRHandler.completeStaging();
+        centHandler.completeStaging();
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {

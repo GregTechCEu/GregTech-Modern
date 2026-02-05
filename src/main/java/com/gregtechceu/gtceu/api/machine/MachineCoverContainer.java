@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.*;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,7 +29,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     @SyncToClient
     @SaveField
     @RerenderOnChanged
-    private CoverBehavior up, down, north, south, west, east;
+    private @Nullable CoverBehavior up, down, north, south, west, east;
 
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
@@ -67,7 +69,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public CoverBehavior getCoverAtSide(Direction side) {
+    public @Nullable CoverBehavior getCoverAtSide(Direction side) {
         return switch (side) {
             case UP -> up;
             case SOUTH -> south;
@@ -92,12 +94,12 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         return machine.getItemHandlerCap(side, useCoverCapability);
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         return machine.getFluidHandlerCap(side, useCoverCapability);
     }
 }

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ISyncRegistrar;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Bounds;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.StandardResizer;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -578,8 +577,6 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     // ----------------
     // === Resizing ===
     // ----------------
-
-    public void estimateSize(Bounds bounds) {}
 
     @Override
     public int getDefaultWidth() {
