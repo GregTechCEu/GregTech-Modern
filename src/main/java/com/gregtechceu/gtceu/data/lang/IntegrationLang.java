@@ -45,7 +45,7 @@ public class IntegrationLang {
         provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
-    /** Jade, TheOneProbe, WTHIT */
+    /** Jade */
     private static void initWailaLikeLang(RegistrateLangProvider provider) {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
@@ -100,6 +100,14 @@ public class IntegrationLang {
         provider.add("gtceu.jade.fluid_use", "%s mB/t");
         provider.add("gtceu.jade.amperage_use", "%s A");
         provider.add("gtceu.jade.at", " @ ");
+        provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
+        provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
+        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("gtceu.jade.seconds", "%s seconds");
+        provider.add("gtceu.jade.minutes", "%s minutes");
+        provider.add("gtceu.jade.hours", "%s hours");
+        provider.add("gtceu.jade.days", "%s days");
+        provider.add("gtceu.jade.years", "%s years");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

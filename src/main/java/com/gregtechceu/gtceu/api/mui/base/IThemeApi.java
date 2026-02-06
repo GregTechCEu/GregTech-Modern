@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.base;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Scrollbar;
 import com.gregtechceu.gtceu.api.mui.theme.*;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
@@ -149,7 +150,35 @@ public interface IThemeApi {
      * @param defaultTheme default theme if no theme was found
      * @return the registered theme for the given screen or the given default theme or {@link #getDefaultTheme()}
      */
-    ITheme getThemeForScreen(String owner, String name, @Nullable String defaultTheme);
+    default ITheme getThemeForScreen(String owner, String name, @Nullable String defaultTheme,
+                                     @Nullable String fallbackTheme) {
+        return getThemeForScreen(owner, name, null, defaultTheme, fallbackTheme);
+    }
+
+    /**
+     * Gets the appropriate theme for a screen.
+     *
+     * @param owner        owner of the screen
+     * @param name         name of the screen
+     * @param panel        the name
+     * @param defaultTheme default theme if no theme was found
+     * @return the registered theme for the given screen or the given default theme or {@link #getDefaultTheme()}
+     */
+    ITheme getThemeForScreen(String owner, String name, @Nullable String panel, @Nullable String defaultTheme,
+                             @Nullable String fallbackTheme);
+
+    /**
+     * Gets the appropriate theme for a specific panel.
+     *
+     * @param panel        the panel to find a theme for
+     * @param defaultTheme default theme if no theme was found
+     * @return the registered theme for the given screen or the given default theme or {@link #getDefaultTheme()}
+     */
+    default ITheme getThemeForScreen(ModularPanel panel, @Nullable String defaultTheme) {
+        ModularScreen screen = panel.getScreen();
+        return getThemeForScreen(screen.getOwner(), screen.getName(), panel.getName(), defaultTheme,
+                screen.getThemeOverride());
+    }
 
     /**
      * Gets the appropriate theme for a screen.
@@ -159,7 +188,7 @@ public interface IThemeApi {
      * @return the registered theme for the given screen or the given default theme or {@link #getDefaultTheme()}
      */
     default ITheme getThemeForScreen(ModularScreen screen, @Nullable String defaultTheme) {
-        return getThemeForScreen(screen.getOwner(), screen.getName(), defaultTheme);
+        return getThemeForScreen(screen.getOwner(), screen.getName(), defaultTheme, null);
     }
 
     /**

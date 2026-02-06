@@ -347,6 +347,8 @@ public class GTGuiTextures {
     public static final UITexture OUT_SLOT_OVERLAY_STEEL = fullImage("textures/gui/overlay/out_slot_overlay_steel.png");
     public static final UITexture PAPER_OVERLAY = fullImage("textures/gui/overlay/paper_overlay.png",
             ColorType.DEFAULT);
+    public static final UITexture PATTERN_OVERLAY = fullImage("textures/gui/widget/pattern_overlay.png",
+            ColorType.DEFAULT);
     public static final UITexture PRINTED_PAPER_OVERLAY = fullImage("textures/gui/overlay/printed_paper_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture PIPE_OVERLAY_2 = fullImage("textures/gui/overlay/pipe_overlay_2.png",
@@ -360,6 +362,8 @@ public class GTGuiTextures {
     public static final UITexture PRESS_OVERLAY_3 = fullImage("textures/gui/overlay/press_overlay_3.png",
             ColorType.DEFAULT);
     public static final UITexture PRESS_OVERLAY_4 = fullImage("textures/gui/overlay/press_overlay_4.png",
+            ColorType.DEFAULT);
+    public static final UITexture REFUND_OVERLAY = fullImage("textures/gui/widget/refund_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture SAWBLADE_OVERLAY = fullImage("textures/gui/overlay/sawblade_overlay.png",
             ColorType.DEFAULT);
@@ -425,6 +429,8 @@ public class GTGuiTextures {
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
             .subAreaXYWH(0, 0, 16, 16)
             .build();
+
+    public static final UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
 
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(

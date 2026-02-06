@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -21,6 +21,8 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -143,5 +145,23 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
 
         return group;
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("min", minValue);
+        tag.putInt("max", maxValue);
+        tag.putBoolean("latched", isLatched);
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setMinValue(tag.getInt("min"));
+        setMaxValue(tag.getInt("max"));
+        setLatched(tag.getBoolean("latched"));
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
     }
 }
