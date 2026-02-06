@@ -950,7 +950,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS dimension(ResourceLocation dimension, boolean reverse) {
-            return addCondition(new DimensionCondition(dimension).setReverse(reverse));
+            return addCondition(
+                    new DimensionCondition(ResourceKey.create(Registries.DIMENSION, dimension)).setReverse(reverse));
         }
 
         public GTRecipeJS dimension(ResourceLocation dimension) {
@@ -1363,7 +1364,7 @@ public interface GTRecipeSchema {
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");
     RecipeKey<Long> DURATION = TimeComponent.TICKS.key("duration").optional(100L);
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
-    RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
+    RecipeKey<RecipeCondition<?>[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
             .optional(new RecipeCondition[0]);
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 

@@ -1,112 +1,67 @@
 package com.gregtechceu.gtceu.api.mui.base.layout;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 
 /**
  * An interface that handles resizing of widgets.
  * Usually this interface is not implemented by the users of this library or will even interact with it.
  */
-public interface IResizeable {
+public interface IResizeable extends IResizeParent {
 
     /**
      * Called once before resizing
      */
-    void initResizing();
+    void initResizing(boolean onOpen);
 
     /**
      * Resizes the given element
      *
-     * @param guiElement     element to resize
      * @param isParentLayout if the parent is a layout widget
      * @return true if element is fully resized
      */
-    boolean resize(IGuiElement guiElement, boolean isParentLayout);
+    boolean resize(boolean isParentLayout);
 
     /**
-     * Called if {@link #resize(IGuiElement, boolean)} returned false after children have been resized.
+     * Called if {@link #resize(boolean)} returned false after children have been resized.
      *
-     * @param guiElement element to resize
      * @return if element is fully resized
      */
-    boolean postResize(IGuiElement guiElement);
+    boolean postResize();
 
     /**
      * Called after all elements in the tree are resized and the absolute positions needs to be calculated from the
      * relative position.
-     *
-     * @param guiElement element that was resized
      */
-    default void applyPos(IGuiElement guiElement) {}
+    default void preApplyPos() {}
 
     /**
-     * @return area of the element
+     * This converts the relative pos to resizer parent to relative pos to widget parent.
      */
-    // TODO doesnt fit with the other api methods in this interface
-    Area getArea();
-
-    /**
-     * @return true if the relative x position is calculated
-     */
-    boolean isXCalculated();
-
-    /**
-     * @return true if the relative y position is calculated
-     */
-    boolean isYCalculated();
-
-    /**
-     * @return true if the width is calculated
-     */
-    boolean isWidthCalculated();
-
-    /**
-     * @return true if the height is calculated
-     */
-    boolean isHeightCalculated();
-
-    boolean areChildrenCalculated();
-
-    boolean isLayoutDone();
-
-    default boolean isSizeCalculated(GuiAxis axis) {
-        return axis.isHorizontal() ? isWidthCalculated() : isHeightCalculated();
-    }
-
-    default boolean isPosCalculated(GuiAxis axis) {
-        return axis.isHorizontal() ? isXCalculated() : isYCalculated();
-    }
-
-    /**
-     * @return true if the relative position and size are fully calculated
-     */
-    default boolean isSelfFullyCalculated(boolean isParentLayout) {
-        return isSelfFullyCalculated() && !canRelayout(isParentLayout);
-    }
-
-    default boolean isSelfFullyCalculated() {
-        return isXCalculated() && isYCalculated() && isWidthCalculated() && isHeightCalculated();
-    }
-
-    default boolean isFullyCalculated() {
-        return isSelfFullyCalculated() && areChildrenCalculated() && isLayoutDone();
-    }
-
-    default boolean isFullyCalculated(boolean isParentLayout) {
-        return isSelfFullyCalculated(isParentLayout) && areChildrenCalculated() && isLayoutDone();
-    }
-
-    boolean canRelayout(boolean isParentLayout);
+    default void applyPos() {}
 
     void setChildrenResized(boolean resized);
 
     void setLayoutDone(boolean done);
 
+    default void setAxisResized(GuiAxis axis, boolean pos, boolean size) {
+        if (axis.isHorizontal()) {
+            setXAxisResized(pos, size);
+        } else {
+            setYAxisResized(pos, size);
+        }
+    }
+
+    void setXAxisResized(boolean pos, boolean size);
+
+    void setYAxisResized(boolean pos, boolean size);
+
     /**
      * Marks position and size as calculated.
      */
-    void setResized(boolean x, boolean y, boolean w, boolean h);
+    default void setResized(boolean x, boolean y, boolean w, boolean h) {
+        setXAxisResized(x, w);
+        setYAxisResized(y, h);
+    }
 
     default void setPosResized(boolean x, boolean y) {
         setResized(x, y, isWidthCalculated(), isHeightCalculated());
@@ -117,11 +72,11 @@ public interface IResizeable {
     }
 
     default void setXResized(boolean v) {
-        setResized(v, isYCalculated(), isWidthCalculated(), isHeightCalculated());
+        setXAxisResized(v, isWidthCalculated());
     }
 
     default void setYResized(boolean v) {
-        setResized(isXCalculated(), v, isWidthCalculated(), isHeightCalculated());
+        setYAxisResized(v, isHeightCalculated());
     }
 
     default void setPosResized(GuiAxis axis, boolean v) {
@@ -133,11 +88,11 @@ public interface IResizeable {
     }
 
     default void setWidthResized(boolean v) {
-        setResized(isXCalculated(), isYCalculated(), v, isHeightCalculated());
+        setXAxisResized(isXCalculated(), v);
     }
 
     default void setHeightResized(boolean v) {
-        setResized(isXCalculated(), isYCalculated(), isWidthCalculated(), v);
+        setYAxisResized(isYCalculated(), v);
     }
 
     default void setSizeResized(GuiAxis axis, boolean v) {
@@ -182,14 +137,4 @@ public interface IResizeable {
             setYMarginPaddingApplied(b);
         }
     }
-
-    /**
-     * @return true if margin and padding are applied on the x-axis
-     */
-    boolean isXMarginPaddingApplied();
-
-    /**
-     * @return true if margin and padding are applied on the y-axis
-     */
-    boolean isYMarginPaddingApplied();
 }

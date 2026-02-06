@@ -18,8 +18,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -258,7 +258,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -273,6 +273,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 return highestVoltage;
             }
         }
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**

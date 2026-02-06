@@ -253,7 +253,7 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
                         x += 18;
                         continue;
                     }
-                    widget.flex().left(x).top(y);
+                    widget.resizer().left(x).top(y);
                     slotGroupWidget.child(widget);
                     if (this.syncKey != null && widget instanceof ISynced<?> synced) {
                         synced.syncHandler(this.syncKey, syncId++);
@@ -264,7 +264,7 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
                 y += 18;
                 x = 0;
             }
-            slotGroupWidget.flex().size(maxWidth, this.matrix.size() * 18);
+            slotGroupWidget.resizer().size(maxWidth, this.matrix.size() * 18);
             return slotGroupWidget;
         }
     }

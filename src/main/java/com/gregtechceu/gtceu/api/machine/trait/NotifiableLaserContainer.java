@@ -5,10 +5,18 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
+
+    public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
+            NotifiableLaserContainer.class);
 
     public NotifiableLaserContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
@@ -23,6 +31,11 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     public static NotifiableLaserContainer receiverContainer(MetaMachine machine, long maxCapacity,
                                                              long maxInputVoltage, long maxInputAmperage) {
         return new NotifiableLaserContainer(machine, maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
+    }
+
+    @Override
+    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
+        return TYPE;
     }
 
     @Override

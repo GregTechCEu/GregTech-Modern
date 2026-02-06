@@ -27,4 +27,8 @@ public interface ICopy<T> {
     }
 
     T createDeepCopy(T t);
+
+    static <T> ICopy<T> wrapNullSafe(ICopy<T> copy) {
+        return t -> t == null ? null : copy.createDeepCopy(t);
+    }
 }

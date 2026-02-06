@@ -15,12 +15,14 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -92,21 +94,14 @@ public class ForgeClientEventListener {
 
         AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
-        boolean flying = player.getAbilities().flying;
-        float originalFov = flying ? 1.1F : 1.0F;
-        float walkSpeed = player.getAbilities().getWalkingSpeed();
 
-        originalFov *= ((float) moveSpeed.getBaseValue() / walkSpeed + 1.0F) / 2.0F;
-        if (walkSpeed == 0.0F || Float.isNaN(originalFov) ||
-                Float.isInfinite(originalFov)) {
-            return;
-        }
+        float multi = 1;
+        var state = player.level().getBlockState(player.getOnPos());
 
-        float newFov = flying ? 1.1F : 1.0F;
-        newFov *= ((float) getValueWithoutWalkingBoost(moveSpeed) / walkSpeed + 1.0F) /
-                2.0F;
+        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
 
-        event.setNewFovModifier(newFov / originalFov);
+        multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
+        event.setNewFovModifier(event.getNewFovModifier() * multi);
     }
 
     private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {

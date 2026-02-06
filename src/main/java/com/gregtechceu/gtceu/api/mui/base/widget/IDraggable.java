@@ -51,7 +51,7 @@ public interface IDraggable extends IViewport {
      * @param widget current top most widget below the mouse
      * @return if the location is valid
      */
-    default boolean canDropHere(int x, int y, @Nullable IGuiElement widget) {
+    default boolean canDropHere(int x, int y, @Nullable IWidget widget) {
         return true;
     }
 

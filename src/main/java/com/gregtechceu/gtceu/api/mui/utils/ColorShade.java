@@ -64,12 +64,20 @@ public class ColorShade implements IntIterable {
         return this.darker[Mth.clamp(index, 0, this.darker.length - 1)];
     }
 
+    public int darkerShadeCount() {
+        return this.darker.length;
+    }
+
     public int brighter(int index) {
         return this.brighter[index];
     }
 
     public int brighterSafe(int index) {
         return this.brighter[Mth.clamp(index, 0, this.brighter.length - 1)];
+    }
+
+    public int brighterShadeCount() {
+        return this.brighter.length;
     }
 
     @NotNull

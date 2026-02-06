@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@ApiStatus.Experimental
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
 public class OverlayHandler implements Comparable<OverlayHandler> {
 
     private final Predicate<Screen> test;
