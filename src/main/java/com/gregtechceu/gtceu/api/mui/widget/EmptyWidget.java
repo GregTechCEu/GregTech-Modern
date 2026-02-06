@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.widget;
 
-import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Flex;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.StandardResizer;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -20,7 +19,7 @@ public class EmptyWidget implements IWidget {
     @Getter
     private final Area area = new Area();
     @Getter
-    private final Flex flex = new Flex(this);
+    private final StandardResizer resizer = new StandardResizer(this);
     private boolean requiresResize = false;
     @Setter
     @Getter
@@ -100,26 +99,14 @@ public class EmptyWidget implements IWidget {
     }
 
     @Override
-    public void markTooltipDirty() {}
-
-    @Override
     public ModularGuiContext getContext() {
         return this.parent.getContext();
     }
 
     @Override
-    public Flex flex() {
-        return this.flex;
+    public @NotNull StandardResizer resizer() {
+        return this.resizer;
     }
-
-    @NotNull
-    @Override
-    public IResizeable resizer() {
-        return this.flex;
-    }
-
-    @Override
-    public void resizer(IResizeable resizer) {}
 
     @Nullable
     @Override

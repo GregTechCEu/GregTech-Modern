@@ -11,6 +11,10 @@ import java.util.function.Supplier;
 public class ByteArraySyncValue extends GenericSyncValue<byte[]> {
 
     public ByteArraySyncValue(@NotNull Supplier<byte[]> getter, @Nullable Consumer<byte[]> setter) {
-        super(byte[].class, getter, setter, ByteBufAdapters.BYTE_ARR, byte[]::clone);
+        this(getter, setter, false);
+    }
+
+    public ByteArraySyncValue(@NotNull Supplier<byte[]> getter, @Nullable Consumer<byte[]> setter, boolean nullable) {
+        super(byte[].class, getter, setter, ByteBufAdapters.BYTE_ARR, byte[]::clone, nullable);
     }
 }

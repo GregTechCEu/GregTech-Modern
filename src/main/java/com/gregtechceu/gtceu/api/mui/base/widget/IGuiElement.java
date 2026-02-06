@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
-import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.ResizeNode;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Base interface for gui elements. For example widgets.
  */
+@ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+@Deprecated
 public interface IGuiElement {
 
     /**
@@ -25,7 +28,7 @@ public interface IGuiElement {
      */
     boolean hasParent();
 
-    IResizeable resizer();
+    ResizeNode resizer();
 
     /**
      * @return the area this element occupies
@@ -40,13 +43,6 @@ public interface IGuiElement {
     default Area getParentArea() {
         return getParent().getArea();
     }
-
-    /**
-     * Draws this element
-     *
-     * @param context gui context
-     */
-    void draw(ModularGuiContext context);
 
     /**
      * Called when the mouse hovers this element. This means this element is directly below the mouse or there are

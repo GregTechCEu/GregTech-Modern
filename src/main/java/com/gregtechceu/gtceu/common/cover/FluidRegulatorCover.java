@@ -7,16 +7,18 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -247,5 +249,21 @@ public class FluidRegulatorCover extends PumpCover {
             return true;
 
         return !this.filterHandler.getFilter().supportsAmounts();
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferMode", transferMode.ordinal());
+        tag.putInt("transferLimit", globalTransferLimit);
+        tag.putInt("transferBucket", transferBucketMode.ordinal());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
+        globalTransferLimit = (tag.getInt("transferLimit"));
+        setTransferBucketMode(BucketMode.values()[tag.getInt("transferBucket")]);
+        super.pasteConfig(player, tag);
     }
 }

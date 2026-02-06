@@ -1,10 +1,15 @@
 package com.gregtechceu.gtceu.api.mui.overlay;
 
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+import com.gregtechceu.gtceu.client.mui.screen.OpenScreenEvent;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -13,10 +18,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@ApiStatus.Experimental
+@ApiStatus.Internal
 public class OverlayStack {
 
     private static final List<ModularScreen> overlay = new ArrayList<>();
@@ -101,10 +107,10 @@ public class OverlayStack {
     }
 
     @Nullable
-    public static IGuiElement getHoveredElement() {
+    public static IWidget getHoveredElement() {
         for (int i = overlay.size() - 1; i >= 0; i--) {
             ModularScreen screen = overlay.get(i);
-            IGuiElement hovered = screen.getContext().getTopHovered();
+            IWidget hovered = screen.getContext().getTopHovered();
             if (hovered == null) continue;
             return hovered;
         }
@@ -113,5 +119,32 @@ public class OverlayStack {
 
     public static boolean isHoveringOverlay() {
         return getHoveredElement() != null;
+    }
+
+    public static void onOpenScreen(Screen newScreen) {
+        closeAll();
+        if (newScreen != null) {
+            // backwards compat
+            for (OverlayHandler handler : OverlayManager.overlays) {
+                if (handler.isValidFor(newScreen)) {
+                    ModularScreen overlay = Objects.requireNonNull(handler.createOverlay(newScreen),
+                            "Overlays must not be null!");
+                    overlay.constructOverlay(newScreen);
+                    OverlayStack.open(overlay);
+                }
+            }
+
+            OpenScreenEvent event = new OpenScreenEvent(newScreen);
+            MinecraftForge.EVENT_BUS.post(event);
+            for (ModularScreen overlay : event.getOverlays()) {
+                overlay.constructOverlay(newScreen);
+                open(overlay);
+            }
+            if (ConfigHolder.INSTANCE.dev.debugUI && newScreen instanceof IMuiScreen muiScreen) {
+                ModularScreen overlay = new DebugOverlay(muiScreen);
+                overlay.constructOverlay(newScreen);
+                open(overlay);
+            }
+        }
     }
 }

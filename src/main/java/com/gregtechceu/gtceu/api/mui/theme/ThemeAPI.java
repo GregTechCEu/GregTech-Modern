@@ -61,19 +61,32 @@ public class ThemeAPI implements IThemeApi {
     }
 
     @Override
-    public ITheme getThemeForScreen(String owner, String name, @Nullable String defaultTheme) {
-        String theme = getThemeIdForScreen(owner, name);
+    public ITheme getThemeForScreen(String owner, String name, @Nullable String panel, @Nullable String defaultTheme,
+                                    @Nullable String fallbackTheme) {
+        String theme = getThemeIdForScreen(owner, name, panel);
         if (theme != null) return getTheme(theme);
         if (defaultTheme != null) return getTheme(defaultTheme);
+        if (fallbackTheme != null) return getTheme(fallbackTheme);
         return getTheme(ConfigHolder.INSTANCE.client.ui.useDarkThemeByDefault ? "vanilla_dark" : "vanilla");
     }
 
-    private String getThemeIdForScreen(String mod, String name) {
+    private String getThemeIdForScreen(String mod, String name, String panelName) {
         String fullName = mod + ":" + name;
-        String theme = this.jsonScreenThemes.get(fullName);
+        String fullPanelName = null;
+        if (panelName != null) fullPanelName = fullName + ":" + panelName;
+        String theme = null;
+        if (fullPanelName != null) {
+            theme = this.jsonScreenThemes.get(fullPanelName);
+            if (theme != null) return theme;
+        }
+        theme = this.jsonScreenThemes.get(fullName);
         if (theme != null) return theme;
         theme = this.jsonScreenThemes.get(mod);
         if (theme != null) return theme;
+        if (fullPanelName != null) {
+            theme = this.screenThemes.get(fullPanelName);
+            if (theme != null) return theme;
+        }
         theme = this.screenThemes.get(fullName);
         return theme != null ? theme : this.screenThemes.get(mod);
     }

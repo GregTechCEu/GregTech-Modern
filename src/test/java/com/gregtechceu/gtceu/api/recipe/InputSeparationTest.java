@@ -28,13 +28,15 @@ public class InputSeparationTest {
     public static void prepare(ServerLevel level) {
         LCR_RECIPE_TYPE = TestUtils.createRecipeType("input_separation_tests", 3, 3, 3, 3);
         // Force insert the recipe into the manager.
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCR_RECIPE_TYPE.getAdditionHandler().beginStaging();
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_input_separation"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.ACACIA_WOOD))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
+        LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,

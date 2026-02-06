@@ -6,15 +6,14 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -45,10 +44,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine, IMachineLife {
 
-    @Nullable
     @Getter
-    @Setter
-    private ICleanroomProvider cleanroom;
+    protected final CleanroomReceiverTrait cleanroomReceiver;
     @Getter
     @SaveField
     @SyncToClient
@@ -77,9 +74,10 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
                                 Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier,
                                 Function<SteamMachine, NotifiableFluidTank> steamTankFactory) {
-        super(info, isHighPressure);
+        super(info, isHighPressure, steamTankFactory);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
@@ -107,7 +105,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
 
-        for (MachineTrait trait : getTraits()) {
+        for (MachineTrait trait : traitHolder.getAllTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
             }

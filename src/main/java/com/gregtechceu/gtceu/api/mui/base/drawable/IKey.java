@@ -292,7 +292,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         return withStyle().alignment(alignment);
     }
 
-    default StyledText color(int color) {
+    default @NotNull StyledText color(int color) {
         return color(() -> color);
     }
 
@@ -322,7 +322,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
             }
             styledText.shadow(JsonHelper.getBoolean(json, false, "shadow"));
             styledText.alignment(
-                    JsonHelper.deserialize(json, Alignment.class, styledText.getAlignment(), "align", "alignment"));
+                    JsonHelper.deserialize(json, Alignment.class, styledText.alignment(), "align", "alignment"));
             styledText.scale(JsonHelper.getFloat(json, 1, "scale"));
         }
     }

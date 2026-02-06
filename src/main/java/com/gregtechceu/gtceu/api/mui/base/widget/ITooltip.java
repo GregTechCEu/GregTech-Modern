@@ -275,4 +275,9 @@ public interface ITooltip<W extends ITooltip<W>> {
         tooltip().addStringLines(lines);
         return getThis();
     }
+
+    default W removeAllTooltips() {
+        tooltip().reset();
+        return getThis();
+    }
 }

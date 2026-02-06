@@ -24,4 +24,4 @@ Client sync fields **do not** automatically detect changes. When changing a clie
 
 ### Other changes
 
- - `saveCustomPersistedData` & `loadCustomPersistedData` methods: Use `@CustomDataModifier` & `@FieldDataModifier`
+ - `saveCustomPersistedData` & `loadCustomPersistedData` methods, and serialization of custom data types - See `ValueTransformer<T>` and `ValueTransformers` classes.

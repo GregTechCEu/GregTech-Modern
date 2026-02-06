@@ -7,17 +7,19 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -171,5 +173,21 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
             return true;
 
         return this.filterHandler.getFilter().isBlackList();
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalTransferSizeMillibuckets());
+        tag.putInt("voidBucketMode", getTransferBucketMode().ordinal());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        setTransferBucketMode(BucketMode.values()[tag.getInt("voidBucketMode")]);
+        setCurrentBucketModeTransferSize(tag.getInt("voidSize"));
+        super.pasteConfig(player, tag);
     }
 }

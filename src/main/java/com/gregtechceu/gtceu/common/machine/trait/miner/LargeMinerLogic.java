@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

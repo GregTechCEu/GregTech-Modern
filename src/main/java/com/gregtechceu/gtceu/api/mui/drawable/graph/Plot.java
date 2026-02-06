@@ -43,7 +43,6 @@ public class Plot {
     }
 
     private void redraw(GraphView view) {
-        long time = System.nanoTime();
         float dHalf = thickness * 0.5f;
 
         int n = xs.length * 4;
@@ -145,9 +144,6 @@ public class Plot {
         lpoy = py * dHalf;
 
         storePoints(vertexIndex, view, x1, y1, lpox, lpoy);
-        time = System.nanoTime() - time;
-        // GTCEu.LOGGER.error("Calculating vertices from {} data points took {}s", xs.length,
-        // FormattingUtil.formatNumberReadable(time));
     }
 
     private int storePoints(int index, GraphView view, float sx, float sy, float ox, float oy) {
@@ -177,12 +173,8 @@ public class Plot {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         var pose = graphics.pose().last().pose();
         var buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleStrip());
-        long time = System.nanoTime();
         for (int i = 0; i < this.vertexBuffer.length; i += 2) {
             buffer.vertex(pose, this.vertexBuffer[i], this.vertexBuffer[i + 1], 0).color(r, g, b, a).endVertex();
-            time = System.nanoTime() - time;
-            // GTCEu.LOGGER.error("Drawing plot with {} points took {}s", xs.length,
-            // FormattingUtil.formatNumberReadable(time));
         }
     }
 
