@@ -274,6 +274,7 @@ public class CommonProxy {
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(NBTPredicateIngredient.TYPE, NBTPredicateIngredient.Serializer.INSTANCE);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
+            CraftingHelper.register(ToolIngredient.TYPE, ToolIngredient.Serializer.INSTANCE);
 
             // register the map ingredient converters for all of our ingredients
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);

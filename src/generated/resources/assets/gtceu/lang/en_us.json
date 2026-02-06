@@ -4918,6 +4918,8 @@
   "item.gtceu.tool.wire_cutter": "%s Wire Cutter",
   "item.gtceu.tool.wrench": "%s Wrench",
   "item.gtceu.tool.wrench.tooltip": "§8Hold left click to dismantle Machines",
+  "item.gtceu.tool_box": "Tool Box",
+  "item.gtceu.tool_box.empty": "Can store up to 9 tools.",
   "item.gtceu.transistor": "Transistor",
   "item.gtceu.transistor.tooltip": "§7Basic Electronic Component",
   "item.gtceu.treated_wood_boat": "Treated Wood Boat",

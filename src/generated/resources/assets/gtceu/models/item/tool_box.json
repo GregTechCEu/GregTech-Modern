@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/tool_box/opened",
+      "predicate": {
+        "gtceu:tool_box_opened": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/tool_box/closed"
+  }
+}

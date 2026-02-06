@@ -2171,6 +2171,24 @@ public class GTItems {
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
+    public static ItemEntry<ComponentItem> TOOL_BOX = REGISTRATE.item("tool_box", ComponentItem::create)
+            .lang("Tool Box")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ToolBoxBehavior.INSTANCE))
+            .model((ctx, prov) -> {
+                var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/tool_box/closed"));
+                prov.getBuilder("item/tool_box/opened")
+                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                        .texture("layer0", prov.modLoc("item/tool_box/opened"));
+                rootModel.override()
+                        .predicate(ToolBoxBehavior.MODEL_OVERRIDE_KEY, 1.0f)
+                        .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/tool_box/opened")))
+                        .end();
+            })
+            .onRegister(modelPredicate(ToolBoxBehavior.MODEL_OVERRIDE_KEY,
+                    () -> () -> (stack, level, entity, layer) -> ToolBoxBehavior.isOpened(stack) ? 1.0f : 0.0f))
+            .register();
+
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::create)
             .lang("Terminal")
             .properties(p -> p.stacksTo(1))
