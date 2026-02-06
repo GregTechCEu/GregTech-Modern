@@ -430,6 +430,8 @@ public class GTGuiTextures {
             .subAreaXYWH(0, 0, 16, 16)
             .build();
 
+    public static final UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
+
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
