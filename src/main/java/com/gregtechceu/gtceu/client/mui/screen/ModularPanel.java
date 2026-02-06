@@ -3,17 +3,19 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
@@ -25,8 +27,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.Util;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -70,7 +70,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private State state = State.IDLE;
     private boolean cantDisposeNow = false;
     @Getter
-    private final @NotNull ObjectArrayList<LocatedWidget> hovering = new ObjectArrayList<>();
+    private final @NotNull ObjectList<LocatedWidget> hovering = ObjectList.create();
     private final Input keyboard = new Input();
     private final Input mouse = new Input();
 
@@ -86,6 +86,10 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private Animator animator;
 
     private boolean resizeable = false;
+    private String themeOverride;
+    private ITheme theme;
+
+    private Runnable onCloseAction;
 
     public ModularPanel(@NotNull String name) {
         this.name = Objects.requireNonNull(name, "A panels name must not be null and should be unique!");
@@ -108,8 +112,19 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        return syncHandler instanceof IPanelHandler;
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(IPanelHandler.class);
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        setPanelHandler(syncOrValue.castNullable(IPanelHandler.class));
+    }
+
+    @ApiStatus.Internal
+    public void setPanelSyncHandler(PanelSyncHandler syncHandler) {
+        setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
     }
 
     /**
@@ -228,6 +243,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public void onOpen(ModularScreen screen) {
         this.screen = screen;
         getArea().z(1);
+        resizer().initialize(this.screen.getResizeNode(), this.screen.getResizeNode());
         initialise(this, false);
         WidgetTree.onUpdate(this);
         // TODO: NEA handles main panel
@@ -239,17 +255,15 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         this.state = State.OPEN;
     }
 
-    boolean reopen(boolean strict) {
-        if (this.state != State.CLOSED) {
-            if (strict) throw new IllegalStateException();
-            return false;
-        }
+    void reopen() {
         this.state = State.OPEN;
-        return true;
     }
 
     @MustBeInvokedByOverriders
     public void onClose() {
+        if (this.onCloseAction != null) {
+            this.onCloseAction.run();
+        }
         this.state = State.CLOSED;
         if (this.panelHandler != null) {
             this.panelHandler.closePanelInternal();
@@ -258,7 +272,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @Override
     public boolean isExcludeAreaInXei() {
-        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !flex().isFullSize());
+        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !resizer().isFullSize());
     }
 
     @MustBeInvokedByOverriders
@@ -323,6 +337,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
                 }
             } else {
                 for (LocatedWidget widget : this.hovering) {
+                    if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                     widget.applyMatrix(getContext());
                     IWidget w = widget.getElement();
                     if (w instanceof IDragResizeable resizeable &&
@@ -400,6 +415,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             boolean tryTap = this.mouse.tryTap(button);
             // first see if the clicked widget is still hovered and try to interact with it
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (this.mouse.isWidget(widget)) {
                     if (widget.getElement() instanceof Interactable interactable &&
                             onMouseReleased(mouseX, mouseY, button, tryTap, widget, interactable)) {
@@ -411,6 +427,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             }
             // now try all other hovered
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (!this.mouse.isWidget(widget) && widget.getElement() instanceof Interactable interactable &&
                         onMouseReleased(mouseX, mouseY, button, tryTap, widget, interactable)) {
                     return true;
@@ -463,6 +480,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             LocatedWidget pressed = null;
             boolean result = false;
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (widget.getElement() instanceof Interactable interactable) {
                     widget.applyMatrix(getContext());
                     Interactable.Result interactResult = interactable.onKeyPressed(keyCode, scanCode, modifiers);
@@ -499,6 +517,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             boolean tryTap = this.keyboard.tryTap(keyCode);
             // first see if the clicked widget is still hovered and try to interact with it
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (this.keyboard.isWidget(widget)) {
                     if (widget.getElement() instanceof Interactable interactable &&
                             onKeyReleased(keyCode, scanCode, modifiers, tryTap, widget, interactable)) {
@@ -510,6 +529,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             }
             // now try all other hovered
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (!this.keyboard.isWidget(widget) && widget.getElement() instanceof Interactable interactable &&
                         onKeyReleased(keyCode, scanCode, modifiers, tryTap, widget, interactable)) {
                     return true;
@@ -561,6 +581,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             LocatedWidget pressed = null;
             boolean result = false;
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (widget.getElement() instanceof Interactable interactable) {
                     widget.applyMatrix(getContext());
                     Interactable.Result interactResult = interactable.onCharTyped(codePoint, modifiers);
@@ -591,6 +612,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             }
             if (this.hovering.isEmpty()) return false;
             for (LocatedWidget widget : this.hovering) {
+                if (widget.getElement() == null || !widget.getElement().isValid()) continue;
                 if (widget.getElement() instanceof Interactable interactable) {
                     widget.applyMatrix(getContext());
                     boolean result = interactable.onMouseScrolled(mouseX, mouseY, delta);
@@ -620,7 +642,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             if (this.mouse.held &&
                     button == this.mouse.lastButton &&
                     this.mouse.lastPressed != null &&
-                    this.mouse.lastPressed.getElement() instanceof Interactable interactable) {
+                    this.mouse.lastPressed.getElement() instanceof Interactable interactable &&
+                    this.mouse.lastPressed.getElement().isValid()) {
                 this.mouse.lastPressed.applyMatrix(getContext());
                 interactable.onMouseDrag(mouseX, mouseY, button, dragX, dragY);
                 this.mouse.lastPressed.unapplyMatrix(getContext());
@@ -635,7 +658,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
                                                                                      T defaultValue) {
         LocatedWidget focused = this.getContext().getFocusedWidget();
         T result = defaultValue;
-        if (focused.getElement() instanceof Interactable interactable) {
+        if (focused.getElement() instanceof Interactable interactable && focused.getElement().isValid()) {
             focused.applyMatrix(getContext());
             result = function.apply((W) interactable);
             focused.unapplyMatrix(getContext());
@@ -759,16 +782,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return getScreen().getMainPanel() == this;
     }
 
-    @ApiStatus.Internal
-    @Override
-    public void setSyncHandler(@Nullable SyncHandler syncHandler) {
-        if (!isValidSyncHandler(syncHandler))
-            throw new IllegalStateException("Panel SyncHandler's must implement IPanelHandler!");
-
-        super.setSyncHandler(syncHandler);
-        setPanelHandler((IPanelHandler) syncHandler);
-    }
-
     @NotNull
     protected Animator getAnimator() {
         if (this.animator == null) {
@@ -803,6 +816,13 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         }
     }
 
+    public ITheme getTheme() {
+        if (this.theme == null) {
+            this.theme = IThemeApi.get().getThemeForScreen(this, this.themeOverride);
+        }
+        return this.theme;
+    }
+
     public ModularPanel bindPlayerInventory() {
         return child(SlotGroupWidget.playerInventory(true));
     }
@@ -823,6 +843,17 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     public ModularPanel resizeableOnDrag(boolean resizeable) {
         this.resizeable = resizeable;
+        return this;
+    }
+
+    public ModularPanel onCloseAction(Runnable onCloseAction) {
+        this.onCloseAction = onCloseAction;
+        return this;
+    }
+
+    public ModularPanel themeOverride(String id) {
+        this.themeOverride = id;
+        this.theme = null;
         return this;
     }
 
@@ -862,7 +893,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
      */
     private static class Input {
 
-        private final ObjectList<Interactable> acceptedInteractions = new ObjectArrayList<>();
+        private final ObjectList<Interactable> acceptedInteractions = ObjectList.create();
         @Nullable
         private LocatedWidget lastPressed;
         private boolean held;

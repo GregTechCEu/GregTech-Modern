@@ -49,4 +49,8 @@ public class SyncHandlers {
                                                                  Consumer<T> setter) {
         return new EnumSyncValue<>(clazz, getter, setter);
     }
+
+    public static <T> GenericSyncValue.Builder<T> generic(Class<T> type) {
+        return new GenericSyncValue.Builder<>(type);
+    }
 }

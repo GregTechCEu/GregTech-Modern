@@ -1,6 +1,15 @@
 repositories {
     mavenLocal()
     mavenCentral()
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
+    exclusiveContent { // Force
+        forRepository { mavenCentral() }
+        filter {
+            includeGroup("it.unimi.dsi")
+            includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
+        }
+    }
 
     maven { // JEI
         name = "Jared's Maven"
@@ -32,10 +41,6 @@ repositories {
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }
         filter { includeGroup("dev.ftb.mods") }
-    }
-    exclusiveContent { // TOP
-        forRepository { maven { url = "https://maven.k-4u.nl" } }
-        filter { includeGroup('mcjty.theoneprobe') }
     }
     exclusiveContent { // JourneyMap API
         forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }

@@ -88,14 +88,14 @@ public interface IDragResizeable {
             if (dragArea.left) {
                 int s = startArea.width - dx * keepPosFactor;
                 if (s >= resizeable.getMinDragWidth()) {
-                    widget.flex().left(startArea.rx + dx);
-                    widget.flex().width(s);
+                    widget.resizer().left(startArea.rx + dx);
+                    widget.resizer().width(s);
                 }
             } else if (dragArea.right) {
                 int s = startArea.width + dx * keepPosFactor;
                 if (s >= resizeable.getMinDragWidth()) {
-                    widget.flex().left(startArea.rx - dx * (keepPosFactor - 1));
-                    widget.flex().width(s);
+                    widget.resizer().left(startArea.rx - dx * (keepPosFactor - 1));
+                    widget.resizer().width(s);
                 }
             }
         }
@@ -103,14 +103,14 @@ public interface IDragResizeable {
             if (dragArea.top) {
                 int s = startArea.height - dy * keepPosFactor;
                 if (s >= resizeable.getMinDragHeight()) {
-                    widget.flex().top(startArea.ry + dy);
-                    widget.flex().height(s);
+                    widget.resizer().top(startArea.ry + dy);
+                    widget.resizer().height(s);
                 }
             } else if (dragArea.bottom) {
                 int s = startArea.height + dy * keepPosFactor;
                 if (s >= resizeable.getMinDragHeight()) {
-                    widget.flex().top(startArea.ry - dy * (keepPosFactor - 1));
-                    widget.flex().height(s);
+                    widget.resizer().top(startArea.ry - dy * (keepPosFactor - 1));
+                    widget.resizer().height(s);
                 }
             }
         }

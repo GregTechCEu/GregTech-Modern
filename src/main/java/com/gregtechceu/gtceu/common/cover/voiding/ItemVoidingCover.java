@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -86,16 +85,16 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
      * public Widget createUIWidget() {
      * final var group = new WidgetGroup(0, 0, 176, 120);
      * group.addWidget(new LabelWidget(10, 5, getUITitle()));
-     * 
+     *
      * group.addWidget(new ToggleButtonWidget(10, 20, 20, 20,
      * GuiTextures.BUTTON_POWER, this::isWorkingEnabled, this::setWorkingEnabled));
-     * 
+     *
      * // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
      * group.addWidget(filterHandler.createFilterSlotUI(148, 91));
      * group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
-     * 
+     *
      * buildAdditionalUI(group);
-     * 
+     *
      * return group;
      * }
      */
@@ -131,17 +130,5 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
             return isWorkingEnabled() ? GuiTextures.TOOL_START : GuiTextures.TOOL_PAUSE;
         }
         return null;
-    }
-
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemVoidingCover.class,
-            ConveyorCover.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

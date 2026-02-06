@@ -363,11 +363,6 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({ "Should all Stone Types drop unique Ore Item Blocks?",
-                "Default: false (meaning only Stone, Netherrack, and Endstone)" })
-        public boolean allUniqueStoneTypes = false;
-
-        @Configurable
         @Configurable.Comment({ "Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.",
                 "Default: false (no falling ores)" })
         public boolean sandOresFall = false;
@@ -480,6 +475,11 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether multiblocks should ignore all cleanroom requirements.",
                 "This does nothing if enableCleanroom is false.", "Default: false" })
         public boolean cleanMultiblocks = false;
+        @Configurable
+        @Configurable.Comment({
+                "Whether the miner should attempt to replace the block mined with a cobbled version of the ore",
+                "Default: true" })
+        public boolean replaceWithCobbleVersion = true;
         @Configurable
         @Configurable.Comment({ "Block to replace mined ores with in the miner and multiblock miner.",
                 "Default: minecraft:cobblestone" })
@@ -690,7 +690,7 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
         @Configurable
-        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
+        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
         @Configurable
@@ -740,10 +740,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {
 
+        @Configurable
+        @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
+        public boolean temperaturesInCelsius = false;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
@@ -906,5 +913,59 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+
+        @Configurable
+        public DeveloperConfigs.MuiConfigs mui = new DeveloperConfigs.MuiConfigs();
+
+        public static class MuiConfigs {
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String textColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String outlineColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for cursor in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String cursorColor = "#ff4cAf50";
+
+            @Configurable
+            @Configurable.Comment({ "Scale of debug text",
+                    "Default: 0.8f" })
+            @Configurable.DecimalRange(min = 0.1f, max = 10.0f)
+            public float scale = 0.8f;
+
+            @Configurable
+            public boolean showHovered = true;
+            @Configurable
+            public boolean showPos = true;
+            @Configurable
+            public boolean showSize = true;
+            @Configurable
+            public boolean showWidgetTheme = true;
+            @Configurable
+            public boolean showExtra = true;
+            @Configurable
+            public boolean showOutline = true;
+
+            @Configurable
+            public boolean showParent = true;
+            @Configurable
+            public boolean showParentPos = true;
+            @Configurable
+            public boolean showParentSize = true;
+            @Configurable
+            public boolean showParentWidgetTheme = true;
+            @Configurable
+            public boolean showParentOutline = true;
+        }
     }
 }

@@ -14,13 +14,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -34,15 +33,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
+    public static final MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
+            NotifiableEnergyContainer.class);
+
+    @Override
+    public MachineTraitType<?> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     protected IO handlerIO;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
@@ -98,11 +107,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public void onMachineLoad() {
         super.onMachineLoad();
         checkOutputSubscription();
@@ -110,8 +114,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     @Override
-    public void onMachineUnLoad() {
-        super.onMachineUnLoad();
+    public void onMachineUnload() {
+        super.onMachineUnload();
         if (updateSubs != null) {
             updateSubs.unsubscribe();
             updateSubs = null;
@@ -147,6 +151,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             energyOutputPerSec += this.energyStored - energyStored;
         }
         this.energyStored = energyStored;
+        syncDataHolder.markClientSyncFieldDirty("energyStored");
         checkOutputSubscription();
         notifyListeners();
     }
@@ -172,7 +177,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
                 var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                        machine.getPos().relative(side), oppositeSide);
+                        machine.getBlockPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                             outputAmperes - amperesUsed);

@@ -75,9 +75,8 @@ public class FloatSyncValue extends ValueSyncHandler<Float> implements
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -122,5 +121,10 @@ public class FloatSyncValue extends ValueSyncHandler<Float> implements
     @Override
     public void setDoubleValue(double value, boolean setSource, boolean sync) {
         setFloatValue((float) value, setSource, sync);
+    }
+
+    @Override
+    public Class<Float> getValueType() {
+        return Float.class;
     }
 }

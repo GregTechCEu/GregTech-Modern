@@ -24,7 +24,7 @@ public interface IExplosionMachine extends IMachineFeature {
         if (!shouldWeatherOrTerrainExplosion()) return;
         var machine = self();
         var level = machine.getLevel();
-        var pos = machine.getPos();
+        var pos = machine.getBlockPos();
         if (GTValues.RNG.nextInt(1000) == 0) {
             for (Direction side : GTUtil.DIRECTIONS) {
                 var fluidState = level.getBlockState(pos.relative(side)).getFluidState();
@@ -47,7 +47,7 @@ public interface IExplosionMachine extends IMachineFeature {
     }
 
     default void doExplosion(float explosionPower) {
-        doExplosion(self().getPos(), explosionPower);
+        doExplosion(self().getBlockPos(), explosionPower);
     }
 
     default void doExplosion(BlockPos pos, float explosionPower) {
@@ -62,7 +62,7 @@ public interface IExplosionMachine extends IMachineFeature {
     default void setOnFire(double additionalFireChance) {
         var machine = self();
         var level = machine.getLevel();
-        var pos = machine.getPos();
+        var pos = machine.getBlockPos();
         boolean isFirstFireSpawned = false;
         for (Direction side : GTUtil.DIRECTIONS) {
             if (level.isEmptyBlock(pos.relative(side))) {

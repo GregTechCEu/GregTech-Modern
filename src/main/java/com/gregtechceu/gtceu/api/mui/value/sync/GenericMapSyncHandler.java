@@ -56,12 +56,15 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
             this.cache.put(this.keyCopy.createDeepCopy(entry.getKey()),
                     this.valueCopy.createDeepCopy(entry.getValue()));
         }
+        onSetCache(value, setSource, sync);
+    }
+
+    protected void onSetCache(Map<K, V> value, boolean setSource, boolean sync) {
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -105,12 +108,17 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
         for (int i = 0; i < size; i++) {
             this.cache.put(this.keyDeserializer.deserialize(buffer), this.valueDeserializer.deserialize(buffer));
         }
-        this.setter.accept(getValue());
+        onSetCache(getValue(), true, false);
     }
 
     @Override
     public Map<K, V> getValue() {
         return Collections.unmodifiableMap(this.cache);
+    }
+
+    @Override
+    public Class<Map<K, V>> getValueType() {
+        return (Class<Map<K, V>>) (Object) Map.class;
     }
 
     public static class Builder<K, V> {

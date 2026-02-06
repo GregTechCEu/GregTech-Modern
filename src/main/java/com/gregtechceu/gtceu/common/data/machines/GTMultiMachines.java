@@ -503,7 +503,7 @@ public class GTMultiMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
@@ -1052,6 +1052,10 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
+            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
             .pattern((def) -> FactoryBlockPattern.start()
                     .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
                     .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.ICopy;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufDeserializer;
@@ -7,8 +8,6 @@ import com.gregtechceu.gtceu.utils.serialization.network.IByteBufSerializer;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
 
 public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, List<T>> {
 
-    private final ObjectList<T> cache = new ObjectArrayList<>();
+    private final ObjectList<T> cache = ObjectList.create();
 
     public GenericListSyncHandler(@NotNull Supplier<List<T>> getter, @Nullable Consumer<List<T>> setter,
                                   @NotNull IByteBufDeserializer<T> deserializer,
@@ -59,6 +58,11 @@ public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, L
             this.cache.add(deserializeValue(buffer));
         }
         onSetCache(getValue(), true, false);
+    }
+
+    @Override
+    public Class<List<T>> getValueType() {
+        return (Class<List<T>>) (Object) List.class;
     }
 
     public static <T> Builder<T> builder() {

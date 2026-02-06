@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -11,14 +11,26 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -31,7 +43,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,20 +55,16 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 public class RotorHolderPartMachine extends TieredPartMachine
                                     implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public int rotorSpeed;
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
@@ -65,8 +72,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Nullable
     protected ISubscription rotorInvSubs;
 
-    public RotorHolderPartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public RotorHolderPartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventory = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.BOTH);
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
     }
@@ -74,10 +81,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onMachineRemoved() {
@@ -130,6 +133,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
         return rotorMaterial;
     }
 
+    public void setRotorMaterial(Material mat) {
+        this.rotorMaterial = mat;
+        syncDataHolder.markClientSyncFieldDirty("rotorMaterial");
+    }
+
     private void onRotorInventoryChanged() {
         var stack = getRotorStack();
         var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
@@ -147,6 +155,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
                     .setValue(HAS_ROTOR, false)
                     .setValue(IS_EMISSIVE_ROTOR, false));
         }
+        syncDataHolder.markClientSyncFieldDirty("rotorMaterial");
     }
 
     @Override
@@ -180,6 +189,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
             setRenderState(getRenderState().setValue(IS_ROTOR_SPINNING, rotorSpeed > 0));
         }
         this.rotorSpeed = rotorSpeed;
+        syncDataHolder.markClientSyncFieldDirty("rotorSpeed");
     }
 
     @Override
@@ -219,8 +229,10 @@ public class RotorHolderPartMachine extends TieredPartMachine
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
-            player.hurt(GTDamageTypes.TURBINE.source(level),
-                    TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
+            TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
+            if (behaviour != null) {
+                player.hurt(GTDamageTypes.TURBINE.source(level), behaviour.getDamage(getRotorStack()));
+            }
             return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;
@@ -229,6 +241,43 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
+    // TODO MUI: Might need EIO widget? Not sure
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        SlotGroup rotorSlotGroup = new SlotGroup("rotor", 1);
+
+        var slot = new ItemSlot()
+                .slot(new ModularSlot(inventory, 0)
+                        .slotGroup(rotorSlotGroup))
+                .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY)
+                .marginLeft(30)
+                .marginRight(30)
+                .verticalCenter();
+
+        var rotorSync = new IntSyncValue(this::getRotorSpeed, (speed) -> {});
+        rotorSync.setChangeListener(() -> {
+            boolean canEdit = rotorSync.getIntValue() == 0;
+            slot.getSlot().accessibility(canEdit, canEdit);
+        });
+
+        syncManager.syncValue("rotor_speed", rotorSync);
+
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 100 + (18 * 4))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * 4)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(slot)))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
     /*
      * @Override
      * public Widget createUIWidget() {

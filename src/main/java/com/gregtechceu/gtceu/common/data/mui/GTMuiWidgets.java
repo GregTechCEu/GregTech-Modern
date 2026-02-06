@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
@@ -11,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
@@ -31,24 +35,39 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GTMuiWidgets {
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
-        return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
+        UITexture background = GTGuiTextures.BACKGROUND;
+        if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().getTheme()
+                    .getBackground();
+        }
+        if (background == null) {
+            background = GTGuiTextures.BACKGROUND;
+        }
+
+        return createTitleBar(definition, panelWidth, background);
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
+        String machineName = displayItem.getHoverName().getString();
+        machineName = machineName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(hatchName);
+        int textTitleWidth = TextRenderer.getFont().width(machineName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
@@ -68,16 +87,16 @@ public class GTMuiWidgets {
                         .asWidget()
                         .marginLeft(borderRadius))
                 .mainAxisAlignment(Alignment.MainAxis.START)
-                .child(IKey.str(hatchName)
+                .child(IKey.str(machineName)
                         .asWidget()
-                        .paddingTop(1)
+                        .paddingTop(3)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
-    public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
-        BooleanSyncValue power = new BooleanSyncValue(() -> recipeLogicMachine.getRecipeLogic().isWorkingEnabled(),
-                recipeLogicMachine::setWorkingEnabled);
+    public static ToggleButton createPowerButton(BooleanSupplier getter, BooleanConsumer setter,
+                                                 PanelSyncManager syncManager) {
+        BooleanSyncValue power = new BooleanSyncValue(getter, setter);
         syncManager.syncValue("working_enabled", power);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
@@ -85,8 +104,15 @@ public class GTMuiWidgets {
                 .background(GTGuiTextures.BUTTON_POWER[0])
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
-                        recipeLogicMachine.getRecipeLogic().isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
+                        power.getBoolValue() ? "behaviour.soft_hammer.enabled" :
                                 "behaviour.soft_hammer.disabled"))));
+    }
+
+    public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
+        return createPowerButton(
+                () -> recipeLogicMachine.getRecipeLogic().isWorkingEnabled(),
+                recipeLogicMachine::setWorkingEnabled,
+                syncManager);
     }
 
     public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, UITexture texture, int size) {
@@ -96,12 +122,18 @@ public class GTMuiWidgets {
     }
 
     public static ItemSlot createBatterySlot(SimpleTieredMachine tieredMachine, PanelSyncManager syncManager) {
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(tieredMachine.getChargerInventory(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(tieredMachine.getChargerInventory(), 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
 
-    public static ToggleButton createAutoOutputItemButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
+    public static ItemSlot createBatterySlot(IItemHandler itemHandler, int slot, PanelSyncManager syncManager) {
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(itemHandler, slot));
+        syncManager.syncValue("battery", battery);
+        return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
+    }
+
+    public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {
         BooleanSyncValue itemOutputs = new BooleanSyncValue(machine::isAutoOutputItems,
                 machine::setAutoOutputItems);
         syncManager.syncValue("auto_output_items", itemOutputs);
@@ -152,16 +184,19 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(SimpleTieredMachine machine, ModularPanel parentPanel,
-                                                         PanelSyncManager syncManager) {
-        IntSyncValue circuitSyncValue = new IntSyncValue(() -> {
-            if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) return -1;
-            return IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0));
+    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
+                                                           Supplier<ItemStack> circuitGetter) {
+        return new IntSyncValue(() -> {
+            if (circuitGetter.get().isEmpty()) return -1;
+            return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
-                (v) -> machine.getCircuitInventory().setStackInSlot(0,
-                        (v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v))));
-        syncManager.syncValue("circuit_slot", circuitSyncValue);
+                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
+                        IntCircuitBehaviour.stack(v,
+                                circuitGetter.get().isEmpty() ? 1 : circuitGetter.get().getCount())));
+    }
 
+    public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
+        syncManager.syncValue("circuit_slot", circuitSyncValue);
         Grid buttonGrid = new Grid()
                 .coverChildren()
                 .mapTo(8, 32, i -> new ToggleButton()
@@ -173,12 +208,10 @@ public class GTMuiWidgets {
                                     if (v) circuitSyncValue.setValue(i + 1);
                                 })));
 
-        ModularPanel circuitPanel = new Dialog<>("circuit_panel")
+        return new Dialog<>("circuit_panel")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)
                 .setCloseOnOutOfBoundsClick(true)
-                .relative(parentPanel)
-                .leftRelOffset(0.0f, -180)
                 .height(105)
                 .child(new Column()
                         .padding(2)
@@ -189,7 +222,24 @@ public class GTMuiWidgets {
                         .alignX(Alignment.Center)
                         .child(IKey.lang("item.gtceu.circuit.integrated.gui").asWidget())
                         .child(buttonGrid));
+    }
 
+    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
+                                                      Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+        IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
+        return createCircuitSlotPanel(circuitSyncValue, syncManager);
+    }
+
+    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel parentPanel,
+                                                         PanelSyncManager syncManager) {
+        IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
+                i -> machine.getCircuitInventory().setStackInSlot(0, i),
+                () -> machine.getCircuitInventory().getStackInSlot(0));
+        ModularPanel circuitPanel = createCircuitSlotPanel(
+                circuitSyncValue,
+                syncManager)
+                .relative(parentPanel)
+                .leftRelOffset(0.0f, -180);
         IPanelHandler circuitPanelHandler = syncManager.panel("circuit_panel",
                 (sm, sh) -> circuitPanel, true);
 
@@ -252,6 +302,9 @@ public class GTMuiWidgets {
     }
 
     public static IDrawable.DrawableWidget createGTLogo() {
+        if (GTValues.XMAS.getAsBoolean()) {
+            return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO_XMAS);
+        }
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
     }
 
@@ -284,6 +337,6 @@ public class GTMuiWidgets {
     }
 
     public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
-        return layout.getMainWidget();
+        return new ParentWidget<>();
     }
 }

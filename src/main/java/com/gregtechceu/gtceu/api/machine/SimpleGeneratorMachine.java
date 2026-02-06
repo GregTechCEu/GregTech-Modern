@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -43,27 +43,21 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     @Getter
     private final float hazardStrengthPerOperation;
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
-                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction,
-                                  Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
+                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
+        super(info, tier, tankScalingFunction);
+
+        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
-                                  Object... args) {
-        this(holder, tier, 0.25f, tankScalingFunction, args);
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, 0.25f, tankScalingFunction);
     }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        var energyContainer = super.createEnergyContainer(args);
-        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        return energyContainer;
-    }
 
     @Override
     protected boolean isEnergyEmitter() {
@@ -124,6 +118,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     public void afterWorking() {
         super.afterWorking();
         spreadEnvironmentalHazard();
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return GTValues.V[this.tier];
     }
 
     //////////////////////////////////////

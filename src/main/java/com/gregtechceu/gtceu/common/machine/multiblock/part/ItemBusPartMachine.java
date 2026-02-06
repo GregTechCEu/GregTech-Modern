@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -12,10 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -23,28 +22,25 @@ import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
@@ -59,8 +55,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,10 +64,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemBusPartMachine extends TieredIOPartMachine
                                 implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
@@ -82,21 +74,20 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter(AccessLevel.PROTECTED)
     private boolean hasCircuitSlot = true;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean circuitSlotEnabled;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isDistinct = false;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
-        super(holder, tier, io);
-        this.inventory = createInventory(args);
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
+        this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
@@ -104,22 +95,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected int getInventorySize() {
         int sizeRoot = 1 + Math.min(9, getTier());
         return sizeRoot * sizeRoot;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, getInventorySize(), io, IO.BOTH);
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -166,6 +153,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
+        syncDataHolder.markClientSyncFieldDirty("isDistinct");
         getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
@@ -200,17 +188,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return -1;
     }
 
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        // todo: delete for 1.8
-        // fix to preserve distinctness from pre 1.7 versions
-        if (tag.contains("inventory")) {
-            var invTag = tag.getCompound("inventory");
-            if (invTag.contains("isDistinct")) {
-                this.isDistinct = invTag.getBoolean("isDistinct");
-            }
-        }
+    public void setCircuitSlotEnabled(boolean enabled) {
+        circuitSlotEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("circuitSlotEnabled");
     }
 
     //////////////////////////////////////
@@ -235,7 +215,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -280,7 +260,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
@@ -293,16 +273,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
-                // We don't set the circuit or distinct busses, since
-                // that doesn't make sense on an output bus.
-                // Furthermore, existing inventory items
-                // and conveyors will drop to the floor on block override.
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-                newMachine.setPaintingColor(this.getPaintingColor());
-            }
+        if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
+            // We don't set the circuit or distinct busses, since
+            // that doesn't make sense on an output bus.
+            // Furthermore, existing inventory items
+            // and conveyors will drop to the floor on block override.
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            newMachine.setPaintingColor(this.getPaintingColor());
         }
         return true;
     }
@@ -314,50 +292,17 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
 
-        // inv is 162, 74
-        // 176 = 162 + 7 * 2 padding,
-        int panelWidth = Math.max(176 + 18 + 3, 18 * rowSize + 18 + 14);
-        int panelHeight = 74 + Math.max(30, 9 + rowSize * 18) + 14;
+        int width = Math.max(176, 18 * rowSize + 14);
+        int height = Math.max(168, (18 * rowSize) + 78 + 19);
+        var panel = GTGuis.createPanel(this, width, height);
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), width));
 
-        var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
-
-        var displayItem = this.getDefinition().asStack();
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
-
-        int borderRadius = 5;
-        int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.8f) - (iconSize + (borderRadius * 2));
-        int textTitleWidth = TextRenderer.getFont().width(hatchName) + iconSize + (borderRadius * 2);
-
-        int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
-        int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
-        int textHeight = textHeightPerRow * textRows + borderRadius;
-
-        panel.child(new Row()
-                .coverChildrenHeight()
-                .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                .widthRel(.8f)
-                .top(-(textHeight + borderRadius))
-                .rightRel(0.5f)
-                .background(GTGuiTextures.BACKGROUND)
-                .child(new ItemDrawable(displayItem)
-                        .asIcon().size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .mainAxisAlignment(Alignment.MainAxis.START)
-                .child(IKey.str(hatchName)
-                        .asWidget()
-                        .paddingTop(1)
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
-                        .size(textTitleWidth, textHeight)));
+        int smallHatchOffset = tier < 2 ? 9 * (3 - rowSize) : 0;
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
-
         panel.child(new Grid()
-                .top(7).height(18 * rowSize)
-                .minElementMargin(0, 0)
-                .minColWidth(18).minRowHeight(18)
+                .coverChildren()
+                .top(10 + smallHatchOffset)
                 .alignX(0.5f)
                 .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
@@ -371,14 +316,24 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
                 .child(SlotGroupWidget.playerInventory(true)
                         // .alignX(Alignment.CENTER)
-                        .left(18 + 10)
+                        .left(7)
                         .bottom(7));
+
+        var theme = this.getDefinition().getThemeId();
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+                .getBackground();
+        if (backgroundTexture == null) {
+            backgroundTexture = GTGuiTextures.BACKGROUND;
+        }
 
         panel.child(new Column()
                 .coverChildren()
-                .childPadding(3)
-                // .left(7).top(18 * rowSize + 7 + 5)
-                .left(7).bottom(7)
+                .rightRel(1.0f)
+                .reverseLayout(true)
+                .bottom(16)
+                .padding(8, 0, 4, 4)
+                .childPadding(2)
+                .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
                 .child(new ToggleButton()
                         .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
                         .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
@@ -387,7 +342,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                         .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
                                 isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
                                         "behaviour.soft_hammer.disabled")))))
-                .childIf(io.support(IO.IN), new ToggleButton()
+                .childIf(isCircuitSlotEnabled(), () -> GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager))
+                .childIf(io.support(IO.IN), () -> new ToggleButton()
                         .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
                         .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
                         .tooltipAutoUpdate(true)
@@ -395,14 +351,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                                          richTooltip) -> richTooltip
                                                  .add(Component.translatable("gtceu.multiblock.universal.distinct")
                                                          .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
-                                                         .append(Component.translatable(isDistinct() ?
-                                                                 "gtceu.multiblock.universal.distinct.yes" :
-                                                                 "gtceu.multiblock.universal.distinct.no"))))))
-        /*
-         * .childIf(io.support(IO.IN) && hasCircuitSlot && isCircuitSlotEnabled(),
-         * new ItemSlot().slot(new ModularSlot(circuitInventory.storage, 0)))
-         */
-        ;
+                                                         .append(Component
+                                                                 .translatable("gtceu.multiblock.universal.distinct" +
+                                                                         (isDistinct() ? ".yes" : ".no")))))));
 
         return panel;
     }
@@ -418,7 +369,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * super.attachConfigurators(configuratorPanel);
      * }
      * }
-     * 
+     *
      * @Override
      * public Widget createUIWidget() {
      * int rowSize = (int) Math.sqrt(getInventorySize());
@@ -438,10 +389,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
      * }
      * }
-     * 
+     *
      * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
      * group.addWidget(container);
-     * 
+     *
      * return group;
      * }
      */

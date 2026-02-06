@@ -16,7 +16,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -244,7 +243,7 @@ public class TextRenderer {
 
     protected int getStartY(float maxHeight, float height) {
         if (this.alignment.y > 0 && maxHeight > 0 && height != maxHeight) {
-            return (int) (this.y + (maxHeight * this.alignment.y) - height * this.alignment.y);
+            return this.y + Math.round(maxHeight * this.alignment.y) - Math.round(height * this.alignment.y);
         }
         return this.y;
     }
@@ -255,19 +254,18 @@ public class TextRenderer {
 
     protected int getStartX(float maxWidth, float lineWidth) {
         if (this.alignment.x > 0 && maxWidth > 0) {
-            return Math.max(this.x, (int) (this.x + (maxWidth * this.alignment.x) - lineWidth * this.alignment.x));
+            return Math.max(this.x,
+                    this.x + Math.round(maxWidth * this.alignment.x) - Math.round(lineWidth * this.alignment.x));
         }
         return this.x;
     }
 
     protected void draw(GuiGraphics graphics, FormattedCharSequence text, float x, float y) {
         if (this.simulate || graphics == null) return;
-        RenderSystem.disableBlend();
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 0f);
         graphics.drawString(getFont(), text, (int) (x / this.scale), (int) (y / this.scale), this.color, this.shadow);
         graphics.pose().popPose();
-        RenderSystem.enableBlend();
     }
 
     public float getFontHeight() {

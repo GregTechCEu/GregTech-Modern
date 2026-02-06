@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
-public class IntProviderFluidIngredient extends FluidIngredient {
+public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
@@ -38,6 +39,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * The last result of {@link IntProviderFluidIngredient#getSampledCount()}. -1 if not rolled.
      */
+    @Getter
     @Setter
     protected int sampledCount = -1;
     /**
@@ -91,7 +93,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     @Override
     public FluidStack[] getStacks() {
         if (fluidStacks == null) {
-            int cachedAmount = getSampledCount(GTValues.RNG);
+            int cachedAmount = rollSampledCount(GTValues.RNG);
             if (cachedAmount == 0) {
                 return EMPTY_STACK_ARRAY;
             }
@@ -122,24 +124,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
      * returns the roll.
      * If it has, returns the existing roll.
-     * Passthrough method, invokes {@link IntProviderFluidIngredient#getSampledCount(RandomSource)} using the threadsafe
-     * {@link GTValues#RNG}.
-     *
-     * @return the amount rolled
-     */
-    public int getSampledCount() {
-        return getSampledCount(GTValues.RNG);
-    }
-
-    /**
-     * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
-     * returns the roll.
-     * If it has, returns the existing roll.
      *
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
      * @return the amount rolled
      */
-    public int getSampledCount(@NotNull RandomSource random) {
+    public int rollSampledCount(@NotNull RandomSource random) {
         if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
         }
@@ -161,7 +150,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * Resets the random roll on this ingredient
      */
-    public void reroll() {
+    public void reset() {
         sampledCount = -1;
         fluidStacks = null;
     }
@@ -225,5 +214,17 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        inner.toNetwork(buffer);
+        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
+    }
+
+    public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        int[] range = buffer.readVarIntArray(2);
+        IntProvider provider = UniformInt.of(range[0], range[1]);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 }

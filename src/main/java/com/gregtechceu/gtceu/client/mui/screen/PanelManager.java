@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.wrapper.WidgetWrapper;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.LocatedWidget;
 import com.gregtechceu.gtceu.utils.ReverseIterable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public class PanelManager {
     /**
      * List of all open panels from top to bottom.
      */
-    private final ObjectList<ModularPanel> panels = new ObjectArrayList<>();
+    private final ObjectList<ModularPanel> panels = ObjectList.create();
     // a clone of the list to avoid CMEs
     private final List<ModularPanel> panelsClone = new ArrayList<>();
     private final List<ModularPanel> panelsView = Collections.unmodifiableList(this.panelsClone);
@@ -42,7 +41,7 @@ public class PanelManager {
     private final List<WidgetWrapper> panelWrappers = new ArrayList<>();
     private final List<WidgetWrapper> panelWrappersView = Collections.unmodifiableList(this.panelWrappers);
     private final ReverseIterable<WidgetWrapper> reversePanelWrappers = new ReverseIterable<>(this.panelWrappersView);
-    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(DISPOSAL_CAPACITY);
+    private final ObjectList<ModularPanel> disposal = ObjectList.create(DISPOSAL_CAPACITY);
     private final Map<String, IPanelHandler> panelHandlerMap = new Object2ObjectOpenHashMap<>();
     private boolean cantDisposeNow = false;
     private boolean dirty = false;
@@ -62,7 +61,7 @@ public class PanelManager {
                 if (this.panels.isEmpty()) {
                     throw new IllegalStateException("Can't init in closed state!");
                 }
-                this.panels.forEach(p -> p.reopen(true));
+                this.panels.forEach(ModularPanel::reopen);
                 this.disposal.removeIf(this.panels::contains);
                 setState(State.REOPENED);
                 yield true;
@@ -132,10 +131,9 @@ public class PanelManager {
         panel.setPanelGuiContext(this.screen.getContext());
         this.panels.add(0, panel);
         this.dirty = true;
-        panel.getArea().setPanelLayer((byte) this.panels.size());
         panel.onOpen(this.screen);
         if (resize) {
-            WidgetTree.resizeInternal(panel, true);
+            WidgetTree.resizeInternal(panel.resizer(), true);
         }
     }
 
@@ -233,8 +231,17 @@ public class PanelManager {
         return false;
     }
 
+    void closeScreen() {
+        // only close the screen without closing the panels
+        // this is useful when we expect the screen to reopen at some point and the sync managers are still available
+        if (this.state.isOpen) {
+            setState(State.CLOSED);
+            this.screen.onClose();
+        }
+    }
+
     private void finalizePanel(ModularPanel panel) {
-        panel.onClose();
+        if (panel.isOpen()) panel.onClose();
         if (!this.disposal.contains(panel)) {
             if (this.disposal.size() == DISPOSAL_CAPACITY) {
                 this.disposal.remove(0).dispose();
@@ -265,6 +272,8 @@ public class PanelManager {
             setState(State.WAIT_DISPOSAL);
             return;
         }
+        // make sure every panel gets closed before disposing
+        this.panels.forEach(this::finalizePanel);
         setState(State.CLOSED);
         this.disposal.forEach(ModularPanel::dispose);
         this.disposal.clear();
@@ -472,7 +481,7 @@ public class PanelManager {
          */
         REOPENED(true),
         /**
-         * Screen is closed after it was open.
+         * Screen is closed after it was open. Panels may still be considered open in some cases.
          */
         CLOSED(false),
         /**

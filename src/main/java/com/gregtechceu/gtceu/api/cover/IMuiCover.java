@@ -35,8 +35,8 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return self().coverHolder.isRemote();
     }
 
-    default boolean isInvalid() {
-        return self().coverHolder.isInValid() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
+    default boolean isRemoved() {
+        return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
 
     default GTGuiTheme getUITheme() {

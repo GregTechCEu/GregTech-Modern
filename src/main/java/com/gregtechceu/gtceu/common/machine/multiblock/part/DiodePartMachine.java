@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -29,9 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DiodePartMachine extends TieredIOPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DiodePartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     // spotless:off
     public enum AmpMode implements StringRepresentable {
@@ -73,17 +68,16 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     public static int MAX_AMPS = 16;
 
-    @Persisted
+    @SaveField
     protected NotifiableEnergyContainer energyContainer;
 
     @Getter
-    @DescSynced
-    @Persisted(key = "amp_mode")
-    @UpdateListener(methodName = "onAmpUpdated")
+    @SyncToClient
+    @SaveField(nbtKey = "amp_mode")
     private int amps;
 
-    public DiodePartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, IO.BOTH);
+    public DiodePartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, IO.BOTH);
         long tierVoltage = GTValues.V[getTier()];
 
         this.amps = 1;
@@ -95,10 +89,10 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     private void cycleAmpMode() {
         amps = amps == getMaxAmperage() ? 1 : amps << 1;
-        if (!getLevel().isClientSide) {
+        if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("amps");
             reinitializeEnergyContainer();
             notifyBlockUpdate();
-            markDirty();
         }
     }
 
@@ -146,22 +140,10 @@ public class DiodePartMachine extends TieredIOPartMachine {
         return InteractionResult.CONSUME;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @SuppressWarnings("unused")
-    public void onAmpUpdated(int newValue, int oldValue) {
-        this.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        if (!isRemote()) {
-            setRenderState(getRenderState()
-                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
-            super.scheduleRenderUpdate();
-        }
+    @ClientFieldChangeListener(fieldName = "amps")
+    public void onAmpUpdated() {
+        setRenderState(
+                getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+        scheduleRenderUpdate();
     }
 }
