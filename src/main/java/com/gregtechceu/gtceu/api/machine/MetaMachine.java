@@ -103,8 +103,6 @@ import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
 
@@ -212,6 +210,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    public void modifyDrops(List<ItemStack> drops) {}
+
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
@@ -280,7 +280,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     /**
-     * Called when a player clicks this meta tile entity with a tool
+     * Called when a player clicks this machine with a tool
      *
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
      *         animations will be played

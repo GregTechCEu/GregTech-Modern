@@ -53,8 +53,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * All simple single machines are implemented here.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SimpleTieredMachine extends WorkableTieredMachine
                                  implements IFancyUIMachine, IHasCircuitSlot {
 

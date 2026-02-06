@@ -35,8 +35,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SimpleGeneratorMachine extends WorkableTieredMachine
                                     implements IFancyUIMachine, IEnvironmentalHazardEmitter {
 
