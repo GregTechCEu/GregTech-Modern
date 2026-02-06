@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -40,7 +41,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,7 +214,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine, groups.indexOf(group));
-        MutableBoolean moduleChanged = new MutableBoolean(false);
+        BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
@@ -234,7 +234,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
                                                     if (!amount && !init)
-                                                        moduleChanged.setTrue();
+                                                        moduleChanged.setValue(true);
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .background(
