@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
@@ -24,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
-                                               implements IHPCAComponentHatch, IMachineModifyDrops {
+                                               implements IHPCAComponentHatch {
 
     @SaveField
     @SyncToClient
@@ -89,7 +88,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops) {
+    public void modifyDrops(List<ItemStack> drops) {
         for (int i = 0; i < drops.size(); ++i) {
             ItemStack drop = drops.get(i);
             if (drop.getItem() == this.getDefinition().getItem()) {
