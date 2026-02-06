@@ -286,7 +286,8 @@ public class PlaceholderHandler {
                                         .value(scaleDouble)
                                         .marginLeft(4))
                                 .childIf(updateInterval != null,
-                                        () -> new TextWidget<>(IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
+                                        () -> new TextWidget<>(
+                                                IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
                                 .childIf(updateInterval != null, () -> new TextFieldWidget()
                                         .setNumbers(1, 1000)
                                         .setDefaultNumber(1)
