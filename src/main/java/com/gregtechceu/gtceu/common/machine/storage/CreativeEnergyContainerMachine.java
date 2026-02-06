@@ -9,11 +9,8 @@ import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -23,6 +20,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -33,6 +31,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -42,8 +41,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.gregtechceu.gtceu.common.mui.GTGuis.defaultPopupPanel;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -198,15 +195,15 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // syncing
-        LongSyncValue voltage = new LongSyncValue(this::getVoltage, this::setVoltage);
-        IntSyncValue amps = new IntSyncValue(this::getAmps, this::setAmps);
-        IntSyncValue tier = new IntSyncValue(this::getTier, this::setTier);
-        BooleanSyncValue sourceSync = new BooleanSyncValue(this::isSource, this::setSource);
-        BooleanSyncValue isActive = new BooleanSyncValue(this::isActive, this::setActive);
+        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v);
+        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = a < 1 ? 1 : a);
+        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t);
+        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b);
+        BooleanSyncValue isActive = new BooleanSyncValue(() -> this.active, (b) -> this.active = b);
         syncManager.syncValue("tier", tier);
 
-        IPanelHandler panelSyncHandler = syncManager.panel("voltage popup",
-                (manager, handler) -> createAmpSelector(voltage, tier), false);
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("voltage popup", false,
+                (manager, handler) -> createAmpSelector(voltage, tier));
 
         return new ModularPanel("main panel")
                 .coverChildrenHeight()
@@ -218,13 +215,13 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .padding(7)
                         .mainAxisAlignment(Alignment.MainAxis.START)
                         .coverChildrenHeight()
-                        .child(createTitleRow())
+                        .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                         .child(createVoltageRow(panelSyncHandler, voltage))
                         .child(createAmpRow(amps))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(createSourceSelector(sourceSync))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(new Row()
                                 .coverChildrenHeight()
@@ -238,27 +235,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                         .asWidget()
                                         .paddingLeft(4)
 
-                                ))
-
-                );
-    }
-
-    Flow createTitleRow() {
-        return Flow.row()
-                .alignX(0)
-                .marginBottom(4)
-                .height(16)
-                .child(new ItemDrawable(this.getDefinition()
-                        .getItem())
-                        .asWidget()
-                        .size(16)
-                        .marginRight(4))
-                .child(IKey.lang(this
-                        .getDefinition()
-                        .asStack()
-                        .getHoverName())
-                        .asWidget()
-                        .heightRel(1));
+                                )));
     }
 
     private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage) {
@@ -270,19 +247,17 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .setNumbersLong(() -> 1, () -> Long.MAX_VALUE)
                         .value(voltage))
                 .child(new ButtonWidget<>()
-                        .overlay(IKey.dynamic(() -> {
-                            int voltageTier = GTUtil.getTierByVoltage(voltage.getLongValue());
-                            return Component.literal(GTValues.VNF[voltageTier]);
-                        })
-                                .shadow(true)
-                                .asIcon())
                         .height(16)
-                        .width(32)
+                        .width(40)
+                        .overlay(IKey.dynamic(
+                                () -> Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage.getLongValue())]))
+                                .shadow(true))
+
+                        // .width(32)
                         .marginLeft(4)
                         .tooltip(new RichTooltip().add("Click to Change Tier"))
                         .onMousePressed((a, b, c) -> {
                             if (panel.isPanelOpen()) {
-
                                 panel.closePanel();
                             } else {
                                 panel.openPanel();
@@ -305,11 +280,10 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 .child(
                         new TextFieldWidget()
                                 .setTextAlignment(Alignment.CENTER)
-
                                 .setNumbers(1, Integer.MAX_VALUE)
                                 .value(amps)
                                 .setDefaultNumber(1))
-                .child(IKey.str("Amperage")
+                .child(IKey.lang("gtceu.creative.energy.amperage")
                         .asWidget()
                         .anchorRight(0)
                         .paddingRight(4)
@@ -347,9 +321,10 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     private Flow createSourceSelector(BooleanSyncValue sourceSync) {
         return Flow.column()
                 .coverChildrenHeight()
-                .child(new Row()
+                .child(Flow.row()
                         .coverChildrenHeight()
                         .name("button")
+                        .childPadding(2)
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
                                     if (sourceSync.getValue()) {
@@ -358,14 +333,13 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(sourceSync))
-                        .child(IKey.str("Source")
-                                .asWidget()
-                                .paddingLeft(4))
+                        .child(IKey.lang("gtceu.creative.energy.source").asWidget())
                         .paddingBottom(2))
-                .child(new Row()
+                .child(Flow.row()
                         .coverChildrenHeight()
                         .name("button")
                         .coverChildrenHeight()
+                        .childPadding(2)
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
                                     if (!sourceSync.getValue()) {
@@ -374,38 +348,35 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
-                        .child(IKey.str("Sink")
-                                .asWidget()
-                                .paddingLeft(4)
-
-                        ));
+                        .child(IKey.lang("gtceu.creative.energy.sink").asWidget()));
     }
 
-    private ModularPanel createAmpSelector(LongSyncValue syncer, IntSyncValue tier) {
-        int buttonHeight = 16;
-        ListWidget<IWidget, ?> list = new ListWidget<>();
-        for (int i = 0; i < GTValues.TIER_COUNT; i++) {
-            String tierName = GTValues.VNF[i];
-            long tierVoltage = GTValues.V[i];
-            int tierValue = i;
-            list.child(new ButtonWidget<>().onMousePressed((a, b, c) -> {
-                syncer.setLongValue(tierVoltage);
-                tier.setIntValue(tierValue);
-                return true;
-            })
-                    .overlay(IKey.dynamic(() -> Component.literal(tierName)))
-                    .size(48, buttonHeight))
-                    .alignX(0F);
-        }
-
-        return defaultPopupPanel("voltageSelector:")
-                .child(new Column()
-                        .child(IKey.lang("tier").asWidget()
-                                .marginBottom(3))
-                        .child(list.size(54, buttonHeight * 5).childSeparator(IIcon.EMPTY_2PX))
-                        .margin(5)
-                        .childPadding(3)
-                        .coverChildren())
-                .coverChildren();
+    private ModularPanel createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
+        return new Dialog<>("amp_selector")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .width(72)
+                .height(104)
+                .child(Flow.column()
+                        .child(IKey.lang("gtceu.top.cable_voltage").asWidget().top(4).left(3))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.80f).horizontalCenter().top(19))
+                        .child(new ListWidget<>()
+                                .widthRel(1.0f)
+                                .height(120)
+                                .maxSize(80)
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .children(GTValues.TIER_COUNT, v -> new ButtonWidget<>()
+                                        .width(36)
+                                        .overlay(IKey.lang(Component.literal(GTValues.VNF[v])))
+                                        .onMousePressed((x, y, b) -> {
+                                            voltage.setValue(GTValues.V[v]);
+                                            tier.setValue(v);
+                                            return true;
+                                        }))
+                                .top(20))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.80f).horizontalCenter().top(99)));
     }
 }
