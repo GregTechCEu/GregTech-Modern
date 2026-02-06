@@ -7,19 +7,16 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
@@ -57,7 +54,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine, IMachineLife {
+public class PumpMachine extends TieredEnergyMachine implements IUIMachine, IMachineLife {
 
     public static final int BASE_PUMP_RADIUS = 16;
     public static final int EXTRA_PUMP_RADIUS = 4;
@@ -67,46 +64,23 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Getter
     @SaveField
     private int pumpHeadY;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputFluids;
     @SaveField
     protected final NotifiableFluidTank cache;
+
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
     public PumpMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    @Override
-    public boolean isAllowInputFromOutputSideFluids() {
-        return false;
-    }
-
-    @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {}
-
-    @Override
-    public Direction getOutputFacingFluids() {
-        return getFrontFacing();
-    }
-
-    public void setAutoOutputFluids(boolean autoOutputFluids) {
-        this.autoOutputFluids = autoOutputFluids;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
-    }
-
-    @Override
-    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
-        setFrontFacing(outputFacing);
-    }
 
     @Override
     public void onLoad() {
@@ -507,8 +481,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     public void update() {
-        if (getOutputFacingFluids() != null) {
-            cache.exportToNearby(getOutputFacingFluids());
+        if (autoOutput.getFluidOutputDirection() != null) {
+            cache.exportToNearby(autoOutput.getFluidOutputDirection());
         }
 
         // do not do anything without enough energy supplied
@@ -570,25 +544,10 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 .widget(new TankWidget(cache.getStorages()[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
+                        GuiTextures.BUTTON_FLUID_OUTPUT, this.autoOutput::isAutoOutputFluids,
+                        this.autoOutput::setAllowAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
-    }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

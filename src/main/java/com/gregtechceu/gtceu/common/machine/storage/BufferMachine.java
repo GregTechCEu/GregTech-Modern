@@ -5,75 +5,31 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BufferMachine extends TieredMachine implements IMachineLife, IAutoOutputBoth, IFancyUIMachine {
+public class BufferMachine extends TieredMachine implements IMachineLife, IFancyUIMachine {
 
     public static final int TANK_SIZE = 64000;
-
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected @Nullable Direction outputFacingItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected @Nullable Direction outputFacingFluids;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputFluids;
-    @Getter
-    @Setter
-    @SaveField
-    protected boolean allowInputFromOutputSideItems;
-    @Getter
-    @Setter
-    @SaveField
-    protected boolean allowInputFromOutputSideFluids;
 
     @SaveField
     @Getter
@@ -82,17 +38,16 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @SaveField
     @Getter
     protected final NotifiableFluidTank tank;
+    @SaveField
+    @SyncToClient
 
-    @Nullable
-    protected TickableSubscription autoOutputSubs;
-
-    @Nullable
-    protected ISubscription invSubs, tankSubs;
+    public final AutoOutputTrait autoOutput;
 
     public BufferMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         this.inventory = createInventory();
         this.tank = createTank();
+        this.autoOutput = new AutoOutputTrait(this, List.of(inventory), List.of(tank));
     }
 
     ////////////////////////////////
@@ -113,94 +68,6 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
 
     protected NotifiableFluidTank createTank() {
         return new NotifiableFluidTank(this, getTankSize(tier), TANK_SIZE, IO.BOTH);
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
-        this.invSubs = inventory.addChangedListener(this::updateAutoOutputSubscription);
-        this.tankSubs = tank.addChangedListener(this::updateAutoOutputSubscription);
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (invSubs != null) {
-            invSubs.unsubscribe();
-            this.invSubs = null;
-        }
-
-        if (tankSubs != null) {
-            tankSubs.unsubscribe();
-            this.tankSubs = null;
-        }
-    }
-
-    ////////////////////////////////
-    // ******* Auto Output *******//
-    ////////////////////////////////
-
-    @Override
-    public void setAutoOutputFluids(boolean allow) {
-        this.autoOutputFluids = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
-        this.outputFacingFluids = outputFacing;
-        syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setAutoOutputItems(boolean allow) {
-        this.autoOutputItems = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingItems(@Nullable Direction outputFacing) {
-        this.outputFacingItems = outputFacing;
-        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    protected void updateAutoOutputSubscription() {
-        var outputFacingItems = getOutputFacingItems();
-        var outputFacingFluids = getOutputFacingFluids();
-        if ((isAutoOutputItems() && !inventory.isEmpty() && outputFacingItems != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacingItems)) ||
-                (isAutoOutputFluids() && !tank.isEmpty() && outputFacingFluids != null &&
-                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacingFluids))) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
-    protected void autoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                tank.exportToNearby(getOutputFacingFluids());
-            }
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                inventory.exportToNearby(getOutputFacingItems());
-            }
-        }
-        updateAutoOutputSubscription();
     }
 
     ////////////////////////////////
@@ -232,20 +99,6 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
         return group;
-    }
-
-    ///////////////////////////////
-    // ******* Rendering ********//
-    ///////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (side == getOutputFacingItems() || side == getOutputFacingFluids()) {
-                return GuiTextures.TOOL_ALLOW_INPUT;
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
     }
 
     ////////////////////////////////

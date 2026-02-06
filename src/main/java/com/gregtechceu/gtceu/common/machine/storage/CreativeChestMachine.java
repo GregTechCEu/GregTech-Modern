@@ -43,17 +43,14 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    protected ItemCache createCacheItemHandler() {
-        return new InfiniteCache(this);
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                cache.exportToNearby(getOutputFacingItems());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    protected ItemCache createCacheItemHandler() {
+        return new InfiniteCache(this);
     }
 
     private InteractionResult updateStored(ItemStack item) {
@@ -65,6 +62,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     private void setTicksPerCycle(String value) {
         if (value.isEmpty()) return;
         ticksPerCycle = Integer.parseInt(value);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 

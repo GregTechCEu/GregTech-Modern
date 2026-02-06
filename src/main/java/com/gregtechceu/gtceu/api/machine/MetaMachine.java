@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
@@ -40,10 +41,10 @@ import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -100,8 +101,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -176,6 +175,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             getCoverContainer().removeCover(direction, null);
         }
         if (this instanceof IMachineLife l) l.onMachineRemoved();
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
+        super.load(tag);
     }
 
     @MustBeInvokedByOverriders
@@ -374,26 +379,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return InteractionResult.FAIL;
             }
             setFrontFacing(gridSide);
-        } else {
-            var itemStack = playerIn.getItemInHand(hand);
-            var tagCompound = getBehaviorsTag(itemStack);
-            ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.values()[tagCompound
-                    .getByte("Mode")];
-
-            if (type.isItem()) {
-                if (this instanceof IAutoOutputItem autoOutputItem &&
-                        (!hasFrontFacing() || gridSide != getFrontFacing())) {
-                    autoOutputItem.setOutputFacingItems(gridSide);
-                }
-            }
-            if (type.isFluid()) {
-                if (this instanceof IAutoOutputFluid autoOutputFluid &&
-                        (!hasFrontFacing() || gridSide != getFrontFacing())) {
-                    autoOutputFluid.setOutputFacingFluids(gridSide);
-                }
-            }
+            return InteractionResult.sidedSuccess(isRemote());
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return InteractionResult.PASS;
     }
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
@@ -411,51 +399,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
         if (isRemote()) return InteractionResult.SUCCESS;
-        if (playerIn.isShiftKeyDown()) {
-            boolean changed = false;
-            if (this instanceof IAutoOutputItem autoOutputItem) {
-                if (autoOutputItem.getOutputFacingItems() == gridSide) {
-                    autoOutputItem.setAllowInputFromOutputSideItems(!autoOutputItem.isAllowInputFromOutputSideItems());
-                    playerIn.displayClientMessage(Component
-                            .translatable("gtceu.machine.basic.input_from_output_side." +
-                                    (autoOutputItem.isAllowInputFromOutputSideItems() ? "allow" : "disallow"))
-                            .append(Component.translatable("gtceu.creative.chest.item")), true);
-                    changed = true;
-                }
-            }
-            if (this instanceof IAutoOutputFluid autoOutputFluid) {
-                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
-                    autoOutputFluid
-                            .setAllowInputFromOutputSideFluids(!autoOutputFluid.isAllowInputFromOutputSideFluids());
-                    playerIn.displayClientMessage(Component
-                            .translatable("gtceu.machine.basic.input_from_output_side." +
-                                    (autoOutputFluid.isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
-                            .append(Component.translatable("gtceu.creative.tank.fluid")), true);
-                    changed = true;
-                }
-            }
-            if (changed) {
-                return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-            }
-        } else {
-            boolean changed = false;
-            if (this instanceof IAutoOutputItem autoOutputItem) {
-                if (autoOutputItem.getOutputFacingItems() == gridSide) {
-                    autoOutputItem.setAutoOutputItems(!autoOutputItem.isAutoOutputItems());
-                    changed = true;
-                }
-            }
-            if (this instanceof IAutoOutputFluid autoOutputFluid) {
-                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
-                    autoOutputFluid.setAutoOutputFluids(!autoOutputFluid.isAutoOutputFluids());
-                    changed = true;
-
-                }
-            }
-            if (changed) {
-                return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-            }
-        }
         return InteractionResult.PASS;
     }
 
@@ -526,9 +469,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH)) return true;
-        if (toolTypes.contains(GTToolType.SCREWDRIVER) &&
-                (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid))
-            return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
@@ -536,7 +476,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
-                if (result) return result;
+                if (result) return true;
             }
         }
 
@@ -553,7 +493,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
 
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isShiftKeyDown()) {
+            if (player.isShiftKeyDown()) {
                 if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() && side == getFrontFacing())) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
@@ -891,8 +831,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side &&
-                !autoOutput.isAllowInputFromOutputSideItems()) {
+        var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (side != null && autoOutputTrait != null && autoOutputTrait.getItemOutputDirection() == side &&
+                !autoOutputTrait.allowsItemInputFromOutputSide()) {
             io = IO.OUT;
         }
 
@@ -915,8 +856,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side &&
-                !autoOutput.isAllowInputFromOutputSideFluids()) {
+        var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (side != null && autoOutputTrait != null && autoOutputTrait.getFluidOutputDirection() == side &&
+                !autoOutputTrait.allowsFluidInputFromOutputSide()) {
             io = IO.OUT;
         }
 
@@ -1062,7 +1004,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public static class AE2CallWrapper {
 
         public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
-                                                                Direction side) {
+                                                                @Nullable Direction side) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));

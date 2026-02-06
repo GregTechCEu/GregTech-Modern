@@ -9,15 +9,13 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -36,9 +34,6 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -51,22 +46,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IInteractedMachine, IControllable,
+@NotNullByDefault
+public class QuantumChestMachine extends TieredMachine implements IInteractedMachine, IControllable,
                                  IDropSaveMachine, IFancyUIMachine {
 
     /**
@@ -77,20 +68,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
      */
     public static final Object2LongOpenHashMap<UUID> INTERACTION_LOGGER = new Object2LongOpenHashMap<>();
 
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected @Nullable Direction outputFacingItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputItems;
-    @Getter
-    @Setter
-    @SaveField
-    protected boolean allowInputFromOutputSideItems;
     @SaveField
     private boolean isVoiding;
 
@@ -109,15 +86,16 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @SaveField
     protected long storedAmount = 0;
 
-    @Nullable
-    protected TickableSubscription autoOutputSubs;
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
     public QuantumChestMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
         super(info, tier);
-        this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler();
         this.lockedItem = new CustomItemStackHandler();
+        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
         lockedItem.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("lockedItem"));
     }
 
@@ -129,19 +107,10 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         return new ItemCache(this);
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
-    }
-
     protected void onItemChanged() {
         if (!isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("storedAmount");
             syncDataHolder.markClientSyncFieldDirty("stored");
-            updateAutoOutputSubscription();
         }
     }
 
@@ -192,64 +161,18 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     //////////////////////////////////////
 
     @Override
-    public void setAutoOutputItems(boolean allow) {
-        this.autoOutputItems = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingItems(@Nullable Direction outputFacing) {
-        this.outputFacingItems = outputFacing;
-        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    @Override
     public boolean isWorkingEnabled() {
-        return isAutoOutputItems();
+        return autoOutput.isAutoOutputItems();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        setAutoOutputItems(isWorkingAllowed);
-    }
-
-    protected void updateAutoOutputSubscription() {
-        var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !stored.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacing)) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                cache.exportToNearby(getOutputFacingItems());
-            }
-            updateAutoOutputSubscription();
-        }
+        autoOutput.setAllowAutoOutputItems(isWorkingAllowed);
     }
 
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
-
-    @Override
-    public boolean isFacingValid(Direction facing) {
-        if (facing == outputFacingItems) return false;
-        return super.isFacingValid(facing);
-    }
 
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
@@ -296,46 +219,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
         }
         return IInteractedMachine.super.onLeftClick(player, world, hand, pos, direction);
-    }
-
-    @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown() && !isRemote()) {
-            var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
-            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            if (gridSide != getOutputFacingItems()) {
-                setOutputFacingItems(gridSide);
-            } else {
-                setOutputFacingItems(null);
-            }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-
-        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
-        if (!isRemote()) {
-            if (gridSide == getOutputFacingItems()) {
-                if (isAllowInputFromOutputSideItems()) {
-                    setAllowInputFromOutputSideItems(false);
-                    playerIn.sendSystemMessage(
-                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
-                                    .append(Component.translatable("gtceu.creative.chest.item")));
-                } else {
-                    setAllowInputFromOutputSideItems(true);
-                    playerIn.sendSystemMessage(
-                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
-                                    .append(Component.translatable("gtceu.creative.chest.item")));
-                }
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
     }
 
     public boolean isLocked() {
@@ -389,7 +272,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         stack -> stored.isEmpty() || GTUtil.isSameItemSameTags(stack, stored))
                         .setMaxStackSize(1))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
-                        GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
+                        GuiTextures.BUTTON_ITEM_OUTPUT, this.autoOutput::isAutoOutputItems,
+                        this.autoOutput::setAllowAutoOutputItems)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
                 .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
@@ -424,17 +308,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                               Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isShiftKeyDown()) {
-                if (!hasFrontFacing() || side != getFrontFacing()) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (side == getOutputFacingItems()) {
-                return GuiTextures.TOOL_ALLOW_INPUT;
-            }
-        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+        if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (side == getFrontFacing()) return null;
         }
         return super.sideTips(player, pos, state, toolTypes, side);
