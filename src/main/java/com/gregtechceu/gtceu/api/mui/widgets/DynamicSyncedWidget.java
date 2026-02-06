@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.IDynamicSyncNotifiable;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 
@@ -17,23 +20,26 @@ import java.util.function.Supplier;
  * The dynamic child can be a widget tree of any size which can also contain {@link SyncHandler}s. These sync handlers
  * MUST be registered
  * via a variant of
- * {@link com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager#getOrCreateSyncHandler(String, Class, Supplier)}
+ * {@link com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager#getOrCreateSyncHandler(String, Class, Supplier)
+ * PanelSyncManager#getOrCreateSyncHandler(String, Class, Supplier)}.
  * 
  * @param <W> type of this widget
  */
 public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widget<W> {
 
-    private DynamicSyncHandler syncHandler;
+    private IDynamicSyncNotifiable syncHandler;
     private IWidget child;
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        if (syncHandler instanceof DynamicSyncHandler dynamicSyncHandler) {
-            this.syncHandler = dynamicSyncHandler;
-            dynamicSyncHandler.attachDynamicWidgetListener(this::updateChild);
-            return true;
-        }
-        return false;
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(IDynamicSyncNotifiable.class);
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        this.syncHandler = syncOrValue.castNullable(IDynamicSyncNotifiable.class);
+        if (this.syncHandler != null) this.syncHandler.attachDynamicWidgetListener(this::updateChild);
     }
 
     @Override
@@ -59,9 +65,12 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
     }
 
     public W syncHandler(DynamicSyncHandler syncHandler) {
-        this.syncHandler = syncHandler;
-        setSyncHandler(syncHandler);
-        syncHandler.attachDynamicWidgetListener(this::updateChild);
+        setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
+        return getThis();
+    }
+
+    public W syncHandler(DynamicLinkedSyncHandler<?> syncHandler) {
+        setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return getThis();
     }
 

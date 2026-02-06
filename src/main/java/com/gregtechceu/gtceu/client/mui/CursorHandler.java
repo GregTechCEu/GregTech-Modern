@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.client.mui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.widget.ResizeDragArea;
 
 import net.minecraft.client.Minecraft;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 
 import java.awt.image.BufferedImage;
@@ -59,23 +61,36 @@ public class CursorHandler {
         GLFW.glfwSetCursor(windowHandle, CURSOR_NORMAL);
     }
 
+    public static long createSafeCursor(int shape) {
+        try (GLFWErrorCallback ignored = org.lwjgl.glfw.GLFW.glfwSetErrorCallback(null)) {
+            long cursor = GLFW.glfwCreateStandardCursor(shape);
+            if (cursor == 0L) { // If can't load platform-specific default cursors
+                GTCEu.LOGGER.warn("GLFW: Failed to create standard cursor shape {}. Falling back to default pointer.",
+                        shape);
+                // TODO: Load custom textures
+                return 0L;
+            }
+            return cursor;
+        }
+    }
+
     public static void init() {
         windowHandle = Minecraft.getInstance().getWindow().getWindow();
 
         // load platform-specific default cursors (instead of using custom textures)
 
         // GLFW will switch to the default cursor when 0 is passed into glfwSetCursor
-        CURSOR_NORMAL = 0; // GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        CURSOR_TEXT_INPUT = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
-        CURSOR_CROSSHAIR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
-        CURSOR_POINT_HOVERED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_POINTING_HAND_CURSOR);
-        CURSOR_NOT_ALLOWED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_NOT_ALLOWED_CURSOR);
+        CURSOR_NORMAL = createSafeCursor(GLFW.GLFW_ARROW_CURSOR);
+        CURSOR_TEXT_INPUT = createSafeCursor(GLFW.GLFW_IBEAM_CURSOR);
+        CURSOR_CROSSHAIR = createSafeCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
+        CURSOR_POINT_HOVERED = createSafeCursor(GLFW.GLFW_POINTING_HAND_CURSOR);
+        CURSOR_NOT_ALLOWED = createSafeCursor(GLFW.GLFW_NOT_ALLOWED_CURSOR);
 
-        CURSOR_RESIZE_HORIZONTAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_EW_CURSOR);
-        CURSOR_RESIZE_VERTICAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NS_CURSOR);
-        CURSOR_RESIZE_TR_BL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NESW_CURSOR);
-        CURSOR_RESIZE_TL_BR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
-        CURSOR_RESIZE_ALL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_ALL_CURSOR);
+        CURSOR_RESIZE_HORIZONTAL = createSafeCursor(GLFW.GLFW_RESIZE_EW_CURSOR);
+        CURSOR_RESIZE_VERTICAL = createSafeCursor(GLFW.GLFW_RESIZE_NS_CURSOR);
+        CURSOR_RESIZE_TR_BL = createSafeCursor(GLFW.GLFW_RESIZE_NESW_CURSOR);
+        CURSOR_RESIZE_TL_BR = createSafeCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
+        CURSOR_RESIZE_ALL = createSafeCursor(GLFW.GLFW_RESIZE_ALL_CURSOR);
     }
 
     public static GLFWImage readGLImage(BufferedImage img, boolean inverse, boolean transpose) {

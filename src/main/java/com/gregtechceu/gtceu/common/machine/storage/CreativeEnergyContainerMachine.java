@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
@@ -30,22 +29,17 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -55,51 +49,29 @@ import static com.gregtechceu.gtceu.common.mui.GTGuis.defaultPopupPanel;
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IMuiMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Getter
-    @Persisted
-    @Setter
+    @SaveField
     private long voltage = 0;
-    @Persisted
-    @Setter
+    @SaveField
     private int amps = 1;
-    @Persisted
-    @Getter
-    @Setter
-    private int tier = 0;
-
-    public int getAmps() {
-        if (amps == 0) return 1;
-        return amps;
-    }
-
-    @Persisted
-    @Getter
-    @Setter
+    @SaveField
+    private int setTier = 0;
+    @SaveField
     private boolean active = false;
-    @Persisted
-    @Getter
-    @Setter
+    @SaveField
     private boolean source = true;
-    @Persisted
+    @SaveField
     private long energyIOPerSec = 0;
     private long lastAverageEnergyIOPerTick = 0;
     private long ampsReceived = 0;
     private boolean doExplosion = false;
 
-    public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX);
+    public CreativeEnergyContainerMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onLoad() {
@@ -116,7 +88,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
             this.setIOSpeed(energyIOPerSec / 20);
             energyIOPerSec = 0;
             if (doExplosion) {
-                getLevel().explode(null, getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5,
+                getLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5,
+                        getBlockPos().getZ() + 0.5,
                         1, Level.ExplosionInteraction.NONE);
                 doExplosion = false;
             }
@@ -126,11 +99,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing),
+            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(),
+                    getBlockPos().relative(facing),
                     opposite);
             // Try to get laser capability
             if (container == null)
-                container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+                container = GTCapabilityHelper.getLaser(getLevel(), getBlockPos().relative(facing), opposite);
 
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
                 ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);

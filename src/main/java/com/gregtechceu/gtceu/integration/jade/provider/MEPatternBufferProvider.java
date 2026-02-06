@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
@@ -28,30 +27,26 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine) {
-                CompoundTag serverData = blockAccessor.getServerData();
-                if (!serverData.getBoolean("formed")) return;
+        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferPartMachine) {
+            CompoundTag serverData = blockAccessor.getServerData();
+            if (!serverData.getBoolean("formed")) return;
 
-                iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
-                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
-                readBufferTag(iTooltip, serverData);
-            }
+            iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
+                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+            readBufferTag(iTooltip, serverData);
         }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
-                if (!buffer.isFormed()) {
-                    compoundTag.putBoolean("formed", false);
-                    return;
-                }
-                compoundTag.putBoolean("formed", true);
-                compoundTag.putInt("proxies", buffer.getProxies().size());
-                writeBufferTag(compoundTag, buffer);
+        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferPartMachine buffer) {
+            if (!buffer.isFormed()) {
+                compoundTag.putBoolean("formed", false);
+                return;
             }
+            compoundTag.putBoolean("formed", true);
+            compoundTag.putInt("proxies", buffer.getProxies().size());
+            writeBufferTag(compoundTag, buffer);
         }
     }
 

@@ -6,9 +6,18 @@ import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
-public class BoolValue implements IBoolValue<Boolean>, IIntValue<Boolean>, IStringValue<Boolean> {
+public class BoolValue implements IBoolValue<Boolean>, IStringValue<Boolean> {
+
+    public static Dynamic wrap(IBoolValue<?> val) {
+        return new Dynamic(val::getBoolValue, val::setBoolValue);
+    }
+
+    public static Dynamic wrapAtomic(AtomicBoolean val) {
+        return new Dynamic(val::get, val::set);
+    }
 
     private boolean value;
 
@@ -47,13 +56,8 @@ public class BoolValue implements IBoolValue<Boolean>, IIntValue<Boolean>, IStri
     }
 
     @Override
-    public int getIntValue() {
-        return this.value ? 1 : 0;
-    }
-
-    @Override
-    public void setIntValue(int val) {
-        setBoolValue(val == 1);
+    public Class<Boolean> getValueType() {
+        return Boolean.class;
     }
 
     public static class Dynamic implements IBoolValue<Boolean>, IIntValue<Boolean>, IStringValue<Boolean> {
@@ -104,6 +108,11 @@ public class BoolValue implements IBoolValue<Boolean>, IIntValue<Boolean>, IStri
         @Override
         public void setIntValue(int val) {
             setBoolValue(val == 1);
+        }
+
+        @Override
+        public Class<Boolean> getValueType() {
+            return Boolean.class;
         }
     }
 }

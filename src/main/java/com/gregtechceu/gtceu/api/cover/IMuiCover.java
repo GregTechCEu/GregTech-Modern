@@ -31,8 +31,8 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return (CoverBehavior) this;
     }
 
-    default boolean isInvalid() {
-        return self().coverHolder.isInValid() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
+    default boolean isRemoved() {
+        return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
 
     default GTGuiTheme getUITheme() {
@@ -79,6 +79,10 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
      */
     default ParentWidget<?> createSettingsRow() {
         return new ParentWidget<>().height(16).widthRel(1.0f).marginBottom(2);
+    }
+
+    default int getIncrementValue() {
+        return getIncrementValue(MouseData.create(-1));
     }
 
     default int getIncrementValue(MouseData data) {

@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
@@ -194,6 +193,14 @@ public class RecipeHandlerList {
             }
         }
         return copy;
+    }
+
+    public List<IRecipeHandler<?>> getHandlersFlat() {
+        List<IRecipeHandler<?>> handlerList = new ArrayList<>();
+        for (var handlerEntry : getHandlerMap().entrySet()) {
+            handlerList.addAll(handlerEntry.getValue());
+        }
+        return handlerList;
     }
 
     private record Subscription(List<ISubscription> subs) implements ISubscription {

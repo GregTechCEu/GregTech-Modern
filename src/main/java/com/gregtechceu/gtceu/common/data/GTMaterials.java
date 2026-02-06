@@ -184,7 +184,7 @@ public class GTMaterials {
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
-            if (oreType.shouldDropAsItem() && oreType.material() != null) {
+            if (oreType.material() != null) {
                 prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), dust.materialAmount()));
             }
         }
@@ -959,6 +959,7 @@ public class GTMaterials {
     public static Material Redstone;
     public static Material Dichloroethane;
     public static Material Diethylenetriamine;
+    public static Material Tuff;
 
     /**
      * Third Degree Materials

@@ -2,15 +2,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -40,14 +39,9 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     @Getter
     private final int tier;
 
-    public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public BedrockOreMinerMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine) m));
         this.tier = tier;
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new BedrockOreMinerLogic(this);
     }
 
     @Override
@@ -57,7 +51,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
     public int getEnergyTier() {
         var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        if (energyContainer == null) return this.tier;
         var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
                 .map(IEnergyContainer.class::cast).toList());
         return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));

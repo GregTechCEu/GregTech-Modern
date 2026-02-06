@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.misc.forge.FluidTankHandler;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 
@@ -16,6 +15,7 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(fluent = true, chain = true)
 public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
 
-    public static final int SYNC_FLUID = 0;
     public static final int SYNC_CLICK = 1;
     public static final int SYNC_SCROLL = 2;
     public static final int SYNC_CONTROLS_AMOUNT = 3;
@@ -62,14 +61,8 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
                 this.fluidTank.fill(value.copy(), IFluidHandler.FluidAction.EXECUTE);
             }
         }
-        if (sync) {
-            if (GTCEu.isClientThread()) {
-                syncToServer(SYNC_FLUID, this::write);
-            } else {
-                syncToClient(SYNC_FLUID, this::write);
-            }
-        }
         onValueChanged();
+        if (sync) sync();
     }
 
     public boolean needsSync() {
@@ -89,6 +82,16 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
     }
 
     @Override
+    public Class<FluidStack> getValueType() {
+        return FluidStack.class;
+    }
+
+    @Override
+    public void notifyUpdate() {
+        setValue(this.fluidTank.getFluid(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         this.cache.writeToPacket(buffer);
     }
@@ -100,7 +103,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
 
     @Override
     public void readOnClient(int id, FriendlyByteBuf buf) {
-        if (id == SYNC_FLUID) {
+        if (id == SYNC_VALUE) {
             read(buf);
         } else if (id == SYNC_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();
@@ -109,7 +112,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
 
     @Override
     public void readOnServer(int id, FriendlyByteBuf buf) {
-        if (id == SYNC_FLUID) {
+        if (id == SYNC_VALUE) {
             if (this.phantom) {
                 read(buf);
             }
@@ -135,7 +138,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
             return;
         }
         int maxAttempts = mouseData.shift() ? currentStack.getCount() : 1;
-        if (mouseData.mouseButton() == 0 && this.canFillSlot) {
+        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_RIGHT && this.canFillSlot) {
             boolean performedTransfer = false;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, this.fluidHandler,
@@ -167,7 +170,8 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
             return;
         }
         FluidStack currentFluid = this.fluidTank.getFluid();
-        if (mouseData.mouseButton() == 1 && this.canDrainSlot && !currentFluid.isEmpty()) {
+        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_LEFT && this.canDrainSlot &&
+                !currentFluid.isEmpty()) {
             boolean performedTransfer = false;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryFillContainer(currentStack, this.fluidHandler,
@@ -178,7 +182,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
                     break; // do not continue if we can't add resulting container into inventory
                 }
 
-                remainingStack = FluidUtil.tryFillContainer(currentStack, this.fluidHandler, Integer.MAX_VALUE, null,
+                remainingStack = FluidUtil.tryFillContainer(currentStack, this.fluidHandler, Integer.MAX_VALUE, player,
                         true).result;
                 if (currentStack.getCount() == 1) {
                     currentStack = remainingStack;

@@ -84,6 +84,20 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     }
 
     @Override
+    public RichText reset() {
+        this.elements.clear();
+        this.componentList = null;
+        this.alignment = Alignment.CenterLeft;
+        this.scale = 1f;
+        this.color = null;
+        this.shadow = null;
+        this.cursor = 0;
+        this.cursorLocked = false;
+        this.cachedText = null;
+        return this;
+    }
+
+    @Override
     public RichText add(FormattedText c) {
         addElement(c);
         clearComponents();
@@ -127,6 +141,16 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     public RichText clearText() {
         this.elements.clear();
         this.cursor = 0;
+        clearComponents();
+        return this;
+    }
+
+    public RichText addAll(RichText other) {
+        newLine();
+        this.elements.addAll(this.cursor, other.elements);
+        if (!this.cursorLocked) {
+            this.cursor += other.elements.size();
+        }
         clearComponents();
         return this;
     }

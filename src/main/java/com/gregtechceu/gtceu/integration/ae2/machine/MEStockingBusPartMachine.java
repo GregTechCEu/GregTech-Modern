@@ -1,25 +1,36 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -52,30 +63,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @DescSynced
-    @Persisted
+    @SyncToClient
+    @SaveField
     @Getter
     private boolean autoPull;
 
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int minStackSize = 1;
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingBusPartMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.autoPullTest = $ -> false;
     }
 
@@ -96,14 +102,9 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -143,10 +144,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
     }
 
-    @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    /*
+     * @Override
+     * public void attachSideTabs(TabsWidget sideTabs) {
+     * sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
+     * }
+     */
 
     @Override
     protected void flushInventory() {
@@ -194,6 +197,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("autoPull");
             if (!this.autoPull) {
                 this.aeItemHandler.clearInventory(0);
             } else if (updateMEStatus()) {
@@ -272,10 +276,40 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     ///////////////////////////////
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
+    protected Flow createButtonColumn(ModularPanel panel, PanelSyncManager syncManager,
+                                      UITexture backgroundTexture) {
+        IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
+                (sm, sh) -> GTGuis.createPopupPanel("stocking_settings_panel", 140, 70)
+                        .child(new Column()
+                                .coverChildren()
+                                .child(IKey.lang("gtceu.gui.me_network.min_stack_size").asWidget())
+                                .child(new TextFieldWidget()
+                                        .size(120, 18)
+                                        .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize))
+                                        .setNumbers(1, Integer.MAX_VALUE))
+                                .child(IKey.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
+                                .child(new TextFieldWidget()
+                                        .size(120, 18)
+                                        .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle))
+                                        .setNumbers(1, 200))
+                                .margin(5)));
+
+        return super.createButtonColumn(panel, syncManager, backgroundTexture)
+                .child(new ToggleButton()
+                        .value(new BoolValue.Dynamic(this::isAutoPull, this::setAutoPull))
+                        .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
+                        .tooltipAutoUpdate(true)
+                        .tooltipBuilder(r -> r
+                                .addLine(IKey.lang("gtceu.gui.me_network.auto_pull_toggle"))))
+                .child(new ButtonWidget<>()
+                        .size(18)
+                        .onMousePressed((x, y, b) -> {
+                            settingsPanelHandler.openPanel();
+                            return true;
+                        })
+                        .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
+                        .tooltip(new RichTooltip()
+                                .addLine(IKey.lang("gtceu.gui.me_network.stocking_settings"))));
     }
 
     @Override

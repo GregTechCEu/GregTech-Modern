@@ -38,7 +38,9 @@ public class SingleChildWidget<W extends SingleChildWidget<W>> extends Widget<W>
             child.initialise(this, true);
             scheduleResize();
         }
-        updateList();
+        onChildAdd(child);
         return getThis();
     }
+
+    protected void onChildAdd(IWidget child) {}
 }

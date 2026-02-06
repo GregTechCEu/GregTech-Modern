@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -21,6 +22,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeManager;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -68,6 +70,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -223,7 +227,7 @@ public class ForgeCommonEventListener {
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
         if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
-                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
+                MetaMachine.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
             if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
                     event.getFace())) {
                 event.setCanceled(true);
@@ -255,6 +259,8 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        if (GTCEu.isClientThread())
+            event.addListener(new ThemeManager());
     }
 
     @SubscribeEvent
@@ -317,15 +323,14 @@ public class ForgeCommonEventListener {
         if (player instanceof ServerPlayer serverPlayer) {
             GTNetwork.sendToPlayer(serverPlayer, new SPacketSendWorldID());
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
-                return;
-
-            ServerLevel level = serverPlayer.serverLevel();
-            var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                ServerLevel level = serverPlayer.serverLevel();
+                var data = EnvironmentalHazardSavedData.getOrCreate(level);
+                GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            }
+            CapeRegistry.detectNewCapes(serverPlayer);
+            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
         }
-        CapeRegistry.detectNewCapes(player);
-        CapeRegistry.loadCurrentCapesOnLogin(player);
     }
 
     @SubscribeEvent
@@ -372,10 +377,50 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
+        Player player = event.player;
+        if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
+            var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (speedAttrib == null) return;
+            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+
+            float speedBoost = 0.0f;
+            if (!player.onGround() || player.isInWater() || player.isCrouching()) {
+                speedBoost = 0.0f;
+            } else {
+                var state = player.level().getBlockState(player.getOnPos());
+                if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
+                    speedBoost = 0.6f; // value that is added to the base MC speed
+                } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
+                    speedBoost = 0.25f; // slower to walk on studs
+                } else if (state.is(CustomTags.SLOW_WALKABLE_BLOCKS)) {
+                    speedBoost = -0.20f; // slower on frames
+                }
+            }
+            if (speedMod != null) {
+                if (speedBoost == speedMod.getAmount()) {
+                    return;
+                } else {
+                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                }
+            } else {
+                if (speedBoost == 0.0f) return;
+            }
+            if (speedBoost != 0.0f) {
+                speedAttrib.addTransientModifier(
+                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
+                                speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }

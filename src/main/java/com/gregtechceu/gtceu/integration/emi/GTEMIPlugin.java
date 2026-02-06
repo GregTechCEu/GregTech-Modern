@@ -109,5 +109,9 @@ public class GTEMIPlugin implements EmiPlugin {
 
         registry.addExclusionArea(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
         registry.addExclusionArea(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
+        registry.addDragDropHandler(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
+        registry.addDragDropHandler(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
+        registry.addStackProvider(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
+        registry.addStackProvider(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
     }
 }

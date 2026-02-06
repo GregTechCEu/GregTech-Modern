@@ -64,6 +64,11 @@ public class ByteSyncValue extends ValueSyncHandler<Byte> implements IByteSyncVa
     }
 
     @Override
+    public void notifyUpdate() {
+        setByteValue(this.getter.getByte(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeByte(getByteValue());
     }
@@ -84,13 +89,17 @@ public class ByteSyncValue extends ValueSyncHandler<Byte> implements IByteSyncVa
         if (setSource && this.setter != null) {
             this.setter.setByte(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
     public byte getByteValue() {
         return this.cache;
+    }
+
+    @Override
+    public Class<Byte> getValueType() {
+        return Byte.class;
     }
 }

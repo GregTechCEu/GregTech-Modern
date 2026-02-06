@@ -1,22 +1,17 @@
 package com.gregtechceu.gtceu.api.mui.overlay;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-@ApiStatus.Experimental
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class OverlayManager {
 
@@ -27,23 +22,5 @@ public class OverlayManager {
             overlays.add(handler);
             overlays.sort(OverlayHandler::compareTo);
         }
-    }
-
-    public static void onOpenScreen(Screen newScreen) {
-        // if (newScreen == event.getCurrentScreen()) return;
-        OverlayStack.closeAll();
-        for (OverlayHandler handler : overlays) {
-            if (handler.isValidFor(newScreen)) {
-                ModularScreen overlay = Objects.requireNonNull(handler.createOverlay(newScreen),
-                        "Overlays must not be null!");
-                overlay.constructOverlay(newScreen);
-                OverlayStack.open(overlay);
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onCloseScreen(ScreenEvent.Closing event) {
-        OverlayStack.closeAll();
     }
 }

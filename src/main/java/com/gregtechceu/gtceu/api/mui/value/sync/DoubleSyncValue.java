@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.value.sync.IDoubleSyncValue;
+import com.gregtechceu.gtceu.api.mui.base.value.sync.IFloatSyncValue;
 import com.gregtechceu.gtceu.api.mui.base.value.sync.IStringSyncValue;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,7 +16,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 public class DoubleSyncValue extends ValueSyncHandler<Double>
-                             implements IDoubleSyncValue<Double>, IStringSyncValue<Double> {
+                             implements IDoubleSyncValue<Double>, IFloatSyncValue<Double>, IStringSyncValue<Double> {
 
     private final DoubleSupplier getter;
     private final DoubleConsumer setter;
@@ -74,9 +75,8 @@ public class DoubleSyncValue extends ValueSyncHandler<Double>
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -86,6 +86,11 @@ public class DoubleSyncValue extends ValueSyncHandler<Double>
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void notifyUpdate() {
+        setDoubleValue(this.getter.getAsDouble(), false, true);
     }
 
     @Override
@@ -106,5 +111,20 @@ public class DoubleSyncValue extends ValueSyncHandler<Double>
     @Override
     public String getStringValue() {
         return String.valueOf(this.cache);
+    }
+
+    @Override
+    public float getFloatValue() {
+        return (float) getDoubleValue();
+    }
+
+    @Override
+    public void setFloatValue(float value, boolean setSource, boolean sync) {
+        setDoubleValue(value, setSource, sync);
+    }
+
+    @Override
+    public Class<Double> getValueType() {
+        return Double.class;
     }
 }

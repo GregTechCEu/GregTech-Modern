@@ -106,10 +106,10 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
             this.casingModel = ModelUtils.getModelForState(casing);
         }
 
-        BlockPos partPos = part.self().getPos();
+        BlockPos partPos = part.self().getBlockPos();
 
         MultiblockControllerMachine machine = controller.self();
-        BlockPos controllerPos = machine.getPos();
+        BlockPos controllerPos = machine.getBlockPos();
         Direction multiFront = machine.getFrontFacing();
         Direction multiUpward = machine.getUpwardsFacing();
         boolean flipped = machine.isFlipped();

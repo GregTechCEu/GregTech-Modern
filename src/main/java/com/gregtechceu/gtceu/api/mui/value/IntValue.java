@@ -1,12 +1,22 @@
 package com.gregtechceu.gtceu.api.mui.value;
 
+import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
+public class IntValue implements IIntValue<Integer>, IDoubleValue<Integer>, IStringValue<Integer> {
+
+    public static Dynamic wrap(IIntValue<?> val) {
+        return new Dynamic(val::getIntValue, val::setIntValue);
+    }
+
+    public static Dynamic wrapAtomic(AtomicInteger val) {
+        return new Dynamic(val::get, val::set);
+    }
 
     private int value;
 
@@ -35,6 +45,16 @@ public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
     }
 
     @Override
+    public double getDoubleValue() {
+        return getIntValue();
+    }
+
+    @Override
+    public void setDoubleValue(double val) {
+        setIntValue((int) val);
+    }
+
+    @Override
     public String getStringValue() {
         return String.valueOf(this.value);
     }
@@ -42,6 +62,11 @@ public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
     @Override
     public void setStringValue(String val) {
         setIntValue(Integer.parseInt(val));
+    }
+
+    @Override
+    public Class<Integer> getValueType() {
+        return Integer.class;
     }
 
     public static class Dynamic implements IIntValue<Integer>, IStringValue<Integer> {
@@ -82,6 +107,11 @@ public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
         @Override
         public void setValue(Integer value) {
             setIntValue(value);
+        }
+
+        @Override
+        public Class<Integer> getValueType() {
+            return Integer.class;
         }
     }
 }

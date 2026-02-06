@@ -65,13 +65,18 @@ public class ItemDrawable implements IDrawable, IJsonSerializable<ItemDrawable> 
     }
 
     @Override
-    public Widget<?> asWidget() {
-        return IDrawable.super.asWidget().size(16);
+    public int getDefaultWidth() {
+        return 16;
     }
 
     @Override
-    public Icon asIcon() {
-        return IDrawable.super.asIcon().size(16);
+    public int getDefaultHeight() {
+        return 16;
+    }
+
+    @Override
+    public Widget<?> asWidget() {
+        return IDrawable.super.asWidget().size(16);
     }
 
     public ItemDrawable setItem(@NotNull ItemStack item) {
