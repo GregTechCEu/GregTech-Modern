@@ -248,8 +248,13 @@ public class GTMachines {
             ELECTRIC_TIERS);
     public static final MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector",
             GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction, true);
+
     public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher",
-            RockCrusherMachine::new, (tier, builder) -> builder
+            (info, tier) -> {
+                var machine = new SimpleTieredMachine(info, tier, defaultTankSizeFunction);
+                machine.getExplodableMachineTrait().setShouldExplodeInWeatherAndWater(false);
+                return machine;
+            }, (tier, builder) -> builder
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"),
                             GTRecipeTypes.ROCK_BREAKER_RECIPES))
@@ -262,6 +267,7 @@ public class GTMachines {
                     .tooltips(explosion())
                     .register(),
             ELECTRIC_TIERS);
+
     public static final MachineDefinition[] AIR_SCRUBBER = registerTieredMachines("air_scrubber",
             AirScrubberMachine::new, (tier, builder) -> builder
                     .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
