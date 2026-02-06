@@ -5,14 +5,32 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEKeyStorageSyncHandler;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEStackDisplayWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
@@ -82,21 +100,49 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     // ********** GUI ***********//
     ///////////////////////////////
 
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
-     * // ME Network status
-     * group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
-     * "gtceu.gui.me_network.online" :
-     * "gtceu.gui.me_network.offline"));
-     * group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-     * // display list
-     * group.addWidget(new AEListGridWidget.Fluid(5, 20, 3, this.internalBuffer));
-     *
-     * return group;
-     * }
-     */
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 176, 229);
+        panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176));
+
+        BooleanSyncValue isOnlineValue = SyncHandlers.bool(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
+
+        panel.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget()
+                .top(14)
+                .left(7));
+
+        panel.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list"))
+                .top(24)
+                .left(7));
+
+        var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);
+        syncManager.syncValue("ae_output_display", storageSyncHandler);
+
+        int[] savedScroll = { 0 };
+        var dynamicHandler = new DynamicLinkedSyncHandler<>(storageSyncHandler)
+                .widgetProvider((sm, value) -> {
+                    var list = value.getValue();
+                    if (list.isEmpty()) return new TextWidget<>(IKey.lang("gtceu.gui.me_network.empty"));
+                    return new ScrollPreservingGrid(savedScroll)
+                            .size(167, 108)
+                            .scrollable(new VerticalScrollData())
+                            .mapTo(9, list, (index, stack) -> new AEStackDisplayWidget(list, index));
+                });
+
+        panel.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicHandler)
+                .size(167, 108)
+                .top(34)
+                .alignX(0.5f));
+
+        panel.child(SlotGroupWidget.playerInventory(true).bottom(7));
+
+        return panel;
+    }
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
 

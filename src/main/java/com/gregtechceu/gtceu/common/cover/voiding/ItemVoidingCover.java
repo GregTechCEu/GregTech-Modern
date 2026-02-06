@@ -3,17 +3,12 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -36,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemVoidingCover extends ConveyorCover implements IUICover, IControllable {
+public class ItemVoidingCover extends ConveyorCover implements IControllable {
 
     public ItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide, 0);
@@ -85,22 +80,24 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 120);
-        group.addWidget(new LabelWidget(10, 5, getUITitle()));
-
-        group.addWidget(new ToggleButtonWidget(10, 20, 20, 20,
-                GuiTextures.BUTTON_POWER, this::isWorkingEnabled, this::setWorkingEnabled));
-
-        // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
-        group.addWidget(filterHandler.createFilterSlotUI(148, 91));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
-
-        buildAdditionalUI(group);
-
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * final var group = new WidgetGroup(0, 0, 176, 120);
+     * group.addWidget(new LabelWidget(10, 5, getUITitle()));
+     *
+     * group.addWidget(new ToggleButtonWidget(10, 20, 20, 20,
+     * GuiTextures.BUTTON_POWER, this::isWorkingEnabled, this::setWorkingEnabled));
+     *
+     * // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
+     * group.addWidget(filterHandler.createFilterSlotUI(148, 91));
+     * group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
+     *
+     * buildAdditionalUI(group);
+     *
+     * return group;
+     * }
+     */
 
     @NotNull
     protected String getUITitle() {

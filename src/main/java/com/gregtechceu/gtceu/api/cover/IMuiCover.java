@@ -31,6 +31,10 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return (CoverBehavior) this;
     }
 
+    default boolean isRemote() {
+        return self().coverHolder.isRemote();
+    }
+
     default boolean isRemoved() {
         return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
@@ -131,7 +135,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
         private EnumSyncValue<T> syncValue;
         private final Class<T> enumValue;
-        private String lang;
+        private IKey lang;
         private IDrawable[] background;
         private IDrawable selectedBackground;
         private IDrawable[] overlay;
@@ -145,7 +149,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
             return this;
         }
 
-        public EnumRowBuilder<T> lang(String lang) {
+        public EnumRowBuilder<T> lang(IKey lang) {
             this.lang = lang;
             return this;
         }
@@ -204,8 +208,8 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
                 }
             }
 
-            if (this.lang != null && !this.lang.isEmpty())
-                row.child(IKey.lang(this.lang).asWidget().align(Alignment.CenterRight).height(18));
+            if (this.lang != null)
+                row.child(this.lang.asWidget().align(Alignment.CenterRight).height(18));
 
             return row;
         }

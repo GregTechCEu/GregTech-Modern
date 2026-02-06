@@ -158,12 +158,12 @@ public class GTGuiTextures {
     public static final UITexture[] BUTTON_POWER = slice("textures/gui/widget/button_power.png", 16, 32, 16, 16,
             ColorType.DEFAULT);
 
-    public static final UITexture[] BUTTON_BLACKLIST = slice("textures/gui/widget/button_blacklist.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_BLACKLIST = fullImage("textures/gui/widget/button_blacklist.png",
+            ColorType.DEFAULT);
     public static final UITexture[] BUTTON_IGNORE_DAMAGE = slice("textures/gui/widget/button_filter_damage.png",
             16, 32, 16, 16, ColorType.DEFAULT);
-    public static final UITexture[] BUTTON_IGNORE_NBT = slice("textures/gui/widget/button_filter_nbt.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_IGNORE_NBT = fullImage("textures/gui/widget/button_filter_nbt.png",
+            ColorType.DEFAULT);
 
     public static final UITexture[] BUTTON_CASE_SENSITIVE = slice(
             "textures/gui/widget/ore_filter/button_case_sensitive.png",
@@ -443,6 +443,8 @@ public class GTGuiTextures {
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
             .subAreaXYWH(0, 0, 16, 16)
             .build();
+
+    public static final UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
 
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(

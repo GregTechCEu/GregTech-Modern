@@ -131,6 +131,7 @@ public class GTMultiMachines {
                             .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.getBlockState()), null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
+            .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE

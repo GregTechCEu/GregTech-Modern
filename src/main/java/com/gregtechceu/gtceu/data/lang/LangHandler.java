@@ -1364,6 +1364,11 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
         provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
+        provider.add("gtceu.gui.me_network.auto_pull_toggle", "Toggle Auto-Pull");
+        provider.add("gtceu.gui.me_network.empty", "Empty");
+        provider.add("gtceu.gui.me_network.stocking_settings", "Stocking Settings");
+        provider.add("gtceu.gui.me_network.min_stack_size", "Min Stack Size:");
+        provider.add("gtceu.gui.me_network.ticks_per_cycle", "Ticks Per Cycle:");
 
         provider.add("gtceu.gui.item_auto_output", "Item Output: %s");
         provider.add("gtceu.gui.item_input_from_output", "Item Input from Output: %s");
