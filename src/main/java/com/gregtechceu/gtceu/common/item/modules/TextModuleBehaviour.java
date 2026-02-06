@@ -3,7 +3,11 @@ package com.gregtechceu.gtceu.common.item.modules;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
+import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
@@ -12,6 +16,7 @@ import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
@@ -29,26 +34,31 @@ import java.util.UUID;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
+    private PlaceholderContext getContext(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        return new PlaceholderContext(
+                group.getTargetLevel(machine.getLevel()),
+                group.getTarget(machine.getLevel()),
+                group.getTargetCoverSide(),
+                group.getPlaceholderSlotsHandler(),
+                group.getTargetCover(machine.getLevel()),
+                null,
+                stack.getOrCreateTag().getUUID("placeholderUUID"));
+    }
+
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                getPlaceholderText(stack),
-                new PlaceholderContext(
-                        group.getTargetLevel(machine.getLevel()),
-                        group.getTarget(machine.getLevel()),
-                        group.getTargetCoverSide(),
-                        group.getPlaceholderSlotsHandler(),
-                        group.getTargetCover(machine.getLevel()),
-                        null,
-                        stack.getOrCreateTag().getUUID("placeholderUUID")));
-        stack.getOrCreateTag().put("text", text.toTag());
+                getPlaceholderText(stack), getContext(stack, machine, group));
+        stack.getOrCreateTag().put("text",
+                text.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT)).toTag());
     }
 
     @Override
     public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        this.updateText(stack, machine, group);
+        if (!isPaused(stack))
+            this.updateText(stack, machine, group);
     }
 
     @Override
@@ -61,10 +71,22 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
+        PlaceholderContext ctx = getContext(stack, machine, group);
+        IStringValue<?> code = SyncHandlers.string(
+                () -> getPlaceholderText(stack),
+                s -> setPlaceholderText(stack, s));
+        DoubleSyncValue scale = SyncHandlers.doubleNumber(
+                () -> getScale(stack),
+                s -> setScale(stack, s));
+        IBoolValue<?> pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
+        Runnable updateText = () -> updateText(stack, machine, group);
+        assert ctx.itemStackHandler() != null;
         return new ModularPanel("placeholder_editor")
                 .size(400, 250)
                 .resizeableOnDrag(true)
-                .excludeAreaInXei();
+                .excludeAreaInXei()
+                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, null, pause,
+                        updateText));
     }
 
     @Override
@@ -82,6 +104,16 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public void setScale(ItemStack stack, double scale) {
         stack.getOrCreateTag().putDouble("scale", scale);
+    }
+
+    public void setPaused(ItemStack stack, boolean paused) {
+        stack.getOrCreateTag().putBoolean("paused", paused);
+    }
+
+    public boolean isPaused(ItemStack stack) {
+        if (stack.getOrCreateTag().contains("paused"))
+            return stack.getOrCreateTag().getBoolean("paused");
+        else return false;
     }
 
     public void setPlaceholderText(ItemStack stack, String text) {

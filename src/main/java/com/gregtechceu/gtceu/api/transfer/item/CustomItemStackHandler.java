@@ -52,4 +52,10 @@ public class CustomItemStackHandler extends ItemStackHandler
         stacks.clear();
         onContentsChanged.run();
     }
+
+    public NonNullList<ItemStack> toList() {
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int slot = 0; slot < getSlots(); slot++) list.add(getStackInSlot(slot));
+        return list;
+    }
 }

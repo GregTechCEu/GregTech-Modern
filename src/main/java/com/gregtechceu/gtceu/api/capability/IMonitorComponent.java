@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.IItemHandler;
@@ -13,7 +13,7 @@ public interface IMonitorComponent {
         return false;
     }
 
-    IGuiTexture getComponentIcon();
+    IDrawable getIcon();
 
     BlockPos getBlockPos();
 

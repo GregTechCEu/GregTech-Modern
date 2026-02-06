@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -15,9 +16,17 @@ import com.gregtechceu.gtceu.client.renderer.monitor.MonitorImageRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
-public class ImageModuleBehaviour implements IMonitorModuleItem {
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
@@ -51,5 +60,12 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
 
     public void setUrl(ItemStack stack, String url) {
         stack.getOrCreateTag().putString("url", url);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        tooltipComponents.add(Component.translatable("gtceu.item.tooltip.image_url", getUrl(stack))
+                .withStyle(ChatFormatting.DARK_AQUA));
     }
 }

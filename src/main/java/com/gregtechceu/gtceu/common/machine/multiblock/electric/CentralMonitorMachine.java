@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
@@ -16,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
@@ -26,17 +25,9 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -47,10 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Stream;
@@ -68,18 +57,16 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     private int leftDist = 0, rightDist = 0, upDist = 0, downDist = 0;
     @SaveField
     @SyncToClient
-    @Getter
     @RerenderOnChanged
+    @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
-    private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
-    private final List<IMonitorComponent> selectedTargets = new ArrayList<>();
 
     private MultiblockState patternFindingState;
 
     private static TraceabilityPredicate MULTI_PREDICATE = null;
 
-    public CentralMonitorMachine(BlockEntityCreationInfo info) {
-        super(info, CentralMonitorLogic::new);
+    public CentralMonitorMachine(BlockEntityCreationInfo holder) {
+        super(holder, CentralMonitorLogic::new);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {
@@ -134,6 +121,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
+        getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
+        getSyncDataHolder().markClientSyncFieldDirty("recipeLogic");
     }
 
     @Override
@@ -205,6 +194,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             posDown.move(down);
             downDist++;
         }
+        getSyncDataHolder().markClientSyncFieldDirty("leftDist");
+        getSyncDataHolder().markClientSyncFieldDirty("rightDist");
+        getSyncDataHolder().markClientSyncFieldDirty("upDist");
+        getSyncDataHolder().markClientSyncFieldDirty("downDist");
     }
 
     private boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist, Direction left,
@@ -283,24 +276,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
 
-    public boolean isMonitor(int row, int col) {
-        IMonitorComponent component = this.getComponent(row, col);
-        if (component == null) return false;
-        return component.isMonitor();
-    }
-
-    private IGuiTexture getComponentTexture(int row, int col) {
-        if (row < 0 || col < 0 || row > downDist + upDist + 1 || col > leftDist + rightDist + 1)
-            return GuiTextures.BLANK_TRANSPARENT;
-        IMonitorComponent component = getComponent(row, col);
-        if (component == null) return GuiTextures.BLANK_TRANSPARENT;
-        return component.getComponentIcon();
-    }
-
-    private boolean isInAnyGroup(IMonitorComponent component) {
-        return monitorGroups.stream().anyMatch(group -> group.contains(component.getBlockPos()));
-    }
-
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
@@ -308,19 +283,26 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         getDefinition().getAdditionalDisplay().accept(this, textList);
     }
 
-    @Override
-    public IGuiTexture getComponentIcon() {
-        return ResourceTexture.fromSpirit(GTCEu.id("block/multiblock/network_switch/overlay_front_active"));
+    public void setMonitorGroups(List<MonitorGroup> groups) {
+        if (!(monitorGroups instanceof ArrayList<MonitorGroup>)) monitorGroups = new ArrayList<>(monitorGroups);
+        monitorGroups.clear();
+        monitorGroups.addAll(groups);
+        getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
     }
 
     @Override
-    public @NotNull List<Component> getDebugInfo(Player player, int logLevel,
-                                                 PortableScannerBehavior.DisplayMode mode) {
+    public IDrawable getIcon() {
+        return GTGuiTextures.GREGTECH_LOGO;
+    }
+
+    @Override
+    public List<Component> getDebugInfo(Player player, int logLevel,
+                                        PortableScannerBehavior.DisplayMode mode) {
         return List.of(Component.translatable("gtceu.central_monitor.size", leftDist, rightDist, upDist, downDist));
     }
 
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         return List.of(Component.translatable("gtceu.central_monitor.size", leftDist, rightDist, upDist, downDist));
     }
 

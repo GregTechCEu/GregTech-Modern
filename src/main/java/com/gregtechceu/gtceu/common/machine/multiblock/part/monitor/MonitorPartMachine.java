@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -28,8 +25,8 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
     }
 
     @Override
-    public IGuiTexture getComponentIcon() {
-        return ResourceTexture.fromSpirit(GTCEu.id("item/computer_monitor_cover"));
+    public IDrawable getIcon() {
+        return GTGuiTextures.MONITOR;
     }
 
     @Override
