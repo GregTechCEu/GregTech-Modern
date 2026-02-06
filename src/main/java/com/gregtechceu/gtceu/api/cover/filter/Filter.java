@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -17,7 +19,7 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
     /**
      * @return Filter panel when opened by itself (including the player inventory)
      */
-    ModularPanel getPanel(PanelSyncManager syncManager);
+    ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
 
     CompoundTag saveFilter();
 

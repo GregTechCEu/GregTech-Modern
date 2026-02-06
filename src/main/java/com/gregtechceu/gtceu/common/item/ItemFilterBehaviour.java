@@ -30,7 +30,6 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!level.isClientSide) {
             if (player.isCrouching()) {
-                // TODO: Stop destroying nbt when first opening the UI
                 UIFactories.playerInventory().openFromHand(player, usedHand);
                 return InteractionResultHolder.success(player.getItemInHand(usedHand));
             }
@@ -40,7 +39,7 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
 
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return ItemFilter.loadFilter(data.getUsedItemStack()).getPanel(syncManager);
+        return ItemFilter.loadFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings);
     }
 
     // @Override

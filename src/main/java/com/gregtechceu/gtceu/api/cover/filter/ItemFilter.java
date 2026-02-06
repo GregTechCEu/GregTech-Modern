@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -61,7 +63,7 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public ModularPanel getPanel(PanelSyncManager syncManager) {
+        public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
             return null;
         }
 

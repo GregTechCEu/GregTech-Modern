@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -113,7 +115,7 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     @Override
-    public ModularPanel getPanel(PanelSyncManager syncManager) {
+    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
         Grid filterGrid = new Grid()

@@ -509,7 +509,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             var filterSlot = filterHandler.getFilterSlot();
             // TODO get the panel to use the right sync handler when swapping from one item filter to the next
             var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                    (sm, sh) -> ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(sm));
+                    (sm, sh) -> ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
 
             DynamicSyncHandler filterButton = new DynamicSyncHandler()
                     .widgetProvider((sm, buf) -> {
