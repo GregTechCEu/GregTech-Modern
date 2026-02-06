@@ -104,6 +104,7 @@ public class PlaceholderHandler {
         Stack<List<MultiLineComponent>> stack = new Stack<>();
         stack.push(GTUtil.list(MultiLineComponent.empty()));
         for (char c : s.toCharArray()) {
+            if (!exceptions.isEmpty()) break;
             if (c == '\'' && prev == '[') {
                 singleEscapes++;
                 symbol++;
@@ -177,8 +178,10 @@ public class PlaceholderHandler {
                                     if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
                                 }
                             }
+                        } catch (PlaceholderException e) {
+                            exceptions.add(e);
+                            e.setLineInfo(line, symbol);
                         }
-                        default -> GTUtil.getLast(stack.peek()).append(c);
                     }
                     default -> {
                         lineBeginningWhitespace = false;
@@ -276,14 +279,14 @@ public class PlaceholderHandler {
                         .child(Flow.row()
                                 .height(20)
                                 .childIf(scaleDouble != null,
-                                        new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_scale")))
+                                        () -> new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_scale")))
                                 .childIf(scaleDouble != null, () -> new TextFieldWidget()
                                         .setNumbersDouble(x -> Math.max(x, 0))
                                         .setDefaultNumber(1.0)
                                         .value(scaleDouble)
                                         .marginLeft(4))
                                 .childIf(updateInterval != null,
-                                        new TextWidget<>(IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
+                                        () -> new TextWidget<>(IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
                                 .childIf(updateInterval != null, () -> new TextFieldWidget()
                                         .setNumbers(1, 1000)
                                         .setDefaultNumber(1)
