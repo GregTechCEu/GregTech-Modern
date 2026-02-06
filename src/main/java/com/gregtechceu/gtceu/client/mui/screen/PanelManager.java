@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.wrapper.WidgetWrapper;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.LocatedWidget;
 import com.gregtechceu.gtceu.utils.ReverseIterable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public class PanelManager {
     /**
      * List of all open panels from top to bottom.
      */
-    private final ObjectList<ModularPanel> panels = new ObjectArrayList<>();
+    private final ObjectList<ModularPanel> panels = ObjectList.create();
     // a clone of the list to avoid CMEs
     private final List<ModularPanel> panelsClone = new ArrayList<>();
     private final List<ModularPanel> panelsView = Collections.unmodifiableList(this.panelsClone);
@@ -42,7 +41,7 @@ public class PanelManager {
     private final List<WidgetWrapper> panelWrappers = new ArrayList<>();
     private final List<WidgetWrapper> panelWrappersView = Collections.unmodifiableList(this.panelWrappers);
     private final ReverseIterable<WidgetWrapper> reversePanelWrappers = new ReverseIterable<>(this.panelWrappersView);
-    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(DISPOSAL_CAPACITY);
+    private final ObjectList<ModularPanel> disposal = ObjectList.create(DISPOSAL_CAPACITY);
     private final Map<String, IPanelHandler> panelHandlerMap = new Object2ObjectOpenHashMap<>();
     private boolean cantDisposeNow = false;
     private boolean dirty = false;
@@ -134,7 +133,7 @@ public class PanelManager {
         this.dirty = true;
         panel.onOpen(this.screen);
         if (resize) {
-            WidgetTree.resizeInternal(panel, true);
+            WidgetTree.resizeInternal(panel.resizer(), true);
         }
     }
 

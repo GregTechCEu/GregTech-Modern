@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

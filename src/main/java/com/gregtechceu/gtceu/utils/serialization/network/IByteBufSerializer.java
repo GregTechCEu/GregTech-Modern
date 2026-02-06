@@ -16,4 +16,13 @@ public interface IByteBufSerializer<T> {
      * @param value  object to write
      */
     void serialize(FriendlyByteBuf buffer, T value);
+
+    static <T> IByteBufSerializer<T> wrapNullSafe(IByteBufSerializer<T> serializer) {
+        return (buffer, value) -> {
+            buffer.writeBoolean(value == null);
+            if (value != null) {
+                serializer.serialize(buffer, value);
+            }
+        };
+    }
 }

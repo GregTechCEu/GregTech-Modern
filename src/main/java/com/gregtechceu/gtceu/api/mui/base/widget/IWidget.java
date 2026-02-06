@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
+import com.gregtechceu.gtceu.api.mui.base.ITreeNode;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
-import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.Stencil;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Flex;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.StandardResizer;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * A widget in a GUI
+ * A widget in a GUI.
  */
-public interface IWidget extends IGuiElement {
+public interface IWidget extends IGuiElement, ITreeNode<IWidget> {
 
     String WIDGET_TRANSLATION_KEY_FORMAT = "widget.%s.name";
     /**
@@ -36,92 +36,39 @@ public interface IWidget extends IGuiElement {
             .or(CharMatcher.anyOf("-_."))
             .negate();
 
-    /**
-     * Validates and initialises this element.
-     * This element now becomes valid
-     *
-     * @param parent the parent this element belongs to
-     * @param late   true if this is called some time after the widget tree of the parent has been initialised
-     */
-    void initialise(@NotNull IWidget parent, boolean late);
+    default String getTranslationId() {
+        String className = FormattingUtil.toLowerCaseUnderscore(this.getClass().getSimpleName());
+        className = DISALLOWED_TRANSLATION_KEY_CHARS.removeFrom(className);
+        return WIDGET_TRANSLATION_KEY_FORMAT.formatted(className);
+    }
 
     /**
-     * Invalidates this element.
+     * @return the screen this element is in
      */
-    void dispose();
+    ModularScreen getScreen();
 
     /**
-     * Determines if this element exist in an active gui.
-     *
-     * @return if this is in a valid gui
+     * @return the parent of this widget
      */
-    boolean isValid();
-
-    /**
-     * Draws the background of this widget.
-     *
-     * @param context     gui context
-     * @param widgetTheme widget theme of this widget
-     */
-    void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme);
-
-    /**
-     * Draws additional stuff in this widget.
-     * x = 0 and y = 0 is now in the top left corner of this widget.
-     * Do NOT override this method, it is never called. Use {@link #draw(ModularGuiContext, WidgetThemeEntry)} instead.
-     *
-     * @param context gui context
-     */
-    @ApiStatus.NonExtendable
-    @Deprecated
+    @NotNull
     @Override
-    default void draw(ModularGuiContext context) {
-        draw(context, getWidgetTheme(context.getTheme()));
+    IWidget getParent();
+
+    @Override
+    default boolean hasParent() {
+        return isValid();
     }
 
     /**
-     * Draws extra elements of this widget. Called after {@link #drawBackground(ModularGuiContext, WidgetThemeEntry)}
-     * and
-     * before
-     * {@link #drawOverlay(ModularGuiContext, WidgetThemeEntry)}
-     *
-     * @param context     gui context
-     * @param widgetTheme widget theme
+     * @return the context the current screen
      */
-    void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme);
+    ModularGuiContext getContext();
 
     /**
-     * Draws the overlay of this widget.
-     *
-     * @param context     gui context
-     * @param widgetTheme widget theme
+     * @return the panel this widget is in
      */
-    void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme);
-
-    /**
-     * Draws foreground elements of this widget. For example tooltips.
-     * No transformations are applied here.
-     *
-     * @param context gui context
-     */
-    void drawForeground(ModularGuiContext context);
-
-    default void transform(IViewportStack stack) {
-        stack.translate(getArea().rx, getArea().ry, 0);
-    }
-
-    default Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
-        return null;
-    }
-
-    default WidgetThemeEntry<?> getWidgetTheme(ITheme theme) {
-        return theme.getFallback();
-    }
-
-    /**
-     * Called 20 times per second.
-     */
-    void onUpdate();
+    @NotNull
+    ModularPanel getPanel();
 
     /**
      * @return the area this widget occupies
@@ -129,10 +76,13 @@ public interface IWidget extends IGuiElement {
     @Override
     Area getArea();
 
-    default String getTranslationId() {
-        String className = FormattingUtil.toLowerCaseUnderscore(this.getClass().getSimpleName());
-        className = DISALLOWED_TRANSLATION_KEY_CHARS.removeFrom(className);
-        return WIDGET_TRANSLATION_KEY_FORMAT.formatted(className);
+    /**
+     * Shortcut to get the area of the parent
+     *
+     * @return parent area
+     */
+    default Area getParentArea() {
+        return getParent().getArea();
     }
 
     /**
@@ -169,62 +119,50 @@ public interface IWidget extends IGuiElement {
     }
 
     /**
-     * Calculates if a given pos is inside this widgets area.
-     * This should be used over {@link Area#isInside(int, int)}, since this accounts for transformations.
-     *
-     * @param stack viewport stack
-     * @param point position
-     * @return if pos is inside this widgets area
+     * Called when the mouse hovers this element. This means this element is directly below the mouse or there are
+     * widgets in between which
+     * all allow to pass hover through. This is not called when the element is at any point below the mouse.
      */
-    default boolean isInside(IViewportStack stack, Point point) {
-        return isInside(stack, point.x, point.y);
+    default void onMouseStartHover() {}
+
+    /**
+     * Called when the mouse no longer hovers this element. This widget can still be below the mouse on some level.
+     */
+    default void onMouseEndHover() {}
+
+    /**
+     * Called when the mouse enters this elements area with any amount of widgets above it from the current panel.
+     */
+    default void onMouseEnterArea() {}
+
+    /**
+     * Called when the mouse leaves the area, or it started hovering a different panel.
+     */
+    default void onMouseLeaveArea() {}
+
+    /**
+     * @return if this widget is currently right below the mouse
+     */
+    default boolean isHovering() {
+        return isHoveringFor(0);
     }
 
     /**
-     * @return all children of this widget
+     * Returns if this element is right blow the mouse for a certain amount of time
+     *
+     * @param ticks time in ticks
+     * @return if this element is right blow the mouse for a certain amount of time
      */
-    @NotNull
-    default List<IWidget> getChildren() {
-        return Collections.emptyList();
+    default boolean isHoveringFor(int ticks) {
+        return false;
     }
 
-    /**
-     * @return if this widget has any children
-     */
-    default boolean hasChildren() {
-        return !getChildren().isEmpty();
+    default boolean isBelowMouse() {
+        return isBelowMouseFor(0);
     }
 
-    /**
-     * @return the panel this widget is in
-     */
-    @NotNull
-    ModularPanel getPanel();
-
-    /**
-     * Returns if this element is enabled. Disabled elements are not drawn and can not be interacted with. If this is
-     * disabled, the children
-     * will be considered disabled to without actually being disabled.
-     *
-     * @return if this element is enabled
-     */
-    @Override
-    boolean isEnabled();
-
-    void setEnabled(boolean enabled);
-
-    /**
-     * Checks if all ancestors are enabled. Only then this widget is visible and interactable.
-     *
-     * @return if all ancestors are enabled.
-     */
-    default boolean areAncestorsEnabled() {
-        IWidget parent = this;
-        do {
-            if (!parent.isEnabled()) return false;
-            parent = parent.getParent();
-        } while (parent.hasParent());
-        return true;
+    default boolean isBelowMouseFor(int ticks) {
+        return false;
     }
 
     /**
@@ -267,40 +205,142 @@ public interface IWidget extends IGuiElement {
     }
 
     /**
-     * Marks tooltip for this widget as dirty.
+     * @return default width if it can't be calculated
      */
-    void markTooltipDirty();
-
-    /**
-     * @return the parent of this widget
-     */
-    @NotNull
-    IWidget getParent();
-
-    @Override
-    default boolean hasParent() {
-        return isValid();
+    default int getDefaultWidth() {
+        return 18;
     }
 
     /**
-     * @return the context of the current screen
+     * @return default height if it can't be calculated
      */
-    ModularGuiContext getContext();
+    default int getDefaultHeight() {
+        return 18;
+    }
+
+    /**
+     * Validates and initialises this element.
+     * This element now becomes valid
+     *
+     * @param parent the parent this element belongs to
+     * @param late   true if this is called some time after the widget tree of the parent has been initialised
+     */
+    void initialise(@NotNull IWidget parent, boolean late);
+
+    /**
+     * Invalidates this element.
+     */
+    void dispose();
+
+    /**
+     * Determines if this element exist in an active gui.
+     *
+     * @return if this is in a valid gui
+     */
+    boolean isValid();
+
+    /**
+     * Called 20 times per second.
+     */
+    default void onUpdate() {}
+
+    /**
+     * Draws the background of this widget.
+     *
+     * @param context     gui context
+     * @param widgetTheme widget theme of this widget
+     */
+    default void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
+
+    /**
+     * Draws extra elements of this widget. Called after {@link #drawBackground(ModularGuiContext, WidgetThemeEntry)}
+     * and before
+     * {@link #drawOverlay(ModularGuiContext, WidgetThemeEntry)}
+     *
+     * @param context     gui context
+     * @param widgetTheme widget theme
+     */
+    default void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
+
+    /**
+     * Draws the overlay of this theme.
+     *
+     * @param context     gui context
+     * @param widgetTheme widget theme
+     */
+    default void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
+
+    /**
+     * Draws foreground elements of this widget. For example tooltips.
+     * No transformations are applied here.
+     *
+     * @param context gui context
+     */
+    default void drawForeground(ModularGuiContext context) {}
+
+    default void transform(IViewportStack stack) {
+        stack.translate(getArea().rx, getArea().ry, 0);
+    }
+
+    default Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
+        return null;
+    }
+
+    default WidgetThemeEntry<?> getWidgetTheme(ITheme theme) {
+        return theme.getFallback();
+    }
+
+    /**
+     * @return all children of this widget
+     */
+    @NotNull
+    @Override
+    default List<IWidget> getChildren() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * @return if this widget has any children
+     */
+    @Override
+    default boolean hasChildren() {
+        return !getChildren().isEmpty();
+    }
+
+    void scheduleResize();
+
+    boolean requiresResize();
+
+    /**
+     * @return flex of this widget
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Nullable
+    default StandardResizer getFlex() {
+        return resizer();
+    }
 
     /**
      * @return flex of this widget. Creates a new one if it doesn't already have one.
      */
-    Flex flex();
+    @NotNull
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    default StandardResizer flex() {
+        return resizer();
+    }
 
     /**
-     * Does the same as {@link IPositioned#flex(Consumer)}
+     * Does the same as {@link IPositioned#resizer(Consumer)}
      *
      * @param builder function to build flex
      * @return this
      */
-    default IWidget flexBuilder(Consumer<Flex> builder) {
-        builder.accept(flex());
-        return this;
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    default IWidget flexBuilder(Consumer<StandardResizer> builder) {
+        return resizerBuilder(builder);
     }
 
     /**
@@ -308,14 +348,12 @@ public interface IWidget extends IGuiElement {
      */
     @NotNull
     @Override
-    IResizeable resizer();
+    StandardResizer resizer();
 
-    /**
-     * Sets the resizer of this widget.
-     *
-     * @param resizer resizer
-     */
-    void resizer(IResizeable resizer);
+    default IWidget resizerBuilder(Consumer<StandardResizer> builder) {
+        builder.accept(resizer());
+        return this;
+    }
 
     /**
      * Called before a widget is resized.
@@ -333,13 +371,29 @@ public interface IWidget extends IGuiElement {
     default void postResize() {}
 
     /**
-     * @return flex of this widget
+     * Returns if this element is enabled. Disabled elements are not drawn and can not be interacted with. If this is
+     * disabled, the children
+     * will be considered disabled to without actually being disabled.
+     *
+     * @return if this element is enabled
      */
-    Flex getFlex();
+    @Override
+    boolean isEnabled();
 
-    default boolean isExpanded() {
-        Flex flex = getFlex();
-        return flex != null && flex.isExpanded();
+    void setEnabled(boolean enabled);
+
+    /**
+     * Checks if all ancestors are enabled. Only then this widget is visible and interactable.
+     *
+     * @return if all ancestors are enabled.
+     */
+    default boolean areAncestorsEnabled() {
+        IWidget parent = this;
+        do {
+            if (!parent.isEnabled()) return false;
+            parent = parent.getParent();
+        } while (parent.hasParent());
+        return true;
     }
 
     @Nullable

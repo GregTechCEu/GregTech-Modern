@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import net.minecraft.nbt.CompoundTag;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * A machine that can save its contents when dropped.
@@ -28,12 +28,12 @@ public interface IDropSaveMachine extends IMachineFeature {
      *
      * @param tag The tag to save to.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     void saveToItem(CompoundTag tag);
 
     /**
      * Loads the contents of the block entity from a compound tag.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     void loadFromItem(CompoundTag tag);
 }

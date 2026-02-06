@@ -53,4 +53,9 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public boolean swapIO() {
         return false;
     }
+
+    @Override
+    public boolean isCircuitSlotEnabled() {
+        return false;
+    }
 }

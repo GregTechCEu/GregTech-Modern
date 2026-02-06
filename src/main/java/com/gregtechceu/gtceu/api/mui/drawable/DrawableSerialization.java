@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
 import net.minecraft.network.chat.Component;
@@ -172,7 +173,7 @@ public class DrawableSerialization implements JsonSerializer<IDrawable>, JsonDes
             }
             return JsonHelper.getBoolean(json, false, "lang", "translate") ? IKey.lang(s) : IKey.str(s);
         } else if (element.isJsonArray()) {
-            ObjectArrayList<IKey> strings = new ObjectArrayList<>();
+            ObjectList<IKey> strings = ObjectList.create();
             for (JsonElement element1 : element.getAsJsonArray()) {
                 strings.add(parseText(element1));
             }

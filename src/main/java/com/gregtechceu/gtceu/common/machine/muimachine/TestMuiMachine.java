@@ -37,6 +37,7 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Fox;
@@ -57,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 public class TestMuiMachine extends MetaMachine implements IMuiMachine {
@@ -83,6 +85,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     private final int duration = 80;
     private int progress = 0;
     private int cycleState = 0;
+    private List<Integer> serverInts = new ArrayList<>();
     private ItemStack displayItem = new ItemStack(Items.DIAMOND);
     private final IItemHandlerModifiable inventory = new ItemStackHandler(2) {
 
@@ -123,6 +126,14 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         IntSyncValue cycleStateValue = new IntSyncValue(() -> this.cycleState, val -> this.cycleState = val);
         syncManager.getHyperVisor().syncValue("cycle_state", cycleStateValue);
         syncManager.syncValue("display_item", GenericSyncValue.forItem(() -> this.displayItem, null));
+        GenericListSyncHandler<Integer> numberListSyncHandler = GenericListSyncHandler.<Integer>builder()
+                .getter(() -> this.serverInts)
+                .setter(v -> this.serverInts = v)
+                .serializer(FriendlyByteBuf::writeInt)
+                .deserializer(FriendlyByteBuf::readInt)
+                .immutableCopy()
+                .build();
+        syncManager.syncValue("number_list", numberListSyncHandler);
         syncManager.bindPlayerInventory(data.getPlayer());
 
         DynamicSyncHandler dynamicSyncHandler = new DynamicSyncHandler()
@@ -143,45 +154,55 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     return flow;
                 });
 
+        DynamicLinkedSyncHandler<GenericListSyncHandler<Integer>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                numberListSyncHandler)
+                .widgetProvider((syncManager1, value1) -> {
+                    List<Integer> vals = value1.getValue();
+                    return new Column()
+                            .widthRel(1f)
+                            .coverChildrenHeight()
+                            .children(vals.size(), i -> IKey.str(String.valueOf(vals.get(i))).asWidget().padding(2))
+                            .name("synced number col");
+                });
+
+        // disable spotless on the menu layout code so it won't insert random line breaks
+        // spotless:off
         Rectangle colorPickerBackground = new Rectangle().color(Color.RED.main);
         ModularPanel panel = new ModularPanel("test_tile");
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
-                (mainPanel,
-                 player) -> new ColorPickerDialog(colorPickerBackground::color, colorPickerBackground.getColor(),
-                         true)
+                (mainPanel, player) -> new ColorPickerDialog(colorPickerBackground::color, colorPickerBackground.getColor(), true)
                          .setDraggable(true)
                          .relative(panel)
                          .top(0)
                          .rightRel(1f),
                 true);
         PagedWidget.Controller tabController = new PagedWidget.Controller();
-        panel.flex()                        // returns object which is responsible for sizing
+        panel.resizer()                        // returns object which is responsible for sizing
                 .size(176, 220)       // set a static size for the main panel
                 .align(Alignment.Center);    // center the panel in the screen
 
         var babyFop = new Fox(EntityType.FOX, data.getLevel());
         babyFop.setAge(-1);
-        panel
-                .child(new Row()
-                        .name("Tab row")
-                        .coverChildren()
-                        .topRel(0f, 4, 1f)
-                        .child(new PageButton(0, tabController)
-                                .tab(GTGuiTextures.TAB_TOP, -1)
-                                .overlay(new EntityDrawable(babyFop)))
-                        .child(new PageButton(1, tabController)
-                                .tab(GTGuiTextures.TAB_TOP, 0)
-                                .overlay(new ItemDrawable(Items.OAK_SAPLING).asIcon()))
-                        .child(new PageButton(2, tabController)
-                                .tab(GTGuiTextures.TAB_TOP, 0)
-                                .overlay(new ItemDrawable(Items.COMPASS).asIcon()))
-                        .child(new PageButton(3, tabController)
-                                .tab(GTGuiTextures.TAB_TOP, 0)
-                                .overlay(new ItemDrawable(Blocks.CHEST).asIcon()))
-                        .child(new PageButton(4, tabController)
-                                .tab(GTGuiTextures.TAB_TOP, 0)
-                                .overlay(new ItemDrawable(Items.ENDER_EYE).asIcon())))
+        panel.child(new Row()
+                .name("Tab row")
+                .coverChildren()
+                .topRel(0f, 4, 1f)
+                .child(new PageButton(0, tabController)
+                        .tab(GTGuiTextures.TAB_TOP, -1)
+                        .overlay(new EntityDrawable<>(babyFop).followMouse()))
+                .child(new PageButton(1, tabController)
+                        .tab(GTGuiTextures.TAB_TOP, 0)
+                        .overlay(new ItemDrawable(Items.OAK_SAPLING).asIcon()))
+                .child(new PageButton(2, tabController)
+                        .tab(GTGuiTextures.TAB_TOP, 0)
+                        .overlay(new ItemDrawable(Items.COMPASS).asIcon()))
+                .child(new PageButton(3, tabController)
+                        .tab(GTGuiTextures.TAB_TOP, 0)
+                        .overlay(new ItemDrawable(Blocks.CHEST).asIcon()))
+                .child(new PageButton(4, tabController)
+                        .tab(GTGuiTextures.TAB_TOP, 0)
+                        .overlay(new ItemDrawable(Items.ENDER_EYE).asIcon())))
 
                 .child(new Expandable()
                         .name("expandable")
@@ -206,14 +227,13 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .row("III   ")
                                         .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i))
                                                 .addTooltipLine("This slot is empty"))
-                                        .key('O',
-                                                new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
-                                        .key('D',
-                                                new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
+                                        .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
+                                        .key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
                                         .build()
                                         .margin(5, 5, 20, 5).name("crafting"))))
 
                 .child(Flow.column()
+                        .name("main col")
                         .sizeRel(1f)
                         .paddingBottom(7)
                         .child(new ParentWidget<>()
@@ -242,45 +262,36 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .child(new ButtonWidget<>()
                                                                         .size(60, 18)
-                                                                        .overlay(IKey.dynamic(() -> Component
-                                                                                .literal("Button " + this.val))))
+                                                                        .overlay(IKey.dynamic(() -> Component.literal("Button " + this.val))))
                                                                 .child(new FluidSlot()
                                                                         .margin(2)
-                                                                        .syncHandler(
-                                                                                SyncHandlers.fluidSlot(this.fluidTank)))
+                                                                        .syncHandler(SyncHandlers.fluidSlot(this.fluidTank)))
                                                                 .child(new ButtonWidget<>()
                                                                         .size(60, 18)
                                                                         .tooltip(tooltip -> {
                                                                             tooltip.showUpTimer(10);
                                                                             tooltip.addLine(IKey.str("Test Line g"));
-                                                                            tooltip.addLine(IKey.str(
-                                                                                    "An image inside of a tooltip:"));
+                                                                            tooltip.addLine(IKey.str("An image inside of a tooltip:"));
                                                                             tooltip.addLine(GTGuiTextures.MUI_LOGO
                                                                                     .asIcon().size(50)
                                                                                     .alignment(Alignment.TopCenter));
-                                                                            tooltip.addLine(
-                                                                                    IKey.str("And here a circle:"));
+                                                                            tooltip.addLine(IKey.str("And here a circle:"));
                                                                             tooltip.addLine(new Circle()
-                                                                                    .setColor(Color.RED.darker(2),
-                                                                                            Color.RED.brighter(2))
+                                                                                    .setColor(Color.RED.darker(2), Color.RED.brighter(2))
                                                                                     .asIcon()
                                                                                     .size(20))
-                                                                                    .addLine(new ItemDrawable(
-                                                                                            new ItemStack(
-                                                                                                    Items.DIAMOND))
-                                                                                            .asIcon())
+                                                                                    .addLine(new ItemDrawable(Items.DIAMOND).asIcon())
                                                                                     .pos(RichTooltip.Pos.LEFT);
                                                                         })
-                                                                        .onMousePressed(
-                                                                                (mouseX, mouseY, mouseButton) -> {
-                                                                                    // panel.getScreen().close(true);
-                                                                                    // panel.getScreen().openDialog("dialog",
-                                                                                    // this::buildDialog,
-                                                                                    // ModularUI.LOGGER::info);
-                                                                                    // openSecondWindow(context).openIn(panel.getScreen());
-                                                                                    panelSyncHandler.openPanel();
-                                                                                    return true;
-                                                                                })
+                                                                        .onMousePressed((mouseX, mouseY, mouseButton) -> {
+                                                                            // panel.getScreen().close(true);
+                                                                            // panel.getScreen().openDialog("dialog",
+                                                                            // this::buildDialog,
+                                                                            // ModularUI.LOGGER::info);
+                                                                            // openSecondWindow(context).openIn(panel.getScreen());
+                                                                            panelSyncHandler.openPanel();
+                                                                            return true;
+                                                                        })
                                                                         // .flex(flex -> flex.left(3)) // ?
                                                                         .overlay(IKey.str("Button 2")))
                                                                 .child(new TextFieldWidget()
@@ -296,8 +307,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .value(SyncHandlers.doubleNumber(
                                                                                 () -> this.doubleValue,
                                                                                 val -> this.doubleValue = val))
-                                                                        .setNumbersDouble(
-                                                                                DoubleUnaryOperator.identity())
+                                                                        .setNumbersDouble(DoubleUnaryOperator.identity())
                                                                         .hintText(Component.literal("number")))
                                                                 // .child(IKey.str("Test
                                                                 // string").asWidget().padding(2).name("test
@@ -313,39 +323,31 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 // .widthRel(0.5f)
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> (this.progress /
-                                                                                (double) this.duration))
+                                                                        .progress(() -> (this.progress / (double) this.duration))
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 20))
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> (this.progress /
-                                                                                (double) this.duration))
+                                                                        .progress(() -> (this.progress / (double) this.duration))
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_MIXER, 20)
                                                                         .direction(
                                                                                 ProgressWidget.Direction.CIRCULAR_CW))
                                                                 .child(new Row().coverChildrenWidth().height(22)
                                                                         .child(new ToggleButton()
                                                                                 .value(new BoolValue.Dynamic(
-                                                                                        () -> cycleStateValue
-                                                                                                .getIntValue() == 0,
-                                                                                        val -> cycleStateValue
-                                                                                                .setIntValue(0)))
+                                                                                        () -> cycleStateValue.getIntValue() == 0,
+                                                                                        val -> cycleStateValue.setIntValue(0)))
                                                                                 .overlay(GTGuiTextures.CYCLE_BUTTON
                                                                                         .getSubArea(0, 0, 1, 1 / 3f)))
                                                                         .child(new ToggleButton()
                                                                                 .value(new BoolValue.Dynamic(
-                                                                                        () -> cycleStateValue
-                                                                                                .getIntValue() == 1,
-                                                                                        val -> cycleStateValue
-                                                                                                .setIntValue(1)))
+                                                                                        () -> cycleStateValue.getIntValue() == 1,
+                                                                                        val -> cycleStateValue.setIntValue(1)))
                                                                                 .overlay(GTGuiTextures.CYCLE_BUTTON
                                                                                         .getSubArea(0, 1 / 3f, 1,
                                                                                                 2 / 3f)))
                                                                         .child(new ToggleButton()
                                                                                 .value(new BoolValue.Dynamic(
-                                                                                        () -> cycleStateValue
-                                                                                                .getIntValue() == 2,
-                                                                                        val -> cycleStateValue
-                                                                                                .setIntValue(2)))
+                                                                                        () -> cycleStateValue.getIntValue() == 2,
+                                                                                        val -> cycleStateValue.setIntValue(2)))
                                                                                 .overlay(GTGuiTextures.CYCLE_BUTTON
                                                                                         .getSubArea(0, 2 / 3f, 1, 1))))
                                                                 /*
@@ -429,8 +431,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .size(20, 20)
                                                                 .stateCount(3)
                                                                 .stateOverlay(GTGuiTextures.CYCLE_BUTTON)
-                                                                .value(new IntSyncValue(() -> this.val2,
-                                                                        val -> this.val2 = val))
+                                                                .value(new IntSyncValue(() -> this.val2, val -> this.val2 = val))
                                                                 .margin(8, 0))
                                                         .child(IKey.str("Hello World").asWidget().height(18)))
                                                 .child(new SpecialButton(
@@ -482,20 +483,17 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .stateOverlay(GTGuiTextures.CHECK_BOX)
                                                                         .size(14, 14)
                                                                         .margin(8, 4))
-                                                                .child(IKey.str("Boolean config").asWidget()
-                                                                        .height(14)))
+                                                                .child(IKey.str("Boolean config").asWidget().height(14)))
                                                         .child(new Row()
                                                                 .name("test config 2")
                                                                 .widthRel(1f).height(14)
                                                                 .childPadding(2)
                                                                 .child(new TextFieldWidget()
-                                                                        .value(new IntValue.Dynamic(() -> this.num,
-                                                                                val -> this.num = val))
+                                                                        .value(new IntValue.Dynamic(() -> this.num, val -> this.num = val))
                                                                         .disableHoverBackground()
                                                                         .setNumbers(1, Short.MAX_VALUE)
                                                                         .setTextAlignment(Alignment.Center)
-                                                                        .background(
-                                                                                new Rectangle().color(0xFFb1b1b1))
+                                                                        .background(new Rectangle().color(0xFFb1b1b1))
                                                                         .setTextColor(IKey.TEXT_COLOR)
                                                                         .size(20, 14))
                                                                 .child(IKey.str("Number config").asWidget()
@@ -514,26 +512,28 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .value(new BoolValue(false))
                                                                         .stateOverlay(GTGuiTextures.CHECK_BOX)
                                                                         .size(14, 14))
-                                                                .child(IKey.str("Boolean config 3").asWidget()
-                                                                        .height(14)))))
+                                                                .child(IKey.str("Boolean config 3").asWidget().height(14)))))
                                         .addPage(new ParentWidget<>()
                                                 .name("page 4 storage")
                                                 .sizeRel(1f)
                                                 .child(new Column()
+                                                        .name("page 4 col, dynamic widgets")
                                                         .padding(7)
                                                         .child(new ItemSlot()
                                                                 .slot(new ModularSlot(this.storageInventory0, 0)
-                                                                        .changeListener(((newItem, onlyAmountChanged,
-                                                                                          client, init) -> {
+                                                                        .changeListener(((newItem, onlyAmountChanged, client, init) -> {
                                                                             if (client && !onlyAmountChanged) {
                                                                                 dynamicSyncHandler.notifyUpdate(
-                                                                                        packet -> packet
-                                                                                                .writeItem(newItem));
+                                                                                        packet -> packet.writeItem(newItem));
                                                                             }
                                                                         }))))
                                                         .child(new DynamicSyncedWidget<>()
                                                                 .widthRel(1f)
-                                                                .syncHandler(dynamicSyncHandler))))
+                                                                .syncHandler(dynamicSyncHandler))
+                                                /*.child(new DynamicSyncedWidget<>()
+                                                        .widthRel(1f)
+                                                        .coverChildrenHeight()
+                                                        .syncHandler(dynamicLinkedSyncHandler))*/))
                                         .addPage(createSchemaPage(data))))
                         .child(SlotGroupWidget.playerInventory(false)));
         /*
@@ -548,6 +548,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
          * .left(0.5f))
          * .setSynced("fluid_slot"));
          */
+        // spotless:on
         return panel;
     }
 
@@ -639,6 +640,21 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
+    public void buildDialog(Dialog<String> dialog) {
+        AtomicReference<String> value = new AtomicReference<>("");
+        dialog.setDraggable(true);
+        dialog.child(new TextFieldWidget()
+                .resizer(flex -> flex.size(100, 20).align(Alignment.Center))
+                .value(new StringValue.Dynamic(value::get, value::set)))
+                .child(new ButtonWidget<>()
+                        .resizer(flex -> flex.size(8, 8).top(5).right(5))
+                        .overlay(IKey.str("x"))
+                        .onMousePressed((x, y, mouseButton) -> {
+                            dialog.closeWith(value.get());
+                            return true;
+                        }));
+    }
+
     @Override
     public void clientTick() {
         if (this.time++ % 20 == 0) {
@@ -680,6 +696,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
             Collection<Item> vals = ForgeRegistries.ITEMS.getValues();
             Item item = vals.stream().skip(new Random().nextInt(vals.size())).findFirst().orElse(Items.DIAMOND);
             this.displayItem = new ItemStack(item, 26735987);
+
+            Random rnd = new Random();
+            this.serverInts.clear();
+            for (int i = 0; i < 5; i++) {
+                this.serverInts.add(rnd.nextInt(100));
+            }
         }
         if (++this.progress == this.duration) {
             this.progress = 0;

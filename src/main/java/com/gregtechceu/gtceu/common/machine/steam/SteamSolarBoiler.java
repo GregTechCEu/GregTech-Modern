@@ -82,19 +82,6 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
                         .progress(() -> GTUtil.canSeeSunClearly(getLevel(), getBlockPos()) ? 1.0 : 0.0));
     }
 
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * return super.createUI(entityPlayer)
-     * .widget(new ProgressWidget(() -> GTUtil.canSeeSunClearly(getLevel(), getPos()) ? 1.0 : 0.0, 114, 44, 20,
-     * 20)
-     * .setProgressTexture(
-     * GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
-     * GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0.5, 1,
-     * 0.5)));
-     * }
-     */
-
     @Override
     protected void randomDisplayTick(RandomSource random, float x, float y, float z) {}
 }

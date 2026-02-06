@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.TriPredicate;
 
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
@@ -204,8 +205,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
-            var collected = AE2CallWrapper.collect(first, limit);
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
+            Set<? extends IColorableBlockEntity> collected;
+            if (first instanceof CableBusBlockEntity) {
+                collected = AE2CallWrapper.collect(first, limit);
+            } else {
+                collected = Set.of((IColorableBlockEntity) first);
+            }
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
@@ -479,8 +485,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     limit, limit * 6);
         }
 
-        static boolean isAE2Cable(BlockEntity be) {
-            return be instanceof CableBusBlockEntity;
+        static boolean isColorable(BlockEntity be) {
+            return be instanceof IColorableBlockEntity;
         }
 
         static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {

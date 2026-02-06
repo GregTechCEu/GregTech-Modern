@@ -57,9 +57,9 @@ public final class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 
-    private static <T extends RecipeCondition> RecipeConditionType<T> register(String name,
-                                                                               RecipeConditionType.ConditionFactory<T> factory,
-                                                                               Codec<T> codec) {
+    private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,
+                                                                                  RecipeConditionType.ConditionFactory<T> factory,
+                                                                                  Codec<T> codec) {
         return GTRegistries.RECIPE_CONDITIONS.register(name, new RecipeConditionType<>(factory, codec));
     }
 }

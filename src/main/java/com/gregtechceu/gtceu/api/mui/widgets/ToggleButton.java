@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.theme.SelectableTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
@@ -101,5 +102,9 @@ public class ToggleButton extends AbstractCycleButtonWidget<ToggleButton> {
 
     public ToggleButton tooltipBuilder(boolean selected, Consumer<RichTooltip> builder) {
         return super.tooltipBuilder(selected ? 1 : 0, builder);
+    }
+
+    public ToggleButton child(boolean selected, IWidget widget) {
+        return stateChild(selected ? 1 : 0, widget);
     }
 }

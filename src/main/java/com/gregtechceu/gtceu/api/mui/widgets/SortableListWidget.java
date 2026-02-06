@@ -2,16 +2,14 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.animation.Animator;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IValueWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.api.mui.widget.DraggableWidget;
-import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.LocatedWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +27,8 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     private Consumer<Item<T>> onRemove;
     private int timeSinceLastMove = 0;
     private boolean scheduleAnimation = false;
-    private final ObjectList<Area> widgetAreaSnapshots = new ObjectArrayList<>();
-    private final ObjectList<Animator> animators = new ObjectArrayList<>();;
+    private final ObjectList<Area> widgetAreaSnapshots = ObjectList.create();
+    private final ObjectList<Animator> animators = ObjectList.create();
 
     public SortableListWidget() {
         super(Item::getWidgetValue);
@@ -165,7 +163,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
 
         private final T value;
         private List<IWidget> children;
-        private Predicate<IGuiElement> dropPredicate;
+        private Predicate<IWidget> dropPredicate;
         private SortableListWidget<T> listWidget;
         @Getter
         private int index = -1;
@@ -173,7 +171,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
 
         public Item(T value) {
             this.value = value;
-            flex().widthRel(1f).height(18);
+            resizer().widthRel(1f).height(18);
             background(GTGuiTextures.BUTTON);
         }
 
@@ -192,18 +190,19 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         }
 
         @Override
-        public boolean canDropHere(int x, int y, @Nullable IGuiElement widget) {
+        public boolean canDropHere(int x, int y, @Nullable IWidget widget) {
             return this.dropPredicate == null || this.dropPredicate.test(widget);
         }
 
         @Override
         public void onDrag(int mouseButton, double timeSinceLastClick) {
             super.onDrag(mouseButton, timeSinceLastClick);
-            // TODO: this kind of assumes the hovered is in the bounds of the parent item, which may not be true.
-            IWidget hovered = getContext().getTopHovered();
-            Item<?> item = WidgetTree.findParent(hovered, Item.class);
-            if (item != null && item != this && item.listWidget == this.listWidget) {
-                this.listWidget.moveTo(this.index, item.index);
+            for (LocatedWidget hovering : getPanel().getAllHoveringList(false)) {
+                if (hovering.getElement() instanceof SortableListWidget.Item<?> item && item != this &&
+                        item.listWidget == this.listWidget) {
+                    this.listWidget.moveTo(this.index, item.index);
+                    break;
+                }
             }
         }
 
@@ -230,7 +229,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
             return child(widgetCreator.apply(this));
         }
 
-        public Item<T> dropPredicate(Predicate<IGuiElement> dropPredicate) {
+        public Item<T> dropPredicate(Predicate<IWidget> dropPredicate) {
             this.dropPredicate = dropPredicate;
             return this;
         }

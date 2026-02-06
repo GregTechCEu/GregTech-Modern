@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.mui.screen.viewport;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Stencil;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
@@ -69,14 +69,14 @@ public class GuiContext extends GuiViewportStack {
     @Getter
     private int currentDrawingZ = 0;
 
-    public boolean isAbove(IGuiElement widget) {
+    public boolean isAbove(IWidget widget) {
         return isMouseAbove(widget.getArea());
     }
 
     /**
      * @return true the mouse is anywhere above the widget
      */
-    public boolean isMouseAbove(IGuiElement widget) {
+    public boolean isMouseAbove(IWidget widget) {
         return isMouseAbove(widget.getArea());
     }
 
