@@ -177,12 +177,8 @@ public class PlaceholderHandler {
                                     if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
                                 }
                             }
-                        } catch (PlaceholderException e) {
-                            e.setLineInfo(line, symbol);
-                            exceptions.add(e);
-                        } catch (RuntimeException e) {
-                            exceptions.add(e);
                         }
+                        default -> GTUtil.getLast(stack.peek()).append(c);
                     }
                     default -> {
                         lineBeginningWhitespace = false;

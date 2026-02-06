@@ -13,13 +13,13 @@ import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -564,7 +564,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                         BlockPos blockPos = new BlockPos(x, y, z);
                         BlockState state = level.getBlockState(blockPos);
                         if (state.getDestroySpeed(level, blockPos) >= 0 &&
-                                level.getBlockEntity(blockPos) == null &&
                                 state.is(Tags.Blocks.ORES)) {
                             blocks.addLast(blockPos);
                         }

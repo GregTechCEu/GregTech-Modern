@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -112,11 +113,12 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     }
 
     protected boolean consumeEnergy() {
-        var cleanroom = getMachine();
+        var cleanroomTrait = getMachine().getTraitHolder().getTrait(CleanroomProviderTrait.TYPE);
+        if (cleanroomTrait == null) return false;
         // clamp to max for VA indexing
-        var tier = Mth.clamp(cleanroom.getTier(), GTValues.ULV, GTValues.MAX);
+        var tier = Mth.clamp(getMachine().getTier(), GTValues.ULV, GTValues.MAX);
         // use 3/16th an amp when fully clean otherwise 15/16th an amp during cleaning
-        long energyToDrain = cleanroom.isClean() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
+        long energyToDrain = cleanroomTrait.isActive() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
                 GTValues.VA[tier];
         if (energyContainer != null) {
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;

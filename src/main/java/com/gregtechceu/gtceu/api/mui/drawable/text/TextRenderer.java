@@ -16,7 +16,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -263,12 +262,10 @@ public class TextRenderer {
 
     protected void draw(GuiGraphics graphics, FormattedCharSequence text, float x, float y) {
         if (this.simulate || graphics == null) return;
-        RenderSystem.disableBlend();
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 0f);
         graphics.drawString(getFont(), text, (int) (x / this.scale), (int) (y / this.scale), this.color, this.shadow);
         graphics.pose().popPose();
-        RenderSystem.enableBlend();
     }
 
     public float getFontHeight() {

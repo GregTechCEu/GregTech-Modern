@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IDraggable;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
@@ -60,7 +59,7 @@ public class DragHandle extends Widget<DragHandle> implements IDraggable {
     }
 
     @Override
-    public boolean canDropHere(int x, int y, @Nullable IGuiElement widget) {
+    public boolean canDropHere(int x, int y, @Nullable IWidget widget) {
         return this.parentDraggable != null && this.parentDraggable.canDropHere(x, y, widget);
     }
 

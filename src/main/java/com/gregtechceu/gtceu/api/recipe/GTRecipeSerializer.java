@@ -80,14 +80,11 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(contents, capability.serializer::toNetworkContent);
     }
 
-    public static RecipeCondition conditionReader(FriendlyByteBuf buf) {
-        // Consume the condition key that's set in conditionWriter
-        buf.readUtf();
+    public static RecipeCondition<?> conditionReader(FriendlyByteBuf buf) {
         return RecipeCondition.fromNetwork(buf);
     }
 
-    public static void conditionWriter(FriendlyByteBuf buf, RecipeCondition condition) {
-        buf.writeUtf(GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
+    public static void conditionWriter(FriendlyByteBuf buf, RecipeCondition<?> condition) {
         condition.toNetwork(buf);
     }
 
@@ -124,7 +121,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
                 buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
 
-        List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(),
+        List<RecipeCondition<?>> conditions = buf.readCollection(c -> new ArrayList<>(),
                 GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
         if (GTCEu.Mods.isKubeJSLoaded()) {

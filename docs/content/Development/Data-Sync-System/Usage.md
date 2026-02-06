@@ -58,41 +58,46 @@ The following field types are supported by default:
 
 ### Adding support for additional types
 
-To add support for an additional type, call `ValueTransformers.registerClassTransformer(Class<?> cls, IValueTransformer<?> transformer)` or `ValueTransformers.registerInterfaceTransformer(Class<?> cls, IValueTransformer<?> transformer)`
+The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialized.
 
-The `IValueTransformer<T>` interface defines how a value of type `T` should be serialised.
+To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 
+Additionally, fields can be explicitly directed to use a specific value transformer:
 ```java
-public interface IValueTransformer<T> {
+/**
+ * Example from HullMachine.java. This example shows serialization of an AE2 class which may or may not be loaded at runtime.
+ */
 
-    // If this type cannot be instanced purely from a serialised tag.
-    // All complex type typically have mustProvideObject true 
-    default boolean mustProvideObject() {
-        return false;
+@SaveField(nbtKey = "grid_node")
+private final Object gridNodeHost;
+
+private static class GridNodeHostTransformer implements ValueTransformer<Object> {
+
+  @Override
+  public Tag serializeNBT(Object value, TransformerContext<Object> context) {
+    if (GTCEu.Mods.isAE2Loaded() &&
+            (context.currentValue()) instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+      var compound = new CompoundTag();
+      connectedBlockEntity.getMainNode().saveToNBT(compound);
+      return compound;
     }
-    
-    // A method for serialising a value into a tag
-    // Called when serialising a value to be sent to the client
-    default Tag serializeClientSyncNBT(@Nullable T value, ISyncManaged holder) {
-      return serializeNBT(value, holder);
+    return new CompoundTag();
+  }
+
+  @Override
+  public @Nullable Object deserializeNBT(Tag tag, TransformerContext<Object> context) {
+    if (GTCEu.Mods.isAE2Loaded() &&
+            context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+            tag instanceof CompoundTag c) {
+      connectedBlockEntity.getMainNode().loadFromNBT(c);
     }
-
-    // A method for deserialising a value from a tag
-    // Called when deserialising a value on the client.
-    // If mustProvideObject == true, currentVal is the currently saved value.
-  default T deserializeClientNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal) {
-      return deserializeNBT(tag, holder, currentVal);
-    }
-
-
-  // A method for serialising a value into a tag.
-  // The holder param is the object this sync value is attached to
-  Tag serializeNBT(T value, ISyncManaged holder);
-    
-  // A method for deserialising a value from a tag
-  // If mustProvideObject == true, currentVal is the currently saved value.
-  T deserializeNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal);
+    return null;
+  }
 }
-```
 
-Some types may be too complex to be processed using this system. For more complex NBT interactions, use the `@FieldDataModifier` and `@CustomDataField` annotations.
+static {
+  ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+          new GridNodeHostTransformer());
+}
+
+```

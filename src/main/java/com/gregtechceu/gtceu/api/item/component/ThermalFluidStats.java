@@ -86,7 +86,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         }
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                    FormattingUtil.formatNumbers(maxFluidTemperature)));
+                    FormattingUtil.formatTemperature(maxFluidTemperature)));
             if (gasProof) tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (plasmaProof) tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
