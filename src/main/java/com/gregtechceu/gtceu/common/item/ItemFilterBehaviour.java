@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.mui.factory.UIFactories;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.function.Function;
 
 public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
-        implements IInteractionItem, IUIHolder<PlayerInventoryGuiData<?>> {
+        implements IInteractionItem, IItemUIHolder {
 
     @Override
     public void onAttached(Item item) {

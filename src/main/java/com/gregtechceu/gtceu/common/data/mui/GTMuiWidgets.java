@@ -60,8 +60,11 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        var displayItem = definition.asStack();
-        String machineName = displayItem.getHoverName().getString();
+        return createTitleBar(definition.asStack(), panelWidth, background);
+    }
+
+    public static Flow createTitleBar(ItemStack stack, int panelWidth, UITexture background) {
+        String machineName = stack.getHoverName().getString();
         machineName = machineName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
@@ -82,7 +85,7 @@ public class GTMuiWidgets {
                 .top(-(textHeight + borderRadius))
                 .rightRel(0.45f)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(new ItemDrawable(displayItem)
+                .child(new ItemDrawable(stack)
                         .asIcon().size(iconSize)
                         .asWidget()
                         .marginLeft(borderRadius))

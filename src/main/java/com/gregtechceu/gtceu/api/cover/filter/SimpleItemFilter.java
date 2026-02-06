@@ -1,18 +1,26 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -43,9 +51,6 @@ public class SimpleItemFilter implements ItemFilter {
     protected boolean ignoreNbt;
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
-
-    protected ModularPanel panel;
-    protected ModularPanel popupPanel;
 
     protected Consumer<ItemFilter> itemWriter = filter -> {};
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
@@ -118,37 +123,29 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     @Override
-    public void createPanel(PanelSyncManager syncManager) {
-        this.panel = makePanel(syncManager).child(SlotGroupWidget.playerInventory(true));
-        if (this.panel instanceof Dialog<?> dialog) {
-            dialog.setDraggable(false);
-        }
-    }
-
-    @Override
-    public void createPopupPanel(PanelSyncManager syncManager) {
-        this.popupPanel = makePanel(syncManager);
-        if (this.popupPanel instanceof Dialog<?> dialog) {
-            dialog.setDraggable(true)
-                    .setDisablePanelsBelow(false)
-                    .closeOnOutOfBoundsClick();
-        }
-    }
-
-    @Override
     public ModularPanel getPanel(PanelSyncManager syncManager) {
-        if (this.panel == null) {
-            createPanel(syncManager);
-        }
-        return this.panel;
-    }
+        FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
-    @Override
-    public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
-        if (this.popupPanel == null) {
-            createPopupPanel(syncManager);
-        }
-        return this.popupPanel;
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .mapTo(3, 9, i -> new PhantomItemSlot()
+                        .size(16)
+                        .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
+                                .changeListener((stack, amount, client, init) -> {
+                                handler.setStackInSlot(i, stack);
+                        }).ignoreMaxStackSize(true).accessibility(true, false))));
+
+        return new Dialog<>("simple_item_filter")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(Flow.row()
+                        .top(10)
+                        .coverChildrenHeight()
+                        .child(filterGrid.horizontalCenter())
+                )
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     private static class FilterItemStackHandler extends CustomItemStackHandler {
@@ -180,107 +177,18 @@ public class SimpleItemFilter implements ItemFilter {
             return matches[slot];
         }
 
-        // Pretty sure this is unused? PhantomSlot only calls setStackInSlot
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            return matches[slot] = stack;
+            return stack;
         }
 
         @Override
         public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             super.setStackInSlot(slot, stack);
-            matches[slot] = stack;
+            matches[slot] = stack.copyWithCount(1);
             filter.onUpdated.accept(filter);
         }
     }
-
-    private ModularPanel makePanel(PanelSyncManager syncManager) {
-        var handler = new FilterItemStackHandler(matches, this);
-
-        SlotGroup filterInv = new SlotGroup("filter_inv", 3, 1000, true);
-
-        syncManager.registerSlotGroup(filterInv);
-
-        return new Dialog<>("item_filter_dialog", null)
-                .resizeableOnDrag(true)
-                .padding(7)
-                .child(IKey.lang("cover.item_filter.title").asWidget().left(5).top(5))
-                .child(new Column()
-                        .coverChildren()
-                        .name("base")
-                        .child(new Row()
-                                .height(18 * 3)
-                                .left(54).top(10)
-                                .child(new Column()
-                                        .coverChildren()
-                                        .child(SlotGroupWidget.builder()
-                                                .matrix("III", "III", "III")
-                                                .key('I', index -> new PhantomItemSlot()
-                                                        // TODO: Figure out how to get the phantom slots to actually add
-                                                        // stuff to the item "handler"
-                                                        .slot(SyncHandlers.phantomItemSlot(handler, index)
-                                                                .ignoreMaxStackSize(true)
-                                                                .slotGroup(filterInv)))
-                                                .build()))
-                                .child(new Column()
-                                        .coverChildren()
-                                        .child(new ToggleButton()
-                                                .margin(0, 4, 4, 4)
-                                                .size(20)
-                                                .value(new BoolValue.Dynamic(this::isBlackList, this::setBlackList))
-                                                .tooltip(ttip -> ttip.add(
-                                                        IKey.dynamic(
-                                                                () -> Component.translatable("cover.filter.blacklist." +
-                                                                        (isBlackList ? "enabled" : "disabled")))))
-                                                .stateOverlay(GTGuiTextures.BUTTON_BLACKLIST))
-                                        .child(new ToggleButton()
-                                                .margin(0, 4, 4, 4)
-                                                .size(20)
-                                                .value(new BoolValue.Dynamic(this::isIgnoreNbt, this::setIgnoreNbt))
-                                                .tooltip(ttip -> ttip.add(
-                                                        IKey.dynamic(() -> Component
-                                                                .translatable("cover.item_filter.ignore_nbt." +
-                                                                        (ignoreNbt ? "enabled" : "disabled")))))
-                                                .stateOverlay(GTGuiTextures.BUTTON_IGNORE_NBT)))));
-    }
-
-    // public WidgetGroup openConfigurator(int x, int y) {
-    // WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-    // for (int i = 0; i < 3; i++) {
-    // for (int j = 0; j < 3; j++) {
-    // final int index = i * 3 + j;
-    //
-    // var handler = new CustomItemStackHandler(matches[index]);
-    //
-    // var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
-    //
-    // @Override
-    // public void updateScreen() {
-    // super.updateScreen();
-    // setMaxStackSize(maxStackSize);
-    // }
-    //
-    // @Override
-    // public void detectAndSendChanges() {
-    // super.detectAndSendChanges();
-    // setMaxStackSize(maxStackSize);
-    // }
-    // };
-    //
-    // slot.setChangeListener(() -> {
-    // matches[index] = handler.getStackInSlot(0);
-    // onUpdated.accept(this);
-    // }).setBackground(GuiTextures.SLOT);
-    //
-    // group.addWidget(slot);
-    // }
-    // }
-    // group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-    // GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-    // group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-    // GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-    // return group;
-    // }
 
     @Override
     public boolean test(ItemStack itemStack) {

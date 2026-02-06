@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
@@ -17,8 +18,11 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -33,6 +37,7 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -49,6 +54,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -438,9 +444,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = GTGuis.createPanel(this, 176, 192 + 18);
 
-        return panel.child(IMuiCover.createTitleRow(this.self().getAttachItem()))
-                .child(createCoverUI(data, syncManager, settings))
-                .bindPlayerInventory();
+        panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+
+        return panel.child(createCoverUI(data, syncManager, settings))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
 
         // return IMuiCover.super.buildUI(data, syncManager, settings);
     }
@@ -448,11 +455,11 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()
-                .top(24).margin(7, 0)
+                .top(7).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
 
-        EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(
-                ManualIOMode.class, this::getManualIOMode, this::setManualIOMode);
+        EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getManualIOMode, this::setManualIOMode);
 
         EnumSyncValue<DistributionMode> distMode = new EnumSyncValue<>(DistributionMode.class,
                 this::getDistributionMode, this::setDistributionMode);
@@ -505,48 +512,38 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
         if (createFilterRow()) {
             var filterSlot = filterHandler.getFilterSlot();
+            // TODO get the panel to use the right sync handler when swapping from one item filter to the next
+            var panelHandler = syncManager.syncedPanel("filterPanel", true,
+                    (sm, sh) ->
+                            ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(sm));
 
-            var filterPanelHandler = syncManager.panel("filter_panel",
-                    (psm, ph) -> ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0))
-                            .getPopupPanel(syncManager),
-                    true);
+            DynamicSyncHandler filterButton = new DynamicSyncHandler()
+                    .widgetProvider((sm, buf) -> {
+                        ItemStack stack = buf.readItem();
+                        if (stack.isEmpty()) return new EmptyWidget();
+                        stack = filterSlot.getStackInSlot(0);
+                        ItemFilter filter = ItemFilter.loadFilter(stack);
 
-            column.child(new Row()
-                    .child(new ItemSlot()
-                            .slot(new ModularSlot(filterSlot, 0).changeListener((newStack, amount, client, init) -> {
-                                if (newStack.isEmpty() ||
-                                        newStack.equals(filterHandler.getFilterSlot().getStackInSlot(0))) {
-                                    filterPanelHandler.closePanel();
-                                }
-                            })).marginRight(4))
-                    .child(new Row()
-                            .coverChildrenWidth()
-                            .childPadding(3)
-                            .child(new ButtonWidget<>()
-                                    .overlay(new DynamicDrawable(
-                                            () -> new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0)))
-                                            .asIcon().center().size(14))
-                                    .tooltip(t -> t.addLine("Configure Filter"))
-                                    .onMousePressed((mouseX, mouseY, button) -> {
-                                        if (!ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0))
-                                                .getPopupPanel(syncManager).isOpen()) {
-                                            filterPanelHandler.openPanel();
-                                        }
-                                        return true;
-                                    }))
-                            .child(IKey.dynamic(() -> filterHandler.getFilterSlot().getStackInSlot(0).getHoverName())
-                                    .asWidget())
-                            .setEnabledIf((flow) -> !filterHandler.getFilterSlot().getStackInSlot(0).isEmpty())
-                            .alignX(Alignment.CenterRight)));
+                        return new ButtonWidget<>()
+                                .onMousePressed((x, y, b) -> {
+                                    panelHandler.openPanel();
+                                    return true;
+                                });
+                    });
+
+            column.child(Flow.row()
+                            .coverChildrenHeight()
+                            .child(new ItemSlot()
+                                    .slot(new ModularSlot(filterSlot, 0)
+                                            .changeListener((stack, amount, client, init) -> {
+                                                filterButton.notifyUpdate(packet -> packet.writeItem(stack));
+                                            }))
+                                    .marginRight(4))
+                            .child(new DynamicSyncedWidget<>().syncHandler(filterButton))
+            );
         }
 
         if (createConveyorIORow()) {
-            /*
-             * column.child(new EnumRowBuilder<>(IO.class)
-             * .value(io)
-             * .overlay(16, GTGuiTextures.CONVEYOR_MODE_OVERLAY)
-             * .build());
-             */
         }
 
         if (createDistributionModeRow()) {

@@ -558,10 +558,10 @@ public class ClientScreenHandler {
         float scale = ConfigHolder.INSTANCE.dev.mui.scale;
         int shift = (int) (11 * scale + 0.5f);
         int lineY = screenH - shift - 2;
-        if (GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded() || GTCEu.Mods.isREILoaded()) lineY -= 12;
+        if (GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded() || GTCEu.Mods.isREILoaded()) lineY -= 20;
         GuiDraw.drawText(graphics, "Mouse Pos: " + mouseX + ", " + mouseY, 5, lineY, scale, outlineColor, true);
-        lineY -= shift + 2;
-        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 23, scale, outlineColor, true);
+        lineY -= shift;
+        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, lineY, scale, outlineColor, true);
         lineY -= shift;
         GuiDraw.drawText(graphics, "Theme ID: " + context.getTheme().getId(), 5, lineY, scale, outlineColor, true);
         LocatedWidget locatedHovered = muiScreen.getPanelManager().getTopWidgetLocated(true);

@@ -143,18 +143,7 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public void createPanel(PanelSyncManager syncManager) {}
-
-    @Override
     public ModularPanel getPanel(PanelSyncManager syncManager) {
-        return null;
-    }
-
-    @Override
-    public void createPopupPanel(PanelSyncManager syncManager) {}
-
-    @Override
-    public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
         return null;
     }
 

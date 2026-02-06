@@ -14,19 +14,10 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
     WidgetGroup openConfigurator(int x, int y);
 
-    void createPanel(PanelSyncManager syncManager);
-
-    void createPopupPanel(PanelSyncManager syncManager);
-
     /**
      * @return Filter panel when opened by itself (including the player inventory)
      */
     ModularPanel getPanel(PanelSyncManager syncManager);
-
-    /**
-     * @return Filter panel when opened in another panel(eg a conveyor)
-     */
-    ModularPanel getPopupPanel(PanelSyncManager syncManager);
 
     CompoundTag saveFilter();
 
