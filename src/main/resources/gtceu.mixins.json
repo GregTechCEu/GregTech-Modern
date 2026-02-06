@@ -71,6 +71,7 @@
         "client.AbstractContainerMenuAccessor",
         "client.ItemEntityMixin",
         "client.SlotAccessor",
+        "dev.test.GameTestRegistryMixin",
         "emi.EmiRecipeFillerMixin",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
@@ -84,8 +85,7 @@
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",
-        "rei.RecipeFinderMixin",
-        "top.ConfigMixin"
+        "rei.RecipeFinderMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

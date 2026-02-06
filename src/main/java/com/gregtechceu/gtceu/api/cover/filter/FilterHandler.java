@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -131,6 +131,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         }
 
         return this.filterSlot;
+    }
+
+    public void setFilterItem(ItemStack item) {
+        getFilterSlot().setStackInSlot(0, item);
+        updateFilter();
     }
 
     private void updateFilter() {

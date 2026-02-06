@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
@@ -7,14 +8,14 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
@@ -48,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight, ICopyable {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);

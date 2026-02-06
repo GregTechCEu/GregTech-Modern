@@ -20,6 +20,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -28,8 +30,6 @@ import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -334,6 +334,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(waterTank.getStorages()[0]))
                         .size(14, 54)
+                        .alwaysShowFull(true)
                         .displayAmount(false))
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(steamTank.getStorages()[0])

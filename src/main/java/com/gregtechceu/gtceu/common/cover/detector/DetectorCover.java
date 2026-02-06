@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -95,5 +97,17 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     @Override
     public boolean canPipePassThrough() {
         return false;
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putBoolean("inverted", isInverted);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setInverted(tag.getBoolean("inverted"));
+        super.pasteConfig(player, tag);
     }
 }

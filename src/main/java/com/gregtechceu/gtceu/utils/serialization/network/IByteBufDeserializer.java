@@ -16,4 +16,8 @@ public interface IByteBufDeserializer<T> {
      * @return the read object
      */
     T deserialize(FriendlyByteBuf buffer);
+
+    static <T> IByteBufDeserializer<T> wrapNullSafe(IByteBufDeserializer<T> deserializer) {
+        return buffer -> buffer.readBoolean() ? null : deserializer.deserialize(buffer);
+    }
 }

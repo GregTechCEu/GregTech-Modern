@@ -15,10 +15,10 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

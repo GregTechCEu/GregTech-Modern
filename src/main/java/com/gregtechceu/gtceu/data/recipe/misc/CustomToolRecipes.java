@@ -88,11 +88,15 @@ public final class CustomToolRecipes {
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_EV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_IV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadChainsaw, GTToolType.CHAINSAW_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadChainsaw, GTToolType.CHAINSAW_HV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadChainsaw, GTToolType.CHAINSAW_IV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_LV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_HV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_IV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, GTToolType.BUZZSAW);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_HV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_IV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_LV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_HV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_IV);

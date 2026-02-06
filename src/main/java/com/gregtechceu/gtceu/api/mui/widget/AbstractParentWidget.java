@@ -60,7 +60,7 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
                 IDrawable.isVisible(getHoverOverlay()) ||
                 getTooltip() != null)
             return true;
-        WidgetThemeEntry<?> widgetTheme = getWidgetTheme(getContext().getTheme());
+        WidgetThemeEntry<?> widgetTheme = getWidgetTheme(getPanel().getTheme());
         if (getBackground() == null && IDrawable.isVisible(widgetTheme.getTheme().getBackground())) return true;
         return getHoverBackground() == null && IDrawable.isVisible(widgetTheme.getHoverTheme().getBackground());
     }
