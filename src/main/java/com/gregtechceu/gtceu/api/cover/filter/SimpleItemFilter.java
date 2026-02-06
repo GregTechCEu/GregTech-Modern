@@ -1,22 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -30,7 +21,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -132,8 +122,8 @@ public class SimpleItemFilter implements ItemFilter {
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
                                 .changeListener((stack, amount, client, init) -> {
-                                handler.setStackInSlot(i, stack);
-                        }).ignoreMaxStackSize(true).accessibility(true, false))));
+                                    handler.setStackInSlot(i, stack);
+                                }).ignoreMaxStackSize(true).accessibility(true, false))));
 
         return new Dialog<>("simple_item_filter")
                 .setDisablePanelsBelow(false)
@@ -143,8 +133,7 @@ public class SimpleItemFilter implements ItemFilter {
                 .child(Flow.row()
                         .top(10)
                         .coverChildrenHeight()
-                        .child(filterGrid.horizontalCenter())
-                )
+                        .child(filterGrid.horizontalCenter()))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 

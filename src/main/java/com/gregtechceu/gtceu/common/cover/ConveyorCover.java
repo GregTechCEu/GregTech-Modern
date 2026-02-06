@@ -9,10 +9,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -24,7 +21,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
@@ -46,7 +42,6 @@ import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -514,8 +509,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             var filterSlot = filterHandler.getFilterSlot();
             // TODO get the panel to use the right sync handler when swapping from one item filter to the next
             var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                    (sm, sh) ->
-                            ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(sm));
+                    (sm, sh) -> ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(sm));
 
             DynamicSyncHandler filterButton = new DynamicSyncHandler()
                     .widgetProvider((sm, buf) -> {
@@ -532,19 +526,17 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                     });
 
             column.child(Flow.row()
-                            .coverChildrenHeight()
-                            .child(new ItemSlot()
-                                    .slot(new ModularSlot(filterSlot, 0)
-                                            .changeListener((stack, amount, client, init) -> {
-                                                filterButton.notifyUpdate(packet -> packet.writeItem(stack));
-                                            }))
-                                    .marginRight(4))
-                            .child(new DynamicSyncedWidget<>().syncHandler(filterButton))
-            );
+                    .coverChildrenHeight()
+                    .child(new ItemSlot()
+                            .slot(new ModularSlot(filterSlot, 0)
+                                    .changeListener((stack, amount, client, init) -> {
+                                        filterButton.notifyUpdate(packet -> packet.writeItem(stack));
+                                    }))
+                            .marginRight(4))
+                    .child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
         }
 
-        if (createConveyorIORow()) {
-        }
+        if (createConveyorIORow()) {}
 
         if (createDistributionModeRow()) {
             column.child(new EnumRowBuilder<>(DistributionMode.class)

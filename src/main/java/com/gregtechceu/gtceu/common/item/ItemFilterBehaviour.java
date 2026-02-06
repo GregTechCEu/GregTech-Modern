@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.mui.factory.UIFactories;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
