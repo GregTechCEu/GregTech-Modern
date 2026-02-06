@@ -40,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,8 +214,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine, groups.indexOf(group));
-        List<Boolean> moduleChanged = new ArrayList<>();
-        moduleChanged.add(false);
+        MutableBoolean moduleChanged = new MutableBoolean(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
@@ -234,25 +234,25 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
                                                     if (!amount && !init)
-                                                        moduleChanged.set(0, true);
+                                                        moduleChanged.setTrue();
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .background(
-                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                new DynamicDrawable(() -> moduleChanged.getValue() ?
                                                         GTGuiTextures.MC_BUTTON_DISABLED :
                                                         GTGuiTextures.MC_BUTTON),
                                                 GTGuiTextures.EDIT)
                                         .hoverBackground(
-                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                new DynamicDrawable(() -> moduleChanged.getValue() ?
                                                         GTGuiTextures.MC_BUTTON_DISABLED :
                                                         GTGuiTextures.MC_BUTTON_HOVERED),
                                                 GTGuiTextures.EDIT)
                                         .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
-                                        .addTooltipLine(IKey.lang(() -> moduleChanged.get(0) ?
+                                        .addTooltipLine(IKey.lang(() -> moduleChanged.getValue() ?
                                                 "gtceu.gui.central_monitor.module_editor_disabled" :
                                                 "gtceu.gui.central_monitor.module_editor_button"))
                                         .onMousePressed((mouseX, mouseY, button) -> {
-                                            if (moduleEditor != null && !moduleChanged.get(0)) moduleEditor.openPanel();
+                                            if (moduleEditor != null && !moduleChanged.getValue()) moduleEditor.openPanel();
                                             return true;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
