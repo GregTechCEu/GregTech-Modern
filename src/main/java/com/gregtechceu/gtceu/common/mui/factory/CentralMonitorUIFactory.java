@@ -252,7 +252,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                 "gtceu.gui.central_monitor.module_editor_disabled" :
                                                 "gtceu.gui.central_monitor.module_editor_button"))
                                         .onMousePressed((mouseX, mouseY, button) -> {
-                                            if (moduleEditor != null && !moduleChanged.getValue()) moduleEditor.openPanel();
+                                            if (moduleEditor != null && !moduleChanged.getValue())
+                                                moduleEditor.openPanel();
                                             return true;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
