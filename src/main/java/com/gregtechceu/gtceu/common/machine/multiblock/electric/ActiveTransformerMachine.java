@@ -14,13 +14,13 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
@@ -150,7 +150,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public void onStructureInvalid() {
         if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
                 !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-            ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), 6f + getTier());
+            GTUtil.doExplosion(getLevel(), getBlockPos(), 6f + getTier());
         }
         super.onStructureInvalid();
         this.powerOutput = new EnergyContainerList(new ArrayList<>());

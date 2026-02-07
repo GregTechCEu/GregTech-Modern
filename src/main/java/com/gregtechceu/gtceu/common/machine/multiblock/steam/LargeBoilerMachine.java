@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -155,15 +155,15 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
 
                 // check explosion
                 if (drained < maxDrain) {
-                    ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), 2f);
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2f);
                     var center = getBlockPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
-                        ExplodableMachineTrait.doExplosion(getLevel(), center, 2f);
+                        GTUtil.doExplosion(getLevel(), center, 2f);
                     }
                     for (Direction x : Direction.Plane.HORIZONTAL) {
                         for (Direction y : Direction.Plane.HORIZONTAL) {
                             if (GTValues.RNG.nextInt(100) > 80) {
-                                ExplodableMachineTrait.doExplosion(getLevel(), center.relative(x).relative(y), 2f);
+                                GTUtil.doExplosion(getLevel(), center.relative(x).relative(y), 2f);
                             }
                         }
                     }

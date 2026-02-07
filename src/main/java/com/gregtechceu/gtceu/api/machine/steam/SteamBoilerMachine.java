@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -23,6 +22,7 @@ import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -194,7 +194,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
-                    ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), 2.0f);
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2.0f);
                 } else this.hasNoWater = !hasDrainedWater;
                 if (filledSteam == 0 && hasDrainedWater && getLevel() instanceof ServerLevel serverLevel) {
                     final float x = getBlockPos().getX() + 0.5F;

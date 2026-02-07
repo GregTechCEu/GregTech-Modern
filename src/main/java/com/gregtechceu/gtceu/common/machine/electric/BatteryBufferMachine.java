@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -290,7 +289,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 
