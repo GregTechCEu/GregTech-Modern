@@ -52,7 +52,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
@@ -100,8 +99,6 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {

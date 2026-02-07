@@ -5,19 +5,22 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class ExplodableMachineTrait extends MachineTrait {
 
-    public static final MachineTraitType<ExplodableMachineTrait> TYPE = new MachineTraitType<>(ExplodableMachineTrait.class);
+    public static final MachineTraitType<ExplodableMachineTrait> TYPE = new MachineTraitType<>(
+            ExplodableMachineTrait.class);
 
     private @Nullable TickableSubscription explosionSub = null;
 
@@ -28,7 +31,8 @@ public class ExplodableMachineTrait extends MachineTrait {
     @Setter
     private Supplier<Boolean> explosionPredicate;
 
-    public ExplodableMachineTrait(MetaMachine machine, float explosionPower, float fireChance, Supplier<Boolean> explosionPredicate) {
+    public ExplodableMachineTrait(MetaMachine machine, float explosionPower, float fireChance,
+                                  Supplier<Boolean> explosionPredicate) {
         super(machine);
         shouldExplodeInWeatherAndWater = true;
         this.explosionPredicate = explosionPredicate;
@@ -66,7 +70,8 @@ public class ExplodableMachineTrait extends MachineTrait {
     }
 
     private void updateSubscription() {
-        if (!isRemote() && shouldExplodeInWeatherAndWater && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion) {
+        if (!isRemote() && shouldExplodeInWeatherAndWater &&
+                ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion) {
             explosionSub = subscribeServerTick(explosionSub, this::checkExplosion);
         } else {
             if (explosionSub != null) explosionSub.unsubscribe();

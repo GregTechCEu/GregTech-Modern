@@ -14,13 +14,11 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
-import lombok.Getter;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
-import java.util.function.Function;
+import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Function;
 
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine {
 
@@ -34,7 +32,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
                                Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
         super(info, tier);
         energyContainer = energyContainerSupplier.apply(this);
-        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
+        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0);
     }
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
@@ -48,7 +47,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             energyContainer = NotifiableEnergyContainer.receiverContainer(this,
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
         }
-        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
+        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0);
     }
 
     //////////////////////////////////////

@@ -9,12 +9,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
@@ -22,6 +26,7 @@ import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -44,7 +49,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -100,14 +104,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         super.onStructureFormed();
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> coolantContainers = new ArrayList<>();
-        List<IHPCAComponentHatch> componentHatches = new ArrayList<>();
+        List<HPCAComponentTrait> componentTraits = new ArrayList<>();
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (part instanceof IHPCAComponentHatch componentHatch) {
-                componentHatches.add(componentHatch);
-            }
+
+            componentTraits.addAll(part.self().getTraitHolder().getTraits(HPCAComponentTrait.TYPE));
+
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
@@ -128,7 +132,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
         this.coolantHandler = new FluidHandlerList(coolantContainers);
-        this.hpcaHandler.onStructureForm(componentHatches);
+        this.hpcaHandler.onStructureForm(componentTraits);
 
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
@@ -214,9 +218,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            if (part instanceof IHPCAComponentHatch hpcaPart) {
-                hpcaPart.setActive(active);
-            }
+            part.self().getTraitHolder().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
         }
     }
 
@@ -385,9 +387,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         private final HPCAMachine controller;
 
         // structure info
-        private final List<IHPCAComponentHatch> components = new ObjectArrayList<>();
-        private final Set<IHPCACoolantProvider> coolantProviders = new ObjectOpenHashSet<>();
-        private final Set<IHPCAComputationProvider> computationProviders = new ObjectOpenHashSet<>();
+        private final List<HPCAComponentTrait> components = new ObjectArrayList<>();
+        private final Set<HPCACoolantProviderTrait> coolantProviders = new ObjectOpenHashSet<>();
+        private final Set<HPCAComputationProviderTrait> computationProviders = new ObjectOpenHashSet<>();
         private int numBridges;
 
         // transaction info
@@ -406,17 +408,17 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             this.controller = controller;
         }
 
-        public void onStructureForm(Collection<IHPCAComponentHatch> components) {
+        public void onStructureForm(Collection<HPCAComponentTrait> components) {
             reset();
             for (var component : components) {
                 this.components.add(component);
-                if (component instanceof IHPCACoolantProvider coolantProvider) {
+                if (component instanceof HPCACoolantProviderTrait coolantProvider) {
                     this.coolantProviders.add(coolantProvider);
                 }
-                if (component instanceof IHPCAComputationProvider computationProvider) {
+                if (component instanceof HPCAComputationProviderTrait computationProvider) {
                     this.computationProviders.add(computationProvider);
                 }
-                if (component.isBridge()) {
+                if (component.allowBridging()) {
                     this.numBridges++;
                 }
             }
@@ -536,7 +538,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             // 1% chance each tick to damage a component if running too hot
             if (GTValues.RNG.nextInt(200) == 0) {
                 // randomize which component is actually damaged
-                List<IHPCAComponentHatch> candidates = new ArrayList<>();
+                List<HPCAComponentTrait> candidates = new ArrayList<>();
                 for (var component : components) {
                     if (component.canBeDamaged()) {
                         candidates.add(component);
@@ -588,7 +590,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         public long getUpkeepEUt() {
             long upkeepEUt = 0;
             for (var component : components) {
-                upkeepEUt += component.getUpkeepEUt();
+                upkeepEUt += component.upkeepEUt();
             }
             return upkeepEUt;
         }
@@ -597,7 +599,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         public long getMaxEUt() {
             long maximumEUt = 0;
             for (var component : components) {
-                maximumEUt += component.getMaxEUt();
+                maximumEUt += component.maxEUt();
             }
             return maximumEUt;
         }
@@ -704,7 +706,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         public void addErrors(List<Component> textList) {
-            if (components.stream().anyMatch(IHPCAComponentHatch::isDamaged)) {
+            if (components.stream().anyMatch(HPCAComponentTrait::isDamaged)) {
                 textList.add(
                         Component.translatable("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED));
             }
@@ -714,7 +716,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             if (components.size() <= index) {
                 return GuiTextures.BLANK_TRANSPARENT;
             }
-            return components.get(index).getComponentIcon();
+            if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine)
+                return componentPartMachine.getComponentIcon();
+            return GuiTextures.BLANK_TRANSPARENT;
         }
 
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,
@@ -729,9 +733,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
-                        BlockEntity be = world.getBlockEntity(tempPos);
-                        if (be instanceof IHPCAComponentHatch hatch) {
-                            components.add(hatch);
+                        MetaMachine be = MetaMachine.getMachine(world, tempPos);
+                        if (be == null) continue;
+                        var trait = be.getTraitHolder().getTrait(HPCAComponentTrait.TYPE);
+                        if (trait != null) {
+                            components.add(trait);
                         }
                         // if here without a hatch, something went wrong, better to skip than add a null into the mix.
                     }

@@ -271,8 +271,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         long canAccept = getEnergyCapacity() - getEnergyStored();
         if (voltage > 0L && (side == null || inputsEnergy(side))) {
             if (voltage > getInputVoltage()) {
-                var explodable = machine.getTraitHolder().getTrait(ExplodableMachineTrait.TYPE);
-                if (explodable != null) explodable.doExplosion(GTUtil.getExplosionPower(voltage));
+                machine.getTraitHolder().getTraitOptional(ExplodableMachineTrait.TYPE)
+                        .ifPresent(t -> t.doExplosion(GTUtil.getExplosionPower(voltage)));
                 return Math.min(amperage, getInputAmperage() - amps);
             }
             if (canAccept >= voltage) {
