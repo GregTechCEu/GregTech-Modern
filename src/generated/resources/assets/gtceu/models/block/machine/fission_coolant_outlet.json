@@ -12,11 +12,11 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
           "overlay": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet_emissive",
-          "side": "gtceu:block/casings/voltage/ulv/side",
-          "top": "gtceu:block/casings/voltage/ulv/top"
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
         }
       }
     },
@@ -24,11 +24,11 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
           "overlay": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet_emissive",
-          "side": "gtceu:block/casings/voltage/ulv/side",
-          "top": "gtceu:block/casings/voltage/ulv/top"
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
         }
       }
     },
@@ -36,11 +36,11 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
           "overlay": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet_emissive",
-          "side": "gtceu:block/casings/voltage/ulv/side",
-          "top": "gtceu:block/casings/voltage/ulv/top"
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
         }
       }
     },
@@ -48,11 +48,11 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
           "overlay": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_coolant_outlet_emissive",
-          "side": "gtceu:block/casings/voltage/ulv/side",
-          "top": "gtceu:block/casings/voltage/ulv/top"
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
         }
       }
     }

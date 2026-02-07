@@ -979,11 +979,13 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
 
         // Fission Reactor parts
-        provider.add("gtceu.machine.fission_heat_exchanger.tooltip", "§7Rapidl y transfers heat to nearby reactor components");
+        provider.add("gtceu.machine.fission_heat_exchanger.tooltip",
+                "§7Rapidly transfers heat to nearby reactor components");
         provider.add("gtceu.machine.fission_neutron_reflector.tooltip",
                 "§7Reflects neutrons back into the reactor core, stabilizes heat!");
         provider.add("gtceu.machine.fission_moderator.tooltip", "§7Moderates neutron speed for sustained fission");
-        provider.add("gtceu.machine.fission_control_rod.tooltip", "§7Absorbs neutrons to regulate reactor output and raise heat");
+        provider.add("gtceu.machine.fission_control_rod.tooltip",
+                "§7Absorbs neutrons to regulate reactor output and raise heat");
         provider.add("gtceu.machine.fission_fuel_rod_port.tooltip",
                 "§7Fuel rod insertion port for the Fission Reactor");
         provider.add("gtceu.machine.fission_coolant_outlet.tooltip", "§7Heated coolant output for the Fission Reactor");
