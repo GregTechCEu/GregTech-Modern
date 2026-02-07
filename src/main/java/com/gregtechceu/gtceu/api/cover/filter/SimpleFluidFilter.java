@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
@@ -58,7 +59,12 @@ public class SimpleFluidFilter implements FluidFilter {
 
     protected SimpleFluidFilter() {
         for (int i=0;i<9; i++) {
+            int finalI = i;
             fluidStorageSlots[i] = new CustomFluidTank(64000);
+            fluidStorageSlots[i].setOnContentsChanged(() -> {
+                matches[finalI] = fluidStorageSlots[finalI].getFluid();
+                onUpdated.accept(this);
+            });
         }
         Arrays.fill(matches, FluidStack.EMPTY);
     }
@@ -75,6 +81,7 @@ public class SimpleFluidFilter implements FluidFilter {
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             handler.matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
+            handler.fluidStorageSlots[i].setFluid(handler.matches[i]);
         }
         return handler;
     }
@@ -117,12 +124,19 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
+
+
     @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
 
+        for (int i=0; i<9; i++) {
+            syncManager.syncValue("filter_slot_" + i,
+                    new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));
+        }
+
         Grid filterGrid = new Grid()
                 .coverChildren()
-                .mapTo(3, 9, i -> new FluidSlot().syncHandler(new FluidSlotSyncHandler(fluidStorageSlots[i]).phantom(true)));
+                .mapTo(3, 9, i -> new FluidSlot().syncHandler("filter_slot_" + i));
 
         return new Dialog<>("simple_fluid_filter")
                 .setDisablePanelsBelow(false)
