@@ -149,10 +149,14 @@ public class SimpleItemFilter implements ItemFilter {
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
-    private static class FilterItemStackHandler extends CustomItemStackHandler {
+    public static class FilterItemStackHandler extends CustomItemStackHandler {
 
-        private ItemStack[] matches;
-        private SimpleItemFilter filter;
+        private final ItemStack[] matches;
+        private final SimpleItemFilter filter;
+
+        public FilterItemStackHandler(SimpleItemFilter filter) {
+            this(filter.matches, filter);
+        }
 
         public FilterItemStackHandler(ItemStack[] matches, SimpleItemFilter simpleItemFilter) {
             super(matches.length);

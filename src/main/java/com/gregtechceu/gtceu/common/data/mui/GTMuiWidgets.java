@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -14,10 +16,14 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -27,13 +33,16 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
@@ -41,9 +50,7 @@ import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class GTMuiWidgets {
 
@@ -346,5 +353,104 @@ public class GTMuiWidgets {
 
     public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
         return new ParentWidget<>();
+    }
+
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler, Function<ItemStack, S> filterLoader, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var filterSlot = filterHandler.getFilterSlot();
+        // TODO get the panel to use the right sync handler when swapping from one item filter to the next
+        var panelHandler = syncManager.syncedPanel("filterPanel", true,
+                (sm, sh) -> filterLoader.apply(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
+
+        DynamicSyncHandler filterButton = new DynamicSyncHandler()
+                .widgetProvider((sm, buf) -> {
+                    ItemStack stack = buf.readItem();
+                    if (stack.isEmpty()) return new EmptyWidget();
+                    stack = filterSlot.getStackInSlot(0);
+                    S filter = filterLoader.apply(stack);
+
+                    return new ButtonWidget<>()
+                            .onMousePressed((x, y, b) -> {
+                                panelHandler.openPanel();
+                                return true;
+                            });
+                });
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(new ItemSlot()
+                        .slot(new ModularSlot(filterSlot, 0)
+                                .changeListener((stack, amount, client, init) -> {
+                                    filterButton.notifyUpdate(packet -> packet.writeItem(stack));
+                                }))
+                        .marginRight(4))
+                .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
+    }
+
+    private static int getIncrementValue(MouseData data) {
+        int adjust = 1;
+        if (data.shift()) adjust *= 4;
+        if (data.ctrl()) adjust *= 16;
+        if (data.alt()) adjust *= 64;
+        return adjust;
+    }
+
+    private static IKey createAdjustOverlay(boolean increment) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(increment ? '+' : '-');
+        builder.append(getIncrementValue(MouseData.create(-1)));
+
+        float scale = 1f;
+        if (builder.length() == 3) {
+            scale = 0.8f;
+        } else if (builder.length() == 4) {
+            scale = 0.6f;
+        } else if (builder.length() > 4) {
+            scale = 0.5f;
+        }
+        return IKey.str(builder.toString())
+                .color(Color.WHITE.main)
+                .scale(scale);
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, int minValue, int maxValue) {
+
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
+                syncValue::setStringValue);
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .marginBottom(2)
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .left(0).width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, minValue, maxValue);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
+                .child(new TextFieldWidget()
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(minValue, maxValue)
+                        .onMouseScrolled((mouseX, mouseY, delta) -> {
+                            int inc = (int) delta * getIncrementValue(MouseData.create(-1));
+                            int val = Mth.clamp(syncValue.getIntValue() + inc, minValue, maxValue);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .value(formattedValue)
+                        .background(GTGuiTextures.DISPLAY))
+                .child(new ButtonWidget<>()
+                        .right(0).width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, minValue, maxValue);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
     }
 }
