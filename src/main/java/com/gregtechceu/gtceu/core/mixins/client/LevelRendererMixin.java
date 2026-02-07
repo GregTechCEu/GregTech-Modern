@@ -19,7 +19,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -44,7 +43,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -177,26 +175,25 @@ public abstract class LevelRendererMixin {
         assert level != null;
         var rendererCfg = ConfigHolder.INSTANCE.client.renderer;
         int rgb = 0;
-        boolean doRenderColoredOutline = false;
+        boolean renderColoredOutline = false;
 
         // spotless:off
-        // if it's translucent and a material block, always do the colored outline
-        MaterialEntry materialEntry = gtceu$getTranslucentBlockMaterial(state, pos);
-        if (!materialEntry.isEmpty()) {
-            doRenderColoredOutline = true;
+        MaterialEntry materialEntry = ChemicalHelper.getMaterialEntry(state.getBlock());
+        if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
+            renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
             if (rendererCfg.coloredTieredMachineOutline) {
                 if (mbe.getMetaMachine() instanceof SteamMachine steam) {
-                    doRenderColoredOutline = true;
+                    renderColoredOutline = true;
                     rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
                 } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
-                    doRenderColoredOutline = true;
+                    renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
             }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
-            doRenderColoredOutline = true;
+            renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
@@ -205,48 +202,18 @@ public abstract class LevelRendererMixin {
                 rgb = materialPipe.material.getMaterialRGB();
             }
         }
-
-        VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));
         // spotless:on
-        if (doRenderColoredOutline) {
+        VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));
+
+        if (renderColoredOutline) {
             float red = FastColor.ARGB32.red(rgb) / 255f;
             float green = FastColor.ARGB32.green(rgb) / 255f;
             float blue = FastColor.ARGB32.blue(rgb) / 255f;
             renderShape(poseStack, consumer, blockShape,
                     pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
-                    red, green, blue, 1f);
+                    red, green, blue, 0.4f);
             return;
         }
-        BlockPos.MutableBlockPos mutable = pos.mutable();
-        for (BlockPos o : GTUtil.NON_CORNER_NEIGHBOURS) {
-            BlockPos offset = mutable.setWithOffset(pos, o);
-            if (!gtceu$getTranslucentBlockMaterial(level.getBlockState(offset), offset).isEmpty()) {
-                renderShape(poseStack, consumer, blockShape,
-                        pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
-                        0, 0, 0, 1f);
-                return;
-            }
-        }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);
-    }
-
-    @Unique
-    private @NotNull MaterialEntry gtceu$getTranslucentBlockMaterial(BlockState state, BlockPos pos) {
-        assert level != null;
-        // skip non-solid blocks from other mods (like vanilla ice blocks)
-        if (!state.isSolidRender(level, pos) && !(state.getBlock() instanceof MaterialBlock)) {
-            return MaterialEntry.NULL_ENTRY;
-        }
-
-        BakedModel blockModel = minecraft.getBlockRenderer().getBlockModel(state);
-        ModelData modelData = level.getModelDataManager().getAt(pos);
-        if (modelData == null) modelData = ModelData.EMPTY;
-        modelData = blockModel.getModelData(level, pos, state, modelData);
-
-        gtceu$modelRandom.setSeed(state.getSeed(pos));
-        if (blockModel.getRenderTypes(state, gtceu$modelRandom, modelData).contains(RenderType.translucent())) {
-            return ChemicalHelper.getMaterialEntry(state.getBlock());
-        }
-        return MaterialEntry.NULL_ENTRY;
     }
 }

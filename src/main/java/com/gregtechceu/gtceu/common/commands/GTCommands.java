@@ -293,7 +293,7 @@ public class GTCommands {
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
                                             GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {
-        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
+        Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
         var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
         int dumpedCount = 0;
         for (ResourceLocation id : registry.keys()) {

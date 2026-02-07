@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
@@ -1230,6 +1231,17 @@ public class TagPrefix {
         return generateBlock && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
                 hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
+    }
+
+    public MaterialIconType getMaterialIconType(Material material) {
+        // special case emissive ores
+        if (materialIconType == MaterialIconType.ore && material.hasProperty(PropertyKey.ORE)) {
+            OreProperty oreProp = material.getProperty(PropertyKey.ORE);
+            if (oreProp.isEmissive()) {
+                return MaterialIconType.oreEmissive;
+            }
+        }
+        return materialIconType;
     }
 
     public String getLowerCaseName() {

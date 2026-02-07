@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -28,13 +29,18 @@ public class StrictShapedRecipe extends ShapedRecipe {
 
     public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
+    @Getter
+    private final boolean matchSize;
+
     public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height,
-                              NonNullList<Ingredient> recipeItems, ItemStack result) {
+                              NonNullList<Ingredient> recipeItems, ItemStack result, boolean matchSize) {
         super(id, group, category, width, height, recipeItems, result);
+        this.matchSize = matchSize;
     }
 
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
+        if (matchSize && (inv.getWidth() != this.getWidth() || inv.getHeight() != this.getHeight())) return false;
         for (int i = 0; i <= inv.getWidth() - this.getWidth(); ++i) {
             for (int j = 0; j <= inv.getHeight() - this.getHeight(); ++j) {
                 if (this.matches(inv, i, j)) {
@@ -82,7 +88,9 @@ public class StrictShapedRecipe extends ShapedRecipe {
             int j = strings.length;
             NonNullList<Ingredient> nonNullList = ShapedRecipeAccessor.callDissolvePattern(strings, map, i, j);
             ItemStack itemStack = StrictShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
+            boolean matchSize = json.get("matchSize").getAsBoolean();
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack,
+                    matchSize);
         }
 
         @Override
@@ -94,7 +102,9 @@ public class StrictShapedRecipe extends ShapedRecipe {
             NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
             nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
             ItemStack itemStack = buffer.readItem();
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
+            boolean matchSize = buffer.readBoolean();
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack,
+                    matchSize);
         }
 
         @Override
@@ -107,6 +117,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
                 ingredient.toNetwork(buffer);
             }
             buffer.writeItem(((ShapedRecipeAccessor) recipe).getResult());
+            buffer.writeBoolean(recipe.matchSize);
         }
     }
 }

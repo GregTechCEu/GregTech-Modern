@@ -15,7 +15,6 @@ import java.util.Set;
 
 public class MaterialBlockRenderer {
 
-    public static final String LAYER_2_SUFFIX = "_layer2";
     private static final Set<MaterialBlockRenderer> MODELS = new HashSet<>();
 
     public static void create(Block block, MaterialIconType type, MaterialIconSet iconSet) {
@@ -25,12 +24,11 @@ public class MaterialBlockRenderer {
     public static void reinitModels() {
         for (MaterialBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = blockId.withPrefix("block/");
-            GTDynamicResourcePack.addBlockModel(blockId,
-                    new DelegatedModel(model.type.getBlockModelPath(model.iconSet, true)));
+            ResourceLocation modelId = model.type.getBlockModelPath(model.iconSet, true);
+
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
-                    new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
+                    new DelegatedModel(modelId));
         }
     }
 
