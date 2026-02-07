@@ -78,11 +78,6 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        return null;
-    }
-
-    @Override
     public void setOnUpdated(Consumer<S> onUpdated) {
         this.onUpdated = filter -> {
             this.itemWriter.accept(filter);

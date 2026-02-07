@@ -4,11 +4,23 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -102,51 +114,23 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        fluidStorageSlots = new CustomFluidTank[9];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
-
-                fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
-                fluidStorageSlots[index].setFluid(matches[index]);
-
-                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
-                        () -> fluidStorageSlots[index].getFluid(),
-                        (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
-
-                    @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setShowAmount(maxStackSize > 1L);
-                    }
-
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
-                        setShowAmount(maxStackSize > 1L);
-                    }
-                };
-
-                tank.setChangeListener(() -> {
-                    matches[index] = fluidStorageSlots[index].getFluidInTank(0);
-                    onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
-
-                group.addWidget(tank);
-            }
-        }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-        return group;
-    }
-
     @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return null;
+
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .mapTo(3, 9, i -> new FluidSlot().syncHandler(new FluidSlotSyncHandler(fluidStorageSlots[i]).phantom(true)));
+
+        return new Dialog<>("simple_fluid_filter")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(Flow.row()
+                        .top(10)
+                        .coverChildrenHeight()
+                        .child(filterGrid.horizontalCenter()))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     @Override

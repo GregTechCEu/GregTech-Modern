@@ -58,11 +58,6 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public WidgetGroup openConfigurator(int x, int y) {
-            throw new NotImplementedException("Not available for empty item filter");
-        }
-
-        @Override
         public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
             return null;
         }

@@ -110,11 +110,6 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        return null;
-    }
-
-    @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
