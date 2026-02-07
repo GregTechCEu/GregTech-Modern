@@ -8,21 +8,49 @@
     "side"
   ],
   "variants": {
-    "is_formed=false": {
+    "is_formed=false,is_painted=false": {
       "model": {
-        "parent": "gtceu:block/machine/part/fission_heat_exchanger",
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger_emissive",
           "side": "gtceu:block/casings/voltage/ulv/side",
           "top": "gtceu:block/casings/voltage/ulv/top"
         }
       }
     },
-    "is_formed=true": {
+    "is_formed=false,is_painted=true": {
       "model": {
-        "parent": "gtceu:block/machine/part/fission_heat_exchanger",
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger_emissive",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger_emissive",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fission_heat_exchanger_emissive",
           "side": "gtceu:block/casings/voltage/ulv/side",
           "top": "gtceu:block/casings/voltage/ulv/top"
         }

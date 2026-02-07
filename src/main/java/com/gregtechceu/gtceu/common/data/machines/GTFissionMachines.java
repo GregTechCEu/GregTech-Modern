@@ -174,7 +174,6 @@ public class GTFissionMachines {
             })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_reactor"),
                     GTCEu.id("block/multiblock/fission_reactor"))
-            .appearanceBlock(CASING_REACTOR_VESSEL)
             .register();
     // Spotless:on
     public static void init() {}
