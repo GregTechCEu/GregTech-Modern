@@ -158,12 +158,12 @@ public class GTGuiTextures {
     public static final UITexture[] BUTTON_POWER = slice("textures/gui/widget/button_power.png", 16, 32, 16, 16,
             ColorType.DEFAULT);
 
-    public static final UITexture[] BUTTON_BLACKLIST = slice("textures/gui/widget/button_blacklist.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_BLACKLIST = fullImage("textures/gui/widget/button_blacklist.png",
+            ColorType.DEFAULT);
     public static final UITexture[] BUTTON_IGNORE_DAMAGE = slice("textures/gui/widget/button_filter_damage.png",
             16, 32, 16, 16, ColorType.DEFAULT);
-    public static final UITexture[] BUTTON_IGNORE_NBT = slice("textures/gui/widget/button_filter_nbt.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_IGNORE_NBT = fullImage("textures/gui/widget/button_filter_nbt.png",
+            ColorType.DEFAULT);
 
     public static final UITexture[] BUTTON_CASE_SENSITIVE = slice(
             "textures/gui/widget/ore_filter/button_case_sensitive.png",
@@ -289,6 +289,8 @@ public class GTGuiTextures {
     public static final UITexture DUST_OVERLAY = fullImage("textures/gui/overlay/dust_overlay.png", ColorType.DEFAULT);
     public static final UITexture DUST_OVERLAY_BRONZE = fullImage("textures/gui/overlay/dust_overlay_bronze.png");
     public static final UITexture DUST_OVERLAY_STEEL = fullImage("textures/gui/overlay/dust_overlay_steel.png");
+    public static final UITexture PRIMITIVE_DUST_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_dust.png", ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY = fullImage("textures/gui/overlay/extractor_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY_BRONZE = fullImage(
@@ -306,6 +308,15 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture FURNACE_OVERLAY_BRONZE = fullImage("textures/gui/overlay/furnace_overlay_bronze.png");
     public static final UITexture FURNACE_OVERLAY_STEEL = fullImage("textures/gui/overlay/furnace_overlay_steel.png");
+    public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_furnace.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK_OVERLAY = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank_overlay.png",
+            ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY = fullImage("textures/gui/overlay/hammer_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY_BRONZE = fullImage("textures/gui/overlay/hammer_overlay_bronze.png");
@@ -323,6 +334,9 @@ public class GTGuiTextures {
     public static final UITexture IN_SLOT_OVERLAY_BRONZE = fullImage("textures/gui/overlay/in_slot_overlay_bronze.png");
     public static final UITexture IN_SLOT_OVERLAY_STEEL = fullImage("textures/gui/overlay/in_slot_overlay_steel.png");
     public static final UITexture INGOT_OVERLAY = fullImage("textures/gui/overlay/ingot_overlay.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_INGOT_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_ingot.png",
             ColorType.DEFAULT);
     public static final UITexture INT_CIRCUIT_OVERLAY = fullImage("textures/gui/overlay/int_circuit_overlay.png",
             ColorType.DEFAULT);
@@ -435,6 +449,8 @@ public class GTGuiTextures {
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR = progressBar(
+            "textures/gui/primitive/progress_bar_primitive_blast_furnace.png", ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW = progressBar("textures/gui/progress_bar/progress_bar_arrow.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW_BRONZE = progressBar(

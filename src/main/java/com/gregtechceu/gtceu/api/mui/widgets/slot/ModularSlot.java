@@ -64,6 +64,11 @@ public class ModularSlot extends SlotItemHandler {
         }
     }
 
+    public ModularSlot(IItemHandler itemHandler, int index, boolean phantom) {
+        super(itemHandler, index, Integer.MIN_VALUE, Integer.MIN_VALUE);
+        this.phantom = phantom;
+    }
+
     @ApiStatus.Internal
     public void initialize(ItemSlotSyncHandler syncManager, boolean phantom) {
         this.syncHandler = syncManager;

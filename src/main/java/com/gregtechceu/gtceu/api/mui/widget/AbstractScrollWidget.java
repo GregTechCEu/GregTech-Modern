@@ -29,6 +29,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     private final ScrollArea scroll = new ScrollArea();
     private boolean scrollXActive, scrollYActive;
+    private IGuiAction.MouseScroll customMouseScroll;
 
     public AbstractScrollWidget(@Nullable HorizontalScrollData x, @Nullable VerticalScrollData y) {
         super();
@@ -113,7 +114,15 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+        if (customMouseScroll != null) {
+            return customMouseScroll.scroll(mouseX, mouseY, delta);
+        }
         return this.scroll.mouseScroll(getContext());
+    }
+
+    public W onMouseScrolled(IGuiAction.MouseScroll mouseScroll) {
+        this.customMouseScroll = mouseScroll;
+        return getThis();
     }
 
     @Override
