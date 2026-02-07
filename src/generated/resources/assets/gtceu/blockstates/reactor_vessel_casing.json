@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtceu:block/reactor_vessel_casing"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/fission_fuel_rod_drain",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/fission_fuel_rod_drain",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/fission_fuel_rod_drain"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/fission_fuel_rod_drain",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/fission_fuel_rod_drain",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/fission_fuel_rod_drain",
+      "y": 270
+    }
+  }
+}

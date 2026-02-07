@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/fission_heat_exchanger",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/fission_heat_exchanger",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/fission_heat_exchanger"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/fission_heat_exchanger",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/fission_heat_exchanger",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/fission_heat_exchanger",
+      "y": 270
+    }
+  }
+}
