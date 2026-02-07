@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
@@ -138,6 +140,20 @@ public class SimpleFluidFilter implements FluidFilter {
                 .coverChildren()
                 .mapTo(3, 9, i -> new FluidSlot().syncHandler("filter_slot_" + i));
 
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList);
+        syncManager.syncValue("blacklist", blacklist);
+
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt);
+        syncManager.syncValue("ignoreNBT", ignoreNBT);
+
+        Flow filterConfigButtons = Flow.col()
+                .coverChildren()
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
+
+
+
+
         return new Dialog<>("simple_fluid_filter")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)
@@ -146,7 +162,9 @@ public class SimpleFluidFilter implements FluidFilter {
                 .child(Flow.row()
                         .top(10)
                         .coverChildrenHeight()
-                        .child(filterGrid.horizontalCenter()))
+                        .child(filterGrid.horizontalCenter())
+                        .child(filterConfigButtons.marginLeft(118))
+                )
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 

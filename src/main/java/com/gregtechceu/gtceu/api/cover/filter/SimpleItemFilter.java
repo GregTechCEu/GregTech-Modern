@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -122,6 +124,17 @@ public class SimpleItemFilter implements ItemFilter {
                                     handler.setStackInSlot(i, stack);
                                 }).ignoreMaxStackSize(true).accessibility(true, false))));
 
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList);
+        syncManager.syncValue("blacklist", blacklist);
+
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt);
+        syncManager.syncValue("ignoreNBT", ignoreNBT);
+
+        Flow filterConfigButtons = Flow.col()
+                .coverChildren()
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
+
         return new Dialog<>("simple_item_filter")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)
@@ -130,7 +143,9 @@ public class SimpleItemFilter implements ItemFilter {
                 .child(Flow.row()
                         .top(10)
                         .coverChildrenHeight()
-                        .child(filterGrid.horizontalCenter()))
+                        .child(filterGrid.horizontalCenter())
+                        .child(filterConfigButtons.marginLeft(118))
+                )
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
