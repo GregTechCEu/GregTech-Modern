@@ -239,6 +239,12 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
     public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation",
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
+
+    // Fission Reactor
+    public static final BlockEntry<Block> CASING_REACTOR_VESSEL = createCasingBlock("reactor_vessel_casing",
+            GTCEu.id("block/casings/solid/machine_casing_reactor_vessel"));
+    public static final BlockEntry<Block> CASING_REACTOR = createCasingBlock("reactor_casing",
+            GTCEu.id("block/casings/solid/machine_casing_reactor"));
     public static final BlockEntry<GlassBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
