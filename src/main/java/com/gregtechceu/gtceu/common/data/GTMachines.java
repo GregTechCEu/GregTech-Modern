@@ -1165,6 +1165,7 @@ public class GTMachines {
         GTMultiMachines.init();
         GCYMMachines.init();
         GTResearchMachines.init();
+        GTFissionMachines.init();
 
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
