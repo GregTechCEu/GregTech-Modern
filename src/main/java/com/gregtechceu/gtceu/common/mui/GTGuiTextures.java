@@ -184,6 +184,8 @@ public class GTGuiTextures {
     // public static final IDrawable PLUS = IKey.str("+").asIcon().marginLeft(1);
     // public static final IDrawable MINUS = IKey.str("-").asIcon().marginLeft(1);
 
+    public static final UITexture INFO = fullImage("textures/gui/widget/information.png");
+
     public static final UITexture[] MANUAL_IO_OVERLAY_IN = slice("textures/gui/overlay/manual_io_overlay_in.png",
             18, 18 * 3, 18, 18, ColorType.DEFAULT);
     public static final UITexture[] MANUAL_IO_OVERLAY_OUT = slice("textures/gui/overlay/manual_io_overlay_out.png",
