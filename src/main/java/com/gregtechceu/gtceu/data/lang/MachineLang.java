@@ -978,6 +978,31 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
 
+        // Fission Reactor parts
+        provider.add("gtceu.machine.fission_heat_exchanger.tooltip", "§7Rapidl y transfers heat to nearby reactor components");
+        provider.add("gtceu.machine.fission_neutron_reflector.tooltip",
+                "§7Reflects neutrons back into the reactor core, stabilizes heat!");
+        provider.add("gtceu.machine.fission_moderator.tooltip", "§7Moderates neutron speed for sustained fission");
+        provider.add("gtceu.machine.fission_control_rod.tooltip", "§7Absorbs neutrons to regulate reactor output and raise heat");
+        provider.add("gtceu.machine.fission_fuel_rod_port.tooltip",
+                "§7Fuel rod insertion port for the Fission Reactor");
+        provider.add("gtceu.machine.fission_coolant_outlet.tooltip", "§7Heated coolant output for the Fission Reactor");
+        provider.add("gtceu.machine.fission_fuel_rod_drain.tooltip",
+                "§7Spent fuel rod extraction for the Fission Reactor");
+        provider.add("gtceu.machine.fission_coolant_inlet.tooltip", "§7Coolant input for the Fission Reactor");
+
+        // Fission Reactor multiblock UI
+        provider.add("gtceu.multiblock.fission.status", "Status: %s");
+        provider.add("gtceu.multiblock.fission.vessel_heat", "Vessel Heat: %s / %s");
+        provider.add("gtceu.multiblock.fission.height", "Reactor Height: %s");
+        provider.add("gtceu.multiblock.fission.overheating", "§cOVERHEATING!");
+        provider.add("gtceu.multiblock.fission.start", "Start Reactor");
+        provider.add("gtceu.multiblock.fission.shutdown", "Shutdown Reactor");
+
+        // Fission part heat readout
+        provider.add("gtceu.multiblock.fission.part.heat", "Column Heat: %s / %s (%s)");
+        provider.add("gtceu.multiblock.fission.part.not_formed", "Not part of a formed reactor");
+
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");
         provider.add("gtceu.creative.chest.tpc", "Ticks per Cycle");

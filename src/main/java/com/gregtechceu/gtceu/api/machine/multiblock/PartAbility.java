@@ -53,6 +53,15 @@ public class PartAbility {
     public static final PartAbility HPCA_COMPONENT = new PartAbility("hpca_component");
     public static final PartAbility OBJECT_HOLDER = new PartAbility("object_holder");
 
+    public static final PartAbility FISSION_FUEL_PORT = new PartAbility("fission_fuel_port");
+    public static final PartAbility FISSION_FUEL_DRAIN = new PartAbility("fission_fuel_drain");
+    public static final PartAbility FISSION_COOLANT_INLET = new PartAbility("fission_coolant_inlet");
+    public static final PartAbility FISSION_COOLANT_OUTLET = new PartAbility("fission_coolant_outlet");
+    public static final PartAbility FISSION_HEAT_EXCHANGER = new PartAbility("fission_heat_exchanger");
+    public static final PartAbility FISSION_NEUTRON_REFLECTOR = new PartAbility("fission_neutron_reflector");
+    public static final PartAbility FISSION_MODERATOR = new PartAbility("fission_moderator");
+    public static final PartAbility FISSION_CONTROL_ROD = new PartAbility("fission_control_rod");
+
     /**
      * tier -> available blocks
      */

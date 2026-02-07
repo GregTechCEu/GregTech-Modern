@@ -13,6 +13,8 @@
     "gtceu:inert_machine_casing",
     "gtceu:sturdy_machine_casing",
     "gtceu:palladium_substation",
+    "gtceu:reactor_vessel_casing",
+    "gtceu:reactor_casing",
     "gtceu:nonconducting_casing",
     "gtceu:vibration_safe_casing",
     "gtceu:watertight_casing",
