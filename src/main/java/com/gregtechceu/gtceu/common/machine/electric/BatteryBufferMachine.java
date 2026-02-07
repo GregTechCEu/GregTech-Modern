@@ -290,7 +290,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    ExplodableMachineTrait.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 

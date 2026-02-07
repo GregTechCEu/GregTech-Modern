@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -66,7 +68,8 @@ public class ExplodableMachineTrait extends MachineTrait {
     }
 
     private void updateSubscription() {
-        if (!isRemote() && shouldExplodeInWeatherAndWater && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion) {
+        if (!isRemote() && shouldExplodeInWeatherAndWater &&
+                ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion) {
             explosionSub = subscribeServerTick(explosionSub, this::checkExplosion);
         } else {
             if (explosionSub != null) explosionSub.unsubscribe();
@@ -100,37 +103,15 @@ public class ExplodableMachineTrait extends MachineTrait {
     }
 
     public void doExplosion() {
-        doExplosion(getLevel(), getBlockPos(), explosionPower);
+        GTUtil.doExplosion(getLevel(), getBlockPos(), explosionPower);
     }
 
     public void doExplosion(float power) {
-        doExplosion(getLevel(), getBlockPos(), power);
-    }
-
-    public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
-        level.removeBlock(pos, false);
-        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
-                        Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+        GTUtil.doExplosion(getLevel(), getBlockPos(), power);
     }
 
     public void setOnFire() {
-        setOnFire(getLevel(), getBlockPos(), fireChance);
+        GTUtil.setOnFire(getLevel(), getBlockPos(), fireChance);
     }
 
-    private static void setOnFire(Level level, BlockPos pos, double additionalFireChance) {
-        boolean isFirstFireSpawned = false;
-        for (Direction side : GTUtil.DIRECTIONS) {
-            if (level.isEmptyBlock(pos.relative(side))) {
-                if (!isFirstFireSpawned) {
-                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
-                    if (!level.isEmptyBlock(pos.relative(side))) {
-                        isFirstFireSpawned = true;
-                    }
-                } else if (additionalFireChance >= GTValues.RNG.nextDouble() * 100) {
-                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
-                }
-            }
-        }
-    }
 }
