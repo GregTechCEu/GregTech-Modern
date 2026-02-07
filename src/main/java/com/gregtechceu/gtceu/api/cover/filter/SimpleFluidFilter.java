@@ -54,9 +54,12 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected int maxStackSize = 1;
 
-    private CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
+    private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
     protected SimpleFluidFilter() {
+        for (int i=0;i<9; i++) {
+            fluidStorageSlots[i] = new CustomFluidTank(64000);
+        }
         Arrays.fill(matches, FluidStack.EMPTY);
     }
 
@@ -175,6 +178,12 @@ public class SimpleFluidFilter implements FluidFilter {
         for (FluidStack match : matches) {
             if (!match.isEmpty())
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
+        }
+    }
+
+    private static class FluidFilterTank extends CustomFluidTank {
+        public FluidFilterTank(int capacity) {
+            super(capacity);
         }
     }
 }
