@@ -404,7 +404,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when a machine is clicked.
+     * Called when a machine is right clicked.
      */
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
