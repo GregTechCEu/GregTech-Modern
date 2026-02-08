@@ -333,7 +333,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
         group.addWidget(filterHandler.createFilterSlotUI(-115 + (18 * rowSize) / 2, 35 + 11 * rowSize));
-        // group.addWidget(filterHandler.createFilterConfigUI(-100, 100, 156, 60));
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
