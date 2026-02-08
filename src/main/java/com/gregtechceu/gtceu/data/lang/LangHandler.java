@@ -1664,6 +1664,27 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.module",
+                "Renders the module in the specified slot onto the central monitor (does not work in a cover)",
+                "Usage:",
+                "  {module <slot> <x> <y>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.setImage",
+                "Sets the image URL in an image module in the specified slot",
+                "Usage:",
+                "  {setImage <slot> <url>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.rect",
+                "Draws a rectangle at the specified position with the specified coordinates and size",
+                "Usage:",
+                "  {rect <x> <y> <width> <height> <colorARGB>} -> empty string",
+                "  {rect 0.5 0.25 2 1 0xFFFFFFFF} -> draws a white rectangle at (0.5, 0.25) with the size (2, 1)");
+        multiLang(provider, "gtceu.placeholder_info.quad",
+                "Draws a quad (must specify parameters for all 4 vertices)",
+                "Usage:",
+                "  {quad <x1> <y1> <x2> <y2> <x3> <y3> <x4> <y4> <color1> <color2> <color3> <color4>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.item",
+                "Returns the amount and id of the item in a specified slot",
+                "Usage:",
+                "  {item <slot>} -> \"31 minecraft:diamond\" (for example)");
         multiLang(provider, "gtceu.placeholder_info.bufferText",
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",

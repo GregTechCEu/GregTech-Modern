@@ -201,6 +201,8 @@ public final class ToolRecipeHandler {
             GTCEu.LOGGER.warn("Did not find rod for " + material.getName() +
                     ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
         }
+
+        GTToolType.getTypes().forEach((s, gtToolType) -> addNetheriteToolRecipe(provider, gtToolType));
     }
 
     private static void processElectricTool(@NotNull Consumer<FinishedRecipe> provider, @NotNull ToolProperty property,
@@ -354,6 +356,11 @@ public final class ToolRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.getName()),
                     toolStack, recipe);
         }
+    }
+
+    public static void addNetheriteToolRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull GTToolType tool) {
+        VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite, GTMaterials.Diamond,
+                Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ChemicalHelper.get(ingot, GTMaterials.Netherite).getItem());
     }
 
     public static void addArmorRecipe(Consumer<FinishedRecipe> provider, @NotNull Material material,
