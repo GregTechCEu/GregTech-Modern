@@ -36,12 +36,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 public class MetaTileEntityMachineRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        ASSEMBLER_RECIPES.recipeBuilder("test_drum")
-                .inputItems(STEEL_DRUM, 2)
-                .outputItems(Items.DIRT, 3)
-                .duration((int) SECONDS * 3)
-                .EUt(400)
-                .save(provider);
 
         // Reservoir Hatch
         ASSEMBLER_RECIPES.recipeBuilder("reservoir_hatch")
