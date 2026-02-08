@@ -69,6 +69,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -249,7 +250,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
     }
 
-    private void onPatternChange(int index) {
+    @VisibleForTesting
+    public void onPatternChange(int index) {
         if (isRemote()) return;
 
         // remove old if applicable
