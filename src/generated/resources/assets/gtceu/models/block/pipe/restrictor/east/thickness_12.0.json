@@ -1,0 +1,33 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#restrictor"
+        },
+        "north": {
+          "texture": "#restrictor"
+        },
+        "south": {
+          "texture": "#restrictor"
+        },
+        "up": {
+          "texture": "#restrictor"
+        }
+      },
+      "from": [
+        14.002999,
+        1.997,
+        1.997
+      ],
+      "to": [
+        16,
+        14.002999,
+        14.002999
+      ]
+    }
+  ],
+  "textures": {
+    "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+  }
+}

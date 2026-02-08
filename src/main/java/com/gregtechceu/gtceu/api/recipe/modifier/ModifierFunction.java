@@ -108,11 +108,11 @@ public interface ModifierFunction {
         private ContentModifier outputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickInputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickOutputModifier = ContentModifier.IDENTITY;
-        private final List<RecipeCondition> addedConditions = new ArrayList<>();
+        private final List<RecipeCondition<?>> addedConditions = new ArrayList<>();
 
         public FunctionBuilder() {}
 
-        public FunctionBuilder conditions(RecipeCondition... conditions) {
+        public FunctionBuilder conditions(RecipeCondition<?>... conditions) {
             addedConditions.addAll(Arrays.asList(conditions));
             return this;
         }

@@ -13,12 +13,10 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +28,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
                                      IAutoPersistBlockEntity, IPaintable, IForgeBlockEntity {
-
-    ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
-    ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     default BlockEntity self() {
         return (BlockEntity) this;

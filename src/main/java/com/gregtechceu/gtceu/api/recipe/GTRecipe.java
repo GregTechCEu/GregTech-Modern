@@ -43,7 +43,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics;
     public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
 
-    public final List<RecipeCondition> conditions;
+    public final List<RecipeCondition<?>> conditions;
     // for KubeJS. actual type is List<IngredientAction>.
     // Must be List<?> to not cause crashes without KubeJS.
     public final List<?> ingredientActions;
@@ -71,7 +71,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition> conditions,
+                    List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
@@ -92,7 +92,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition> conditions,
+                    List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,

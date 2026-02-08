@@ -13,10 +13,18 @@ import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
+import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
@@ -27,17 +35,23 @@ import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
+import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.forge.ForgeCommonEventListener;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
 import net.minecraft.client.model.BoatModel;
@@ -49,6 +63,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -158,6 +173,50 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
+        event.register(PipeModelLoader.ID.getPath(), PipeModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
+        PipeModel.DYNAMIC_MODELS.clear();
+    }
+
+    @SubscribeEvent
+    public void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
+        // regenerate all pipe models in case their textures changed
+        // cables may do this, others too if something's removed
+        for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
+        }
+        for (var block : GTMaterialBlocks.FLUID_PIPE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
+        }
+        for (var block : GTMaterialBlocks.ITEM_PIPE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
+        }
+
+        MaterialBlockRenderer.reinitModels();
+        TagPrefixItemRenderer.reinitModels();
+        OreBlockRenderer.reinitModels();
+        ToolItemRenderer.reinitModels();
+        ArmorItemRenderer.reinitModels();
+        SurfaceRockRenderer.reinitModels();
+        GTModels.registerMaterialFluidModels();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void postRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
+        // do this last so addons can easily add new variants to the registered model set
+        PipeModel.initDynamicModels();
+
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            GregTechKubeJSPlugin.generateMachineBlockModels();
+        }
+        RuntimeBlockstateProvider.INSTANCE.run();
+        PipeModelBuilder.clearRestrictorModelCache();
     }
 }

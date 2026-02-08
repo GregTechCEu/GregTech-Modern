@@ -316,7 +316,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(machine, r -> matchRecipe(r).isSuccess());
+        return machine.getRecipeType().searchRecipe(machine, r -> true);
     }
 
     public void findAndHandleRecipe() {
@@ -343,6 +343,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
                 return;
+
+            if (!matchRecipe(match).isSuccess()) {
+                continue;
+            }
 
             // cache matching recipes.
             if (lastFailedMatches == null) {
