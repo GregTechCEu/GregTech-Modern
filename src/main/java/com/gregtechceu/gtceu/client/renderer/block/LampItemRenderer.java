@@ -16,15 +16,20 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
-
 /**
  * All this renderer does is refer rendering to the correct block model based on the lamp item's NBT.<br>
  * Without it, all item variants would look like the default 'lit, with bloom' one.
  */
 public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
 
-    public static final Supplier<LampItemRenderer> INSTANCE = LampItemRenderer::new;
+    private static LampItemRenderer INSTANCE = null;
+
+    public static LampItemRenderer getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LampItemRenderer();
+        }
+        return INSTANCE;
+    }
 
     protected final ItemRenderer itemRenderer;
     protected final BlockRenderDispatcher blockRenderer;
