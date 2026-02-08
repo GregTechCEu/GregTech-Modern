@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -144,8 +142,7 @@ public class SimpleItemFilter implements ItemFilter {
                         .top(10)
                         .coverChildrenHeight()
                         .child(filterGrid.horizontalCenter())
-                        .child(filterConfigButtons.marginLeft(118))
-                )
+                        .child(filterConfigButtons.marginLeft(118)))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 

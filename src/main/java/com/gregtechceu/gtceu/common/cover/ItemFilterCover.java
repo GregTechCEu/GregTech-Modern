@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -99,7 +98,6 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
         Flow column = Flow.column()
                 .top(7).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
@@ -112,7 +110,6 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
         syncManager.syncValue("filterMode", filterMode);
         syncManager.syncValue("ioMode", ioMode);
-
 
         var panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> itemFilter.getPanel(data, sm, settings));

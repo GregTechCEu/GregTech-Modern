@@ -12,12 +12,10 @@ import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -26,15 +24,14 @@ import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -168,7 +165,10 @@ public class SmartItemFilter implements ItemFilter {
         }
 
         public static UITexture[] getTextures() {
-            return Arrays.stream(VALUES).map(v -> UITexture.fullImage(GTCEu.MOD_ID, "textures/block/machines/" + v.localeName + "/overlay_front.png", ColorType.DEFAULT)).toArray(UITexture[]::new);
+            return Arrays.stream(VALUES)
+                    .map(v -> UITexture.fullImage(GTCEu.MOD_ID,
+                            "textures/block/machines/" + v.localeName + "/overlay_front.png", ColorType.DEFAULT))
+                    .toArray(UITexture[]::new);
         }
 
         @Override

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -192,7 +191,8 @@ public class RobotArmCover extends ConveyorCover {
                 .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
                 .build());
 
-        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, 1, getTransferMode().maxStackSize).setEnabledIf($ -> shouldShowStackSize()));
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, 1, getTransferMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;
     }

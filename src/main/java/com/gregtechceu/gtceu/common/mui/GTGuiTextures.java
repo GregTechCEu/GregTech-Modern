@@ -204,7 +204,8 @@ public class GTGuiTextures {
             "textures/gui/widget/button_distribution_mode.png",
             16, 48, 16, 16, ColorType.DEFAULT);
 
-    public static final UITexture[] VOIDING_MODES = {fullImage("textures/gui/icon/voiding_mode/void_any.png"), fullImage("textures/gui/icon/voiding_mode/void_overflow.png")};
+    public static final UITexture[] VOIDING_MODES = { fullImage("textures/gui/icon/voiding_mode/void_any.png"),
+            fullImage("textures/gui/icon/voiding_mode/void_overflow.png") };
 
     public static final UITexture BUTTON_VOID = fullImage("textures/gui/widget/button_void.png");
 

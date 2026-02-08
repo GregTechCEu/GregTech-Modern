@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -52,7 +51,7 @@ public class SimpleFluidFilter implements FluidFilter {
     private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
     protected SimpleFluidFilter() {
-        for (int i=0;i<9; i++) {
+        for (int i = 0; i < 9; i++) {
             int finalI = i;
             fluidStorageSlots[i] = new CustomFluidTank(64000);
             fluidStorageSlots[i].setOnContentsChanged(() -> {
@@ -118,12 +117,9 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
-
-
     @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-        for (int i=0; i<9; i++) {
+        for (int i = 0; i < 9; i++) {
             syncManager.syncValue("filter_slot_" + i,
                     new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));
         }
@@ -143,9 +139,6 @@ public class SimpleFluidFilter implements FluidFilter {
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
 
-
-
-
         return new Dialog<>("simple_fluid_filter")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)
@@ -155,8 +148,7 @@ public class SimpleFluidFilter implements FluidFilter {
                         .top(10)
                         .coverChildrenHeight()
                         .child(filterGrid.horizontalCenter())
-                        .child(filterConfigButtons.marginLeft(118))
-                )
+                        .child(filterConfigButtons.marginLeft(118)))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
@@ -204,5 +196,4 @@ public class SimpleFluidFilter implements FluidFilter {
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
     }
-
 }

@@ -355,7 +355,11 @@ public class GTMuiWidgets {
         return new ParentWidget<>();
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler, Function<ItemStack, S> filterLoader, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
+                                                                              Function<ItemStack, S> filterLoader,
+                                                                              SidedPosGuiData data,
+                                                                              PanelSyncManager syncManager,
+                                                                              UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
         // TODO get the panel to use the right sync handler when swapping from one item filter to the next
         var panelHandler = syncManager.syncedPanel("filterPanel", true,
@@ -413,7 +417,6 @@ public class GTMuiWidgets {
     }
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, int minValue, int maxValue) {
-
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 

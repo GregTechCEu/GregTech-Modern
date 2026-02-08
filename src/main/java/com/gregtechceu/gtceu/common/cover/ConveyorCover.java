@@ -460,7 +460,9 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createFilterRow()) {
-            column.child(GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings).marginBottom(2));
+            column.child(
+                    GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings)
+                            .marginBottom(2));
         }
 
         if (createConveyorIORow()) {}

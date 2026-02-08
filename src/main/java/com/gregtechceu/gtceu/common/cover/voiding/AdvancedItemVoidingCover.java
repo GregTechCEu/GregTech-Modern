@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
-import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -24,7 +22,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -126,10 +124,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     // *********** GUI ***********//
     //////////////////////////////////////
 
-
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column =  super.createCoverUI(data, syncManager, settings);
+        var column = super.createCoverUI(data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
                 this::getVoidingMode, this::setVoidingMode);
@@ -143,14 +140,13 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
                 .overlay(16, GTGuiTextures.VOIDING_MODES)
                 .lang(IKey.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
                 .build()
-                .marginTop(2)
-        );
+                .marginTop(2));
 
-        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, 1, getVoidingMode().maxStackSize).setEnabledIf($ -> shouldShowStackSize()));
+        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, 1, getVoidingMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;
     }
-
 
     @Override
     protected @NotNull String getUITitle() {

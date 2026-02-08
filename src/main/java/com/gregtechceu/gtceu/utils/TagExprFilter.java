@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TagExprFilter {
+
     private static final Pattern DOUBLE_WILDCARD = Pattern.compile("\\*{2,}");
     private static final Pattern DOUBLE_AND = Pattern.compile("&{2,}");
     private static final Pattern DOUBLE_OR = Pattern.compile("\\|{2,}");

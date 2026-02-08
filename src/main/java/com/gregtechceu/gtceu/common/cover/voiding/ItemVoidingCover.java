@@ -7,15 +7,13 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
-
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -90,10 +88,10 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
                 .top(7).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
 
-
-        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings);
-        filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager).marginRight(3));
-
+        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager,
+                settings);
+        filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
+                .marginRight(3));
 
         return column.child(filterRow);
     }
