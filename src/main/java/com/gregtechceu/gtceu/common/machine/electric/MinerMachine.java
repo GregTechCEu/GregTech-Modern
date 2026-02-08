@@ -96,6 +96,7 @@ public class MinerMachine extends WorkableTieredMachine
 
     @Override
     public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         // Remove the miner pipes below this miner
         getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
