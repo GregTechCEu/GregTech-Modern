@@ -58,7 +58,6 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.function.*;
@@ -1175,7 +1174,7 @@ public class TagPrefix {
         return PREFIXES.getOrDefault(prefixName, replacement);
     }
 
-    public @UnmodifiableView List<TagKey<Item>> getItemParentTags() {
+    public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
         return tags.stream()
                 .filter(TagType::isParentTag)
                 .map(type -> type.getTag(this, GTMaterials.NULL))
@@ -1183,7 +1182,7 @@ public class TagPrefix {
                 .toList();
     }
 
-    public @UnmodifiableView List<TagKey<Item>> getItemTags(@NotNull Material mat) {
+    public @Unmodifiable List<TagKey<Item>> getItemTags(@NotNull Material mat) {
         return tags.stream()
                 .filter(type -> !type.isParentTag())
                 .map(type -> type.getTag(this, mat))
@@ -1191,14 +1190,14 @@ public class TagPrefix {
                 .toList();
     }
 
-    public @UnmodifiableView List<TagKey<Item>> getAllItemTags(@NotNull Material mat) {
+    public @Unmodifiable List<TagKey<Item>> getAllItemTags(@NotNull Material mat) {
         return tags.stream()
                 .map(type -> type.getTag(this, mat))
                 .filter(Objects::nonNull)
                 .toList();
     }
 
-    public @UnmodifiableView List<TagKey<Block>> getBlockTags(@NotNull Material mat) {
+    public @Unmodifiable List<TagKey<Block>> getBlockTags(@NotNull Material mat) {
         return tags.stream()
                 .filter(type -> !type.isParentTag())
                 .map(type -> type.getTag(this, mat))
@@ -1207,7 +1206,7 @@ public class TagPrefix {
                 .toList();
     }
 
-    public @UnmodifiableView List<TagKey<Block>> getAllBlockTags(@NotNull Material mat) {
+    public @Unmodifiable List<TagKey<Block>> getAllBlockTags(@NotNull Material mat) {
         return tags.stream().map(type -> type.getTag(this, mat))
                 .filter(Objects::nonNull)
                 .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location()))
@@ -1320,7 +1319,7 @@ public class TagPrefix {
         ignoredMaterials.remove(material);
     }
 
-    public @UnmodifiableView Map<Material, @Unmodifiable Collection<Supplier<? extends ItemLike>>> getIgnored() {
+    public @Unmodifiable Map<Material, @Unmodifiable Collection<Supplier<? extends ItemLike>>> getIgnored() {
         return Map.copyOf(ignoredMaterials);
     }
 
