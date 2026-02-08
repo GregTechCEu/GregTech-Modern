@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -24,7 +25,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -37,11 +37,10 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -64,8 +63,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 @NotNullByDefault
-public class QuantumTankMachine extends TieredMachine implements IInteractedMachine, IControllable,
-                                IDropSaveMachine, IMuiMachine {
+public class QuantumTankMachine extends TieredMachine implements IInteractedMachine, IDropSaveMachine, IControllable,
+                                IMuiMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
@@ -245,7 +244,8 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
                                         .child(Flow.row()
                                                 .margin(4, 0, 41, 0)
                                                 .coverChildren()
-                                                .child(createAutoOutputFluidButton(syncManager))
+                                                .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput,
+                                                        syncManager))
                                                 .child(createFluidLockButton(syncManager))
                                                 .child(createVoidButton(syncManager)))
                                         .child(Flow.column()
@@ -255,19 +255,6 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
                                                 .child(createPhantomLockedFluidSlot(syncManager)))))
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-    }
-
-    private ToggleButton createAutoOutputFluidButton(PanelSyncManager syncManager) {
-        BooleanSyncValue fluidOutputs = new BooleanSyncValue(this::isAutoOutputFluids,
-                this::setAutoOutputFluids);
-        syncManager.syncValue("auto_output_fluids", fluidOutputs);
-        return new ToggleButton()
-                .value(new BoolValue.Dynamic(fluidOutputs::getBoolValue, fluidOutputs::setBoolValue))
-                .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.fluid_auto_output",
-                        Component.translatable(fluidOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
-                                "cover.voiding.label.disabled")))));
     }
 
     private ToggleButton createFluidLockButton(PanelSyncManager syncManager) {

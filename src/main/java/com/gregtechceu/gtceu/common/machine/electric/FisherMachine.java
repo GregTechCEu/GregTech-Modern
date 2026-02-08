@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -40,10 +39,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.FishingHook;
@@ -60,9 +56,6 @@ import net.minecraft.world.phys.Vec3;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -352,8 +345,6 @@ public class FisherMachine extends TieredEnergyMachine
             case 6 -> 2;
             default -> 2;
         };
-
-        boolean autoOutputItem = hasAutoOutputItem();
 
         BooleanSyncValue power = new BooleanSyncValue(() -> active,
                 (b) -> active = b);

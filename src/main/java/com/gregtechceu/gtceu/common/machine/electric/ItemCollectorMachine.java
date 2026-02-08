@@ -32,10 +32,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -52,7 +49,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -360,6 +356,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
                         .child(GTMuiWidgets.createBatterySlot(getChargerInventory(), 0, syncManager))
-                        .child(GTMuiWidgets.createAutoOutputItemButton(this, syncManager)));
+                        .child(GTMuiWidgets.createAutoOutputItemButton(this.autoOutput, syncManager)));
     }
 }

@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.data.mui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -148,9 +148,9 @@ public class GTMuiWidgets {
         // EnumSyncValue voidMode = new EnumSyncValue(IVoidable.VoidingMode.class, machine.)
     }
 
-    public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {
-        BooleanSyncValue itemOutputs = new BooleanSyncValue(machine::isAutoOutputItems,
-                machine::setAutoOutputItems);
+    public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput, PanelSyncManager syncManager) {
+        BooleanSyncValue itemOutputs = new BooleanSyncValue(autoOutput::isAutoOutputItems,
+                autoOutput::setAllowAutoOutputItems);
         syncManager.syncValue("auto_output_items", itemOutputs);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(itemOutputs::getBoolValue, itemOutputs::setBoolValue))
@@ -161,9 +161,9 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    public static ToggleButton createAutoOutputFluidButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
-        BooleanSyncValue fluidOutputs = new BooleanSyncValue(machine::isAutoOutputFluids,
-                machine::setAutoOutputFluids);
+    public static ToggleButton createAutoOutputFluidButton(AutoOutputTrait autoOutput, PanelSyncManager syncManager) {
+        BooleanSyncValue fluidOutputs = new BooleanSyncValue(autoOutput::isAutoOutputFluids,
+                autoOutput::setAllowAutoOutputFluids);
         syncManager.syncValue("auto_output_fluids", fluidOutputs);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(fluidOutputs::getBoolValue, fluidOutputs::setBoolValue))
@@ -174,9 +174,9 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    public static ToggleButton createInputFromOutputItem(SimpleTieredMachine machine, PanelSyncManager syncManager) {
-        BooleanSyncValue inputFromOutputItem = new BooleanSyncValue(machine::isAllowInputFromOutputSideItems,
-                machine::setAllowInputFromOutputSideItems);
+    public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput, PanelSyncManager syncManager) {
+        BooleanSyncValue inputFromOutputItem = new BooleanSyncValue(autoOutput::allowsItemInputFromOutputSide,
+                autoOutput::setAllowItemInputFromOutputSide);
         syncManager.syncValue("input_from_output_item", inputFromOutputItem);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(inputFromOutputItem::getBoolValue, inputFromOutputItem::setBoolValue))
@@ -187,9 +187,9 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    public static ToggleButton createInputFromOutputFluid(SimpleTieredMachine machine, PanelSyncManager syncManager) {
-        BooleanSyncValue inputFromOutputFluid = new BooleanSyncValue(machine::isAllowInputFromOutputSideFluids,
-                machine::setAllowInputFromOutputSideFluids);
+    public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput, PanelSyncManager syncManager) {
+        BooleanSyncValue inputFromOutputFluid = new BooleanSyncValue(autoOutput::allowsFluidInputFromOutputSide,
+                autoOutput::setAllowFluidInputFromOutputSide);
         syncManager.syncValue("input_from_output_fluid", inputFromOutputFluid);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(inputFromOutputFluid::getBoolValue, inputFromOutputFluid::setBoolValue))
