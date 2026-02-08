@@ -311,7 +311,9 @@ public class TestUtils {
 
     public static ServerPlayer makeMockSurvivalServerPlayer(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
-        ServerPlayer player = new ServerPlayer(server, helper.getLevel(), new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+        ServerPlayer player = new ServerPlayer(server, helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+
             public boolean isSpectator() {
                 return false;
             }

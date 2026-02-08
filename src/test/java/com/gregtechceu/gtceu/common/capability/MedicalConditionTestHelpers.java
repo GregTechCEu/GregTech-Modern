@@ -22,7 +22,7 @@ public class MedicalConditionTestHelpers {
     }
 
     public static void setMedicalConditionCounts(GameTestHelper helper, Player player,
-                                           MedicalCondition condition, float counts) {
+                                                 MedicalCondition condition, float counts) {
         MedicalConditionTracker tracker = getMedicalConditionTracker(helper, player);
         tracker.medicalConditions.put(condition, counts);
         tracker.updateActiveSymptoms();
@@ -54,7 +54,8 @@ public class MedicalConditionTestHelpers {
                                                   MedicalCondition condition, float expectedCounts) {
         float counts = getMedicalConditionTracker(helper, player).medicalConditions.getFloat(condition);
         helper.assertTrue(Mth.equal(counts, expectedCounts),
-                "Player " + player + " should have " + expectedCounts + " 'counts' of medical condition " + condition.id + ", has " + counts);
+                "Player " + player + " should have " + expectedCounts + " 'counts' of medical condition " +
+                        condition.id + ", has " + counts);
     }
 
     public static double getAndAssertAttributeModifier(Player player, Attribute attribute, UUID modifierId) {
