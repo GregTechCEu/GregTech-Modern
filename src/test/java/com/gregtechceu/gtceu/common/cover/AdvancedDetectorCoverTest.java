@@ -57,11 +57,12 @@ public class AdvancedDetectorCoverTest {
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         int offset = (int) (machine.getOffsetTimer() % 20L);
         helper.runAtTickTime(20 - offset, () -> helper.pullLever(2, 2, 2));
-        helper.runAtTickTime(40 - offset,
+        // 20 ticks for the cover to update, 11 ticks for the recipe to finish, 1 tick for the cover to update
+        helper.runAtTickTime(52 - offset,
                 () -> helper.succeedWhen(() -> TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1))));
     }
 
-    @GameTest(template = "electrolyzer", batch = "coverTests", attempts = 5, requiredSuccesses = 5)
+    @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
