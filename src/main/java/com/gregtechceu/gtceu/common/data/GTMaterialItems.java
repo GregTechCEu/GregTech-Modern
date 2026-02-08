@@ -168,4 +168,22 @@ public class GTMaterialItems {
                     .register());
         }
     }
+
+    //Not Sure Where to put these, these aren't actual materials but uh, shrug?
+    public static final ItemEntry<Item> FUEL_ROD_LEU = REGISTRATE.item("fuel_rod_leu", Item::new)
+            .lang("LEU Fuel Rod").register();
+    public static final ItemEntry<Item> FUEL_ROD_MOX = REGISTRATE.item("fuel_rod_mox", Item::new)
+            .lang("MOX Fuel Rod").register();
+    public static final ItemEntry<Item> FUEL_ROD_THORIUM = REGISTRATE.item("fuel_rod_thorium", Item::new)
+            .lang("Thorium Fuel Rod").register();
+
+    public static final ItemEntry<Item> DEPLETED_ROD_LEU = REGISTRATE.item("depleted_rod_leu", Item::new)
+            .lang("Depleted LEU Fuel Rod").register();
+    public static final ItemEntry<Item> DEPLETED_ROD_MOX = REGISTRATE.item("depleted_rod_mox", Item::new)
+            .lang("Depleted MOX Fuel Rod").register();
+    public static final ItemEntry<Item> DEPLETED_ROD_THORIUM = REGISTRATE.item("depleted_rod_thorium", Item::new)
+            .lang("Depleted Thorium Fuel Rod").register();
+
+
+
 }
