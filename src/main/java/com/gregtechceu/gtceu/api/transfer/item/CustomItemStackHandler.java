@@ -57,7 +57,7 @@ public class CustomItemStackHandler extends ItemStackHandler
     }
 
     public void dropInventoryInWorld(Level world, BlockPos pos) {
-        for (ItemStack stack: stacks) {
+        for (ItemStack stack : stacks) {
             Block.popResource(world, pos, stack);
         }
         clear();
