@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -78,12 +81,17 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Persisted
     @DescSynced
     private boolean isDistinct = false;
+    @Persisted
+    @DescSynced
+    @Getter
+    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        filterHandler = FilterHandlers.item(this);
     }
 
     //////////////////////////////////////
@@ -99,8 +107,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return sizeRoot * sizeRoot;
     }
 
+    protected boolean matchesFilter(ItemStack stack) {
+        if (filterHandler.isFilterPresent())
+            return filterHandler.getFilter().test(stack);
+        return true;
+    }
+
     protected NotifiableItemStackHandler createInventory(Object... args) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io);
+        return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(this::matchesFilter);
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
@@ -318,6 +332,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
+        group.addWidget(filterHandler.createFilterSlotUI(-115 + (18 * rowSize) / 2, 35 + 11 * rowSize));
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
@@ -329,7 +344,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
-
         return group;
     }
 }

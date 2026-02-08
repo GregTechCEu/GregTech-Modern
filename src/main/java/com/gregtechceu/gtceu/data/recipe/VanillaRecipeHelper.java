@@ -10,10 +10,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -22,11 +25,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import it.unimi.dsi.fastutil.chars.*;
+import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharArraySet;
+import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
+
+import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 
 public class VanillaRecipeHelper {
 
@@ -616,6 +623,38 @@ public class VanillaRecipeHelper {
             }
         }
         builder.save(provider);
+    }
+
+    public static void addSmithingTransformRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                                  @NotNull Item result, @NotNull ItemLike baseInput,
+                                                  @NotNull ItemLike template, @NotNull ItemLike addition,
+                                                  @NotNull RecipeCategory category) {
+        SmithingTransformRecipeBuilder
+                .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
+                .unlocks(String.format("has_%s", baseInput), has(baseInput))
+                .save(provider, regName);
+    }
+
+    public static void addSmithingTransformRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                                  @NotNull Item result, @NotNull ItemLike baseInput,
+                                                  @NotNull ItemLike template, @NotNull ItemLike addition) {
+        addSmithingTransformRecipe(provider, GTCEu.id(regName), result, baseInput, template, addition,
+                RecipeCategory.MISC);
+    }
+
+    public static void addToolUpgradingRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull GTToolType tool,
+                                              @NotNull Material upgradeMaterial, @NotNull Material baseMaterial,
+                                              @NotNull ItemLike template, @NotNull ItemLike addition) {
+        ItemStack upgradeToolStack = ToolHelper.get(tool, upgradeMaterial);
+        ItemStack baseToolStack = ToolHelper.get(tool, baseMaterial);
+
+        if (upgradeToolStack.isEmpty() || baseToolStack.isEmpty()) return;
+
+        VanillaRecipeHelper.addSmithingTransformRecipe(provider,
+                String.format("%s_%s_smithing_transform_from_%s", upgradeMaterial.getName(), tool.name,
+                        baseMaterial.getName()),
+                upgradeToolStack.getItem(), baseToolStack.getItem(),
+                template, addition);
     }
 
     /**

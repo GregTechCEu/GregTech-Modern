@@ -97,6 +97,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType molten = new MaterialIconType("molten");
     public static final MaterialIconType block = new MaterialIconType("block");
     public static final MaterialIconType ore = new MaterialIconType("ore");
+    public static final MaterialIconType oreEmissive = new MaterialIconType("oreEmissive");
     public static final MaterialIconType oreSmall = new MaterialIconType("oreSmall");
     public static final MaterialIconType frameGt = new MaterialIconType("frameGt");
     public static final MaterialIconType wire = new MaterialIconType("wire");

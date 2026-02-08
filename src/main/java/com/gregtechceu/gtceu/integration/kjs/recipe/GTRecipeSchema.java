@@ -974,6 +974,14 @@ public interface GTRecipeSchema {
             return biome(biome, false);
         }
 
+        public GTRecipeJS biomeTag(ResourceLocation biome, boolean reverse) {
+            return addCondition(new BiomeTagCondition(TagKey.create(Registries.BIOME, biome)).setReverse(reverse));
+        }
+
+        public GTRecipeJS biomeTag(ResourceLocation biome) {
+            return biomeTag(biome, false);
+        }
+
         public GTRecipeJS rain(float level, boolean reverse) {
             return addCondition(new RainingCondition(level).setReverse(reverse));
         }

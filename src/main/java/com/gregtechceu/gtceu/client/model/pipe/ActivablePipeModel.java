@@ -58,7 +58,7 @@ public class ActivablePipeModel extends PipeModel {
     }
 
     /**
-     * Override this to change the actual model {@link #block this.block} will use.
+     * Override this to change the active model {@link #block this.block} will use.
      *
      * @return A model builder for the block's actual model.
      * @see #getOrCreateBlockModel()
@@ -139,7 +139,9 @@ public class ActivablePipeModel extends PipeModel {
         Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
 
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
-                .parent(new ModelFile.UncheckedModelFile("block/block"));
+                .parent(new ModelFile.UncheckedModelFile("block/block"))
+                .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))
+                .renderType(RENDERTYPE_CUTOUT_MIPPED);
 
         ResourceLocation side = this.sideActive != null ? this.sideActive : this.side;
         ResourceLocation end = this.endActive != null ? this.endActive : this.end;

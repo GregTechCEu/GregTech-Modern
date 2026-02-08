@@ -283,9 +283,9 @@ public class GCYMMachines {
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     Component.translatable("gtceu.assembler")))
+            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
@@ -636,7 +636,7 @@ public class GCYMMachines {
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
                         .aisle("##X##", "#XAX#", "XAPAX", "#XAX#", "##X##").setRepeatable(1, 12)
-                        .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
+                        .aisle("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
                                 .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
@@ -646,7 +646,6 @@ public class GCYMMachines {
                         .where('X', casingPredicate.or(exportPredicate))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
-                        .where('C', abilities(MUFFLER))
                         .where('A', air())
                         .where('#', any())
                         .build();

@@ -1150,6 +1150,14 @@ public class GTRecipeBuilder {
         return biome(biome, false);
     }
 
+    public GTRecipeBuilder biomeTag(TagKey<Biome> biome, boolean reverse) {
+        return addCondition(new BiomeTagCondition(biome).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder biomeTag(TagKey<Biome> biome) {
+        return biomeTag(biome, false);
+    }
+
     public GTRecipeBuilder rain(float level, boolean reverse) {
         return addCondition(new RainingCondition(level).setReverse(reverse));
     }
@@ -1797,7 +1805,7 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory);
+                conditions, List.of(), data, duration, recipeCategory, -1);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,

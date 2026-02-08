@@ -401,6 +401,7 @@ public class MiscRecipeLoader {
                 .inputItems(dust, Glass, 2)
                 .notConsumable(SHAPE_MOLD_PLATE)
                 .outputItems(plate, Glass)
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
