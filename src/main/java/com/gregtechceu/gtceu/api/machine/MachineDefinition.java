@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -72,6 +74,22 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
+    @NotNull
+    @Getter
+    @Setter
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    @NotNull
+    @Getter
+    @Setter
+    private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
+    @NotNull
+    @Getter
+    @Setter
+    private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
+    @NotNull
+    @Getter
+    @Setter
+    private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
     @Getter
     @Setter
     private boolean regressWhenWaiting = true;

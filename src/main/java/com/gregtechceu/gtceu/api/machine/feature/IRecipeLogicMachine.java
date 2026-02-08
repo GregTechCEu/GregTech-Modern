@@ -77,25 +77,29 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
     default boolean beforeWorking(@Nullable GTRecipe recipe) {
-        return true;
+        return self().getDefinition().getBeforeWorking().test(this, recipe);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
     default boolean onWorking() {
-        return true;
+        return self().getDefinition().getOnWorking().test(this);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWaiting() {}
+    default void onWaiting() {
+        self().getDefinition().getOnWaiting().accept(this);
+    }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
-    default void afterWorking() {}
+    default void afterWorking() {
+        self().getDefinition().getAfterWorking().accept(this);
+    }
 
     /**
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
@@ -108,7 +112,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
      * 
      * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
-     *         false - keep using the {@link RecipeLogic# lastRecipe}, which is already modified.
+     *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
      */
     default boolean alwaysTryModifyRecipe() {
         // make it *always* do overclock and parallel so that the machine doesn't get stuck running a lower-tier recipe
