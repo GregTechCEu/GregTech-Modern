@@ -34,7 +34,8 @@ public class FuelRodPortPartMachine extends FissionCapstonePartMachine {
 
     public FuelRodPortPartMachine(BlockEntityCreationInfo info) {
         super(info);
-        this.inventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.BOTH);
+        this.inventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.BOTH)
+                .setFilter(stack -> FuelRodRegistry.isFuelRod(stack.getItem()));
     }
 
     @Override

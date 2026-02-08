@@ -10,11 +10,20 @@ public class ReactorComponent {
 
     private final ReactorComponentType type;
     private final int maxHeat;
-    private final int baseHeatGeneration;
+    @Setter
+    private int baseHeatGeneration;
     private final int baseCoolingRate;
     @Setter
     private boolean active;
     private int heat;
+    @Setter
+    private int insertionDepth;
+    @Setter
+    private int ticksAlive;
+    @Setter
+    private int maxLifetimeTicks;
+    @Setter
+    private float endOfLifeMultiplier;
 
     public ReactorComponent(ReactorComponentType type, int maxHeat, int baseHeatGeneration, int baseCoolingRate) {
         this.type = type;
@@ -22,6 +31,7 @@ public class ReactorComponent {
         this.baseHeatGeneration = baseHeatGeneration;
         this.baseCoolingRate = baseCoolingRate;
         this.active = true;
+        this.endOfLifeMultiplier = 1.0f;
     }
 
     public void addHeat(int amount) {
@@ -40,6 +50,29 @@ public class ReactorComponent {
         return maxHeat > 0 ? (float) heat / maxHeat : 0;
     }
 
+    public int getEffectiveHeatGeneration() {
+        if (type != ReactorComponentType.FUEL_ROD || maxLifetimeTicks <= 0) {
+            return baseHeatGeneration;
+        }
+        int threshold = (int) (maxLifetimeTicks * 0.8f);
+        if (ticksAlive <= threshold) {
+            return baseHeatGeneration;
+        }
+        float progress = (float) (ticksAlive - threshold) / (maxLifetimeTicks - threshold);
+        float multiplier = 1.0f + (endOfLifeMultiplier - 1.0f) * Math.min(progress, 1.0f);
+        return (int) (baseHeatGeneration * multiplier);
+    }
+
+    public boolean isDepleted() {
+        return type == ReactorComponentType.FUEL_ROD && maxLifetimeTicks > 0 && ticksAlive >= maxLifetimeTicks;
+    }
+
+    public void tickFuelAge() {
+        if (type == ReactorComponentType.FUEL_ROD && active && maxLifetimeTicks > 0) {
+            ticksAlive++;
+        }
+    }
+
     public CompoundTag serializeToNbt() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("type", type.ordinal());
@@ -48,6 +81,10 @@ public class ReactorComponent {
         tag.putInt("coolRate", baseCoolingRate);
         tag.putBoolean("active", active);
         tag.putInt("heat", heat);
+        tag.putInt("insertionDepth", insertionDepth);
+        tag.putInt("ticksAlive", ticksAlive);
+        tag.putInt("maxLifetime", maxLifetimeTicks);
+        tag.putFloat("eolMultiplier", endOfLifeMultiplier);
         return tag;
     }
 
@@ -57,6 +94,10 @@ public class ReactorComponent {
                 type, tag.getInt("maxHeat"), tag.getInt("heatGen"), tag.getInt("coolRate"));
         comp.setActive(tag.getBoolean("active"));
         comp.setHeat(tag.getInt("heat"));
+        comp.setInsertionDepth(tag.getInt("insertionDepth"));
+        comp.setTicksAlive(tag.getInt("ticksAlive"));
+        comp.setMaxLifetimeTicks(tag.getInt("maxLifetime"));
+        comp.setEndOfLifeMultiplier(tag.getFloat("eolMultiplier"));
         return comp;
     }
 

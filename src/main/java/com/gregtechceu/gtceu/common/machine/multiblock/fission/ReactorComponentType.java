@@ -6,5 +6,8 @@ public enum ReactorComponentType {
     HEAT_EXCHANGER,
     NEUTRON_REFLECTOR,
     MODERATOR,
-    CONTROL_ROD
+    CONTROL_ROD,
+    CASING,
+    CONTROLLER,
+    VESSEL
 }
