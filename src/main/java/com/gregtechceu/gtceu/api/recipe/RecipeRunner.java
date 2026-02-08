@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
+import net.minecraft.network.chat.Component;
+
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
@@ -114,7 +116,11 @@ public class RecipeRunner {
     private ActionResult handleContents() {
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(io)) {
-            return ActionResult.FAIL_NO_CAPABILITIES;
+            return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.no_capabilities")
+                            .append(Component.literal(": "))
+                            .append(Component.translatable(io.tooltip)),
+                    null, io);
         }
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
