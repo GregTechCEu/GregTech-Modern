@@ -2,7 +2,11 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -15,6 +19,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -53,10 +58,17 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithoutActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        SimpleTieredMachine machine = ((SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         int offset = (int) (machine.getOffsetTimer() % 20L);
-        helper.runAtTickTime(20 - offset, () -> helper.pullLever(2, 2, 2));
+        helper.runAtTickTime(20 - offset, () -> {
+            // Stop the fluid input
+            helper.pullLever(2, 2, 2);
+            // Also clear out the tank
+            NotifiableFluidTank tank = (NotifiableFluidTank) machine
+                    .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+            tank.setFluidInTank(0, FluidStack.EMPTY);
+        });
         // 20 ticks for the cover to update, 11 ticks for the recipe to finish, 1 tick for the cover to update
         helper.runAtTickTime(52 - offset,
                 () -> helper.succeedWhen(() -> TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1))));
