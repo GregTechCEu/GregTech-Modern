@@ -24,17 +24,17 @@ public class GTMultiblockPanelUtil {
         this.controller = controller;
     }
 
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
         boolean isFormed = controller.isFormed();
 
         var parentWidget = new ParentWidget<>();
         var listWidget = new ListWidget<>()
-                .width(187 - 3 - 3)
-                .height(90 - 3 - 3)
+                .width(width - 6)
+                .height(height - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .alignX(Alignment.CenterLeft);
-        parentWidget.size(187, 90)
+        parentWidget.size(width, height)
                 .background(GTGuiTextures.MUI_DISPLAY);
 
         if (controller instanceof IWorkableMultiController rlMachine) {
