@@ -998,6 +998,11 @@ public class MachineLang {
         provider.add("gtceu.multiblock.fission.vessel_heat", "Vessel Heat: %s / %s");
         provider.add("gtceu.multiblock.fission.height", "Reactor Height: %s");
         provider.add("gtceu.multiblock.fission.overheating", "§cOVERHEATING!");
+        provider.add("gtceu.multiblock.fission.heat_gen", "Heat Gen: %s HU/t");
+        provider.add("gtceu.multiblock.fission.cooling", "Cooling: %s HU/t");
+        provider.add("gtceu.multiblock.fission.fuel_rods", "Fuel Rods: %s/%s active");
+        provider.add("gtceu.multiblock.fission.coolant_flow", "Coolant: %s mB/t");
+        provider.add("gtceu.multiblock.fission.coolant_type", "Coolant Type: %s");
         provider.add("gtceu.multiblock.fission.start", "Start Reactor");
         provider.add("gtceu.multiblock.fission.shutdown", "Shutdown Reactor");
 
