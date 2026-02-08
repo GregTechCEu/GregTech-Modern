@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine, IMachineLife {
+public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine {
 
     public static final long AMPS_PER_ITEM = 4L;
 
@@ -117,7 +117,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(chargerInventory);
     }
 

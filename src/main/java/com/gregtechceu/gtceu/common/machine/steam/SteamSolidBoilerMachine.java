@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -38,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMachineLife {
+public class SteamSolidBoilerMachine extends SteamBoilerMachine {
 
     public static final Object2BooleanMap<Item> FUEL_CACHE = new Object2BooleanOpenHashMap<>();
 
@@ -164,7 +163,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
      */
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(fuelHandler.storage);
         clearInventory(ashHandler.storage);
     }

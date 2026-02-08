@@ -586,10 +586,6 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
-
-        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
