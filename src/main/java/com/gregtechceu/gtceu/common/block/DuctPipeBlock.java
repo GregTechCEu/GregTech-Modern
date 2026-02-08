@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
@@ -95,8 +95,9 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
                                          @Nullable BlockEntity tile) {
         return tile != null &&
                 (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
-                        tile instanceof MetaMachine metaMachine && (tile instanceof IEnvironmentalHazardCleaner ||
-                                tile instanceof IEnvironmentalHazardEmitter));
+                        tile instanceof MetaMachine metaMachine &&
+                                (metaMachine.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null
+                                || metaMachine.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null) );
     }
 
     @Override

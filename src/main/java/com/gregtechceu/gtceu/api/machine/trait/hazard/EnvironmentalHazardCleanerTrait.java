@@ -13,13 +13,15 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiPredicate;
 
 public class EnvironmentalHazardCleanerTrait extends MachineTrait {
     public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(EnvironmentalHazardCleanerTrait.class);
@@ -28,17 +30,20 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
     protected float removedLastSecond;
 
     @Getter
-    @Setter
-    protected float amountToRemove;
+    protected float amountPerOperation;
     @Getter
-    @Setter
     protected MedicalCondition conditionToRemove;
     @Getter
-    @Setter
     protected int cleaningRadius;
+    @Getter
+    private boolean cleaningOperationInProgress;
 
-    public EnvironmentalHazardCleanerTrait(MetaMachine machine, MedicalCondition condition, float amountToRemove, int cleaningRadius) {
+    private final @Nullable BiPredicate<MedicalCondition, Float> cleaningHandler;
+
+    public EnvironmentalHazardCleanerTrait(MetaMachine machine, int cleaningRadius, @Nullable BiPredicate<MedicalCondition, Float> validateCleaningOperation) {
         super(machine);
+        this.cleaningRadius = cleaningRadius;
+        this.cleaningHandler = validateCleaningOperation;
     }
 
     @Override
@@ -46,7 +51,26 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
         return TYPE;
     }
 
-    public boolean cleanHazard() {
+    public boolean cleanHazard(MedicalCondition condition, float totalAmountToRemove) {
+        if (cleaningHandler == null) return beginCleaningOperation(condition, totalAmountToRemove);
+        return cleaningHandler.test(condition, totalAmountToRemove);
+    }
+
+    public boolean beginCleaningOperation(MedicalCondition condition, float amountPerOperation) {
+        if (cleaningOperationInProgress) return false;
+
+        this.conditionToRemove = condition;
+        this.amountPerOperation = amountPerOperation;
+        this.cleaningOperationInProgress = true;
+        return true;
+    }
+
+    public void endCleaningOperation() {
+        this.cleaningOperationInProgress = false;
+    }
+
+    public void cleanHazard() {
+        if (!cleaningOperationInProgress) return;
         if (machine.getOffsetTimer() % 20 == 0) {
             removedLastSecond = 0;
 
@@ -57,7 +81,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
                             !duct.isConnected(dir.getOpposite())) {
                         continue;
                     }
-                    return true;
+                    return;
                 }
             }
 
@@ -83,7 +107,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
                         return null;
                     }
 
-                    float toClean = getAmountToRemove() / distance;
+                    float toClean = amountPerOperation / distance;
                     removedLastSecond += toClean;
                     zone.removeStrength(toClean);
                     if (zone.strength() <= 0) {
@@ -96,6 +120,6 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
                 });
             }
         }
-        return true;
+        return;
     }
 }

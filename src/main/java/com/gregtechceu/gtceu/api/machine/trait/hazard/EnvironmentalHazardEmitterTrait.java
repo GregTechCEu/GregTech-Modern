@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.level.ServerLevel;
 
+/**
+ * trait for environmental hazard (e.g. pollution) emitters like mufflers.
+ */
 public class EnvironmentalHazardEmitterTrait extends MachineTrait {
     public static final MachineTraitType<EnvironmentalHazardEmitterTrait> TYPE = new MachineTraitType<>(EnvironmentalHazardEmitterTrait.class);
 
