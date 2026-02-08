@@ -58,12 +58,16 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         Integer connectionMask = modelData.get(GTModelProperties.PIPE_CONNECTION_MASK);
         Integer blockedMask = modelData.get(GTModelProperties.PIPE_BLOCKED_MASK);
 
-        if (level == null || pos == null || state == null) {
+        if (state == null) {
             connectionMask = ITEM_CONNECTIONS;
             blockedMask = Node.ALL_CLOSED;
         }
         if (connectionMask == null || connectionMask != Node.ALL_OPENED) {
-            quads.addAll(parts.get(null).getQuads(state, side, rand, modelData, renderType));
+            BakedModel centerModel = parts.get(null);
+            if (renderType == null ||
+                    state != null && centerModel.getRenderTypes(state, rand, modelData).contains(renderType)) {
+                quads.addAll(centerModel.getQuads(state, side, rand, modelData, renderType));
+            }
             if (connectionMask == null) {
                 // return unconnected base model if the model property isn't set
                 return quads;
@@ -71,9 +75,17 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         }
         for (Direction dir : GTUtil.DIRECTIONS) {
             if (PipeBlockEntity.isConnected(connectionMask, dir)) {
-                quads.addAll(parts.get(dir).getQuads(state, side, rand, modelData, renderType));
+                BakedModel model = parts.get(dir);
+                if (renderType == null ||
+                        (state != null && model.getRenderTypes(state, rand, modelData).contains(renderType))) {
+                    quads.addAll(model.getQuads(state, side, rand, modelData, renderType));
+                }
                 if (blockedMask != null && PipeBlockEntity.isFaceBlocked(blockedMask, dir)) {
-                    quads.addAll(restrictors.get(dir).getQuads(state, side, rand, modelData, renderType));
+                    model = restrictors.get(dir);
+                    if (renderType == null ||
+                            (state != null && model.getRenderTypes(state, rand, modelData).contains(renderType))) {
+                        quads.addAll(model.getQuads(state, side, rand, modelData, renderType));
+                    }
                 }
             }
         }
@@ -83,7 +95,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
                 modelData, renderType);
 
-        if (pipeNode.getFrameMaterial().isNull() || (renderType != null && renderType != RenderType.translucent())) {
+        if (pipeNode.getFrameMaterial().isNull()) {
             return quads;
         }
         var frameBlockEntry = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial());
@@ -123,16 +135,13 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
-        ModelData.Builder builder = modelData.derive()
-                .with(GTModelProperties.LEVEL, level)
-                .with(GTModelProperties.POS, pos);
-
-        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> blockEntity)) {
-            return builder.build();
+        for (BakedModel part : this.parts.values()) {
+            modelData = part.getModelData(level, pos, state, modelData);
         }
-        return builder.with(GTModelProperties.PIPE_CONNECTION_MASK, blockEntity.getVisualConnections())
-                .with(GTModelProperties.PIPE_BLOCKED_MASK, blockEntity.getBlockedConnections())
-                .build();
+        for (BakedModel restrictor : this.restrictors.values()) {
+            modelData = restrictor.getModelData(level, pos, state, modelData);
+        }
+        return modelData;
     }
 
     @SuppressWarnings("deprecation")

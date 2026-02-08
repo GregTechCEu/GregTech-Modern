@@ -1,7 +1,27 @@
 {
-  "parent": "gtceu:block/cube_2_layer/tinted_both/all_translucent",
+  "parent": "block/block",
+  "loader": "forge:composite",
   "textures": {
-    "bot_all": "gtceu:block/material_sets/lapis/block",
-    "top_all": "gtceu:block/material_sets/lapis/block_secondary"
-  }
+    "particle": "gtceu:block/material_sets/lapis/block"
+  },
+  "children": {
+    "base": {
+      "parent": "gtceu:block/cube/tinted/all_0",
+      "render_type": "solid",
+      "textures": {
+        "all": "gtceu:block/material_sets/lapis/block"
+      }
+    },
+    "secondary": {
+      "parent": "gtceu:block/cube/tinted/all",
+      "render_type": "translucent",
+      "textures": {
+        "all": "gtceu:block/material_sets/lapis/block_secondary"
+      }
+    }
+  },
+  "item_render_order": [
+    "base",
+    "secondary"
+  ]
 }
