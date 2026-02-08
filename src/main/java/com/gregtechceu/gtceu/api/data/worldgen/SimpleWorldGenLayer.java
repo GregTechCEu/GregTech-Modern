@@ -37,7 +37,8 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     @Override
     public String toString() {
         if (this.cachedToString == null) {
-            String serializedTarget = String.valueOf(RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null));
+            String serializedTarget = String
+                    .valueOf(RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null));
             String dimensionsString = this.dimensions.stream()
                     .map(key -> key.location().toString())
                     .collect(Collectors.joining(", ", "[", "]"));
