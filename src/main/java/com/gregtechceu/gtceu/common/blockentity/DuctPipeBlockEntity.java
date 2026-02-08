@@ -116,9 +116,10 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             }
             BlockPos relative = getBlockPos().relative(side);
             MetaMachine adjacent = MetaMachine.getMachine(level, relative);
-            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null
-                    || (adjacent != null && (adjacent.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null
-                        || adjacent.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
+            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null ||
+                    (adjacent != null &&
+                            (adjacent.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
+                                    adjacent.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
         }
         return false;
     }

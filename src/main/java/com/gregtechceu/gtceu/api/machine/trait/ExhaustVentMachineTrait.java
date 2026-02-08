@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,8 +19,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 
-public class ExhaustVentMachineTrait extends MachineTrait{
-    public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(ExhaustVentMachineTrait.class, false);
+import lombok.Getter;
+import lombok.Setter;
+
+public class ExhaustVentMachineTrait extends MachineTrait {
+
+    public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(
+            ExhaustVentMachineTrait.class, false);
 
     @Getter
     @Setter
@@ -46,7 +50,6 @@ public class ExhaustVentMachineTrait extends MachineTrait{
     public MachineTraitType<ExhaustVentMachineTrait> getTraitType() {
         return TYPE;
     }
-
 
     public boolean isVentingBlocked() {
         BlockPos ventingBlockPos = getBlockPos().relative(getVentingDirection());

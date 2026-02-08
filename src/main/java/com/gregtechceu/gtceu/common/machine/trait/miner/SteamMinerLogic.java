@@ -17,7 +17,7 @@ public class SteamMinerLogic extends MinerLogic {
      */
     public SteamMinerLogic(IRecipeLogicMachine metaTileEntity, int fortune, int speed, int maximumRadius) {
         super(metaTileEntity, fortune, speed, maximumRadius);
-        steamMiner = (SteamMinerMachine)metaTileEntity;
+        steamMiner = (SteamMinerMachine) metaTileEntity;
     }
 
     @Override

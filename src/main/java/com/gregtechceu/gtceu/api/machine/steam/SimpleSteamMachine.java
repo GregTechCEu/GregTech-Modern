@@ -105,7 +105,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
             if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
                 upwardsDir = upwardsDir.getOpposite();
             }
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), exhaustVentTrait.getVentingDirection(), upwardsDir);
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), exhaustVentTrait.getVentingDirection(),
+                    upwardsDir);
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, relative));
         }
     }

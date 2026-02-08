@@ -10,21 +10,25 @@ import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
 
 public class EnvironmentalHazardCleanerTrait extends MachineTrait {
-    public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(EnvironmentalHazardCleanerTrait.class);
+
+    public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(
+            EnvironmentalHazardCleanerTrait.class);
 
     @Getter
     protected float removedLastSecond;
@@ -40,7 +44,8 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
 
     private final @Nullable BiPredicate<MedicalCondition, Float> cleaningHandler;
 
-    public EnvironmentalHazardCleanerTrait(MetaMachine machine, int cleaningRadius, @Nullable BiPredicate<MedicalCondition, Float> validateCleaningOperation) {
+    public EnvironmentalHazardCleanerTrait(MetaMachine machine, int cleaningRadius,
+                                           @Nullable BiPredicate<MedicalCondition, Float> validateCleaningOperation) {
         super(machine);
         this.cleaningRadius = cleaningRadius;
         this.cleaningHandler = validateCleaningOperation;

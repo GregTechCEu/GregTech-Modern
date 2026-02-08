@@ -60,12 +60,12 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
     @Getter
     private final EnvironmentalHazardEmitterTrait hazardEmitter;
 
-
     public MufflerPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING, 2.5f / Math.max(tier, 1));
+        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                2.5f / Math.max(tier, 1));
     }
 
     //////////////////////////////////////

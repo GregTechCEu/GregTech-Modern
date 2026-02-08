@@ -9,15 +9,19 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import net.minecraft.server.level.ServerLevel;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.server.level.ServerLevel;
 
 /**
  * trait for localized hazard (e.g. radiation) emitters like nuclear reactors.
  */
 public class LocalizedHazardEmitterTrait extends MachineTrait {
-    public static final MachineTraitType<LocalizedHazardEmitterTrait> TYPE = new MachineTraitType<>(LocalizedHazardEmitterTrait.class);
+
+    public static final MachineTraitType<LocalizedHazardEmitterTrait> TYPE = new MachineTraitType<>(
+            LocalizedHazardEmitterTrait.class);
 
     @Getter
     @Setter
@@ -26,7 +30,8 @@ public class LocalizedHazardEmitterTrait extends MachineTrait {
     @Setter
     private int conditionStrength;
 
-    public LocalizedHazardEmitterTrait(MetaMachine machine, MedicalCondition conditionToEmit, int defaultConditionStrength) {
+    public LocalizedHazardEmitterTrait(MetaMachine machine, MedicalCondition conditionToEmit,
+                                       int defaultConditionStrength) {
         super(machine);
         this.conditionToEmit = conditionToEmit;
         this.conditionStrength = defaultConditionStrength;
@@ -57,4 +62,3 @@ public class LocalizedHazardEmitterTrait extends MachineTrait {
         }
     }
 }
-

@@ -9,11 +9,12 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidType;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,7 +40,8 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
         this.exportItems = createExportItemHandler();
         this.importFluids = createImportFluidHandler();
         this.exportFluids = createExportFluidHandler();
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING, 0.1f);
+        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                0.1f);
     }
 
     //////////////////////////////////////

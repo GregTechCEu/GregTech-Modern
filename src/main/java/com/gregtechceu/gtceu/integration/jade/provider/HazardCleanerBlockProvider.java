@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +17,6 @@ public class HazardCleanerBlockProvider extends MachineTraitProvider<Environment
     public HazardCleanerBlockProvider() {
         super(GTCEu.id("hazard_cleaner_provider"), EnvironmentalHazardCleanerTrait.TYPE);
     }
-
 
     @Override
     protected void write(CompoundTag data, BlockAccessor block, EnvironmentalHazardCleanerTrait capability) {

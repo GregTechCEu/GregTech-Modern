@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -49,7 +49,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         super(info, tier, tankScalingFunction);
 
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING, hazardStrengthPerOperation);
+        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                hazardStrengthPerOperation);
     }
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {

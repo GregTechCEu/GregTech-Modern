@@ -30,7 +30,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     public AirScrubberMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, GTMachineUtils.largeTankSizeFunction);
-        this.cleanerTrait = new EnvironmentalHazardCleanerTrait(this, tier/2, this::validateCleaningOperation);
+        this.cleanerTrait = new EnvironmentalHazardCleanerTrait(this, tier / 2, this::validateCleaningOperation);
     }
 
     @Override
@@ -61,7 +61,8 @@ public class AirScrubberMachine extends SimpleTieredMachine {
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
         if (super.beforeWorking(recipe) && recipe != null) {
             // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
-            return cleanerTrait.beginCleaningOperation(currentRecipeMedicalCondition, MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1));
+            return cleanerTrait.beginCleaningOperation(currentRecipeMedicalCondition,
+                    MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1));
         }
         return false;
     }

@@ -9,15 +9,19 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import net.minecraft.server.level.ServerLevel;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.server.level.ServerLevel;
 
 /**
  * trait for environmental hazard (e.g. pollution) emitters like mufflers.
  */
 public class EnvironmentalHazardEmitterTrait extends MachineTrait {
-    public static final MachineTraitType<EnvironmentalHazardEmitterTrait> TYPE = new MachineTraitType<>(EnvironmentalHazardEmitterTrait.class);
+
+    public static final MachineTraitType<EnvironmentalHazardEmitterTrait> TYPE = new MachineTraitType<>(
+            EnvironmentalHazardEmitterTrait.class);
 
     @Getter
     @Setter
@@ -26,7 +30,8 @@ public class EnvironmentalHazardEmitterTrait extends MachineTrait {
     @Setter
     protected MedicalCondition conditionToEmit;
 
-    public EnvironmentalHazardEmitterTrait(MetaMachine machine, MedicalCondition conditionToEmit, float emissionStrength) {
+    public EnvironmentalHazardEmitterTrait(MetaMachine machine, MedicalCondition conditionToEmit,
+                                           float emissionStrength) {
         super(machine);
         this.conditionToEmit = conditionToEmit;
         this.emissionStrength = emissionStrength;
@@ -57,4 +62,3 @@ public class EnvironmentalHazardEmitterTrait extends MachineTrait {
         }
     }
 }
-
