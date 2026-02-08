@@ -53,6 +53,8 @@ public abstract class MachineTrait implements ISyncManaged {
         return capabilityValidator.test(side);
     }
 
+    public BlockPos getBlockPos() {return machine.getBlockPos();}
+
     @Override
     public void markAsChanged() {
         machine.markAsChanged();
