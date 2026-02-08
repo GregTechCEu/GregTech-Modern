@@ -158,26 +158,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ***** Machine Lifecycle ******//
     //////////////////////////////////////
 
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        if (player instanceof ServerPlayer sPlayer) {
-            ownerUUID = sPlayer.getUUID();
-        }
-
-        if (this instanceof IDropSaveMachine dropSaveMachine) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null) {
-                dropSaveMachine.loadFromItem(tag);
-            }
-        }
-    }
-
-    public void onRemoved() {
-        for (Direction direction : GTUtil.DIRECTIONS) {
-            getCoverContainer().removeCover(direction, null);
-        }
-        if (this instanceof IMachineLife l) l.onMachineRemoved();
-    }
-
     @Override
     public void load(CompoundTag tag) {
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
@@ -197,14 +177,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public void setRenderState(MachineRenderState renderState) {
-        this.renderState = renderState;
-        if (level != null && !level.isClientSide) {
-            syncDataHolder.markClientSyncFieldDirty("renderState");
-        }
-        scheduleRenderUpdate();
-    }
-
     @Override
     public final void setRemoved() {
         super.setRemoved();
@@ -219,6 +191,25 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             serverTick.unsubscribe();
         }
         serverTicks.clear();
+    }
+
+    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
+        if (player instanceof ServerPlayer sPlayer) {
+            ownerUUID = sPlayer.getUUID();
+        }
+
+        if (this instanceof IDropSaveMachine dropSaveMachine) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null) {
+                dropSaveMachine.loadFromItem(tag);
+            }
+        }
+    }
+
+    public void onMachineDestroyed() {
+        for (Direction direction : GTUtil.DIRECTIONS) {
+            getCoverContainer().removeCover(direction, null);
+        }
     }
 
     //////////////////////////////////////
@@ -479,6 +470,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             return true;
         }
         return false;
+    }
+
+    public void setRenderState(MachineRenderState renderState) {
+        this.renderState = renderState;
+        if (level != null && !level.isClientSide) {
+            syncDataHolder.markClientSyncFieldDirty("renderState");
+        }
+        scheduleRenderUpdate();
     }
 
     public void setPaintingColor(int color) {

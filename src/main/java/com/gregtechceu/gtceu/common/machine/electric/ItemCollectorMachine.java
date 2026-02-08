@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -56,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemCollectorMachine extends TieredEnergyMachine
-                                  implements IFancyUIMachine, IMachineLife, IWorkable {
+                                  implements IFancyUIMachine, IWorkable {
 
     @Getter
     private static final int[] INVENTORY_SIZES = { 4, 9, 16, 25, 25 };
@@ -173,7 +172,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(chargerInventory);
         clearInventory(output.storage);
     }

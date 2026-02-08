@@ -415,7 +415,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
         clearInventory(patternInventory);
         clearInventory(shareInventory);
     }
