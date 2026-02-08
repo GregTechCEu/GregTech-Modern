@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +30,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -129,8 +129,10 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
                 this::getVoidingMode, this::setVoidingMode);
-        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets, this::setGlobalTransferSizeMillibuckets);
-        EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode, this::setBucketMode);
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
+                this::setGlobalTransferSizeMillibuckets);
+        EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
+                this::setBucketMode);
 
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);
@@ -142,8 +144,9 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
                 .build()
                 .marginTop(2));
 
-        column.child(GTMuiWidgets.createIntInputWithBucketMode(voidingLimit, bucketModeSync, getVoidingMode().maxStackSize)
-                .setEnabledIf($ -> shouldShowStackSize()));
+        column.child(
+                GTMuiWidgets.createIntInputWithBucketMode(voidingLimit, bucketModeSync, getVoidingMode().maxStackSize)
+                        .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;
     }

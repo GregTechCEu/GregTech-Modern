@@ -43,7 +43,6 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -122,7 +121,6 @@ public class GTMuiWidgets {
                         power.getBoolValue() ? "behaviour.soft_hammer.enabled" :
                                 "behaviour.soft_hammer.disabled"))));
     }
-
 
     public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
         return createPowerButton(
@@ -361,12 +359,12 @@ public class GTMuiWidgets {
     }
 
     public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
-
         var cycleButton = new CycleButtonWidget()
                 .stateCount(allowExtendedIO ? 4 : 2)
                 .stateOverlay(IO.IN, IO.IN.getUiTexture())
                 .stateOverlay(IO.OUT, IO.OUT.getUiTexture())
-                .tooltipBuilder(r -> r.addLine(IKey.dynamic(() -> Component.translatable(syncValue.getValue().getTooltip()))));
+                .tooltipBuilder(
+                        r -> r.addLine(IKey.dynamic(() -> Component.translatable(syncValue.getValue().getTooltip()))));
 
         if (allowExtendedIO) {
             cycleButton.stateOverlay(IO.BOTH, IO.BOTH.getUiTexture());
@@ -375,7 +373,6 @@ public class GTMuiWidgets {
 
         return cycleButton;
     }
-
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
                                                                               Function<ItemStack, S> filterLoader,
@@ -479,10 +476,13 @@ public class GTMuiWidgets {
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
     }
 
-
-    public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue, EnumSyncValue<BucketMode> bucketModeSyncValue, int maxMB) {
-        StringSyncValue formattedValue = new StringSyncValue(() -> String.valueOf((intSyncValue.getValue()/bucketModeSyncValue.getValue().multiplier)),
-                (v) -> intSyncValue.setValue(Integer.parseInt(v)*bucketModeSyncValue.getValue().multiplier, true, true));
+    public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue,
+                                                               EnumSyncValue<BucketMode> bucketModeSyncValue,
+                                                               int maxMB) {
+        StringSyncValue formattedValue = new StringSyncValue(
+                () -> String.valueOf((intSyncValue.getValue() / bucketModeSyncValue.getValue().multiplier)),
+                (v) -> intSyncValue.setValue(Integer.parseInt(v) * bucketModeSyncValue.getValue().multiplier, true,
+                        true));
 
         return Flow.row()
                 .coverChildrenHeight()
@@ -491,7 +491,8 @@ public class GTMuiWidgets {
                 .child(new ButtonWidget<>()
                         .width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button)) * bucketModeSyncValue.getValue().multiplier);
+                            int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button)) *
+                                    bucketModeSyncValue.getValue().multiplier);
                             val = Mth.clamp(val, 0, maxMB);
                             intSyncValue.setIntValue(val, true, true);
                             return true;
@@ -503,7 +504,8 @@ public class GTMuiWidgets {
                         .setTextColor(Color.WHITE.darker(1))
                         .setNumbers(0, maxMB)
                         .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1)) * bucketModeSyncValue.getValue().multiplier);
+                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1)) *
+                                    bucketModeSyncValue.getValue().multiplier);
                             int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB);
                             intSyncValue.setIntValue(val, true, true);
                             return true;
@@ -512,9 +514,10 @@ public class GTMuiWidgets {
                         .background(GTGuiTextures.DISPLAY))
                 .child(new ButtonWidget<>()
                         .right(18)
-                       .width(18)
+                        .width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button)) * bucketModeSyncValue.getValue().multiplier);
+                            int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button)) *
+                                    bucketModeSyncValue.getValue().multiplier);
                             val = Mth.clamp(val, 0, maxMB);
                             intSyncValue.setIntValue(val, true, true);
                             return true;
@@ -524,8 +527,7 @@ public class GTMuiWidgets {
                         .right(0)
                         .width(18)
                         .value(bucketModeSyncValue)
-                        .background(BucketMode.BUCKET.getIcon(), BucketMode.MILLI_BUCKET.getIcon())
-                );
+                        .background(BucketMode.BUCKET.getIcon(), BucketMode.MILLI_BUCKET.getIcon()));
     }
 
     public static class EnumRowBuilder<T extends Enum<T>> {

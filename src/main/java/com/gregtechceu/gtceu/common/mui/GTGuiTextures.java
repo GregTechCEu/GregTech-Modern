@@ -437,7 +437,8 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_CLEAR_GRID = fullImage("textures/gui/widget/button_clear_grid.png", null);
 
     public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
-    public static final UITexture BUTTON_DETECTOR_INVERT = fullImage("textures/gui/widget/button_detector_cover_inverted.png");
+    public static final UITexture BUTTON_DETECTOR_INVERT = fullImage(
+            "textures/gui/widget/button_detector_cover_inverted.png");
     public static final UITexture BUTTON_REDSTONE_ON = fullImage("textures/gui/widget/button_redstone_on.png");
     public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");
