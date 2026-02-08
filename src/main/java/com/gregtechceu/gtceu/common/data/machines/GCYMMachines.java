@@ -655,7 +655,6 @@ public class GCYMMachines {
                 var builder = MultiblockShapeInfo.builder()
                         .where('S', definition, Direction.NORTH)
                         .where('C', CASING_WATERTIGHT.getDefaultState())
-                        .where('M', MUFFLER_HATCH[IV], Direction.UP)
                         .where('X', PARALLEL_HATCH[IV], Direction.NORTH)
                         .where('H', FLUID_IMPORT_HATCH[IV], Direction.NORTH)
                         .where('B', ITEM_EXPORT_BUS[IV], Direction.NORTH)
@@ -675,7 +674,7 @@ public class GCYMMachines {
                 List<String> aisle3 = new ArrayList<>(16);
                 aisle3.add("CCCCC");
                 aisle3.add("C###C");
-                aisle3.add("#CMC#");
+                aisle3.add("#CCC#");
                 List<String> aisle4 = new ArrayList<>(16);
                 aisle4.add("CCCCC");
                 aisle4.add("C###C");
