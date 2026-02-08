@@ -39,32 +39,42 @@ import java.util.function.Supplier;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
-    private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    private void updateText(ItemStack stack, PlaceholderContext ctx) {
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 getPlaceholderText(stack),
-                new PlaceholderContext(
-                        group.getTargetLevel(machine.getLevel()),
-                        group.getTarget(machine.getLevel()),
-                        group.getTargetCoverSide(),
-                        group.getPlaceholderSlotsHandler(),
-                        group.getTargetCover(machine.getLevel()),
-                        null,
-                        stack.getOrCreateTag().getUUID("placeholderUUID")));
+                ctx);
         stack.getOrCreateTag().put("text", text.toTag());
+    }
+
+    private PlaceholderContext makeContext(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        return new PlaceholderContext(
+                group.getTargetLevel(machine.getLevel()),
+                group.getTarget(machine.getLevel()),
+                group.getTargetCoverSide(),
+                group.getPlaceholderSlotsHandler(),
+                group.getTargetCover(machine.getLevel()),
+                null,
+                stack.getOrCreateTag().contains("placeholderUUID") ? stack.getOrCreateTag().getUUID("placeholderUUID") :
+                        null);
     }
 
     @Override
     public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        this.updateText(stack, machine, group);
+        this.updateText(stack, makeContext(stack, machine, group));
     }
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {
+        this.updateText(stack, context);
+    }
+
+    @Override
+    public IMonitorRenderer getRenderer(ItemStack stack) {
         return new MonitorTextRenderer(
-                getText(stack).toImmutable(),
+                getText(stack),
                 Math.max(getScale(stack), .0001));
     }
 
@@ -123,7 +133,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public MultiLineComponent getText(ItemStack stack) {
-        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().get("text"));
     }
 
     public double getScale(ItemStack stack) {

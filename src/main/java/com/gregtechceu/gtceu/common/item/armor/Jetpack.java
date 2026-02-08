@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
@@ -61,11 +61,11 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         String messageKey = null;
         if (toggleTimer == 0) {
-            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
                 messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
                 data.putBoolean("enabled", jetpackEnabled);
-            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+            } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
                 messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
                 data.putBoolean("hover", hoverMode);

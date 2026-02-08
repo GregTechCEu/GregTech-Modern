@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -296,5 +297,21 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
             }
             sideCoverSlot.onContentsChanged(0);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putBoolean("inverted", isInverted);
+        tag.putInt("redstoneLvl", minRedstoneStrength);
+        tag.putBoolean("preventPowerfail", preventPowerFail);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setInverted(tag.getBoolean("inverted"));
+        setMinRedstoneStrength(tag.getInt("redstoneLvl"));
+        preventPowerFail = tag.getBoolean("preventPowerfail");
+        super.pasteConfig(player, tag);
     }
 }

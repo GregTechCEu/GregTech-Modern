@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class RecipeRunner {
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
     private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
     private final Predicate<RecipeCapability<?>> outputVoid;
+    @Getter
+    private int groupColor;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -49,6 +53,7 @@ public class RecipeRunner {
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
         this.outputVoid = cap -> holder instanceof IVoidable voidable && voidable.canVoidRecipeOutputs(cap);
+        this.groupColor = recipe.groupColor;
     }
 
     @NotNull
@@ -163,6 +168,13 @@ public class RecipeRunner {
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
+            if (handlerListEntry.getKey() instanceof RecipeHandlerGroupColor coloredGroup) {
+                if (io == IO.IN && simulated && !isTick) {
+                    groupColor = coloredGroup.color();
+                } else if (coloredGroup.color() != -1 && coloredGroup.color() != groupColor) {
+                    continue;
+                }
+            }
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
 

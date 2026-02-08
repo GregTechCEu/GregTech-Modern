@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
@@ -142,11 +143,10 @@ public class TagPrefix {
                             .sound(SoundType.DEEPSLATE),
                     new ResourceLocation("block/deepslate"), false, false, true);
 
-    // TODO figure out a composition for tuff
     public static final TagPrefix oreTuff = oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
             .registerOre(
-                    Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of()
+                    Blocks.TUFF::defaultBlockState, () -> GTMaterials.Tuff, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
                             .sound(SoundType.TUFF),
                     new ResourceLocation("block/tuff"));
@@ -187,10 +187,9 @@ public class TagPrefix {
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
                     new ResourceLocation("block/netherrack"), true, false, true);
 
-    // TODO figure out a composition for blackstone
     public static final TagPrefix oreBlackstone = oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Blackstone %s Ore")
-            .registerOre(Blocks.BLACKSTONE::defaultBlockState, null,
+            .registerOre(Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
@@ -1232,6 +1231,17 @@ public class TagPrefix {
         return generateBlock && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
                 hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
+    }
+
+    public MaterialIconType getMaterialIconType(Material material) {
+        // special case emissive ores
+        if (materialIconType == MaterialIconType.ore && material.hasProperty(PropertyKey.ORE)) {
+            OreProperty oreProp = material.getProperty(PropertyKey.ORE);
+            if (oreProp.isEmissive()) {
+                return MaterialIconType.oreEmissive;
+            }
+        }
+        return materialIconType;
     }
 
     public String getLowerCaseName() {

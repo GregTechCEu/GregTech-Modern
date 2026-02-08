@@ -96,7 +96,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
 
         public void write(FriendlyByteBuf buffer, NBTPredicateIngredient ingredient) {
             buffer.writeItem(ingredient.stack);
-            buffer.writeUtf(ingredient.toJson().toString());
+            buffer.writeUtf(ingredient.predicate.toJson().toString());
         }
     }
 }

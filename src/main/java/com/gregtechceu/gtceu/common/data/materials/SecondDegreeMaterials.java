@@ -107,7 +107,7 @@ public class SecondDegreeMaterials {
         Apatite = new Material.Builder(GTCEu.id("apatite"))
                 .gem(1).ore(4, 2)
                 .color(0x06cdf1).secondaryColor(0x701c07).iconSet(DIAMOND)
-                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
+                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, DISABLE_DECOMPOSITION)
                 .components(Calcium, 5, Phosphate, 3, Chlorine, 1)
                 .buildAndRegister();
 
@@ -530,6 +530,13 @@ public class SecondDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS)
+                .buildAndRegister();
+
+        Tuff = new Material.Builder(GTCEu.id("tuff"))
+                .dust()
+                .color(0x75756a).secondaryColor(0x8a8a80).iconSet(ROUGH)
+                .flags(NO_SMASHING)
+                .components(Ash, 2, PotassiumFeldspar, 1)
                 .buildAndRegister();
     }
 }

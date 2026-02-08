@@ -42,7 +42,7 @@ public interface ModifierFunction {
     /**
      * Use this static to denote that the recipe doesn't get modified
      */
-    ModifierFunction IDENTITY = recipe -> recipe;
+    ModifierFunction IDENTITY = ModifierFunction.builder().build();
 
     /**
      * Applies this modifier to the passed recipe
@@ -108,11 +108,11 @@ public interface ModifierFunction {
         private ContentModifier outputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickInputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickOutputModifier = ContentModifier.IDENTITY;
-        private final List<RecipeCondition> addedConditions = new ArrayList<>();
+        private final List<RecipeCondition<?>> addedConditions = new ArrayList<>();
 
         public FunctionBuilder() {}
 
-        public FunctionBuilder conditions(RecipeCondition... conditions) {
+        public FunctionBuilder conditions(RecipeCondition<?>... conditions) {
             addedConditions.addAll(Arrays.asList(conditions));
             return this;
         }
@@ -159,7 +159,7 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
-                        recipe.data, recipe.duration, recipe.recipeCategory);
+                        recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
                 copied.parallels = recipe.parallels * parallels;
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;
