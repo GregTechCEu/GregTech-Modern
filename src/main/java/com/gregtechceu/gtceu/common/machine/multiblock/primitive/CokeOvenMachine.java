@@ -2,18 +2,22 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -32,34 +36,48 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets.createTankWidget;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMachine {
+public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMachine {
 
     public CokeOvenMachine(BlockEntityCreationInfo info) {
         super(info);
     }
 
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.PRIMITIVE_BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new SlotWidget(importItems.storage, 0, 52, 30, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 76, 32, 20, 15,
-                        GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
-                .widget(new SlotWidget(exportItems.storage, 0, 103, 30, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-                .widget(new TankWidget(exportFluids.getStorages()[0], 134, 13, 20, 58, true, false)
-                        .setBackground(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setShowAmountOverlay(false)
-                        .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84,
-                        true));
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 166)
+                // Top half of the screen
+                .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
+                        new ModularSlot(importItems.storage, 0)
+                                .slotGroup(new SlotGroup("import_items", 1))))
+                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
+                        .margin(52, 0, 30, 0))
+
+                .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
+                        new ModularSlot(exportItems.storage, 0)
+                                .slotGroup(new SlotGroup("export_items", 1))
+                                .accessibility(false, true)))
+                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
+                        .margin(103, 0, 30, 0))
+                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
+
+                .child(createTankWidget()
+                        .overlayTexture(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
+                        .background(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
+                        .syncHandler(new FluidSlotSyncHandler(
+                                exportFluids.getStorages()[0])
+                                .canFillSlot(false))
+                        .margin(134, 0, 13, 0))
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) uiTheme.getPanelTheme().getTheme()
+                        .getBackground()))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     @Override

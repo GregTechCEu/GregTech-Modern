@@ -1,9 +1,20 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -15,6 +26,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -97,42 +109,76 @@ public class SimpleItemFilter implements ItemFilter {
         onUpdated.accept(this);
     }
 
+    @Override
     public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
+        return null;
+    }
 
-                var handler = new CustomItemStackHandler(matches[index]);
+    @Override
+    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
-                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .mapTo(3, 9, i -> new PhantomItemSlot()
+                        .size(16)
+                        .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
+                                .changeListener((stack, amount, client, init) -> {
+                                    handler.setStackInSlot(i, stack);
+                                }).ignoreMaxStackSize(true).accessibility(true, false))));
 
-                    @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setMaxStackSize(maxStackSize);
-                    }
+        return new Dialog<>("simple_item_filter")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(Flow.row()
+                        .top(10)
+                        .coverChildrenHeight()
+                        .child(filterGrid.horizontalCenter()))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
 
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
-                        setMaxStackSize(maxStackSize);
-                    }
-                };
+    private static class FilterItemStackHandler extends CustomItemStackHandler {
 
-                slot.setChangeListener(() -> {
-                    matches[index] = handler.getStackInSlot(0);
-                    onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
+        private ItemStack[] matches;
+        private SimpleItemFilter filter;
 
-                group.addWidget(slot);
-            }
+        public FilterItemStackHandler(ItemStack[] matches, SimpleItemFilter simpleItemFilter) {
+            super(matches.length);
+            this.matches = matches;
+            this.filter = simpleItemFilter;
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-        return group;
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return matches[slot];
+        }
+
+        @Override
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (amount >= matches[slot].getCount()) {
+                matches[slot] = ItemStack.EMPTY;
+            }
+            return matches[slot];
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+            super.setStackInSlot(slot, stack);
+            matches[slot] = stack.copyWithCount(1);
+            filter.onUpdated.accept(filter);
+        }
     }
 
     @Override

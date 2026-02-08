@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +15,11 @@ import java.util.function.Predicate;
 public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
     WidgetGroup openConfigurator(int x, int y);
+
+    /**
+     * @return Filter panel when opened by itself (including the player inventory)
+     */
+    ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
 
     CompoundTag saveFilter();
 

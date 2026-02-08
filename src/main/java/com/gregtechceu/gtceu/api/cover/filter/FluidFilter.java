@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -56,6 +61,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         @Override
         public WidgetGroup openConfigurator(int x, int y) {
             throw new NotImplementedException("Not available for empty fluid filter");
+        }
+
+        @Override
+        public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+            return null;
         }
 
         @Override
