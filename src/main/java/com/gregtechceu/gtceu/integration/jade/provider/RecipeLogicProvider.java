@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -63,22 +60,10 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     }
 
     public static long getVoltage(RecipeLogic capability) {
-        long voltage = -1;
-        if (capability.machine instanceof SimpleTieredMachine machine) {
-            voltage = GTValues.V[machine.getTier()];
-        } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
-            voltage = GTValues.V[machine.getTier()];
-        } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
-            voltage = machine.getParts().stream()
-                    .filter(EnergyHatchPartMachine.class::isInstance)
-                    .map(EnergyHatchPartMachine.class::cast)
-                    .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
-                    .max()
-                    .orElse(-1);
-        }
+        long voltage = capability.machine.getDisplayRecipeVoltage();
+
         // default display as LV, this shouldn't happen because a machine is either electric or steam
-        if (voltage == -1) voltage = 32;
-        return voltage;
+        return voltage == -1 ? GTValues.V[GTValues.LV] : voltage;
     }
 
     @Override
@@ -141,6 +126,20 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     } else {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
                     }
+                }
+            }
+        } else {
+            if (blockEntity instanceof MetaMachineBlockEntity mbe &&
+                    mbe.metaMachine instanceof IRecipeLogicMachine rlm) {
+                var logic = rlm.getRecipeLogic();
+
+                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
+                    Component status = logic.isWaiting() ?
+                            Component.translatable("gtceu.recipe_logic.recipe_waiting")
+                                    .withStyle(ChatFormatting.YELLOW) :
+                            Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
+                    tooltip.add(status);
+                    logic.getFancyTooltip().forEach(tooltip::add);
                 }
             }
         }

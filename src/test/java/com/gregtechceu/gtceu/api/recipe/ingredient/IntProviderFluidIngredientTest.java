@@ -78,7 +78,14 @@ public class IntProviderFluidIngredientTest {
         CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_centrifuge_tests",
                 GTRecipeTypes.CENTRIFUGE_RECIPES);
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+        var LCRHandler = LCR_RECIPE_TYPE.getAdditionHandler();
+        LCRHandler.beginStaging();
+        var centHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
+        centHandler.beginStaging();
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cr"))
                 .inputFluidsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -87,7 +94,7 @@ public class IntProviderFluidIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cr"))
                 .inputFluids(CR_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
@@ -95,7 +102,7 @@ public class IntProviderFluidIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_lcr"))
                 .inputFluidsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputFluids(RUBBER)
@@ -104,7 +111,7 @@ public class IntProviderFluidIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_lcr"))
                 .inputFluids(LCR_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
@@ -112,7 +119,7 @@ public class IntProviderFluidIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cent"))
                 .inputFluidsRanged(LCENT_IN, UniformInt.of(0, 40))
                 .inputItems(COBBLE)
@@ -121,13 +128,17 @@ public class IntProviderFluidIngredientTest {
                 .duration(4)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cent"))
                 .inputFluids(LCENT_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 40))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
+
+        CRHandler.completeStaging();
+        LCRHandler.completeStaging();
+        centHandler.completeStaging();
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
@@ -585,7 +596,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -657,7 +670,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -731,7 +746,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -803,7 +820,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -877,7 +896,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 500)
+              timeoutTicks = 500,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -954,7 +975,9 @@ public class IntProviderFluidIngredientTest {
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
-              timeoutTicks = 500)
+              timeoutTicks = 500,
+              requiredSuccesses = 1,
+              attempts = 10)
     public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 

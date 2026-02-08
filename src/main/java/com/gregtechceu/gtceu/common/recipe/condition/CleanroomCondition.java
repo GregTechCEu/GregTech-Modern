@@ -23,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class CleanroomCondition extends RecipeCondition {
+public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
 
-    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom))
-                    .apply(instance, CleanroomCondition::new));
-    public final static CleanroomCondition INSTANCE = new CleanroomCondition();
+    // spotless:off
+    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom)
+    ).apply(instance, CleanroomCondition::new));
+    // spotless:on
 
     @Getter
     private CleanroomType cleanroom = CleanroomType.CLEANROOM;
@@ -40,7 +40,7 @@ public class CleanroomCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<CleanroomCondition> getType() {
         return GTRecipeConditions.CLEANROOM;
     }
 
@@ -66,7 +66,7 @@ public class CleanroomCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public CleanroomCondition createTemplate() {
         return new CleanroomCondition();
     }
 }

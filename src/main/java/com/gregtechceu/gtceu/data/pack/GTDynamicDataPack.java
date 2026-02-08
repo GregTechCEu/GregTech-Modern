@@ -68,7 +68,7 @@ public class GTDynamicDataPack implements PackResources {
     public static void addRecipe(FinishedRecipe recipe) {
         JsonObject recipeJson = recipe.serializeRecipe();
         byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
-        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
+        Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
         ResourceLocation recipeId = recipe.getId();
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeBytes);
