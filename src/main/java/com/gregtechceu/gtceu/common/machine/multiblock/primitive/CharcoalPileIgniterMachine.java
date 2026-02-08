@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -46,8 +47,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
     private static final int MIN_RADIUS = 1;

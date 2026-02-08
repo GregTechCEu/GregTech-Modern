@@ -39,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
-                          IDropSaveMachine, IInteractedMachine {
+                          IDropSaveMachine {
 
     public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
 
@@ -103,7 +103,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
