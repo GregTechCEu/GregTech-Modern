@@ -12,46 +12,46 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
-public class ExplodableMachineTrait extends MachineTrait {
+public class EnvironmentalExplosionTrait extends MachineTrait {
 
-    public static final MachineTraitType<ExplodableMachineTrait> TYPE = new MachineTraitType<>(
-            ExplodableMachineTrait.class);
+    public static final MachineTraitType<EnvironmentalExplosionTrait> TYPE = new MachineTraitType<>(
+            EnvironmentalExplosionTrait.class);
 
     private @Nullable TickableSubscription explosionSub = null;
 
-    private boolean shouldExplodeInWeatherAndWater;
+    private boolean enableEnvironmentalExplosions;
     @Getter
     @Setter
     private float explosionPower, fireChance;
     @Setter
-    private Supplier<Boolean> explosionPredicate;
+    private BooleanSupplier explosionPredicate;
 
-    public ExplodableMachineTrait(MetaMachine machine, float explosionPower, float fireChance,
-                                  Supplier<Boolean> explosionPredicate) {
+    public EnvironmentalExplosionTrait(MetaMachine machine, float explosionPower, float fireChance,
+                                       BooleanSupplier explosionPredicate) {
         super(machine);
-        shouldExplodeInWeatherAndWater = true;
+        enableEnvironmentalExplosions = true;
         this.explosionPredicate = explosionPredicate;
         this.explosionPower = explosionPower;
         this.fireChance = fireChance;
     }
 
-    public ExplodableMachineTrait(MetaMachine machine, float explosionPower, float fireChance) {
+    public EnvironmentalExplosionTrait(MetaMachine machine, float explosionPower, float fireChance) {
         this(machine, explosionPower, fireChance, () -> true);
     }
 
     @Override
-    public MachineTraitType<ExplodableMachineTrait> getTraitType() {
+    public MachineTraitType<EnvironmentalExplosionTrait> getTraitType() {
         return TYPE;
     }
 
-    public boolean shouldExplodeInWeatherAndWater() {
-        return shouldExplodeInWeatherAndWater;
+    public boolean enableEnvironmentalExplosions() {
+        return enableEnvironmentalExplosions;
     }
 
-    public void setShouldExplodeInWeatherAndWater(boolean value) {
-        shouldExplodeInWeatherAndWater = value;
+    public void setEnableEnvironmentalExplosions(boolean value) {
+        enableEnvironmentalExplosions = value;
         updateSubscription();
     }
 
@@ -67,24 +67,24 @@ public class ExplodableMachineTrait extends MachineTrait {
     }
 
     private void updateSubscription() {
-        if (!isRemote() && shouldExplodeInWeatherAndWater &&
+        if (!isRemote() && enableEnvironmentalExplosions &&
                 ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion) {
-            explosionSub = subscribeServerTick(explosionSub, this::checkExplosion);
+            explosionSub = subscribeServerTick(explosionSub, this::checkEnvironment);
         } else {
             if (explosionSub != null) explosionSub.unsubscribe();
             explosionSub = null;
         }
     }
 
-    private void checkExplosion() {
-        if (!shouldExplodeInWeatherAndWater || !explosionPredicate.get()) return;
+    private void checkEnvironment() {
+        if (!enableEnvironmentalExplosions || !explosionPredicate.getAsBoolean()) return;
         var level = machine.getLevel();
         var pos = getBlockPos();
         if (GTValues.RNG.nextInt(1000) == 0) {
             for (Direction side : GTUtil.DIRECTIONS) {
                 var fluidState = level.getBlockState(pos.relative(side)).getFluidState();
                 if (!fluidState.isEmpty()) {
-                    doExplosion();
+                    GTUtil.doExplosion(level, pos, explosionPower);
                     return;
                 }
             }
@@ -93,23 +93,11 @@ public class ExplodableMachineTrait extends MachineTrait {
             if (level.isRainingAt(pos) || level.isRainingAt(pos.east()) || level.isRainingAt(pos.west()) ||
                     level.isRainingAt(pos.north()) || level.isRainingAt(pos.south())) {
                 if (level.isThundering() && GTValues.RNG.nextInt(3) == 0) {
-                    doExplosion();
+                    GTUtil.doExplosion(level, pos, explosionPower);
                 } else if (GTValues.RNG.nextInt(10) == 0) {
-                    doExplosion();
-                } else setOnFire();
+                    GTUtil.doExplosion(level, pos, explosionPower);
+                } else GTUtil.setOnFire(level, pos, fireChance);
             }
         }
-    }
-
-    public void doExplosion() {
-        GTUtil.doExplosion(getLevel(), getBlockPos(), explosionPower);
-    }
-
-    public void doExplosion(float power) {
-        GTUtil.doExplosion(getLevel(), getBlockPos(), power);
-    }
-
-    public void setOnFire() {
-        GTUtil.setOnFire(getLevel(), getBlockPos(), fireChance);
     }
 }

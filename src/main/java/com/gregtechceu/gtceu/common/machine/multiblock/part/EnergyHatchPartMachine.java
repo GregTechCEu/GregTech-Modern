@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
@@ -30,7 +30,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
         super(info, tier, io);
         this.amperage = amperage;
         this.energyContainer = createEnergyContainer();
-        new ExplodableMachineTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
+        new EnvironmentalExplosionTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
     }
 
     //////////////////////////////////////

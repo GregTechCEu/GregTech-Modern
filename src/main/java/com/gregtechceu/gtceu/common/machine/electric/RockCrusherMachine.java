@@ -8,6 +8,6 @@ public class RockCrusherMachine extends SimpleTieredMachine {
 
     public RockCrusherMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, GTMachineUtils.defaultTankSizeFunction);
-        explodableMachineTrait.setShouldExplodeInWeatherAndWater(false);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 }

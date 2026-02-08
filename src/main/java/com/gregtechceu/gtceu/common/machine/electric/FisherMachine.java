@@ -123,7 +123,7 @@ public class FisherMachine extends TieredEnergyMachine
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
         autoOutput = AutoOutputTrait.ofItems(this, cache);
-        explodableMachineTrait.setShouldExplodeInWeatherAndWater(false);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 
     public void setWorkingEnabled(boolean enabled) {

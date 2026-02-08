@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExplodableMachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -31,13 +31,13 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @SyncToClient
     public final NotifiableEnergyContainer energyContainer;
     @Getter
-    protected final ExplodableMachineTrait explodableMachineTrait;
+    protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
                                Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
         super(info, tier);
         energyContainer = energyContainerSupplier.apply(this);
-        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10,
+        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0);
     }
 
@@ -52,7 +52,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             energyContainer = NotifiableEnergyContainer.receiverContainer(this,
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
         }
-        explodableMachineTrait = new ExplodableMachineTrait(this, tier, tier * 10,
+        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0);
     }
 
