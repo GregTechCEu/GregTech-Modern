@@ -185,7 +185,7 @@ public class RobotArmCover extends ConveyorCover {
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
 
-        column.child(new EnumRowBuilder<>(TransferMode.class)
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
                 .value(transferMode)
                 .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
                 .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))

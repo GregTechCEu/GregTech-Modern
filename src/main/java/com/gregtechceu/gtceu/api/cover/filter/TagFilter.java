@@ -59,8 +59,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString);
-        RichTooltip infoTooltip = new RichTooltip();
-        LangHandler.getMultiLang("cover.tag_filter.info").forEach(v -> infoTooltip.addLine(v.getString()));
+        RichTooltip infoTooltip = new RichTooltip().addMultiLine("cover.tag_filter.info");
 
         var inputRow = Flow.row().margin(7).coverChildren().horizontalCenter()
                 .child(new TextFieldWidget().width(140).value(filterString))

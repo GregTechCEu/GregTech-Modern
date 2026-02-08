@@ -426,18 +426,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel panel = GTGuis.createPanel(this, 176, 192 + 18);
-
-        panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
-
-        return panel.child(createCoverUI(data, syncManager, settings))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-
-        // return IMuiCover.super.buildUI(data, syncManager, settings);
-    }
-
-    @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()
                 .top(7).margin(7, 0)
@@ -450,10 +438,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 this::getDistributionMode, this::setDistributionMode);
 
         IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
 
         syncManager.syncValue("manualMode", manualMode);
         syncManager.syncValue("distribution", distMode);
         syncManager.syncValue("throughput", transferRate);
+        syncManager.syncValue("io", ioSync);
 
         if (createThroughputRow()) {
             column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, 1, maxItemTransferRate));
@@ -462,13 +452,14 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         if (createFilterRow()) {
             column.child(
                     GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings)
+                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2))
                             .marginBottom(2));
         }
 
         if (createConveyorIORow()) {}
 
         if (createDistributionModeRow()) {
-            column.child(new EnumRowBuilder<>(DistributionMode.class)
+            column.child(new GTMuiWidgets.EnumRowBuilder<>(DistributionMode.class)
                     .value(distMode)
                     .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
                     .lang(IKey.dynamic(() -> Component.translatable(distributionMode.localeName)))
@@ -476,7 +467,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createManualIOModeRow()) {
-            column.child(new EnumRowBuilder<>(ManualIOMode.class)
+            column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                     .value(manualMode)
                     .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                     .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))

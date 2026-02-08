@@ -4,20 +4,27 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -46,11 +53,9 @@ public class FluidRegulatorCover extends PumpCover {
     @SaveField
     @SyncToClient
     @Getter
+    @Setter
     protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
-
-    private NumberInputWidget<Integer> transferSizeInput;
-    private EnumSelectorWidget<BucketMode> transferBucketModeInput;
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                                int maxTransferRate) {
@@ -154,26 +159,12 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
-        var oldMultiplier = this.transferBucketMode.multiplier;
-        var newMultiplier = transferBucketMode.multiplier;
-
         this.transferBucketMode = transferBucketMode;
         syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
-        if (transferSizeInput == null) return;
-
-        if (oldMultiplier > newMultiplier) {
-            transferSizeInput.setValue(getCurrentBucketModeTransferSize());
-        }
-        this.transferSizeInput.setMax(MAX_STACK_SIZE / this.transferBucketMode.multiplier);
-        if (newMultiplier > oldMultiplier) {
-            transferSizeInput.setValue(getCurrentBucketModeTransferSize());
-        }
     }
 
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
-
-        configureTransferSizeInput();
 
         if (!this.isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("transferMode");
@@ -186,8 +177,6 @@ public class FluidRegulatorCover extends PumpCover {
         if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
             filter.setMaxStackSize(transferMode == TransferMode.TRANSFER_ANY ? 1 : MAX_STACK_SIZE);
         }
-
-        configureTransferSizeInput();
     }
 
     private int getFilteredFluidAmount(FluidStack fluidStack) {
@@ -208,37 +197,29 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
-        this.transferSizeInput = new IntInputWidget(35, 45, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(0)
-                .setMax(Integer.MAX_VALUE);
-        configureTransferSizeInput();
-        group.addWidget(this.transferSizeInput);
+        var column = super.createCoverUI(data, syncManager, settings);
 
-        this.transferBucketModeInput = new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.transferBucketModeInput);
-    }
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit);
+        var transferBucketMode = new EnumSyncValue<>(BucketMode.class, this::getTransferBucketMode, this::setTransferBucketMode);
 
-    private int getCurrentBucketModeTransferSize() {
-        return this.globalTransferLimit / this.transferBucketMode.multiplier;
-    }
+        syncManager.syncValue("transferMode", transferMode);
+        syncManager.syncValue("transferSize", transferSize);
 
-    private void setCurrentBucketModeTransferSize(int transferSize) {
-        this.globalTransferLimit = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
-                MAX_STACK_SIZE);
-        syncDataHolder.markClientSyncFieldDirty("globalTransferLimit");
-    }
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
+                .value(transferMode)
+                .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
+                .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
+                .build());
 
-    private void configureTransferSizeInput() {
-        if (this.transferSizeInput == null || transferBucketModeInput == null)
-            return;
+        column.child(GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode, maxFluidTransferRate));
 
-        this.transferSizeInput.setVisible(shouldShowTransferSize());
-        this.transferBucketModeInput.setVisible(shouldShowTransferSize());
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, 1, MAX_STACK_SIZE)
+                .setEnabledIf($ -> shouldShowTransferSize()));
+
+        return column;
     }
 
     private boolean shouldShowTransferSize() {

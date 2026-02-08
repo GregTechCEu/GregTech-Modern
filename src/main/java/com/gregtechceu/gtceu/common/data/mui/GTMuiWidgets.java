@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -37,12 +38,15 @@ import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
@@ -118,6 +122,7 @@ public class GTMuiWidgets {
                         power.getBoolValue() ? "behaviour.soft_hammer.enabled" :
                                 "behaviour.soft_hammer.disabled"))));
     }
+
 
     public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
         return createPowerButton(
@@ -355,6 +360,23 @@ public class GTMuiWidgets {
         return new ParentWidget<>();
     }
 
+    public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
+
+        var cycleButton = new CycleButtonWidget()
+                .stateCount(allowExtendedIO ? 4 : 2)
+                .stateOverlay(IO.IN, IO.IN.getUiTexture())
+                .stateOverlay(IO.OUT, IO.OUT.getUiTexture())
+                .tooltipBuilder(r -> r.addLine(IKey.dynamic(() -> Component.translatable(syncValue.getValue().getTooltip()))));
+
+        if (allowExtendedIO) {
+            cycleButton.stateOverlay(IO.BOTH, IO.BOTH.getUiTexture());
+            cycleButton.stateOverlay(IO.NONE, IO.NONE.getUiTexture());
+        }
+
+        return cycleButton;
+    }
+
+
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
                                                                               Function<ItemStack, S> filterLoader,
                                                                               SidedPosGuiData data,
@@ -386,7 +408,7 @@ public class GTMuiWidgets {
                                 .changeListener((stack, amount, client, init) -> {
                                     filterButton.notifyUpdate(packet -> packet.writeItem(stack));
                                 }))
-                        .marginRight(4))
+                        .marginLeft(2))
                 .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
     }
 
@@ -455,5 +477,138 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
+    }
+
+
+    public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue, EnumSyncValue<BucketMode> bucketModeSyncValue, int maxMB) {
+        StringSyncValue formattedValue = new StringSyncValue(() -> String.valueOf((intSyncValue.getValue()/bucketModeSyncValue.getValue().multiplier)),
+                (v) -> intSyncValue.setValue(Integer.parseInt(v)*bucketModeSyncValue.getValue().multiplier, true, true));
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .marginBottom(2)
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button)) * bucketModeSyncValue.getValue().multiplier);
+                            val = Mth.clamp(val, 0, maxMB);
+                            intSyncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
+                .child(new TextFieldWidget()
+                        .left(18).right(36)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(0, maxMB)
+                        .onMouseScrolled((mouseX, mouseY, delta) -> {
+                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1)) * bucketModeSyncValue.getValue().multiplier);
+                            int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB);
+                            intSyncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .value(formattedValue)
+                        .background(GTGuiTextures.DISPLAY))
+                .child(new ButtonWidget<>()
+                        .right(18)
+                       .width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button)) * bucketModeSyncValue.getValue().multiplier);
+                            val = Mth.clamp(val, 0, maxMB);
+                            intSyncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))))
+                .child(new CycleButtonWidget()
+                        .right(0)
+                        .width(18)
+                        .value(bucketModeSyncValue)
+                        .background(BucketMode.BUCKET.getIcon(), BucketMode.MILLI_BUCKET.getIcon())
+                );
+    }
+
+    public static class EnumRowBuilder<T extends Enum<T>> {
+
+        private EnumSyncValue<T> syncValue;
+        private final Class<T> enumValue;
+        private IKey lang;
+        private IDrawable[] background;
+        private IDrawable selectedBackground;
+        private IDrawable[] overlay;
+
+        public EnumRowBuilder(Class<T> enumValue) {
+            this.enumValue = enumValue;
+        }
+
+        public EnumRowBuilder<T> value(EnumSyncValue<T> syncValue) {
+            this.syncValue = syncValue;
+            return this;
+        }
+
+        public EnumRowBuilder<T> lang(IKey lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public EnumRowBuilder<T> background(IDrawable... background) {
+            this.background = background;
+            return this;
+        }
+
+        public EnumRowBuilder<T> selectedBackground(IDrawable selectedBackground) {
+            this.selectedBackground = selectedBackground;
+            return this;
+        }
+
+        public EnumRowBuilder<T> overlay(IDrawable... overlay) {
+            this.overlay = overlay;
+            return this;
+        }
+
+        public EnumRowBuilder<T> overlay(int size, IDrawable... overlay) {
+            this.overlay = new IDrawable[overlay.length];
+            for (int i = 0; i < overlay.length; i++) {
+                this.overlay[i] = overlay[i].asIcon().size(size);
+            }
+            return this;
+        }
+
+        private BoolValue.Dynamic boolValueOf(EnumSyncValue<T> syncValue, T value) {
+            return new BoolValue.Dynamic(() -> syncValue.getValue() == value, $ -> syncValue.setValue(value));
+        }
+
+        public Flow build() {
+            var row = Flow.row().marginBottom(2).coverChildrenHeight().widthRel(1f);
+            if (this.enumValue != null && this.syncValue != null) {
+                for (var enumVal : enumValue.getEnumConstants()) {
+                    var button = new ToggleButton().size(18).marginRight(2)
+                            .value(boolValueOf(this.syncValue, enumVal));
+
+                    if (this.background != null && this.background.length > 0)
+                        button.background(this.background);
+                    else
+                        button.background(GTGuiTextures.MC_BUTTON);
+
+                    if (this.selectedBackground != null)
+                        button.selectedBackground(this.selectedBackground);
+                    else
+                        button.selectedBackground(GTGuiTextures.MC_BUTTON_DISABLED);
+
+                    if (this.overlay != null)
+                        button.overlay(this.overlay[enumVal.ordinal()]);
+
+                    if (enumVal instanceof StringRepresentable serializable) {
+                        button.addTooltipLine(IKey.lang(serializable.getSerializedName()));
+                    }
+                    row.child(button);
+                }
+            }
+
+            if (this.lang != null)
+                row.child(this.lang.asWidget().align(Alignment.CenterRight).height(18));
+
+            return row;
+        }
     }
 }

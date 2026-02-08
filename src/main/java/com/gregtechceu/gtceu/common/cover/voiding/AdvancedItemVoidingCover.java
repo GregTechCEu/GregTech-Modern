@@ -135,7 +135,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);
 
-        column.child(new EnumRowBuilder<>(VoidingMode.class)
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
                 .value(voidingMode)
                 .overlay(16, GTGuiTextures.VOIDING_MODES)
                 .lang(IKey.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))

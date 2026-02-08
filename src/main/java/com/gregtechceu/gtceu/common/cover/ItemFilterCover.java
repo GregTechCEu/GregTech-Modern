@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -125,13 +126,13 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
                 .coverChildrenHeight()
                 .child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
 
-        column.child(new EnumRowBuilder<>(FilterMode.class)
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
                 .value(filterMode)
                 .overlay(16, GTGuiTextures.FILTER_MODE_OVERLAY)
                 .lang(IKey.dynamic(() -> Component.translatable(getFilterMode().getTooltip())))
                 .build());
 
-        column.child(new EnumRowBuilder<>(ManualIOMode.class)
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                 .value(ioMode)
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                 .lang(IKey.dynamic(() -> Component.translatable(getAllowFlow().name())))

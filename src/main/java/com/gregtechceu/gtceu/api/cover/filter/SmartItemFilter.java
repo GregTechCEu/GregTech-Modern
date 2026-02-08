@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.ColorType;
@@ -98,7 +97,7 @@ public class SmartItemFilter implements ItemFilter {
                 .setDraggable(true)
                 .setCloseOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(new IMuiCover.EnumRowBuilder<>(SmartFilteringMode.class)
+                .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
                         .value(mode)
                         .overlay(16, SmartFilteringMode.getTextures())
                         .lang(IKey.dynamic(() -> Component.translatable(filterMode.localeName)))
