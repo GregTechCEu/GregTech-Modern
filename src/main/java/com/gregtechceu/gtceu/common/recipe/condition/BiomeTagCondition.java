@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class BiomeTagCondition extends RecipeCondition {
+public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
 
     public static final Codec<BiomeTagCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
@@ -42,7 +42,7 @@ public class BiomeTagCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<BiomeTagCondition> getType() {
         return GTRecipeConditions.BIOME_TAG;
     }
 
@@ -67,7 +67,7 @@ public class BiomeTagCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public BiomeTagCondition createTemplate() {
         return new BiomeTagCondition();
     }
 }
