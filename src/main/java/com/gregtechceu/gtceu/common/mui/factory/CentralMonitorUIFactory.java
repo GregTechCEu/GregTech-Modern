@@ -54,8 +54,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
     public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                         MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
-        GenericSyncValue<List<MonitorGroup>> groupSync = new GenericSyncValue<>(machine::getMonitorGroups,
-                machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS);
+        GenericSyncValue<List<MonitorGroup>> groupSync = new GenericSyncValue.Builder<List<MonitorGroup>>(null)
+                .adapter(ByteBufAdapters.MONITOR_GROUPS)
+                .setter(machine::setMonitorGroups)
+                .getter(machine::getMonitorGroups)
+                .build();
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
         SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
