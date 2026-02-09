@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
@@ -187,6 +188,10 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             part.addedToController(this);
         }
         updatePartPositions();
+
+        for (var trait: getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait) multiblockMachineTrait.onStructureFormed();
+        }
     }
 
     @Override
@@ -203,6 +208,10 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         parallelHatch = null;
         parts.clear();
         updatePartPositions();
+
+        for (var trait: getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait) multiblockMachineTrait.onStructureInvalid();
+        }
     }
 
     /**
