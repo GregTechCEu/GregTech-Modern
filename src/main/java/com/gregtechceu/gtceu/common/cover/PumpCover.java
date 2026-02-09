@@ -271,35 +271,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    // @Override
-    // public Widget createUIWidget() {
-    // final var group = new WidgetGroup(0, 0, 176, 137);
-    // group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
-    //
-    // transferRateWidget = new IntInputWidget(10, 20, 134, 20,
-    // this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0);
-    // setBucketMode(this.bucketMode); // initial input widget config happens here
-    // group.addWidget(transferRateWidget);
-    //
-    // group.addWidget(new EnumSelectorWidget<>(
-    // 146, 20, 20, 20,
-    // Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxFluidTransferRate).toList(),
-    // bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
-    //
-    // group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
-    //
-    // group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
-    // ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-    // .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
-    //
-    // group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-    // group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
-    //
-    // buildAdditionalUI(group);
-    //
-    // return group;
-    // }
-
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()

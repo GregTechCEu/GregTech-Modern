@@ -82,6 +82,10 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
         }
     }
 
+    //////////////////////////////////////
+    // *********** GUI ***********//
+    //////////////////////////////////////
+
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()
@@ -96,10 +100,6 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
         return column.child(filterRow);
     }
 
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-    ///
     @NotNull
     protected String getUITitle() {
         return "cover.item.voiding.title";
