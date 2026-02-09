@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -80,9 +79,10 @@ public class GTMuiWidgets {
 
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
-        return new Row()
+        return Flow.row()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
                 .top(-(textHeight + borderRadius))
                 .rightRel(0.45f)
@@ -91,10 +91,8 @@ public class GTMuiWidgets {
                         .asIcon().size(iconSize)
                         .asWidget()
                         .marginLeft(borderRadius))
-                .mainAxisAlignment(Alignment.MainAxis.START)
                 .child(IKey.str(machineName)
                         .asWidget()
-                        .paddingTop(3)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
