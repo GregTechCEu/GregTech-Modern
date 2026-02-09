@@ -223,12 +223,11 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
-        if (tileEntity instanceof MetaMachine machine) {
-            if (machine instanceof IMachineModifyDrops machineModifyDrops) {
-                machineModifyDrops.onDrops(drops);
-            }
+
+        BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (be instanceof MetaMachine machine) {
+            machine.modifyDrops(drops);
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
