@@ -25,6 +25,9 @@ public class ConfigHolder {
         }
     }
 
+    void myMethod() {}
+
+    @Configurable.ValueUpdateCallback(method = "myMethod")
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();
     @Configurable

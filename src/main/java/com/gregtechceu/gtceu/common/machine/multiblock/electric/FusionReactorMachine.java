@@ -272,15 +272,15 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
-                    this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
-        }
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // super.addDisplayText(textList);
+    // if (isFormed()) {
+    // textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
+    // this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
+    // textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
+    // }
+    // }
 
     public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
         long euToStart = recipe.data.getLong("eu_to_start");

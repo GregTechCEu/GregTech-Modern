@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.utils.serialization.network;
 
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -105,6 +108,34 @@ public class ByteBufAdapters {
         @Override
         public boolean areEqual(@NotNull BigDecimal t1, @NotNull BigDecimal t2) {
             return t1.equals(t2);
+        }
+    };
+
+    public static final IByteBufAdapter<GTRecipe> GTRECIPE = new IByteBufAdapter<>() {
+
+        @Override
+        public GTRecipe deserialize(FriendlyByteBuf buffer) {
+            if (!buffer.readBoolean()) {
+                return null;
+            }
+            ResourceLocation id = buffer.readResourceLocation();
+            return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buffer);
+        }
+
+        @Override
+        public void serialize(FriendlyByteBuf buffer, GTRecipe u) {
+            if (u == null) {
+                buffer.writeBoolean(false);
+                return;
+            }
+            buffer.writeBoolean(true);
+            buffer.writeResourceLocation(u.getId());
+            GTRecipeSerializer.SERIALIZER.toNetwork(buffer, u);
+        }
+
+        @Override
+        public boolean areEqual(@NotNull GTRecipe t1, @NotNull GTRecipe t2) {
+            return EqualityTest.wrapNullSafe(GTRecipe::equals).areEqual(t1, t2);
         }
     };
 
