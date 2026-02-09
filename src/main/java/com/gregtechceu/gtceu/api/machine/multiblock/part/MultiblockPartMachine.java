@@ -58,7 +58,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     // Not sure if necessary, but added to match the Controller class
-    @SuppressWarnings("unused")
     @ClientFieldChangeListener(fieldName = "controllerPositions")
     public void onControllersUpdated() {
         controllers.clear();
