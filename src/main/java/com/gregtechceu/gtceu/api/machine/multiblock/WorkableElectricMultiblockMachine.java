@@ -61,6 +61,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         super(info);
     }
 
+    @Override
+    public WorkableElectricMultiblockMachine self() {
+        return this;
+    }
+
     //////////////////////////////////////
     // *** Multiblock Lifecycle ***//
     //////////////////////////////////////

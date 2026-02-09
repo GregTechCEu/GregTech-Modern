@@ -45,7 +45,7 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
         if (hit.getDirection() != getFrontFacing())
-            return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+            return super.onUse(state, world, pos, player, hand, hit);
         clicked = true;
         clickPosX = hit.getLocation()
                 .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());

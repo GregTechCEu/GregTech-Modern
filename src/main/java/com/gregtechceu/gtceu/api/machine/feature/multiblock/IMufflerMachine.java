@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
@@ -86,7 +87,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     //////////////////////////////////////
 
     @Override
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 

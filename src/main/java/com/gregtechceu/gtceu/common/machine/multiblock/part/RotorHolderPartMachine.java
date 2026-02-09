@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -268,7 +269,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     // ******* FANCY GUI ********//
     //////////////////////////////////////
     @Override
-    public void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+    public void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
