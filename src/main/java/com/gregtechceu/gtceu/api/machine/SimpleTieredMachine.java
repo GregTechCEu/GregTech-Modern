@@ -133,8 +133,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     // ********** MISC ***********//
     //////////////////////////////////////
     @Override
-    public void onMachineRemoved() {
-        super.onMachineRemoved();
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(chargerInventory);
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
             clearInventory(circuitInventory.storage);

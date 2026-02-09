@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -58,7 +57,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FisherMachine extends TieredEnergyMachine
-                           implements IFancyUIMachine, IMachineLife, IWorkable {
+                           implements IFancyUIMachine, IWorkable {
 
     @SaveField
     protected final NotifiableItemStackHandler cache;
@@ -167,7 +166,8 @@ public class FisherMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(chargerInventory);
         clearInventory(baitHandler.storage);
         clearInventory(cache.storage);
