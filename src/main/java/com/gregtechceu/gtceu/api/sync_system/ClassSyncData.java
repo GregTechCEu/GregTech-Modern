@@ -80,8 +80,9 @@ public final class ClassSyncData {
 
         for (Field field : clazz.getDeclaredFields()) {
 
-            boolean hasSaveField = field.isAnnotationPresent(SaveField.class);
-            boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class);
+            boolean isSyncManaged = ISyncManaged.class.isAssignableFrom(field.getType());
+            boolean hasSaveField = field.isAnnotationPresent(SaveField.class) || isSyncManaged;
+            boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class) || isSyncManaged;
             if (!hasSaveField && !hasClientSync) continue;
 
             if (Modifier.isStatic(field.getModifiers()))
