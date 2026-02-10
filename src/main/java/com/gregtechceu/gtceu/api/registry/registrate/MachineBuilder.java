@@ -147,7 +147,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean regressWhenWaiting = true;
     private boolean allowCoverOnFront = false;
     @Getter
-    private PanelFactory UI = null;
+    private PanelFactory ui = null;
     @Getter
     private String themeId = ThemeAPI.DEFAULT_ID;
     private Supplier<BlockState> appearance;
@@ -302,8 +302,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE UI(PanelFactory ui) {
-        this.UI = ui;
+    public TYPE ui(PanelFactory ui) {
+        this.ui = ui;
         return getThis();
     }
 
@@ -695,8 +695,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
         var blockEntity = blockEntityBuilder.register();
-        if (this.UI != null) {
-            definition.setUI(UI);
+        if (this.ui != null) {
+            definition.setUI(ui);
         }
         if (this.themeId != null) {
             definition.setThemeId(themeId);

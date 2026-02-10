@@ -180,7 +180,7 @@ public class RobotArmCover extends ConveyorCover {
         var column = super.createCoverUI(data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
-        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit);
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v);
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
@@ -191,7 +191,7 @@ public class RobotArmCover extends ConveyorCover {
                 .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
                 .build());
 
-        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, 1, getTransferMode().maxStackSize)
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;

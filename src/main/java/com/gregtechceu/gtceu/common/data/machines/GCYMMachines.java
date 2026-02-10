@@ -71,7 +71,7 @@ public class GCYMMachines {
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .modelProperty(IS_FORMED, false)
                     .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
-                    .UI((guiData, syncManager, uiSettings, machine) -> {
+                    .ui((guiData, syncManager, uiSettings, machine) -> {
                         return ((ParallelHatchPartMachine) machine).buildUI(guiData, syncManager, uiSettings);
                     })
                     .model(createWorkableTieredHullMachineModel(

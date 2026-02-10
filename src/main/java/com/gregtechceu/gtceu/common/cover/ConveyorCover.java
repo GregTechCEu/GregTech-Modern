@@ -443,7 +443,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         syncManager.syncValue("io", ioSync);
 
         if (createThroughputRow()) {
-            column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, 1, maxItemTransferRate));
+            column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, () -> 1, () -> maxItemTransferRate));
         }
 
         if (createFilterRow()) {

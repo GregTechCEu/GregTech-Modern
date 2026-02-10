@@ -145,7 +145,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
                 .marginTop(2));
 
         column.child(
-                GTMuiWidgets.createIntInputWithBucketMode(voidingLimit, bucketModeSync, getVoidingMode().maxStackSize)
+                GTMuiWidgets
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
                         .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.FluidDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
@@ -195,6 +196,30 @@ public class GTMultiblockTextUtil {
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
+    }
+
+    public static TextWidget<?> addSteamUsageLine(SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
+        IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
+                    if (steamRH == null) return 0;
+                    return steamRH.getSteamTank().getFluidInTank(0).getAmount();
+                }));
+        IntSyncValue steamCapacity = syncManager.getOrCreateSyncHandler("steamCapacity", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
+                    if (steamRH == null) return 0;
+                    return steamRH.getSteamTank().getTankCapacity(0);
+                }));
+
+        BooleanSyncValue hasSteamHandler = syncManager.getOrCreateSyncHandler("hasSteam", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> steamRH != null));
+
+        return IKey
+                .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
+                        FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                        FormattingUtil.formatNumbers(steamCapacity.getIntValue())))
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
 
     public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,

@@ -45,8 +45,8 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
      */
     public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer) {
         SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
-        slotGroupWidget.coverChildren();
-        slotGroupWidget.name("player_inventory");
+        slotGroupWidget.coverChildren()
+                .name("player_inventory");
         String key = "player";
         for (int i = 0; i < 9; i++) {
             slotGroupWidget.child(slotConsumer.apply(i, new ItemSlot())

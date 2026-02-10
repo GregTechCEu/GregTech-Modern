@@ -142,7 +142,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
                 .build()
                 .marginTop(2));
 
-        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, 1, getVoidingMode().maxStackSize)
+        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
 
         return column;

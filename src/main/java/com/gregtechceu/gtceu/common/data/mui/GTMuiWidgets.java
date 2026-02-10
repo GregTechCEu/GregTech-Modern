@@ -95,7 +95,7 @@ public class GTMuiWidgets {
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
                 .top(-(textHeight + borderRadius))
-                .rightRel(0.45f)
+                .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
                 .child(new ItemDrawable(stack)
                         .asIcon().size(iconSize)
@@ -440,7 +440,8 @@ public class GTMuiWidgets {
                 .scale(scale);
     }
 
-    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, int minValue, int maxValue) {
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                            IntSupplier maxValue) {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 
@@ -452,7 +453,7 @@ public class GTMuiWidgets {
                         .left(0).width(18)
                         .onMousePressed((x, y, button) -> {
                             int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
-                            val = Mth.clamp(val, minValue, maxValue);
+                            val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
@@ -464,7 +465,8 @@ public class GTMuiWidgets {
                         .setNumbers(minValue, maxValue)
                         .onMouseScrolled((mouseX, mouseY, delta) -> {
                             int inc = (int) delta * getIncrementValue(MouseData.create(-1));
-                            int val = Mth.clamp(syncValue.getIntValue() + inc, minValue, maxValue);
+                            int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
+                                    maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
@@ -474,7 +476,7 @@ public class GTMuiWidgets {
                         .right(0).width(18)
                         .onMousePressed((x, y, button) -> {
                             int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
-                            val = Mth.clamp(val, minValue, maxValue);
+                            val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
@@ -483,10 +485,10 @@ public class GTMuiWidgets {
 
     public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue,
                                                                EnumSyncValue<BucketMode> bucketModeSyncValue,
-                                                               int maxMB) {
+                                                               IntSupplier maxMB) {
         StringSyncValue formattedValue = new StringSyncValue(
-                () -> String.valueOf((intSyncValue.getValue() / bucketModeSyncValue.getValue().multiplier)),
-                (v) -> intSyncValue.setValue(Integer.parseInt(v) * bucketModeSyncValue.getValue().multiplier, true,
+                () -> String.valueOf(intSyncValue.getValue()),
+                (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
                         true));
 
         return Flow.row()
@@ -498,7 +500,7 @@ public class GTMuiWidgets {
                         .onMousePressed((x, y, button) -> {
                             int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button)) *
                                     bucketModeSyncValue.getValue().multiplier);
-                            val = Mth.clamp(val, 0, maxMB);
+                            val = Mth.clamp(val, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
                             return true;
                         })
@@ -507,11 +509,11 @@ public class GTMuiWidgets {
                         .left(18).right(36)
                         .setTextAlignment(Alignment.Center)
                         .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(0, maxMB)
+                        .setNumbers(0, maxMB.getAsInt())
                         .onMouseScrolled((mouseX, mouseY, delta) -> {
                             int inc = (int) delta * (getIncrementValue(MouseData.create(-1)) *
                                     bucketModeSyncValue.getValue().multiplier);
-                            int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB);
+                            int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
                             return true;
                         })
@@ -523,7 +525,7 @@ public class GTMuiWidgets {
                         .onMousePressed((x, y, button) -> {
                             int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button)) *
                                     bucketModeSyncValue.getValue().multiplier);
-                            val = Mth.clamp(val, 0, maxMB);
+                            val = Mth.clamp(val, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
                             return true;
                         })

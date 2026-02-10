@@ -213,9 +213,10 @@ public class FluidRegulatorCover extends PumpCover {
                 .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
                 .build());
 
-        column.child(GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode, maxFluidTransferRate));
+        column.child(GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode,
+                () -> maxFluidTransferRate));
 
-        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, 1, MAX_STACK_SIZE)
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> MAX_STACK_SIZE)
                 .setEnabledIf($ -> shouldShowTransferSize()));
 
         return column;
