@@ -65,7 +65,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
                 getText(stack).toImmutable(),
-                Math.max(getScale(stack), .0001));
+                getScale(stack));
     }
 
     @Override
@@ -99,6 +99,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public double getScale(ItemStack stack) {
+        if (!stack.getOrCreateTag().contains("scale"))
+            return 1;
         return Math.max(stack.getOrCreateTag().getDouble("scale"), .0001);
     }
 
