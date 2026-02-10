@@ -740,8 +740,7 @@ public class ToolHelper {
                         }
                     }
                     ToolHelper.damageItem(tool, player, 1);
-                    player.awardStat(Stats.BLOCK_MINED.get((Block) shearable));
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
+                    state.getBlock().playerDestroy(world, player, pos, state, world.getBlockEntity(pos), tool);
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
