@@ -91,7 +91,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
             ListTag listTag = new ListTag();
-            editor.getLines().forEach(line -> listTag.add(StringTag.valueOf(line)));
+            editor.getLines().forEach(line -> listTag.add(StringTag.valueOf(line.replaceAll("\r", ""))));
             CompoundTag tag2 = stack.getOrCreateTag();
             tag2.put("formatStringLines", listTag);
             try {
@@ -146,7 +146,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public void setPlaceholderText(ItemStack stack, String text) {
         ListTag listTag = new ListTag();
-        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line));
+        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line.replaceAll("\r", "")));
         stack.getOrCreateTag().put("formatStringLines", listTag);
     }
 
