@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectO
 import com.gregtechceu.gtceu.common.network.packets.ui.*;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
 import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
-import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
