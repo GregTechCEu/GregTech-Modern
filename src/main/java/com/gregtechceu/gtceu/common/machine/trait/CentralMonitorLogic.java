@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.NotNull;
 
 public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
