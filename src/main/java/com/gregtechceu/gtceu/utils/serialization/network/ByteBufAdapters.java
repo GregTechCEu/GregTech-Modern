@@ -83,7 +83,7 @@ public class ByteBufAdapters {
 
         @Override
         public void serialize(FriendlyByteBuf buffer, BigInteger u) {
-            buffer.writeBytes(u.toByteArray());
+            buffer.writeByteArray(u.toByteArray());
         }
 
         @Override

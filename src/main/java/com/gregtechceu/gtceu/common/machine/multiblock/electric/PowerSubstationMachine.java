@@ -269,7 +269,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 164);
+        var panel = GTGuis.createPanel(this, 176, 176);
 
         panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()
@@ -278,7 +278,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         .margin(4, 0)
                         .left(3).top(5)
                         .child(Flow.row()
-                                .child(getMainTextPanel(syncManager, 170, 70))))
+                                .child(getMainTextPanel(syncManager, 170, 84))))
                 .child(Flow.column()
                         .coverChildren()
                         .leftRel(1.0f)
