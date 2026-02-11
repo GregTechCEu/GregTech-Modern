@@ -109,8 +109,8 @@ public class GTMuiWidgets {
 
     public static ToggleButton createPowerButton(BooleanSupplier getter, BooleanConsumer setter,
                                                  PanelSyncManager syncManager) {
-        BooleanSyncValue power = new BooleanSyncValue(getter, setter);
-        syncManager.syncValue("working_enabled", power);
+        BooleanSyncValue power = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(getter, setter));
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
                 .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
