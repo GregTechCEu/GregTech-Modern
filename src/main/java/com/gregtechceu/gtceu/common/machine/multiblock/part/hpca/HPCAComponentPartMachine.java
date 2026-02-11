@@ -55,7 +55,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops) {
+    public void modifyDrops(List<ItemStack> drops) {
         for (int i = 0; i < drops.size(); ++i) {
             ItemStack drop = drops.get(i);
             if (drop.getItem() == this.getDefinition().getItem()) {

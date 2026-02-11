@@ -206,6 +206,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    public void modifyDrops(List<ItemStack> drops) {}
+
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
