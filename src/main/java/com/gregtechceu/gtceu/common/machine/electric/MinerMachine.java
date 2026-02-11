@@ -57,7 +57,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine
-                          implements IMiner, IControllable, IFancyUIMachine, IDataInfoProvider {
+                          implements IControllable, IFancyUIMachine, IDataInfoProvider, IMiner {
 
     @Getter
     @SaveField
@@ -95,7 +95,8 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         // Remove the miner pipes below this miner
         getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
