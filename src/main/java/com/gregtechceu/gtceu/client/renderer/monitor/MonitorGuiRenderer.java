@@ -184,7 +184,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
         ShaderInstance shaderInstance = MCHelper.getMc().gameRenderer.blitShader;
         shaderInstance.setSampler("DiffuseSampler", renderTarget.getColorTextureId());
-        ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$bob(poseStack, partialTick);
         Matrix4f pose = poseStack.last().pose();
         double fov = ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$getFov(partialTick);
         if (shaderInstance.PROJECTION_MATRIX != null)

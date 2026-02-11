@@ -54,12 +54,4 @@ public abstract class GameRendererMixin implements IGameRenderer {
     public double gtceu$getFov(float partialTicks) {
         return getFov(mainCamera, partialTicks, true);
     }
-
-    @Override
-    public void gtceu$bob(PoseStack poseStack, float partialTicks) {
-        bobHurt(poseStack, partialTicks);
-        if (minecraft.options.bobView().get()) {
-            bobView(poseStack, partialTicks);
-        }
-    }
 }

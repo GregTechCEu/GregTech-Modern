@@ -127,6 +127,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private EditableMachineUI editableUI;
     @Getter
     @Setter
+    @Nullable
     private PanelFactory UI;
     @Getter
     @Setter
