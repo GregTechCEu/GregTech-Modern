@@ -51,7 +51,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
@@ -100,10 +99,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
 
@@ -211,6 +206,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    public void modifyDrops(List<ItemStack> drops) {}
+
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
@@ -279,7 +276,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     /**
-     * Called when a player clicks this meta tile entity with a tool
+     * Called when a player clicks this machine with a tool
      *
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
      *         animations will be played

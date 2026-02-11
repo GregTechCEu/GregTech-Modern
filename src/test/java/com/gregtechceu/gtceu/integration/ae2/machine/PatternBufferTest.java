@@ -83,6 +83,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferNormalInputBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         helper.succeedWhen(() -> {
             helper.assertTrue(
@@ -97,6 +99,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
 
         IGrid grid = busHolder.patternBuffer.getGrid();
 
@@ -139,6 +143,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDistinctDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setDistinct(true);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
@@ -182,6 +188,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDyeingDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setPaintingColor(0xff);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
