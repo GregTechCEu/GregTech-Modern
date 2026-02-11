@@ -40,7 +40,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -48,13 +47,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * All simple single machines are implemented here.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SimpleTieredMachine extends WorkableTieredMachine
                                  implements IFancyUIMachine, IHasCircuitSlot {
 
