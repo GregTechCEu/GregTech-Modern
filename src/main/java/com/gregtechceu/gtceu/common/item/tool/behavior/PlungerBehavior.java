@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PlungerBehavior implements IToolBehavior, IComponentCapability, IInteractionItem {
+public class PlungerBehavior implements IToolBehavior, IComponentCapability {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
 
