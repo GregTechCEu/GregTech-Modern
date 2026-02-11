@@ -25,6 +25,9 @@ public class ConfigHolder {
         }
     }
 
+    void myMethod() {}
+
+    @Configurable.ValueUpdateCallback(method = "myMethod")
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();
     @Configurable
@@ -581,10 +584,6 @@ public class ConfigHolder {
                 "Default: 8"
         })
         public int steamMultiParallelAmount = 8;
-
-        @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")

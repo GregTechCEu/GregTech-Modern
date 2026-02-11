@@ -42,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLife,
+public class CrateMachine extends MetaMachine implements IMuiMachine,
                           IDropSaveMachine, IInteractedMachine {
 
     public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
@@ -140,7 +140,8 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         if (!isTaped) clearInventory(inventory.storage);
     }
 }

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -186,16 +187,19 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
-        if (machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.getOutputFacingItems() != null) {
-            tag.putString(ITEM_OUTPUT_SIDE, directionToString(autoOutputItem.getOutputFacingItems()));
-            tag.putBoolean(ITEM_AUTO_OUTPUT, autoOutputItem.isAutoOutputItems());
-            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, autoOutputItem.isAllowInputFromOutputSideItems());
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
+                outputTrait.getItemOutputDirection() != null) {
+            tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
+            tag.putBoolean(ITEM_AUTO_OUTPUT, outputTrait.isAutoOutputItems());
+            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.allowsItemInputFromOutputSide());
         }
 
-        if (machine instanceof IAutoOutputFluid autoOutputFluid && autoOutputFluid.getOutputFacingFluids() != null) {
-            tag.putString(FLUID_OUTPUT_SIDE, directionToString(autoOutputFluid.getOutputFacingFluids()));
-            tag.putBoolean(FLUID_AUTO_OUTPUT, autoOutputFluid.isAutoOutputFluids());
-            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, autoOutputFluid.isAllowInputFromOutputSideFluids());
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids() &&
+                outputTrait.getFluidOutputDirection() != null) {
+            tag.putString(FLUID_OUTPUT_SIDE, directionToString(outputTrait.getFluidOutputDirection()));
+            tag.putBoolean(FLUID_AUTO_OUTPUT, outputTrait.isAutoOutputFluids());
+            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.allowsFluidInputFromOutputSide());
         }
 
         if (machine instanceof IMufflableMachine mufflableMachine) {
@@ -218,20 +222,19 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
-        if (machine instanceof IAutoOutputItem autoOutputItem) {
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
-                autoOutputItem.setOutputFacingItems(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
-            if (tag.contains(ITEM_AUTO_OUTPUT)) autoOutputItem.setAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+                outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
+            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
             if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
-                autoOutputItem.setAllowInputFromOutputSideItems(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
-        }
-
-        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
+                outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
             if (tag.contains(FLUID_OUTPUT_SIDE))
-                autoOutputFluid.setOutputFacingFluids(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
-            if (tag.contains(FLUID_AUTO_OUTPUT)) autoOutputFluid.setAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+                outputTrait.setFluidOutputDirection(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
+            if (tag.contains(FLUID_AUTO_OUTPUT))
+                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
-                autoOutputFluid.setAllowInputFromOutputSideFluids(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
+                outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
         }
 
         Direction facingDir = Direction.byName(tag.getString(FACING_DIR));

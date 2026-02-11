@@ -3,23 +3,31 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidFilterCover extends CoverBehavior implements IUICover {
+public class FluidFilterCover extends CoverBehavior implements IMuiCover {
 
     protected FluidFilter fluidFilter;
     @SaveField
@@ -80,14 +88,47 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getFluidFilter().openConfigurator(62, 25));
-        return group;
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        Flow column = Flow.column()
+                .top(7).margin(7, 0)
+                .widthRel(1.0f).coverChildrenHeight();
+
+        EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
+                this::getFilterMode, this::setFilterMode);
+
+        EnumSyncValue<ManualIOMode> ioMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getAllowFlow, this::setAllowFlow);
+
+        syncManager.syncValue("filterMode", filterMode);
+        syncManager.syncValue("ioMode", ioMode);
+
+        var panelHandler = syncManager.syncedPanel("filterPanel", true,
+                (sm, sh) -> fluidFilter.getPanel(data, sm, settings));
+
+        DynamicSyncHandler filterButton = new DynamicSyncHandler()
+                .widgetProvider((sm, buf) -> new ButtonWidget<>()
+                        .onMousePressed((x, y, b) -> {
+                            panelHandler.openPanel();
+                            return true;
+                        }));
+
+        column.child(Flow.row()
+                .coverChildrenHeight()
+                .child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
+                .value(filterMode)
+                .overlay(16, GTGuiTextures.FILTER_MODE_OVERLAY)
+                .lang(IKey.dynamic(() -> Component.translatable(getFilterMode().getTooltip())))
+                .build());
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
+                .value(ioMode)
+                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
+                .lang(IKey.dynamic(() -> Component.translatable(getAllowFlow().getTooltip())))
+                .build());
+
+        return column;
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

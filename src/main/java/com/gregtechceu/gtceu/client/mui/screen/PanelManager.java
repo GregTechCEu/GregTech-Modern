@@ -84,10 +84,12 @@ public class PanelManager {
             this.panelsClone.clear();
             this.panelsClone.addAll(this.panels);
 
-            this.panelWrappers.clear();
-            this.panelsClone.stream()
-                    .map(WidgetWrapper::new)
-                    .forEach(this.panelWrappers::add);
+            /*
+             * this.panelWrappers.clear();
+             * this.panelsClone.stream()
+             * .map(WidgetWrapper::new)
+             * .forEach(this.panelWrappers::add);
+             */
 
             this.dirty = false;
         }

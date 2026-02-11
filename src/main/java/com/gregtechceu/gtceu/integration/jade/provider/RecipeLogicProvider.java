@@ -32,7 +32,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic capability) {
+    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();

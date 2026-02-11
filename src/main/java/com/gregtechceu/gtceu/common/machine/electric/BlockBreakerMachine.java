@@ -5,27 +5,19 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -35,24 +27,14 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,40 +42,32 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IAutoOutputItem, IMuiMachine, IMachineLife, IControllable {
+                                 implements IMuiMachine, IControllable {
 
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected Direction outputFacingItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputItems;
     @SaveField
     protected final NotifiableItemStackHandler cache;
     @Getter
     @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
-    protected TickableSubscription autoOutputSubs, batterySubs, breakerSubs;
+    protected TickableSubscription batterySubs, breakerSubs;
     @Nullable
-    protected ISubscription exportItemSubs, energySubs;
+    protected ISubscription energySubs;
     private final int inventorySize;
     @SyncToClient
     private int blockBreakProgress = 0;
     private float currentHardness;
     private final long energyPerTick;
     public final float efficiencyMultiplier;
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
     @Getter
     @SaveField
@@ -106,8 +80,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         this.cache = createCacheItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
-        setOutputFacingItems(getFrontFacing().getOpposite());
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
+
+        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
     }
 
     public static float getEfficiencyMultiplier(int tier) {
@@ -142,10 +117,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         super.onLoad();
         if (!isRemote()) {
             if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
                 serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
             }
-            exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(() -> {
                 this.updateBatterySubscription();
                 this.updateBreakerSubscription();
@@ -161,14 +134,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             energySubs.unsubscribe();
             energySubs = null;
         }
-        if (exportItemSubs != null) {
-            exportItemSubs.unsubscribe();
-            exportItemSubs = null;
-        }
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(chargerInventory);
         clearInventory(cache.storage);
     }
@@ -177,7 +147,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateBreakerSubscription();
-        updateAutoOutputSubscription();
     }
 
     //////////////////////////////////////
@@ -209,10 +178,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                     for (ItemStack drop : drops) {
                         var remainder = tryFillCache(drop);
                         if (!remainder.isEmpty()) {
-                            if (getOutputFacingItems() == null) {
+                            if (autoOutput.getItemOutputDirection() == null) {
                                 Block.popResource(getLevel(), getBlockPos(), remainder);
                             } else {
-                                Block.popResource(getLevel(), getBlockPos().relative(getOutputFacingItems()),
+                                Block.popResource(getLevel(),
+                                        getBlockPos().relative(autoOutput.getItemOutputDirection()),
                                         remainder);
                             }
                         }
@@ -279,46 +249,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ******* Auto Output *******//
     //////////////////////////////////////
-    @Override
-    public void setAutoOutputItems(boolean allow) {
-        this.autoOutputItems = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public boolean isAllowInputFromOutputSideItems() {
-        return false;
-    }
-
-    @Override
-    public void setAllowInputFromOutputSideItems(boolean allow) {}
-
-    @Override
-    public void setOutputFacingItems(@Nullable Direction outputFacing) {
-        this.outputFacingItems = outputFacing;
-        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-        updateAutoOutputSubscription();
-    }
-
-    protected void updateAutoOutputSubscription() {
-        var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacing))
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
-        else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null)
-                cache.exportToNearby(getOutputFacingItems());
-            updateAutoOutputSubscription();
-        }
-    }
 
     protected void updateBatterySubscription() {
         if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true))
@@ -337,14 +267,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public boolean shouldWeatherOrTerrainExplosion() {
         return false;
-    }
-
-    @Override
-    public boolean isFacingValid(Direction facing) {
-        if (facing == getOutputFacingItems()) {
-            return false;
-        }
-        return super.isFacingValid(facing);
     }
 
     public void setWorkingEnabled(boolean workingEnabled) {
@@ -458,91 +380,14 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
                         .child(createBatterySlot(syncManager))
-                        .child(createAutoOutputItemButton(syncManager))
+                        .child(GTMuiWidgets.createAutoOutputItemButton(autoOutput, syncManager))
                         .excludeAreaInXei());
         return panel;
-    }
-
-    public ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {
-        BooleanSyncValue itemOutputs = new BooleanSyncValue(this::isAutoOutputItems,
-                this::setAutoOutputItems);
-        syncManager.syncValue("auto_output_items", itemOutputs);
-        return new ToggleButton()
-                .value(new BoolValue.Dynamic(itemOutputs::getBoolValue, itemOutputs::setBoolValue))
-                .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.item_auto_output",
-                        Component.translatable(itemOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
-                                "cover.voiding.label.disabled")))));
     }
 
     public ItemSlot createBatterySlot(PanelSyncManager syncManager) {
         ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(this.chargerInventory, 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
-    }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isShiftKeyDown()) {
-                if (!hasFrontFacing() || side != getFrontFacing()) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
-        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (side == getOutputFacingItems()) {
-                return GuiTextures.TOOL_ALLOW_INPUT;
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
-    }
-
-    //////////////////////////////////////
-    // ******* Interactions ********//
-    //////////////////////////////////////
-    @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown() && !isRemote()) {
-            var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
-            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-
-            // important not to use getters here, which have different logic
-            Direction itemFacing = this.outputFacingItems;
-
-            if (gridSide != itemFacing) {
-                // if it is a new side, move it
-                setOutputFacingItems(gridSide);
-            } else {
-                // remove the output facing when wrenching the current one to disable it
-                setOutputFacingItems(null);
-            }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-
-        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
     }
 }

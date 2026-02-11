@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -41,13 +40,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -74,7 +70,7 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CleanroomMachine extends WorkableElectricMultiblockMachine
-                              implements IDisplayUIMachine, IDataInfoProvider {
+                              implements IDataInfoProvider {
 
     public static final int CLEAN_AMOUNT_THRESHOLD = 95;
     public static final int MIN_CLEAN_AMOUNT = 0;
@@ -456,56 +452,58 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return machine instanceof PrimitivePumpMachine;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        if (isFormed()) {
-            var maxVoltage = getMaxVoltage();
-            if (maxVoltage > 0) {
-                String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
-                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-            }
-
-            if (cleanroomType != null) {
-                textList.add(Component.translatable(cleanroomType.getTranslationKey()));
-            }
-
-            if (!isWorkingEnabled()) {
-                textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-
-            } else if (isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.running"));
-                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
-                double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
-                textList.add(
-                        Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-                                String.format("%.2f", (float) maxInSec), currentProgress));
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.idling"));
-            }
-
-            if (recipeLogic.isWaiting()) {
-                textList.add(Component.translatable("gtceu.multiblock.waiting")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            }
-
-            if (cleanroomProviderTrait.isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
-            }
-            textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
-                    fDist + bDist + 1));
-        } else {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-                    .withStyle(ChatFormatting.GRAY);
-            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
-        }
-    }
+    /*
+     * @Override
+     * public void addDisplayText(List<Component> textList) {
+     * if (isFormed()) {
+     * var maxVoltage = getMaxVoltage();
+     * if (maxVoltage > 0) {
+     * String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
+     * textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+     * }
+     * 
+     * if (cleanroomType != null) {
+     * textList.add(Component.translatable(cleanroomType.getTranslationKey()));
+     * }
+     * 
+     * if (!isWorkingEnabled()) {
+     * textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+     * 
+     * } else if (isActive()) {
+     * textList.add(Component.translatable("gtceu.multiblock.running"));
+     * int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
+     * double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
+     * double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
+     * textList.add(
+     * Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
+     * String.format("%.2f", (float) maxInSec), currentProgress));
+     * } else {
+     * textList.add(Component.translatable("gtceu.multiblock.idling"));
+     * }
+     * 
+     * if (recipeLogic.isWaiting()) {
+     * textList.add(Component.translatable("gtceu.multiblock.waiting")
+     * .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+     * }
+     * 
+     * if (cleanroomProviderTrait.isActive()) {
+     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
+     * } else {
+     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
+     * }
+     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
+     * textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
+     * textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
+     * fDist + bDist + 1));
+     * } else {
+     * Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+     * .withStyle(ChatFormatting.GRAY);
+     * textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+     * .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+     * .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+     * }
+     * }
+     */
 
     /**
      * Adjust the cleanroom's clean amount

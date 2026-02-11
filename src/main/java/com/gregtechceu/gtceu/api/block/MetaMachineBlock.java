@@ -223,12 +223,11 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
-        if (tileEntity instanceof MetaMachine machine) {
-            if (machine instanceof IMachineModifyDrops machineModifyDrops) {
-                machineModifyDrops.onDrops(drops);
-            }
+
+        BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (be instanceof MetaMachine machine) {
+            machine.modifyDrops(drops);
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
@@ -248,7 +247,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
                 if (machine != null) {
-                    machine.onRemoved();
+                    machine.onMachineDestroyed();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
@@ -328,19 +327,32 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     //////////////////////////////////////
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
-        return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return false;
+        return machine.canConnectRedstone(side);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return MetaMachine.getMachine(level, pos).getOutputSignal(direction);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputSignal(direction);
+    }
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputDirectSignal(direction);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        return MetaMachine.getMachine(level, pos).getAnalogOutputSignal();
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getAnalogOutputSignal();
     }
 
     /////////

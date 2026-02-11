@@ -21,7 +21,7 @@ public interface FilterHandlers {
             }
 
             @Override
-            protected boolean canInsertFilterItem(ItemStack itemStack) {
+            public boolean canInsertFilterItem(ItemStack itemStack) {
                 return ItemFilter.FILTERS.containsKey(itemStack.getItem());
             }
         };
@@ -41,7 +41,7 @@ public interface FilterHandlers {
             }
 
             @Override
-            protected boolean canInsertFilterItem(ItemStack itemStack) {
+            public boolean canInsertFilterItem(ItemStack itemStack) {
                 return FluidFilter.FILTERS.containsKey(itemStack.getItem());
             }
         };

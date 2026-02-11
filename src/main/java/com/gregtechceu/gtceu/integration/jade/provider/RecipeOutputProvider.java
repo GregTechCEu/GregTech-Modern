@@ -50,7 +50,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic recipeLogic) {
+    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic recipeLogic) {
         if (recipeLogic.isWorking()) {
             data.putBoolean("Working", recipeLogic.isWorking());
             var recipe = recipeLogic.getLastRecipe();

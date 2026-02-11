@@ -57,11 +57,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
 
     protected abstract F getEmptyFilter();
 
-    protected abstract boolean canInsertFilterItem(ItemStack itemStack);
-
     //////////////////////////////////
     // ***** PUBLIC API ******//
     //////////////////////////////////
+
+    public abstract boolean canInsertFilterItem(ItemStack itemStack);
 
     public Widget createFilterSlotUI(int xPos, int yPos) {
         return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
@@ -117,7 +117,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
-    private CustomItemStackHandler getFilterSlot() {
+    public CustomItemStackHandler getFilterSlot() {
         if (this.filterSlot == null) {
             this.filterSlot = new CustomItemStackHandler(this.filterItem) {
 

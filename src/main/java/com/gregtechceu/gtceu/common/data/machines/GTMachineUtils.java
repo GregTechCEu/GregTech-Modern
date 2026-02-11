@@ -377,7 +377,7 @@ public class GTMachineUtils {
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
                         .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                        .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
+                        .ui(GTSingleblockMachinePanels.STEAM_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -1013,7 +1013,7 @@ public class GTMachineUtils {
                                 .workableTieredHullModel(GTCEu.id("block/machines/" + name))
                                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
-                                .UI(panelFactory)
+                                .ui(panelFactory)
                                 .register();
                     },
                     tiers);

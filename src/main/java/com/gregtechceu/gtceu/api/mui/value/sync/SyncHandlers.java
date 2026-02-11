@@ -33,6 +33,10 @@ public class SyncHandlers {
         return new StringSyncValue(getter, setter);
     }
 
+    public static ModularSlot phantomItemSlot(IItemHandlerModifiable inventory, int index) {
+        return new ModularSlot(inventory, index, true);
+    }
+
     public static ModularSlot itemSlot(IItemHandlerModifiable inventory, int index) {
         return new ModularSlot(inventory, index);
     }

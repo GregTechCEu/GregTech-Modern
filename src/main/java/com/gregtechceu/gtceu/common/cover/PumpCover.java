@@ -4,29 +4,32 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IIOCover;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -47,14 +50,13 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
+public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, IControllable {
 
     // .5b 2b 8b
     public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV));
@@ -184,22 +186,8 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     }
 
     public void setBucketMode(BucketMode bucketMode) {
-        var oldMultiplier = this.bucketMode.multiplier;
-        var newMultiplier = bucketMode.multiplier;
-
         this.bucketMode = bucketMode;
         syncDataHolder.markClientSyncFieldDirty("bucketMode");
-        if (transferRateWidget == null) return;
-
-        if (oldMultiplier > newMultiplier) {
-            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
-        }
-
-        transferRateWidget.setMax(maxFluidTransferRate / bucketMode.multiplier);
-
-        if (newMultiplier > oldMultiplier) {
-            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
-        }
     }
 
     protected void setManualIOMode(ManualIOMode manualIOMode) {
@@ -284,45 +272,35 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        Flow column = Flow.column()
+                .top(7).margin(7, 0)
+                .widthRel(1.0f).coverChildrenHeight();
 
-        transferRateWidget = new IntInputWidget(10, 20, 134, 20,
-                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0);
-        setBucketMode(this.bucketMode); // initial input widget config happens here
-        group.addWidget(transferRateWidget);
+        IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate);
+        EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
+                this::setBucketMode);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+        EnumSyncValue<ManualIOMode> manualIOModeSync = new EnumSyncValue<>(ManualIOMode.class, this::getManualIOMode,
+                this::setManualIOMode);
 
-        group.addWidget(new EnumSelectorWidget<>(
-                146, 20, 20, 20,
-                Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxFluidTransferRate).toList(),
-                bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
+        syncManager.syncValue("transferRate", transferRateSync);
+        syncManager.syncValue("io", ioSync);
+        syncManager.syncValue("manualIO", manualIOModeSync);
 
-        group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
+        column.child(GTMuiWidgets.createIntInputWithBucketMode(transferRateSync, bucketModeSync,
+                () -> maxFluidTransferRate));
 
-        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
-                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+        column.child(GTMuiWidgets.createFilterRow(filterHandler, FluidFilter::loadFilter, data, syncManager, settings)
+                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2)).marginBottom(2));
 
-        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
+                .value(manualIOModeSync)
+                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
+                .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))
+                .build());
 
-        buildAdditionalUI(group);
-
-        return group;
-    }
-
-    private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
-        return List.of(
-                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick")));
-    }
-
-    private int getCurrentBucketModeTransferRate() {
-        return this.transferRate / this.bucketMode.multiplier;
-    }
-
-    private void setCurrentBucketModeTransferRate(int transferRate) {
-        this.setTransferRate(transferRate * this.bucketMode.multiplier);
+        return column;
     }
 
     @NotNull

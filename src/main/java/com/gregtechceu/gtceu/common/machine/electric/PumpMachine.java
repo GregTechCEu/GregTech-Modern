@@ -3,25 +3,19 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -31,8 +25,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -41,7 +33,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -68,7 +59,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IMuiMachine, IMachineLife {
+public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
 
     public static final int BASE_PUMP_RADIUS = 16;
     public static final int EXTRA_PUMP_RADIUS = 4;
@@ -78,46 +69,23 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Getter
     @SaveField
     private int pumpHeadY;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputFluids;
     @SaveField
     protected final NotifiableFluidTank cache;
+
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
     public PumpMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    @Override
-    public boolean isAllowInputFromOutputSideFluids() {
-        return false;
-    }
-
-    @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {}
-
-    @Override
-    public Direction getOutputFacingFluids() {
-        return getFrontFacing();
-    }
-
-    public void setAutoOutputFluids(boolean autoOutputFluids) {
-        this.autoOutputFluids = autoOutputFluids;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
-    }
-
-    @Override
-    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
-        setFrontFacing(outputFacing);
-    }
 
     @Override
     public void onLoad() {
@@ -415,7 +383,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         if (getLevel() instanceof ServerLevel serverLevel) {
             var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
@@ -518,8 +487,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     public void update() {
-        if (getOutputFacingFluids() != null) {
-            cache.exportToNearby(getOutputFacingFluids());
+        if (autoOutput.getFluidOutputDirection() != null) {
+            cache.exportToNearby(autoOutput.getFluidOutputDirection());
         }
 
         // do not do anything without enough energy supplied
@@ -598,7 +567,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                                         .child(Flow.row()
                                                 .margin(4, 0, 41, 0)
                                                 .coverChildren()
-                                                .child(createAutoOutputFluidButton(syncManager)))
+                                                .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput,
+                                                        syncManager)))
                                         .child(Flow.column()
                                                 .margin(68, 0, 23, 0)
                                                 .coverChildren()
@@ -607,38 +577,9 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
-    private ToggleButton createAutoOutputFluidButton(PanelSyncManager syncManager) {
-        BooleanSyncValue fluidOutputs = new BooleanSyncValue(this::isAutoOutputFluids,
-                this::setAutoOutputFluids);
-        syncManager.syncValue("auto_output_fluids", fluidOutputs);
-        return new ToggleButton()
-                .value(new BoolValue.Dynamic(fluidOutputs::getBoolValue, fluidOutputs::setBoolValue))
-                .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.fluid_auto_output",
-                        Component.translatable(fluidOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
-                                "cover.voiding.label.disabled")))));
-    }
-
     private IWidget createFluidSlot(PanelSyncManager syncManager) {
         syncManager.syncValue("fluid_slot",
                 SyncHandlers.fluidSlot(cache.getStorages()[0]).controlsAmount(false));
         return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
-    }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers.collections;
 
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
+import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -52,7 +53,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         else current = new ArrayList<>();
         List<T> finalCurrent = current;
         for (var t : listTag) {
-            T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),
+            T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t),
                     getInnerElemContext(null, context));
             if (val != null) finalCurrent.add(val);
         }
