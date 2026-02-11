@@ -6,9 +6,27 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -17,6 +35,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
@@ -112,21 +132,96 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * WidgetGroup group = new WidgetGroup(new Position(0, 0));
-     * // ME Network status
-     * group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-     * "gtceu.gui.me_network.online" :
-     * "gtceu.gui.me_network.offline"));
-     *
-     * // Config slots
-     * group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
-     *
-     * return group;
-     * }
-     */
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 176, 192);
+        panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176));
+
+        BooleanSyncValue isOnlineValue = SyncHandlers.bool(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
+
+        panel.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget()
+                .top(14)
+                .left(7));
+
+        registerConfigActions(syncManager);
+
+        panel.child(new AEConfigWidget(aeFluidHandler, CONFIG_SIZE, true)
+                .syncManager(syncManager)
+                .size(8 * 18, 2 * (18 * 2 + 2))
+                .top(26)
+                .alignX(0.5f));
+
+        var theme = this.getDefinition().getThemeId();
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+                .getBackground();
+        if (backgroundTexture == null) {
+            backgroundTexture = GTGuiTextures.BACKGROUND;
+        }
+
+        panel.child(createButtonColumn(panel, syncManager, backgroundTexture));
+
+        panel.child(SlotGroupWidget.playerInventory(true).bottom(7));
+
+        return panel;
+    }
+
+    protected Flow createButtonColumn(ModularPanel panel, PanelSyncManager syncManager,
+                                      UITexture backgroundTexture) {
+        return new Column()
+                .coverChildren()
+                .rightRel(1.0f)
+                .reverseLayout(true)
+                .bottom(16)
+                .padding(5, 2, 4, 4)
+                .childPadding(2)
+                .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
+                .child(GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager));
+    }
+
+    protected void registerConfigActions(PanelSyncManager syncManager) {
+        syncManager.registerServerSyncedAction("ae_config_set", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeFluidHandler.getInventory()[index];
+            var player = syncManager.getPlayer();
+            ItemStack held = player.containerMenu.getCarried();
+            FluidUtil.getFluidContained(held).ifPresent(fluid -> {
+                slot.setConfig(AEUtil.fromFluidStack(fluid));
+            });
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_clear", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            aeFluidHandler.getInventory()[index].setConfig(null);
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_amount", packet -> {
+            int index = packet.readVarInt();
+            long amount = packet.readVarLong();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeFluidHandler.getInventory()[index];
+            if (slot.getConfig() != null && amount > 0) {
+                slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amount));
+            }
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_set_ghost", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            boolean isFluidGhost = packet.readBoolean();
+            if (isFluidGhost) {
+                FluidStack fluid = FluidStack.readFromPacket(packet);
+                if (!fluid.isEmpty()) {
+                    aeFluidHandler.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid));
+                }
+            }
+        });
+    }
 
     ////////////////////////////////
     // ******* Interaction *******//

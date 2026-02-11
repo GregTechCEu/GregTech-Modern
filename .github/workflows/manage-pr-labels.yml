@@ -30,7 +30,7 @@ jobs:
         with:
           mode: minimum
           count: 1
-          labels: 'type: feature, type: bugfix, type: refactor, type: translation, ignore changelog'
+          labels: 'type: feature, type: bugfix, type: refactor, type: translation, type: tests, ignore changelog'
           exit_type: failure
 
       - name: Check for Required Release Label # require exactly one of these labels

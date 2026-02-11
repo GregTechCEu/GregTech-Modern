@@ -15,6 +15,9 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -22,9 +25,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -208,11 +208,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     protected static class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
-        private ChargerMachine machine;
+        private final ChargerMachine machine;
 
         protected EnergyBatteryTrait(ChargerMachine machine, int inventorySize) {
             super(machine, GTValues.V[machine.tier] * inventorySize * 32L, GTValues.V[machine.tier],
                     inventorySize * AMPS_PER_ITEM, 0L, 0L);
+            this.machine = machine;
             this.setSideInputCondition(side -> machine.isWorkingEnabled());
             this.setSideOutputCondition(side -> false);
         }
@@ -269,7 +270,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 }
 
                 if (changed) {
-                    markAsChanged();
+                    machine.markAsChanged();
                     machine.changeState(State.RUNNING);
                 }
 

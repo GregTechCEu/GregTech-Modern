@@ -12,18 +12,27 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntSupplier;
 
+@Accessors(fluent = true, chain = true)
 public class AnimatedText extends StyledText {
 
     private MutableComponent full;
     private String fullString;
     private String currentString = "";
     private int currentIndex;
+    /**
+     * How fast the characters appear
+     */
+    @Setter
     private int speed = 40; // ms per char
     private long timeLastDraw;
+    @Setter
     private boolean forward = true;
 
     private boolean isAnimating = false;
@@ -104,48 +113,33 @@ public class AnimatedText extends StyledText {
         return this;
     }
 
-    public AnimatedText forward(boolean forward) {
-        this.forward = forward;
-        return this;
-    }
-
     @Override
-    public AnimatedText style(ChatFormatting formatting) {
+    public @NotNull AnimatedText style(ChatFormatting formatting) {
         return (AnimatedText) super.style(formatting);
     }
 
     @Override
-    public AnimatedText alignment(Alignment alignment) {
+    public @NotNull AnimatedText alignment(Alignment alignment) {
         return (AnimatedText) super.alignment(alignment);
     }
 
     @Override
-    public AnimatedText color(int color) {
+    public @NotNull AnimatedText color(int color) {
         return color(() -> color);
     }
 
     @Override
-    public AnimatedText color(@Nullable IntSupplier color) {
+    public @NotNull AnimatedText color(@Nullable IntSupplier color) {
         return (AnimatedText) super.color(color);
     }
 
     @Override
-    public AnimatedText scale(float scale) {
+    public @NotNull AnimatedText scale(float scale) {
         return (AnimatedText) super.scale(scale);
     }
 
     @Override
-    public AnimatedText shadow(@Nullable Boolean shadow) {
+    public @NotNull AnimatedText shadow(@Nullable Boolean shadow) {
         return (AnimatedText) super.shadow(shadow);
-    }
-
-    /**
-     * How fast the characters appear
-     *
-     * @param speed in ms per character
-     */
-    public AnimatedText speed(int speed) {
-        this.speed = speed;
-        return this;
     }
 }

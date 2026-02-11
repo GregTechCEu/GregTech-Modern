@@ -25,15 +25,17 @@ public class InteractableIcon extends DelegateIcon implements Interactable {
     private IGuiAction.KeyReleased onKeyReleased;
     @Setter
     private IGuiAction.KeyPressed onKeyTapped;
+    @Setter
+    public boolean playClickSound = true;
 
     public InteractableIcon(IIcon icon) {
         super(icon);
     }
 
     public void playClickSound() {
-        // if (this.playClickSound) {
-        Interactable.playButtonClickSound();
-        // }
+        if (this.playClickSound) {
+            Interactable.playButtonClickSound();
+        }
     }
 
     @Override

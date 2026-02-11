@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -216,8 +217,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine, groups.indexOf(group));
-        List<Boolean> moduleChanged = new ArrayList<>();
-        moduleChanged.add(false);
+        BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
@@ -237,25 +237,26 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
                                                     if (!amount && !init)
-                                                        moduleChanged.set(0, true);
+                                                        moduleChanged.setValue(true);
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .background(
-                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                new DynamicDrawable(() -> moduleChanged.getValue() ?
                                                         GTGuiTextures.MC_BUTTON_DISABLED :
                                                         GTGuiTextures.MC_BUTTON),
                                                 GTGuiTextures.EDIT)
                                         .hoverBackground(
-                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                new DynamicDrawable(() -> moduleChanged.getValue() ?
                                                         GTGuiTextures.MC_BUTTON_DISABLED :
                                                         GTGuiTextures.MC_BUTTON_HOVERED),
                                                 GTGuiTextures.EDIT)
                                         .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
-                                        .addTooltipLine(IKey.lang(() -> moduleChanged.get(0) ?
+                                        .addTooltipLine(IKey.lang(() -> moduleChanged.getValue() ?
                                                 "gtceu.gui.central_monitor.module_editor_disabled" :
                                                 "gtceu.gui.central_monitor.module_editor_button"))
                                         .onMousePressed((mouseX, mouseY, button) -> {
-                                            if (moduleEditor != null && !moduleChanged.get(0)) moduleEditor.openPanel();
+                                            if (moduleEditor != null && !moduleChanged.getValue())
+                                                moduleEditor.openPanel();
                                             return true;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))

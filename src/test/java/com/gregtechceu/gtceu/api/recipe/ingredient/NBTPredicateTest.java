@@ -34,7 +34,10 @@ public class NBTPredicateTest {
     @BeforeBatch(batch = "NBTPredicateTest")
     public static void prepare(ServerLevel level) {
         CR_RECIPE_TYPE = TestUtils.createRecipeType("nbt_predicate_ingredient_cr_tests", CHEMICAL_RECIPES);
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test")
                         .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("foo", "bar"))
                         .outputItems(new ItemStack(Items.COAL))
@@ -42,7 +45,7 @@ public class NBTPredicateTest {
                         .duration(5)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced")
                         .chance(4000)
                         .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("bin", "bar"))
@@ -52,7 +55,7 @@ public class NBTPredicateTest {
                         .duration(4)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_ranged")
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
                                 new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0, 4)))
@@ -61,7 +64,7 @@ public class NBTPredicateTest {
                         .duration(4)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced_ranged")
                         .chance(4000)
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
@@ -71,6 +74,7 @@ public class NBTPredicateTest {
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)
                         .buildRawRecipe());
+        CRHandler.completeStaging();
     }
 
     @GameTest(template = "empty", batch = "NBTPredicateTest")

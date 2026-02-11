@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.drawable.ITextLine;
 import com.gregtechceu.gtceu.api.mui.base.value.*;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> extends Widget<W>
+public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> extends SingleChildWidget<W>
                                       implements Interactable {
 
     private static final RichTooltip[] EMPTY_TOOLTIP = new RichTooltip[0];
@@ -35,12 +36,15 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
     protected IDrawable[] overlay = null;
     protected IDrawable[] hoverOverlay = null;
     protected RichTooltip[] tooltip = EMPTY_TOOLTIP;
+    protected IWidget[] stateChildren = null;
+    protected IWidget fallbackChild = null;
 
     @Override
     public void onInit() {
         if (this.intValue == null) {
             this.intValue = new IntValue(0);
         }
+        updateChild(getState());
     }
 
     @Override
@@ -79,6 +83,9 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         this.overlay = checkArray(this.overlay, stateCount);
         this.hoverBackground = checkArray(this.hoverBackground, stateCount);
         this.hoverOverlay = checkArray(this.hoverOverlay, stateCount);
+        if (this.stateChildren == null) this.stateChildren = new IWidget[stateCount];
+        else if (this.stateChildren.length < stateCount)
+            this.stateChildren = Arrays.copyOf(this.stateChildren, stateCount);
     }
 
     protected void expectCount() {
@@ -124,11 +131,22 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         if (state < 0 || state >= this.stateCount) {
             throw new IndexOutOfBoundsException("CycleButton state out of bounds");
         }
+        updateChild(state);
         if (setSource) {
             this.intValue.setIntValue(state);
         }
         this.lastValue = state;
         markTooltipDirty();
+    }
+
+    private void updateChild(int state) {
+        IWidget child = this.stateChildren != null && this.stateChildren.length > state ? this.stateChildren[state] :
+                null;
+        if (child != null) {
+            child(child);
+        } else if (getChild() != this.fallbackChild) {
+            child(this.fallbackChild);
+        }
     }
 
     @Override
@@ -225,8 +243,36 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         return getThis();
     }
 
+    @Override
+    public W invisible() {
+        if (this.background != null) {
+            Arrays.fill(this.background, IDrawable.EMPTY);
+        }
+        if (getBackground() == null) {
+            super.background(IDrawable.EMPTY);
+        }
+        return disableHoverBackground();
+    }
+
     protected W value(IIntValue<?> value) {
         setSyncOrValue(ISyncOrValue.orEmpty(value));
+        return getThis();
+    }
+
+    @Override
+    public W child(IWidget child) {
+        this.fallbackChild = child;
+        return super.child(child);
+    }
+
+    public W stateChild(int state, IWidget child) {
+        updateStateCount(state, false);
+        if (this.stateChildren == null) {
+            this.stateChildren = new IWidget[state + 1];
+        } else if (this.stateChildren.length < state + 1) {
+            this.stateChildren = Arrays.copyOf(this.stateChildren, state + 1);
+        }
+        this.stateChildren[state] = child;
         return getThis();
     }
 

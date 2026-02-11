@@ -50,6 +50,12 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     @Override
     public void beforeResize(boolean onOpen) {
         super.beforeResize(onOpen);
+        if (resizer().getChildren().isEmpty() || resizer().getChildren().size() > 2)
+            throw new IllegalStateException("Invalid Expandable children size");
+        if (resizer().getChildren().size() > 1) {
+            resizer().getChildren().remove(1);
+        }
+        resizer().getChildren().set(0, this.expanded ? this.expandedView.resizer() : this.normalView.resizer());
         this.currentChildren = Collections.singletonList(this.expanded ? this.expandedView : this.normalView);
     }
 

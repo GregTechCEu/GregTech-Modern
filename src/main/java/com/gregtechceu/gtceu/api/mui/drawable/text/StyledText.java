@@ -12,19 +12,27 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntSupplier;
 
+@Accessors(fluent = true, chain = true)
 public class StyledText extends BaseKey {
 
     private final IKey key;
     @Getter
+    @Setter
     private Alignment alignment = Alignment.Center;
     @Getter
+    @Setter
     private IntSupplier color = null;
+    @Setter
     private @Nullable Boolean shadow = null;
     @Getter
+    @Setter
     private float scale = 1f;
 
     public StyledText(IKey key) {
@@ -57,37 +65,8 @@ public class StyledText extends BaseKey {
     }
 
     @Override
-    public BaseKey style(ChatFormatting formatting) {
+    public @NotNull BaseKey style(ChatFormatting formatting) {
         this.key.style(formatting);
-        return this;
-    }
-
-    @Override
-    public StyledText alignment(Alignment alignment) {
-        this.alignment = alignment;
-        return this;
-    }
-
-    @Override
-    public StyledText color(int color) {
-        return color(() -> color);
-    }
-
-    @Override
-    public StyledText color(@Nullable IntSupplier color) {
-        this.color = color;
-        return this;
-    }
-
-    @Override
-    public StyledText scale(float scale) {
-        this.scale = scale;
-        return this;
-    }
-
-    @Override
-    public StyledText shadow(@Nullable Boolean shadow) {
-        this.shadow = shadow;
         return this;
     }
 

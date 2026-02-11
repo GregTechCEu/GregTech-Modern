@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -137,7 +138,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
             return;
         }
         int maxAttempts = mouseData.shift() ? currentStack.getCount() : 1;
-        if (mouseData.mouseButton() == 0 && this.canFillSlot) {
+        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_RIGHT && this.canFillSlot) {
             boolean performedTransfer = false;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, this.fluidHandler,
@@ -169,7 +170,8 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
             return;
         }
         FluidStack currentFluid = this.fluidTank.getFluid();
-        if (mouseData.mouseButton() == 1 && this.canDrainSlot && !currentFluid.isEmpty()) {
+        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_LEFT && this.canDrainSlot &&
+                !currentFluid.isEmpty()) {
             boolean performedTransfer = false;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryFillContainer(currentStack, this.fluidHandler,
@@ -180,7 +182,7 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
                     break; // do not continue if we can't add resulting container into inventory
                 }
 
-                remainingStack = FluidUtil.tryFillContainer(currentStack, this.fluidHandler, Integer.MAX_VALUE, null,
+                remainingStack = FluidUtil.tryFillContainer(currentStack, this.fluidHandler, Integer.MAX_VALUE, player,
                         true).result;
                 if (currentStack.getCount() == 1) {
                     currentStack = remainingStack;
