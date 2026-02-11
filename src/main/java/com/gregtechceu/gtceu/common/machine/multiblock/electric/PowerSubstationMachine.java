@@ -315,12 +315,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 () -> new BooleanSyncValue(this.recipeLogic::isActive));
         BooleanSyncValue waiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this.recipeLogic::isWaiting));
-        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(this.recipeLogic::getProgressPercent));
-        IntSyncValue duration = syncManager.getOrCreateSyncHandler("duration", IntSyncValue.class,
-                () -> new IntSyncValue(this.recipeLogic::getDuration));
-        IntSyncValue progress = syncManager.getOrCreateSyncHandler("progress", IntSyncValue.class,
-                () -> new IntSyncValue(this.recipeLogic::getProgress));
 
         // Energy bank specific sync handlers
         // These will not be called anywhere else, so we can create them directly instead of using
@@ -350,15 +344,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> !power.getBoolValue()));
         listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.running"))
-                .asWidget()
-                .setEnabledIf((widget) -> active.getBoolValue()));
-        listWidget.child(IKey.dynamic(() -> {
-            int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
-            double maxInSec = (float) duration.getIntValue() / 20.0f;
-            double currentInSec = (float) progress.getIntValue() / 20.0f;
-            return Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-                    String.format("%.2f", (float) maxInSec), currentProgress);
-        })
                 .asWidget()
                 .setEnabledIf((widget) -> active.getBoolValue()));
         listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
