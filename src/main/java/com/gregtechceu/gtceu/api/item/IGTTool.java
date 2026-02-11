@@ -345,11 +345,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
         if (!player.isShiftKeyDown()) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
-            int result = -1;
-            if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(serverPlayer, stack, pos);
-            }
-            if (result != 0) {
                 // prevent exploits with instantly breakable blocks
                 BlockState state = player.level().getBlockState(pos);
                 boolean effective = false;
