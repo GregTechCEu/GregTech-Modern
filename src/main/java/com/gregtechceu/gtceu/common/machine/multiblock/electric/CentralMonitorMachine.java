@@ -122,7 +122,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
         getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
-        getSyncDataHolder().markClientSyncFieldDirty("recipeLogic");
+        recipeLogic.getSyncDataHolder().markClientSyncFieldDirty("status");
     }
 
     @Override
