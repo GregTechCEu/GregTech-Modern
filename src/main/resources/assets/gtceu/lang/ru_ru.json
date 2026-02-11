@@ -5898,5 +5898,18 @@
     "item.gtceu.tool.tooltip.default_enchantments": "§5Стандартные чары:",
     "item.gtceu.wireless_transmitter_cover": "Беспроводной передатчик",
     "config.gtceu.option.replaceWithCobbleVersion": "replaceWithCobbleVersion",
-    "material.gtceu.tuff": "Туфф"
+    "material.gtceu.tuff": "Туфф",
+    "behaviour.memory_card.client_msg.cleared": "Сохраненная конфигурация очищена",
+    "behaviour.memory_card.client_msg.copied": "Сохраненная конфигурация скопирована",
+    "behaviour.memory_card.client_msg.missing_items": "Нехватка предметов требуемых для вставки конфигурации",
+    "behaviour.memory_card.client_msg.pasted": "Сохраненная конфигурация применена",
+    "behaviour.memory_card.copy_target": "Копирование: %s",
+    "behaviour.memory_card.disabled": "§cВыключено§r",
+    "behaviour.memory_card.enabled": "§aВключено§r",
+    "behaviour.memory_card.tooltip.copy": "§7Присесть + ПКМ для копирования конфигурации, или удаления сохраненных данных если целью является блок, отличный от Машины или Трубы.",
+    "behaviour.memory_card.tooltip.items_to_paste": "Следующие предметы необходимы для вставки этой конфигурации:",
+    "behaviour.memory_card.tooltip.paste": "§7ПКМ чтобы вставить конфигурацию машины",
+    "behaviour.memory_card.tooltip.view_stored": "§8<Присесть для просмотра конфигурации>",
+    "behaviour.setting.tooltip.allow_input": "§2Разрешить ввод§r",
+    "behaviour.setting.tooltip.auto_output": "§2Авто. вывод§r"
 }
