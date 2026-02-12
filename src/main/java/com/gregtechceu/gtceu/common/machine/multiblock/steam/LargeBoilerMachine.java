@@ -37,15 +37,10 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -291,6 +286,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                             steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
                 })
+                        .asWidget())
+                .child(IKey.lang(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
+                        .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(GTMuiWidgets.createIntInputWithButtons(throttle, () -> 25, () -> 100, 5, UITexture.EMPTY))
 
