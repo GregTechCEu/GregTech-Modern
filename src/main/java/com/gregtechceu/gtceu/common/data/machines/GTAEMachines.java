@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.integration.ae2.machine.*;
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.EV;
+import static com.gregtechceu.gtceu.api.GTValues.IV;
 import static com.gregtechceu.gtceu.api.GTValues.LuV;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -32,7 +33,7 @@ public class GTAEMachines {
     public final static MachineDefinition STOCKING_IMPORT_BUS_ME = REGISTRATE
             .machine("me_stocking_input_bus", MEStockingBusPartMachine::new)
             .langValue("ME Stocking Input Bus")
-            .tier(LuV)
+            .tier(IV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
@@ -76,7 +77,7 @@ public class GTAEMachines {
     public final static MachineDefinition STOCKING_IMPORT_HATCH_ME = REGISTRATE
             .machine("me_stocking_input_hatch", MEStockingHatchPartMachine::new)
             .langValue("ME Stocking Input Hatch")
-            .tier(LuV)
+            .tier(IV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
