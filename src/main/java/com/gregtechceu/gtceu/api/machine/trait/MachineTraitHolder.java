@@ -50,6 +50,8 @@ public final class MachineTraitHolder {
 
     /**
      * Registers a trait to be synced/saved.
+     * Do not register a trait to be synced and also store that trait as a syncable machine field, otherwise the trait data will be duplicated. Use only one sync method.
+     *
      * @param traitName Unique identifier for this trait.
      * @param trait The trait to register
      */
