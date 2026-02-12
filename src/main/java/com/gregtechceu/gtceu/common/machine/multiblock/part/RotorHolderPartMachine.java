@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -52,8 +51,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IInteractedMachine {
+public class RotorHolderPartMachine extends TieredPartMachine {
 
     public static final int SPEED_INCREMENT = 1;
     public static final int SPEED_DECREMENT = 3;
@@ -87,7 +85,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(inventory.storage);
+        inventory.dropInventoryInWorld();
     }
 
     @Override
@@ -227,8 +225,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
         inventory.onContentsChanged();
     }
 
+    @Override
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
+        var superResult = super.onUse(state, level, pos, player, hand, hit);
+        if (superResult != InteractionResult.PASS) return superResult;
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
             TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
             if (behaviour != null) {

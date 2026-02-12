@@ -418,8 +418,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public void onMachineDestroyed() {
-        clearInventory(patternInventory);
-        clearInventory(shareInventory);
+        patternInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        shareInventory.dropInventoryInWorld();
     }
 
     @Override

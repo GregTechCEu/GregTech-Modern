@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -18,6 +16,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -44,11 +45,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockControllerMachine extends MetaMachine implements IInteractedMachine {
+public class MultiblockControllerMachine extends MetaMachine {
 
     private MultiblockState multiblockState;
     private final List<IMultiPart> parts = new ArrayList<>();
-    private @Nullable IParallelHatch parallelHatch = null;
+    private @Nullable ParallelHatchPartMachine parallelHatch = null;
     @Getter
     @SyncToClient
     private BlockPos[] partPositions = new BlockPos[0];
@@ -119,7 +120,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IInterac
         }
         this.parts.sort(getPartSorter());
         for (var part : parts) {
-            if (part instanceof IParallelHatch pHatch) {
+            if (part instanceof ParallelHatchPartMachine pHatch) {
                 parallelHatch = pHatch;
             }
             part.addedToController(this);
@@ -212,13 +213,13 @@ public class MultiblockControllerMachine extends MetaMachine implements IInterac
     }
 
     /**
-     * The instance of {@link IParallelHatch} attached to this Controller.
+     * The instance of {@link ParallelHatchPartMachine} attached to this Controller.
      * <p>
      * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
      *
      * @return an {@link Optional} of the attached IParallelHatch, empty if one is not attached
      */
-    public Optional<IParallelHatch> getParallelHatch() {
+    public Optional<ParallelHatchPartMachine> getParallelHatch() {
         return Optional.ofNullable(parallelHatch);
     }
 
