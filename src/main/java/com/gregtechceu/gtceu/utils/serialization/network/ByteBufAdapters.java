@@ -34,7 +34,7 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf());
-    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, (a, b) -> Objects.equals(a.copy(), b.copy()));
+    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, Objects::equals);
     // spotless:on
 
     public static final IByteBufAdapter<byte[]> BYTE_ARR = new IByteBufAdapter<>() {
