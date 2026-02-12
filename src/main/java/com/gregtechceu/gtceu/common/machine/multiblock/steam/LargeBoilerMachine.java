@@ -12,17 +12,21 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -251,7 +255,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.DISPLAY_BRONZE);
+                .background(GTGuiTextures.DISPLAY);
 
         // Machine generic sync handlers
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
@@ -290,11 +294,73 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 .child(IKey.lang(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
                         .withStyle(ChatFormatting.WHITE))
                         .asWidget())
-                .child(GTMuiWidgets.createIntInputWithButtons(throttle, () -> 25, () -> 100, 5, UITexture.EMPTY))
+                .child(createIntInputWithButtons(throttle))
 
                 .setEnabledIf((widget) -> isFormed.getBoolValue());
         parentWidget.child(listWidget);
         return parentWidget;
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue) {
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
+                syncValue::setStringValue);
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .marginBottom(2)
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .left(0).width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, 25, 100);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
+                .child(new TextFieldWidget()
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(25, 100)
+                        .onMouseScrolled((mouseX, mouseY, delta) -> {
+                            int inc = (int) delta;
+                            int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .value(formattedValue))
+                .child(new ButtonWidget<>()
+                        .right(0).width(18)
+                        .onMousePressed((x, y, button) -> {
+                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, 25, 100);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
+    }
+
+    private static IKey createAdjustOverlay(boolean increment) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(increment ? '+' : '-');
+        builder.append(getIncrementValue(MouseData.create(-1)));
+
+        float scale = 1f;
+        if (builder.length() == 3) {
+            scale = 0.8f;
+        } else if (builder.length() == 4) {
+            scale = 0.6f;
+        } else if (builder.length() > 4) {
+            scale = 0.5f;
+        }
+        return IKey.str(builder.toString())
+                .color(Color.WHITE.main)
+                .scale(scale);
+    }
+
+    private static int getIncrementValue(MouseData data) {
+        return data.shift() ? 5 : 1;
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
