@@ -6,14 +6,12 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -26,11 +24,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,7 +36,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -89,7 +83,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
                     recipeLogicMachine.getRecipeLogic().isWorking()) {
                 emitPollutionParticles();
@@ -114,7 +108,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
         if (snowSubscription == null) {
             this.snowSubscription = subscribeServerTick(null, this::tryBreakSnow);
@@ -123,7 +117,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
 
     @MustBeInvokedByOverriders
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         if (controllers.isEmpty()) {
             unsubscribe(snowSubscription);
@@ -133,7 +127,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
 
     private void tryBreakSnow() {
         if (getOffsetTimer() % 10 == 0) {
-            for (IMultiController controller : getControllers()) {
+            for (MultiblockControllerMachine controller : getControllers()) {
                 if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
                         recipeLogicMachine.getRecipeLogic().isWorking()) {
                     BlockPos mufflerPos = getBlockPos().relative(getFrontFacing());
@@ -173,16 +167,6 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
 
         self().getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
                 xPos, yPos, zPos, xSpd, ySpd, zSpd);
-    }
-
-    @Override
-    public void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
-        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
-                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
-                () -> !isFrontFaceFree(),
-                () -> null));
     }
 
     //////////////////////////////////////

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
@@ -34,7 +34,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     public void setCurrentParallel(int parallelAmount) {
         this.currentParallel = Mth.clamp(parallelAmount, MIN_PARALLEL, this.maxParallel);
-        for (IMultiController controller : this.getControllers()) {
+        for (MultiblockControllerMachine controller : this.getControllers()) {
             if (controller instanceof IRecipeLogicMachine rlm) {
                 rlm.getRecipeLogic().markLastRecipeDirty();
             }

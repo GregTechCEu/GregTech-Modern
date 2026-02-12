@@ -14,7 +14,7 @@ public interface IFluidRenderMulti extends IWorkableMultiController, IMachineFea
     @ApiStatus.NonExtendable
     default Set<BlockPos> getFluidOffsets() {
         Set<BlockPos> offsets = getFluidBlockOffsets();
-        if (offsets.isEmpty() && this.isFormed()) {
+        if (offsets.isEmpty() && self().isFormed()) {
             offsets = saveOffsets();
             setFluidBlockOffsets(offsets);
         }
@@ -28,12 +28,10 @@ public interface IFluidRenderMulti extends IWorkableMultiController, IMachineFea
     @ApiStatus.Internal
     void setFluidBlockOffsets(@NotNull Set<BlockPos> offsets);
 
-    @Override
     default void onStructureFormed() {
         saveOffsets();
     }
 
-    @Override
     default void onStructureInvalid() {
         getFluidBlockOffsets().clear();
     }

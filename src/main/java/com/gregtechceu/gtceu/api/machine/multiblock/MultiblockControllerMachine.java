@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
@@ -18,6 +18,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,11 +37,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -47,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockControllerMachine extends MetaMachine implements IMultiController {
+public class MultiblockControllerMachine extends MetaMachine {
 
     private MultiblockState multiblockState;
     private final List<IMultiPart> parts = new ArrayList<>();
@@ -55,6 +53,13 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Getter
     @SyncToClient
     private BlockPos[] partPositions = new BlockPos[0];
+
+    /**
+     * Whether Multiblock Formed.
+     * <br>
+     * NOTE: even machine is formed, it doesn't mean to workable!
+     * Its parts maybe invalid due to chunk unload.
+     */
     @Getter
     @SaveField
     @SyncToClient
@@ -70,13 +75,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     //////////////////////////////////////
-    // ***** Initialization ******//
+    // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
-
-    @Override
-    public MultiblockMachineDefinition getDefinition() {
-        return (MultiblockMachineDefinition) super.getDefinition();
-    }
 
     @Override
     public void onLoad() {
@@ -94,83 +94,15 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
     }
 
-    @Override
-    @NotNull
-    public MultiblockState getMultiblockState() {
-        if (multiblockState == null) {
-            multiblockState = new MultiblockState(getLevel(), getBlockPos());
-        }
-        return multiblockState;
-    }
-
-    public void setFlipped(boolean flipped) {
-        isFlipped = flipped;
-        syncDataHolder.markClientSyncFieldDirty("isFlipped");
-    }
-
-    @SuppressWarnings("unused")
-    @ClientFieldChangeListener(fieldName = "partPositions")
-    protected void onPartsUpdated() {
-        parts.clear();
-        for (var pos : partPositions) {
-            if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
-                parts.add(part);
-            }
-        }
-    }
-
-    protected void updatePartPositions() {
-        this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
-                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
-        syncDataHolder.markClientSyncFieldDirty("partPositions");
-    }
-
-    @Override
-    public List<IMultiPart> getParts() {
-        // for the client side, when the chunk unloaded
-        if (parts.size() != this.partPositions.length) {
-            parts.clear();
-            for (var pos : this.partPositions) {
-                if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
-                    parts.add(part);
-                }
-            }
-        }
-        return this.parts;
-    }
-
-    @Override
-    public Optional<ParallelHatchPartMachine> getParallelHatch() {
-        return Optional.ofNullable(parallelHatch);
-    }
-
-    //////////////////////////////////////
-    // *** Multiblock LifeCycle ***//
-    //////////////////////////////////////
-    @Getter
-    private final Lock patternLock = new ReentrantLock();
-
-    @Override
-    public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getOffset() + periodID) % 4 == 0 &&
-                checkPatternWithTryLock()) { // per second
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().execute(() -> {
-                    patternLock.lock();
-                    if (checkPatternWithLock()) { // formed
-                        setFlipped(getMultiblockState().isNeededFlip());
-                        onStructureFormed();
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        mwsd.addMapping(getMultiblockState());
-                        mwsd.removeAsyncLogic(this);
-                    }
-                    patternLock.unlock();
-                });
-            }
-        }
-    }
-
-    @Override
+    /**
+     * Called when structure is formed, have to be called after {@link #checkPattern()}. (server-side / fake scene only)
+     * <br>
+     * Trigger points:
+     * <br>
+     * 1 - Blocks in structure changed but still formed.
+     * <br>
+     * 2 - Literally, structure formed.
+     */
     public void onStructureFormed() {
         isFormed = true;
         syncDataHolder.markClientSyncFieldDirty("isFormed");
@@ -196,7 +128,15 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         updatePartPositions();
     }
 
-    @Override
+    /**
+     * Called when structure is invalid. (server-side / fake scene only)
+     * <br>
+     * Trigger points:
+     * <br>
+     * 1 - Blocks in structure changed.
+     * <br>
+     * 2 - Before controller machine removed.
+     */
     public void onStructureInvalid() {
         isFormed = false;
         MachineRenderState renderState = getRenderState();
@@ -213,12 +153,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     /**
-     * mark multiblockState as unload error first.
-     * if it's actually cuz by block breaking.
-     * {@link #onStructureInvalid()} will be called from
-     * {@link MultiblockState#onBlockStateChanged(BlockPos, BlockState)}
+     * Called from part, when part is invalid due to chunk unload or broken.
      */
-    @Override
     public void onPartUnload() {
         parts.removeIf(part -> part.self().isRemoved());
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
@@ -226,6 +162,104 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
         }
         updatePartPositions();
+    }
+
+    //////////////////////////////////////
+    // ***** Getters ******//
+    /// ///////////////////////////////////
+
+    @Override
+    public MultiblockMachineDefinition getDefinition() {
+        return (MultiblockMachineDefinition) super.getDefinition();
+    }
+
+    /**
+     * Get MultiblockState. It records all structure-related information.
+     */
+    @NotNull
+    public MultiblockState getMultiblockState() {
+        if (multiblockState == null) {
+            multiblockState = new MultiblockState(getLevel(), getBlockPos());
+        }
+        return multiblockState;
+    }
+
+    public @Nullable BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState,
+                                                  BlockPos sourcePos) {
+        if (isFormed()) {
+            return getDefinition().getPartAppearance().apply(this, part, side);
+        }
+        return null;
+    }
+
+    public Comparator<IMultiPart> getPartSorter() {
+        return getDefinition().getPartSorter().apply(this);
+    }
+
+    /**
+     * Get all parts
+     */
+    public List<IMultiPart> getParts() {
+        // for the client side, when the chunk unloaded
+        if (parts.size() != this.partPositions.length) {
+            parts.clear();
+            for (var pos : this.partPositions) {
+                if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                    parts.add(part);
+                }
+            }
+        }
+        return this.parts;
+    }
+
+    /**
+     * The instance of {@link ParallelHatchPartMachine} attached to this Controller.
+     * <p>
+     * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
+     *
+     * @return an {@link Optional} of the attached IParallelHatch, empty if one is not attached
+     */
+    public Optional<ParallelHatchPartMachine> getParallelHatch() {
+        return Optional.ofNullable(parallelHatch);
+    }
+
+    /**
+     *
+     * @return Whether batching is enabled on this multiblock
+     */
+    public boolean isBatchEnabled() {
+        return false;
+    }
+
+    public void setFlipped(boolean flipped) {
+        isFlipped = flipped;
+        syncDataHolder.markClientSyncFieldDirty("isFlipped");
+    }
+
+    @SuppressWarnings("unused")
+    @ClientFieldChangeListener(fieldName = "partPositions")
+    protected void onPartsUpdated() {
+        parts.clear();
+        for (var pos : partPositions) {
+            if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                parts.add(part);
+            }
+        }
+    }
+
+    protected void updatePartPositions() {
+        this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
+                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
+        syncDataHolder.markClientSyncFieldDirty("partPositions");
+    }
+
+    public void setBatchEnabled(boolean batch) {}
+
+    /**
+     * should add part to the part list.
+     */
+    public boolean shouldAddPartToController(IMultiPart part) {
+        return true;
     }
 
     @Override
@@ -273,6 +307,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
     }
 
+    /**
+     * Show the preview of structure.
+     */
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
@@ -283,6 +320,98 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             }
             return InteractionResult.SUCCESS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    public boolean allowCircuitSlots() {
+        return true;
+    }
+
+    //////////////////////////////////////
+    // *** Pattern checking ***//
+    //////////////////////////////////////
+
+    /**
+     * Get structure pattern.
+     * You can override it to create dynamic patterns.
+     */
+    public BlockPattern getPattern() {
+        return getDefinition().getPatternFactory().get();
+    }
+
+    /**
+     * Get lock for pattern checking.
+     */
+    @Getter
+    private final Lock patternLock = new ReentrantLock();
+
+    /**
+     * Called in an async thread. It's unsafe, Don't modify anything of world but checking information.
+     * It will be called per 5 tick.
+     *
+     * @param periodID period Tick
+     */
+    public void asyncCheckPattern(long periodID) {
+        if ((getMultiblockState().hasError() || !isFormed) && (getOffset() + periodID) % 4 == 0 &&
+                checkPatternWithTryLock()) { // per second
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                serverLevel.getServer().execute(() -> {
+                    patternLock.lock();
+                    if (checkPatternWithLock()) { // formed
+                        setFlipped(getMultiblockState().isNeededFlip());
+                        onStructureFormed();
+                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                        mwsd.addMapping(getMultiblockState());
+                        mwsd.removeAsyncLogic(this);
+                    }
+                    patternLock.unlock();
+                });
+            }
+        }
+    }
+
+    /**
+     * Check MultiBlock Pattern. Just checking pattern without any other logic.
+     * You can override it but it's unsafe for calling. because it will also be called in an async thread.
+     * <br>
+     * you should always use {@link MultiblockControllerMachine#checkPatternWithLock()} )} and
+     * {@link MultiblockControllerMachine#checkPatternWithTryLock()} instead.
+     *
+     * @return whether it can be formed.
+     */
+    public boolean checkPattern() {
+        BlockPattern pattern = getPattern();
+        return pattern != null && pattern.checkPatternAt(getMultiblockState(), false);
+    }
+
+    /**
+     * Check pattern with a lock.
+     */
+    public boolean checkPatternWithLock() {
+        var lock = getPatternLock();
+        lock.lock();
+        try {
+            return checkPattern();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Check pattern with a try lock
+     *
+     * @return false - checking failed or cant get the lock.
+     */
+    public boolean checkPatternWithTryLock() {
+        var lock = getPatternLock();
+        if (lock.tryLock()) {
+            try {
+                return checkPattern();
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            return false;
+        }
     }
 }

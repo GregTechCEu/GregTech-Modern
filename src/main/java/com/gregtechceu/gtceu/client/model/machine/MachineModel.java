@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.model.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -298,7 +298,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
-        for (IMultiController controller : controllers) {
+        for (MultiblockControllerMachine controller : controllers) {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             List<BakedQuad> newQuads = null;
@@ -329,7 +329,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, IMultiController controller,
+    private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, MultiblockControllerMachine controller,
                                                 List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
