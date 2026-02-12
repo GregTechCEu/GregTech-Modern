@@ -102,7 +102,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                 return updateStored(heldItem);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

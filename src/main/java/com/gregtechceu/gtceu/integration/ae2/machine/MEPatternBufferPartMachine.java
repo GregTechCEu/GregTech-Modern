@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -379,8 +379,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public PatternContainerGroup getTerminalGroup() {
         // Has controller
         if (isFormed()) {
-            IMultiController controller = getControllers().first();
-            MultiblockMachineDefinition controllerDefinition = controller.self().getDefinition();
+            MultiblockControllerMachine controller = getControllers().first();
+            MultiblockMachineDefinition controllerDefinition = controller.getDefinition();
             // has customName
             if (!customName.isEmpty()) {
                 return new PatternContainerGroup(
@@ -418,8 +418,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public void onMachineDestroyed() {
-        clearInventory(patternInventory);
-        clearInventory(shareInventory);
+        patternInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        shareInventory.dropInventoryInWorld();
     }
 
     @Override

@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -46,10 +45,7 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.LaserHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.TankValvePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
@@ -866,7 +862,7 @@ public class GTMachineUtils {
                                 new TraceabilityPredicate(
                                         new SimplePredicate(
                                                 state -> MetaMachine.getMachine(state.getWorld(),
-                                                        state.getPos()) instanceof IRotorHolderMachine rotorHolder &&
+                                                        state.getPos()) instanceof RotorHolderPartMachine rotorHolder &&
                                                         state.getWorld()
                                                                 .getBlockState(state.getPos()
                                                                         .relative(rotorHolder.self().getFrontFacing()))

@@ -139,8 +139,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(cache.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        cache.dropInventoryInWorld();
     }
 
     @Override

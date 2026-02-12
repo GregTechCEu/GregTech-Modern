@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -67,7 +66,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IUIMachine, IDataInfoProvider, IInteractedMachine {
+                                         implements IUIMachine, IDataInfoProvider {
 
     @SaveField
     public final NotifiableFluidTank waterTank;
@@ -303,7 +302,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 return InteractionResult.SUCCESS;
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     //////////////////////////////////////

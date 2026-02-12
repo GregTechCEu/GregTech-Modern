@@ -78,7 +78,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
-        if (!machine.isFormed() || machine.getFluidOffsets() == null) {
+        if (!machine.self().isFormed() || machine.getFluidOffsets() == null) {
             return;
         }
         if (!fixedFluid) {

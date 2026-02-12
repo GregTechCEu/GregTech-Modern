@@ -130,9 +130,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
