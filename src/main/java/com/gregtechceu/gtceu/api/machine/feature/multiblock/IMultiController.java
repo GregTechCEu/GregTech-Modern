@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -8,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -146,13 +146,13 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     List<IMultiPart> getParts();
 
     /**
-     * The instance of {@link IParallelHatch} attached to this Controller.
+     * The instance of {@link ParallelHatchPartMachine} attached to this Controller.
      * <p>
-     * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
+     * Note that this will return a singular instance, and will not account for multiple attached ParallelHatches
      * 
-     * @return an {@link Optional} of the attached IParallelHatch, empty if one is not attached
+     * @return an {@link Optional} of the attached ParallelHatch, empty if one is not attached
      */
-    Optional<IParallelHatch> getParallelHatch();
+    Optional<ParallelHatchPartMachine> getParallelHatch();
 
     /**
      *
