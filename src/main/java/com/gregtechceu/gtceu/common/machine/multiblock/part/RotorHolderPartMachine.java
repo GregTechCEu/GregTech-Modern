@@ -74,7 +74,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(inventory.storage);
+        inventory.dropInventoryInWorld();
     }
 
     @Override

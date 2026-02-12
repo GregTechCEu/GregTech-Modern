@@ -476,8 +476,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             while (itg.hasNext()) {
                 MonitorGroup group = itg.next();
                 if (group.isEmpty()) {
-                    clearInventory(group.getItemStackHandler());
-                    clearInventory(group.getPlaceholderSlotsHandler());
+                    group.getItemStackHandler().dropInventoryInWorld(getLevel(), getBlockPos());
+                    group.getPlaceholderSlotsHandler().dropInventoryInWorld(getLevel(), getBlockPos());
                     itg.remove();
                 }
             }
@@ -667,8 +667,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         for (MonitorGroup group : monitorGroups) {
-            clearInventory(group.getItemStackHandler());
-            clearInventory(group.getPlaceholderSlotsHandler());
+            group.getItemStackHandler().dropInventoryInWorld(getLevel(), getBlockPos());;
+            group.getPlaceholderSlotsHandler().dropInventoryInWorld(getLevel(), getBlockPos());
         }
     }
 }
