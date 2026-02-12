@@ -92,7 +92,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         getRecipeLogic().onRemove();
-        clearInventory(exportItems.storage);
+        exportItems.dropInventoryInWorld();
     }
 
     @Override

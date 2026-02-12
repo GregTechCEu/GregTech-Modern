@@ -174,8 +174,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(output.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        output.dropInventoryInWorld();
     }
 
     //////////////////////////////////////

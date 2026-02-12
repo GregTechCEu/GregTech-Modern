@@ -85,7 +85,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(this.heldItems.storage);
+        heldItems.storage.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override
