@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -12,21 +12,17 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -62,8 +58,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @SyncToClient
     protected boolean isFlipped;
 
-    public MultiblockControllerMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MultiblockControllerMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////
@@ -95,7 +91,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @NotNull
     public MultiblockState getMultiblockState() {
         if (multiblockState == null) {
-            multiblockState = new MultiblockState(getLevel(), getPos());
+            multiblockState = new MultiblockState(getLevel(), getBlockPos());
         }
         return multiblockState;
     }
@@ -118,7 +114,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
 
     protected void updatePartPositions() {
         this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
-                this.parts.stream().map(part -> part.self().getPos()).toArray(BlockPos[]::new);
+                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
         syncDataHolder.markClientSyncFieldDirty("partPositions");
     }
 
@@ -149,7 +145,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
 
     @Override
     public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 &&
+        if ((getMultiblockState().hasError() || !isFormed) && (getOffset() + periodID) % 4 == 0 &&
                 checkPatternWithTryLock()) { // per second
             if (getLevel() instanceof ServerLevel serverLevel) {
                 serverLevel.getServer().execute(() -> {
@@ -217,7 +213,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
      */
     @Override
     public void onPartUnload() {
-        parts.removeIf(part -> part.self().isInValid());
+        parts.removeIf(part -> part.self().isRemoved());
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
         if (getLevel() instanceof ServerLevel serverLevel) {
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
@@ -252,33 +248,13 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getPos(),
+            getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 checkPattern();
             }
         }
-    }
-
-    @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
-        if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
-                    getUpwardsFacing().getClockWise());
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-        if (playerIn.isShiftKeyDown()) {
-            if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
-                return InteractionResult.FAIL;
-            }
-            if (!isRemote()) {
-                setFrontFacing(gridSide);
-            }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
 
     @Override

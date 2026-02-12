@@ -29,6 +29,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     private final ScrollArea scroll = new ScrollArea();
     private boolean scrollXActive, scrollYActive;
+    private IGuiAction.MouseScroll customMouseScroll;
 
     public AbstractScrollWidget(@Nullable HorizontalScrollData x, @Nullable VerticalScrollData y) {
         super();
@@ -70,7 +71,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     public void beforeResize(boolean onOpen) {
         super.beforeResize(onOpen);
-        this.scroll.applyWidgetTheme(getContext().getTheme().getScrollbarTheme().getTheme(isHovering()));
+        this.scroll.applyWidgetTheme(getPanel().getTheme().getScrollbarTheme().getTheme(isHovering()));
         if (onOpen) checkScrollbarActive(true);
         getScrollArea().getScrollPadding().scrollPaddingAll(0);
         applyAdditionalOffset(this.scroll.getScrollX());
@@ -113,7 +114,15 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+        if (customMouseScroll != null) {
+            return customMouseScroll.scroll(mouseX, mouseY, delta);
+        }
         return this.scroll.mouseScroll(getContext());
+    }
+
+    public W onMouseScrolled(IGuiAction.MouseScroll mouseScroll) {
+        this.customMouseScroll = mouseScroll;
+        return getThis();
     }
 
     @Override
@@ -139,7 +148,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
             context.getStencil().pop();
-            WidgetThemeEntry<WidgetTheme> scrollbarTheme = context.getTheme().getScrollbarTheme();
+            WidgetThemeEntry<WidgetTheme> scrollbarTheme = getPanel().getTheme().getScrollbarTheme();
             this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
                     scrollbarTheme.getTheme().getBackground());
         }

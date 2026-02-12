@@ -71,7 +71,7 @@ public class GCYMMachines {
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .modelProperty(IS_FORMED, false)
                     .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
-                    .UI((guiData, syncManager, uiSettings, machine) -> {
+                    .ui((guiData, syncManager, uiSettings, machine) -> {
                         return ((ParallelHatchPartMachine) machine).buildUI(guiData, syncManager, uiSettings);
                     })
                     .model(createWorkableTieredHullMachineModel(
@@ -705,7 +705,7 @@ public class GCYMMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();

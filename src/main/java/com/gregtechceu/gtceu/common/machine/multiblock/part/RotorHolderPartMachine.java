@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
@@ -21,6 +20,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
@@ -28,8 +29,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -53,7 +52,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
+                                    implements IRotorHolderMachine, IInteractedMachine {
 
     @SaveField
     public final NotifiableItemStackHandler inventory;
@@ -72,8 +71,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Nullable
     protected ISubscription rotorInvSubs;
 
-    public RotorHolderPartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public RotorHolderPartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventory = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.BOTH);
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
     }
@@ -83,7 +82,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(inventory.storage);
     }
 

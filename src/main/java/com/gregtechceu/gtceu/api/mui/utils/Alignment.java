@@ -62,10 +62,33 @@ public class Alignment {
      */
     public enum MainAxis {
 
+        /**
+         * All children will be put at the start of the Flow next to each other.
+         */
         START,
+        /**
+         * All children will be put in the center of the Flow next to each other.
+         */
         CENTER,
+        /**
+         * All children will be put at the end of the Flow next to each other (this does not reverse children order).
+         */
         END,
+        /**
+         * This maximizes the space between children with the given available space of the Flow. The first widget will
+         * be put at the very
+         * start and the last widget will be put at the very end. If the flow has exactly one child, then this behaves
+         * the same as
+         * {@link #CENTER}.
+         */
         SPACE_BETWEEN,
+        /**
+         * This maximizes the space around the children with the given available space of the Flow. Contrary to
+         * {@link #SPACE_BETWEEN} this
+         * does not put one "space" between every widget, but rather one "space" on both sides of every widget. If the
+         * flow has exactly one
+         * child, then this behaves the same as {@link #CENTER}.
+         */
         SPACE_AROUND
     }
 
@@ -75,8 +98,17 @@ public class Alignment {
      */
     public enum CrossAxis {
 
+        /**
+         * All children will be put at the start of the Flow next to each other.
+         */
         START,
+        /**
+         * All children will be put in the center of the Flow next to each other.
+         */
         CENTER,
+        /**
+         * All children will be put at the end of the Flow next to each other (this does not reverse children order).
+         */
         END
     }
 

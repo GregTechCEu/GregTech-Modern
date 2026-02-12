@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -37,8 +37,8 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
     @Nullable
     private TickableSubscription clickResetSubscription;
 
-    public AdvancedMonitorPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public AdvancedMonitorPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

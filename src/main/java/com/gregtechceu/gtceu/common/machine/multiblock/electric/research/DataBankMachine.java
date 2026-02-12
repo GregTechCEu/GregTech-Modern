@@ -1,17 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -37,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataBankMachine extends WorkableElectricMultiblockMachine
-                             implements IFancyUIMachine, IDisplayUIMachine, IControllable {
+                             implements IControllable {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
@@ -51,8 +48,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public DataBankMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public DataBankMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
     }
 
@@ -63,7 +60,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
@@ -175,17 +172,17 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         updateTickSubscription();
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addEnergyUsageExactLine(getEnergyUsage())
-                .addWorkingStatusLine();
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // MultiblockDisplayText.builder(textList, isFormed())
+    // .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+    // .setWorkingStatusKeys(
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.data_bank.providing")
+    // .addEnergyUsageExactLine(getEnergyUsage())
+    // .addWorkingStatusLine();
+    // }
 
     /*
      * @Override

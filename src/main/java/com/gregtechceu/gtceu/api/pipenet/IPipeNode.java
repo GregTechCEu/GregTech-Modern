@@ -1,18 +1,15 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -20,9 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
-                          extends ITickSubscription, IPaintable {
-
-    long getOffsetTimer();
+                          extends ITickSubscription, IPaintable, IGregtechBlockEntity {
 
     /**
      * Get Cover Container.
@@ -93,26 +88,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         return (BlockEntity) this;
     }
 
-    default Level getPipeLevel() {
-        return self().getLevel();
-    }
-
-    default BlockPos getPipePos() {
-        return self().getBlockPos();
-    }
-
-    default boolean isInValid() {
-        return self().isRemoved();
-    }
-
-    default boolean isRemote() {
-        var level = getPipeLevel();
-        if (level == null) {
-            return GTCEu.isClientThread();
-        }
-        return level.isClientSide;
-    }
-
     @SuppressWarnings("unchecked")
     default PipeBlock<PipeType, NodeDataType, ?> getPipeBlock() {
         return (PipeBlock<PipeType, NodeDataType, ?>) self().getBlockState().getBlock();
@@ -120,8 +95,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @Nullable
     default PipeNet<NodeDataType> getPipeNet() {
-        if (getPipeLevel() instanceof ServerLevel serverLevel) {
-            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getPipePos());
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
         }
         return null;
     }
@@ -134,41 +109,12 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default NodeDataType getNodeData() {
         var net = getPipeNet();
         if (net != null) {
-            return net.getNodeAt(getPipePos()).data;
+            return net.getNodeAt(getBlockPos()).data;
         }
         return null;
     }
 
-    void notifyBlockUpdate();
-
-    default void scheduleRenderUpdate() {
-        var pos = getPipePos();
-        var level = getPipeLevel();
-        if (level != null) {
-            var state = level.getBlockState(pos);
-            if (level.isClientSide) {
-                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-            } else {
-                level.blockEvent(pos, state.getBlock(), 1, 0);
-            }
-        }
-    }
-
     default void serverTick() {}
-
-    default void scheduleNeighborShapeUpdate() {
-        Level level = getPipeLevel();
-        BlockPos pos = getPipePos();
-
-        if (level == null || pos == null)
-            return;
-
-        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
-    }
-
-    default BlockEntity getNeighbor(Direction direction) {
-        return getPipeLevel().getBlockEntity(getPipePos().relative(direction));
-    }
 
     @Override
     default int getDefaultPaintingColor() {

@@ -6,19 +6,32 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -36,6 +49,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @SaveField
     @Getter
+    @Setter
     protected int globalVoidingLimit = 1;
 
     private IntInputWidget stackSizeInput;
@@ -111,6 +125,30 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     //////////////////////////////////////
 
     @Override
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var column = super.createCoverUI(data, syncManager, settings);
+
+        EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
+                this::getVoidingMode, this::setVoidingMode);
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit);
+
+        syncManager.syncValue("voidingMode", voidingMode);
+        syncManager.syncValue("voidingLimit", voidingLimit);
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
+                .value(voidingMode)
+                .overlay(16, GTGuiTextures.VOIDING_MODES)
+                .lang(IKey.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
+                .build()
+                .marginTop(2));
+
+        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
+
+        return column;
+    }
+
+    @Override
     protected @NotNull String getUITitle() {
         return "cover.item.voiding.advanced.title";
     }
@@ -153,5 +191,19 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
             return true;
 
         return this.filterHandler.getFilter().isBlackList();
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalVoidingLimit());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        globalVoidingLimit = tag.getInt("voidSize");
+        super.pasteConfig(player, tag);
     }
 }

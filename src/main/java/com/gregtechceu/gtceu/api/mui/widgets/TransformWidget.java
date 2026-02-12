@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.widget.DelegatingSingleChildWidget;
+import com.gregtechceu.gtceu.api.mui.widget.DelegatingWidget;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
-public class TransformWidget extends DelegatingSingleChildWidget<TransformWidget> {
+public class TransformWidget extends DelegatingWidget {
 
     private static final Vector3f sharedVec = new Vector3f();
 
@@ -17,10 +17,8 @@ public class TransformWidget extends DelegatingSingleChildWidget<TransformWidget
     private boolean hasConstTransform = false;
     private Consumer<IViewportStack> transform;
 
-    public TransformWidget() {}
-
     public TransformWidget(IWidget child) {
-        child(child);
+        super(child);
     }
 
     @Override

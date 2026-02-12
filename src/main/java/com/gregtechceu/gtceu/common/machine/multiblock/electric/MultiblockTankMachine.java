@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -24,6 +25,13 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -51,20 +59,11 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     @NotNull
     private final NotifiableFluidTank tank;
 
-    public MultiblockTankMachine(IMachineBlockEntity holder, int capacity, @Nullable PropertyFluidFilter filter,
-                                 Object... args) {
-        super(holder);
+    public MultiblockTankMachine(BlockEntityCreationInfo info, int capacity, @Nullable PropertyFluidFilter filter) {
+        super(info);
 
-        this.tank = createTank(capacity, filter, args);
-    }
-
-    protected NotifiableFluidTank createTank(int capacity, @Nullable PropertyFluidFilter filter, Object... args) {
-        var fluidTank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
-
-        if (filter != null)
-            fluidTank.setFilter(filter);
-
-        return fluidTank;
+        this.tank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
+        if (filter != null) tank.setFilter(filter);
     }
 
     @Override

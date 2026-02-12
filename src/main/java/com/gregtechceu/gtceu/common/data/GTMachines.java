@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -81,6 +82,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/coal"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
@@ -94,6 +96,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/lava"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
@@ -107,6 +110,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/solar"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
@@ -121,7 +125,8 @@ public class GTMachines {
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
-                    .UI(GTSingleblockMachinePanels.STEAM_MACERATOR)
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
+                    .ui(GTSingleblockMachinePanels.STEAM_MACHINE)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
@@ -179,7 +184,7 @@ public class GTMachines {
     public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines("arc_furnace",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
-                    .UI(GTSingleblockMachinePanels.ARC_FURNACE)
+                    .ui(GTSingleblockMachinePanels.ARC_FURNACE)
                     // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("arc_furnace"),
                     // GTRecipeTypes.ARC_FURNACE_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -281,7 +286,7 @@ public class GTMachines {
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
-                    .UI(GTSingleblockMachinePanels.MACERATOR)
+                    .ui(GTSingleblockMachinePanels.MACERATOR)
                     // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
                     // GTRecipeTypes.MACERATOR_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -308,7 +313,7 @@ public class GTMachines {
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"),
                             GTRecipeTypes.ROCK_BREAKER_RECIPES))
-                    .UI(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ROCK_BREAKER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -323,7 +328,7 @@ public class GTMachines {
                     .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("air_scrubber"),
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES))
-                    .UI(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -887,6 +892,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Input Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -900,6 +906,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Output Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -913,6 +920,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM)
             .modelProperty(IS_FORMED, false)
             .overlaySteamHullModel("steam_hatch")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                     SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
                     Component.translatable("gtceu.machine.steam.steam_hatch.tooltip"))
@@ -924,6 +932,7 @@ public class GTMachines {
             .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
@@ -931,6 +940,7 @@ public class GTMachines {
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .modelProperty(IS_FORMED, false)
             .model(createBasicReplaceableTextureMachineModel(GTCEu.id("block/machine/part/pump_hatch")))
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -22,7 +23,6 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -318,7 +318,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                             boolean isShattering, boolean isMelting) {
         // prevent the sound from spamming when filled from anything not a pipe
         if (getOffsetTimer() % 10 == 0) {
-            level.playSound(null, this.getPipePos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, this.getBlockPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         if (isLeaking) {
@@ -330,8 +330,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),
@@ -346,7 +346,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         }
 
         if (isCorroding) {
-            FluidPipeBlockEntity.spawnParticles(getPipeLevel(), getPipePos(), Direction.UP, ParticleTypes.CRIT,
+            FluidPipeBlockEntity.spawnParticles(this.getLevel(), this.getBlockPos(), Direction.UP, ParticleTypes.CRIT,
                     3 + GTValues.RNG.nextInt(2));
 
             // voids 25%
@@ -354,8 +354,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply chemical damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(1));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(1));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyChemicalDamage(entityLivingBase, 2);
                 }
@@ -364,7 +364,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             // 1/10 chance to void everything and destroy the pipe
             if (GTValues.RNG.nextInt(10) == 0) {
                 stack.setAmount(0);
-                level.removeBlock(getPipePos(), false);
+                level.removeBlock(this.getBlockPos(), false);
             }
         }
 
@@ -382,8 +382,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (isMelting && getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),
@@ -407,8 +407,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply frost damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),

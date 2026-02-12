@@ -64,13 +64,6 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    public static final UITexture BACKGROUND_TITLE = UITexture.builder()
-            .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
-            .imageSize(16, 16)
-            .adaptable(4)
-            .subAreaUV(0, 0, 1f, .75f)
-            .build();
-
     public static final UITexture BACKGROUND_INVERSE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_inverse.png")
             .imageSize(16, 16)
@@ -81,15 +74,15 @@ public class GTGuiTextures {
 
     public static final UITexture BACKGROUND_BRONZE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_bronze.png")
-            .imageSize(176, 166)
-            .adaptable(3)
+            .imageSize(16, 16)
+            .adaptable(4)
             .name(IDs.BRONZE_BACKGROUND)
             .build();
 
     public static final UITexture BACKGROUND_STEEL = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_steel.png")
-            .imageSize(176, 166)
-            .adaptable(3)
+            .imageSize(16, 16)
+            .adaptable(4)
             .name(IDs.STEEL_BACKGROUND)
             .build();
 
@@ -165,12 +158,12 @@ public class GTGuiTextures {
     public static final UITexture[] BUTTON_POWER = slice("textures/gui/widget/button_power.png", 16, 32, 16, 16,
             ColorType.DEFAULT);
 
-    public static final UITexture[] BUTTON_BLACKLIST = slice("textures/gui/widget/button_blacklist.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_BLACKLIST = fullImage("textures/gui/widget/button_blacklist.png",
+            ColorType.DEFAULT);
     public static final UITexture[] BUTTON_IGNORE_DAMAGE = slice("textures/gui/widget/button_filter_damage.png",
             16, 32, 16, 16, ColorType.DEFAULT);
-    public static final UITexture[] BUTTON_IGNORE_NBT = slice("textures/gui/widget/button_filter_nbt.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_IGNORE_NBT = fullImage("textures/gui/widget/button_filter_nbt.png",
+            ColorType.DEFAULT);
 
     public static final UITexture[] BUTTON_CASE_SENSITIVE = slice(
             "textures/gui/widget/ore_filter/button_case_sensitive.png",
@@ -191,15 +184,18 @@ public class GTGuiTextures {
     // public static final IDrawable PLUS = IKey.str("+").asIcon().marginLeft(1);
     // public static final IDrawable MINUS = IKey.str("-").asIcon().marginLeft(1);
 
-    public static final UITexture[] MANUAL_IO_OVERLAY_IN = slice("textures/gui/overlay/manual_io_overlay_in.png",
-            18, 18 * 3, 18, 18, ColorType.DEFAULT);
+    public static final UITexture INFO = fullImage("textures/gui/widget/information.png");
+
+    public static final UITexture[] MANUAL_IO_OVERLAY_IN = { fullImage("textures/gui/icon/manual_io_mode/disabled.png"),
+            fullImage("textures/gui/icon/manual_io_mode/filtered.png"),
+            fullImage("textures/gui/icon/manual_io_mode/unfiltered.png") };
     public static final UITexture[] MANUAL_IO_OVERLAY_OUT = slice("textures/gui/overlay/manual_io_overlay_out.png",
             18, 18 * 3, 18, 18, ColorType.DEFAULT);
     public static final UITexture[] CONVEYOR_MODE_OVERLAY = slice("textures/gui/overlay/conveyor_mode_overlay.png",
             18, 18 * 2, 18, 18, ColorType.DEFAULT);
 
     public static final UITexture[] TRANSFER_MODE_OVERLAY = slice("textures/gui/overlay/transfer_mode_overlay.png",
-            18, 18 * 3, 18, 18, ColorType.DEFAULT);
+            40, 40 * 3, 40, 40, ColorType.DEFAULT);
 
     public static final UITexture[] FLUID_TRANSFER_MODE_OVERLAY = slice(
             "textures/gui/overlay/fluid_transfer_mode_overlay.png",
@@ -208,6 +204,9 @@ public class GTGuiTextures {
     public static final UITexture[] DISTRIBUTION_MODE_OVERLAY = slice(
             "textures/gui/widget/button_distribution_mode.png",
             16, 48, 16, 16, ColorType.DEFAULT);
+
+    public static final UITexture[] VOIDING_MODES = { fullImage("textures/gui/icon/voiding_mode/void_any.png"),
+            fullImage("textures/gui/icon/voiding_mode/void_overflow.png") };
 
     public static final UITexture BUTTON_VOID = fullImage("textures/gui/widget/button_void.png");
 
@@ -296,6 +295,8 @@ public class GTGuiTextures {
     public static final UITexture DUST_OVERLAY = fullImage("textures/gui/overlay/dust_overlay.png", ColorType.DEFAULT);
     public static final UITexture DUST_OVERLAY_BRONZE = fullImage("textures/gui/overlay/dust_overlay_bronze.png");
     public static final UITexture DUST_OVERLAY_STEEL = fullImage("textures/gui/overlay/dust_overlay_steel.png");
+    public static final UITexture PRIMITIVE_DUST_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_dust.png", ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY = fullImage("textures/gui/overlay/extractor_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY_BRONZE = fullImage(
@@ -313,6 +314,15 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture FURNACE_OVERLAY_BRONZE = fullImage("textures/gui/overlay/furnace_overlay_bronze.png");
     public static final UITexture FURNACE_OVERLAY_STEEL = fullImage("textures/gui/overlay/furnace_overlay_steel.png");
+    public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_furnace.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK_OVERLAY = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank_overlay.png",
+            ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY = fullImage("textures/gui/overlay/hammer_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY_BRONZE = fullImage("textures/gui/overlay/hammer_overlay_bronze.png");
@@ -330,6 +340,9 @@ public class GTGuiTextures {
     public static final UITexture IN_SLOT_OVERLAY_BRONZE = fullImage("textures/gui/overlay/in_slot_overlay_bronze.png");
     public static final UITexture IN_SLOT_OVERLAY_STEEL = fullImage("textures/gui/overlay/in_slot_overlay_steel.png");
     public static final UITexture INGOT_OVERLAY = fullImage("textures/gui/overlay/ingot_overlay.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_INGOT_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_ingot.png",
             ColorType.DEFAULT);
     public static final UITexture INT_CIRCUIT_OVERLAY = fullImage("textures/gui/overlay/int_circuit_overlay.png",
             ColorType.DEFAULT);
@@ -354,6 +367,8 @@ public class GTGuiTextures {
     public static final UITexture OUT_SLOT_OVERLAY_STEEL = fullImage("textures/gui/overlay/out_slot_overlay_steel.png");
     public static final UITexture PAPER_OVERLAY = fullImage("textures/gui/overlay/paper_overlay.png",
             ColorType.DEFAULT);
+    public static final UITexture PATTERN_OVERLAY = fullImage("textures/gui/widget/pattern_overlay.png",
+            ColorType.DEFAULT);
     public static final UITexture PRINTED_PAPER_OVERLAY = fullImage("textures/gui/overlay/printed_paper_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture PIPE_OVERLAY_2 = fullImage("textures/gui/overlay/pipe_overlay_2.png",
@@ -367,6 +382,8 @@ public class GTGuiTextures {
     public static final UITexture PRESS_OVERLAY_3 = fullImage("textures/gui/overlay/press_overlay_3.png",
             ColorType.DEFAULT);
     public static final UITexture PRESS_OVERLAY_4 = fullImage("textures/gui/overlay/press_overlay_4.png",
+            ColorType.DEFAULT);
+    public static final UITexture REFUND_OVERLAY = fullImage("textures/gui/widget/refund_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture SAWBLADE_OVERLAY = fullImage("textures/gui/overlay/sawblade_overlay.png",
             ColorType.DEFAULT);
@@ -420,6 +437,8 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_CLEAR_GRID = fullImage("textures/gui/widget/button_clear_grid.png", null);
 
     public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
+    public static final UITexture BUTTON_DETECTOR_INVERT = fullImage(
+            "textures/gui/widget/button_detector_cover_inverted.png");
     public static final UITexture BUTTON_REDSTONE_ON = fullImage("textures/gui/widget/button_redstone_on.png");
     public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");
@@ -433,9 +452,13 @@ public class GTGuiTextures {
             .subAreaXYWH(0, 0, 16, 16)
             .build();
 
+    public static final UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
+
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR = progressBar(
+            "textures/gui/primitive/progress_bar_primitive_blast_furnace.png", ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW = progressBar("textures/gui/progress_bar/progress_bar_arrow.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW_BRONZE = progressBar(

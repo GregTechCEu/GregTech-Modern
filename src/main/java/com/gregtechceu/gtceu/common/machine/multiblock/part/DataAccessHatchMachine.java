@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -19,14 +18,16 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -50,12 +51,10 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquareSlotGroupFromInventory;
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
@@ -63,8 +62,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @SaveField
     public final NotifiableItemStackHandler importItems;
 
-    public DataAccessHatchMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {
-        super(holder, tier);
+    public DataAccessHatchMachine(BlockEntityCreationInfo info, int tier, boolean isCreative) {
+        super(info, tier);
         this.isCreative = isCreative;
         this.recipes = isCreative ? Collections.emptySet() : new ObjectOpenHashSet<>();
         this.importItems = createImportItemHandler();
@@ -98,6 +97,10 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                          @NotNull UISettings settings) {
         int size = (int) Math.sqrt(getInventorySize());
 
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+                i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
+                GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
+
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
@@ -108,30 +111,12 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .align(Alignment.CENTER)
                                 .coverChildren()
-                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory", syncManager)
+                                .child(grid
                                         .marginLeft(30)
                                         .marginRight(30)
                                         .verticalCenter())))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * int rowSize = (int) Math.sqrt(getInventorySize());
-     * int xOffset = 18 * rowSize / 2;
-     * WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
-     *
-     * for (int y = 0; y < rowSize; y++) {
-     * for (int x = 0; x < rowSize; x++) {
-     * int index = y * rowSize + x;
-     * group.addWidget(new SlotWidget(importItems, index,
-     * rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-     * .setBackgroundTexture(GuiTextures.SLOT));
-     * }
-     * }
-     * return group;
-     * }
-     */
 
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
@@ -148,7 +133,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         clearInventory(importItems.storage);
     }
 

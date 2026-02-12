@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
@@ -59,7 +57,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
+import static com.gregtechceu.gtceu.api.machine.MetaMachine.*;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
                                 IBlockEntityRendererBakedModel<BlockEntity> {
@@ -230,21 +228,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render output overlays
-        if (machine instanceof IAutoOutputItem autoOutputItem) {
-            var itemFace = autoOutputItem.getOutputFacingItems();
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
+            var itemFace = outputTrait.getItemOutputDirection();
             if (itemFace != null && side == itemFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputItem.isAutoOutputItems()) {
+                if (outputTrait.isAutoOutputItems()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
                             itemOutputOverlaySprite));
                 }
             }
         }
-        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
-            var fluidFace = autoOutputFluid.getOutputFacingFluids();
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
+            var fluidFace = outputTrait.getFluidOutputDirection();
             if (fluidFace != null && side == fluidFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputFluid.isAutoOutputFluids()) {
+                if (outputTrait.isAutoOutputFluids()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
                             fluidOutputOverlaySprite));
                 }
@@ -390,14 +389,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void render(@NotNull BlockEntity blockEntity, float partialTick,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
-        if (machineBE.getDefinition() != getDefinition()) return;
-        ICoverableRenderer.super.renderDynamicCovers(machineBE.getMetaMachine(), partialTick, poseStack, buffer,
+        if (!(blockEntity instanceof MetaMachine machine)) return;
+        if (machine.getDefinition() != getDefinition()) return;
+        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer,
                 packedLight,
                 packedOverlay);
         if (dynamicRenders.isEmpty()) return;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, cameraPos)) {
@@ -422,11 +420,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public AABB getRenderBoundingBox(BlockEntity blockEntity) {
         AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(blockEntity);
 
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return bounds;
-        if (machineBE.getDefinition() != getDefinition()) return bounds;
+        if (!(blockEntity instanceof MetaMachine machine)) return bounds;
+        if (machine.getDefinition() != getDefinition()) return bounds;
         if (dynamicRenders.isEmpty()) return bounds;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
             bounds = bounds.minmax(model.getRenderBoundingBox(machine));
         }
@@ -436,11 +433,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
+        if (!(blockEntity instanceof MetaMachine machine)) return false;
+        if (machine.getDefinition() != getDefinition()) return false;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender render : dynamicRenders) {
             if (render.shouldRenderOffScreen(machine)) return true;
         }
@@ -450,12 +446,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRender(BlockEntity blockEntity, @NotNull Vec3 cameraPos) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
-        if (machineBE.getMetaMachine().getCoverContainer().hasDynamicCovers()) return true;
+        if (!(blockEntity instanceof MetaMachine machine)) return false;
+        if (machine.getDefinition() != getDefinition()) return false;
+        if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
             if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
                 return true;

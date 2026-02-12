@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -19,9 +19,9 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -81,8 +81,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Nullable
     protected TickableSubscription preHeatSubs;
 
-    public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.energyContainer = createEnergyContainer();
     }
@@ -115,7 +115,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
@@ -272,15 +272,15 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
-                    this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
-        }
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // super.addDisplayText(textList);
+    // if (isFormed()) {
+    // textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
+    // this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
+    // textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
+    // }
+    // }
 
     public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
         long euToStart = recipe.data.getLong("eu_to_start");

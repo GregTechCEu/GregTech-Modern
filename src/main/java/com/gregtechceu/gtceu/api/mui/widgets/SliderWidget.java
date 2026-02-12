@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class SliderWidget extends Widget<SliderWidget> implements Interactable {
 
     private IDoubleValue<?> doubleValue;
-    private IDrawable stopperDrawable = new Rectangle().setColor(Color.withAlpha(Color.WHITE.main, 0.4f));
+    private IDrawable stopperDrawable = new Rectangle().color(Color.withAlpha(Color.WHITE.main, 0.4f));
     private IDrawable handleDrawable = GTGuiTextures.BUTTON;
     private GuiAxis axis = GuiAxis.X;
     private DoubleList stopper;
@@ -103,7 +103,7 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.handleDrawable != null) {
-            this.handleDrawable.draw(context, this.sliderArea, context.getTheme().getButtonTheme().getTheme());
+            this.handleDrawable.draw(context, this.sliderArea, getPanel().getTheme().getButtonTheme().getTheme());
         }
     }
 

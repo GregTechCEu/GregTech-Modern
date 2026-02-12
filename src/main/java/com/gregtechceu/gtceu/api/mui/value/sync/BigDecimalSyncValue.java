@@ -14,7 +14,12 @@ import java.util.function.Supplier;
 public class BigDecimalSyncValue extends GenericSyncValue<BigDecimal> implements IStringValue<BigDecimal> {
 
     public BigDecimalSyncValue(@NotNull Supplier<BigDecimal> getter, @Nullable Consumer<BigDecimal> setter) {
-        super(BigDecimal.class, getter, setter, ByteBufAdapters.BIG_DECIMAL, ICopy.immutable());
+        this(getter, setter, false);
+    }
+
+    public BigDecimalSyncValue(@NotNull Supplier<BigDecimal> getter, @Nullable Consumer<BigDecimal> setter,
+                               boolean nullable) {
+        super(BigDecimal.class, getter, setter, ByteBufAdapters.BIG_DECIMAL, ICopy.immutable(), nullable);
     }
 
     @Override

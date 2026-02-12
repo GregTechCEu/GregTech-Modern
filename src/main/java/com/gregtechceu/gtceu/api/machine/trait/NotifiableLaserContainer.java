@@ -5,10 +5,18 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
+
+    public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
+            NotifiableLaserContainer.class);
 
     public NotifiableLaserContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
@@ -26,6 +34,11 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     }
 
     @Override
+    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
+        return TYPE;
+    }
+
+    @Override
     public void serverTick() {
         amps = 0;
         if (getMachine().getLevel().isClientSide)
@@ -38,10 +51,10 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         long amperesUsed = 0;
         for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
-            BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
+            BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
             Direction oppositeSide = side.getOpposite();
             ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
-                    getMachine().getPos().relative(side), oppositeSide);
+                    getMachine().getBlockPos().relative(side), oppositeSide);
             if (tileEntity != null && laserContainer != null) {
                 if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
                 amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,

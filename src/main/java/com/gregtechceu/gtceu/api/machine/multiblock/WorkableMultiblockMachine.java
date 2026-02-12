@@ -1,24 +1,20 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -37,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -45,10 +42,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine
                                                 implements IWorkableMultiController, IMufflableMachine {
 
-    @Nullable
     @Getter
-    @Setter
-    private ICleanroomProvider cleanroom;
+    protected final CleanroomReceiverTrait cleanroomReceiver;
     @Getter
     @SaveField
     @SyncToClient
@@ -78,14 +73,20 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder);
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info,
+                                     Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
+        super(info);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.recipeLogic = createRecipeLogic(args);
+        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
+        this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
+    }
+
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info) {
+        this(info, RecipeLogic::new);
     }
 
     public void setMuffled(boolean muffled) {
@@ -105,10 +106,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         recipeLogic.inValid();
     }
 
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new RecipeLogic(this);
-    }
-
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
@@ -124,7 +121,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
@@ -137,7 +134,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
-        for (MachineTrait trait : getTraits()) {
+        for (MachineTrait trait : traitHolder.getAllTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
             }

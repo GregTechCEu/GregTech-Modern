@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -11,12 +11,12 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -30,11 +30,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -48,8 +44,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     private @Nullable RecipeHandlerList handlerList;
 
-    public MultiblockPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MultiblockPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////
@@ -96,7 +92,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (handlerList == null) {
             List<IRecipeHandler<?>> handlers = new ArrayList<>();
             IO handlerIO = null;
-            for (var trait : traits) {
+            for (var trait : traitHolder.getAllTraits()) {
                 if (trait instanceof IRecipeHandlerTrait<?> rht) {
                     if (handlerIO == null) handlerIO = rht.getHandlerIO();
                     handlers.add(rht);
@@ -119,7 +115,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             // Need to copy if > 1 so that we can call removedFromController safely without CME
             Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
             for (IMultiController controller : toIter) {
-                if (serverLevel.isLoaded(controller.self().getPos())) {
+                if (serverLevel.isLoaded(controller.self().getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
                 }
@@ -136,7 +132,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @MustBeInvokedByOverriders
     @Override
     public void removedFromController(IMultiController controller) {
-        controllerPositions.remove(controller.self().getPos());
+        controllerPositions.remove(controller.self().getBlockPos());
         controllers.remove(controller);
 
         if (controllers.isEmpty()) {
@@ -151,7 +147,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @MustBeInvokedByOverriders
     @Override
     public void addedToController(IMultiController controller) {
-        controllerPositions.add(controller.self().getPos());
+        controllerPositions.add(controller.self().getBlockPos());
         controllers.add(controller);
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");

@@ -22,10 +22,6 @@ public abstract class AbstractMapIngredient {
         return hash;
     }
 
-    protected final void invalidate() {
-        this.hashed = false;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -7,15 +7,22 @@ import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import static com.gregtechceu.gtceu.GTCEu.MOD_ID;
 
 public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
@@ -28,13 +35,13 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     public void open(ServerPlayer player, IMuiMachine machine) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(machine);
-        if (machine.self().isInValid()) {
+        if (machine.self().isRemoved()) {
             throw new IllegalArgumentException("Can't open invalid MetaMachine GUI!");
         }
         if (player.level() != machine.self().getLevel()) {
             throw new IllegalArgumentException("MetaMachine must be in same dimension as the player!");
         }
-        BlockPos pos = machine.self().getPos();
+        BlockPos pos = machine.self().getBlockPos();
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, player);
     }
@@ -73,5 +80,15 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     public static MetaMachine getMachine(PosGuiData data) {
         return MetaMachine.getMachine(data.getLevel(), data.getBlockPos());
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
+        return new GTGuiScreen(MOD_ID, mainPanel, getThemeId(data));
+    }
+
+    public String getThemeId(PosGuiData data) {
+        return getMachine(data).getDefinition().getThemeId();
     }
 }

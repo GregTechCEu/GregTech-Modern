@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.common.pipelike.duct.*;
@@ -97,11 +96,11 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             return null;
         }
         DuctPipeNet currentPipeNet = this.currentPipeNet.get();
-        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(getPipePos())) {
+        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos())) {
             return currentPipeNet;
         }
-        LevelDuctPipeNet worldNet = (LevelDuctPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) getPipeLevel());
-        currentPipeNet = worldNet.getNetFromPos(getPipePos());
+        LevelDuctPipeNet worldNet = (LevelDuctPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) this.getLevel());
+        currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
         if (currentPipeNet != null) {
             this.currentPipeNet = new WeakReference<>(currentPipeNet);
         }
@@ -117,9 +116,8 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             BlockPos relative = getBlockPos().relative(side);
             return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) !=
                     null ||
-                    (level.getBlockEntity(relative) instanceof IMachineBlockEntity machineBlockEntity &&
-                            (machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardCleaner ||
-                                    machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardEmitter));
+                    (level.getBlockEntity(relative) instanceof IEnvironmentalHazardCleaner ||
+                            level.getBlockEntity(relative) instanceof IEnvironmentalHazardEmitter);
         }
         return false;
     }

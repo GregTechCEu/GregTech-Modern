@@ -17,7 +17,7 @@ public class NetworkUtils {
     public static final Consumer<FriendlyByteBuf> EMPTY_PACKET = buffer -> {};
 
     public static boolean isClient(Player player) {
-        if (player == null) throw new NullPointerException("Can't get side of null player!");
+        if (player == null) return GTCEu.isClientThread();
         return player.level().isClientSide;
     }
 
@@ -54,6 +54,10 @@ public class NetworkUtils {
             buffer.writeVarInt(MAX_ENCODED + 1);
             return;
         }
+        if (string.isEmpty()) {
+            buffer.writeVarInt(0);
+            return;
+        }
         maxBytes = Math.min(maxBytes, Short.MAX_VALUE);
         byte[] bytesTest = string.getBytes(StandardCharsets.UTF_8);
         byte[] bytes;
@@ -76,9 +80,8 @@ public class NetworkUtils {
 
     public static String readStringSafe(FriendlyByteBuf buffer) {
         int length = buffer.readVarInt();
-        if (length > MAX_ENCODED) {
-            return null;
-        }
+        if (length > MAX_ENCODED) return null;
+        if (length == 0) return "";
         String s = buffer.toString(buffer.readerIndex(), length, StandardCharsets.UTF_8);
         buffer.readerIndex(buffer.readerIndex() + length);
         return s;

@@ -17,9 +17,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
+import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
-import com.gregtechceu.gtceu.syncsystem.annotations.*;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -44,6 +48,15 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IWorkable, IFancyTooltip {
+
+    public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
+
+    @Override
+    public MachineTraitType<RecipeLogic> getTraitType() {
+        return TYPE;
+    }
+
+    protected static class ChanceCacheMap extends IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> {}
 
     public enum Status implements StringRepresentable {
 
@@ -78,6 +91,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Nullable
     @SaveField
     @SyncToClient
+    @Getter
     private Component waitingReason = null;
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
@@ -121,8 +135,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     protected boolean suspendAfterFinish = false;
     @Getter
     @SaveField(nbtKey = "chance_cache")
-    @CustomDataField
-    protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
+    protected final ChanceCacheMap chanceCaches = makeChanceCaches();
     protected TickableSubscription subscription;
     protected Object workingSound;
 
@@ -270,6 +283,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 }
                 progress++;
                 totalContinuousRunningTime++;
+                syncDataHolder.markClientSyncFieldDirty("progress");
             } else {
                 setWaiting(handleTick.reason());
 
@@ -310,11 +324,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     protected void regressRecipe() {
         if (progress > 0 && machine.regressWhenWaiting()) {
             this.progress = 1;
+            syncDataHolder.markClientSyncFieldDirty("progress");
         }
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(machine, r -> matchRecipe(r).isSuccess());
+        return machine.getRecipeType().searchRecipe(machine, r -> true);
     }
 
     public void findAndHandleRecipe() {
@@ -330,6 +345,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             lastOriginRecipe = null;
             handleSearchingRecipes(searchRecipe());
         }
+        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
         recipeDirty = false;
     }
 
@@ -341,6 +357,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
                 return;
+
+            if (!matchRecipe(match).isSuccess()) {
+                continue;
+            }
 
             // cache matching recipes.
             if (lastFailedMatches == null) {
@@ -370,6 +390,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = 0;
             isActive = false;
+            syncDataHolder.resyncAllFields();
             return;
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);
@@ -383,6 +404,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = recipe.duration;
             isActive = true;
+            syncDataHolder.resyncAllFields();
         }
     }
 
@@ -402,6 +424,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
+                syncDataHolder.markClientSyncFieldDirty("waitingReason");
             }
         }
     }
@@ -409,6 +432,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     public void setWaiting(@Nullable Component reason) {
         setStatus(Status.WAITING);
         waitingReason = reason;
+        syncDataHolder.markClientSyncFieldDirty("waitingReason");
         machine.onWaiting();
     }
 
@@ -497,6 +521,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 isActive = false;
                 // Force a recipe recheck.
                 lastRecipe = null;
+                syncDataHolder.resyncAllFields();
                 return;
             }
             if (machine.alwaysTryModifyRecipe()) {
@@ -506,6 +531,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                         markLastRecipeDirty();
                     } else {
                         lastRecipe = modified;
+                        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
                     }
                 } else {
                     markLastRecipeDirty();
@@ -524,6 +550,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 progress = 0;
                 duration = 0;
                 isActive = false;
+                syncDataHolder.resyncAllFields();
             }
         }
     }
@@ -545,6 +572,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
+            syncDataHolder.markClientSyncFieldDirty("progress");
+            syncDataHolder.markClientSyncFieldDirty("duration");
         }
     }
 
@@ -567,10 +596,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             }
             if (sound != null) {
                 workingSound = sound.playAutoReleasedSound(
-                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isInValid() &&
-                                getMachine().getLevel().isLoaded(getMachine().getPos()) &&
-                                MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(),
-                        getMachine().getPos(), true, 0, 1, 1);
+                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
+                                getMachine().getLevel().isLoaded(getMachine().getBlockPos()) &&
+                                MetaMachine.getMachine(getMachine().getLevel(), getMachine().getBlockPos()) ==
+                                        getMachine(),
+                        getMachine().getBlockPos(), true, 0, 1, 1);
             }
         } else if (workingSound instanceof AutoReleasedSound soundEntry) {
             soundEntry.release();
@@ -599,49 +629,64 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return waitingReason != null;
     }
 
-    protected Map<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
-        Map<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
+    protected ChanceCacheMap makeChanceCaches() {
+        ChanceCacheMap map = new ChanceCacheMap();
         for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;
     }
 
-    @FieldDataModifier(fieldName = "chanceCaches", target = FieldDataModifier.ModifyTarget.SAVE_NBT)
-    private Tag saveChanceCacheData(Tag tag, boolean saveClientFields) {
-        CompoundTag chanceCache = new CompoundTag();
-        this.chanceCaches.forEach((cap, cache) -> {
-            ListTag cacheTag = new ListTag();
-            for (var entry : cache.object2IntEntrySet()) {
-                CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.contentToNbt(entry.getKey());
-                compoundTag.put("entry", obj);
-                compoundTag.putInt("cached_chance", entry.getIntValue());
-                cacheTag.add(compoundTag);
+    static {
+        ValueTransformers.registerTransformer(ChanceCacheMap.class, new ValueTransformer<ChanceCacheMap>() {
+
+            @Override
+            public @NotNull Tag serializeNBT(@NotNull ChanceCacheMap value,
+                                             @NotNull TransformerContext<ChanceCacheMap> context) {
+                CompoundTag chanceCache = new CompoundTag();
+                if (context.currentValue() == null) return chanceCache;
+
+                context.currentValue().forEach((cap, cache) -> {
+                    ListTag cacheTag = new ListTag();
+                    for (var entry : cache.object2IntEntrySet()) {
+                        CompoundTag compoundTag = new CompoundTag();
+                        var obj = cap.contentToNbt(entry.getKey());
+                        compoundTag.put("entry", obj);
+                        compoundTag.putInt("cached_chance", entry.getIntValue());
+                        cacheTag.add(compoundTag);
+                    }
+                    chanceCache.put(cap.name, cacheTag);
+                });
+
+                return chanceCache;
             }
-            chanceCache.put(cap.name, cacheTag);
-        });
-        return chanceCache;
-    }
 
-    @FieldDataModifier(fieldName = "chanceCaches", target = FieldDataModifier.ModifyTarget.LOAD_NBT)
-    private void loadChanceCacheData(Tag tag, boolean loadClientFields) {
-        if (tag instanceof CompoundTag chanceCache) {
-            for (String key : chanceCache.getAllKeys()) {
-                RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-                if (cap == null) continue; // Necessary since we removed a RecipeCapability when nuking Create
-                // noinspection rawtypes
-                Object2IntMap map = this.chanceCaches.computeIfAbsent(cap, RecipeCapability::makeChanceCache);
+            @Override
+            public @Nullable ChanceCacheMap deserializeNBT(@NotNull Tag tag,
+                                                           @NotNull TransformerContext<ChanceCacheMap> context) {
+                CompoundTag chanceCache = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+                if (context.currentValue() != null) {
+                    for (String key : chanceCache.getAllKeys()) {
+                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
+                        // Necessary since a RecipeCapability was removed when removing Create support, and for future
+                        // removals
+                        if (cap == null) continue;
+                        // noinspection rawtypes
+                        Object2IntMap map = context.currentValue().computeIfAbsent(cap,
+                                RecipeCapability::makeChanceCache);
 
-                ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
-                for (int i = 0; i < chanceTag.size(); ++i) {
-                    CompoundTag chanceKey = chanceTag.getCompound(i);
-                    var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
-                    int value = chanceKey.getInt("cached_chance");
-                    // noinspection unchecked
-                    map.put(entry, value);
+                        ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
+                        for (int i = 0; i < chanceTag.size(); ++i) {
+                            CompoundTag chanceKey = chanceTag.getCompound(i);
+                            var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
+                            int value = chanceKey.getInt("cached_chance");
+                            // noinspection unchecked
+                            map.put(entry, value);
+                        }
+                    }
                 }
+                return context.currentValue();
             }
-        }
+        });
     }
 }

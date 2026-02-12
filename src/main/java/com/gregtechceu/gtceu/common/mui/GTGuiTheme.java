@@ -66,6 +66,7 @@ public class GTGuiTheme {
     public static final GTGuiTheme PRIMITIVE = templateBuilder("gregtech_primitive")
             .panel(GTGuiTextures.IDs.PRIMITIVE_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
+            .fluidSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
             .build();
 
     private final String themeId;

@@ -6,15 +6,17 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
@@ -34,7 +36,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(ConverterMachine machine, int amps) {
+    public ConverterTrait(@NotNull ConverterMachine machine, int amps) {
         super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
                 GTValues.V[machine.getTier()], amps);
         this.amps = amps;
@@ -69,7 +71,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         } else { // output fe
             var fontFacing = machine.getFrontFacing();
             var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getPos().relative(fontFacing), fontFacing.getOpposite());
+                    machine.getBlockPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);
@@ -85,6 +87,13 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     //////////////////////////////
 
     private class FEContainer extends MachineTrait implements IEnergyStorage {
+
+        public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
+
+        @Override
+        public MachineTraitType<FEContainer> getTraitType() {
+            return TYPE;
+        }
 
         public FEContainer(MetaMachine machine) {
             super(machine);

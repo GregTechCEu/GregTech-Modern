@@ -14,20 +14,22 @@ import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.SliderWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -36,6 +38,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -144,7 +148,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {
@@ -197,7 +201,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     private int getInputSignal() {
         Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
+        BlockPos sourcePos = coverHolder.getBlockPos().relative(attachedSide);
 
         return level.getSignal(sourcePos, attachedSide);
     }
@@ -213,7 +217,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
-        return GTGuis.createPanel(this, 176, 112 + 82)
+        return GTGuis.createPanel(this, 176, 245)
                 .child(IMuiCover.createTitleRow(this.self().getAttachItem()))
                 .child(Flow.column()
                         .widthRel(1.0f).margin(7, 0)
@@ -222,19 +226,44 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(createSettingsRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(() -> isInverted, bool -> isInverted = bool))
+                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true)))
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
                                 .child(IKey.lang("cover.enable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(createSettingsRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(() -> !isInverted, bool -> isInverted = !bool))
+                                        .value(new BooleanSyncValue(() -> !this.isInverted(),
+                                                ($) -> this.setInverted(false)))
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
                                 .child(IKey.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
+                        .child(createSettingsRow()
+                                .child(new ToggleButton()
+                                        .size(16).left(0)
+                                        .value(new BooleanSyncValue(() -> preventPowerFail,
+                                                bool -> preventPowerFail = bool))
+                                        .overlay(GTGuiTextures.CIRCUIT_OVERLAY))
+                                .child(IKey.lang("cover.machine_controller.suspend_powerfail").asWidget()
+                                        .heightRel(1.0f).left(20)))
+                        .child(createSettingsRow()
+                                .child(IKey
+                                        .dynamic(() -> Component.translatable("cover.machine_controller.redstone",
+                                                redstoneSignalOutput))
+                                        .asWidget()
+                                        .heightRel(1.0f).leftRel(0f)))
+                        .child(createSettingsRow()
+                                .child(new SliderWidget()
+                                        .background(GTGuiTextures.FLUID_SLOT)
+                                        .widthRel(0.9f)
+                                        .height(15)
+                                        .alignX(0.5f)
+                                        .bounds(0, 15)
+                                        .stopper(1.0)
+                                        .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
+                                                v -> redstoneSignalOutput = (int) v))))
                         // Separating line
-                        .child(new Rectangle().setColor(UI_TEXT_COLOR).asWidget()
+                        .child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).alignX(0.5f).marginBottom(4).marginTop(4))
 
                         // Controlling selector
@@ -310,7 +339,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                 .value(boolValueOf(syncValue, mode))
                 .overlay(new ItemDrawable(stack).asIcon().size(16))
                 .tooltip(t -> t.addLine(IKey.lang(mode.localeName))
-                        .addLine(IKey.lang(stack.getDisplayName())));
+                        .addLine(IKey.lang(stack.getHoverName())));
     }
 
     /*
@@ -407,5 +436,21 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
             }
             sideCoverSlot.onContentsChanged(0);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putBoolean("inverted", isInverted);
+        tag.putInt("redstoneLvl", minRedstoneStrength);
+        tag.putBoolean("preventPowerfail", preventPowerFail);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setInverted(tag.getBoolean("inverted"));
+        setMinRedstoneStrength(tag.getInt("redstoneLvl"));
+        preventPowerFail = tag.getBoolean("preventPowerfail");
+        super.pasteConfig(player, tag);
     }
 }

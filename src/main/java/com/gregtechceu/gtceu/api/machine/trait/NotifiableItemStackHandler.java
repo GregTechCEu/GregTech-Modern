@@ -9,12 +9,13 @@ import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -32,8 +33,20 @@ import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
+
+    public static final MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
+            NotifiableItemStackHandler.class);
+
+    @Override
+    public MachineTraitType<NotifiableItemStackHandler> getTraitType() {
+        return TYPE;
+    }
 
     @Getter
     public final IO handlerIO;
@@ -123,23 +136,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     output = items[0];
                 }
                 amount = output.getCount();
-                if (io == IO.OUT) {
-                    int outputStorageLimit = 0;
-                    for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                        ItemStack stack = storage.getStackInSlot(slot);
-                        if (stack.isEmpty() || GTUtil.isSameItemSameTags(stack, output)) {
-                            outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
-                        }
-                    }
-                    if (provider.getCountProvider().getMinValue() > outputStorageLimit) {
-                        it.remove();
-                        continue;
-                    } else if (simulate) {
-                        amount = provider.getCountProvider().getMaxValue();
-                    } else {
-                        amount = Math.min(output.getCount(), outputStorageLimit);
-                    }
-                }
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -264,7 +260,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
@@ -274,7 +270,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.IN);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)

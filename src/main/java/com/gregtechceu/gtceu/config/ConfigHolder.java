@@ -25,6 +25,9 @@ public class ConfigHolder {
         }
     }
 
+    void myMethod() {}
+
+    @Configurable.ValueUpdateCallback(method = "myMethod")
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();
     @Configurable
@@ -583,10 +586,6 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
-
-        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
@@ -740,10 +739,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {
 
+        @Configurable
+        @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
+        public boolean temperaturesInCelsius = false;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
@@ -906,5 +912,59 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+
+        @Configurable
+        public DeveloperConfigs.MuiConfigs mui = new DeveloperConfigs.MuiConfigs();
+
+        public static class MuiConfigs {
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String textColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for outlining widgets in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String outlineColor = "#dcb42873";
+
+            @Configurable
+            @Configurable.Comment({ "Color for cursor in debug mode, in ARGB" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+            @Configurable.Gui.ColorValue
+            public String cursorColor = "#ff4cAf50";
+
+            @Configurable
+            @Configurable.Comment({ "Scale of debug text",
+                    "Default: 0.8f" })
+            @Configurable.DecimalRange(min = 0.1f, max = 10.0f)
+            public float scale = 0.8f;
+
+            @Configurable
+            public boolean showHovered = true;
+            @Configurable
+            public boolean showPos = true;
+            @Configurable
+            public boolean showSize = true;
+            @Configurable
+            public boolean showWidgetTheme = true;
+            @Configurable
+            public boolean showExtra = true;
+            @Configurable
+            public boolean showOutline = true;
+
+            @Configurable
+            public boolean showParent = true;
+            @Configurable
+            public boolean showParentPos = true;
+            @Configurable
+            public boolean showParentSize = true;
+            @Configurable
+            public boolean showParentWidgetTheme = true;
+            @Configurable
+            public boolean showParentOutline = true;
+        }
     }
 }

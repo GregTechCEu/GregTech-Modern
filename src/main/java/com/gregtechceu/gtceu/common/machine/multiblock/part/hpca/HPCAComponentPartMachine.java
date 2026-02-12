@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
@@ -24,15 +23,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
-                                               implements IHPCAComponentHatch, IMachineModifyDrops {
+                                               implements IHPCAComponentHatch {
 
     @SaveField
     @SyncToClient
     @RerenderOnChanged
     private boolean damaged;
 
-    public HPCAComponentPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCAComponentPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     public abstract boolean isAdvanced();
@@ -89,7 +88,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops) {
+    public void modifyDrops(List<ItemStack> drops) {
         for (int i = 0; i < drops.size(); ++i) {
             ItemStack drop = drops.get(i);
             if (drop.getItem() == this.getDefinition().getItem()) {

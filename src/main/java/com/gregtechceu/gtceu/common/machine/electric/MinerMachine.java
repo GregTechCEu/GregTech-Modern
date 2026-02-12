@@ -1,18 +1,15 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -20,38 +17,30 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,44 +53,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine
-                          implements IMiner, IControllable, IMuiMachine, IDataInfoProvider, IAutoOutputItem {
+                          implements IControllable, IMuiMachine, IDataInfoProvider, IMiner {
 
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected Direction outputFacingItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputItems;
-    @Getter
-    @Setter
-    @SaveField
-    protected boolean allowInputFromOutputSideItems;
     @Getter
     @SaveField
     protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable
-    protected TickableSubscription autoOutputSubs, batterySubs;
+    protected TickableSubscription batterySubs;
     @Nullable
-    protected ISubscription exportItemSubs, energySubs;
+    protected ISubscription energySubs;
 
-    public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune,
-                        Object... args) {
-        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed,
-                maximumRadius);
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
+
+    public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
+        super(info, tier,
+                (m) -> new MinerLogic(m, fortune, speed, maximumRadius),
+                0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
+        this.autoOutput = AutoOutputTrait.ofItems(this, exportItems);
+        autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+    protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
@@ -110,31 +91,8 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 0, IO.IN);
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        if (args.length > 3 && args[args.length - 4] instanceof Integer invSize) {
-            return new NotifiableItemStackHandler(this, invSize, IO.OUT);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        if (args.length > 2 && args[args.length - 3] instanceof Integer fortune &&
-                args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new MinerLogic(this, fortune, speed, maxRadius);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         // Remove the miner pipes below this miner
         getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
@@ -147,20 +105,10 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-            }
             updateBatterySubscription();
-            exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
             chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         }
@@ -169,11 +117,6 @@ public class MinerMachine extends WorkableTieredMachine
     @Override
     public void onUnload() {
         super.onUnload();
-        if (exportItemSubs != null) {
-            exportItemSubs.unsubscribe();
-            exportItemSubs = null;
-        }
-
         if (energySubs != null) {
             energySubs.unsubscribe();
             energySubs = null;
@@ -183,48 +126,12 @@ public class MinerMachine extends WorkableTieredMachine
     //////////////////////////////////////
     // ********** LOGIC **********//
     //////////////////////////////////////
-    protected void updateAutoOutputSubscription() {
-        var outputFace = getOutputFacingItems();
-        if (isAutoOutputItems() && outputFace != null && !exportItems.isEmpty() &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFace)) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
     protected void updateBatterySubscription() {
         if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
             batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
         } else if (batterySubs != null) {
             batterySubs.unsubscribe();
             batterySubs = null;
-        }
-    }
-
-    protected void autoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                exportItems.exportToNearby(getOutputFacingItems());
-            }
-        }
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setAutoOutputItems(boolean allow) {
-        this.autoOutputItems = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingItems(@Nullable Direction outputFacing) {
-        if (outputFacing != Direction.DOWN) {
-            this.outputFacingItems = outputFacing;
-            syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-            updateAutoOutputSubscription();
         }
     }
 
@@ -350,6 +257,6 @@ public class MinerMachine extends WorkableTieredMachine
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
                         .child(GTMuiWidgets.createBatterySlot(getChargerInventory(), 0, syncManager))
-                        .child(GTMuiWidgets.createAutoOutputItemButton(this, syncManager)));
+                        .child(GTMuiWidgets.createAutoOutputItemButton(this.autoOutput, syncManager)));
     }
 }

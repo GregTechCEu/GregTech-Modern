@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -57,11 +57,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
 
     protected abstract F getEmptyFilter();
 
-    protected abstract boolean canInsertFilterItem(ItemStack itemStack);
-
     //////////////////////////////////
     // ***** PUBLIC API ******//
     //////////////////////////////////
+
+    public abstract boolean canInsertFilterItem(ItemStack itemStack);
 
     public Widget createFilterSlotUI(int xPos, int yPos) {
         return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
@@ -117,7 +117,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
-    private CustomItemStackHandler getFilterSlot() {
+    public CustomItemStackHandler getFilterSlot() {
         if (this.filterSlot == null) {
             this.filterSlot = new CustomItemStackHandler(this.filterItem) {
 
@@ -131,6 +131,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         }
 
         return this.filterSlot;
+    }
+
+    public void setFilterItem(ItemStack item) {
+        getFilterSlot().setStackInSlot(0, item);
+        updateFilter();
     }
 
     private void updateFilter() {
@@ -160,7 +165,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
             if (filter instanceof SmartItemFilter smart &&
                     container instanceof CoverBehavior cover &&
                     cover.coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) {
                     smart.setModeFromMachine(machine.getDefinition().getName());
                 }

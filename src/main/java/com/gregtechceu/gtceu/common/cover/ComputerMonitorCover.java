@@ -12,13 +12,13 @@ import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -100,7 +100,8 @@ public class ComputerMonitorCover extends CoverBehavior
         tmp = tmp.stream().map(str -> '{' + str + '}').toList();
         return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
-                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemStackHandler,
+                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide,
+                        itemStackHandler,
                         this, new MultiLineComponent(text), placeholderUUID));
     }
 

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -115,7 +115,7 @@ public class LargeMinerLogic extends MinerLogic {
 
     @Override
     public BlockPos getMiningPos() {
-        return getMachine().getPos().relative(getMachine().getFrontFacing().getOpposite());
+        return getMachine().getBlockPos().relative(getMachine().getFrontFacing().getOpposite());
     }
 
     @Override

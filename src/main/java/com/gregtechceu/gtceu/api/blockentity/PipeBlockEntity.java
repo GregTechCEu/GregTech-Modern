@@ -12,13 +12,12 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
+import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.datafixers.TagFixer;
-import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -29,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +55,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
                                      extends ManagedSyncBlockEntity
-                                     implements IPipeNode<PipeType, NodeDataType>, IToolGridHighlight, IToolable {
+                                     implements IPipeNode<PipeType, NodeDataType>, IToolGridHighlight, IToolable,
+                                     ICopyable {
 
     private final long offset = GTValues.RNG.nextInt(20);
 
@@ -99,10 +100,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        IPipeNode.super.scheduleRenderUpdate();
-    }
-
     @Override
     public long getOffsetTimer() {
         return level == null ? offset : (level.getServer().getTickCount() + offset);
@@ -283,7 +280,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     private void updateNetworkConnection(Direction side, boolean connected) {
         LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) getLevel());
-        worldPipeNet.updateBlockedConnections(getPipePos(), side, !connected);
+        worldPipeNet.updateBlockedConnections(this.getBlockPos(), side, !connected);
     }
 
     protected int withSideConnection(int blockedConnections, Direction side, boolean connected) {
@@ -354,8 +351,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack,
-                                                           UseOnContext context) {
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack,
+                                                                     UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
@@ -398,7 +395,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 }
             } else {
                 if (!frameMaterial.isNull()) {
-                    Block.popResource(getLevel(), getPipePos(),
+                    Block.popResource(getLevel(), this.getBlockPos(),
                             GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = GTMaterials.NULL;
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
@@ -420,13 +417,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public void doExplosion(float explosionPower) {
-        getLevel().removeBlock(getPipePos(), false);
+        getLevel().removeBlock(this.getBlockPos(), false);
         if (!getLevel().isClientSide) {
-            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, getPipePos().getX() + 0.5,
-                    getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
+            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, this.getBlockPos().getX() + 0.5,
+                    this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5,
                     10, 0.2, 0.2, 0.2, 0.0);
         }
-        getLevel().explode(null, getPipePos().getX() + 0.5, getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
+        getLevel().explode(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5,
+                this.getBlockPos().getZ() + 0.5,
                 explosionPower, Level.ExplosionInteraction.NONE);
     }
 
@@ -439,8 +437,17 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        TagFixer.fixFluidTags(tag);
-        super.load(tag);
+    public CompoundTag copyConfig(CompoundTag tag) {
+        return ICopyable.super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getItemsRequiredToPaste() {
+        return coverContainer.getItemsRequiredToPaste();
     }
 }

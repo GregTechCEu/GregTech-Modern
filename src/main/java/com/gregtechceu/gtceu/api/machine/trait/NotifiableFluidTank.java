@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
@@ -25,6 +25,13 @@ import java.util.function.Predicate;
 
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
+
+    public static final MachineTraitType<NotifiableFluidTank> TYPE = new MachineTraitType<>(NotifiableFluidTank.class);
+
+    @Override
+    public MachineTraitType<NotifiableFluidTank> getTraitType() {
+        return TYPE;
+    }
 
     @Getter
     public final IO handlerIO;
@@ -308,7 +315,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
@@ -318,7 +325,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getFluidCapFilter(facing, IO.IN);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)

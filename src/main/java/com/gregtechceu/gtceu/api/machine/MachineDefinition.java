@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -44,7 +45,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<IMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -60,8 +61,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
-    @Setter
-    private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
     @Getter
     @Setter
     private @NotNull GTRecipeType @NotNull [] recipeTypes;
@@ -131,6 +130,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private PanelFactory UI;
     @Getter
     @Setter
+    private String themeId = ThemeAPI.DEFAULT_ID;
+    @Getter
+    @Setter
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
 
     @Getter
@@ -160,10 +162,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return blockEntityTypeSupplier.get();
     }
 
-    public MetaMachine createMetaMachine(IMachineBlockEntity blockEntity) {
-        return machineSupplier.apply(blockEntity);
-    }
-
     public ItemStack asStack() {
         return new ItemStack(getItem());
     }
@@ -178,8 +176,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     @Override
-    public IMachineBlock get() {
-        return (IMachineBlock) blockSupplier.get();
+    public MetaMachineBlock get() {
+        return (MetaMachineBlock) blockSupplier.get();
     }
 
     public String getName() {

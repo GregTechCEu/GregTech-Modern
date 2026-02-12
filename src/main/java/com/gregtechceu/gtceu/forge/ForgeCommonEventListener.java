@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeManager;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -226,7 +227,7 @@ public class ForgeCommonEventListener {
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
         if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
-                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
+                MetaMachine.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
             if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
                     event.getFace())) {
                 event.setCanceled(true);
@@ -258,6 +259,8 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        if (GTCEu.isClientThread())
+            event.addListener(new ThemeManager());
     }
 
     @SubscribeEvent
@@ -415,7 +418,9 @@ public class ForgeCommonEventListener {
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }

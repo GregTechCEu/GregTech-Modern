@@ -1,36 +1,38 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -57,7 +59,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine, IMachineLife {
+public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
 
     public static final int BASE_PUMP_RADIUS = 16;
     public static final int EXTRA_PUMP_RADIUS = 4;
@@ -67,49 +69,23 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Getter
     @SaveField
     private int pumpHeadY;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputFluids;
     @SaveField
     protected final NotifiableFluidTank cache;
 
-    public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
-        this.cache = createCacheFluidHandler(args);
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
+
+    public PumpMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
+        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
+                IO.OUT);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
-    }
-
-    @Override
-    public boolean isAllowInputFromOutputSideFluids() {
-        return false;
-    }
-
-    @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {}
-
-    @Override
-    public Direction getOutputFacingFluids() {
-        return getFrontFacing();
-    }
-
-    public void setAutoOutputFluids(boolean autoOutputFluids) {
-        this.autoOutputFluids = autoOutputFluids;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
-    }
-
-    @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
-        setFrontFacing(outputFacing);
-    }
 
     @Override
     public void onLoad() {
@@ -251,7 +227,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             return;
         }
 
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         BlockPos downPos = headPos.below(1);
         var downBlock = getLevel().getBlockState(downPos);
@@ -385,7 +361,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
      */
     private boolean canAdvancePumpHead() {
         // position of the pump head, i.e. the position of the lowest mining pipe
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
@@ -407,9 +383,10 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getPos().relative(Direction.DOWN);
+            var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
                 pos = pos.relative(Direction.DOWN);
@@ -510,8 +487,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     public void update() {
-        if (getOutputFacingFluids() != null) {
-            cache.exportToNearby(getOutputFacingFluids());
+        if (autoOutput.getFluidOutputDirection() != null) {
+            cache.exportToNearby(autoOutput.getFluidOutputDirection());
         }
 
         // do not do anything without enough energy supplied
@@ -562,36 +539,47 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     // ********** Gui ***********//
     //////////////////////////////////////
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
-                .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> cache.getFluidInTank(0).getAmount() + "").setTextColor(-1)
-                        .setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(cache.getStorages()[0], 90, 35, true, true)
-                        .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        IntSyncValue bucketSyncer = new IntSyncValue(() -> cache.getFluidInTank(0).getAmount(), (ignored) -> {});
+        syncManager.syncValue("bucket_amount", bucketSyncer);
+
+        return new ModularPanel(this.getDefinition().getName())
+                .child(
+                        // Top half of the screen
+                        new ParentWidget<>()
+                                .widthRel(1)
+                                .height(20 + 60)
+                                // Box that has the display texture BG +
+                                // the buttons / text / etc
+                                .child(new ParentWidget<>()
+                                        .background(GTGuiTextures.DISPLAY)
+                                        .size(90, 63)
+                                        .align(Alignment.CENTER)
+                                        .child(IKey.lang("gtceu.gui.fluid_amount").asWidget()
+                                                .color(0xffffff)
+                                                .margin(8, 0, 8, 0))
+                                        .child(IKey.dynamic(
+                                                () -> Component.literal(
+                                                        FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
+                                                .asWidget()
+                                                .color(0xffffff)
+                                                .margin(8, 0, 20, 0))
+                                        .child(Flow.row()
+                                                .margin(4, 0, 41, 0)
+                                                .coverChildren()
+                                                .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput,
+                                                        syncManager)))
+                                        .child(Flow.column()
+                                                .margin(68, 0, 23, 0)
+                                                .coverChildren()
+                                                .child(createFluidSlot(syncManager)))))
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
+    private IWidget createFluidSlot(PanelSyncManager syncManager) {
+        syncManager.syncValue("fluid_slot",
+                SyncHandlers.fluidSlot(cache.getStorages()[0]).controlsAmount(false));
+        return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
     }
 }
