@@ -97,13 +97,9 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
         if (!isRemote()) {
-            if (super.onUse(state, world, pos, player, hand, hit) == InteractionResult.SUCCESS) {
-                return InteractionResult.SUCCESS;
-            }
             if (FluidUtil.interactWithFluidHandler(player, hand, fuelTank)) {
                 return InteractionResult.SUCCESS;
             }
-            return InteractionResult.PASS;
         }
         return super.onUse(state, world, pos, player, hand, hit);
     }
