@@ -186,7 +186,8 @@ public class SyncDataHolder {
         @Override
         public @Nullable ISyncManaged deserializeNBT(Tag tag, TransformerContext<ISyncManaged> context) {
             ISyncManaged syncManaged = context.currentValue();
-            Objects.requireNonNull(syncManaged).getSyncDataHolder().deserializeNBT((CompoundTag)tag, context.isClientSync());
+            Objects.requireNonNull(syncManaged).getSyncDataHolder().deserializeNBT((CompoundTag) tag,
+                    context.isClientSync());
             return syncManaged;
         }
     }

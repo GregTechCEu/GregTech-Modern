@@ -29,7 +29,8 @@ public interface ValueTransformer<T> {
      *
      */
     record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
-                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync, boolean isClientFullSyncUpdate) {}
+                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
+                                 boolean isClientFullSyncUpdate) {}
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.

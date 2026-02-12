@@ -196,8 +196,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
         updatePartPositions();
 
-        for (var trait: getTraitHolder().getAllTraits()) {
-            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait) multiblockMachineTrait.onStructureFormed();
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureFormed();
         }
     }
 
@@ -216,8 +217,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         parts.clear();
         updatePartPositions();
 
-        for (var trait: getTraitHolder().getAllTraits()) {
-            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait) multiblockMachineTrait.onStructureInvalid();
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureInvalid();
         }
     }
 

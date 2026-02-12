@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -50,14 +51,16 @@ public final class MachineTraitHolder {
 
     /**
      * Registers a trait to be synced/saved.
-     * Do not register a trait to be synced and also store that trait as a syncable machine field, otherwise the trait data will be duplicated. Use only one sync method.
+     * Do not register a trait to be synced and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.
      *
      * @param traitName Unique identifier for this trait.
-     * @param trait The trait to register
+     * @param trait     The trait to register
      */
     public MachineTraitHolder syncTrait(String traitName, MachineTrait trait) {
         if (trait.machine != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
-        if (traitsToSave.containsKey(traitName)) throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
+        if (traitsToSave.containsKey(traitName))
+            throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
         traitsToSave.put(traitName, trait);
         return this;
     }
@@ -65,7 +68,7 @@ public final class MachineTraitHolder {
     @SuppressWarnings("unchecked")
     public @Nullable <T extends MachineTrait> T getSyncTrait(String traitName) {
         MachineTrait trait = traitsToSave.get(traitName);
-        return trait == null ? null : (T)trait;
+        return trait == null ? null : (T) trait;
     }
 
     /**
@@ -93,7 +96,8 @@ public final class MachineTraitHolder {
         public Tag serializeNBT(MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
             CompoundTag tag = new CompoundTag();
 
-            value.traitsToSave.forEach((k, v) -> tag.put(k, v.getSyncDataHolder().serializeNBT(context.isClientSync(), context.isClientFullSyncUpdate())));
+            value.traitsToSave.forEach((k, v) -> tag.put(k,
+                    v.getSyncDataHolder().serializeNBT(context.isClientSync(), context.isClientFullSyncUpdate())));
 
             return tag;
         }
@@ -101,12 +105,13 @@ public final class MachineTraitHolder {
         @Override
         public @Nullable MachineTraitHolder deserializeNBT(Tag tag, TransformerContext<MachineTraitHolder> context) {
             var traitHolder = Objects.requireNonNull(context.currentValue());
-            var compoundTag = (CompoundTag)tag;
+            var compoundTag = (CompoundTag) tag;
 
-            for (var key: compoundTag.getAllKeys()) {
+            for (var key : compoundTag.getAllKeys()) {
                 var trait = traitHolder.getSyncTrait(key);
                 if (trait == null) {
-                    GTCEu.LOGGER.warn("Attempted to deserialise syncable trait '{}', but no syncable trait has that ID", key);
+                    GTCEu.LOGGER.warn("Attempted to deserialise syncable trait '{}', but no syncable trait has that ID",
+                            key);
                     continue;
                 }
                 trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound("key"), context.isClientSync());

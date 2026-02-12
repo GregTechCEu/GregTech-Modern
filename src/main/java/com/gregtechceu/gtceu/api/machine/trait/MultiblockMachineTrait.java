@@ -9,5 +9,6 @@ public abstract class MultiblockMachineTrait extends MachineTrait {
     }
 
     public void onStructureFormed() {}
+
     public void onStructureInvalid() {}
 }
