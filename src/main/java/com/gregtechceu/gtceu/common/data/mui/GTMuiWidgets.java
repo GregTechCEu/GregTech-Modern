@@ -415,7 +415,11 @@ public class GTMuiWidgets {
     }
 
     private static int getIncrementValue(MouseData data) {
-        int adjust = 1;
+        return getIncrementValue(data, 1);
+    }
+
+    private static int getIncrementValue(MouseData data, int step) {
+        int adjust = step;
         if (data.shift()) adjust *= 4;
         if (data.ctrl()) adjust *= 16;
         if (data.alt()) adjust *= 64;
@@ -423,9 +427,13 @@ public class GTMuiWidgets {
     }
 
     private static IKey createAdjustOverlay(boolean increment) {
+        return createAdjustOverlay(increment, 1);
+    }
+
+    private static IKey createAdjustOverlay(boolean increment, int step) {
         final StringBuilder builder = new StringBuilder();
         builder.append(increment ? '+' : '-');
-        builder.append(getIncrementValue(MouseData.create(-1)));
+        builder.append(getIncrementValue(MouseData.create(-1), step));
 
         float scale = 1f;
         if (builder.length() == 3) {
@@ -442,6 +450,21 @@ public class GTMuiWidgets {
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
                                                             IntSupplier maxValue) {
+        return createIntInputWithButtons(syncValue, minValue, maxValue, 1, GTGuiTextures.DISPLAY);
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                            IntSupplier maxValue, int step) {
+        return createIntInputWithButtons(syncValue, minValue, maxValue, step, GTGuiTextures.DISPLAY);
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                            IntSupplier maxValue, IDrawable background) {
+        return createIntInputWithButtons(syncValue, minValue, maxValue, 1, background);
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                            IntSupplier maxValue, int step, IDrawable background) {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 
@@ -452,12 +475,12 @@ public class GTMuiWidgets {
                 .child(new ButtonWidget<>()
                         .left(0).width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
+                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button), step);
                             val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
-                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
                 .child(new TextFieldWidget()
                         .left(18).right(18)
                         .setTextAlignment(Alignment.Center)
@@ -471,16 +494,16 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .value(formattedValue)
-                        .background(GTGuiTextures.DISPLAY))
+                        .background(background))
                 .child(new ButtonWidget<>()
                         .right(0).width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
+                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button), step);
                             val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
-                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
     }
 
     public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue,
