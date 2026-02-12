@@ -141,7 +141,7 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> parallelAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);
     }
 
     public static TextWidget<?> addBatchModeLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
@@ -160,7 +160,7 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() > 1);
     }
 
     public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine,
@@ -178,7 +178,7 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> subtickAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> subtickAmount.getIntValue() > 1);
     }
 
     public static TextWidget<?> addTotalRunsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
@@ -195,7 +195,7 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
     }
 
     public static TextWidget<?> addSteamUsageLine(SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
