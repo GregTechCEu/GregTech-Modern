@@ -196,7 +196,9 @@ public interface ModifierFunction {
                 if (eutModifier != ContentModifier.IDENTITY) {
                     var preEUt = RecipeHelper.getRealEUtWithIO(recipe);
                     EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt.stack(), eutModifier);
-                    EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
+                    if (!eut.isEmpty()) {
+                        EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
+                    }
                 }
                 return copied;
             };
