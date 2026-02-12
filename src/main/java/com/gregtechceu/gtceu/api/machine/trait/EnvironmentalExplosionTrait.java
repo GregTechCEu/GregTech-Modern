@@ -89,15 +89,13 @@ public class EnvironmentalExplosionTrait extends MachineTrait {
                 }
             }
         }
-        if (GTValues.RNG.nextInt(1000) == 0) {
-            if (level.isRainingAt(pos) || level.isRainingAt(pos.east()) || level.isRainingAt(pos.west()) ||
-                    level.isRainingAt(pos.north()) || level.isRainingAt(pos.south())) {
-                if (level.isThundering() && GTValues.RNG.nextInt(3) == 0) {
-                    GTUtil.doExplosion(level, pos, explosionPower);
-                } else if (GTValues.RNG.nextInt(10) == 0) {
-                    GTUtil.doExplosion(level, pos, explosionPower);
-                } else GTUtil.setOnFire(level, pos, fireChance);
-            }
+        if (level.isRainingAt(pos) || level.isRainingAt(pos.east()) || level.isRainingAt(pos.west()) ||
+                level.isRainingAt(pos.north()) || level.isRainingAt(pos.south())) {
+            if (level.isThundering() && GTValues.RNG.nextInt(3) == 0) {
+                if (GTValues.RNG.nextInt(1000) == 0) GTUtil.doExplosion(level, pos, explosionPower);
+            } else if (GTValues.RNG.nextInt(10) == 0) {
+                if (GTValues.RNG.nextInt(1000) == 0) GTUtil.doExplosion(level, pos, explosionPower);
+            } else if (GTValues.RNG.nextInt(1000) == 0) GTUtil.setOnFire(level, pos, fireChance);
         }
     }
 }
