@@ -104,7 +104,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
@@ -136,7 +136,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     public void addedToController(IMultiController controller) {
         if (!controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
+                circuitInventory.dropInventoryInWorld();
             } else {
                 circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
             }

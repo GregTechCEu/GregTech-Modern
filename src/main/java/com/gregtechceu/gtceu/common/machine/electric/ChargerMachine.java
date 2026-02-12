@@ -112,7 +112,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     //////////////////////////////////////

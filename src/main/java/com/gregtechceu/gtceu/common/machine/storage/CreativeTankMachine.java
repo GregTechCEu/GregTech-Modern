@@ -131,7 +131,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                         .orElse(InteractionResult.PASS);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

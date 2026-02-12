@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -35,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DrumMachine extends MetaMachine implements IDropSaveMachine, IInteractedMachine {
+public class DrumMachine extends MetaMachine implements IDropSaveMachine {
 
     @Getter
     private final int maxStoredFluids;
@@ -132,7 +131,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine, IInter
                 return InteractionResult.SUCCESS;
             }
         }
-        return world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
