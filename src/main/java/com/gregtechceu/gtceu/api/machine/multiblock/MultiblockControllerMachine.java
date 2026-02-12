@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -176,7 +174,6 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * Get MultiblockState. It records all structure-related information.
      */
-    @NotNull
     public MultiblockState getMultiblockState() {
         if (multiblockState == null) {
             multiblockState = new MultiblockState(getLevel(), getBlockPos());
@@ -278,7 +275,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
@@ -320,7 +317,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
             return InteractionResult.SUCCESS;
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     public boolean allowCircuitSlots() {
