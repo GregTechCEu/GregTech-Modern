@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConf
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.misc.StockingHatchList;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
@@ -33,6 +34,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IStackWatcher;
+import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -42,15 +46,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
+public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart, IStorageWatcherNode {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -74,9 +76,15 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
+    private IStackWatcher watcher;
+
+    private StockingHatchList topItems = new StockingHatchList(CONFIG_SIZE);
+    private boolean pendingWatcherSync;
+
     public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
         this.autoPullTest = $ -> false;
+        this.nodeHolder.getMainNode().addService(IStorageWatcherNode.class, this);
     }
 
     /////////////////////////////////
@@ -93,6 +101,14 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void removedFromController(IMultiController controller) {
         IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+        if (autoPull) {
+            refreshList();
+        }
     }
 
     @Override
@@ -113,34 +129,78 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
-        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
-                                                                                                  // Avoid Crash loops.
+        if (ticksPerCycle == 0) {
+            // Emergency Check to avoid Crash loops.
+            ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
+        }
         if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (autoPull) {
-                refreshList();
+            syncWatchedStacks();
+        }
+        if (pendingWatcherSync) {
+            pendingWatcherSync = false;
+            syncWatchedStacks();
+        }
+    }
+
+    // Refreshes what things are being watched
+    private void syncWatchedStacks() {
+        if (watcher == null) return;
+        watcher.reset();
+        if (autoPull) {
+            watcher.setWatchAll(true);
+        } else {
+            watcher.setWatchAll(false);
+            for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
+                if (slot.getConfig() == null) continue;
+                watcher.add(slot.getConfig().what());
             }
-            syncME();
         }
     }
 
     @Override
-    protected void syncME() {
-        // Update the visual display for the fake items. This also is important for the item handler's
-        // getStackInSlot() method, as it uses the cached items set here.
-        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
-        for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
-            var config = slot.getConfig();
-            if (config != null) {
-                // Try to fill the slot
-                var key = config.what();
-                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= minStackSize) {
-                    slot.setStock(new GenericStack(key, extracted));
+    public void updateWatcher(IStackWatcher watcher) {
+        this.watcher = watcher;
+        this.syncWatchedStacks();
+    }
+
+    @Override
+    public void onStackChange(AEKey what, long amount) {
+        if (!(what instanceof AEItemKey itemKey)) return;
+        if (autoPull) {
+            if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) {
+                topItems.remove(what);
+            } else {
+                if (!topItems.insert(what, amount)) return;
+            }
+
+            syncListToHandler();
+        } else {
+            for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
+                if (slot.getConfig() == null) {
+                    slot.setStock(null);
                     continue;
                 }
+                AEKey key = slot.getConfig().what();
+                if (key.equals(what)) {
+                    if (amount > 0) {
+                        slot.setStock(new GenericStack(key, amount));
+                    } else {
+                        slot.setStock(null);
+                    }
+                }
             }
-            slot.setStock(null);
         }
+    }
+
+    private void syncListToHandler() {
+        int index;
+        for (index = 0; index < topItems.size(); index++) {
+            var entry = topItems.get(index);
+            var slot = this.aeItemHandler.getInventory()[index];
+            slot.setConfig(new GenericStack(entry.getKey(), 1));
+            slot.setStock(new GenericStack(entry.getKey(), entry.getAmount()));
+        }
+        aeItemHandler.clearInventory(index);
     }
 
     @Override
@@ -217,54 +277,26 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         MEStorage networkStorage = grid.getStorageService().getInventory();
         var counter = networkStorage.getAvailableStacks();
 
-        // Use a PriorityQueue to sort the stacks on size, take the first CONFIG_SIZE
-        // biggest stacks.
-        PriorityQueue<Object2LongMap.Entry<AEKey>> topItems = new PriorityQueue<>(
-                Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
+        topItems.clear();
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
-            long amount = entry.getLongValue();
             AEKey what = entry.getKey();
-
-            if (amount <= 0) continue;
             if (!(what instanceof AEItemKey itemKey)) continue;
-
-            long request = networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource);
-            if (request == 0) continue;
-
-            // Ensure that it is valid to configure with this stack
-            if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
-            if (amount >= minStackSize) {
-                if (topItems.size() < CONFIG_SIZE) {
-                    topItems.offer(entry);
-                } else if (amount > topItems.peek().getLongValue()) {
-                    topItems.poll();
-                    topItems.offer(entry);
-                }
-            }
-        }
-
-        // Now, topItems is a PQ with CONFIG_SIZE highest amount items in the system.
-        int index;
-        int itemAmount = topItems.size();
-        for (index = 0; index < CONFIG_SIZE; index++) {
-            if (topItems.isEmpty()) break;
-            Object2LongMap.Entry<AEKey> entry = topItems.poll();
-
-            AEKey what = entry.getKey();
             long amount = entry.getLongValue();
 
-            // If we get here, the item has already been checked by the PQ.
-            long request = networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource);
+            if (autoPullTest != null && !autoPullTest.test(new GenericStack(what, amount))) continue;
 
-            // Since we want our items to be displayed from highest to lowest, but poll() returns
-            // the lowest first, we fill in the slots starting at itemAmount-1
-            var slot = this.aeItemHandler.getInventory()[itemAmount - index - 1];
-            slot.setConfig(new GenericStack(what, 1));
-            slot.setStock(new GenericStack(what, request));
+            topItems.insert(what, amount);
         }
 
-        aeItemHandler.clearInventory(index);
+        syncListToHandler();
+    }
+
+    // Expensive, use sparingly.
+    private long getAmountInNetwork(AEKey key) {
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+        return extracted;
     }
 
     ///////////////////////////////
@@ -361,6 +393,21 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         public ExportOnlyAEStockingItemSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
             super(config, stock);
+        }
+
+        @Override
+        public void setConfig(@Nullable GenericStack config) {
+            var oldConfig = this.config;
+            this.config = config;
+            if (config == null) {
+                this.setStock(null);
+            } else {
+                if (!config.equals(oldConfig)) {
+                    // Refresh to get stack amount from AE2
+                    this.setStock(new GenericStack(config.what(), getAmountInNetwork(config.what())));
+                    pendingWatcherSync = true;
+                }
+            }
         }
 
         @Override
