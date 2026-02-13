@@ -107,6 +107,24 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
+
+    public static TextWidget<?> addProgressLinePercentOnly(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
+
+        return IKey.dynamic(() -> {
+                    int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
+                    return Component.translatable("gtceu.multiblock.progress_percent", currentProgress);
+                })
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
     public static TextWidget<?> addEnergyTierLine(WorkableElectricMultiblockMachine rlMachine,
                                                   PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
