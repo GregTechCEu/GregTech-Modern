@@ -69,6 +69,35 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager) {
+        LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    var energyList = weMachine.getEnergyContainer();
+                    return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
+                }));
+        return addEnergyUsageExactLine(weMachine, syncManager, energyUsage);
+    }
+
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager, LongSyncValue energyUsage) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+
+        return IKey.dynamic(() -> {
+            if (energyUsage.getLongValue() <= 0) return Component.empty();
+            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
+            // wrap in text component to keep it from being formatted
+            Component voltageName = Component.literal(
+                    GTValues.VNF[GTUtil.getTierByVoltage(energyUsage.getLongValue())]);
+
+            return Component.translatable("gtceu.multiblock.energy_consumption",
+                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
+        })
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue());
+    }
+
     public static IKey addEnergyTierLine(boolean formed, int tier) {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return IKey.EMPTY;
