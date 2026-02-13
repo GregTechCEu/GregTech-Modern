@@ -385,7 +385,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
             getToolStats().getBehaviors()
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
-            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
+            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D || getToolType().harvestTags.stream().anyMatch(state::is)) {
                 ToolHelper.damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
             }
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
