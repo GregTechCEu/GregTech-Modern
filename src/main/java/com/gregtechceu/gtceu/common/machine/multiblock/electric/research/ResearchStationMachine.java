@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
@@ -25,7 +24,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -33,6 +31,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
@@ -143,9 +142,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         return panel;
     }
 
-
     public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
-
         var parentWidget = new ParentWidget<>();
         var listWidget = new ListWidget<>()
                 .width(width - 6)
@@ -163,7 +160,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
     }
-
 
     // @Override
     // public void addDisplayText(List<Component> textList) {
