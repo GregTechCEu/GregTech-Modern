@@ -724,11 +724,12 @@ public class Color {
      * @return average ARGB color
      */
     public static int average(int... colors) {
-        float r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0;
+        int a = 0;
         for (int color : colors) {
-            r += getRed(color);
-            g += getGreen(color);
-            b += getBlue(color);
+            r += getRedSq(color);
+            g += getGreenSq(color);
+            b += getBlueSq(color);
             a += getAlpha(color);
         }
         return argb((int) Math.sqrt(r / colors.length), (int) Math.sqrt(g / colors.length),
@@ -795,7 +796,7 @@ public class Color {
         int r = (int) lerpComp(curve, Color.getRed(color1), Color.getRed(color2), value);
         int g = (int) lerpComp(curve, Color.getGreen(color1), Color.getGreen(color2), value);
         int b = (int) lerpComp(curve, Color.getBlue(color1), Color.getBlue(color2), value);
-        int a = (int) lerpComp(curve, Color.getAlpha(color1), Color.getAlpha(color2), value);
+        int a = Interpolations.lerp(Color.getAlpha(color1), Color.getAlpha(color2), value);
         return Color.argb(r, g, b, a);
     }
 
@@ -839,7 +840,6 @@ public class Color {
      */
     @OnlyIn(Dist.CLIENT)
     public static void resetGlColor() {
-        RenderSystem.colorMask(true, true, true, true);
         setGlColorOpaque(WHITE.main);
     }
 

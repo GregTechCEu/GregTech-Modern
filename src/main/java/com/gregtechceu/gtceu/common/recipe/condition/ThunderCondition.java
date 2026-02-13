@@ -11,18 +11,20 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class ThunderCondition extends RecipeCondition {
+public class ThunderCondition extends RecipeCondition<ThunderCondition> {
 
-    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-                    .apply(instance, ThunderCondition::new));
+    // spotless:off
+    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.FLOAT.fieldOf("level").forGetter(ThunderCondition::getLevel)
+    ).apply(instance, ThunderCondition::new));
+    // spotless:on
 
-    public final static ThunderCondition INSTANCE = new ThunderCondition();
+    @Getter
     private float level;
 
     public ThunderCondition(boolean isReverse, float level) {
@@ -35,17 +37,13 @@ public class ThunderCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<ThunderCondition> getType() {
         return GTRecipeConditions.THUNDER;
     }
 
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.thunder.tooltip", level);
-    }
-
-    public float getLevel() {
-        return level;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class ThunderCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public ThunderCondition createTemplate() {
         return new ThunderCondition();
     }
 }

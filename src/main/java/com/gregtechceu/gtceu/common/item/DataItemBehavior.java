@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -8,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -153,12 +153,12 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                 if (ResearchManager.readResearchId(itemStack) == null) {
                     return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                 }
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
             } else {
                 return interactable.onDataStickUse(context.getPlayer(), itemStack);
             }
         }
-        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            var machine = blockEntity.getMetaMachine();
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachine machine) {
             if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
                 return InteractionResult.FAIL;
             }
@@ -167,13 +167,12 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     if (ResearchManager.readResearchId(itemStack) == null) {
                         return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                     }
+                    return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
                 } else {
                     return interactable.onDataStickUse(context.getPlayer(), itemStack);
                 }
-            } else {
-                return InteractionResult.PASS;
             }
         }
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.PASS;
     }
 }

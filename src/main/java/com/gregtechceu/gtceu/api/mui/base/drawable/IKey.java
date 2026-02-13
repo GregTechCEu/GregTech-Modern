@@ -156,11 +156,26 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     /**
      * Creates a dynamic text key.
      *
-     * @param getter string supplier
+     * @param supp string supplier
      * @return dynamic text key
      */
-    static IKey dynamic(@NotNull Supplier<@NotNull Component> getter) {
-        return new DynamicKey(getter);
+    static IKey dynamic(@NotNull Supplier<@NotNull Component> supp) {
+        // DO NOT PULL OUT INTO A LOCAL VAR IT WILL BREAK THE SUPPLIER
+        if (supp.get() instanceof MutableComponent) {
+            return dynamicKey(() -> IKey.lang(supp.get()));
+        } else {
+            return dynamicKey(() -> IKey.lang(supp.get().copy()));
+        }
+    }
+
+    /**
+     * Creates a dynamic text key.
+     *
+     * @param supp key supplier
+     * @return dynamic text key
+     */
+    static IKey dynamicKey(@NotNull Supplier<@NotNull IKey> supp) {
+        return new DynamicKey(supp);
     }
 
     /**
@@ -186,10 +201,16 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     @OnlyIn(Dist.CLIENT)
     @Override
     default void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+        drawAligned(context, x, y, width, height, widgetTheme, Alignment.CENTER);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    default void drawAligned(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme,
+                             Alignment alignment) {
         renderer.setColor(widgetTheme.getTextColor());
         renderer.setShadow(widgetTheme.isTextShadow());
-        renderer.setAlignment(Alignment.Center, width, height);
-        renderer.setScale(1f);
+        renderer.setAlignment(alignment, width, height);
+        renderer.setScale(getScale());
         renderer.setPos(x, y);
         renderer.draw(context.getGraphics(), getFormatted());
     }
@@ -197,6 +218,32 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     @Override
     default boolean canApplyTheme() {
         return true;
+    }
+
+    @Override
+    default int getDefaultWidth() {
+        renderer.setAlignment(Alignment.TopLeft, -1, -1);
+        renderer.setScale(getScale());
+        renderer.setPos(0, 0);
+        renderer.setSimulate(true);
+        renderer.draw(null, getFormatted());
+        renderer.setSimulate(false);
+        return (int) renderer.getLastWidth();
+    }
+
+    @Override
+    default int getDefaultHeight() {
+        renderer.setAlignment(Alignment.TopLeft, -1, -1);
+        renderer.setScale(getScale());
+        renderer.setPos(0, 0);
+        renderer.setSimulate(true);
+        renderer.draw(null, getFormatted());
+        renderer.setSimulate(false);
+        return (int) renderer.getLastWidth();
+    }
+
+    default float getScale() {
+        return 1f;
     }
 
     @Override
@@ -245,7 +292,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         return withStyle().alignment(alignment);
     }
 
-    default StyledText color(int color) {
+    default @NotNull StyledText color(int color) {
         return color(() -> color);
     }
 
@@ -275,7 +322,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
             }
             styledText.shadow(JsonHelper.getBoolean(json, false, "shadow"));
             styledText.alignment(
-                    JsonHelper.deserialize(json, Alignment.class, styledText.getAlignment(), "align", "alignment"));
+                    JsonHelper.deserialize(json, Alignment.class, styledText.alignment(), "align", "alignment"));
             styledText.scale(JsonHelper.getFloat(json, 1, "scale"));
         }
     }

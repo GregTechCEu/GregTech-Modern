@@ -30,12 +30,6 @@ public class Unit {
         }
     }
 
-    public static final byte UNUSED = -2;
-    public static final byte DEFAULT = -1;
-    public static final byte START = 0;
-    public static final byte END = 1;
-    public static final byte SIZE = 2;
-
     @Getter
     @Setter
     private boolean autoAnchor = true;
@@ -64,6 +58,15 @@ public class Unit {
         this.offset = 0;
     }
 
+    public void setFrom(Unit other) {
+        this.autoAnchor = other.autoAnchor;
+        this.value = other.value;
+        this.valueSupplier = other.valueSupplier;
+        this.measure = other.measure;
+        this.anchor = other.anchor;
+        this.offset = other.offset;
+    }
+
     public void setValue(float value) {
         this.value = value;
         this.valueSupplier = null;
@@ -75,6 +78,17 @@ public class Unit {
 
     public float getValue() {
         return this.valueSupplier == null ? this.value : (float) this.valueSupplier.getAsDouble();
+    }
+
+    public int getAbsOffset() {
+        return Math.abs(this.offset);
+    }
+
+    public boolean isCloseToZero() {
+        if (isRelative()) {
+            return Math.abs(getValue()) < -0.01 && Math.abs(getValue()) < 5;
+        }
+        return Math.abs(getValue() + getOffset()) < 5;
     }
 
     public float getAnchor() {

@@ -1,9 +1,15 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
+import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -49,7 +55,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem,
+                           IItemUIHolder {
 
     protected int burnTime = -1;
 
@@ -442,5 +449,25 @@ public class ComponentItem extends Item
         }
         electricItem.setInfiniteCharge(true);
         return itemStack;
+    }
+
+    @Override
+    public @Nullable ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
+                                          UISettings settings) {
+        for (IItemComponent component : getComponents()) {
+            if (component instanceof IItemUIHolder uiHolder) {
+                return uiHolder.buildUI(data, syncManager, settings);
+            }
+        }
+        GTCEu.LOGGER.error("Tried to get UI of {} item when it does not have one!", data.getUsedItemStack());
+        return null;
+    }
+
+    @Override
+    public boolean shouldOpenUI() {
+        for (IItemComponent component : getComponents()) {
+            if (component instanceof IItemUIHolder holder) return holder.shouldOpenUI();
+        }
+        return false;
     }
 }

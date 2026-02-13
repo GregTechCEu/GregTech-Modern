@@ -4,26 +4,33 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,22 +39,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
+    @Setter
     protected int globalTransferSizeMillibuckets = 1;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
-
-    private NumberInputWidget<Integer> stackSizeInput;
-    private EnumSelectorWidget<BucketMode> stackSizeBucketModeInput;
 
     public AdvancedFluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -97,8 +102,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
-
-        configureStackSizeInput();
+        syncDataHolder.markClientSyncFieldDirty("voidingMode");
 
         if (!this.isRemote()) {
             configureFilter();
@@ -106,13 +110,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
-        var oldMultiplier = this.transferBucketMode.multiplier;
-        var newMultiplier = transferBucketMode.multiplier;
-
         this.transferBucketMode = transferBucketMode;
-
-        if (stackSizeInput == null) return;
-        stackSizeInput.setValue(getCurrentBucketModeTransferSize());
+        syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
     }
 
     //////////////////////////////////////
@@ -125,19 +124,32 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var column = super.createCoverUI(data, syncManager, settings);
 
-        this.stackSizeInput = new IntInputWidget(35, 20, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(1)
-                .setMax(Integer.MAX_VALUE);
-        configureStackSizeInput();
-        group.addWidget(this.stackSizeInput);
+        EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
+                this::getVoidingMode, this::setVoidingMode);
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
+                this::setGlobalTransferSizeMillibuckets);
+        EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
+                this::setBucketMode);
 
-        this.stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.stackSizeBucketModeInput);
+        syncManager.syncValue("voidingMode", voidingMode);
+        syncManager.syncValue("voidingLimit", voidingLimit);
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
+                .value(voidingMode)
+                .overlay(16, GTGuiTextures.VOIDING_MODES)
+                .lang(IKey.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
+                .build()
+                .marginTop(2));
+
+        column.child(
+                GTMuiWidgets
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
+                        .setEnabledIf($ -> shouldShowStackSize()));
+
+        return column;
     }
 
     private int getCurrentBucketModeTransferSize() {
@@ -146,6 +158,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     private void setCurrentBucketModeTransferSize(int transferSize) {
         this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
+        syncDataHolder.markClientSyncFieldDirty("globalTransferSizeMillibuckets");
     }
 
     @Override
@@ -153,16 +166,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
             filter.setMaxStackSize(voidingMode == VoidingMode.VOID_ANY ? 1 : Integer.MAX_VALUE);
         }
-
-        configureStackSizeInput();
-    }
-
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null || stackSizeBucketModeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeBucketModeInput.setVisible(shouldShowStackSize());
     }
 
     private boolean shouldShowStackSize() {
@@ -175,15 +178,19 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         return this.filterHandler.getFilter().isBlackList();
     }
 
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedFluidVoidingCover.class, FluidVoidingCover.MANAGED_FIELD_HOLDER);
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalTransferSizeMillibuckets());
+        tag.putInt("voidBucketMode", getTransferBucketMode().ordinal());
+        return super.copyConfig(tag);
+    }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        setTransferBucketMode(BucketMode.values()[tag.getInt("voidBucketMode")]);
+        setCurrentBucketModeTransferSize(tag.getInt("voidSize"));
+        super.pasteConfig(player, tag);
     }
 }

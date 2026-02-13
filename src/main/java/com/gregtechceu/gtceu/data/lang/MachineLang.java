@@ -484,6 +484,7 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.minez", "mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
+        provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
 
         provider.add("gtceu.machine.fluid_drilling_rig.description",
                 "§7Drills fluids from veins under bedrock.");
@@ -987,7 +988,8 @@ public class MachineLang {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.energy.sink", "Sink");
         provider.add("gtceu.creative.energy.source", "Source");
-        provider.add("gtceu.creative.computation.average", "Average Requested CWUt");
+        provider.add("gtceu.creative.computation.average", "Average CWU/tick: %d");
+        provider.add("gtceu.creative.computation.max_usage", "Max CWU/tick:");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
     }

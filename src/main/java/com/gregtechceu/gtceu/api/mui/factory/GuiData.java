@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -15,16 +16,18 @@ import java.util.Objects;
  * For example, if the GUI was opened by right-clicking a BlockEntity, then this data needs a world and a block pos.
  * <p>
  * Also see {@link PosGuiData} (useful for BlockEntities), {@link SidedPosGuiData} (useful for covers from GregTech) and
- * {@link HandGuiData} (useful for guis opened by interacting with an item in the players hand) for default
+ * {@link PlayerInventoryGuiData} (useful for guis opened by interacting with an item in the players inventory) for
+ * default
  * implementations.
  * </p>
  */
 public class GuiData {
 
+    @NotNull
     @Getter
     private final Player player;
 
-    public GuiData(Player player) {
+    public GuiData(@NotNull Player player) {
         this.player = Objects.requireNonNull(player);
     }
 

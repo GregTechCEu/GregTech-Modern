@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.theme;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An interface used to parse json objects to widget themes.
@@ -16,5 +17,6 @@ public interface WidgetThemeParser<T extends WidgetTheme> {
      * @param fallback a fallback widget theme json data object
      * @return the parsed widget theme
      */
+    @NotNull
     T parse(T parent, JsonObject json, JsonObject fallback);
 }

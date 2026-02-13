@@ -10,6 +10,7 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 
 import com.google.common.collect.AbstractIterator;
 import lombok.Getter;
@@ -37,13 +38,16 @@ public class ModularGuiContext extends GuiContext {
     private @Nullable Screen parent;
     @Getter
     private LocatedWidget focusedWidget = LocatedWidget.EMPTY;
+    private List<LocatedWidget> belowMouse = Collections.emptyList();
     /**
      * the hovered widget (widget directly below the mouse)
      */
     private List<LocatedWidget> hovered = Collections.emptyList();
+    private LocatedWidget resizeable = null;
     private final HoveredIterable hoveredWidgets;
 
     private LocatedElement<IDraggable> draggable;
+    private int dragStartX = 0, dragStartY = 0;
     private int lastButton = -1;
     private long lastClickTime = 0;
     private int lastDragX, lastDragY;
@@ -84,7 +88,7 @@ public class ModularGuiContext extends GuiContext {
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
     @Deprecated
-    public boolean isHovered(IGuiElement guiElement) {
+    public boolean isHovered(IWidget guiElement) {
         return guiElement.isHovering();
     }
 
@@ -97,7 +101,7 @@ public class ModularGuiContext extends GuiContext {
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
     @Deprecated
-    public boolean isHoveredFor(IGuiElement guiElement, int ticks) {
+    public boolean isHoveredFor(IWidget guiElement, int ticks) {
         // convert from frames per second to ticks per second
         return guiElement.isHoveringFor(ticks);
     }
@@ -122,9 +126,9 @@ public class ModularGuiContext extends GuiContext {
     }
 
     /**
-     * @return all widgets which are below the mouse ({@link GuiContext#isAbove(IGuiElement)} is true)
+     * @return all widgets which are below the mouse ({@link GuiContext#isAbove(IWidget)} is true)
      */
-    public Iterable<IGuiElement> getAllBelowMouse() {
+    public Iterable<IWidget> getAllBelowMouse() {
         return this.hoveredWidgets;
     }
 
@@ -272,7 +276,7 @@ public class ModularGuiContext extends GuiContext {
     @ApiStatus.Internal
     public boolean onMousePressed(double mouseX, double mouseY, int button) {
         if ((button == 0 || button == 1) && isMouseItemEmpty() && hasDraggable()) {
-            dropDraggable();
+            dropDraggable(true);
             return true;
         }
         return false;
@@ -282,18 +286,19 @@ public class ModularGuiContext extends GuiContext {
     public boolean onMouseReleased(double mouseX, double mouseY, int button) {
         if (button == this.lastButton && isMouseItemEmpty() && hasDraggable()) {
             long time = Util.getMillis();
-            if (time - this.lastClickTime < 200) return false;
-            dropDraggable();
+            dropDraggable((this.dragStartX == getAbsMouseX() && this.dragStartY == getAbsMouseY()) ||
+                    (time - this.lastClickTime) < 100);
             return true;
         }
         return false;
     }
 
     @ApiStatus.Internal
-    public void dropDraggable() {
+    public void dropDraggable(boolean shouldCancel) {
         this.draggable.applyMatrix(this);
         this.draggable.getElement()
-                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), getTopHovered()));
+                .onDragEnd(!shouldCancel &&
+                        this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), getTopHovered()));
         // TODO: getTopHovered correct here?
         this.draggable.getElement().setMoving(false);
         this.draggable.unapplyMatrix(this);
@@ -311,7 +316,7 @@ public class ModularGuiContext extends GuiContext {
                 draggable = new LocatedElement<>(iDraggable, hovered.getTransformationMatrix());
             } else if (widget instanceof ModularPanel panel) {
                 if (panel.isDraggable()) {
-                    if (!panel.flex().hasFixedSize()) {
+                    if (!panel.resizer().hasFixedSize()) {
                         throw new IllegalStateException(
                                 "Panel must have a fixed size. It can't specify left AND right or top AND bottom!");
                     }
@@ -324,8 +329,9 @@ public class ModularGuiContext extends GuiContext {
             }
             if (draggable.getElement().onDragStart(button)) {
                 draggable.getElement().setMoving(true);
-
                 this.draggable = draggable;
+                this.dragStartX = getAbsMouseX();
+                this.dragStartY = getAbsMouseY();
                 this.lastButton = button;
                 this.lastClickTime = Util.getMillis();
                 return true;
@@ -344,6 +350,7 @@ public class ModularGuiContext extends GuiContext {
     }
 
     private static boolean isStillHovered(List<LocatedWidget> newHovered, LocatedWidget lw) {
+        if (newHovered == null) return false;
         for (LocatedWidget hovered : newHovered) {
             if (hovered.getElement() == lw.getElement()) {
                 return true;
@@ -361,74 +368,73 @@ public class ModularGuiContext extends GuiContext {
             this.draggable.getElement().onDrag(this.lastButton, this.lastClickTime);
             this.draggable.unapplyMatrix(this);
         }
-        List<LocatedWidget> newHovered = this.screen.getPanelManager().getAllHoveredWidgetsList(false);
-        if (newHovered.isEmpty()) {
-            if (this.hovered.isEmpty()) return;
-            CursorHandler.resetCursorIcon();
-            for (LocatedWidget lw : this.hovered) {
-                lw.getElement().onMouseEndHover();
-            }
-            this.hovered = Collections.emptyList();
-        } else {
-            if (!this.hovered.isEmpty()) {
-                List<LocatedWidget> oldHovered = this.hovered;
-                for (int i = 0; i < oldHovered.size(); i++) {
-                    LocatedWidget lw = oldHovered.get(i);
-                    if (!isStillHovered(newHovered, lw)) {
-                        this.hovered.get(i).getElement().onMouseEndHover();
-                    }
+        List<LocatedWidget> newBelowMouse = this.screen.getPanelManager().getAllHoveredWidgetsList(false);
+        if (!newBelowMouse.isEmpty()) {
+            List<LocatedWidget> oldBelowMouse = this.belowMouse;
+            this.belowMouse = newBelowMouse;
+            for (LocatedWidget lw : this.belowMouse) {
+                if (lw.getElement().isValid() && !lw.getElement().isBelowMouse()) {
+                    lw.getElement().onMouseEnterArea();
                 }
             }
+
+            List<LocatedWidget> newHovered = getHoveredWidgets(newBelowMouse);
+            List<LocatedWidget> oldHovered = this.hovered;
             this.hovered = newHovered;
-            for (LocatedWidget lw : this.hovered) {
+
+            checkHoverEnd(newHovered, oldHovered, IWidget::onMouseEndHover);
+            checkHoverEnd(newBelowMouse, oldBelowMouse, IWidget::onMouseLeaveArea);
+        } else {
+            checkHoverEnd(null, this.hovered, IWidget::onMouseEndHover);
+            checkHoverEnd(null, this.belowMouse, IWidget::onMouseLeaveArea);
+            this.hovered = Collections.emptyList();
+            this.belowMouse = Collections.emptyList();
+            this.resizeable = null;
+            CursorHandler.resetCursorIcon();
+        }
+    }
+
+    private List<LocatedWidget> getHoveredWidgets(List<LocatedWidget> belowMouse) {
+        Slot slot = null;
+        LocatedWidget resizeable = null;
+        ResizeDragArea newResizeDragArea = null;
+        List<LocatedWidget> newHovered = new ArrayList<>();
+        for (LocatedWidget lw : belowMouse) {
+            if (!lw.getElement().isValid()) continue;
+            if (lw.getElement().canHover()) {
+                newHovered.add(lw);
                 if (!lw.getElement().isHovering()) {
                     lw.getElement().onMouseStartHover();
-                    if (lw.getElement() instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
-                        this.screen.getScreenWrapper().setHoveredSlot(vanillaSlot.getVanillaSlot());
-                    } else {
-                        this.screen.getScreenWrapper().setHoveredSlot(null);
-                    }
+                }
+                if (slot == null && lw.getElement() instanceof IVanillaSlot vanillaSlot &&
+                        vanillaSlot.handleAsVanillaSlot()) {
+                    slot = vanillaSlot.getVanillaSlot();
+                }
+                if (lw.getAdditionalHoverInfo() instanceof ResizeDragArea resizeDragArea) {
+                    resizeable = lw;
+                    newResizeDragArea = resizeDragArea;
+                }
+                if (!lw.getElement().canHoverThrough()) break;
+            }
+        }
+        ResizeDragArea oldResizeDragArea = this.resizeable != null ?
+                (ResizeDragArea) this.resizeable.getAdditionalHoverInfo() : null;
+        if (newResizeDragArea != oldResizeDragArea) {
+            CursorHandler.setCursorResizeIcon(newResizeDragArea);
+            this.resizeable = resizeable;
+        }
+        this.screen.getScreenWrapper().setHoveredSlot(slot);
+        return newHovered.isEmpty() ? Collections.emptyList() : newHovered;
+    }
+
+    private void checkHoverEnd(List<LocatedWidget> newList, List<LocatedWidget> oldList, Consumer<IWidget> onHoverEnd) {
+        if (!oldList.isEmpty()) {
+            for (LocatedWidget lw : oldList) {
+                if (!isStillHovered(newList, lw)) {
+                    onHoverEnd.accept(lw.getElement());
                 }
             }
         }
-
-        /*
-         * IWidget hovered = locatedHovered != null ? locatedHovered.getElement() : null;
-         * IWidget oldHovered = getHovered();
-         * if (oldHovered != hovered) {
-         * if (this.hovered != null && oldHovered != null) {
-         * if (this.hovered.getAdditionalHoverInfo() instanceof ResizeDragArea) {
-         * CursorHandler.resetCursorIcon();
-         * }
-         * oldHovered.onMouseEndHover();
-         * }
-         * 
-         * this.hovered = locatedHovered;
-         * this.timeHovered = 0;
-         * if (this.hovered != null) {
-         * if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-         * CursorHandler.setCursorResizeIcon(dragArea);
-         * }
-         * hovered.onMouseStartHover();
-         * if (this.hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
-         * this.screen.getScreenWrapper().setHoveredSlot(vanillaSlot.getVanillaSlot());
-         * } else {
-         * this.screen.getScreenWrapper().setHoveredSlot(null);
-         * }
-         * }
-         * } else if (this.hovered != null && locatedHovered != null &&
-         * this.hovered.getAdditionalHoverInfo() != locatedHovered.getAdditionalHoverInfo()) {
-         * if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-         * CursorHandler.setCursorResizeIcon(dragArea);
-         * } else {
-         * CursorHandler.resetCursorIcon();
-         * }
-         * // widget is unchanged, but additional info changed
-         * this.hovered = locatedHovered;
-         * } else {
-         * this.timeHovered++;
-         * }
-         */
     }
 
     public ITheme getTheme() {
@@ -470,7 +476,7 @@ public class ModularGuiContext extends GuiContext {
         }
     }
 
-    private static class HoveredIterable implements Iterable<IGuiElement> {
+    private static class HoveredIterable implements Iterable<IWidget> {
 
         private final PanelManager panelManager;
 
@@ -480,7 +486,7 @@ public class ModularGuiContext extends GuiContext {
 
         @NotNull
         @Override
-        public Iterator<IGuiElement> iterator() {
+        public Iterator<IWidget> iterator() {
             return new Iterator<>() {
 
                 private final Iterator<ModularPanel> panelIt = HoveredIterable.this.panelManager.getOpenPanels()
@@ -499,7 +505,7 @@ public class ModularGuiContext extends GuiContext {
                 }
 
                 @Override
-                public IGuiElement next() {
+                public IWidget next() {
                     if (this.widgetIt == null || !this.widgetIt.hasNext()) {
                         this.widgetIt = this.panelIt.next().getHovering().iterator();
                     }

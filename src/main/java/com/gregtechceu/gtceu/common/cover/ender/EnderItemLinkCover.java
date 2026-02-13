@@ -9,6 +9,9 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
@@ -17,6 +20,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -26,29 +31,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorage> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderItemLinkCover.class,
-            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
+    @Getter
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     protected static final int TRANSFER_RATE = 8;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected VirtualItemStorage storage;
     protected int itemsLeftToTransferLastSecond;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public EnderItemLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.item(this);
+        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), EntryTypes.ENDER_ITEM,
+                getChannelName()));
     }
 
     @Override
@@ -76,6 +82,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Override
     protected void setEntry(VirtualEntry entry) {
         storage = (VirtualItemStorage) entry;
+        syncDataHolder.markClientSyncFieldDirty("storage");
     }
 
     @Override
@@ -116,10 +123,5 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
                         () -> new ItemSlotSH(new ModularSlot(((VirtualItemStorage) entry).getHandler(), 0))))
                 .marginLeft(3)
                 .size(w, h);
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

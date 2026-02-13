@@ -110,8 +110,8 @@ public class IconRenderer {
                 float scale = this.scale;
                 Alignment alignment1 = this.alignment;
                 if (element instanceof StyledText styledText) {
-                    scale = styledText.getScale();
-                    alignment1 = styledText.getAlignment();
+                    scale = styledText.scale();
+                    alignment1 = styledText.alignment();
                 }
                 Component text = key.get();
                 int width = (int) (getFont().width(text) * scale);

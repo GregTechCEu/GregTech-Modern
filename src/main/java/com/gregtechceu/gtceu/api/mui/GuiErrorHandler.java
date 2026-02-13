@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class GuiErrorHandler {
         this.errors.clear();
     }
 
-    void pushError(IGuiElement reference, GuiError.Type type, String msg) {
+    void pushError(IWidget reference, GuiError.Type type, String msg) {
         GuiError error = new GuiError(msg, reference, type);
         if (this.errorSet.add(error)) {
             GTCEu.LOGGER.log(error.getLevel(), error);

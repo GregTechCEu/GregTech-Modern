@@ -200,4 +200,25 @@ public class GTMath {
         }
         return max;
     }
+
+    public static float arithmeticGeometricMean(float a, float b) {
+        return arithmeticGeometricMean(a, b, 5);
+    }
+
+    public static float arithmeticGeometricMean(float a, float b, int iterations) {
+        a = (a + b) / 2;
+        b = Mth.sqrt(a * b);
+        if (--iterations == 0) return a;
+        return arithmeticGeometricMean(a, b, iterations);
+    }
+
+    public static double rescaleLinear(double v, double fromMin, double fromMax, double toMin, double toMax) {
+        v = (v - fromMin) / (fromMax - fromMin); // reverse lerp
+        return toMin + (toMax - toMin) * v; // forward lerp
+    }
+
+    public static float rescaleLinear(float v, float fromMin, float fromMax, float toMin, float toMax) {
+        v = (v - fromMin) / (fromMax - fromMin); // reverse lerp
+        return toMin + (toMax - toMin) * v; // forward lerp
+    }
 }

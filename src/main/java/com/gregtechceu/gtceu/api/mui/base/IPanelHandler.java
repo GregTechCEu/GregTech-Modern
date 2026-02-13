@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.base;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.ApiStatus;
  * Using {@link #openPanel()} is the only way to open multiple panels.
  * </p>
  * <p>
- * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen()} and
- * {@link ModularPanel#animateClose()}. With the difference, that the method from this interface also works on server
+ * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen()}.
+ * With the difference, that the method from this interface also works on server
  * side.
  * </p>
  * Synced panels must be created with {@link PanelSyncManager#panel(String, PanelSyncHandler.IPanelBuilder, boolean)}.
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
  * {@link #simple(ModularPanel, SecondaryPanel.IPanelBuilder, boolean)}
  * is likely what you need.
  */
+@ApiStatus.NonExtendable
 public interface IPanelHandler {
 
     /**
@@ -71,8 +72,23 @@ public interface IPanelHandler {
     void closePanelInternal();
 
     /**
+     * Toggles this panel open or closed. Delegates to {@link #openPanel()} and {@link #closePanel()}.
+     *
+     * @return {@code true} if the panel was opened, {@code false} if it was closed
+     */
+    default boolean togglePanel() {
+        if (isPanelOpen()) {
+            closePanel();
+            return false;
+        } else {
+            openPanel();
+            return true;
+        }
+    }
+
+    /**
      * Deletes the current cached panel. Should not be used frequently.
-     * This only works on panels which don't have {@link ItemSlotSH} sync handlers.
+     * This only works on panels which don't have {@link ItemSlotSyncHandler} sync handlers.
      *
      * @throws UnsupportedOperationException if this handler has ItemSlot sync handlers
      */

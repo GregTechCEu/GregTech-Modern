@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.mui.widget.sizer;
 import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
@@ -12,7 +11,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Objects;
 
@@ -20,7 +18,7 @@ import java.util.Objects;
  * A rectangular widget area, composed of a position and a size.
  * Also has fields for a relative position, a layer and margin & padding.
  */
-public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> {
+public class Area extends Rectangle implements IAnimatable<Area> {
 
     public static boolean isInside(int x, int y, int w, int h, int px, int py) {
         SHARED.set(x, y, w, h);
@@ -34,13 +32,8 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     /**
      * relative position (in most cases the direct parent)
      */
-    public int rx, ry;
-    /**
-     * each panel has its own layer
-     */
-    @Getter
-    @Setter
-    private byte panelLayer = 0;
+    public int rx;
+    public int ry;
     /**
      * the widget layer within this panel
      */
@@ -66,7 +59,6 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         super(area);
         this.rx = area.rx;
         this.ry = area.ry;
-        this.panelLayer = area.panelLayer;
         this.z = area.z;
         getMargin().set(area.getMargin());
         getPadding().set(area.getPadding());
@@ -239,6 +231,10 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         return axis.isHorizontal() ? requestedWidth() : requestedHeight();
     }
 
+    public int paddedSize(GuiAxis axis) {
+        return axis.isHorizontal() ? paddedWidth() : paddedHeight();
+    }
+
     public int relativeEndX() {
         return this.rx + this.width;
     }
@@ -258,7 +254,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
 
     /**
      * Check whether given point is inside the rect.
-     * Use {@link com.gregtechceu.gtceu.api.mui.base.widget.IWidget#isInside(IViewportStack, Point)} rather than
+     * Use {@link com.gregtechceu.gtceu.api.mui.base.widget.IWidget#isInside(IViewportStack, int, int)} rather than
      * this!
      */
     public boolean isInside(Point point) {
@@ -499,7 +495,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
 
     /**
      * Transforms the four corners of this rectangle with the given pose stack. The new rectangle can be rotated.
-     * Then a min fit rectangle, which is not rotated and aligned with the screen, is put around the corners.
+     * Then a min fit rectangle, which is aligned with the screen axis, is put around the corners.
      *
      * @param stack pose stack
      */
@@ -513,17 +509,6 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         int y0 = GTMath.min(yTL, yTR, yBL, yBR);
         int y1 = GTMath.max(yTL, yTR, yBL, yBR);
         setPos(x0, y0, x1, y1);
-    }
-
-    @Override
-    public boolean resize(IGuiElement guiElement, boolean isParentLayout) {
-        guiElement.getArea().set(this);
-        return true;
-    }
-
-    @Override
-    public Area getArea() {
-        return this;
     }
 
     /**
@@ -540,8 +525,10 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         return "Area{" +
                 "x=" + this.x +
                 ", y=" + this.y +
-                ", width=" + this.width +
-                ", height=" + this.height +
+                ", w=" + this.width +
+                ", h=" + this.height +
+                ", rx=" + this.rx +
+                ", ry=" + this.ry +
                 '}';
     }
 
@@ -576,13 +563,13 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Area area = (Area) o;
-        return rx == area.rx && ry == area.ry && panelLayer == area.panelLayer && z == area.z &&
+        return rx == area.rx && ry == area.ry && z == area.z &&
                 Objects.equals(getMargin(), area.getMargin()) &&
                 Objects.equals(getPadding(), area.getPadding());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), rx, ry, panelLayer, z, margin, padding);
+        return Objects.hash(super.hashCode(), rx, ry, z, margin, padding);
     }
 }

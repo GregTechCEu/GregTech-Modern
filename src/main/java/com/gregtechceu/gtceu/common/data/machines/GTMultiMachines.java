@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -108,6 +109,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
+            .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE
@@ -129,6 +131,7 @@ public class GTMultiMachines {
                             .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.getBlockState()), null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
+            .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE
@@ -503,7 +506,7 @@ public class GTMultiMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
@@ -600,6 +603,8 @@ public class GTMultiMachines {
             .multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
@@ -622,6 +627,8 @@ public class GTMultiMachines {
             .multiblock("steam_oven", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
@@ -1052,6 +1059,10 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
+            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
             .pattern((def) -> FactoryBlockPattern.start()
                     .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
                     .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")

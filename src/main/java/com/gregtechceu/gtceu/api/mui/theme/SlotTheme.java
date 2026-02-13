@@ -34,6 +34,12 @@ public class SlotTheme extends WidgetTheme {
                 IThemeApi.SLOT_HOVER_COLOR);
     }
 
+    @Override
+    public WidgetTheme withNoHoverBackground() {
+        return new SlotTheme(getDefaultWidth(), getDefaultHeight(), IDrawable.NONE, getColor(), getTextColor(),
+                isTextShadow(), getIconColor(), this.slotHoverColor);
+    }
+
     public static class Builder<T extends SlotTheme, B extends Builder<T, B>> extends WidgetThemeBuilder<T, B> {
 
         public B hoverColor(int hoverColor) {

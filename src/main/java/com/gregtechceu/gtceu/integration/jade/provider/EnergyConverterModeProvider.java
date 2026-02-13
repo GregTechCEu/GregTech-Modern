@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
 import net.minecraft.nbt.CompoundTag;
@@ -30,8 +29,7 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity &&
-                blockEntity.getMetaMachine() instanceof ConverterMachine converter) {
+        if (blockAccessor.getBlockEntity() instanceof ConverterMachine converter) {
             compoundTag.putBoolean("converterMode", converter.isFeToEu());
         }
     }

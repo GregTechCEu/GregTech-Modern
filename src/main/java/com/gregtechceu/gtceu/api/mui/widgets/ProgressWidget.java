@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.DoubleValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.util.Mth;
 
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.DoubleSupplier;
 
@@ -27,6 +29,9 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     private int imageSize = -1;
 
     private IDoubleValue<?> doubleValue;
+
+    private IDrawable label;
+    private int labelWidth, labelHeight;
 
     @Override
     public void onInit() {
@@ -43,9 +48,14 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     }
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        this.doubleValue = castIfTypeElseNull(syncHandler, IDoubleValue.class);
-        return this.doubleValue != null;
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(IDoubleValue.class);
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        this.doubleValue = syncOrValue.castNullable(IDoubleValue.class);
     }
 
     @Override
@@ -73,33 +83,42 @@ public class ProgressWidget extends Widget<ProgressWidget> {
                 drawCircular(context, progress, widgetTheme);
                 return;
             }
-            if (progress >= 1) {
-                this.fullTexture[0].draw(context, 0, 0, getArea().w(), getArea().h(), widgetTheme);
-            } else {
-                progress = getProgressUV(progress);
-                float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
-                float x = 0, y = 0, width = getArea().width, height = getArea().height;
-                switch (this.direction) {
-                    case RIGHT:
-                        u1 = progress;
-                        width *= progress;
-                        break;
-                    case LEFT:
-                        u0 = 1 - progress;
-                        width *= progress;
-                        x = getArea().width - width;
-                        break;
-                    case DOWN:
-                        v1 = progress;
-                        height *= progress;
-                        break;
-                    case UP:
-                        v0 = 1 - progress;
-                        height *= progress;
-                        y = getArea().height - height;
-                        break;
-                }
-                this.fullTexture[0].drawSubArea(context, x, y, width, height, u0, v0, u1, v1, widgetTheme);
+            progress = getProgressUV(progress);
+            float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
+            float x = 0, y = 0, width = getArea().width, height = getArea().height;
+            float labelXOffset = 0, labelYOffset = 0;
+            switch (this.direction) {
+                case RIGHT:
+                    u1 = progress;
+                    width *= progress;
+                    labelXOffset = -labelWidth / 2f;
+                    labelYOffset = -height / 2 - 2;
+                    break;
+                case LEFT:
+                    u0 = 1 - progress;
+                    width *= progress;
+                    x = getArea().width - width;
+                    labelXOffset = -labelWidth / 2f;
+                    labelYOffset = -height / 2 - 2;
+                    break;
+                case DOWN:
+                    v1 = progress;
+                    height *= progress;
+                    labelXOffset = width / 2 + 2;
+                    labelYOffset = -labelHeight / 2f;
+                    break;
+                case UP:
+                    v0 = 1 - progress;
+                    height *= progress;
+                    y = getArea().height - height;
+                    labelXOffset = width / 2 + 2;
+                    labelYOffset = -labelHeight / 2f;
+                    break;
+            }
+            this.fullTexture[0].drawSubArea(context, x, y, width, height, u0, v0, u1, v1, widgetTheme);
+            if (this.label != null) {
+                this.label.draw(context, (int) (x + labelXOffset - width), (int) (y + labelYOffset), labelWidth,
+                        labelHeight, widgetTheme);
             }
         }
     }
@@ -153,8 +172,7 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     }
 
     public ProgressWidget value(IDoubleValue<?> value) {
-        this.doubleValue = value;
-        setValue(value);
+        setSyncOrValue(ISyncOrValue.orEmpty(value));
         return this;
     }
 
@@ -189,6 +207,13 @@ public class ProgressWidget extends Widget<ProgressWidget> {
 
     public ProgressWidget direction(Direction direction) {
         this.direction = direction;
+        return this;
+    }
+
+    public ProgressWidget label(IDrawable label, int width, int height) {
+        this.label = label;
+        this.labelWidth = width;
+        this.labelHeight = height;
         return this;
     }
 

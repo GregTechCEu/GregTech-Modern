@@ -1,9 +1,15 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Marks a widget as synced
@@ -24,24 +30,82 @@ public interface ISynced<W extends IWidget> {
      * Called when this widget gets initialised or when this widget is added to the gui
      *
      * @param syncManager sync manager
-     * @param late        true if this is called some time after the widget tree of the parent has been initialised
+     * @param late        if this is called at any point after the panel this widget belongs to opened
      */
     void initialiseSyncHandler(ModularSyncManager syncManager, boolean late);
 
     /**
-     * Checks if the received sync handler is valid for this widget.
-     * <b>Synced widgets must override this!</b>
-     *
-     * @param syncHandler received sync handler
-     * @return true if sync handler is valid
+     * @deprecated use {@link #isValidSyncOrValue(ISyncOrValue)}
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
     default boolean isValidSyncHandler(SyncHandler syncHandler) {
         return false;
     }
 
+    /**
+     * Returns if the given value or sync handler is valid for this widget. This is usually a call to
+     * {@link ISyncOrValue#isTypeOrEmpty(Class)}. If the widget must specify a value (disallow null) instanceof check
+     * can be used. You can
+     * check for primitive types which don't have a dedicated {@link com.gregtechceu.gtceu.api.mui.base.value.IValue
+     * IValue} interface with
+     * {@link ISyncOrValue#isValueOfType(Class)}.
+     *
+     * @param syncOrValue a sync handler or a value, but never null
+     * @return if the value or sync handler is valid for this class
+     */
+    default boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return !(syncOrValue instanceof SyncHandler syncHandler) || isValidSyncHandler(syncHandler);
+    }
+
+    /**
+     * Checks if the given sync handler is valid for this widget and throws an exception if not.
+     * Override {@link #isValidSyncHandler(SyncHandler)}
+     *
+     * @param syncHandler given sync handler
+     * @throws IllegalStateException if the given sync handler is invalid for this widget.
+     */
+    @ApiStatus.NonExtendable
+    default void checkValidSyncOrValue(ISyncOrValue syncHandler) {
+        if (!isValidSyncOrValue(syncHandler)) {
+            throw new IllegalStateException(
+                    "SyncHandler of type '" + syncHandler.getClass().getSimpleName() + "' is not valid " +
+                            "for widget '" + this + "'.");
+        }
+    }
+
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
     default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz) {
+        return castIfTypeElseNull(syncHandler, clazz, null);
+    }
+
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz, @Nullable Consumer<T> setup) {
         if (syncHandler != null && clazz.isAssignableFrom(syncHandler.getClass())) {
-            return (T) syncHandler;
+            T t = (T) syncHandler;
+            if (setup != null) setup.accept(t);
+            return t;
+        }
+        return null;
+    }
+
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz) {
+        return castIfTypeGenericElseNull(syncHandler, clazz, null);
+    }
+
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz,
+                                                              @Nullable Consumer<GenericSyncValue<T>> setup) {
+        if (syncHandler instanceof GenericSyncValue<?> genericSyncValue && genericSyncValue.isOfType(clazz)) {
+            GenericSyncValue<T> t = genericSyncValue.cast();
+            if (setup != null) setup.accept(t);
+            return t;
         }
         return null;
     }
@@ -60,7 +124,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param name sync handler key name
      * @param id   sync handler key id
@@ -70,7 +134,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param key sync handler name
      * @return this
@@ -81,7 +145,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param id sync handler id
      * @return this

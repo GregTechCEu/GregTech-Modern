@@ -5,7 +5,7 @@ package com.gregtechceu.gtceu.api.mui.base.value;
  *
  * @param <T> value type
  */
-public interface IValue<T> {
+public interface IValue<T> extends ISyncOrValue {
 
     /**
      * Gets the current value.
@@ -20,4 +20,21 @@ public interface IValue<T> {
      * @param value new value
      */
     void setValue(T value);
+
+    Class<T> getValueType();
+
+    default boolean isValueOfType(Class<?> type) {
+        return type.isAssignableFrom(getValueType());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    default <V> IValue<V> castValueNullable(Class<V> valueType) {
+        return isValueOfType(valueType) ? (IValue<V>) this : null;
+    }
+
+    @Override
+    default boolean isValueHandler() {
+        return true;
+    }
 }

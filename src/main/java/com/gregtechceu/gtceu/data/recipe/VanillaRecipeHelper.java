@@ -327,8 +327,9 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof TagKey<?> key) {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof TagPrefix prefix) {
-                    if (prefix.getItemParentTags().length > 0) {
-                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    var parentTags = prefix.getItemParentTags();
+                    if (!parentTags.isEmpty()) {
+                        builder.define(sign, parentTags.get(0));
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
@@ -344,7 +345,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
         builder.save(provider);
 
@@ -436,7 +437,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
         builder.save(provider);
 
@@ -491,8 +492,9 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof TagKey<?> key) {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof TagPrefix prefix) {
-                    if (prefix.getItemParentTags().length > 0) {
-                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    var parentTags = prefix.getItemParentTags();
+                    if (!parentTags.isEmpty()) {
+                        builder.define(sign, parentTags.get(0));
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
@@ -508,7 +510,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
 
         builder.save(provider);
@@ -575,7 +577,7 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+                builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
             }
         }
         builder.save(provider);

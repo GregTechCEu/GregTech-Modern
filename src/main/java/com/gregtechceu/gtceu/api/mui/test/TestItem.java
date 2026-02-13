@@ -115,8 +115,8 @@ public class TestItem extends Item implements ICurioItem, IUIHolder<PlayerInvent
             }
         };
 
-        Rectangle color1 = new Rectangle().setColor(Color.BLACK.main);
-        Rectangle color2 = new Rectangle().setColor(Color.WHITE.main);
+        Rectangle color1 = new Rectangle().color(Color.BLACK.main);
+        Rectangle color2 = new Rectangle().color(Color.WHITE.main);
 
         IDrawable gradient = (context1, x, y, width, height, widgetTheme) -> GuiDraw.drawHorizontalGradientRect(
                 context1.getGraphics(), x, y, width, height, color1.getColor(), color2.getColor());
@@ -141,14 +141,14 @@ public class TestItem extends Item implements ICurioItem, IUIHolder<PlayerInvent
         ModularPanel panel = new ModularPanel("colors").width(300).coverChildrenHeight().padding(7);
 
         IPanelHandler colorPicker1 = IPanelHandler.simple(panel,
-                (mainPanel, player) -> new ColorPickerDialog("color_picker1", color1::setColor, color1.getColor(), true)
+                (mainPanel, player) -> new ColorPickerDialog("color_picker1", color1::color, color1.getColor(), true)
                         .setDraggable(true)
                         .relative(panel)
                         .top(0)
                         .rightRel(1f),
                 true);
         IPanelHandler colorPicker2 = IPanelHandler.simple(panel,
-                (mainPanel, player) -> new ColorPickerDialog("color_picker2", color2::setColor, color2.getColor(), true)
+                (mainPanel, player) -> new ColorPickerDialog("color_picker2", color2::color, color2.getColor(), true)
                         .setDraggable(true)
                         .relative(panel)
                         .top(0)

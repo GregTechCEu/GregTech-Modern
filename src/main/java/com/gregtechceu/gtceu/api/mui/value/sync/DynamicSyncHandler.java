@@ -13,11 +13,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * This sync handler calls a function on client and server which creates a widget after being notified. The widget is
- * then handed over to a
- * linked {@link DynamicSyncHandler}.
+ * This sync handler is used to update a widget dynamically. The update can be called from client and server side.
+ * To use it add a widget provider with {@link #widgetProvider(IWidgetProvider)} and link this sync handler to a
+ * {@link com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget DynamicSyncedWidget}. When you want the widget to be
+ * updated call
+ * {@link #notifyUpdate(IPacketWriter)}. The passed in packed writer will write a packet, which can the be read inside
+ * the widget provider.
+ * The widget provider as ran on both sides. Inside the provider sync handlers can be registered with variants of
+ * {@link ISyncRegistrar#getOrCreateSyncHandler(String, int, Class, Supplier)}.
  */
-public class DynamicSyncHandler extends SyncHandler {
+@ApiStatus.Obsolete
+public class DynamicSyncHandler extends SyncHandler implements IDynamicSyncNotifiable {
 
     private IWidgetProvider widgetProvider;
     private Consumer<IWidget> onWidgetUpdate;
@@ -56,7 +62,7 @@ public class DynamicSyncHandler extends SyncHandler {
         // collects any unregistered sync handlers
         // since the sync manager is currently locked and we no longer allow bypassing the lock it will crash if it
         // finds any
-        int unregistered = WidgetTree.countUnregisteredSyncHandlers(getSyncManager(), widget);
+        int unregistered = WidgetTree.countUnregisteredSyncHandlers(widget);
         if (unregistered > 0) {
             throw new IllegalStateException(
                     "Widgets created by DynamicSyncHandler can't have implicitly registered sync" +
@@ -120,6 +126,7 @@ public class DynamicSyncHandler extends SyncHandler {
      * An internal function which is used to link the {@link com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget}.
      */
     @ApiStatus.Internal
+    @Override
     public void attachDynamicWidgetListener(Consumer<IWidget> onWidgetUpdate) {
         this.onWidgetUpdate = onWidgetUpdate;
         if (this.onWidgetUpdate != null && this.lastRejectedWidget != null) {

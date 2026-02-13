@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
@@ -20,6 +22,7 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,17 +37,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderFluidLinkCover.class,
-            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
     public static final int TRANSFER_RATE = 8000; // mB/t
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected VirtualTank visualTank;
 
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected int mBLeftToTransferLastSecond;
 
@@ -52,6 +53,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
+        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance()
+                .getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName()));
     }
 
     @Override
@@ -69,11 +72,12 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected void setEntry(VirtualEntry entry) {
         visualTank = (VirtualTank) entry;
+        syncDataHolder.markClientSyncFieldDirty("visualTank");
     }
 
     @Override
     public boolean canAttach() {
-        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide).isPresent();
     }
 
     @Override
@@ -117,11 +121,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
         }
         return 0;
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////

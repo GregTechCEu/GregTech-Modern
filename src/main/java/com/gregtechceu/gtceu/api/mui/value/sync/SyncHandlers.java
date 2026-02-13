@@ -33,6 +33,10 @@ public class SyncHandlers {
         return new StringSyncValue(getter, setter);
     }
 
+    public static ModularSlot phantomItemSlot(IItemHandlerModifiable inventory, int index) {
+        return new ModularSlot(inventory, index, true);
+    }
+
     public static ModularSlot itemSlot(IItemHandlerModifiable inventory, int index) {
         return new ModularSlot(inventory, index);
     }
@@ -44,5 +48,9 @@ public class SyncHandlers {
     public static <T extends Enum<T>> EnumSyncValue<T> enumValue(Class<T> clazz, Supplier<T> getter,
                                                                  Consumer<T> setter) {
         return new EnumSyncValue<>(clazz, getter, setter);
+    }
+
+    public static <T> GenericSyncValue.Builder<T> generic(Class<T> type) {
+        return new GenericSyncValue.Builder<>(type);
     }
 }

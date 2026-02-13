@@ -2,49 +2,37 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"));
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic capability) {
+    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
@@ -62,20 +50,10 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     }
 
     public static long getVoltage(RecipeLogic capability) {
-        long voltage = -1;
-        if (capability.machine instanceof SimpleTieredMachine machine) {
-            voltage = GTValues.V[machine.getTier()];
-        } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
-            voltage = machine.getParts().stream()
-                    .filter(EnergyHatchPartMachine.class::isInstance)
-                    .map(EnergyHatchPartMachine.class::cast)
-                    .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
-                    .max()
-                    .orElse(-1);
-        }
+        long voltage = capability.machine.getDisplayRecipeVoltage();
+
         // default display as LV, this shouldn't happen because a machine is either electric or steam
-        if (voltage == -1) voltage = 32;
-        return voltage;
+        return voltage == -1 ? GTValues.V[GTValues.LV] : voltage;
     }
 
     @Override
@@ -88,18 +66,15 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
 
-                if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                    var machine = mbe.getMetaMachine();
-                    if (machine instanceof SimpleSteamMachine ssm) {
-                        EUt = (long) (EUt * ssm.getConversionRate());
+                if (EUt > 0) {
+                    if (blockEntity instanceof SimpleSteamMachine ssm) {
+                        EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
                         isSteam = true;
-                    } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                        EUt = (long) (EUt * smb.getConversionRate());
+                    } else if (blockEntity instanceof SteamParallelMultiblockMachine smb) {
+                        EUt = (long) Math.ceil(EUt * smb.getConversionRate());
                         isSteam = true;
                     }
-                }
 
-                if (EUt > 0) {
                     MutableComponent text;
 
                     if (isSteam) {
