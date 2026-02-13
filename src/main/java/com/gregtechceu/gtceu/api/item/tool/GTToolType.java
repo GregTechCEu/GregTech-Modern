@@ -264,8 +264,8 @@ public class GTToolType {
     public static final GTToolType SHEARS = GTToolType.builder("shears")
             .toolTag(ToolItemTagType.MATCH, CustomTags.SHEARS)
             .harvestTag(CustomTags.MINEABLE_WITH_SHEARS)
-            .harvestTag(BlockTags.LEAVES)
-            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F).behaviors(ShearBehavior.INSTANCE))
+            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)
+                    .behaviors(ShearBehavior.INSTANCE))
             .defaultActions(ToolActions.SHEARS_DIG)
             .build();
     public static final GTToolType DRILL_LV = GTToolType.builder("lv_drill")

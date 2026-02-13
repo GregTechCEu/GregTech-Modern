@@ -128,9 +128,16 @@ public interface IToolBehavior {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 
-
-    default InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
-                                                   InteractionHand usedHand) {
+    /**
+     * Called when the equipped item is right-clicked.
+     *
+     * @param stack             the stack being used
+     * @param player            the player clicking the entity
+     * @param interactionTarget the entity clicked
+     * @param hand              the hand holding the item
+     */
+    default InteractionResult onInteractLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                     InteractionHand hand) {
         return InteractionResult.PASS;
     }
 

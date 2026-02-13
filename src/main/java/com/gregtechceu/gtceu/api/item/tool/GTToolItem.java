@@ -117,7 +117,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                  InteractionHand usedHand) {
         return definition$interactLivingEntity(stack, player, interactionTarget, usedHand);
     }
 
