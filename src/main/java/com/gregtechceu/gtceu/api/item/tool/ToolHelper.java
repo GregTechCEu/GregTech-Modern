@@ -714,9 +714,9 @@ public class ToolHelper {
     /**
      * Shearing a Block.
      *
-     * @return -1 if not shearable, otherwise return 0 or 1, 0 if tool is now broken.
+     * @return -1 if not shearable or if shearing gave nothing, otherwise return 0 or 1, 0 if tool is now broken.
      */
-    public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
+    public static int shearBlock(ServerPlayer player, ItemStack tool, BlockPos pos) {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
@@ -724,6 +724,9 @@ public class ToolHelper {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
                             tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
+                    if (shearedDrops.isEmpty()) {
+                        return -1;
+                    }
                     boolean relocateMinedBlocks = hasBehaviorsTag(tool) &&
                             getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
@@ -743,7 +746,6 @@ public class ToolHelper {
                         }
                     }
                     ToolHelper.damageItem(tool, player, 1);
-                    state.getBlock().playerDestroy(world, player, pos, state, world.getBlockEntity(pos), tool);
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
