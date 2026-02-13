@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -49,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IFancyUIMachine, IMachineLife, IControllable {
+                                 implements IFancyUIMachine, IControllable {
 
     @SaveField
     protected final NotifiableItemStackHandler cache;
@@ -138,9 +137,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(chargerInventory);
-        clearInventory(cache.storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        cache.dropInventoryInWorld();
     }
 
     @Override

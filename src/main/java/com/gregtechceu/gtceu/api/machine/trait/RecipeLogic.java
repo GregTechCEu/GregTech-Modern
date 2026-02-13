@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -291,7 +291,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                     runAttempt = (int) GTMath.clamp(runAttempt, 0, 5);
                     if (runAttempt == 5) {
                         boolean preventPowerFail = false;
-                        if (machine.self() instanceof IMultiController) {
+                        if (machine instanceof MultiblockControllerMachine) {
                             var covers = machine.self().getCoverContainer().getCovers();
                             for (var cover : covers) {
                                 if (cover instanceof MachineControllerCover mcc) {
@@ -303,7 +303,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                             }
                         }
 
-                        if (machine.self() instanceof IMultiController && !preventPowerFail) {
+                        if (machine instanceof MultiblockControllerMachine && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
                         }

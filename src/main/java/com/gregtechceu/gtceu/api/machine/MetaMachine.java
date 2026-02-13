@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -51,7 +52,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
@@ -100,10 +100,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
 
@@ -157,24 +153,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ***** Machine Lifecycle ******//
     //////////////////////////////////////
 
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        if (player instanceof ServerPlayer sPlayer) {
-            ownerUUID = sPlayer.getUUID();
-        }
-
-        if (this instanceof IDropSaveMachine dropSaveMachine) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null) {
-                dropSaveMachine.loadFromItem(tag);
-            }
-        }
-    }
-
-    public void onRemoved() {
-        for (Direction direction : GTUtil.DIRECTIONS) {
-            getCoverContainer().removeCover(direction, null);
-        }
-        if (this instanceof IMachineLife l) l.onMachineRemoved();
+    @Override
+    public void load(CompoundTag tag) {
+        TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
+        super.load(tag);
     }
 
     @Override
@@ -196,14 +178,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public void setRenderState(MachineRenderState renderState) {
-        this.renderState = renderState;
-        if (level != null && !level.isClientSide) {
-            syncDataHolder.markClientSyncFieldDirty("renderState");
-        }
-        scheduleRenderUpdate();
-    }
-
     @Override
     public final void setRemoved() {
         super.setRemoved();
@@ -219,6 +193,27 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
         serverTicks.clear();
     }
+
+    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
+        if (player instanceof ServerPlayer sPlayer) {
+            ownerUUID = sPlayer.getUUID();
+        }
+
+        if (this instanceof IDropSaveMachine dropSaveMachine) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null) {
+                dropSaveMachine.loadFromItem(tag);
+            }
+        }
+    }
+
+    public void onMachineDestroyed() {
+        for (Direction direction : GTUtil.DIRECTIONS) {
+            getCoverContainer().removeCover(direction, null);
+        }
+    }
+
+    public void modifyDrops(List<ItemStack> drops) {}
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
@@ -288,7 +283,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     /**
-     * Called when a player clicks this meta tile entity with a tool
+     * Called when a player clicks this machine with a tool
      *
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
      *         animations will be played
@@ -402,6 +397,46 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return InteractionResult.PASS;
     }
 
+    /**
+     * Called when a machine is right clicked.
+     */
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        ItemStack itemStack = player.getItemInHand(hand);
+
+        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
+        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
+            var result = onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
+                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
+                }
+            }
+            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
+        }
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof IInteractionTrait interactionTrait) {
+                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
+                if (result != InteractionResult.PASS) return result;
+            }
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when a machine is left clicked.
+     * 
+     * @return true to cancel the click event, false to continue processing
+     */
+    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos,
+                               @Nullable Direction face) {
+        return false;
+    }
+
     //////////////////////////////////////
     // ********** MISC ***********//
     //////////////////////////////////////
@@ -440,6 +475,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return false;
     }
 
+    public void setRenderState(MachineRenderState renderState) {
+        this.renderState = renderState;
+        if (level != null && !level.isClientSide) {
+            syncDataHolder.markClientSyncFieldDirty("renderState");
+        }
+        scheduleRenderUpdate();
+    }
+
     public void setPaintingColor(int color) {
         if (color == this.paintingColor) return;
 
@@ -454,16 +497,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public void onPaintingColorChanged(int color) {}
-
-    public void clearInventory(IItemHandlerModifiable inventory) {
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            ItemStack stackInSlot = inventory.getStackInSlot(i);
-            if (!stackInSlot.isEmpty()) {
-                inventory.setStackInSlot(i, ItemStack.EMPTY);
-                Block.popResource(getLevel(), getBlockPos(), stackInSlot);
-            }
-        }
-    }
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
