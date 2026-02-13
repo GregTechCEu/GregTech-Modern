@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockPartMachine extends MetaMachine implements IMultiPart, IInteractedMachine {
+public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);

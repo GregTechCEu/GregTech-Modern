@@ -320,7 +320,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
             return InteractionResult.SUCCESS;
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     public boolean allowCircuitSlots() {
