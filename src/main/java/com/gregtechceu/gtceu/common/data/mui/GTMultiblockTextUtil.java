@@ -34,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
@@ -242,14 +243,15 @@ public class GTMultiblockTextUtil {
 
     public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
         return addWorkingStatusLine(rlMachine, syncManager,
-                Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
-                Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
-                Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
     }
 
     public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager,
-                                                     Component workPaused, Component runningPerfectly,
-                                                     Component idling) {
+                                                     Supplier<Component> workPaused,
+                                                     Supplier<Component> runningPerfectly,
+                                                     Supplier<Component> idling) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
@@ -262,14 +264,13 @@ public class GTMultiblockTextUtil {
                 .dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
                     if (!isWorkingEnabled.getBoolValue()) {
-                        return workPaused;
+                        return workPaused.get();
                     }
                     if (isActive.getBoolValue()) {
-                        return runningPerfectly;
+                        return runningPerfectly.get();
                     }
-                    return idling;
+                    return idling.get();
                 })
-                .color(Color.WHITE.main)
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue());
     }

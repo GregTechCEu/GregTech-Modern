@@ -156,9 +156,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 .background(GTGuiTextures.MUI_DISPLAY);
 
         listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
-                Component.translatable("gtceu.multiblock.research_station.researching").withStyle(ChatFormatting.GREEN),
-                Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY)));
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gtceu.multiblock.research_station.researching")
+                        .withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY)));
         listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
         listWidget.child(GTMultiblockTextUtil.addOutputLines(this, syncManager));
