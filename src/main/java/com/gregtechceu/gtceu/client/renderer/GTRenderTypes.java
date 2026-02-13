@@ -37,6 +37,7 @@ public class GTRenderTypes extends RenderType {
                     .setCullState(RenderStateShard.NO_CULL)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
+
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom", DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS, RenderType.BIG_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
@@ -44,6 +45,14 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
                     .setOutputState(BLOOM_TARGET)
+                    .createCompositeState(false));
+
+    private static final RenderType MONITOR = RenderType.create("central_monitor",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(NO_CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
@@ -68,6 +77,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
+    }
+
+    public static RenderType getMonitor() {
+        return MONITOR;
     }
 
     public static RenderType guiTexture(ResourceLocation texture) {

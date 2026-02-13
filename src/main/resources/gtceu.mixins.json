@@ -66,6 +66,7 @@
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",
+        "SmithingTransformRecipeMixin",
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",

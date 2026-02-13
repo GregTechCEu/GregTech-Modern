@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
@@ -28,14 +26,10 @@ public abstract class MaterialPipeBlock<
                                        extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
 
     public final Material material;
-    public final PipeBlockRenderer renderer;
-    public final PipeModel model;
 
     public MaterialPipeBlock(Properties properties, PipeType pipeType, Material material) {
         super(properties, pipeType);
         this.material = material;
-        this.model = createPipeModel();
-        this.renderer = new PipeBlockRenderer(this.model);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -58,11 +52,6 @@ public abstract class MaterialPipeBlock<
     }
 
     @Override
-    protected PipeModel getPipeModel() {
-        return model;
-    }
-
-    @Override
     public final NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack) {
         return createMaterialData();
     }
@@ -81,18 +70,11 @@ public abstract class MaterialPipeBlock<
     protected abstract NodeDataType createProperties(PipeType pipeType, Material material);
 
     @Override
-    public @Nullable PipeBlockRenderer getRenderer(BlockState state) {
-        return renderer;
-    }
-
-    @Override
     public final NodeDataType getFallbackType() {
         return createMaterialData();
     }
 
     protected abstract NodeDataType createMaterialData();
-
-    protected abstract PipeModel createPipeModel();
 
     @Override
     public String getDescriptionId() {

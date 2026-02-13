@@ -19,8 +19,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -63,7 +61,7 @@ public final class RecipeDB {
         if (list == null) {
             return null;
         }
-        return findRecursive(list, predicate);
+        return find(list, predicate);
     }
 
     /**
@@ -77,7 +75,7 @@ public final class RecipeDB {
     @VisibleForTesting
     public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list,
                                    @NotNull Predicate<GTRecipe> predicate) {
-        return findRecursive(list, predicate);
+        return (new RecipeIterator(this, list, predicate)).next();
     }
 
     /**
@@ -99,7 +97,7 @@ public final class RecipeDB {
                 list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
             }
         });
-        return findRecursive(list, predicate);
+        return find(list, predicate);
     }
 
     /**
@@ -116,98 +114,6 @@ public final class RecipeDB {
             return null;
         }
         return new RecipeIterator(this, list, predicate);
-    }
-
-    /**
-     * Recursively finds a recipe.
-     *
-     * @param ingredients the ingredients to search with
-     * @param predicate   if the found recipe is valid
-     * @return the recipe
-     */
-    private @Nullable GTRecipe findRecursive(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                             @NotNull Predicate<GTRecipe> predicate) {
-        // Try each ingredient as a starting point, adding it to the skip-list.
-        // The skip-list is a packed long, where each 1 bit represents an index to skip
-        for (int i = 0; i < ingredients.size(); i++) {
-            BitSet skipSet = new BitSet(ingredients.size());
-            skipSet.set(i);
-            GTRecipe r = findRecursive(ingredients, rootBranch, predicate, i, 0, skipSet);
-            if (r != null) {
-                return r;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Recursively finds a recipe by checking the current branch's nodes.
-     *
-     * @param ingredients the ingredients to search with
-     * @param branch      the branch to search
-     * @param predicate   if the found recipe is valid
-     * @param index       the index of the ingredient list to check
-     * @param count       how deep we are in recursion, < ingredients.length
-     * @param skip        bitmask of ingredients already checked
-     * @return the recipe
-     */
-    private @Nullable GTRecipe findRecursive(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                             @NotNull Branch branch, @NotNull Predicate<GTRecipe> predicate,
-                                             int index, int count, @NotNull BitSet skip) {
-        // exhausted all the ingredients, and didn't find anything
-        if (count == ingredients.size()) {
-            return null;
-        }
-
-        // Iterate over current level of nodes.
-        for (AbstractMapIngredient obj : ingredients.get(index)) {
-            // determine the root nodes
-            var nodes = nodesForIngredient(obj, branch);
-            var result = nodes.get(obj);
-            if (result == null) {
-                continue;
-            }
-            // if there is a recipe (left mapping), return it immediately as found, if it can be handled
-            // Otherwise, recurse and go to the next branch.
-            GTRecipe recipe = result.map(r -> predicate.test(r) ? r : null,
-                    b -> findRecursiveDive(ingredients, b, predicate, index, count, skip));
-            if (recipe != null) {
-                return recipe;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Recursively finds a recipe by diving deeper down a path.
-     *
-     * @param ingredients the ingredients to search with
-     * @param branch      the branch to search
-     * @param predicate   if the found recipe is valid
-     * @param index       the index of the ingredient list to check
-     * @param count       how deep we are in recursion, must be < ingredients.length
-     * @param skip        bitmask of ingredients already checked
-     * @return the recipe
-     */
-    private @Nullable GTRecipe findRecursiveDive(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                 @NotNull Branch branch, @NotNull Predicate<GTRecipe> predicate,
-                                                 int index, int count, @NotNull BitSet skip) {
-        // loop through all ingredients, wrapping around the end until all are tried.
-        for (int i = (index + 1) % ingredients.size(); i != index; i = (i + 1) % ingredients.size()) {
-            if (skip.get(i)) {
-                continue;
-            }
-            // Recursive call
-            // Append the current index to the skip list
-            skip.set(i);
-            // Increase the count, so the recursion can terminate if needed (ingredients is exhausted)
-            GTRecipe r = findRecursive(ingredients, branch, predicate, i, count + 1, skip);
-            if (r != null) {
-                return r;
-            }
-            skip.clear(i);
-        }
-        return null;
     }
 
     /**
@@ -358,38 +264,93 @@ public final class RecipeDB {
         return true;
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class SearchFrame {
+
+        int index;           // ingredient slot we’re exploring
+        int ingredientIndex; // position within ingredients[index]
+        Branch branch;       // branch in the recipe DB
+
+        public SearchFrame(int index, Branch branch) {
+            this.index = index;
+            this.ingredientIndex = 0;
+            this.branch = branch;
+        }
+    }
+
     public static class RecipeIterator implements Iterator<GTRecipe> {
 
         private final @NotNull RecipeDB db;
         private final @NotNull List<List<AbstractMapIngredient>> ingredients;
         private final @NotNull Predicate<GTRecipe> predicate;
-        private int index;
 
-        @Override
-        public boolean hasNext() {
-            return index < ingredients.size();
+        private final Deque<SearchFrame> stack = new ArrayDeque<>();
+
+        @VisibleForTesting
+        public RecipeIterator(@NotNull RecipeDB db,
+                              @NotNull List<List<AbstractMapIngredient>> ingredients,
+                              @NotNull Predicate<GTRecipe> predicate) {
+            this.db = db;
+            this.ingredients = ingredients;
+            this.predicate = predicate;
+
+            for (int i = ingredients.size() - 1; i >= 0; i--) {
+                stack.push(new SearchFrame(i, db.rootBranch));
+            }
         }
 
         @Override
-        public @Nullable GTRecipe next() {
-            while (index < ingredients.size()) {
-                BitSet skipSet = new BitSet(ingredients.size());
-                skipSet.set(index);
-                GTRecipe r = db.findRecursive(ingredients, db.rootBranch, predicate, index, 0, skipSet);
-                index++;
-                if (r != null) {
-                    return r;
+        public boolean hasNext() {
+            return !stack.isEmpty();
+        }
+
+        @Override
+        public GTRecipe next() {
+            while (!stack.isEmpty()) {
+                // We stay on one frame until all ingredients have been checked
+                SearchFrame frame = stack.peek();
+
+                if (frame.ingredientIndex >= ingredients.get(frame.index).size()) {
+                    stack.pop();
+                    continue;
                 }
+
+                List<AbstractMapIngredient> ingredientList = ingredients.get(frame.index);
+                AbstractMapIngredient ingredient = ingredientList.get(frame.ingredientIndex);
+                // Increment candidate pos for next iteration
+                frame.ingredientIndex++;
+                var nodes = nodesForIngredient(ingredient, frame.branch);
+                var result = nodes.get(ingredient);
+                if (result == null) {
+                    continue;
+                }
+
+                // Option 1: It's a recipe
+                if (result.left().isPresent()) {
+                    var recipe = result.left().get();
+                    if (predicate.test(recipe)) {
+                        return recipe;
+                    }
+                }
+
+                // Option 2: It's a branch, dive deeper
+                result.ifRight(b -> {
+                    for (int j = ingredients.size() - 1; j >= 0; j--) {
+                        stack.push(new SearchFrame(j, b));
+                    }
+                });
             }
-            return null;
+
+            return null; // no more recipes
         }
 
         /**
          * Reset the iterator
          */
         public void reset() {
-            this.index = 0;
+            stack.clear();
+            for (int i = ingredients.size() - 1; i >= 0; i--) {
+                stack.push(new SearchFrame(i, db.rootBranch));
+            }
         }
     }
 }

@@ -10,12 +10,6 @@ repositories {
         }
     }
 
-    // exclude LWJGL from Minecraft's library maven so we can download its sources from mavenCentral
-    maven {
-        url = "https://libraries.minecraft.net/"
-        content { excludeGroup("org.lwjgl") }
-    }
-
     maven { // JEI
         name = "Jared's Maven"
         url = "https://maven.blamejared.com/"

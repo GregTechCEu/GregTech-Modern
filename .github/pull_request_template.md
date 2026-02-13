@@ -9,6 +9,9 @@ _Any implementations in this PR that should be carefully looked over, or that co
 _A short description of what this PR added/fixed/changed/removed._
 _For correct linking of issues please use any of the Closes/Fixes/Resolves keywords. Example: When a PR is fixing a bug use "Fixes: #number-of-bug"_
 
+## How Was This Tested
+_This section is for screenshots, code snippets or descriptions of how the PR was tested in code or in game to ensure correctness._
+
 ## Additional Information
 _This section is for screenshots to demonstrate any GUI or rendering changes, or any other additional information that reviewers should be aware of._
 
