@@ -69,6 +69,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
+    @Getter
     @SaveField
     @SyncToClient
     protected String colorStr = VirtualEntry.DEFAULT_COLOR;
@@ -88,9 +89,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @SyncToClient
     @RerenderOnChanged
     protected IO io = IO.OUT;
-    protected VirtualEntryWidget virtualEntryWidget;
-    @SyncToClient
-    boolean isAnyChanged = false;
     @Getter
     @Setter
     private boolean isChannelListActive;
@@ -148,18 +146,17 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         syncManager.syncValue("entries", new GenericSyncValue<>(this::getVirtualEntries,
                 this::setVirtualEntries,
                 new VirtualEntryListAdapter()));
-        return new Column()
-                .child(IMuiCover.createTitleRow(this.getAttachItem())
-                        .child(new ToggleButton().syncHandler("CLA")
-                                .overlay(GTGuiTextures.MORE)
-                                .tooltip(t -> t
-                                        .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
-                                .marginLeft(4)
-                                .size(16, 16)))
+        return Flow.column()
+                .child(new ToggleButton().syncHandler("CLA")
+                        .overlay(GTGuiTextures.MORE)
+                        .tooltip(t -> t
+                                .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
+                        .marginLeft(4)
+                        .size(16, 16))
                 .child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive))
-                .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive))
-                .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive))
-                .child(createChannelList(syncManager).setEnabledIf(f -> isChannelListActive))
+                // .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive))
+                // .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive))
+                // .child(createChannelList(syncManager).setEnabledIf(f -> isChannelListActive))
                 .rightRel(0.5F)
                 .top(3)
                 .childPadding(3)
@@ -195,7 +192,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public Flow createVirtualEntryRow(PanelSyncManager syncManager, VirtualEntry entry) {
-        return new Row()
+        return Flow.row()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
                         .tooltip(t -> t.addLine(entry.getColorStr()))
                         .size(18, 18))
@@ -217,7 +214,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public Flow createChannelNameRow(PanelSyncManager syncManager) {
-        return new Row().child(createColorBlock(this::getColor, 18).asWidget().marginRight(3))
+        return Flow.row()
+                .child(createColorBlock(this::getColor, 18).asWidget().marginRight(3))
                 .child(new TextFieldWidget().value(new StringSyncValue(this::getColorStr, this::setChannelName))
                         .setPattern(COLOR_INPUT_PATTERN)
                         .setValidator(String::toUpperCase)
@@ -229,7 +227,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public Flow createDescriptionField() {
-        return new Row()
+        return Flow.row()
                 .child(new TextFieldWidget()
                         .value(new StringSyncValue(getEntry()::getDescription, getEntry()::setDescription))
                         .hintText(Component.translatable("cover.ender_link.channel_description"))
@@ -240,7 +238,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public Flow createSettingsRow() {
-        return new Row()
+        return Flow.row()
                 // Power button
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isWorkingEnabled, this::setWorkingEnabled))
                         // TODO: once the branch that has power overlays defined in GTGuiTextures is merged, we need to
@@ -291,10 +289,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
         return IDrawable.of(
                 // Border
-                (context, x, y, w, h, widgetTheme) -> new Rectangle().setColor(Color.BLACK.main)
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().color(Color.BLACK.main)
                         .draw(context, x, y, size, size, widgetTheme),
                 // Colored block
-                (context, x, y, w, h, widgetTheme) -> new Rectangle().setColor(colorSupplier.getAsInt())
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().color(colorSupplier.getAsInt())
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
 

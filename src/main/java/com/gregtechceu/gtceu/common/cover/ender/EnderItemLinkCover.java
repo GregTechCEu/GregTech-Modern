@@ -9,22 +9,17 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -119,8 +114,8 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h) {
         return new ItemSlot()
                 .syncHandler(manager.getOrCreateSyncHandler(
-                        ModularSyncManager.AUTO_SYNC_PREFIX + coverDefinition.getId().getPath(), ItemSlotSH.class,
-                        () -> new ItemSlotSH(new ModularSlot(((VirtualItemStorage) entry).getHandler(), 0))))
+                        ModularSyncManager.AUTO_SYNC_PREFIX + coverDefinition.getId().getPath(), ItemSlotSyncHandler.class,
+                        () -> new ItemSlotSyncHandler(new ModularSlot(((VirtualItemStorage) entry).getHandler(), 0))))
                 .marginLeft(3)
                 .size(w, h);
     }
