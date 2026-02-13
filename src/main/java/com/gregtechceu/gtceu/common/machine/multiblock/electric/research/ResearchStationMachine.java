@@ -32,7 +32,9 @@ import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -153,6 +155,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         parentWidget.size(width, height)
                 .background(GTGuiTextures.MUI_DISPLAY);
 
+        listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                Component.translatable("gtceu.multiblock.research_station.researching").withStyle(ChatFormatting.GREEN),
+                Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY)));
         listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
         listWidget.child(GTMultiblockTextUtil.addOutputLines(this, syncManager));
@@ -160,19 +166,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
     }
-
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // MultiblockDisplayText.builder(textList, isFormed())
-    // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-    // .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
-    // "gtceu.multiblock.research_station.researching")
-    // .addEnergyUsageLine(energyContainer)
-    // .addEnergyTierLine(tier)
-    // .addWorkingStatusLine()
-    // // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
-    // .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
-    // }
 
     public static class ResearchStationRecipeLogic extends RecipeLogic {
 

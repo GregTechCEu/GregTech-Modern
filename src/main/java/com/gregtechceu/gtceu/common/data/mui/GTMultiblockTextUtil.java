@@ -240,6 +240,40 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
 
+    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+        return addWorkingStatusLine(rlMachine, syncManager,
+                Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+    }
+
+    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager,
+                                                     Component workPaused, Component runningPerfectly,
+                                                     Component idling) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
+        BooleanSyncValue isWorkingEnabled = syncManager.getOrCreateSyncHandler("isWorkingEnabled",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWorkingEnabled()));
+
+        return IKey
+                .dynamic(() -> {
+                    if (!isFormed.getBoolValue()) return Component.empty();
+                    if (!isWorkingEnabled.getBoolValue()) {
+                        return workPaused;
+                    }
+                    if (isActive.getBoolValue()) {
+                        return runningPerfectly;
+                    }
+                    return idling;
+                })
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue());
+    }
+
     public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",

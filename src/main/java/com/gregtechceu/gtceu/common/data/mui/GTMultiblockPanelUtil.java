@@ -44,7 +44,7 @@ public class GTMultiblockPanelUtil {
                 listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager));
                 listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(workableElectricMachine, syncManager));
             }
-
+            listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addParallelLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addBatchModeLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addSubtickParallelsLine(rlMachine, syncManager));
