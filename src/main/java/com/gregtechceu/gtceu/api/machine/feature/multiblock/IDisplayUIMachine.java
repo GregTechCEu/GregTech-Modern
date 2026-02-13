@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
@@ -18,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public interface IDisplayUIMachine extends IUIMachine, IInteractedMachine {
+public interface IDisplayUIMachine extends IUIMachine {
 
     default void addDisplayText(List<Component> textList) {
         for (var part : self().getParts()) {
