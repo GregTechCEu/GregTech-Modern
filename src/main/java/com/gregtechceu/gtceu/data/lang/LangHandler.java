@@ -124,11 +124,27 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
-        provider.add("command.gtceu.medical_condition.get", "Player %s has");
-        provider.add("command.gtceu.medical_condition.get.empty", "Player %s is perfectly healthy.");
-        provider.add("command.gtceu.medical_condition.get.element", "- %s§r for %s minutes %s seconds");
+        provider.add("command.gtceu.medical_condition.clear.everything.failed", "Target has no conditions to remove");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.multiple", "Removed all conditions from %s targets");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.single", "Removed all conditions from %s");
+        provider.add("command.gtceu.medical_condition.clear.specific.failed", "Target doesn't have the requested condition");
+        provider.add("command.gtceu.medical_condition.clear.specific.success.multiple", "Removed %s from %s targets");
+        provider.add("command.gtceu.medical_condition.clear.specific.success.single", "Removed %s from %s");
+
+        provider.add("command.gtceu.medical_condition.give.failed", "Unable to apply this condition (invalid target)");
+        provider.add("command.gtceu.medical_condition.give.success.multiple", "Applied %s to %s targets");
+        provider.add("command.gtceu.medical_condition.give.success.single", "Applied %s to %s");
+
+        provider.add("command.gtceu.medical_condition.get", "%s has");
+        provider.add("command.gtceu.medical_condition.get.empty", "%s is perfectly healthy.");
+        provider.add("command.gtceu.medical_condition.get.element", "- %s for %s minutes %s seconds");
         provider.add("command.gtceu.medical_condition.get.element.permanent",
-                "- %s§r for %s minutes %s seconds (permanent)");
+                "- %s for %s minutes %s seconds (permanent)");
+
+        provider.add("command.gtceu.medical_condition.get.symptoms.empty", "%s has no symptoms.");
+        provider.add("command.gtceu.medical_condition.get.symptoms", "Currently %s has these symptoms:");
+        provider.add("command.gtceu.medical_condition.get.symptoms.element", "- %s");
+
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
@@ -164,6 +180,21 @@ public class LangHandler {
         provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
         provider.add("medical_condition.gtceu.none.affected", "§2Nothing?");
+
+        provider.add("symptom.gtceu.death", "Death");
+        provider.add("symptom.gtceu.random_damage", "Occasional damage");
+        provider.add("symptom.gtceu.health_debuff", "Lowered maximum health");
+        provider.add("symptom.gtceu.air_supply_debuff", "Lowered lung capacity");
+        provider.add("symptom.gtceu.mining_fatigue", "Fatigue");
+        provider.add("symptom.gtceu.weakness", "Weakness");
+        provider.add("symptom.gtceu.slowness", "Slowness");
+        provider.add("symptom.gtceu.blindness", "Blindness");
+        provider.add("symptom.gtceu.darkness", "Darkness");
+        provider.add("symptom.gtceu.nausea", "Nausea");
+        provider.add("symptom.gtceu.wither", "Necrosis");
+        provider.add("symptom.gtceu.weak_poisoning", "Weak poisoning");
+        provider.add("symptom.gtceu.poisoning", "Poisoning");
+        provider.add("symptom.gtceu.hunger", "Increased appetite");
 
         provider.add("tooltip.gtceu.hazard_trigger", "Caused by:");
         provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");

@@ -40,6 +40,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
     @VisibleForTesting
     final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
     private final Set<MedicalCondition> permanentConditions = new ReferenceOpenHashSet<>();
+    @Getter
     private final Object2IntMap<ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
     private final Reference2IntMap<MobEffect> activeMobEffects = new Reference2IntOpenHashMap<>();
 
@@ -87,10 +88,10 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         progressCondition(materialHazard.condition, strength);
     }
 
-    public void progressCondition(@NotNull MedicalCondition condition, float strength) {
+    public void progressCondition(@NotNull MedicalCondition condition, float progression) {
         if (player.isCreative()) return;
 
-        medicalConditions.addTo(condition, strength);
+        medicalConditions.addTo(condition, progression);
         updateActiveSymptoms();
     }
 
