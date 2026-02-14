@@ -269,33 +269,30 @@ public class Symptom {
 
         /**
          * Whether this {@code ConfiguredSymptom} uses the default progression thresholds for its {@link #symptom}
-         * and should recalculate an absolute progression value for the {@linkplain MedicalCondition} it's a part of
+         * and should recalculate absolute progression values for the {@linkplain MedicalCondition} it's a part of
          */
-        private boolean isMinRelative = false, isMaxRelative = false;
+        private boolean relativeThresholds = false;
 
-        public ConfiguredSymptom(Symptom symptom, int stages, float minThreshold,
-                                 float maxThreshold) {
+        protected ConfiguredSymptom(Symptom symptom, int stages, float relativeMinThreshold, float relativeMaxThreshold) {
             this.symptom = symptom;
             this.stages = stages;
             this.relativeHarshness = (float) stages / symptom.defaultStages;
 
-            this.minThreshold = minThreshold;
-            this.maxThreshold = maxThreshold;
+            this.minThreshold = relativeMinThreshold;
+            this.maxThreshold = relativeMaxThreshold;
         }
 
-        public ConfiguredSymptom(Symptom symptom, float minThreshold, float maxThreshold) {
-            this(symptom, symptom.defaultStages, minThreshold, maxThreshold);
+        public ConfiguredSymptom(Symptom symptom, int stages, int absMinThreshold, int absMaxThreshold) {
+            this(symptom, stages, (float) absMinThreshold, (float) absMaxThreshold);
         }
 
-        public ConfiguredSymptom(Symptom symptom, float minThreshold) {
-            this(symptom, symptom.defaultStages, minThreshold, symptom.maxProgressionThreshold);
-            this.isMaxRelative = true;
+        public ConfiguredSymptom(Symptom symptom, int absMinThreshold, int absMaxThreshold) {
+            this(symptom, symptom.defaultStages, absMinThreshold, absMaxThreshold);
         }
 
         public ConfiguredSymptom(Symptom symptom, int stages) {
             this(symptom, stages, symptom.minProgressionThreshold, symptom.maxProgressionThreshold);
-            this.isMinRelative = true;
-            this.isMaxRelative = true;
+            this.relativeThresholds = true;
         }
 
         public ConfiguredSymptom(Symptom symptom) {
@@ -310,12 +307,9 @@ public class Symptom {
          * @param index     the index in the condition's symptom list this symptom will be added to
          */
         public void addedToCondition(MedicalCondition condition, int index) {
-            if (this.isMinRelative) {
-                this.isMinRelative = false;
+            if (this.relativeThresholds) {
+                this.relativeThresholds = false;
                 this.minThreshold = this.minThreshold * condition.maxProgression;
-            }
-            if (this.isMaxRelative) {
-                this.isMaxRelative = false;
                 this.maxThreshold = this.maxThreshold * condition.maxProgression;
             }
 
@@ -329,14 +323,11 @@ public class Symptom {
 
         @Override
         public String toString() {
-            StringJoiner stringJoiner = new StringJoiner(", ", "[", "]")
-                    .setEmptyValue("");
-            if (this.stages != this.symptom.defaultStages) {
-                stringJoiner.add("stages=" + this.stages);
-                stringJoiner.add("relativeHarshness=" + this.relativeHarshness);
-            }
-            if (!this.isMinRelative) stringJoiner.add("minTreshold=" + this.minThreshold);
-            if (!this.isMaxRelative) stringJoiner.add("maxTreshold=" + this.maxThreshold);
+            StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
+            stringJoiner.add("stages=" + this.stages);
+            stringJoiner.add("relativeHarshness=" + this.relativeHarshness);
+            stringJoiner.add("minTreshold=" + this.minThreshold);
+            stringJoiner.add("maxTreshold=" + this.maxThreshold);
 
             return this.symptom.toString() + stringJoiner;
         }
