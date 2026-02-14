@@ -16,7 +16,7 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", value.getName());
         ListTag list = new ListTag();
-        value.getRelativePositions().forEach(pos -> list.add(NbtUtils.writeBlockPos(pos)));
+        value.getMonitorPositions().forEach(pos -> list.add(NbtUtils.writeBlockPos(pos)));
         if (value.getTargetRaw() != null) {
             tag.put("targetPos", NbtUtils.writeBlockPos(value.getTargetRaw()));
             if (value.getTargetCoverSide() != null) {

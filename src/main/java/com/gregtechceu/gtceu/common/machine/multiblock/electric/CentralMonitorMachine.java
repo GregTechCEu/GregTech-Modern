@@ -391,7 +391,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             text.setType(TextTexture.TextType.LEFT);
             label.setButtonTexture(text);
             label.setOnPressCallback(click -> {
-                group.getRelativePositions().forEach(pos -> {
+                group.getMonitorPositions().forEach(pos -> {
                     BlockPos rel = toRelative(pos);
                     if (imageButtons.size() - 1 < rel.getY()) return;
                     if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) return;

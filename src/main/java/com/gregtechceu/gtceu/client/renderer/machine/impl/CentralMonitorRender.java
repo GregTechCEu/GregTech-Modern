@@ -54,7 +54,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                         continue;
                     }
                     poseStack.pushPose();
-                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group)
+                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0))
                             .render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                     poseStack.popPose();
                 }

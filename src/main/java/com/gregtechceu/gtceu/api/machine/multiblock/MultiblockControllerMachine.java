@@ -117,13 +117,13 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
         }
         this.parts.sort(getPartSorter());
+        updatePartPositions();
         for (var part : parts) {
             if (part instanceof ParallelHatchPartMachine pHatch) {
                 parallelHatch = pHatch;
             }
             part.addedToController(this);
         }
-        updatePartPositions();
     }
 
     /**
