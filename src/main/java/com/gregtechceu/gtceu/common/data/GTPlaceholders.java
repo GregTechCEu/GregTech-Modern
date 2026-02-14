@@ -295,7 +295,7 @@ public class GTPlaceholders {
                         throw new InvalidArgsException();
                     return MultiLineComponent.literal(ctx.level()
                             .getSignal(ctx.pos().relative(direction), direction));
-                } else if (GTStringUtils.equals(args.get(1), "set")) {
+                } else if (GTStringUtils.equals(args.get(0), "set")) {
                     int power = PlaceholderUtils.toInt(args.get(1));
                     PlaceholderUtils.checkRange("redstone power", 0, 15, power);
                     if (ctx.cover() == null) throw new NotSupportedException();

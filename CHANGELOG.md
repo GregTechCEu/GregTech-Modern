@@ -1,5 +1,11 @@
 # ChangeLog
 
+## Version [v7.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.5.0-1.20.1...v7.5.1-1.20.1)
+### Fixed
+
+- Fix access protection issue in netherite tools + lamprenderer issues by @jurrejelle in [#4579](https://github.com/GregTechCEu/GregTech-Modern/pull/4579)
+
+ 
 ## Version [v7.5.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.4.1-1.20.1...v7.5.0-1.20.1)
 ### Added
 

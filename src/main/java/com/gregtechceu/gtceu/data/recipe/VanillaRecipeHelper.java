@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
@@ -32,8 +33,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
-import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 
 public class VanillaRecipeHelper {
 
@@ -631,7 +630,7 @@ public class VanillaRecipeHelper {
                                                   @NotNull RecipeCategory category) {
         SmithingTransformRecipeBuilder
                 .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
-                .unlocks(String.format("has_%s", baseInput), has(baseInput))
+                .unlocks(String.format("has_%s", baseInput), InventoryChangeTrigger.TriggerInstance.hasItems(baseInput))
                 .save(provider, regName);
     }
 

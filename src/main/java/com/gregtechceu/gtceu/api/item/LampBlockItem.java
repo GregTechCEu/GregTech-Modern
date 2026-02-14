@@ -77,7 +77,7 @@ public class LampBlockItem extends BlockItem {
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return LampItemRenderer.INSTANCE;
+                return LampItemRenderer.getInstance();
             }
         });
     }
