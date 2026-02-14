@@ -758,5 +758,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         public void scheduleRenderUpdate() {
             controller.scheduleRenderUpdate();
         }
+
+        @Override
+        public Level getLevel() {
+            return controller.getLevel();
+        }
     }
 }

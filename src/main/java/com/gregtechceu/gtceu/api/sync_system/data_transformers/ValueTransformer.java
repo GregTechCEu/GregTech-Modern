@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
 import net.minecraft.nbt.Tag;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,8 +28,8 @@ public interface ValueTransformer<T> {
      *                     being
      *                     written to the server save.
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
-                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
+    record TransformerContext<U>(ISyncManaged holder, TypeDeclaration type,
+                                 @Nullable U currentValue, @Nullable String fieldName, Level levelContext, boolean isClientSync) {}
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.

@@ -449,10 +449,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public @UnknownNullability Level getLevel() {
-        return super.getLevel();
-    }
-
     public void setOwnerUUID(UUID uuid) {
         ownerUUID = uuid;
         syncDataHolder.markClientSyncFieldDirty("ownerUUID");

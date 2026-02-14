@@ -44,38 +44,41 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         return valueTransformer;
     }
 
-    private ValueTransformer.TransformerContext<K> getInnerKeyContext(@Nullable K key,
+
+    private ValueTransformer.TransformerContext<?> getInnerKeyContext(@Nullable K key,
                                                                       ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], key, parentContext.fieldName() + "[key]",
+                parentContext.type().getGenericTypeArgs()[0], key, parentContext.fieldName() + "[key]", parentContext.levelContext(),
                 parentContext.isClientSync());
     }
 
-    private ValueTransformer.TransformerContext<V> getInnerValueContext(@Nullable V value,
+    private ValueTransformer.TransformerContext<?> getInnerValueContext(@Nullable V value,
                                                                         ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
                 parentContext.type().getGenericTypeArgs()[1], value,
-                parentContext.fieldName() + "[value]",
+                parentContext.fieldName() + "[value]", parentContext.levelContext(),
                 parentContext.isClientSync());
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Tag serializeNBT(Map<K, V> value, ValueTransformer.TransformerContext<Map<K, V>> context) {
         ListTag entries = new ListTag();
         for (var entry : value.entrySet()) {
             CompoundTag compound = new CompoundTag();
             compound.put("k",
                     getKeyTransformer(context).serializeNBT(entry.getKey(),
-                            getInnerKeyContext(entry.getKey(), context)));
+                            (TransformerContext<K>) getInnerKeyContext(entry.getKey(), context)));
             compound.put("v",
                     getValueTransformer(context).serializeNBT(entry.getValue(),
-                            getInnerValueContext(entry.getValue(), context)));
+                            (TransformerContext<V>)getInnerValueContext(entry.getValue(), context)));
             entries.add(compound);
         }
         return entries;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<K, V> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Map<K, V>> context) {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
@@ -88,8 +91,8 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             Tag valueTag = compound.get("v");
             if (keyTag == null || valueTag == null) continue;
 
-            K key = getKeyTransformer(context).deserializeNBT(keyTag, getInnerKeyContext(null, context));
-            V value = getValueTransformer(context).deserializeNBT(valueTag, getInnerValueContext(null, context));
+            K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>)getInnerKeyContext(null, context));
+            V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>)getInnerValueContext(null, context));
             if (key == null || value == null) {
                 GTCEu.LOGGER.warn(
                         "Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]",

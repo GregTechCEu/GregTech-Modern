@@ -20,6 +20,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -194,5 +195,10 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     @Override
     public void scheduleRenderUpdate() {
         container.scheduleRenderUpdate();
+    }
+
+    @Override
+    public Level getLevel() {
+        return container.getLevel();
     }
 }

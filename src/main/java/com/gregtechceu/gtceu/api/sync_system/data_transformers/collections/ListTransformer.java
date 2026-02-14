@@ -29,23 +29,25 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         return elementTransformer;
     }
 
-    private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
+    private ValueTransformer.TransformerContext<?> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<List<T>> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
+                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]", parentContext.levelContext(),
                 parentContext.isClientSync());
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Tag serializeNBT(List<T> value, ValueTransformer.TransformerContext<List<T>> context) {
         ListTag list = new ListTag();
         for (var obj : value) {
-            list.add(getElemTransformer(context).serializeNBT(obj, getInnerElemContext(obj, context)));
+            list.add(getElemTransformer(context).serializeNBT(obj, (TransformerContext<T>)getInnerElemContext(obj, context)));
         }
         return list;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public @Nullable List<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<List<T>> context) {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
@@ -53,8 +55,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         else current = new ArrayList<>();
         List<T> finalCurrent = current;
         for (var t : listTag) {
-            T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t),
-                    getInnerElemContext(null, context));
+            T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t), (TransformerContext<T>) getInnerElemContext(null, context));
             if (val != null) finalCurrent.add(val);
         }
         return current;

@@ -19,18 +19,19 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         this.elementTransformer = elementTransformer;
     }
 
-    private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
+    private ValueTransformer.TransformerContext<?> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<T[]> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getArrayComponentType(), elem, parentContext.fieldName() + "[element]",
+                parentContext.type().getArrayComponentType(), elem, parentContext.fieldName() + "[element]", parentContext.levelContext(),
                 parentContext.isClientSync());
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
         for (T element : value) {
-            listTag.add(elementTransformer.serializeNBT(element, getInnerElemContext(element, context)));
+            listTag.add(elementTransformer.serializeNBT(element, (TransformerContext<T>)getInnerElemContext(element, context)));
         }
         return listTag;
     }
@@ -51,7 +52,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             T result = elementTransformer.deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(listTag.get(i)),
-                    getInnerElemContext(current[i], context));
+                    (TransformerContext<T>)getInnerElemContext(current[i], context));
             if (result == null) return current;
             current[i] = result;
         }

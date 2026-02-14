@@ -29,30 +29,32 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         return elementTransformer;
     }
 
-    private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
+    private ValueTransformer.TransformerContext<?> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<Set<T>> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
+                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]", parentContext.levelContext(),
                 parentContext.isClientSync());
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Tag serializeNBT(Set<T> value, ValueTransformer.TransformerContext<Set<T>> context) {
         ListTag tag = new ListTag();
         for (T element : value) {
-            tag.add(getElemTransformer(context).serializeNBT(element, getInnerElemContext(element, context)));
+            tag.add(getElemTransformer(context).serializeNBT(element, (TransformerContext<T>)getInnerElemContext(element, context)));
         }
         return tag;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Set<T>> context) {
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         var current = context.currentValue();
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
-            T value = getElemTransformer(context).deserializeNBT(elementTag, getInnerElemContext(null, context));
+            T value = getElemTransformer(context).deserializeNBT(elementTag, (TransformerContext<T>)getInnerElemContext(null, context));
             if (value != null) current.add(value);
         }
         return current;

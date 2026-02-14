@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
@@ -31,4 +32,6 @@ public interface ISyncManaged {
      * Function called to notify the server that this object has been updated and must be synced to clients
      */
     void markAsChanged();
+
+    Level getLevel();
 }

@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -17,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Objects;
 
@@ -72,6 +74,11 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         getSyncDataHolder().resyncAllFields();
         tag.merge(getSyncDataHolder().serializeNBT(true, true));
         return tag;
+    }
+
+    @Override
+    public @UnknownNullability Level getLevel() {
+        return super.getLevel();
     }
 
     /**
