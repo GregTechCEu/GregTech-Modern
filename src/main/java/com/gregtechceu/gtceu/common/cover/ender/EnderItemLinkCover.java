@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -113,9 +114,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Override
     protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h) {
         return new ItemSlot()
-                .syncHandler(manager.getOrCreateSyncHandler(
-                        ModularSyncManager.AUTO_SYNC_PREFIX + coverDefinition.getId().getPath(), ItemSlotSyncHandler.class,
-                        () -> new ItemSlotSyncHandler(new ModularSlot(((VirtualItemStorage) entry).getHandler(), 0))))
+                .slot(SyncHandlers.itemSlot(((VirtualItemStorage) entry).getHandler(), 0))
                 .marginLeft(3)
                 .size(w, h);
     }

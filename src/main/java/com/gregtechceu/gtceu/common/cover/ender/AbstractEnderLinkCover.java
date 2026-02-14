@@ -12,8 +12,11 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -26,7 +29,6 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -36,16 +38,12 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
-
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -141,24 +139,32 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         }
     }
 
+
+    // Helper, can be removed post update
+
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var isChannelListActive = new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive);
         syncManager.syncValue("CLA", isChannelListActive);
-        syncManager.syncValue("entries", new GenericSyncValue<>(this::getVirtualEntries,
-                this::setVirtualEntries,
-                new VirtualEntryListAdapter()));
+
+        var entries = new GenericListSyncHandler<>.Builder<VirtualEntry>()
+                .getter(this::getVirtualEntries)
+                .setter(this::setVirtualEntries)
+                .adapter(new VirtualEntryAdapter())
+                .build();
+        syncManager.syncValue("entries", entries);
+
         return Flow.column()
-                .child(new ToggleButton().syncHandler("CLA")
+                .child(new ToggleButton().value(BoolValue.wrap(isChannelListActive))
                         .overlay(GTGuiTextures.MORE)
                         .tooltip(t -> t
                                 .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                         .marginLeft(4)
                         .size(16, 16))
                 //.child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                //.child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                //.child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                .child(createChannelList(syncManager).setEnabledIf(f -> isChannelListActive.getBoolValue()))
+                .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createChannelList(entries).setEnabledIf(f -> isChannelListActive.getBoolValue()))
                 .rightRel(0.5F)
                 .top(3)
                 .childPadding(3)
@@ -166,16 +172,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .coverChildren();
     }
 
-    public DynamicSyncedWidget<?> createChannelList(PanelSyncManager syncManager) {
-        @SuppressWarnings("unchecked")
-        var entriesSyncer = (GenericSyncValue<List<VirtualEntry>>) syncManager.getSyncHandlerFromMapKey("entries:0");
-
-        DynamicLinkedSyncHandler<GenericSyncValue<List<VirtualEntry>>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(entriesSyncer)
+    public DynamicSyncedWidget<?> createChannelList(GenericListSyncHandler<VirtualEntry> entriesSyncer) {
+        DynamicLinkedSyncHandler<GenericListSyncHandler<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(entriesSyncer)
                 .widgetProvider((manager, entriesListSyncer) -> {
             if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
             ListWidget<IWidget, ?> list = new ListWidget<>();
             for (var entry : entriesListSyncer.getValue()) {
-                list.child(createVirtualEntryRow(syncManager, entry));
+                list.child(createVirtualEntryRow(manager, entry));
             }
             return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
                     .size(162, 58);
@@ -190,7 +193,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .size(18, 18))
                 .child(IKey.str(entry.getDescription()).asWidget().size(92, 12))
                 .child(createVirtualEntryWidget(syncManager, entry, 18, 18))
-                .child(new com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS)
+                .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS)
                         .onMousePressed((x, y, button) -> {
                             MouseData mouseData = MouseData.create(button);
                             if (mouseData.mouseButton() == 1) {
@@ -238,7 +241,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .overlay(false, GTGuiTextures.PLAY)
                         .overlay(true, GTGuiTextures.PLAY))
                 // Import / Export button
-                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                .child(new CycleButtonWidget()
                         // There are "3" states here because otherwise there is a noticeable lag on the client when it
                         // goes from OUT to IN and initially doesn't know to go back to IN (because the enum has 4
                         // states) so it displays no overlay or tooltip. Very annoying.
@@ -251,7 +254,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .tooltip(2, t -> t.addLine(Component.translatable(IO.IN.tooltip)))
                         .value(new EnumSyncValue<>(IO.class, this::getIo, this::reverseIO)))
                 // Public / Private button
-                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                .child(new CycleButtonWidget()
                         .stateCount(2)
                         .stateOverlay(Permissions.PUBLIC, Permissions.PUBLIC.icon)
                         .stateOverlay(Permissions.PRIVATE, Permissions.PRIVATE.icon)
@@ -261,7 +264,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
                                 this::setPermission)))
                 // Manual IO button
-                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                .child(new CycleButtonWidget()
                         .stateCount(3)
                         .stateOverlay(ManualIOMode.DISABLED, GTGuiTextures.MANUAL_IO_DISABLED)
                         .stateOverlay(ManualIOMode.FILTERED, GTGuiTextures.MANUAL_IO_FILTERED)
@@ -450,6 +453,26 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         @Override
         public boolean areEqual(@NotNull List<VirtualEntry> t1, @NotNull List<VirtualEntry> t2) {
             if (t1.size() != t2.size()) return false;
+            return t1.equals(t2);
+        }
+    }
+
+    private class VirtualEntryAdapter implements IByteBufAdapter<VirtualEntry> {
+
+        @Override
+        public VirtualEntry deserialize(FriendlyByteBuf buffer) {
+            VirtualEntry entry = getEntryType().createInstance();
+            entry.deserializeNBT(buffer.readNbt());
+            return entry;
+        }
+
+        @Override
+        public void serialize(FriendlyByteBuf buffer, VirtualEntry entry) {
+            buffer.writeNbt(entry.serializeNBT());
+        }
+
+        @Override
+        public boolean areEqual(@NotNull VirtualEntry t1, @NotNull VirtualEntry t2) {
             return t1.equals(t2);
         }
     }

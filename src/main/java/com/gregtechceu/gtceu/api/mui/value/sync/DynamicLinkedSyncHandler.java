@@ -61,7 +61,7 @@ public class DynamicLinkedSyncHandler<S extends ValueSyncHandler<?>> extends Syn
         int unregistered = WidgetTree.countUnregisteredSyncHandlers(widget);
         if (unregistered > 0) {
             throw new IllegalStateException(
-                    "Widgets created by DynamicSyncHandler can't have implicitly registered sync handlers. All" +
+                    "Widgets created by DynamicSyncHandler can't have implicitly registered sync handlers. All " +
                             "sync handlers must be registered with a variant of 'PanelSyncManager#getOrCreateSyncHandler(...)'.");
         }
         return widget;
