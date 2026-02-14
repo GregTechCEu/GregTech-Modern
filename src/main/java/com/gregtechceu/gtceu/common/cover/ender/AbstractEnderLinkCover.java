@@ -139,15 +139,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         }
     }
 
-
-    // Helper, can be removed post update
-
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var isChannelListActive = new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive);
         syncManager.syncValue("CLA", isChannelListActive);
 
-        var entries = new GenericListSyncHandler<>.Builder<VirtualEntry>()
+        var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
                 .getter(this::getVirtualEntries)
                 .setter(this::setVirtualEntries)
                 .adapter(new VirtualEntryAdapter())
@@ -162,8 +159,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .marginLeft(4)
                         .size(16, 16))
                 //.child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                //.child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                //.child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
                 .child(createChannelList(entries).setEnabledIf(f -> isChannelListActive.getBoolValue()))
                 .rightRel(0.5F)
                 .top(3)
