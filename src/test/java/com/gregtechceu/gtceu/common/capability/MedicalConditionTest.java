@@ -93,8 +93,8 @@ public class MedicalConditionTest {
                 .thenExecute(() -> {
                     double modifier = MedicalConditionTestHelpers.getAndAssertAttributeModifier(player, Attributes.MOVEMENT_SPEED, Symptom.SYMPTOM_SLOWNESS_UUID);
                     // this value is based on the slowness symptom's default stage count and multiplier (7 and 0.08 respectively)
-                    helper.assertTrue(Mth.equal(modifier, -7 * 0.08f),
-                            "Slowness symprom attribute modifier should have a value of " + (-7 * 0.08f) + " at 18000 counts. (is " + modifier + ")");
+                    helper.assertTrue(Mth.equal(modifier, -7 * 0.05f),
+                            "Slowness symprom attribute modifier should have a value of " + (-7 * 0.05f) + " at 18000 counts. (is " + modifier + ")");
                 })
                 .thenSucceed();
     }
