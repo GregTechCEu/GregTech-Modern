@@ -266,7 +266,8 @@ public class Symptom {
          */
         private boolean relativeThresholds = false;
 
-        protected ConfiguredSymptom(Symptom symptom, int stages, float relativeMinThreshold, float relativeMaxThreshold) {
+        protected ConfiguredSymptom(Symptom symptom, int stages,
+                                    float relativeMinThreshold, float relativeMaxThreshold) {
             this.symptom = symptom;
             this.stages = stages;
             this.relativeHarshness = (float) stages / symptom.defaultStages;
