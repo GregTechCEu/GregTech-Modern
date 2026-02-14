@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -142,7 +143,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        syncManager.syncValue("CLA", new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive));
+        var isChannelListActive = new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive);
+        syncManager.syncValue("CLA", isChannelListActive);
         syncManager.syncValue("entries", new GenericSyncValue<>(this::getVirtualEntries,
                 this::setVirtualEntries,
                 new VirtualEntryListAdapter()));
@@ -153,10 +155,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                                 .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                         .marginLeft(4)
                         .size(16, 16))
-                .child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive))
-                // .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive))
-                // .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive))
-                // .child(createChannelList(syncManager).setEnabledIf(f -> isChannelListActive))
+                //.child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                //.child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                //.child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createChannelList(syncManager).setEnabledIf(f -> isChannelListActive.getBoolValue()))
                 .rightRel(0.5F)
                 .top(3)
                 .childPadding(3)
@@ -165,30 +167,20 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public DynamicSyncedWidget<?> createChannelList(PanelSyncManager syncManager) {
+        @SuppressWarnings("unchecked")
         var entriesSyncer = (GenericSyncValue<List<VirtualEntry>>) syncManager.getSyncHandlerFromMapKey("entries:0");
-        DynamicSyncHandler entryListSyncer = new DynamicSyncHandler().widgetProvider((manager, packet) -> {
+
+        DynamicLinkedSyncHandler<GenericSyncValue<List<VirtualEntry>>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(entriesSyncer)
+                .widgetProvider((manager, entriesListSyncer) -> {
+            if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
             ListWidget<IWidget, ?> list = new ListWidget<>();
-            if (packet == null) return new EmptyWidget();
-            populateChannelList(syncManager, list, packet);
+            for (var entry : entriesListSyncer.getValue()) {
+                list.child(createVirtualEntryRow(syncManager, entry));
+            }
             return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
                     .size(162, 58);
         });
-        entriesSyncer.setChangeListener(() -> entryListSyncer.notifyUpdate(packet -> {
-            List<VirtualEntry> entries = entriesSyncer.getValue();
-            packet.writeInt(entries.size());
-            for (VirtualEntry entry : entries) {
-                packet.writeNbt(entry.serializeNBT());
-            }
-        }));
-        return new DynamicSyncedWidget<>().syncHandler(entryListSyncer).size(162, 58);
-    }
-
-    public void populateChannelList(PanelSyncManager syncManager, ListWidget<IWidget, ?> list, FriendlyByteBuf packet) {
-        int size = packet.readInt();
-        for (int i = 0; i < size; i++) {
-            VirtualEntry entry = getEntryType().createInstance(packet.readNbt());
-            list.child(createVirtualEntryRow(syncManager, entry));
-        }
+        return new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler).size(162, 58);
     }
 
     public Flow createVirtualEntryRow(PanelSyncManager syncManager, VirtualEntry entry) {
