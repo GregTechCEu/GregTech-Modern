@@ -158,9 +158,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                                 .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                         .marginLeft(4)
                         .size(16, 16))
-                //.child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                //.child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
-                //.child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
                 .child(createChannelList(entries).setEnabledIf(f -> isChannelListActive.getBoolValue()))
                 .rightRel(0.5F)
                 .top(3)
@@ -223,7 +223,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public Flow createDescriptionField() {
         return Flow.row()
                 .child(new TextFieldWidget()
-                        .value(new StringSyncValue(getEntry()::getDescription, getEntry()::setDescription))
+                        .value(new StringSyncValue(() -> {
+                            if(getEntry() == null) return "null";
+                            return getEntry().getDescription();
+                        }, (newVal) -> {
+                            if(getEntry() != null) getEntry().setDescription(newVal);
+                        }))
                         .hintText(Component.translatable("cover.ender_link.channel_description"))
                         .widthRel(1F)
                         .height(16))
