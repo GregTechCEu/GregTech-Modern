@@ -131,7 +131,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     //////////////////////////////////////
 
     @Override
-    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h) {
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
         if (!(entry instanceof VirtualTank tank)) return new EmptyWidget();
         return new FluidSlot().syncHandler(SyncHandlers.fluidSlot(tank.getFluidTank()))
                 .marginLeft(3)

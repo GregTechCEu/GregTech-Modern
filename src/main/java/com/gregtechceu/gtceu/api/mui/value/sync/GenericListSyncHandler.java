@@ -54,7 +54,8 @@ public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, L
     @Override
     public void read(FriendlyByteBuf buffer) {
         this.cache.clear();
-        for (int i = 0; i < buffer.readVarInt(); i++) {
+        int size = buffer.readVarInt();
+        for (int i = 0; i < size; i++) {
             this.cache.add(deserializeValue(buffer));
         }
         onSetCache(getValue(), true, false);

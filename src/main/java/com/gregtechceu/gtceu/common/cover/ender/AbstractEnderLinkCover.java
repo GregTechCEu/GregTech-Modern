@@ -174,8 +174,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .widgetProvider((manager, entriesListSyncer) -> {
             if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
             ListWidget<IWidget, ?> list = new ListWidget<>();
-            for (var entry : entriesListSyncer.getValue()) {
-                list.child(createVirtualEntryRow(manager, entry));
+            List<VirtualEntry> entryList = entriesListSyncer.getValue();
+            for (var i=0;i<entryList.size();i++) {
+                var entry = entryList.get(i);
+                list.child(createVirtualEntryRow(manager, entry, i));
             }
             return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
                     .size(162, 58);
@@ -183,13 +185,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler).size(162, 58);
     }
 
-    public Flow createVirtualEntryRow(PanelSyncManager syncManager, VirtualEntry entry) {
+    public Flow createVirtualEntryRow(PanelSyncManager syncManager, VirtualEntry entry, int index) {
         return Flow.row()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
                         .tooltip(t -> t.addLine(entry.getColorStr()))
                         .size(18, 18))
                 .child(IKey.str(entry.getDescription()).asWidget().size(92, 12))
-                .child(createVirtualEntryWidget(syncManager, entry, 18, 18))
+                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, index))
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS)
                         .onMousePressed((x, y, button) -> {
                             MouseData mouseData = MouseData.create(button);
@@ -214,7 +216,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .hintText(Component.translatable("cover.ender_link.channel_name"))
                         .expanded()
                         .height(16))
-                .child(createVirtualEntryWidget(syncManager, this.getEntry(), 18, 18))
+                .child(createVirtualEntryWidget(syncManager, this.getEntry(), 18, 18, -1))
                 .size(162, 18);
     }
 
@@ -403,7 +405,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
      *
      * @return A widget to represent the entry type for this cover
      */
-    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h);
+    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index);
 
     protected int getColor() {
         return VirtualEntry.parseColor(this.colorStr);
