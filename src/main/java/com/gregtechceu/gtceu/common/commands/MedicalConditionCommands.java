@@ -33,7 +33,6 @@ public class MedicalConditionCommands {
     private static final SimpleCommandExceptionType ERROR_CLEAR_SPECIFIC_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.medical_condition.clear.specific.failed"));
 
-
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
@@ -49,12 +48,12 @@ public class MedicalConditionCommands {
                                         }))
                                 .then(literal("symptoms")
                                         .executes(ctx -> {
-                                            return queryMedicalConditions(ctx.getSource(), ctx.getSource().getPlayerOrException());
+                                            return querySymptoms(ctx.getSource(), ctx.getSource().getPlayerOrException());
                                         })
                                         .then(argument("target", EntityArgument.player())
                                                 .requires(source -> source.hasPermission(LEVEL_GAMEMASTERS))
                                                 .executes(context -> {
-                                                    return queryMedicalConditions(context.getSource(), EntityArgument.getPlayer(context, "target"));
+                                                    return querySymptoms(context.getSource(), EntityArgument.getPlayer(context, "target"));
                                                 }))))
                         .then(literal("clear")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
@@ -90,7 +89,8 @@ public class MedicalConditionCommands {
     }
     // spotless:on
 
-    private static int queryMedicalConditions(CommandSourceStack source, ServerPlayer target) throws CommandSyntaxException {
+    private static int queryMedicalConditions(CommandSourceStack source,
+                                              ServerPlayer target) throws CommandSyntaxException {
         MedicalConditionTracker tracker = getMedicalConditionTracker(target);
 
         int conditions = tracker.getMedicalConditions().size();
@@ -113,7 +113,8 @@ public class MedicalConditionCommands {
             }
             float time = entry.getFloatValue();
             source.sendSuccess(() -> {
-                return Component.translatable(langKey, entry.getKey().getAffectedName(), (int) (time / 60), (int) (time % 60));
+                return Component.translatable(langKey,
+                        entry.getKey().getAffectedName(), (int) (time / 60), (int) (time % 60));
             }, true);
         }
         return conditions;
@@ -171,21 +172,25 @@ public class MedicalConditionCommands {
         if (targets.size() == 1) {
             if (condition == null) {
                 source.sendSuccess(() -> {
-                    return Component.translatable("command.gtceu.medical_condition.clear.everything.success.single", targets.iterator().next().getDisplayName());
+                    return Component.translatable("command.gtceu.medical_condition.clear.everything.success.single",
+                            targets.iterator().next().getDisplayName());
                 }, true);
             } else {
                 source.sendSuccess(() -> {
-                    return Component.translatable("command.gtceu.medical_condition.clear.specific.success.single", condition.getAffectedName(), targets.iterator().next().getDisplayName());
+                    return Component.translatable("command.gtceu.medical_condition.clear.specific.success.single",
+                            condition.getAffectedName(), targets.iterator().next().getDisplayName());
                 }, true);
             }
         } else {
             if (condition == null) {
                 source.sendSuccess(() -> {
-                    return Component.translatable("command.gtceu.medical_condition.clear.everything.success.multiple", targets.size());
+                    return Component.translatable("command.gtceu.medical_condition.clear.everything.success.multiple",
+                            targets.size());
                 }, true);
             } else {
                 source.sendSuccess(() -> {
-                    return Component.translatable("command.gtceu.medical_condition.clear.specific.success.multiple", condition.getAffectedName(), targets.size());
+                    return Component.translatable("command.gtceu.medical_condition.clear.specific.success.multiple",
+                            condition.getAffectedName(), targets.size());
                 }, true);
             }
         }
@@ -194,7 +199,8 @@ public class MedicalConditionCommands {
     }
 
     private static int applyMedicalConditions(CommandSourceStack source, Collection<ServerPlayer> targets,
-                                              MedicalCondition condition, float progression) throws CommandSyntaxException {
+                                              MedicalCondition condition,
+                                              float progression) throws CommandSyntaxException {
         int applied = 0;
         for (ServerPlayer player : targets) {
             MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
@@ -210,11 +216,13 @@ public class MedicalConditionCommands {
 
         if (targets.size() == 1) {
             source.sendSuccess(() -> {
-                return Component.translatable("command.gtceu.medical_condition.give.success.single", condition.getAffectedName(), targets.iterator().next().getDisplayName());
+                return Component.translatable("command.gtceu.medical_condition.give.success.single",
+                        condition.getAffectedName(), targets.iterator().next().getDisplayName());
             }, true);
         } else {
             source.sendSuccess(() -> {
-                return Component.translatable("command.gtceu.medical_condition.give.success.multiple", condition.getAffectedName(), targets.size());
+                return Component.translatable("command.gtceu.medical_condition.give.success.multiple",
+                        condition.getAffectedName(), targets.size());
             }, true);
         }
         return applied;

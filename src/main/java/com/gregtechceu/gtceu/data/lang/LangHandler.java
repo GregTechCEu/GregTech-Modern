@@ -125,9 +125,12 @@ public class LangHandler {
         provider.add("gtceu.tool.class.drill", "Drill");
 
         provider.add("command.gtceu.medical_condition.clear.everything.failed", "Target has no conditions to remove");
-        provider.add("command.gtceu.medical_condition.clear.everything.success.multiple", "Removed all conditions from %s targets");
-        provider.add("command.gtceu.medical_condition.clear.everything.success.single", "Removed all conditions from %s");
-        provider.add("command.gtceu.medical_condition.clear.specific.failed", "Target doesn't have the requested condition");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.multiple",
+                "Removed all conditions from %s targets");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.single",
+                "Removed all conditions from %s");
+        provider.add("command.gtceu.medical_condition.clear.specific.failed",
+                "Target doesn't have the requested condition");
         provider.add("command.gtceu.medical_condition.clear.specific.success.multiple", "Removed %s from %s targets");
         provider.add("command.gtceu.medical_condition.clear.specific.success.single", "Removed %s from %s");
 
