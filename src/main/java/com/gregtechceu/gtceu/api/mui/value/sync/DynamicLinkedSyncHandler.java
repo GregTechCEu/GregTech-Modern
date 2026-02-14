@@ -17,7 +17,6 @@ public class DynamicLinkedSyncHandler<S extends ValueSyncHandler<?>> extends Syn
     private IWidgetProvider<S> widgetProvider;
     private Consumer<IWidget> onWidgetUpdate;
 
-    private boolean updateQueued;
     private IWidget lastRejectedWidget;
 
     private final S linkedValue;
@@ -45,10 +44,7 @@ public class DynamicLinkedSyncHandler<S extends ValueSyncHandler<?>> extends Syn
     @Override
     public void init(String key, PanelSyncManager syncManager) {
         super.init(key, syncManager);
-        if (this.updateQueued) {
-            notifyUpdate(true);
-            this.updateQueued = false;
-        }
+        notifyUpdate(false);
     }
 
     private IWidget parseWidget() {
@@ -86,11 +82,7 @@ public class DynamicLinkedSyncHandler<S extends ValueSyncHandler<?>> extends Syn
      * initialised is effective.
      */
     private void notifyUpdate(boolean sync) {
-        if (!isValid()) {
-            // sync handler not yet initialised
-            this.updateQueued = true;
-            return;
-        }
+        if (!isValid()) return;
         IWidget widget = parseWidget();
         if (getSyncManager().isClient()) {
             updateWidget(widget);
