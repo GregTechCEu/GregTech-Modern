@@ -23,7 +23,7 @@ public class Symptom {
 
     // spotless:off
     public static final UUID SYMPTOM_HEALTH_DEBUFF_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");
-    public static final UUID SYMPTOM_ATTACK_SPEED_DEBUFF_UUID = UUID.fromString("f2378ee6-3427-45b5-8440-4b797f7b664a");
+    public static final UUID SYMPTOM_MINING_FATIGUE_UUID = UUID.fromString("f2378ee6-3427-45b5-8440-4b797f7b664a");
     public static final UUID SYMPTOM_WEAKNESS_UUID = UUID.fromString("482e64e0-de77-49cd-b9bc-96b7e7eb16db");
     public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("b3ac6b40-2d30-419f-9cac-5b2cf998ad72");
 
@@ -65,7 +65,7 @@ public class Symptom {
                 }
             });
     // default is 4, stage 10 result will be 1.6
-    public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 0.0f, 1.0f, 0.04f, Attributes.ATTACK_SPEED, SYMPTOM_ATTACK_SPEED_DEBUFF_UUID);
+    public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 0.0f, 1.0f, 0.04f, Attributes.ATTACK_SPEED, SYMPTOM_MINING_FATIGUE_UUID);
     // default is 2, stage 10 result will be 0.5
     public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"), 10, 0.0f, 1.0f, 0.025f, Attributes.ATTACK_DAMAGE, SYMPTOM_WEAKNESS_UUID);
     // default is 0.7, stage 7 result will be 0.392

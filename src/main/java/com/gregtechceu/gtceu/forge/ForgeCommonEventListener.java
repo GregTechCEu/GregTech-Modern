@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -62,6 +63,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -75,9 +77,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.*;
@@ -676,6 +680,17 @@ public class ForgeCommonEventListener {
                     if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
                 }
             }
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null || !ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            return;
+        }
+        if (player.getAttributes().hasModifier(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID)) {
+            float miningFatigueModifier = (float) player.getAttributes()
+                    .getModifierValue(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID);
+            // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
+            event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
         }
     }
 }
