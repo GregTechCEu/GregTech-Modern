@@ -56,7 +56,7 @@ public class MedicalConditionCommands {
                                                     return querySymptoms(context.getSource(), EntityArgument.getPlayer(context, "target"));
                                                 }))))
                         .then(literal("clear")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                 .executes(ctx -> {
                                     return clearMedicalConditions(ctx.getSource(), Collections.singleton(ctx.getSource().getPlayerOrException()), null);
                                 })
