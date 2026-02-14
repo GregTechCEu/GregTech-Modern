@@ -512,6 +512,38 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
+                continue;
+            }
+            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
+                continue;
+            }
+            // undo flight mining speed debuff
+            if (!player.onGround()) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+            // and also underwater debuff
+            if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null || !ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            return;
+        }
+        if (player.getAttributes().hasModifier(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID)) {
+            float miningFatigueModifier = (float) player.getAttributes()
+                    .getModifierValue(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID);
+            // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
+            event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
+        }
+    }
+
+    @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
@@ -668,38 +700,6 @@ public class ForgeCommonEventListener {
                     }
                 }
             });
-        }
-    }
-
-    @SubscribeEvent
-    public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
-                continue;
-            }
-            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
-                continue;
-            }
-            // undo flight mining speed debuff
-            if (!player.onGround()) {
-                event.setNewSpeed(event.getNewSpeed() * 5);
-            }
-            // and also underwater debuff
-            if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
-                event.setNewSpeed(event.getNewSpeed() * 5);
-            }
-        }
-
-        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-        if (tracker == null || !ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
-            return;
-        }
-        if (player.getAttributes().hasModifier(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID)) {
-            float miningFatigueModifier = (float) player.getAttributes()
-                    .getModifierValue(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID);
-            // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
-            event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
         }
     }
 }
