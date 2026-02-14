@@ -97,12 +97,12 @@ public class MedicalConditionCommands {
         if (conditions == 0) {
             source.sendSuccess(() -> {
                 return Component.translatable("command.gtceu.medical_condition.get.empty", target.getName());
-            }, true);
+            }, false);
             return 0;
         } else {
             source.sendSuccess(() -> {
                 return Component.translatable("command.gtceu.medical_condition.get", target.getName());
-            }, true);
+            }, false);
         }
         for (var entry : tracker.getMedicalConditions().reference2FloatEntrySet()) {
             String langKey;
@@ -115,7 +115,7 @@ public class MedicalConditionCommands {
             source.sendSuccess(() -> {
                 return Component.translatable(langKey,
                         entry.getKey().getAffectedName(), (int) (time / 60), (int) (time % 60));
-            }, true);
+            }, false);
         }
         return conditions;
     }
@@ -127,18 +127,18 @@ public class MedicalConditionCommands {
         if (symptoms == 0) {
             source.sendSuccess(() -> {
                 return Component.translatable("command.gtceu.medical_condition.get.symptoms.empty", target.getName());
-            }, true);
+            }, false);
             return 0;
         } else {
             source.sendSuccess(() -> {
                 return Component.translatable("command.gtceu.medical_condition.get.symptoms", target.getName());
-            }, true);
+            }, false);
         }
         for (Symptom.ConfiguredSymptom symptom : tracker.getActiveSymptoms().keySet()) {
             source.sendSuccess(() -> {
                 return Component.translatable("command.gtceu.medical_condition.get.symptoms.element",
                         Component.translatable(symptom.getSymptom().name));
-            }, true);
+            }, false);
         }
         return symptoms;
     }
