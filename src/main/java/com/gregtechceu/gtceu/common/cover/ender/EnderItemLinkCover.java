@@ -9,19 +9,15 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ItemDisplayWidget;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -114,9 +110,9 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     @Override
     protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
-        if (!(entry instanceof VirtualItemStorage itemStorage)) return new EmptyWidget();
-        // TODO: pass index
-        manager.getOrCreateSlot("ender_item_link_cover_" + index, 0, () -> new ModularSlot(itemStorage.getHandler(), 0));
+        if (!(entry instanceof VirtualItemStorage itemStorage)) return new ParentWidget<>().size(w, h);
+        manager.getOrCreateSlot("ender_item_link_cover_" + index, 0,
+                () -> new ModularSlot(itemStorage.getHandler(), 0));
         return new ItemSlot()
                 .syncHandler("ender_item_link_cover_" + index)
                 .marginLeft(3)

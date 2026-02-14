@@ -12,14 +12,6 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -28,18 +20,25 @@ import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -170,18 +169,19 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public DynamicSyncedWidget<?> createChannelList(GenericListSyncHandler<VirtualEntry> entriesSyncer) {
-        DynamicLinkedSyncHandler<GenericListSyncHandler<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(entriesSyncer)
+        DynamicLinkedSyncHandler<GenericListSyncHandler<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                entriesSyncer)
                 .widgetProvider((manager, entriesListSyncer) -> {
-            if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
-            ListWidget<IWidget, ?> list = new ListWidget<>();
-            List<VirtualEntry> entryList = entriesListSyncer.getValue();
-            for (var i=0;i<entryList.size();i++) {
-                var entry = entryList.get(i);
-                list.child(createVirtualEntryRow(manager, entry, i));
-            }
-            return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
-                    .size(162, 58);
-        });
+                    if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
+                    ListWidget<IWidget, ?> list = new ListWidget<>();
+                    List<VirtualEntry> entryList = entriesListSyncer.getValue();
+                    for (var i = 0; i < entryList.size(); i++) {
+                        var entry = entryList.get(i);
+                        list.child(createVirtualEntryRow(manager, entry, i));
+                    }
+                    return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
+                            .size(162, 58);
+                });
         return new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler).size(162, 58);
     }
 
@@ -209,12 +209,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     public Flow createChannelNameRow(PanelSyncManager syncManager) {
         return Flow.row()
-                .child(createColorBlock(this::getColor, 18).asWidget().marginRight(3))
+                .child(createColorBlock(this::getColor, 18).asWidget().size(18).marginRight(3))
                 .child(new TextFieldWidget().value(new StringSyncValue(this::getColorStr, this::setChannelName))
                         .setPattern(COLOR_INPUT_PATTERN)
                         .setValidator(String::toUpperCase)
                         .hintText(Component.translatable("cover.ender_link.channel_name"))
-                        .expanded()
+                        // .expanded()
                         .height(16))
                 .child(createVirtualEntryWidget(syncManager, this.getEntry(), 18, 18, -1))
                 .size(162, 18);
@@ -224,10 +224,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return Flow.row()
                 .child(new TextFieldWidget()
                         .value(new StringSyncValue(() -> {
-                            if(getEntry() == null) return "null";
+                            if (getEntry() == null) return "null";
                             return getEntry().getDescription();
                         }, (newVal) -> {
-                            if(getEntry() != null) getEntry().setDescription(newVal);
+                            if (getEntry() != null) getEntry().setDescription(newVal);
                         }))
                         .hintText(Component.translatable("cover.ender_link.channel_description"))
                         .widthRel(1F)
@@ -410,7 +410,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
      *
      * @return A widget to represent the entry type for this cover
      */
-    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index);
+    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h,
+                                                        int index);
 
     protected int getColor() {
         return VirtualEntry.parseColor(this.colorStr);
