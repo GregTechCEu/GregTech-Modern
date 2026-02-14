@@ -162,8 +162,8 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
     }
 
     private int calculateStage(MedicalCondition condition, ConfiguredSymptom symptom) {
-        float minThreshold = symptom.getMinProgressionThreshold();
-        float maxThreshold = symptom.getMaxProgressionThreshold();
+        float minThreshold = symptom.getMinThreshold();
+        float maxThreshold = symptom.getMaxThreshold();
         float progression = medicalConditions.getFloat(condition);
 
         if (progression < minThreshold) {

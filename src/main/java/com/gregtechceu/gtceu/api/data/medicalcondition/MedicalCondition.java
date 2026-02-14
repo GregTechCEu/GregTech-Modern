@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -104,6 +105,19 @@ public class MedicalCondition {
             key = affectedKey;
         }
         return Component.translatable(key).withStyle(style -> style.withColor(this.color));
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
+        stringJoiner.add("color=#" + FormattingUtil.HEX_FORMAT.toHexDigits(this.color));
+        stringJoiner.add("maxProgression=" + this.maxProgression);
+        stringJoiner.add("symptoms=" + this.symptoms);
+        stringJoiner.add("damageType=" + this.damageTypeData.id);
+        stringJoiner.add("idleProgressionType=" + this.idleProgressionType.name().toLowerCase(Locale.ROOT));
+        stringJoiner.add("idleProgressionRate=" + this.idleProgressionRate);
+
+        return this.id.toString() + stringJoiner.toString();
     }
 
     public enum IdleProgressionType {

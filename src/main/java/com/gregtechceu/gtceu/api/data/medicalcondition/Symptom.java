@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 
+import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -224,6 +225,11 @@ public class Symptom {
         tickEffect.apply(subject, condition, symptom, this, stage);
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public static class ConfiguredSymptom {
 
         @Getter
@@ -235,8 +241,8 @@ public class Symptom {
         /**
          * The threshold this symptom will start occurring at.
          * <p>
-         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minProgressionThreshold}
-         * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minThreshold}
+         * and the maximum stage will be reached at {@link #maxThreshold}.
          * </p>
          * <p>
          * For example: The minimum threshold of this symptom is 100 and
@@ -245,12 +251,12 @@ public class Symptom {
          * </p>
          */
         @Getter
-        private float minProgressionThreshold;
+        private float minThreshold;
         /**
          * The threshold at which this symptom will be reach its maximum potential.
          * <p>
-         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minProgressionThreshold}
-         * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minThreshold}
+         * and the maximum stage will be reached at {@link #maxThreshold}.
          * </p>
          * <p>
          * For example: The maximum threshold of this symptom is 150 and
@@ -259,30 +265,30 @@ public class Symptom {
          * </p>
          */
         @Getter
-        private float maxProgressionThreshold;
+        private float maxThreshold;
 
         /**
          * Whether this {@code ConfiguredSymptom} uses the default progression thresholds for its {@link #symptom}
          * and should recalculate an absolute progression value for the {@linkplain MedicalCondition} it's a part of
          */
-        private boolean isMinRelative, isMaxRelative;
+        private boolean isMinRelative = false, isMaxRelative = false;
 
-        public ConfiguredSymptom(Symptom symptom, int stages, float minProgressionThreshold,
-                                 float maxProgressionThreshold) {
+        public ConfiguredSymptom(Symptom symptom, int stages, float minThreshold,
+                                 float maxThreshold) {
             this.symptom = symptom;
             this.stages = stages;
             this.relativeHarshness = (float) stages / symptom.defaultStages;
 
-            this.minProgressionThreshold = minProgressionThreshold;
-            this.maxProgressionThreshold = maxProgressionThreshold;
+            this.minThreshold = minThreshold;
+            this.maxThreshold = maxThreshold;
         }
 
-        public ConfiguredSymptom(Symptom symptom, float minProgressionThreshold, float maxProgressionThreshold) {
-            this(symptom, symptom.defaultStages, minProgressionThreshold, maxProgressionThreshold);
+        public ConfiguredSymptom(Symptom symptom, float minThreshold, float maxThreshold) {
+            this(symptom, symptom.defaultStages, minThreshold, maxThreshold);
         }
 
-        public ConfiguredSymptom(Symptom symptom, float minProgressionThreshold) {
-            this(symptom, symptom.defaultStages, minProgressionThreshold, symptom.maxProgressionThreshold);
+        public ConfiguredSymptom(Symptom symptom, float minThreshold) {
+            this(symptom, symptom.defaultStages, minThreshold, symptom.maxProgressionThreshold);
             this.isMaxRelative = true;
         }
 
@@ -306,19 +312,33 @@ public class Symptom {
         public void addedToCondition(MedicalCondition condition, int index) {
             if (this.isMinRelative) {
                 this.isMinRelative = false;
-                this.minProgressionThreshold = this.minProgressionThreshold * condition.maxProgression;
+                this.minThreshold = this.minThreshold * condition.maxProgression;
             }
             if (this.isMaxRelative) {
                 this.isMaxRelative = false;
-                this.maxProgressionThreshold = this.maxProgressionThreshold * condition.maxProgression;
+                this.maxThreshold = this.maxThreshold * condition.maxProgression;
             }
 
-            this.minProgressionThreshold = Mth.clamp(this.minProgressionThreshold, 0.0f, condition.maxProgression);
-            this.maxProgressionThreshold = Mth.clamp(this.maxProgressionThreshold, 0.0f, condition.maxProgression);
+            this.minThreshold = Mth.clamp(this.minThreshold, 0.0f, condition.maxProgression);
+            this.maxThreshold = Mth.clamp(this.maxThreshold, 0.0f, condition.maxProgression);
 
-            Preconditions.checkArgument(minProgressionThreshold <= maxProgressionThreshold,
+            Preconditions.checkArgument(minThreshold <= maxThreshold,
                     "minProgressThreshold must be <= maxProgressThreshold for symptom %s (%s) of condition %s (min %s > max %s)",
-                    index, symptom.name, condition.id.toString(), minProgressionThreshold, maxProgressionThreshold);
+                    index, symptom.name, condition.id.toString(), minThreshold, maxThreshold);
+        }
+
+        @Override
+        public String toString() {
+            StringJoiner stringJoiner = new StringJoiner(", ", "[", "]")
+                    .setEmptyValue("");
+            if (this.stages != this.symptom.defaultStages) {
+                stringJoiner.add("stages=" + this.stages);
+                stringJoiner.add("relativeHarshness=" + this.relativeHarshness);
+            }
+            if (!this.isMinRelative) stringJoiner.add("minTreshold=" + this.minThreshold);
+            if (!this.isMaxRelative) stringJoiner.add("maxTreshold=" + this.maxThreshold);
+
+            return this.symptom.toString() + stringJoiner;
         }
     }
 
