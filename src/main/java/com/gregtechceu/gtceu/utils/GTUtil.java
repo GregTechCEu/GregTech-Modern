@@ -652,4 +652,27 @@ public class GTUtil {
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
     }
+
+    public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
+        level.removeBlock(pos, false);
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
+                        Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+    }
+
+    public static void setOnFire(Level level, BlockPos pos, double additionalFireChance) {
+        boolean isFirstFireSpawned = false;
+        for (Direction side : DIRECTIONS) {
+            if (level.isEmptyBlock(pos.relative(side))) {
+                if (!isFirstFireSpawned) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                    if (!level.isEmptyBlock(pos.relative(side))) {
+                        isFirstFireSpawned = true;
+                    }
+                } else if (additionalFireChance >= GTValues.RNG.nextDouble() * 100) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                }
+            }
+        }
+    }
 }

@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -174,7 +173,6 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * Get MultiblockState. It records all structure-related information.
      */
-    @NotNull
     public MultiblockState getMultiblockState() {
         if (multiblockState == null) {
             multiblockState = new MultiblockState(getLevel(), getBlockPos());
@@ -276,7 +274,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
