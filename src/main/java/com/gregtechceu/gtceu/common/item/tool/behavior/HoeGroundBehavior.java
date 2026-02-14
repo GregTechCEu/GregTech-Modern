@@ -68,6 +68,9 @@ public class HoeGroundBehavior implements IToolBehavior {
 
         boolean tilled = false;
         for (BlockPos blockPos : blocks) {
+            if (blockPos.equals(pos)) {
+                continue;
+            }
             UseOnContext posContext = new UseOnContext(level, player, context.getHand(), stack,
                     context.getHitResult().withPosition(blockPos));
             tilled |= tillGround(posContext);
