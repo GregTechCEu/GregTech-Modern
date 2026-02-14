@@ -144,6 +144,11 @@ public class ForgeCommonEventListener {
         }
 
         Player player = event.player;
+        // update the tracker every second, including clearing everything when the config changes.
+        if (player.tickCount % 20 != 0) {
+            return;
+        }
+
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (tracker == null) {
             return;
@@ -160,10 +165,6 @@ public class ForgeCommonEventListener {
             return;
         }
 
-        // apply progression every second
-        if (player.level().getGameTime() % 20 != 0) {
-            return;
-        }
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
