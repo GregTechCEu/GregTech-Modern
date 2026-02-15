@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.forge;
+package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
