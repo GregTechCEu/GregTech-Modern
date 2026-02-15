@@ -11,7 +11,6 @@ kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
-theoneprobe = "1.21_neo-12.0.4-6"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
 # shimmer = "1.20.1-0.2.4"
@@ -82,7 +81,6 @@ create              = { module = "com.simibubi.create:create-1.21.1", version.re
 ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
 flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
 flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
-theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }

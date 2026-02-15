@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.worldgen.generator.indicators;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;

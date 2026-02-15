@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jei.subtype;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 

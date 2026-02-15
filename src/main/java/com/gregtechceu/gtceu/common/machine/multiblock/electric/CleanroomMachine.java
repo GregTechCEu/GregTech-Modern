@@ -22,10 +22,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
@@ -69,8 +69,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
-import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
+import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
 public class CleanroomMachine extends WorkableElectricMultiblockMachine
                               implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {

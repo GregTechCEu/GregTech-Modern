@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.WeightedMaterial;

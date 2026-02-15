@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.medicalcondition;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 
 import net.minecraft.core.registries.Registries;

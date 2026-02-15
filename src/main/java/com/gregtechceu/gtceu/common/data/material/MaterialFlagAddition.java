@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.material;
 
-import com.gregtechceu.gtceu.api.material.material.properties.OreProperty;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 
 import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 

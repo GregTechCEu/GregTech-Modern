@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

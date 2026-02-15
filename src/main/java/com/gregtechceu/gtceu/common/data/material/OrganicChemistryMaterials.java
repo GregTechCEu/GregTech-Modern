@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.common.data.material;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
-import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.FINE;
-import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.ROUGH;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.FINE;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.ROUGH;
 import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 
 public class OrganicChemistryMaterials {

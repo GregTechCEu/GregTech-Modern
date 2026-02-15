@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.data;
 
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 
 import net.minecraft.world.item.Items;
 
-import static com.gregtechceu.gtceu.api.material.material.ItemMaterialData.registerMaterialEntry;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.registerMaterialEntry;
 import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 
 public class TagsHandler {

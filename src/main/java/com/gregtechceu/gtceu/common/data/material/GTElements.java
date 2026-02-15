@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.material;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.material.Element;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 public class GTElements {

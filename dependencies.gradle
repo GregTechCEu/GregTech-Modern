@@ -17,7 +17,6 @@ dependencies {
     compileOnly(forge.emi)
 
     // WAILA-likes
-    compileOnly(forge.theoneprobe)
     compileOnly(forge.jade)
 
     // Curios

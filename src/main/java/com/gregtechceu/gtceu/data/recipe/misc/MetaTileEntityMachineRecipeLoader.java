@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.common.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machine.GTMultiMachines;
 import com.gregtechceu.gtceu.common.data.GTCraftingComponents;
@@ -22,7 +22,6 @@ import appeng.core.definitions.AEParts;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_FLUID_PIPE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_ITEM_PIPE;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.*;

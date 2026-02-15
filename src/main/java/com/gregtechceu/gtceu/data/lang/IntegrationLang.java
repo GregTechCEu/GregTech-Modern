@@ -45,7 +45,7 @@ public class IntegrationLang {
         provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
-    /** Jade, TheOneProbe, WTHIT */
+    /** Jade */
     private static void initWailaLikeLang(RegistrateLangProvider provider) {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");

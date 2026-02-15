@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;

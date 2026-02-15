@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;

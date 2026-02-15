@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.data.tag;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.common.data.item.GTItems;
 import com.gregtechceu.gtceu.common.data.item.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -19,7 +19,6 @@ import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 
 @SuppressWarnings({ "SameParameterValue", "DataFlowIssue" })

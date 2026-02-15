@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.codec.GTCodecUtils.quietExceptionCodec;
+import static com.gregtechceu.gtceu.utils.codec.GTCodecUtils.quietExceptionCodec;
 
 @SuppressWarnings("DataFlowIssue")
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {

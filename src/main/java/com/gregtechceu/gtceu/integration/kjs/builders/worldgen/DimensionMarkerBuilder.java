@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 

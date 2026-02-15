@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.recipe.kind.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -21,7 +21,6 @@ import net.neoforged.neoforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 
