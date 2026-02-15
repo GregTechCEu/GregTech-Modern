@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
@@ -142,6 +143,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var isChannelListActive = new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive);
         syncManager.syncValue("CLA", isChannelListActive);
+        var colorSyncer = new IntSyncValue(this::getColor);
+        syncManager.syncValue("color", colorSyncer);
 
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
                 .getter(this::getVirtualEntries)
@@ -157,7 +160,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                                 .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                         .marginLeft(4)
                         .size(16, 16))
-                .child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
+                .child(createChannelNameRow(syncManager, colorSyncer).setEnabledIf(f -> !isChannelListActive.getBoolValue()))
                 .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
                 .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive.getBoolValue()))
                 .child(createChannelList(entries).setEnabledIf(f -> isChannelListActive.getBoolValue()))
@@ -207,9 +210,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .coverChildren();
     }
 
-    public Flow createChannelNameRow(PanelSyncManager syncManager) {
+    public Flow createChannelNameRow(PanelSyncManager syncManager, IntSyncValue colorSyncer) {
         return Flow.row()
-                .child(createColorBlock(this::getColor, 18).asWidget().size(18).marginRight(3))
+                .child(createColorBlock(colorSyncer::getIntValue, 18).asWidget().size(18).marginRight(3))
                 .child(new TextFieldWidget().value(new StringSyncValue(this::getColorStr, this::setChannelName))
                         .setPattern(COLOR_INPUT_PATTERN)
                         .setValidator(String::toUpperCase)
