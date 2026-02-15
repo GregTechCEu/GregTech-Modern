@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
@@ -13,8 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class HPCAEmptyPartMachine extends HPCAComponentPartMachine {
 
-    public HPCAEmptyPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCAEmptyPartMachine(BlockEntityCreationInfo info) {
+        super(info, (machine) -> new HPCAComponentTrait(machine, 0, 0, false, false));
     }
 
     @Override
@@ -25,15 +26,5 @@ public class HPCAEmptyPartMachine extends HPCAComponentPartMachine {
     @Override
     public ResourceTexture getComponentIcon() {
         return GuiTextures.HPCA_ICON_EMPTY_COMPONENT;
-    }
-
-    @Override
-    public int getUpkeepEUt() {
-        return 0;
-    }
-
-    @Override
-    public boolean canBeDamaged() {
-        return false;
     }
 }

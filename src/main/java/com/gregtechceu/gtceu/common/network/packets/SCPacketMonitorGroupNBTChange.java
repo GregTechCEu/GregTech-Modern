@@ -26,7 +26,7 @@ public class SCPacketMonitorGroupNBTChange implements GTNetwork.INetPacket {
     public SCPacketMonitorGroupNBTChange(ItemStack stack, MonitorGroup group, CentralMonitorMachine machine) {
         this.stack = stack;
         this.monitorGroupId = machine.getMonitorGroups().indexOf(group);
-        this.pos = machine.getPos();
+        this.pos = machine.getBlockPos();
     }
 
     public SCPacketMonitorGroupNBTChange(FriendlyByteBuf buf) {

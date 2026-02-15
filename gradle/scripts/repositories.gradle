@@ -41,10 +41,6 @@ repositories {
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }
         filter { includeGroup("dev.ftb.mods") }
     }
-    exclusiveContent { // TOP
-        forRepository { maven { url = "https://maven.k-4u.nl" } }
-        filter { includeGroup('mcjty.theoneprobe') }
-    }
     exclusiveContent { // JourneyMap API
         forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }
         filter { includeGroup("info.journeymap") }

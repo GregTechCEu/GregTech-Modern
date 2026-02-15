@@ -2,26 +2,25 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -48,6 +47,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class WorldAcceleratorMachine extends TieredEnergyMachine implements IControllable {
 
     private static final Map<String, Class<?>> blacklistedClasses = new Object2ObjectOpenHashMap<>();
@@ -59,8 +62,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public static final BooleanProperty RANDOM_TICK_PROPERTY = GTMachineModelProperties.IS_RANDOM_TICK_MODE;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     private static final long blockEntityAmperage = 6;
     private static final long randomTickAmperage = 3;
     // Variables for Random Tick mode optimization
@@ -71,48 +72,46 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private final int successLimit;
     private final int randRange;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isRandomTickMode = true;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean active = false;
     private TickableSubscription tickSubs;
 
-    public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, args);
+    public WorldAcceleratorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, (TieredEnergyMachine machine) -> {
+            long tierVoltage = GTValues.V[machine.getTier()];
+            return new NotifiableEnergyContainer(machine, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
+        });
         this.speed = (int) Math.pow(2, tier);
         this.successLimit = SUCCESS_LIMITS[tier - 1];
         this.randRange = (getTier() << 1) + 1;
     }
 
-    @Override
-    protected @NotNull NotifiableEnergyContainer createEnergyContainer(Object @NotNull... args) {
-        long tierVoltage = GTValues.V[getTier()];
-        return new NotifiableEnergyContainer(this, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     public void updateSubscription() {
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
-            active = true;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, true));
+            if (!active) {
+                active = true;
+                syncDataHolder.markClientSyncFieldDirty("active");
+            }
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
-            active = false;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, false));
+            if (active) {
+                active = false;
+                syncDataHolder.markClientSyncFieldDirty("active");
+            }
         }
     }
 
@@ -121,9 +120,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         // handle random tick mode
         if (isRandomTickMode) {
             BlockPos cornerPos = new BlockPos(
-                    getPos().getX() - getTier(),
-                    getPos().getY() - getTier(),
-                    getPos().getZ() - getTier());
+                    getBlockPos().getX() - getTier(),
+                    getBlockPos().getY() - getTier(),
+                    getBlockPos().getZ() - getTier());
             int attempts = successLimit * 3;
 
             for (int i = 0, j = 0; i < successLimit && j < attempts; j++) {
@@ -133,7 +132,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                         GTValues.RNG.nextInt(randRange));
                 if (randomPos.getY() > getLevel().getMaxBuildHeight() ||
                         randomPos.getY() < getLevel().getMinBuildHeight() || !getLevel().isLoaded(randomPos) ||
-                        randomPos.equals(getPos()))
+                        randomPos.equals(getBlockPos()))
                     continue;
                 if (getLevel().getBlockState(randomPos).isRandomlyTicking()) {
                     getLevel().getBlockState(randomPos).randomTick((ServerLevel) this.getLevel(), randomPos,
@@ -144,7 +143,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         } else {
             // else handle block entity mode
             for (Direction dir : GTUtil.DIRECTIONS) {
-                BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getPos().relative(dir));
+                BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getBlockPos().relative(dir));
                 if (blockEntity != null && canAccelerate(blockEntity)) {
                     tickBlockEntity(blockEntity);
                 }
@@ -178,7 +177,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     private boolean canAccelerate(BlockEntity blockEntity) {
-        if (blockEntity instanceof PipeBlockEntity || blockEntity instanceof IMachineBlockEntity) return false;
+        if (blockEntity instanceof PipeBlockEntity || blockEntity instanceof MetaMachine) return false;
 
         generateWorldAcceleratorBlacklist();
         final Class<? extends BlockEntity> blockEntityClass = blockEntity.getClass();
@@ -219,6 +218,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, isWorkingEnabled));
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
         updateSubscription();
     }
 
@@ -231,26 +231,13 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         return super.sideTips(player, pos, state, toolTypes, side);
     }
 
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
-    }
-
     @Override
     protected @NotNull InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_RANDOM_TICK_MODE, isRandomTickMode));
+            syncDataHolder.markClientSyncFieldDirty("isRandomTickMode");
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();

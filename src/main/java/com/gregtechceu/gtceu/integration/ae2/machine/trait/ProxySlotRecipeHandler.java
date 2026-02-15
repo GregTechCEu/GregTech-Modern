@@ -2,17 +2,13 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler.SlotRHL;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -97,6 +93,14 @@ public final class ProxySlotRecipeHandler {
     @Getter
     private static class ProxyItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
+        public static final MachineTraitType<ProxyItemRecipeHandler> TYPE = new MachineTraitType<>(
+                ProxyItemRecipeHandler.class);
+
+        @Override
+        public MachineTraitType<ProxyItemRecipeHandler> getTraitType() {
+            return TYPE;
+        }
+
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
@@ -151,6 +155,14 @@ public final class ProxySlotRecipeHandler {
 
     @Getter
     private static class ProxyFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        public static final MachineTraitType<ProxyFluidRecipeHandler> TYPE = new MachineTraitType<>(
+                ProxyFluidRecipeHandler.class);
+
+        @Override
+        public MachineTraitType<ProxyFluidRecipeHandler> getTraitType() {
+            return TYPE;
+        }
 
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;

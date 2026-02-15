@@ -178,10 +178,10 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     }
 
     private int getChunkX() {
-        return SectionPos.blockToSectionCoord(getMachine().getPos().getX());
+        return SectionPos.blockToSectionCoord(getMachine().getBlockPos().getX());
     }
 
     private int getChunkZ() {
-        return SectionPos.blockToSectionCoord(getMachine().getPos().getZ());
+        return SectionPos.blockToSectionCoord(getMachine().getBlockPos().getZ());
     }
 }

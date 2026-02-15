@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
@@ -19,26 +17,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine
                                                      implements ITieredMachine, IOverclockMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            TieredWorkableElectricMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     private final int tier;
-    @Persisted
+    @SaveField
     @Getter
     protected int overclockTier;
 
-    public TieredWorkableElectricMultiblockMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, args);
+    public TieredWorkableElectricMultiblockMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     //////////////////////////////////////
     // ******** OVERCLOCK *********//

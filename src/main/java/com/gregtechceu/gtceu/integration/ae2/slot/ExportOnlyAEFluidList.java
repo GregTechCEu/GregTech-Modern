@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.integration.ae2.slot;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraftforge.fluids.FluidStack;
 
@@ -17,11 +15,8 @@ import java.util.function.Supplier;
 
 public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfigurableSlotList {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            ExportOnlyAEFluidList.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
+    @SaveField
     protected ExportOnlyAEFluidSlot[] inventory;
 
     public ExportOnlyAEFluidList(MetaMachine machine, int slots) {
@@ -99,11 +94,6 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
             }
         }
         return false;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private static class FluidStorageDelegate extends CustomFluidTank {

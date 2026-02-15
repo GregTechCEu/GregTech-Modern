@@ -1,5 +1,14 @@
 # ChangeLog
 
+## Version [v7.5.2](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.5.1-1.20.1...v7.5.2-1.20.1)
+### Fixed
+
+- Turn groupColor field value into optional field codec by @jurrejelle in [#4593](https://github.com/GregTechCEu/GregTech-Modern/pull/4593)
+- Fix wrong argument check for 'redstone set #' placeholder by @FyreDrakon in [#4595](https://github.com/GregTechCEu/GregTech-Modern/pull/4595)
+- Fix ore vein consistency by sorting the cache by @jurrejelle in [#4602](https://github.com/GregTechCEu/GregTech-Modern/pull/4602)
+- Fix CR being displayed on CM when pasting text on windows by @TarLaboratories in [#4603](https://github.com/GregTechCEu/GregTech-Modern/pull/4603)
+
+ 
 ## Version [v7.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.5.0-1.20.1...v7.5.1-1.20.1)
 ### Fixed
 
