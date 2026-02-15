@@ -1,17 +1,15 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -29,9 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CokeOvenHatch extends MultiblockPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CokeOvenHatch.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
     public final ItemHandlerProxyTrait inputInventory, outputInventory;
     public final FluidTankProxyTrait tank;
     @Nullable
@@ -39,8 +34,8 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     @Nullable
     protected ISubscription outputInventorySubs, outputTankSubs;
 
-    public CokeOvenHatch(IMachineBlockEntity holder, Object... args) {
-        super(holder);
+    public CokeOvenHatch(BlockEntityCreationInfo info) {
+        super(info);
         this.inputInventory = new ItemHandlerProxyTrait(this, IO.IN);
         this.outputInventory = new ItemHandlerProxyTrait(this, IO.OUT);
         this.tank = new FluidTankProxyTrait(this, IO.BOTH);
@@ -49,10 +44,6 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onUnload() {
@@ -71,7 +62,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
         if (controller instanceof CokeOvenMachine cokeOven) {
             outputInventorySubs = cokeOven.exportItems.addChangedListener(this::updateAutoIOSubscription);
@@ -84,7 +75,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         inputInventory.setProxy(null);
         outputInventory.setProxy(null);
@@ -127,8 +118,9 @@ public class CokeOvenHatch extends MultiblockPartMachine {
 
     protected void updateAutoIOSubscription() {
         if ((!outputInventory.isEmpty() &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) ||
-                (!tank.isEmpty() && GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()))) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getFrontFacing())) ||
+                (!tank.isEmpty() &&
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFrontFacing()))) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

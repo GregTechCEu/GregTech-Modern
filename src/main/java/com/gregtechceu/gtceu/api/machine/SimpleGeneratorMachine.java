@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -23,7 +23,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -33,37 +32,27 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.function.BiFunction;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SimpleGeneratorMachine extends WorkableTieredMachine
                                     implements IFancyUIMachine, IEnvironmentalHazardEmitter {
 
     @Getter
     private final float hazardStrengthPerOperation;
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
-                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction,
-                                  Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
+                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
+        super(info, tier, tankScalingFunction);
+
+        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
-                                  Object... args) {
-        this(holder, tier, 0.25f, tankScalingFunction, args);
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, 0.25f, tankScalingFunction);
     }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        var energyContainer = super.createEnergyContainer(args);
-        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        return energyContainer;
-    }
 
     @Override
     protected boolean isEnergyEmitter() {

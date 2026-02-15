@@ -105,11 +105,11 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
         if (level == null || level.isClientSide)
             return null;
         OpticalPipeNet currentPipeNet = this.currentPipeNet.get();
-        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(getPipePos()))
+        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos()))
             return currentPipeNet; // if current net is valid and does contain position, return it
         LevelOpticalPipeNet worldNet = (LevelOpticalPipeNet) getPipeBlock()
-                .getWorldPipeNet((ServerLevel) getPipeLevel());
-        currentPipeNet = worldNet.getNetFromPos(getPipePos());
+                .getWorldPipeNet((ServerLevel) this.getLevel());
+        currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
         if (currentPipeNet != null) {
             this.currentPipeNet = new WeakReference<>(currentPipeNet);
         }
@@ -128,7 +128,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
             if (getNumConnections() >= 2) return;
 
             // also check the other pipe
-            BlockEntity tile = getLevel().getBlockEntity(getPipePos().relative(side));
+            BlockEntity tile = getLevel().getBlockEntity(this.getBlockPos().relative(side));
             if (tile instanceof IPipeNode<?, ?> pipeTile &&
                     pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
                 if (pipeTile.getNumConnections() >= 2) return;

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
@@ -165,7 +165,7 @@ public class ForgeClientEventListener {
         BlockPos hitPos = hit.getBlockPos();
         BlockEntity blockEntity = mc.level.getBlockEntity(hitPos);
         // only try to find the correct location if we have a valid machine
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
+        if (!(blockEntity instanceof MetaMachine machineBE)) return;
 
         final List<String> rightLines = event.getRight();
         int lineCount = rightLines.size();
@@ -198,7 +198,7 @@ public class ForgeClientEventListener {
         MutableInt index = new MutableInt(afterBlockSection);
 
         rightLines.add(index.getAndIncrement(), "");
-        machineBE.getMetaMachine().addDebugOverlayText(line -> rightLines.add(index.getAndIncrement(), line));
+        machineBE.addDebugOverlayText(line -> rightLines.add(index.getAndIncrement(), line));
     }
 
     @SubscribeEvent

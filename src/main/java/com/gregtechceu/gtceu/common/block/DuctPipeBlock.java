@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -88,9 +88,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
                                          @Nullable BlockEntity tile) {
         return tile != null &&
                 (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
-                        tile instanceof MetaMachineBlockEntity metaMachine &&
-                                (metaMachine.getMetaMachine() instanceof IEnvironmentalHazardCleaner ||
-                                        metaMachine.getMetaMachine() instanceof IEnvironmentalHazardEmitter));
+                        tile instanceof MetaMachine metaMachine && (tile instanceof IEnvironmentalHazardCleaner ||
+                                tile instanceof IEnvironmentalHazardEmitter));
     }
 
     @Override

@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableLaserContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -27,14 +25,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserHatchPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private NotifiableLaserContainer buffer;
 
-    public LaserHatchPartMachine(IMachineBlockEntity holder, IO io, int tier, int amperage) {
-        super(holder, tier, io);
+    public LaserHatchPartMachine(BlockEntityCreationInfo info, IO io, int tier, int amperage) {
+        super(info, tier, io);
         if (io == IO.OUT) {
             this.buffer = NotifiableLaserContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,
                     GTValues.V[tier], amperage);
@@ -54,12 +49,6 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
     @Override
     public boolean canShared() {
         return false;
-    }
-
-    @Override
-    @NotNull
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @NotNull

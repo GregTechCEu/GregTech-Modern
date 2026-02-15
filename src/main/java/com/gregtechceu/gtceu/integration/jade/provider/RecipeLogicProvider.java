@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -14,35 +12,28 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"));
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic capability) {
+    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
@@ -77,15 +68,12 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 boolean isSteam = false;
 
                 if (EUt > 0) {
-                    if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                        var machine = mbe.getMetaMachine();
-                        if (machine instanceof SimpleSteamMachine ssm) {
-                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
-                            isSteam = true;
-                        } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
-                            isSteam = true;
-                        }
+                    if (blockEntity instanceof SimpleSteamMachine ssm) {
+                        EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
+                        isSteam = true;
+                    } else if (blockEntity instanceof SteamParallelMultiblockMachine smb) {
+                        EUt = (long) Math.ceil(EUt * smb.getConversionRate());
+                        isSteam = true;
                     }
 
                     MutableComponent text;
@@ -129,8 +117,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 }
             }
         } else {
-            if (blockEntity instanceof MetaMachineBlockEntity mbe &&
-                    mbe.metaMachine instanceof IRecipeLogicMachine rlm) {
+            if (blockEntity instanceof IRecipeLogicMachine rlm) {
                 var logic = rlm.getRecipeLogic();
 
                 if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {

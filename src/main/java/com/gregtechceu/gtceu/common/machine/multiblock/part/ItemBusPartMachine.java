@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
@@ -8,33 +9,29 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -47,8 +44,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,12 +51,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemBusPartMachine extends TieredIOPartMachine
-                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
+                                implements IDistinctPart, IHasCircuitSlot, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
@@ -70,41 +63,42 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter(AccessLevel.PROTECTED)
     private boolean hasCircuitSlot = true;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean circuitSlotEnabled;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isDistinct = false;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
-        super(holder, tier, io);
-        this.inventory = createInventory(args);
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
+        this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
         filterHandler = FilterHandlers.item(this);
+
+        inventory.setFilter(this::matchesFilter);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected int getInventorySize() {
         int sizeRoot = 1 + Math.min(9, getTier());
         return sizeRoot * sizeRoot;
+    }
+
+    protected NotifiableItemStackHandler createInventory() {
+        return new NotifiableItemStackHandler(this, getInventorySize(), io);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
@@ -113,12 +107,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return true;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(this::matchesFilter);
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -129,11 +119,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(getInventory().storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        getInventory().dropInventoryInWorld();
 
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
@@ -165,14 +156,15 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
+        syncDataHolder.markClientSyncFieldDirty("isDistinct");
         getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
+                circuitInventory.dropInventoryInWorld();
             } else {
                 circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
             }
@@ -182,7 +174,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         if (!hasCircuitSlot) return;
         for (var c : controllers) {
@@ -199,17 +191,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return -1;
     }
 
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        // todo: delete for 1.8
-        // fix to preserve distinctness from pre 1.7 versions
-        if (tag.contains("inventory")) {
-            var invTag = tag.getCompound("inventory");
-            if (invTag.contains("isDistinct")) {
-                this.isDistinct = invTag.getBoolean("isDistinct");
-            }
-        }
+    public void setCircuitSlotEnabled(boolean enabled) {
+        circuitSlotEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("circuitSlotEnabled");
     }
 
     //////////////////////////////////////
@@ -234,7 +218,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -279,7 +263,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
@@ -292,16 +276,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
-                // We don't set the circuit or distinct busses, since
-                // that doesn't make sense on an output bus.
-                // Furthermore, existing inventory items
-                // and conveyors will drop to the floor on block override.
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-                newMachine.setPaintingColor(this.getPaintingColor());
-            }
+        if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
+            // We don't set the circuit or distinct buses, since
+            // that doesn't make sense on an output bus.
+            // Furthermore, existing inventory items
+            // and conveyors will drop to the floor on block override.
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            newMachine.setPaintingColor(this.getPaintingColor());
         }
         return true;
     }

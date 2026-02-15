@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
@@ -26,14 +27,14 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
      * @return true if front face is free and contains only air blocks in 1x1 area OR has a duct block on it.
      */
     default boolean isFrontFaceFree() {
-        var frontPos = self().getPos().relative(self().getFrontFacing());
+        var frontPos = self().getBlockPos().relative(self().getFrontFacing());
         return self().getLevel().getBlockState(frontPos).isAir() ||
                 GTCapabilityHelper.getHazardContainer(self().getLevel(),
                         frontPos, self().getFrontFacing().getOpposite()) != null;
     }
 
     default void emitPollutionParticles() {
-        var pos = self().getPos();
+        var pos = self().getBlockPos();
         var facing = self().getFrontFacing();
 
         IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
@@ -86,7 +87,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     //////////////////////////////////////
 
     @Override
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
