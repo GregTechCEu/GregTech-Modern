@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item;
+package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
