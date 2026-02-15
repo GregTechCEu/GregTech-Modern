@@ -37,8 +37,8 @@ import com.gregtechceu.gtceu.data.fluid.GTFluids;
 import com.gregtechceu.gtceu.data.model.GTModels;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
-import com.gregtechceu.gtceu.forge.CommonEventListener;
 import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
+import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
@@ -65,10 +65,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ClientInit {
+public class ClientProxy {
 
     public static void init(IEventBus modBus) {
-        modBus.register(ClientInit.class);
+        modBus.register(ClientProxy.class);
         if (!GTCEu.isDataGen()) {
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");

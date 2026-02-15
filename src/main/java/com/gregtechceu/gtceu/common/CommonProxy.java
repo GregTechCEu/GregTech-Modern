@@ -157,18 +157,18 @@ import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-public class CommonInit {
+public class CommonProxy {
 
     private static IEventBus modBus;
 
     public static void init(final IEventBus modBus) {
-        CommonInit.modBus = modBus;
+        CommonProxy.modBus = modBus;
         if (GTCEu.Mods.isKubeJSLoaded()) {
             // initialize this before the class's static listeners
             // so KubeJS materials are registered before the material registry is closed.
             modBus.addListener(EventPriority.LOW, GTKubeJSPlugin::registerWrappers);
         }
-        modBus.register(CommonInit.class);
+        modBus.register(CommonProxy.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
@@ -345,7 +345,7 @@ public class CommonInit {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonInit::postInitMaterials);
+        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonProxy::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
