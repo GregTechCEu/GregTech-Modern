@@ -589,7 +589,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
-        GTMultiblockTextUtil.addProgressLine(this, syncManager);
+        listWidget.child(GTMultiblockTextUtil.addProgressLine(this, syncManager));
 
         listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
                 .asWidget()
