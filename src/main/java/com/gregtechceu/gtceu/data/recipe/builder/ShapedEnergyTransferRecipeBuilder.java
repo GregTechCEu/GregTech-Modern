@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.kind.ShapedEnergyTransferRecipe;
+import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;

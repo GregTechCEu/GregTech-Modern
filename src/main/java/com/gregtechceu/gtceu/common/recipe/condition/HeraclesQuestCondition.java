@@ -2,9 +2,9 @@
 
 // import com.gregtechceu.gtceu.GTCEu;
 // import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-// import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+// import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 // import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-// import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+// import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 // import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 // import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 

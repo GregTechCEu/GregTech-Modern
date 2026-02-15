@@ -31,7 +31,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.common.data.GTCovers;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.common.data.inject.GTEnumProxies;
-import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.data.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -84,8 +84,8 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.ITEM;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.TOOL;
-import static com.gregtechceu.gtceu.common.data.model.GTModels.createTextureModel;
-import static com.gregtechceu.gtceu.common.data.model.GTModels.overrideModel;
+import static com.gregtechceu.gtceu.common.data.models.GTModels.createTextureModel;
+import static com.gregtechceu.gtceu.common.data.models.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class GTItems {

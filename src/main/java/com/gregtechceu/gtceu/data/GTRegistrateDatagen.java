@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.data.tag.BlockTagLoader;
-import com.gregtechceu.gtceu.data.tag.EntityTypeTagLoader;
-import com.gregtechceu.gtceu.data.tag.FluidTagLoader;
-import com.gregtechceu.gtceu.data.tag.ItemTagLoader;
+import com.gregtechceu.gtceu.data.tags.BlockTagLoader;
+import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
+import com.gregtechceu.gtceu.data.tags.FluidTagLoader;
+import com.gregtechceu.gtceu.data.tags.ItemTagLoader;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccessor;
 import com.gregtechceu.gtceu.data.datamap.DataMapsHandler;

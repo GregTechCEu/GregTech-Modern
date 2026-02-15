@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.kind.ShapedFluidContainerRecipe;
+import com.gregtechceu.gtceu.api.recipe.ShapedFluidContainerRecipe;
 
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;

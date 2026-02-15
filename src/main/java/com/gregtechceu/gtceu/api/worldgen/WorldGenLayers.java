@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.WorldGenLayerKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.WorldGenLayerEventJS;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -70,7 +70,7 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     private static final class KJSCallWrapper {
 
         private static void postEvent() {
-            GTCEuStartupEvents.WORLD_GEN_LAYERS.post(new WorldGenLayerKubeEvent());
+            GTCEuStartupEvents.WORLD_GEN_LAYERS.post(new WorldGenLayerEventJS());
         }
     }
 }

@@ -23,9 +23,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinKubeEvent;
-import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinKubeEvent;
-import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.*;
@@ -418,15 +418,15 @@ public class MixinHelpers {
     private static final class KJSCallWrapper {
 
         private static void postOreVeinEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinKubeEvent());
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
         }
 
         private static void postBedrockFluidEvent() {
-            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinKubeEvent());
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS());
         }
 
         private static void postBedrockOreEvent() {
-            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent());
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS());
         }
     }
 

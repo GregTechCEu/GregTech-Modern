@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.common.network.packets.SPacketNotifyCapeChange;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.RegisterCapesKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterCapesEventJS;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.gregtechceu.gtceu.common.data.GTCommands.ERROR_NO_SUCH_CAPE;
+import static com.gregtechceu.gtceu.common.commands.GTCommands.ERROR_NO_SUCH_CAPE;
 
 public class CapeRegistry extends SavedData {
 
@@ -319,7 +319,7 @@ public class CapeRegistry extends SavedData {
     private static class KJSCallWrapper {
 
         public static void fireKJSEvent(RegisterGTCapesEvent event) {
-            GTCEuServerEvents.REGISTER_CAPES.post(ScriptType.SERVER, new RegisterCapesKubeEvent(event));
+            GTCEuServerEvents.REGISTER_CAPES.post(ScriptType.SERVER, new RegisterCapesEventJS(event));
         }
     }
 }

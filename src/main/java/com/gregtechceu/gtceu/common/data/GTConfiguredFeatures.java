@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.FluidSproutConfiguration;
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.StoneBlobConfiguration;
-import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;

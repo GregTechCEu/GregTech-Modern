@@ -10,11 +10,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTItems;
-import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.RegisterWoodsKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterWoodsEventJS;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.BIO_CHAFF;
-import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class WoodMachineRecipes {
@@ -312,7 +312,7 @@ public class WoodMachineRecipes {
         if (CUSTOM_ENTRIES == null) {
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
-                var evt = new RegisterWoodsKubeEvent();
+                var evt = new RegisterWoodsEventJS();
                 GTCEuStartupEvents.REGISTER_WOODS.post(evt);
                 CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
             } else {

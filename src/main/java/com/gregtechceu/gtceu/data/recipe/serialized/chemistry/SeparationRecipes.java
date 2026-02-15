@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.PLANT_BALL;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.STICKY_RESIN;
-import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class SeparationRecipes {

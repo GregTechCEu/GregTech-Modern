@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.kind.StrictShapedRecipe;
+import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;

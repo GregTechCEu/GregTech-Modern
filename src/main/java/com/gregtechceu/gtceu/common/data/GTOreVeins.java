@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
 import static com.gregtechceu.gtceu.api.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
-import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 @SuppressWarnings("unused")
 public class GTOreVeins {
