@@ -44,20 +44,15 @@ public class ShearBehavior implements IToolBehavior {
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        // Do not return ToolActions.SHEARS_HARVEST or ToolActions.SHEARS_CARVE otherwise AOE will not work on
-        // beehive/nest
-        // or pumpkin because the use method of the block will succeed and prevent the onItemUse method of Item to be
-        // called
-        // (see PlayerInteractEvent$RightClickBlock)
-        return action == ToolActions.SHEARS_DISARM;
+        return action == ToolActions.SHEARS_DISARM || action == ToolActions.SHEARS_HARVEST ||
+                action == ToolActions.SHEARS_CARVE;
     }
 
     @Override
-    public @NotNull InteractionResult onItemUse(UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
-        ItemStack stack = context.getItemInHand();
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
 
         List<BlockPos> blocks;
@@ -67,7 +62,6 @@ public class ShearBehavior implements IToolBehavior {
                 blocks = List.of(pos);
             } else {
                 blocks = getShearableBlocks(aoeDefinition, context);
-                blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;
@@ -77,6 +71,12 @@ public class ShearBehavior implements IToolBehavior {
         for (BlockPos blockPos : blocks) {
             BlockState state = level.getBlockState(blockPos);
             Block block = state.getBlock();
+
+            // Clicked pos already handled by the use method of BeehiveBlock, PumpkinBlock and GrowingPlantHeadBlock so
+            // skip it.
+            if (blockPos.equals(pos) && !(block instanceof IForgeShearable)) {
+                continue;
+            }
 
             // Can handle MC special cases like Beehive/nest, Pumpkin, vines which can be sheared to prevent growing.
             // Best would be to patch Pumpkin, Beehive/nest and GrowingPlantHead blocks to implement
