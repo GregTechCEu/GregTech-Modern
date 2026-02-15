@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
+import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.worldgen.ores.OreGenerator;
+import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;

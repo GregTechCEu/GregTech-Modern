@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.cache;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;

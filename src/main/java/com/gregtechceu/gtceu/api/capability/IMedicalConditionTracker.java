@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 
 import net.minecraft.world.effect.MobEffect;
 

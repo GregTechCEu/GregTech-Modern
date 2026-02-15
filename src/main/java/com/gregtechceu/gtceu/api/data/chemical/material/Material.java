@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;

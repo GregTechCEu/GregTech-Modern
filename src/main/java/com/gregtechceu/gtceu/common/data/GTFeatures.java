@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
+import com.gregtechceu.gtceu.api.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.worldgen.modifier.DimensionFilter;
+import com.gregtechceu.gtceu.api.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.feature.FluidSproutFeature;
 import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;

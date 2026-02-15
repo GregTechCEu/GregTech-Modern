@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks;
 
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;

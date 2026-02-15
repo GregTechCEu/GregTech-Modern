@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.ore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;

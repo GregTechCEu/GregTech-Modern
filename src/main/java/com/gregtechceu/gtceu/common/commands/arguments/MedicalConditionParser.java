@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;

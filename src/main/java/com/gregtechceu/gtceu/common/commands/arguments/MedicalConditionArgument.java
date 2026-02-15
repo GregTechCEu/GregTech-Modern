@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;

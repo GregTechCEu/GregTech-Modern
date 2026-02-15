@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.common.pipelike.duct.*;

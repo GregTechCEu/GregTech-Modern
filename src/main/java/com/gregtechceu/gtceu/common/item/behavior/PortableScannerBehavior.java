@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;

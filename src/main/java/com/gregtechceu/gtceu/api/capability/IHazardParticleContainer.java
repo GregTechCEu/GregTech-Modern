@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 
 import net.minecraft.core.Direction;
 

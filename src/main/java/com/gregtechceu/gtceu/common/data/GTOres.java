@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.worldgen.*;
+import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.HolderSet;
@@ -30,8 +30,8 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
+import static com.gregtechceu.gtceu.api.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 @SuppressWarnings("unused")

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.resources.ResourceLocation;
