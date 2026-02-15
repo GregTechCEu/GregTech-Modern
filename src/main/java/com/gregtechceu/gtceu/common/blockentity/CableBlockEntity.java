@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.block.CableBlock;
@@ -21,9 +23,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -58,9 +57,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties> implements IDataInfoProvider {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CableBlockEntity.class,
-            PipeBlockEntity.MANAGED_FIELD_HOLDER);
-
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
     @SideOnly(Side.CLIENT)
@@ -74,8 +70,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     private EnergyNetHandler defaultHandler;
     private int heatQueue;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private int temperature = getDefaultTemp();
     private TickableSubscription heatSubs;
 
@@ -327,6 +323,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+        syncDataHolder.markClientSyncFieldDirty("temperature");
         level.getLightEngine().checkBlock(worldPosition);
         if (!level.isClientSide && temperature >= meltTemp) {
             var facing = Direction.UP;
@@ -362,11 +359,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

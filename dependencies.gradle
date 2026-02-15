@@ -22,8 +22,7 @@ dependencies {
     modCompileOnly(forge.bundles.rei)
     modCompileOnly(forge.emi)
 
-    // WAILA-likes
-    modCompileOnly(forge.theoneprobe)
+    // Jade (WAILA)
     modCompileOnly(forge.jade)
 
     // Curios

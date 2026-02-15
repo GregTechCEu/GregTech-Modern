@@ -24,7 +24,6 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -236,9 +235,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestSucceeds(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -257,9 +255,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestDoesntSucceed(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -278,9 +275,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestChanced(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -306,9 +302,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestRanged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -334,9 +329,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestChancedRanged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);

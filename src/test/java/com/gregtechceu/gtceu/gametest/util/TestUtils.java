@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -10,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -21,6 +19,7 @@ import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -237,7 +235,7 @@ public class TestUtils {
 
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
+        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
@@ -267,16 +265,6 @@ public class TestUtils {
     }
 
     /**
-     * Shortcut function to retrieve a metamachine from a blockentity's
-     *
-     * @param entity The MetaMachineBlockEntity
-     * @return the machine held, if any
-     */
-    public static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
-    }
-
-    /**
      * Helper function to succeed after the test is over
      *
      * @param helper GameTestHelper
@@ -297,5 +285,32 @@ public class TestUtils {
 
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    public static void assertRedstone(GameTestHelper helper, BlockPos pos, int min, int max) {
+        BlockPos absolutePos = helper.absolutePos(pos);
+        int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
+        if (strength > max || strength < min) {
+            throw new GameTestAssertPosException(
+                    "Expected redstone signal between %d and %d, got %d".formatted(min, max, strength),
+                    absolutePos, pos, helper.getTick());
+        }
+    }
+
+    public static void assertRedstoneEither(GameTestHelper helper, BlockPos pos, int... values) {
+        BlockPos absolutePos = helper.absolutePos(pos);
+        int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
+        boolean pass = false;
+        for (int i : values) {
+            if (i == strength) {
+                pass = true;
+                break;
+            }
+        }
+        if (!pass) {
+            throw new GameTestAssertPosException(
+                    "Expected redstone signal to be one of %s, got %d".formatted(values, strength),
+                    absolutePos, pos, helper.getTick());
+        }
     }
 }

@@ -8,16 +8,16 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -49,21 +49,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
+public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight, ICopyable {
 
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
+
     public final CoverDefinition coverDefinition;
     public final ICoverable coverHolder;
     public final Direction attachedSide;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected ItemStack attachItem = ItemStack.EMPTY;
     @Getter
-    @Persisted
+    @SaveField
     protected int redstoneSignalOutput = 0;
 
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -75,21 +74,14 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
     public void scheduleRenderUpdate() {
         coverHolder.scheduleRenderUpdate();
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void onChanged() {
-        var level = coverHolder.getLevel();
-        if (level != null && !level.isClientSide && level.getServer() != null) {
-            level.getServer().execute(coverHolder::markDirty);
+    public void markAsChanged() {
+        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
+            syncEntity.markAsChanged();
         }
     }
 
@@ -101,7 +93,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
      */
     @MustBeInvokedByOverriders
     public boolean canAttach() {
-        var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         return machine == null ||
                 (machine.getDefinition().isAllowCoverOnFront() || !machine.hasFrontFacing() ||
                         coverHolder.getFrontFacing() != attachedSide);
@@ -116,6 +108,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         attachItem = itemStack.copy();
         attachItem.setCount(1);
+        syncDataHolder.markClientSyncFieldDirty("attachItem");
     }
 
     public void onLoad() {}
@@ -148,7 +141,6 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         if (this.redstoneSignalOutput == redstoneSignalOutput) return;
         this.redstoneSignalOutput = redstoneSignalOutput;
         coverHolder.notifyBlockUpdate();
-        coverHolder.markDirty();
     }
 
     public boolean canConnectRedstone() {
