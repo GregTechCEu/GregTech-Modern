@@ -43,7 +43,7 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
-import com.gregtechceu.gtceu.forge.ForgeCommonEventListener;
+import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
@@ -87,7 +87,7 @@ public class ClientProxy extends CommonProxy {
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
-            ForgeCommonEventListener.registerCapes(new RegisterGTCapesEvent());
+            CommonEventListener.registerCapes(new RegisterGTCapesEvent());
         }
         initializeDynamicRenders();
     }

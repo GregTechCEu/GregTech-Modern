@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.forge;
+package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
@@ -111,7 +111,7 @@ import java.util.regex.Pattern;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnderscore;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ForgeCommonEventListener {
+public class CommonEventListener {
 
     @SubscribeEvent
     public static void registerItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
