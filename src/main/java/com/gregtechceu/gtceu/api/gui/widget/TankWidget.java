@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
-import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -220,9 +219,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (self().isMouseOverElement(mouseX, mouseY)) {
             if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
 
-            if (fluidTank instanceof CycleFluidStackHandler stackHandler) {
-                return getXEIIngredientsClickable(stackHandler, tank).get(0);
-            } else if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
+            if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
                 return getXEIIngredientsClickable(entryHandler, tank).get(0);
             }
 
@@ -241,9 +238,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public List<Object> getXEIIngredients() {
         if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return Collections.emptyList();
 
-        if (fluidTank instanceof CycleFluidStackHandler stackHandler) {
-            return getXEIIngredientsClickable(stackHandler, tank);
-        } else if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
+        if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
             return getXEIIngredientsClickable(entryHandler, tank);
         }
 
@@ -255,30 +250,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             return List.of(ForgeEmiStack.of(lastFluidInTank).setChance(XEIChance));
         }
         return List.of(lastFluidInTank);
-    }
-
-    private List<Object> getXEIIngredients(CycleFluidStackHandler handler, int index) {
-        FluidStackList stackList = handler.getStackList(index);
-        if (GTCEu.Mods.isJEILoaded()) {
-            return JEICallWrapper.getJEIIngredients(stackList);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            return REICallWrapper.getREIIngredients(stackList);
-        } else if (GTCEu.Mods.isEMILoaded()) {
-            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance());
-        }
-        return Collections.emptyList();
-    }
-
-    private List<Object> getXEIIngredientsClickable(CycleFluidStackHandler handler, int index) {
-        FluidStackList stackList = handler.getStackList(index);
-        if (GTCEu.Mods.isJEILoaded()) {
-            return JEICallWrapper.getJEIIngredientsClickable(stackList, getPosition(), getSize());
-        } else if (GTCEu.Mods.isREILoaded()) {
-            return REICallWrapper.getREIIngredients(stackList);
-        } else if (GTCEu.Mods.isEMILoaded()) {
-            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance());
-        }
-        return Collections.emptyList();
     }
 
     private List<Object> getXEIIngredients(CycleFluidEntryHandler handler, int index) {
