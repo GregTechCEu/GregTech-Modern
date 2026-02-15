@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.tag;
+package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
 

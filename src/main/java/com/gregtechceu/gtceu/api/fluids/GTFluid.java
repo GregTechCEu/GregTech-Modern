@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -17,15 +18,19 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,10 +49,11 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
     private final Supplier<? extends LiquidBlock> block;
     @Getter
     private final int burnTime;
+    private final Supplier<FluidType> fluidType;
 
     public GTFluid(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
                    Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
-                   Supplier<? extends Item> bucket, int burnTime) {
+                   Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
         super();
         this.state = state;
         this.stillFluid = stillFluid;
@@ -55,6 +61,7 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
         this.block = block;
         this.bucketItem = bucket;
         this.burnTime = burnTime;
+        this.fluidType = fluidType;
     }
 
     @Override
@@ -126,5 +133,59 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
         boolean still = this.getSource() == fluid;
         boolean flowing = this.getFlowing() == fluid;
         return still || flowing;
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return fluidType.get();
+    }
+
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        return fluidType != null && fluidType.get() != null ?
+                Optional.ofNullable(fluidType.get().getSound(SoundActions.BUCKET_FILL)) : Optional.empty();
+    }
+
+    public static class Source extends GTFluid {
+
+        public Source(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                      Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                      Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
+            super(state, stillFluid, flowingFluid, block, bucket, burnTime, fluidType);
+        }
+
+        @Override
+        public int getAmount(net.minecraft.world.level.material.FluidState state) {
+            return 8;
+        }
+
+        @Override
+        public boolean isSource(net.minecraft.world.level.material.FluidState state) {
+            return true;
+        }
+    }
+
+    public static class Flowing extends GTFluid {
+
+        public Flowing(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                       Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                       Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
+            super(state, stillFluid, flowingFluid, block, bucket, burnTime, fluidType);
+        }
+
+        protected void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid, net.minecraft.world.level.material.FluidState> builder) {
+            super.createFluidStateDefinition(builder);
+            builder.add(LEVEL);
+        }
+
+        @Override
+        public int getAmount(net.minecraft.world.level.material.FluidState state) {
+            return state.getValue(LEVEL);
+        }
+
+        @Override
+        public boolean isSource(net.minecraft.world.level.material.FluidState state) {
+            return false;
+        }
     }
 }
