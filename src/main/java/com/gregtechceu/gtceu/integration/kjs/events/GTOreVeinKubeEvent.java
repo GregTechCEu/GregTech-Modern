@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
-import com.gregtechceu.gtceu.data.worldgen.GTOreVeins;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;

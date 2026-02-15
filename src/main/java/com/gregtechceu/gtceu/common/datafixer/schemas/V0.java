@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.datafixer.schemas;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.datafixer.GTReferences;
+import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;

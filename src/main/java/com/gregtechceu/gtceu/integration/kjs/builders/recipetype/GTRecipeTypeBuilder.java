@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;

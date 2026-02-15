@@ -12,9 +12,9 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;

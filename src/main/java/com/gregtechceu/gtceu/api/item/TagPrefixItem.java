@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;

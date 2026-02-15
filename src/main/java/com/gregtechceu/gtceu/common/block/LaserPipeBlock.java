@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LevelLaserPipeNet;
-import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;

@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

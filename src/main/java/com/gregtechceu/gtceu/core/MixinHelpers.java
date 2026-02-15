@@ -19,9 +19,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExte
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.item.GTMaterialItems;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinKubeEvent;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinKubeEvent;

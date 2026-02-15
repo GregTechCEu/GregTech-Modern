@@ -24,9 +24,9 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.ItemWithBERModelRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.datagen.model.builder.MachineModelBuilder;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -73,8 +73,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
-
-import static com.gregtechceu.gtceu.data.model.GTMachineModels.*;
 
 @SuppressWarnings("unused")
 @RemapPrefixForJS("kjs$")

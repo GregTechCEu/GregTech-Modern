@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.component.DataComponents;

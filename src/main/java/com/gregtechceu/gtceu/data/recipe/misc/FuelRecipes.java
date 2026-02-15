@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class FuelRecipes {
 

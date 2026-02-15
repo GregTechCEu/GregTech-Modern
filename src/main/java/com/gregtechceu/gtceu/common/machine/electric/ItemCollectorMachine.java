@@ -22,9 +22,9 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.item.GTItemAbilities;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;

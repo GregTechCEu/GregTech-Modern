@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;

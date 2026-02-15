@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.kind;
 
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
+import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

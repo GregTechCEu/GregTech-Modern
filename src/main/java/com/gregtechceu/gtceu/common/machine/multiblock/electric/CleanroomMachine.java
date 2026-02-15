@@ -36,9 +36,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

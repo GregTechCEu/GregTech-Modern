@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

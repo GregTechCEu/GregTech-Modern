@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.medicalcondition;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.data.effect.GTMobEffects;
+import com.gregtechceu.gtceu.common.data.GTMobEffects;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;

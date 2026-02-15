@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;

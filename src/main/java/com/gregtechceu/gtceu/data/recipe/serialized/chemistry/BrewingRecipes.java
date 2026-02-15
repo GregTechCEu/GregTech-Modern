@@ -8,9 +8,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.data.item.GTItems.BIO_CHAFF;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.BREWING_RECIPES;
+import static com.gregtechceu.gtceu.common.data.item.GTItems.BIO_CHAFF;
+import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.BREWING_RECIPES;
 
 public class BrewingRecipes {
 

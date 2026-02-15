@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.material.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.model.GTModels;
+import com.gregtechceu.gtceu.common.data.model.GTModels;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialIconInfoKubeEvent;
 

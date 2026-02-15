@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;

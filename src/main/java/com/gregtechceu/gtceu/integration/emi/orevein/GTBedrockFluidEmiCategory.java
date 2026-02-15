@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

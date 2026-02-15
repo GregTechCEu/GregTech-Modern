@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.item.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.component.DataComponents;

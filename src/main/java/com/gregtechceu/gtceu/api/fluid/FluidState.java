@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.fluid;
 
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;

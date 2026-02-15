@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 
+import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -94,7 +95,7 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
     /**
      * Queries if an item can perform the given action.
      * See {@link ItemAbilities} for a description of each stock action
-     * and {@link com.gregtechceu.gtceu.data.item.GTItemAbilities} for GTCEu's ones
+     * and {@link GTItemAbilities} for GTCEu's ones
      *
      * @param stack  The stack being used
      * @param action The ability being queried

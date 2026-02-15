@@ -4,8 +4,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class NaquadahRecipes {
 

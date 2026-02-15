@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;

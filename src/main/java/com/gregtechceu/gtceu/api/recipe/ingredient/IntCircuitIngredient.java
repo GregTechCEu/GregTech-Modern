@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;

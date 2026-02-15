@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.jei.orevein;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;

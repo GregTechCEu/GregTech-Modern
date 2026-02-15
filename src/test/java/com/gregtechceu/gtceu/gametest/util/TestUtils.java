@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ELECTRIC;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
 public class TestUtils {
 

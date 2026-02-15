@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.data.worldgen.GTDensityFunctions;
+import com.gregtechceu.gtceu.common.data.GTDensityFunctions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;

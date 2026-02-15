@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory.sortDefinition;
 
 public class GTOreProcessingEmiCategory extends EmiRecipeCategory {

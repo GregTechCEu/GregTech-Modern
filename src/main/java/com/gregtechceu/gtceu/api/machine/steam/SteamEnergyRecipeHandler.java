@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.neoforged.neoforge.fluids.FluidStack;

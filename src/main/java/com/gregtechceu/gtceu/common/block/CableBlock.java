@@ -17,9 +17,9 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

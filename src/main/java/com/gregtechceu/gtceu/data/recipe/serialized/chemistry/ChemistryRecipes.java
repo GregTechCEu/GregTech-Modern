@@ -9,8 +9,8 @@ import net.minecraft.world.level.Level;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.ingot;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ChemistryRecipes {
 

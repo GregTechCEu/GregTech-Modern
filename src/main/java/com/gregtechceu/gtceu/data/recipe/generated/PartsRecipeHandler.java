@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.RecipeOutput;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public final class PartsRecipeHandler {
 

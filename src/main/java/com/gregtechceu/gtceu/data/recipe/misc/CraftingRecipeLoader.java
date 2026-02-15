@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.recipe.kind.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -22,8 +22,8 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.material.GTMaterials.*;
 
 public class CraftingRecipeLoader {
 

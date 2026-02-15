@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.kind;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
+import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;

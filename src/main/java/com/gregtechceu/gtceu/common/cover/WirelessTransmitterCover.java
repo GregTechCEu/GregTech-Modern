@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 

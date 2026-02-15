@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -47,7 +47,6 @@ import java.util.*;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_DURATION_FACTOR;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_VOLTAGE_FACTOR;
-import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
 
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 

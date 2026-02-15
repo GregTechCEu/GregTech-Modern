@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.GrowingPlantBlockAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntegerPropertyAccessor;
 import com.gregtechceu.gtceu.core.mixins.StemBlockAccessor;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 

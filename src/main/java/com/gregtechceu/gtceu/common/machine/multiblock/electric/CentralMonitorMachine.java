@@ -27,9 +27,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

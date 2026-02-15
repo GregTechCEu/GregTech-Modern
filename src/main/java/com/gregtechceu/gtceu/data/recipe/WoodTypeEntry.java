@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

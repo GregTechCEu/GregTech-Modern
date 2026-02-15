@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.gregtechceu.gtceu.data.command.GTCommands.ERROR_NO_SUCH_CAPE;
+import static com.gregtechceu.gtceu.common.data.GTCommands.ERROR_NO_SUCH_CAPE;
 
 public class CapeRegistry extends SavedData {
 

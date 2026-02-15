@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 

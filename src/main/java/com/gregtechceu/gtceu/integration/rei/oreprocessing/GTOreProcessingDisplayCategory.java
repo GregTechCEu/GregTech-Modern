@@ -23,7 +23,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
 
 public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTOreProcessingDisplay> {
 

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Blocks;

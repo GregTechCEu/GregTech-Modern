@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.material.material.stack;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;

@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.common.cover.ender.EnderItemLinkCover;
 import com.gregtechceu.gtceu.common.cover.ender.EnderRedstoneLinkCover;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;

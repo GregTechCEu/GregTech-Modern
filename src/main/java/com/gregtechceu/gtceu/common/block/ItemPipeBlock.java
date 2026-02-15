@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
-import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

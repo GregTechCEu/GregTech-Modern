@@ -8,15 +8,15 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.component.CraftingComponent;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
-import com.gregtechceu.gtceu.data.machine.GTMultiMachines;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.machine.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.machine.GTMachines;
+import com.gregtechceu.gtceu.common.data.machine.GTMultiMachines;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
+import static com.gregtechceu.gtceu.common.data.GTCraftingComponents.*;
 
 public class MetaTileEntityLoader {
 

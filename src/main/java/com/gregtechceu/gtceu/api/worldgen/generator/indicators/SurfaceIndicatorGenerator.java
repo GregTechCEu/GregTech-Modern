@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreIndicatorPlacer;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

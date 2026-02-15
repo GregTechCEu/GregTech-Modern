@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

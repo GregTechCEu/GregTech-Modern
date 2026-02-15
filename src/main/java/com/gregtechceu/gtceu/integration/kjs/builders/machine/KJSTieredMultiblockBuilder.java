@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.machine.GTMachineUtils;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;

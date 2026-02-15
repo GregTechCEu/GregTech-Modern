@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jei.subtype;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.world.item.ItemStack;
 

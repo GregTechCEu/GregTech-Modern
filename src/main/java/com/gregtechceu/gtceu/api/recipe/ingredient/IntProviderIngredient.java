@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
+import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;

@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.item.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.material.GTMaterials;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -26,8 +26,8 @@ import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dustSmall;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dustTiny;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.turbineBlade;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeCategories.MACERATOR_RECYCLING;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.MACERATOR_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeCategories.MACERATOR_RECYCLING;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MACERATOR_RECIPES;
 
 public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
 
