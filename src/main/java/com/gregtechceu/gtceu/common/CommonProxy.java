@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.compat.GTEnergyWrapper;
+import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
@@ -422,7 +422,7 @@ public class CommonProxy {
                             IEnergyStorage forgeEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos,
                                     state, blockEntity, side);
                             if (forgeEnergy != null) {
-                                return new GTEnergyWrapper(forgeEnergy);
+                                return new EUToFEProvider(forgeEnergy);
                             }
                             return null;
                         }, block);

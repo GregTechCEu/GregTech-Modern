@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class GTEnergyWrapper implements IEnergyContainer {
+public class EUToFEProvider implements IEnergyContainer {
 
     /**
      * Internally used FE Buffer so that a very large packet of EU is not partially destroyed
@@ -19,7 +19,7 @@ public class GTEnergyWrapper implements IEnergyContainer {
 
     private final IEnergyStorage energyStorage;
 
-    public GTEnergyWrapper(IEnergyStorage energyStorage) {
+    public EUToFEProvider(IEnergyStorage energyStorage) {
         this.energyStorage = energyStorage;
     }
 

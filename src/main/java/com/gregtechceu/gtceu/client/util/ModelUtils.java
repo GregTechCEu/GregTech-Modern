@@ -94,13 +94,7 @@ public class ModelUtils {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ResourceManagerReloadListener() {
-
-            @Override
-            public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-                EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
-            }
-        });
+        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload));
     }
 
     @SuppressWarnings({ "unchecked", "deprecation" })
