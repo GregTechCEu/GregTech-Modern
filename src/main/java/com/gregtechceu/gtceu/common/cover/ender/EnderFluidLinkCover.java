@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -126,7 +127,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
         if (!(entry instanceof VirtualTank tank)) return new ParentWidget<>().size(w, h);
-        return new FluidSlot().syncHandler(SyncHandlers.fluidSlot(tank.getFluidTank()))
+        manager.getOrCreateSyncHandler("ender_link_cover_fluid_slot_" + index, FluidSlotSyncHandler.class, () -> SyncHandlers.fluidSlot(tank.getFluidTank()));
+
+        return new FluidSlot().syncHandler("ender_link_cover_fluid_slot_" + index)
                 .marginLeft(3)
                 .size(w, h)
         // return new FluidSlot()

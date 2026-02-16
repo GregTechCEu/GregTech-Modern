@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ByteBufAdapters {
 
@@ -136,6 +137,31 @@ public class ByteBufAdapters {
         @Override
         public boolean areEqual(@NotNull GTRecipe t1, @NotNull GTRecipe t2) {
             return EqualityTest.wrapNullSafe(GTRecipe::equals).areEqual(t1, t2);
+        }
+    };
+
+    public static final IByteBufAdapter<UUID> UUID = new IByteBufAdapter<>() {
+
+        @Override
+        public UUID deserialize(FriendlyByteBuf buffer) {
+            if (!buffer.readBoolean()) {
+                return null;
+            }
+            return buffer.readUUID();
+        }
+
+        @Override
+        public void serialize(FriendlyByteBuf buffer, UUID u) {
+            if (u == null) {
+                buffer.writeBoolean(false);
+                return;
+            }
+            buffer.writeUUID(u);
+        }
+
+        @Override
+        public boolean areEqual(@NotNull UUID t1, @NotNull UUID t2) {
+            return EqualityTest.wrapNullSafe(java.util.UUID::equals).areEqual(t1, t2);
         }
     };
 

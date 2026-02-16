@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
@@ -43,6 +44,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
 
 import net.minecraft.core.Direction;
@@ -56,6 +58,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
@@ -153,6 +156,18 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .build();
         syncManager.syncValue("entries", entries);
 
+        // TODO: Find out of this is needed
+        var owner = new GenericSyncValue.Builder<>(UUID.class)
+                .getter(() -> getOwner())
+                .adapter(ByteBufAdapters.UUID)
+                .build();
+        syncManager.syncValue("owner", owner);
+
+        syncManager.registerServerSyncedAction("deleteDescription", (packet) -> {
+            var colorString = packet.readCharSequence(8, StandardCharsets.UTF_8).toString();
+            VirtualEnderRegistry.getInstance().getEntry(getOwner(), getEntryType(), colorString).setDescription("");
+        });
+
         return Flow.column()
                 .child(new ToggleButton().value(BoolValue.wrap(isChannelListActive))
                         .overlay(GTGuiTextures.MORE)
@@ -199,8 +214,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .onMousePressed((x, y, button) -> {
                             MouseData mouseData = MouseData.create(button);
                             if (mouseData.mouseButton() == 1) {
-                                VirtualEnderRegistry.getInstance()
-                                        .getEntry(getOwner(), getEntryType(), entry.getColorStr()).setDescription("");
+                                syncManager.callSyncedAction("deleteDescription", buffer -> {
+                                    buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8);
+                                });
                                 return true;
                             }
                             return false;
