@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public class CraftingRecipeLoader {
 

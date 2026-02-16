@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 
 public final class WireCombiningHandler {
 

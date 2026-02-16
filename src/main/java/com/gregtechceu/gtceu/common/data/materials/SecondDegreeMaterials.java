@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class SecondDegreeMaterials {

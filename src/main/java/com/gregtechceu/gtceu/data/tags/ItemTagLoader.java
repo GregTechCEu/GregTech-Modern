@@ -20,6 +20,8 @@ import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 
 @SuppressWarnings({ "SameParameterValue", "DataFlowIssue" })
 public class ItemTagLoader {

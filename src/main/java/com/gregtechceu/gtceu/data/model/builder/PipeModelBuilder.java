@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.datagen.model.builder;
+package com.gregtechceu.gtceu.data.model.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;

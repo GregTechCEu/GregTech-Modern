@@ -13,16 +13,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.event.PostMaterialEvent;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -38,7 +37,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngre
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
@@ -46,56 +45,36 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
+import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
+import com.gregtechceu.gtceu.common.data.item.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
+import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.common.pack.GTDynamicDataPack;
-import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
-import com.gregtechceu.gtceu.common.pack.GTPackSource;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
-import com.gregtechceu.gtceu.data.command.GTCommandArguments;
-import com.gregtechceu.gtceu.data.cover.GTCovers;
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
-import com.gregtechceu.gtceu.data.datafixer.GTDataFixers;
-import com.gregtechceu.gtceu.data.datagen.GTRegistrateDatagen;
-import com.gregtechceu.gtceu.data.datagen.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.effect.GTMobEffects;
-import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
-import com.gregtechceu.gtceu.data.fluid.GTFluids;
-import com.gregtechceu.gtceu.data.item.*;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.data.GTRegistrateDatagen;
+import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
-import com.gregtechceu.gtceu.data.material.GTElements;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.misc.GTAttachmentTypes;
-import com.gregtechceu.gtceu.data.misc.GTCreativeModeTabs;
-import com.gregtechceu.gtceu.data.misc.GTDimensionMarkers;
-import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
 import com.gregtechceu.gtceu.data.placeholder.GTPlaceholders;
 import com.gregtechceu.gtceu.data.recipe.*;
-import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
-import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.gregtechceu.gtceu.data.tools.GTToolTiers;
-import com.gregtechceu.gtceu.data.valueprovider.GTValueProviderTypes;
-import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
-import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.integration.top.TheOneProbePlugin;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
@@ -146,7 +125,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mcjty.theoneprobe.api.ITheOneProbe;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
@@ -419,12 +397,6 @@ public class CommonProxy {
     @SubscribeEvent
     public static void loadComplete(FMLLoadCompleteEvent event) {}
 
-    @SubscribeEvent
-    public static void interModProcess(InterModProcessEvent event) {
-        InterModComms.sendTo("theoneprobe", "getTheOneProbe",
-                () -> (Function<ITheOneProbe, Void>) TheOneProbePlugin::init);
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(FluidHandler.ITEM, BottleItemFluidHandler::new, Items.GLASS_BOTTLE);
@@ -530,7 +502,7 @@ public class CommonProxy {
     public static final class KJSEventWrapper {
 
         public static void materialModification() {
-            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationKubeEvent());
+            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
         }
     }
 }

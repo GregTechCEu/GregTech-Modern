@@ -35,6 +35,7 @@ import java.util.List;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.GTValues.LuV;
 import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public final class CustomToolRecipes {
 

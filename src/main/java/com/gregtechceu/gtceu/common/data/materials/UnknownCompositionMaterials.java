@@ -9,6 +9,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustSmall;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class UnknownCompositionMaterials {

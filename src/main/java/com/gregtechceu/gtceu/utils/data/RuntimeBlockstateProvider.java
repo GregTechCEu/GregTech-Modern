@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.utils.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import net.minecraft.core.registries.BuiltInRegistries;

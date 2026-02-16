@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public class MetaTileEntityLoader {
 

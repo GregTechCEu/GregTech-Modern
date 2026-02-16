@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -528,7 +529,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "redstone_torch", new ItemStack(Blocks.REDSTONE_TORCH), "R",
                     "T",
-                    'R', new MaterialEntry(TagPrefix.dust, GTMaterials.Redstone),
+                    'R', new MaterialEntry(dust, GTMaterials.Redstone),
                     'T', new ItemStack(Blocks.TORCH));
 
             ASSEMBLER_RECIPES.recipeBuilder("calibrated_sculk_sensor")
@@ -1356,13 +1357,13 @@ public class RecipeAddition {
 
     private static void nerfPaperCrafting(RecipeOutput provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "paper_dust",
-                ChemicalHelper.get(TagPrefix.dust, GTMaterials.Paper, 2), "SSS", " m ", 'S',
+                ChemicalHelper.get(dust, GTMaterials.Paper, 2), "SSS", " m ", 'S',
                 new ItemStack(Items.SUGAR_CANE));
-        VanillaRecipeHelper.addShapedRecipe(provider, "sugar", ChemicalHelper.get(TagPrefix.dust, GTMaterials.Sugar, 1),
+        VanillaRecipeHelper.addShapedRecipe(provider, "sugar", ChemicalHelper.get(dust, GTMaterials.Sugar, 1),
                 "Sm ", 'S', new ItemStack(Items.SUGAR_CANE));
         VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
                 " r ", "SSS", " B ",
-                'S', new MaterialEntry(TagPrefix.dust, GTMaterials.Paper),
+                'S', new MaterialEntry(dust, GTMaterials.Paper),
                 'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));
     }
 

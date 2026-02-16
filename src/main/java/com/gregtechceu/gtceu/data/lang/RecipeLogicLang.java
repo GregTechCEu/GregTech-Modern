@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.datagen.lang;
+package com.gregtechceu.gtceu.data.lang;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 

@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccess
 import com.gregtechceu.gtceu.data.datamap.DataMapsHandler;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.model.BlockstateModelLoader;
-import com.gregtechceu.gtceu.data.datagen.tag.*;
+import com.gregtechceu.gtceu.data.tags.*;
 
 import net.minecraft.data.DataProvider;
 

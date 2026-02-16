@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.common.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
 
 import net.minecraft.commands.CommandBuildContext;

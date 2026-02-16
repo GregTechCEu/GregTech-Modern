@@ -74,6 +74,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+
 @SuppressWarnings("unused")
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)

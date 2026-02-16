@@ -29,6 +29,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
 import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public class GCYMRecipes {
 

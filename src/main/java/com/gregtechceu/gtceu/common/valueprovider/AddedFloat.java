@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.valueprovider;
 
-import com.gregtechceu.gtceu.data.valueprovider.GTValueProviderTypes;
+import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
