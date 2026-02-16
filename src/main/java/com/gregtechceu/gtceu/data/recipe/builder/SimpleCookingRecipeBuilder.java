@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
+
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -12,10 +12,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
+import com.google.gson.JsonObject;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -119,7 +120,6 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
             result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
         }
         json.add("result", result);
-
 
         json.addProperty("experience", experience);
         json.addProperty("cookingtime", cookingTime);
