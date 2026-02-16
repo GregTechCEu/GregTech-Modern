@@ -45,7 +45,6 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
-import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -235,7 +234,6 @@ public class CommonProxy {
         KeyBind.init();
         MachineOwner.init();
         ChestGenHooks.init();
-        GTDataFixers.init();
     }
 
     @ApiStatus.Internal

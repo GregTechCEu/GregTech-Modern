@@ -39,7 +39,6 @@
         "BlockPropertiesAccessor",
         "ChunkGeneratorMixin",
         "ChunkSerializerMixin",
-        "DataFixTypesMixin",
         "EntityMixin",
         "FluidStackAccessor",
         "GrowingPlantBlockAccessor",
