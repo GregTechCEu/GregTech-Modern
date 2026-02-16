@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
-import com.gregtechceu.gtceu.data.tags.DamageTagsLoader;
+import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -47,7 +47,7 @@ public class DataGenerators {
                             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
                     set));
             generator.addProvider(true,
-                    new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+                    new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
         }
     }
 }

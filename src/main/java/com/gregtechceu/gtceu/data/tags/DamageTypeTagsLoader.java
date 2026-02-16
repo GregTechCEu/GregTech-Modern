@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DamageTagsLoader extends TagsProvider<DamageType> {
+public class DamageTypeTagsLoader extends TagsProvider<DamageType> {
 
-    public DamageTagsLoader(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture,
-                            @Nullable ExistingFileHelper existingFileHelper) {
+    public DamageTypeTagsLoader(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture,
+                                @Nullable ExistingFileHelper existingFileHelper) {
         super(arg, Registries.DAMAGE_TYPE, completableFuture, GTCEu.MOD_ID, existingFileHelper);
     }
 
