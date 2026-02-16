@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketExcepti
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

@@ -6,19 +6,19 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
-import com.gregtechceu.gtceu.api.item.PipeBlockItem;
-import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.item.LampBlockItem;
-import com.gregtechceu.gtceu.utils.TagUtil;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
+import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
@@ -26,8 +26,8 @@ import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
-import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -81,8 +81,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings({ "removal", "unchecked" })
 public class GTBlocks {

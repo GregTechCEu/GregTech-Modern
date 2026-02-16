@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;

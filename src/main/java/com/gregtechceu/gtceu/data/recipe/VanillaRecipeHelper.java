@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
@@ -12,6 +10,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;

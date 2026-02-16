@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
-import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
 import net.minecraft.core.HolderLookup;

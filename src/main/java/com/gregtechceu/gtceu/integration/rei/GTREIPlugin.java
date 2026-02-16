@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.integration.rei;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.data.GTFluids;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.rei.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;

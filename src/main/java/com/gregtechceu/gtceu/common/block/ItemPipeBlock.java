@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

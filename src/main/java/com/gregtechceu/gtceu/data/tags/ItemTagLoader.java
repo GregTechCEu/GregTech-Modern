@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.ItemTags;
@@ -19,8 +19,8 @@ import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 @SuppressWarnings({ "SameParameterValue", "DataFlowIssue" })
 public class ItemTagLoader {

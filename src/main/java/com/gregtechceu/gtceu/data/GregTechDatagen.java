@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.data.tags.BlockTagLoader;
-import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
-import com.gregtechceu.gtceu.data.tags.FluidTagLoader;
-import com.gregtechceu.gtceu.data.tags.ItemTagLoader;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccessor;
 import com.gregtechceu.gtceu.data.datamap.DataMapsHandler;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.model.BlockstateModelLoader;
+import com.gregtechceu.gtceu.data.tags.BlockTagLoader;
+import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
+import com.gregtechceu.gtceu.data.tags.FluidTagLoader;
+import com.gregtechceu.gtceu.data.tags.ItemTagLoader;
 
 import net.minecraft.data.DataProvider;
 

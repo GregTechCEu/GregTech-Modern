@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;

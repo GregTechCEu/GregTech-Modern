@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 

@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;

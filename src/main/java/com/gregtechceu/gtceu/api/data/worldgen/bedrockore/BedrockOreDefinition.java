@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;

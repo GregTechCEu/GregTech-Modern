@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;

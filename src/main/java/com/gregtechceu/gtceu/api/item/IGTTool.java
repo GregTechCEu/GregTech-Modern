@@ -1,6 +1,13 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
@@ -11,19 +18,12 @@ import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

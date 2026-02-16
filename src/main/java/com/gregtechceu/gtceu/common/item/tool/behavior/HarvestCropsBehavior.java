@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;

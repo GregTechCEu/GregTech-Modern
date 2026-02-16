@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.fluids;
 
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;

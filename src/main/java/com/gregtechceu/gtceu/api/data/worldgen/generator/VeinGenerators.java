@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
 
 import net.minecraft.resources.ResourceLocation;
 

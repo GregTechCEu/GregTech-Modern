@@ -1,21 +1,21 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.TagPrefixItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 
@@ -46,9 +46,9 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MATERIAL_ITEM;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.TOOL;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTMaterialItems {
 

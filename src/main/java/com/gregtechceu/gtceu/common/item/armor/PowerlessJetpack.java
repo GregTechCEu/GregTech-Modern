@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 

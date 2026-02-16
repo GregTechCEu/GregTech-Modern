@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;

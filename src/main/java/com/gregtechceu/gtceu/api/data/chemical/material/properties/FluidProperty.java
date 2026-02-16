@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageImpl;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;

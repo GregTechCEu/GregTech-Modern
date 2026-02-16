@@ -20,12 +20,12 @@ import com.gregtechceu.gtceu.client.renderer.placeholder.ModulePlaceholderRender
 import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.BindingData;
 import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;

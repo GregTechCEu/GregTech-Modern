@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;

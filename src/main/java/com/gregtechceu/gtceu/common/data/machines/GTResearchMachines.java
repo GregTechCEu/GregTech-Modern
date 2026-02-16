@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.NetworkSwitchMachine;
@@ -26,8 +28,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMach
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -48,10 +48,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
 @MethodsReturnNonnullByDefault

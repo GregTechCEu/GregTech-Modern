@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.world.item.enchantment.Enchantments;

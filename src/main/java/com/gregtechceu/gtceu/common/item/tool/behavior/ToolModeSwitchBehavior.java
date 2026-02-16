@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
-import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

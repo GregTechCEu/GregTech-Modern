@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.tags.TagsHandler;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.StoneMachineRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
+import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 

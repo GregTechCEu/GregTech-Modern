@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -19,7 +19,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.machines.*;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
@@ -33,8 +35,6 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpo
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -54,13 +54,13 @@ import java.util.function.BiConsumer;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
-import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
-import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
-import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTMachines {
 

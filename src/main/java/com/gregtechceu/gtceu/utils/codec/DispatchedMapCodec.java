@@ -13,8 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record DispatchedMapCodec<K, V>(
-        Codec<K> keyCodec,
-        Function<K, Codec<? extends V>> valueCodecFunction)
+                                       Codec<K> keyCodec,
+                                       Function<K, Codec<? extends V>> valueCodecFunction)
         implements Codec<Map<K, V>> {
 
     @Override

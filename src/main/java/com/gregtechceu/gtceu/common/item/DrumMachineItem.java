@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;

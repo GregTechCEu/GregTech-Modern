@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.Node;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;

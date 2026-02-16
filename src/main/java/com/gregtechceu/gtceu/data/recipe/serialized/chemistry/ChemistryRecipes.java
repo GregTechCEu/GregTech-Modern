@@ -7,12 +7,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingot;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 
 public class ChemistryRecipes {
 

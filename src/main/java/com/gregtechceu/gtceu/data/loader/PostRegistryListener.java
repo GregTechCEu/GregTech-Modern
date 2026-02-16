@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.loader;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 

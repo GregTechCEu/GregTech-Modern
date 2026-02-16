@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;

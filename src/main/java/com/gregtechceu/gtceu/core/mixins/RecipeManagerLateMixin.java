@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.lookup.StagingRecipeDB;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 

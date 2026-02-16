@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.machines.GTMultiMachines.FUSION_REACTOR;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTMultiMachines.FUSION_REACTOR;
 
 public class AssemblyLineLoader {
 

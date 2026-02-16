@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;

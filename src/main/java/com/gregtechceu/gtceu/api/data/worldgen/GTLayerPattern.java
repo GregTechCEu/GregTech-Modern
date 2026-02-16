@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;

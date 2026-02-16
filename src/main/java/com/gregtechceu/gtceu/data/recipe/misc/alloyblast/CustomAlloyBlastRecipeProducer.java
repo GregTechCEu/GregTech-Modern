@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc.alloyblast;
 
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import com.google.common.base.Preconditions;

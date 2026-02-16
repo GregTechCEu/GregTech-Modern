@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.BlockPos;

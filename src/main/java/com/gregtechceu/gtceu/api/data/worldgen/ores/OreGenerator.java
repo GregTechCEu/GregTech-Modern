@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;

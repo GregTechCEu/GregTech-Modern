@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LevelLaserPipeNet;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;

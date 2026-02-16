@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 

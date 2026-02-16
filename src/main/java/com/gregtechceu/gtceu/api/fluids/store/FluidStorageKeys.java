@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import org.jetbrains.annotations.NotNull;

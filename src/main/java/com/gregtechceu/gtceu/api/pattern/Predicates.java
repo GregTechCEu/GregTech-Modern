@@ -6,21 +6,21 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.*;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.block.LampBlock;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
@@ -42,9 +42,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
-import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.BORDERLESS_LAMPS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LAMPS;
+import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
 

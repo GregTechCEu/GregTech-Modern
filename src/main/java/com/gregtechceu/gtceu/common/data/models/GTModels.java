@@ -4,15 +4,15 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.block.*;
-import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.FUSION_RECIPES;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.FUSION_RECIPES;
 
 public class FusionLoader {
 
