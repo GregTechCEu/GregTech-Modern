@@ -97,8 +97,9 @@ cc-tweaked-forge-impl = { module = "cc.tweaked:cc-tweaked-1.20.1-forge", version
 worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
 javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
 trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = "trenzalore" }
-xaerosworldmap      = { module = "curse.maven:xaeros-world-map-317780", version.ref = "xaerosWorldMap" }
-xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.ref = "xaerosMinimap" }
+xaeroslib           = { module = "xaero.lib:xaerolib-neoforge-1.21.1", version.ref = "xaerosLib" }
+xaerosworldmap      = { module = "xaero.map:xaeroworldmap-neoforge-1.21.1", version.ref = "xaerosWorldMap" }
+xaerosminimap       = { module = "xaero.minimap:xaerominimap-neoforge-1.21.1", version.ref = "xaerosMinimap" }
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }

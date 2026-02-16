@@ -80,4 +80,12 @@ repositories {
         forRepository { maven { url = "https://maven.squiddev.cc" } }
         filter { includeGroup("cc.tweaked") }
     }
+    exclusiveContent { // This one lib that KJS 1.21 uses for whatever reason?
+        forRepository { maven { url = "https://jitpack.io/" } }
+        filter { includeGroup("com.github.rtyley") }
+    }
+    exclusiveContent {
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupByRegex("xaero\\..+") }
+    }
 }
