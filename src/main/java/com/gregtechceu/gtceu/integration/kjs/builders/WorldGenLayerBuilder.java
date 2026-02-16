@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;

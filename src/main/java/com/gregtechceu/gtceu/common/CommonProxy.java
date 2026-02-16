@@ -38,12 +38,12 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -311,7 +311,7 @@ public class CommonProxy {
     @SubscribeEvent
     public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(GTRegistries.ORE_VEIN_REGISTRY,
-                OreVeinDefinition.DIRECT_CODEC, OreVeinDefinition.DIRECT_CODEC);
+                GTOreDefinition.DIRECT_CODEC, GTOreDefinition.DIRECT_CODEC);
         event.dataPackRegistry(GTRegistries.BEDROCK_FLUID_REGISTRY,
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
         event.dataPackRegistry(GTRegistries.BEDROCK_ORE_REGISTRY,

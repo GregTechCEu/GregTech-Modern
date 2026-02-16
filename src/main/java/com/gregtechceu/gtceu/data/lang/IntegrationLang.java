@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
@@ -31,7 +31,7 @@ public class IntegrationLang {
         provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
         provider.add("gtceu.jei.ore_vein_diagram.dimensions", "Dimensions:");
-        for (ResourceKey<OreVeinDefinition> key : GTOreVeins.ALL_KEYS) {
+        for (ResourceKey<GTOreDefinition> key : GTOreVeins.ALL_KEYS) {
             ResourceLocation id = key.location();
             String name = id.getPath();
             provider.add(id.toLanguageKey("ore_vein"), RegistrateLangProvider.toEnglishName(name));

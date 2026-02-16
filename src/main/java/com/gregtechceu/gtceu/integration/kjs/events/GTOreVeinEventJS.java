@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
 import net.minecraft.core.RegistrationInfo;
@@ -29,7 +29,7 @@ public class GTOreVeinEventJS implements KubeEvent {
 
     public GTOreVeinEventJS() {}
 
-    public void add(Context cx, ResourceLocation id, Consumer<OreVeinDefinition> consumer) {
+    public void add(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
@@ -37,12 +37,12 @@ public class GTOreVeinEventJS implements KubeEvent {
         var vein = GTOreVeins.blankOreDefinition(biomes);
         consumer.accept(vein);
 
-        if (registry instanceof WritableRegistry<OreVeinDefinition> writable) {
+        if (registry instanceof WritableRegistry<GTOreDefinition> writable) {
             writable.register(GTOreVeins.create(id), vein, RegistrationInfo.BUILT_IN);
         }
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<OreVeinDefinition> consumer) {
+    public void modify(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
@@ -54,7 +54,7 @@ public class GTOreVeinEventJS implements KubeEvent {
         consumer.accept(vein);
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, OreVeinDefinition> consumer) {
+    public void modifyAll(Context cx, BiConsumer<ResourceLocation, GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
@@ -82,7 +82,7 @@ public class GTOreVeinEventJS implements KubeEvent {
         keys.forEach(key -> remove(cx, registry, key));
     }
 
-    public void removeAll(Context cx, BiPredicate<ResourceLocation, OreVeinDefinition> predicate) {
+    public void removeAll(Context cx, BiPredicate<ResourceLocation, GTOreDefinition> predicate) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
 
@@ -92,7 +92,7 @@ public class GTOreVeinEventJS implements KubeEvent {
                 .forEach(key -> remove(cx, registry, key));
     }
 
-    private void remove(Context cx, Registry<OreVeinDefinition> registry, ResourceLocation id) {
+    private void remove(Context cx, Registry<GTOreDefinition> registry, ResourceLocation id) {
         if (!registry.containsKey(id)) {
             ConsoleJS.SERVER.error("", new KubeRuntimeException("Trying to remove nonexistent bedrock ore vein " + id)
                     .source(SourceLine.of(cx)));

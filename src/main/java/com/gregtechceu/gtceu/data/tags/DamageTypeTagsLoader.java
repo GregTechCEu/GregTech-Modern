@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 
 import net.minecraft.core.HolderLookup;

@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.worldgen.ores.OreGenerator;
-import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
 
@@ -298,7 +298,7 @@ public class GTCommands {
 
     private static int placeVein(CommandContext<CommandSourceStack> context,
                                  BlockPos sourcePos) throws CommandSyntaxException {
-        Holder.Reference<OreVeinDefinition> vein = ResourceKeyArgumentAccessor.callResolveKey(context, "vein",
+        Holder.Reference<GTOreDefinition> vein = ResourceKeyArgumentAccessor.callResolveKey(context, "vein",
                 GTRegistries.ORE_VEIN_REGISTRY, ERROR_INVALID_VEIN);
         ResourceLocation id = vein.key().location();
 

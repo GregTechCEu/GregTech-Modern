@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.worldgen.*;
-import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -30,8 +30,8 @@ import lombok.Getter;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
-import static com.gregtechceu.gtceu.api.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 @SuppressWarnings("unused")
@@ -47,72 +47,72 @@ public class GTOreVeins {
     @Getter
     private static int largestIndicatorOffset = 0;
 
-    public static final Set<ResourceKey<OreVeinDefinition>> ALL_KEYS = new ReferenceOpenHashSet<>();
+    public static final Set<ResourceKey<GTOreDefinition>> ALL_KEYS = new ReferenceOpenHashSet<>();
 
     //////////////////////////////////////
     // ******** End Vein *********//
     /// ///////////////////////////////////
 
-    public static final ResourceKey<OreVeinDefinition> END_BAUXITE_VEIN = create(GTCEu.id("end_bauxite"));
-    public static final ResourceKey<OreVeinDefinition> END_MAGNETITE_VEIN = create(GTCEu.id("end_magnetite"));
-    public static final ResourceKey<OreVeinDefinition> NAQUADAH_VEIN = create(GTCEu.id("naquadah"));
-    public static final ResourceKey<OreVeinDefinition> PITCHBLENDE_VEIN = create(GTCEu.id("pitchblende"));
-    public static final ResourceKey<OreVeinDefinition> SCHEELITE_VEIN = create(GTCEu.id("scheelite"));
-    public static final ResourceKey<OreVeinDefinition> SHELDONITE_VEIN = create(GTCEu.id("sheldonite"));
+    public static final ResourceKey<GTOreDefinition> END_BAUXITE_VEIN = create(GTCEu.id("end_bauxite"));
+    public static final ResourceKey<GTOreDefinition> END_MAGNETITE_VEIN = create(GTCEu.id("end_magnetite"));
+    public static final ResourceKey<GTOreDefinition> NAQUADAH_VEIN = create(GTCEu.id("naquadah"));
+    public static final ResourceKey<GTOreDefinition> PITCHBLENDE_VEIN = create(GTCEu.id("pitchblende"));
+    public static final ResourceKey<GTOreDefinition> SCHEELITE_VEIN = create(GTCEu.id("scheelite"));
+    public static final ResourceKey<GTOreDefinition> SHELDONITE_VEIN = create(GTCEu.id("sheldonite"));
 
     //////////////////////////////////////
     // ****** Nether Vein *******//
     /// ///////////////////////////////////
 
-    public static final ResourceKey<OreVeinDefinition> BANDED_IRON_VEIN = create(GTCEu.id("banded_iron"));
-    public static final ResourceKey<OreVeinDefinition> BERYLLIUM_VEIN = create(GTCEu.id("beryllium"));
-    public static final ResourceKey<OreVeinDefinition> CERTUS_QUARTZ_VEIN = create(GTCEu.id("certus_quartz"));
-    public static final ResourceKey<OreVeinDefinition> NETHER_MANGANESE_VEIN = create(GTCEu.id("nether_manganese"));
-    public static final ResourceKey<OreVeinDefinition> MOLYBDENUM_VEIN = create(GTCEu.id("molybdenum"));
-    public static final ResourceKey<OreVeinDefinition> MONAZITE_VEIN = create(GTCEu.id("monazite"));
-    public static final ResourceKey<OreVeinDefinition> NETHER_QUARTZ_VEIN = create(GTCEu.id("nether_quartz"));
-    public static final ResourceKey<OreVeinDefinition> METHER_REDSTONE_VEIN = create(GTCEu.id("nether_redstone"));
-    public static final ResourceKey<OreVeinDefinition> SALTPETER_VEIN = create(GTCEu.id("saltpeter"));
-    public static final ResourceKey<OreVeinDefinition> SULFUR_VEIN = create(GTCEu.id("sulfur"));
-    public static final ResourceKey<OreVeinDefinition> TETRAHEDRITE_VEIN = create(GTCEu.id("tetrahedrite"));
-    public static final ResourceKey<OreVeinDefinition> TOPAZ_VEIN = create(GTCEu.id("topaz"));
+    public static final ResourceKey<GTOreDefinition> BANDED_IRON_VEIN = create(GTCEu.id("banded_iron"));
+    public static final ResourceKey<GTOreDefinition> BERYLLIUM_VEIN = create(GTCEu.id("beryllium"));
+    public static final ResourceKey<GTOreDefinition> CERTUS_QUARTZ_VEIN = create(GTCEu.id("certus_quartz"));
+    public static final ResourceKey<GTOreDefinition> NETHER_MANGANESE_VEIN = create(GTCEu.id("nether_manganese"));
+    public static final ResourceKey<GTOreDefinition> MOLYBDENUM_VEIN = create(GTCEu.id("molybdenum"));
+    public static final ResourceKey<GTOreDefinition> MONAZITE_VEIN = create(GTCEu.id("monazite"));
+    public static final ResourceKey<GTOreDefinition> NETHER_QUARTZ_VEIN = create(GTCEu.id("nether_quartz"));
+    public static final ResourceKey<GTOreDefinition> METHER_REDSTONE_VEIN = create(GTCEu.id("nether_redstone"));
+    public static final ResourceKey<GTOreDefinition> SALTPETER_VEIN = create(GTCEu.id("saltpeter"));
+    public static final ResourceKey<GTOreDefinition> SULFUR_VEIN = create(GTCEu.id("sulfur"));
+    public static final ResourceKey<GTOreDefinition> TETRAHEDRITE_VEIN = create(GTCEu.id("tetrahedrite"));
+    public static final ResourceKey<GTOreDefinition> TOPAZ_VEIN = create(GTCEu.id("topaz"));
 
     //////////////////////////////////////
     // ***** Stone *****//
     /// ///////////////////////////////////
 
-    public static final ResourceKey<OreVeinDefinition> APATITE_VEIN = create(GTCEu.id("apatite"));
-    public static final ResourceKey<OreVeinDefinition> CASSITERITE_VEIN = create(GTCEu.id("cassiterite"));
-    public static final ResourceKey<OreVeinDefinition> COAL_VEIN = create(GTCEu.id("coal"));
-    public static final ResourceKey<OreVeinDefinition> COPPER_TIN_VEIN = create(GTCEu.id("copper_tin"));
-    public static final ResourceKey<OreVeinDefinition> GALENA_VEIN = create(GTCEu.id("galena"));
-    public static final ResourceKey<OreVeinDefinition> GARNET_TIN_VEIN = create(GTCEu.id("garnet_tin"));
-    public static final ResourceKey<OreVeinDefinition> GARNET_VEIN = create(GTCEu.id("garnet"));
-    public static final ResourceKey<OreVeinDefinition> IRON_VEIN = create(GTCEu.id("iron"));
-    public static final ResourceKey<OreVeinDefinition> LUBRICANT_VEIN = create(GTCEu.id("lubricant"));
-    public static final ResourceKey<OreVeinDefinition> MAGNETITE_VEIN = create(GTCEu.id("magnetite"));
-    public static final ResourceKey<OreVeinDefinition> MINERAL_SAND_VEIN = create(GTCEu.id("mineral_sand"));
-    public static final ResourceKey<OreVeinDefinition> NICKEL_VEIN = create(GTCEu.id("nickel"));
-    public static final ResourceKey<OreVeinDefinition> SALTS_VEIN = create(GTCEu.id("salts"));
-    public static final ResourceKey<OreVeinDefinition> OILSANDS_VEIN = create(GTCEu.id("oilsands"));
+    public static final ResourceKey<GTOreDefinition> APATITE_VEIN = create(GTCEu.id("apatite"));
+    public static final ResourceKey<GTOreDefinition> CASSITERITE_VEIN = create(GTCEu.id("cassiterite"));
+    public static final ResourceKey<GTOreDefinition> COAL_VEIN = create(GTCEu.id("coal"));
+    public static final ResourceKey<GTOreDefinition> COPPER_TIN_VEIN = create(GTCEu.id("copper_tin"));
+    public static final ResourceKey<GTOreDefinition> GALENA_VEIN = create(GTCEu.id("galena"));
+    public static final ResourceKey<GTOreDefinition> GARNET_TIN_VEIN = create(GTCEu.id("garnet_tin"));
+    public static final ResourceKey<GTOreDefinition> GARNET_VEIN = create(GTCEu.id("garnet"));
+    public static final ResourceKey<GTOreDefinition> IRON_VEIN = create(GTCEu.id("iron"));
+    public static final ResourceKey<GTOreDefinition> LUBRICANT_VEIN = create(GTCEu.id("lubricant"));
+    public static final ResourceKey<GTOreDefinition> MAGNETITE_VEIN = create(GTCEu.id("magnetite"));
+    public static final ResourceKey<GTOreDefinition> MINERAL_SAND_VEIN = create(GTCEu.id("mineral_sand"));
+    public static final ResourceKey<GTOreDefinition> NICKEL_VEIN = create(GTCEu.id("nickel"));
+    public static final ResourceKey<GTOreDefinition> SALTS_VEIN = create(GTCEu.id("salts"));
+    public static final ResourceKey<GTOreDefinition> OILSANDS_VEIN = create(GTCEu.id("oilsands"));
 
     //////////////////////////////////////
     // ***** Deepslate *****//
     /// ///////////////////////////////////
 
-    public static final ResourceKey<OreVeinDefinition> COPPER_VEIN = create(GTCEu.id("copper"));
-    public static final ResourceKey<OreVeinDefinition> DIAMOND_VEIN = create(GTCEu.id("diamond"));
-    public static final ResourceKey<OreVeinDefinition> LAPIS_VEIN = create(GTCEu.id("lapis"));
-    public static final ResourceKey<OreVeinDefinition> MANGANESE_VEIN = create(GTCEu.id("manganese"));
-    public static final ResourceKey<OreVeinDefinition> MICA_VEIN = create(GTCEu.id("mica"));
-    public static final ResourceKey<OreVeinDefinition> OLIVINE_VEIN = create(GTCEu.id("olivine"));
-    public static final ResourceKey<OreVeinDefinition> REDSTONE_VEIN = create(GTCEu.id("redstone"));
-    public static final ResourceKey<OreVeinDefinition> SAPPHIRE_VEIN = create(GTCEu.id("sapphire"));
+    public static final ResourceKey<GTOreDefinition> COPPER_VEIN = create(GTCEu.id("copper"));
+    public static final ResourceKey<GTOreDefinition> DIAMOND_VEIN = create(GTCEu.id("diamond"));
+    public static final ResourceKey<GTOreDefinition> LAPIS_VEIN = create(GTCEu.id("lapis"));
+    public static final ResourceKey<GTOreDefinition> MANGANESE_VEIN = create(GTCEu.id("manganese"));
+    public static final ResourceKey<GTOreDefinition> MICA_VEIN = create(GTCEu.id("mica"));
+    public static final ResourceKey<GTOreDefinition> OLIVINE_VEIN = create(GTCEu.id("olivine"));
+    public static final ResourceKey<GTOreDefinition> REDSTONE_VEIN = create(GTCEu.id("redstone"));
+    public static final ResourceKey<GTOreDefinition> SAPPHIRE_VEIN = create(GTCEu.id("sapphire"));
 
-    public static void updateLargestVeinSize(Registry<OreVeinDefinition> registry) {
+    public static void updateLargestVeinSize(Registry<GTOreDefinition> registry) {
         // map to average of min & max values.
         GTOreVeins.largestVeinSize = registry.stream()
-                .map(OreVeinDefinition::clusterSize)
+                .map(GTOreDefinition::clusterSize)
                 .mapToInt(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2)
                 .max()
                 .orElse(0);
@@ -125,29 +125,29 @@ public class GTOreVeins {
                 .orElse(0);
     }
 
-    public static ResourceKey<OreVeinDefinition> create(ResourceLocation id) {
+    public static ResourceKey<GTOreDefinition> create(ResourceLocation id) {
         var key = ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
         ALL_KEYS.add(key);
         return key;
     }
 
-    public static OreVeinDefinition blankOreDefinition(HolderGetter<Biome> biomeLookup) {
-        return new OreVeinDefinition(
+    public static GTOreDefinition blankOreDefinition(HolderGetter<Biome> biomeLookup) {
+        return new GTOreDefinition(
                 ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
                 0, HolderSet.empty(), BiomeWeightModifier.EMPTY, NoopVeinGenerator.INSTANCE,
                 new ArrayList<>(), biomeLookup);
     }
 
-    private static void register(BootstrapContext<OreVeinDefinition> context,
-                                 ResourceKey<OreVeinDefinition> key,
-                                 Consumer<OreVeinDefinition> consumer) {
-        OreVeinDefinition builder = blankOreDefinition(context.lookup(Registries.BIOME));
+    private static void register(BootstrapContext<GTOreDefinition> context,
+                                 ResourceKey<GTOreDefinition> key,
+                                 Consumer<GTOreDefinition> consumer) {
+        GTOreDefinition builder = blankOreDefinition(context.lookup(Registries.BIOME));
         consumer.accept(builder);
         context.register(key, builder);
     }
 
-    public static void bootstrap(BootstrapContext<OreVeinDefinition> context) {
+    public static void bootstrap(BootstrapContext<GTOreDefinition> context) {
         // END
         RuleTest[] endRules = new RuleTest[] { WorldGeneratorUtils.END_ORE_REPLACEABLES };
 

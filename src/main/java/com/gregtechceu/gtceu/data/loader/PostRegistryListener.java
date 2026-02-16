@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.loader;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
@@ -33,7 +33,7 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
         WorldGeneratorUtils.invalidateOreVeinCache();
     }
 
-    public static void buildVeinGenerators(Registry<OreVeinDefinition> registry) {
+    public static void buildVeinGenerators(Registry<GTOreDefinition> registry) {
         var iterator = registry.holders().iterator();
         while (iterator.hasNext()) {
             var definition = iterator.next();
