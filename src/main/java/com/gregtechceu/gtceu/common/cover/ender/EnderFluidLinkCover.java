@@ -25,8 +25,11 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +41,50 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     @SaveField
     @SyncToClient
-    protected VirtualTank visualTank;
+    protected VirtualTank visualTank = new VirtualTank();
+
+    // todo make this a proper class
+    protected final IFluidTank tankSwitchShim = new IFluidTank() {
+
+        private IFluidTank getDelegate() {
+            return getEntry().getFluidTank();
+        }
+
+        @Override
+        public @NotNull FluidStack getFluid() {
+            return getDelegate().getFluid();
+        }
+
+        @Override
+        public int getFluidAmount() {
+            return getDelegate().getFluidAmount();
+        }
+
+        @Override
+        public int getCapacity() {
+            return getDelegate().getCapacity();
+        }
+
+        @Override
+        public boolean isFluidValid(FluidStack fluidStack) {
+            return getDelegate().isFluidValid(fluidStack);
+        }
+
+        @Override
+        public int fill(FluidStack fluidStack, IFluidHandler.FluidAction fluidAction) {
+            return getDelegate().fill(fluidStack, fluidAction);
+        }
+
+        @Override
+        public @NotNull FluidStack drain(int i, IFluidHandler.FluidAction fluidAction) {
+            return getDelegate().drain(i, fluidAction);
+        }
+
+        @Override
+        public @NotNull FluidStack drain(FluidStack fluidStack, IFluidHandler.FluidAction fluidAction) {
+            return getDelegate().drain(fluidStack, fluidAction);
+        }
+    };
 
     @Getter
     @SaveField
@@ -127,9 +173,12 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
         if (!(entry instanceof VirtualTank tank)) return new ParentWidget<>().size(w, h);
-        manager.getOrCreateSyncHandler("ender_link_cover_fluid_slot_" + index, FluidSlotSyncHandler.class, () -> SyncHandlers.fluidSlot(tank.getFluidTank()));
 
-        return new FluidSlot().syncHandler("ender_link_cover_fluid_slot_" + index)
+        manager.getOrCreateSyncHandler("ender_link_cover_fluid_slot", index, FluidSlotSyncHandler.class,
+                () -> SyncHandlers.fluidSlot(index == -1 ? tankSwitchShim : tank.getFluidTank()));
+
+        return new FluidSlot()
+                .syncHandler("ender_link_cover_fluid_slot", index)
                 .marginLeft(3)
                 .size(w, h)
         // return new FluidSlot()
