@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageTypeData;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
