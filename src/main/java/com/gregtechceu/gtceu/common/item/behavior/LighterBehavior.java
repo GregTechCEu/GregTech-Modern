@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item.tool.behavior;
+package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
