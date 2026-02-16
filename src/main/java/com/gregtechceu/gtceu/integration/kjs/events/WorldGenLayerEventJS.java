@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.WorldGenLayerBuilder;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.typings.Info;

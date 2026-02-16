@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.lookup.StagingRecipeDB;
@@ -76,7 +75,6 @@ public abstract class RecipeManagerLateMixin {
         });
         gtceu$replaceRecipes(recipesByName);
 
-        SteamBoilerLogic.clearBoilerRecipeCaches();
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 var stagingDB = new StagingRecipeDB();

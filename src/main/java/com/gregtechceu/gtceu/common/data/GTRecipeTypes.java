@@ -72,8 +72,7 @@ public class GTRecipeTypes {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
-            .setSound(GTSoundEntries.FURNACE)
-            .addCustomRecipeLogic(SmallBoilerLogic.INSTANCE);
+            .setSound(GTSoundEntries.FURNACE);
 
     //////////////////////////////////////
     // ********* Common *********//
@@ -491,8 +490,7 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
             .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FURNACE)
-            .addCustomRecipeLogic(LargeBoilerLogic.INSTANCE);
+            .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType COKE_OVEN_RECIPES = register("coke_oven", MULTIBLOCK).setMaxIOSize(1, 1, 0, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)

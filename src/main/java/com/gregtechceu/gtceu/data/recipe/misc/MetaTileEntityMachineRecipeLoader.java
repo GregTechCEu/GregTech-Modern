@@ -24,7 +24,7 @@ import java.util.Locale;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_FLUID_PIPE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_ITEM_PIPE;
-import static com.gregtechceu.gtceu.common.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;

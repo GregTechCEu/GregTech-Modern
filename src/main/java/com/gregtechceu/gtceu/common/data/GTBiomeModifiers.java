@@ -35,22 +35,22 @@ public class GTBiomeModifiers {
 
         ctx.register(RUBBER_TREE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomeLookup.getOrThrow(CustomTags.HAS_RUBBER_TREE),
-                HolderSet.direct(placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RUBBER_TREE)),
+                HolderSet.direct(placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_TREE)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         ctx.register(RUBBER_TREE_SWAMP, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomeLookup.getOrThrow(Tags.Biomes.IS_SWAMP),
-                HolderSet.direct(placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RUBBER_TREE_SWAMP)),
+                HolderSet.direct(placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_TREE_SWAMP)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
         HolderSet<Biome> overworld = biomeLookup.getOrThrow(BiomeTags.IS_OVERWORLD);
-        Holder<PlacedFeature> redGraniteBlob = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RED_GRANITE_BLOB);
-        Holder<PlacedFeature> marbleBlob = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.MARBLE_BLOB);
+        Holder<PlacedFeature> redGraniteBlob = placedFeatureRegistry.getOrThrow(GTPlacements.RED_GRANITE_BLOB);
+        Holder<PlacedFeature> marbleBlob = placedFeatureRegistry.getOrThrow(GTPlacements.MARBLE_BLOB);
         ctx.register(STONE_BLOB, new BiomeModifiers.AddFeaturesBiomeModifier(
                 overworld,
                 HolderSet.direct(redGraniteBlob, marbleBlob),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
 
-        Holder<PlacedFeature> rawOilSprout = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RAW_OIL_SPROUT);
+        Holder<PlacedFeature> rawOilSprout = placedFeatureRegistry.getOrThrow(GTPlacements.RAW_OIL_SPROUT);
         ctx.register(RAW_OIL_SPROUT, new BiomeModifiers.AddFeaturesBiomeModifier(
                 overworld,
                 HolderSet.direct(rawOilSprout),

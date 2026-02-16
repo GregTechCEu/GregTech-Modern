@@ -36,8 +36,6 @@ public final class GTRecipeConditions {
             GTCEu.id("environmental_hazard"), new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("daytime"), new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
-    public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            GTCEu.id("rock_breaker"), new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
     public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
 //     public static RecipeConditionType<GameStageCondition> GAMESTAGE;
 //     public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;

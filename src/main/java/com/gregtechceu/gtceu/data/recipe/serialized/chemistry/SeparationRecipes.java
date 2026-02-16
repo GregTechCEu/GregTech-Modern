@@ -8,12 +8,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.data.item.GTItems.PLANT_BALL;
-import static com.gregtechceu.gtceu.common.data.item.GTItems.STICKY_RESIN;
+import static com.gregtechceu.gtceu.common.data.GTItems.PLANT_BALL;
+import static com.gregtechceu.gtceu.common.data.GTItems.STICKY_RESIN;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 
 public class SeparationRecipes {
 

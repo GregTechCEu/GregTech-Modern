@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.component.forge;
+package com.gregtechceu.gtceu.api.item.component;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;

@@ -10,13 +10,12 @@ import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccess
 import com.gregtechceu.gtceu.data.datamap.DataMapsHandler;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.model.BlockstateModelLoader;
-import com.gregtechceu.gtceu.data.tags.*;
 
 import net.minecraft.data.DataProvider;
 
 import com.tterrag.registrate.providers.ProviderType;
 
-public class GTRegistrateDatagen {
+public class GregTechDatagen {
 
     // we only register this so the class gets loaded. the key gets overwritten in #initPre.
     private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.registerProvider(

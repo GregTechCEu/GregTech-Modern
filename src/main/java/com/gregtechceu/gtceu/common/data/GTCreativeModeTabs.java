@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
-import com.gregtechceu.gtceu.common.data.item.GTItems;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;

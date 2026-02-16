@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
-public class GTPlacedFeatures {
+public class GTPlacements {
 
     public static final ResourceKey<PlacedFeature> RUBBER_TREE = ResourceKey.create(Registries.PLACED_FEATURE,
             GTCEu.id("rubber_tree"));

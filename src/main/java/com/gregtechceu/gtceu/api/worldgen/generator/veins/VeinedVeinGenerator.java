@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.common.data.GTDensityFunctions;
+import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
@@ -125,9 +125,9 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE),
+        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTWorldgen.NEW_ORE_VEIN_TOGGLE),
                 randomState);
-        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_RIDGED),
+        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTWorldgen.NEW_ORE_VEIN_RIDGED),
                 randomState);
 
         int size = entry.clusterSize().sample(random);

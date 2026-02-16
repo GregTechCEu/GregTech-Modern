@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item.behavior;
+package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
 

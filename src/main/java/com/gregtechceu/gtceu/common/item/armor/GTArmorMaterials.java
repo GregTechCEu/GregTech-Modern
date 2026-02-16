@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data.item;
+package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
 

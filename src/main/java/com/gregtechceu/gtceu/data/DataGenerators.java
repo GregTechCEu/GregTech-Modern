@@ -21,7 +21,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.Set;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
-public class GTVanillaDatagen {
+public class DataGenerators {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
@@ -39,8 +39,8 @@ public class GTVanillaDatagen {
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                            .add(Registries.PLACED_FEATURE, GTPlacedFeatures::bootstrap)
-                            .add(Registries.DENSITY_FUNCTION, GTDensityFunctions::bootstrap)
+                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrap)
                             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap)
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)

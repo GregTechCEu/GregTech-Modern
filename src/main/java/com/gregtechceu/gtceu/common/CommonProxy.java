@@ -48,10 +48,12 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
+import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -63,7 +65,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.data.GTRegistrateDatagen;
+import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.data.placeholder.GTPlaceholders;
@@ -94,13 +96,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -130,7 +130,6 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -153,7 +152,7 @@ public class CommonProxy {
         UIFactory.register(GTUIEditorFactory.INSTANCE);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
-        GTRegistrateDatagen.initPre();
+        GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
         REGISTRATE.registerEventListeners(modBus);
@@ -224,7 +223,7 @@ public class CommonProxy {
         GTMobEffects.MOB_EFFECTS.register(modBus);
         GTParticleTypes.PARTICLE_TYPES.register(modBus);
 
-        GTRegistrateDatagen.initPost();
+        GregTechDatagen.initPost();
         GTValueProviderTypes.init(modBus);
         GTFeatures.register(modBus);
         WorldGenLayers.registerAll();

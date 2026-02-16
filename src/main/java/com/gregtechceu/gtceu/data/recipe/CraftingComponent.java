@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.recipe.component;
+package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;

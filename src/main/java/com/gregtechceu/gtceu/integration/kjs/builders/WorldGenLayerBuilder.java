@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
+package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;

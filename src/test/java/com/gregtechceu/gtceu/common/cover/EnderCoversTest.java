@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.cover.ender.EnderItemLinkCover;
 import com.gregtechceu.gtceu.common.cover.ender.EnderRedstoneLinkCover;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.common.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
