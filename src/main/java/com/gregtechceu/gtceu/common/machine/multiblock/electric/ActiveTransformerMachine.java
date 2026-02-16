@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -44,7 +44,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-                                      implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
+                                      implements IControllable, IFancyUIMachine, IDisplayUIMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -150,7 +150,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public void onStructureInvalid() {
         if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
                 !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-            doExplosion(6f + getTier());
+            GTUtil.doExplosion(getLevel(), getBlockPos(), 6f + getTier());
         }
         super.onStructureInvalid();
         this.powerOutput = new EnergyContainerList(new ArrayList<>());

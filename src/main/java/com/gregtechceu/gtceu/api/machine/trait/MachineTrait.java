@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -45,8 +46,24 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public abstract MachineTraitType<?> getTraitType();
 
+    public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
+        return machine.subscribeServerTick(last, runnable);
+    }
+
+    public void unsubscribe(TickableSubscription current) {
+        machine.unsubscribe(current);
+    }
+
+    public BlockPos getBlockPos() {
+        return machine.getBlockPos();
+    }
+
     public Level getLevel() {
         return machine.getLevel();
+    }
+
+    public boolean isRemote() {
+        return machine.isRemote();
     }
 
     public final boolean hasCapability(@Nullable Direction side) {

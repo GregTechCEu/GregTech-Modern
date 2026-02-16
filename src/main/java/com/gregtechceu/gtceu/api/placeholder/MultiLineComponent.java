@@ -3,22 +3,31 @@ package com.gregtechceu.gtceu.api.placeholder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Accessors(chain = true)
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     @Getter
+    @Setter
     private boolean ignoreSpaces = false;
+
+    @Getter
+    private final List<GraphicsComponent> graphics = new ArrayList<>();
 
     public MultiLineComponent(List<MutableComponent> components) {
         super();
@@ -79,7 +88,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public int toInt() {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
-        return Integer.parseInt(this.get(0).getString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0x")) return Integer.parseInt(s.substring(2), 16);
+        if (s.startsWith("0b")) return Integer.parseInt(s.substring(2), 2);
+        return Integer.parseInt(s);
     }
 
     public void append(@Nullable String s) {
@@ -100,6 +112,12 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         }
         this.remove(this.size() - 1);
         return this;
+    }
+
+    public MultiLineComponent append(MultiLineComponent multiLineComponent) {
+        if (multiLineComponent == null) return this;
+        this.graphics.addAll(multiLineComponent.getGraphics());
+        return this.append(multiLineComponent.toImmutable());
     }
 
     public void appendNewline() {
@@ -131,18 +149,33 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     }
 
     public Tag toTag() {
+        CompoundTag compoundTag = new CompoundTag();
         ListTag tag = new ListTag();
         for (MutableComponent component : this) {
             tag.add(StringTag.valueOf(Component.Serializer.toJson(component)));
         }
-        return tag;
+        compoundTag.put("text", tag);
+        ListTag graphicsTag = new ListTag();
+        for (GraphicsComponent component : this.getGraphics()) {
+            graphicsTag.add(component.toTag());
+        }
+        compoundTag.put("graphics", graphicsTag);
+        return compoundTag;
     }
 
-    public static MultiLineComponent fromTag(ListTag tag) {
+    public static MultiLineComponent fromTag(@Nullable Tag tag) {
         MultiLineComponent out = MultiLineComponent.empty();
         out.clear();
-        for (Tag i : tag) {
-            out.add(Component.Serializer.fromJson(i.getAsString()));
+        if (tag == null) return out;
+        if (tag instanceof ListTag listTag) {
+            for (Tag i : listTag) {
+                out.add(Component.Serializer.fromJson(i.getAsString()));
+            }
+        } else if (tag instanceof CompoundTag compoundTag) {
+            ListTag textTag = compoundTag.getList("text", Tag.TAG_STRING);
+            for (Tag i : textTag) out.add(Component.Serializer.fromJson(i.getAsString()));
+            ListTag graphicsTag = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
+            for (Tag i : graphicsTag) out.addGraphics(GraphicsComponent.fromTag(i));
         }
         return out;
     }
@@ -150,11 +183,18 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public long toLong() {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
-        return Long.parseLong(this.get(0).getString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0b")) return Long.parseLong(s.substring(2), 2);
+        if (s.startsWith("0x")) return Long.parseLong(s.substring(2), 16);
+        return Long.parseLong(s);
     }
 
-    public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {
-        this.ignoreSpaces = ignoreSpaces;
+    public MultiLineComponent addGraphics(GraphicsComponent... graphicsComponents) {
+        return this.addGraphics(List.of(graphicsComponents));
+    }
+
+    public MultiLineComponent addGraphics(Collection<GraphicsComponent> graphicsComponents) {
+        this.graphics.addAll(graphicsComponents);
         return this;
     }
 }
