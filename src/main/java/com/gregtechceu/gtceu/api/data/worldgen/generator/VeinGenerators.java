@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
