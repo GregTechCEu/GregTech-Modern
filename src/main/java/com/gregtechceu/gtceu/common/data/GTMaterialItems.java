@@ -170,7 +170,7 @@ public class GTMaterialItems {
         }
     }
 
-    //Not Sure Where to put these, these aren't actual materials but uh, shrug?
+    // Not Sure Where to put these, these aren't actual materials but uh, shrug?
     public static final ItemEntry<Item> FUEL_ROD_LEU = REGISTRATE.item("fuel_rod_leu", Item::new)
             .lang("LEU Fuel Rod").register();
     public static final ItemEntry<FuelRodItem> FUEL_ROD_MOX = REGISTRATE.item("fuel_rod_mox", FuelRodItem::new)
