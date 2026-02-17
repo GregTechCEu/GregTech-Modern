@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -23,8 +23,8 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
     private final String autoTooltipKey;
 
-    public SteamItemBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
-        super(holder, 1, io, args);
+    public SteamItemBusPartMachine(BlockEntityCreationInfo info, IO io) {
+        super(info, 1, io);
         autoTooltipKey = io == IO.IN ? "gtceu.gui.item_auto_input.tooltip" : "gtceu.gui.item_auto_output.tooltip";
     }
 
@@ -60,7 +60,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
     @Override
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.STEAM_EXPORT_BUS;
@@ -73,15 +73,13 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof SteamItemBusPartMachine newMachine) {
-                // We don't set the circuit or distinct busses, since
-                // that doesn't make sense on an output bus.
-                // Furthermore, existing inventory items
-                // and conveyors will drop to the floor on block override.
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-            }
+        if (getLevel().getBlockEntity(blockPos) instanceof SteamItemBusPartMachine newMachine) {
+            // We don't set the circuit or distinct busses, since
+            // that doesn't make sense on an output bus.
+            // Furthermore, existing inventory items
+            // and conveyors will drop to the floor on block override.
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
         }
         return true;
     }

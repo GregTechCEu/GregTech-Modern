@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -84,21 +82,19 @@ public class MultipleEnergyHatchTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) helper
+                .getBlockEntity(new BlockPos(1, 2, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        ItemBusPartMachine outputBus = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        EnergyHatchPartMachine energyHatch = (EnergyHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 3, 0)));
+        ItemBusPartMachine inputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        ItemBusPartMachine outputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        EnergyHatchPartMachine energyHatch = (EnergyHatchPartMachine) helper.getBlockEntity(new BlockPos(1, 3, 0));
         // Some instances don't have a second energy hatch
         var hatch2BE = helper.getBlockEntity(new BlockPos(1, 3, 0));
-        if (hatch2BE instanceof MetaMachineBlockEntity hatch2MMBE) {
+        if (hatch2BE instanceof EnergyHatchPartMachine hatch2MMBE) {
             return new BusHolder(inputBus, outputBus, controller, energyHatch,
-                    Optional.of((EnergyHatchPartMachine) hatch2MMBE.getMetaMachine()));
+                    Optional.of(hatch2MMBE));
         }
 
         return new BusHolder(inputBus, outputBus, controller, energyHatch, Optional.empty());

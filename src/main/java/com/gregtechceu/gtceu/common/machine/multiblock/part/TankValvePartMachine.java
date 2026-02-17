@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -25,19 +24,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class TankValvePartMachine extends MultiblockPartMachine {
 
-    private FluidTankProxyTrait tankProxy;
-    private ConditionalSubscriptionHandler autoIOSubscription;
+    private final FluidTankProxyTrait tankProxy;
+    private final ConditionalSubscriptionHandler autoIOSubscription;
     private ISubscription tankChangeListener;
 
-    public TankValvePartMachine(IMachineBlockEntity holder, boolean isMetal, Object... args) {
-        super(holder);
+    public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
+        super(info);
 
-        tankProxy = createTank(args);
+        tankProxy = new FluidTankProxyTrait(this, IO.BOTH);
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
-    }
-
-    protected FluidTankProxyTrait createTank(Object... args) {
-        return new FluidTankProxyTrait(this, IO.BOTH);
     }
 
     @Override
@@ -52,7 +47,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
 
         if (controller instanceof MultiblockTankMachine multiblockTank) {
@@ -64,7 +59,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
 
         tankProxy.setProxy(null);
@@ -91,7 +86,8 @@ public class TankValvePartMachine extends MultiblockPartMachine {
 
     @Nullable
     private IFluidHandler getTargetTank() {
-        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()).resolve().orElse(null);
+        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), getBlockPos(), getFrontFacing()).resolve()
+                .orElse(null);
     }
 
     private void autoIO() {
@@ -106,8 +102,6 @@ public class TankValvePartMachine extends MultiblockPartMachine {
         if (!isFormed()) return false;
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;
-        if (getTargetTank() == null) return false;
-
-        return true;
+        return getTargetTank() != null;
     }
 }

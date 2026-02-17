@@ -1,31 +1,36 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,9 +40,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -45,23 +51,20 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
+public class RotorHolderPartMachine extends TieredPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    public static final int SPEED_INCREMENT = 1;
+    public static final int SPEED_DECREMENT = 3;
+    @SaveField
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public int rotorSpeed;
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
@@ -69,8 +72,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Nullable
     protected ISubscription rotorInvSubs;
 
-    public RotorHolderPartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public RotorHolderPartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventory = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.BOTH);
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
     }
@@ -78,14 +81,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(inventory.storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        inventory.dropInventoryInWorld();
     }
 
     @Override
@@ -120,11 +120,17 @@ public class RotorHolderPartMachine extends TieredPartMachine
         return false;
     }
 
+    /**
+     * @return the base efficiency of the rotor holder in %
+     */
+    static int getBaseEfficiency() {
+        return 100;
+    }
+
     //////////////////////////////////////
     // ****** Rotor Holder ******//
     //////////////////////////////////////
 
-    @Override
     public @NotNull Material getRotorMaterial() {
         // handles clients trying to get the material before server data sync
         // noinspection ConstantValue
@@ -151,9 +157,9 @@ public class RotorHolderPartMachine extends TieredPartMachine
                     .setValue(HAS_ROTOR, false)
                     .setValue(IS_EMISSIVE_ROTOR, false));
         }
+        syncDataHolder.markClientSyncFieldDirty("rotorMaterial");
     }
 
-    @Override
     public boolean hasRotor() {
         return inventory.getStackInSlot(0) != ItemStack.EMPTY;
     }
@@ -184,6 +190,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
             setRenderState(getRenderState().setValue(IS_ROTOR_SPINNING, rotorSpeed > 0));
         }
         this.rotorSpeed = rotorSpeed;
+        syncDataHolder.markClientSyncFieldDirty("rotorSpeed");
     }
 
     @Override
@@ -209,19 +216,20 @@ public class RotorHolderPartMachine extends TieredPartMachine
         return -1;
     }
 
-    @Override
     public ItemStack getRotorStack() {
         return inventory.getStackInSlot(0);
     }
 
-    @Override
     public void setRotorStack(ItemStack rotorStack) {
         inventory.setStackInSlot(0, rotorStack);
         inventory.onContentsChanged();
     }
 
+    @Override
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
+        var superResult = super.onUse(state, level, pos, player, hand, hit);
+        if (superResult != InteractionResult.PASS) return superResult;
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
             TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
             if (behaviour != null) {
@@ -245,5 +253,151 @@ public class RotorHolderPartMachine extends TieredPartMachine
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
         return group;
+    }
+
+    //////////////////////////////////////
+    // ****** RECIPE LOGIC *******//
+    //////////////////////////////////////
+    @Override
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        if (!isFrontFaceFree() || !hasRotor()) {
+            return null;
+        }
+        return super.modifyRecipe(recipe);
+    }
+
+    //////////////////////////////////////
+    // ******* FANCY GUI ********//
+    //////////////////////////////////////
+    @Override
+    public void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
+        attachTooltips(tooltipsPanel);
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        tooltipsPanel.attachTooltips(new Basic(
+                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                () -> !isFrontFaceFree(),
+                () -> null));
+    }
+
+    /**
+     *
+     * @return the total power boost to output and consumption the rotor holder and rotor provide in %
+     */
+    public int getTotalPower() {
+        return getHolderPowerMultiplier() * getRotorPower();
+    }
+
+    public boolean isRotorSpinning() {
+        return getRotorSpeed() > 0;
+    }
+
+    /**
+     * @return the total efficiency the rotor holder and rotor provide in %
+     */
+    public int getTotalEfficiency() {
+        int rotorEfficiency = getRotorEfficiency();
+        if (rotorEfficiency == -1)
+            return -1;
+
+        int holderEfficiency = getHolderEfficiency();
+        if (holderEfficiency == -1)
+            return -1;
+
+        return Math.max(getBaseEfficiency(), rotorEfficiency * holderEfficiency / 100);
+    }
+
+    /**
+     * @return the efficiency provided by the rotor holder in %
+     */
+    public int getHolderEfficiency() {
+        int tierDifference = getTierDifference();
+        if (tierDifference == -1)
+            return -1;
+
+        return 100 + 10 * tierDifference;
+    }
+
+    /**
+     * @return the power multiplier provided by the rotor holder
+     */
+    public int getHolderPowerMultiplier() {
+        int tierDifference = getTierDifference();
+        if (tierDifference == -1) return -1;
+
+        return (int) Math.pow(2, getTierDifference());
+    }
+
+    /**
+     * @return the rotor's efficiency in %
+     */
+    public int getRotorEfficiency() {
+        var stack = getRotorStack();
+        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
+        if (behavior != null) {
+            return behavior.getRotorEfficiency(stack);
+        }
+        return -1;
+    }
+
+    /**
+     * @return the rotor's power in %
+     */
+    public int getRotorPower() {
+        var stack = getRotorStack();
+        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
+        if (behavior != null) {
+            return behavior.getRotorPower(stack);
+        }
+        return -1;
+    }
+
+    /**
+     * @return the rotor's durability as %
+     */
+    public int getRotorDurabilityPercent() {
+        var stack = getRotorStack();
+        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
+        if (behavior != null) {
+            return behavior.getRotorDurabilityPercent(stack);
+        }
+        return -1;
+    }
+
+    /**
+     * damages the rotor
+     *
+     * @param damageAmount to damage
+     */
+    public void damageRotor(int damageAmount) {
+        var stack = getRotorStack();
+        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
+        if (behavior != null) {
+            behavior.applyRotorDamage(stack, damageAmount);
+            setRotorStack(stack);
+        }
+    }
+
+    /**
+     * @return true if the front face is unobstructed
+     */
+    public boolean isFrontFaceFree() {
+        final var facing = self().getFrontFacing();
+        final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
+        final var pos = self().getBlockPos();
+        final var level = self().getLevel();
+        for (int dLeft = -1; dLeft < 2; dLeft++) {
+            for (int dUp = -1; dUp < 2; dUp++) {
+                final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);
+                if (!level.getBlockState(checkPos).isAir()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -77,8 +77,7 @@
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",
-        "rei.RecipeFinderMixin",
-        "top.ConfigMixin"
+        "rei.RecipeFinderMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

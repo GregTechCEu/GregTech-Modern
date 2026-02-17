@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -66,7 +66,7 @@ public class MultiblockWorldSavedData extends SavedData {
     }
 
     // ********************************* thread for searching ********************************* //
-    private final CopyOnWriteArrayList<IMultiController> controllers = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<MultiblockControllerMachine> controllers = new CopyOnWriteArrayList<>();
     private ScheduledExecutorService executorService;
     private final static ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
             .setNameFormat("GTCEu Multiblock Async Thread-%d")
@@ -86,7 +86,7 @@ public class MultiblockWorldSavedData extends SavedData {
      * 
      * @param controller controller
      */
-    public void addAsyncLogic(IMultiController controller) {
+    public void addAsyncLogic(MultiblockControllerMachine controller) {
         controllers.add(controller);
         createExecutorService();
     }
@@ -96,7 +96,7 @@ public class MultiblockWorldSavedData extends SavedData {
      * 
      * @param controller controller
      */
-    public void removeAsyncLogic(IMultiController controller) {
+    public void removeAsyncLogic(MultiblockControllerMachine controller) {
         if (controllers.contains(controller)) {
             controllers.remove(controller);
             if (controllers.isEmpty()) {

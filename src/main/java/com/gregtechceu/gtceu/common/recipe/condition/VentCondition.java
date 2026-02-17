@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -35,8 +35,9 @@ public class VentCondition extends RecipeCondition<VentCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        if (recipeLogic.getProgress() % 10 == 0 && recipeLogic.machine instanceof IExhaustVentMachine ventMachine) {
-            return !(ventMachine.isNeedsVenting() && ventMachine.isVentingBlocked());
+        var ventTrait = recipeLogic.machine.self().getTraitHolder().getTrait(ExhaustVentMachineTrait.TYPE);
+        if (recipeLogic.getProgress() % 10 == 0 && ventTrait != null) {
+            return !(ventTrait.isNeedsVenting() && ventTrait.isVentingBlocked());
         }
         return true;
     }

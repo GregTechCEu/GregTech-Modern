@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
@@ -51,7 +50,7 @@ public class MultiblockState {
     private boolean neededFlip = false;
     public final Level world;
     public final BlockPos controllerPos;
-    public IMultiController lastController;
+    public MultiblockControllerMachine lastController;
 
     // persist
     public LongOpenHashSet cache;
@@ -84,10 +83,9 @@ public class MultiblockState {
         return true;
     }
 
-    public IMultiController getController() {
+    public MultiblockControllerMachine getController() {
         if (world.isLoaded(controllerPos)) {
-            if (world.getBlockEntity(controllerPos) instanceof IMachineBlockEntity machineBlockEntity &&
-                    machineBlockEntity.getMetaMachine() instanceof IMultiController controller) {
+            if (world.getBlockEntity(controllerPos) instanceof MultiblockControllerMachine controller) {
                 return lastController = controller;
             }
         } else {
@@ -171,7 +169,7 @@ public class MultiblockState {
                     }
                 }
             } else {
-                IMultiController controller = getController();
+                MultiblockControllerMachine controller = getController();
                 if (controller == null && error == UNLOAD_ERROR) {
                     if (!serverLevel.isLoaded(controllerPos)) {
                         GTCEu.LOGGER.info("Controller not loaded, pos {}", controllerPos);
@@ -188,11 +186,11 @@ public class MultiblockState {
                     }
                     if (controller.checkPatternWithLock()) {
                         // refresh structure
-                        controller.self().setFlipped(this.neededFlip);
+                        controller.setFlipped(this.neededFlip);
                         controller.onStructureFormed();
                     } else {
                         // invalid structure
-                        controller.self().setFlipped(false);
+                        controller.setFlipped(false);
                         controller.onStructureInvalid();
                         var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                         mwsd.removeMapping(this);

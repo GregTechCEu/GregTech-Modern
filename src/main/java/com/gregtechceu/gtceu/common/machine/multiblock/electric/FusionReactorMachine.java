@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -19,15 +19,14 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -57,9 +56,6 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 @MethodsReturnNonnullByDefault
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
-            WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     // Standard OC used for Fusion
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
             PERFECT_HALF_VOLTAGE_FACTOR, false);
@@ -75,18 +71,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private final int tier;
     @Nullable
     protected EnergyContainerList inputEnergyContainers;
-    @Persisted
+    @SaveField
     protected long heat = 0;
-    @Persisted
+    @SaveField
     protected final NotifiableEnergyContainer energyContainer;
     @Getter
-    @DescSynced
+    @SyncToClient
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
-    public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.energyContainer = createEnergyContainer();
     }
@@ -94,10 +90,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     public NotifiableEnergyContainer createEnergyContainer() {
         // create an internal energy container for temp storage. its capacity is decided when the structure formed.
@@ -123,7 +115,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
@@ -236,6 +228,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                 int newColor = 0xFF000000 | GTUtil.getFluidColor(stack);
                 if (!Objects.equals(color, newColor)) {
                     color = newColor;
+                    syncDataHolder.markClientSyncFieldDirty("color");
                 }
             }
         }
@@ -264,12 +257,14 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     public void onWaiting() {
         super.onWaiting();
         color = -1;
+        syncDataHolder.markClientSyncFieldDirty("color");
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
         color = -1;
+        syncDataHolder.markClientSyncFieldDirty("color");
     }
 
     @Override

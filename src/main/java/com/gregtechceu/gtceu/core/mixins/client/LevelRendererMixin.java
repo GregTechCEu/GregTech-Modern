@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -182,16 +181,14 @@ public abstract class LevelRendererMixin {
         if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
-        } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
-            if (rendererCfg.coloredTieredMachineOutline) {
-                if (mbe.getMetaMachine() instanceof SteamMachine steam) {
+        } else if (rendererCfg.coloredTieredMachineOutline) {
+                if (level.getBlockEntity(pos) instanceof SteamMachine steam) {
                     renderColoredOutline = true;
                     rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
-                } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                } else if (level.getBlockEntity(pos) instanceof ITieredMachine tiered) {
                     renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
-            }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {

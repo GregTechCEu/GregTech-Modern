@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 
@@ -20,9 +22,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -49,33 +48,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MachineControllerCover extends CoverBehavior implements IUICover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
     private CustomItemStackHandler sideCoverSlot;
     private ButtonWidget modeButton;
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Persisted
+    @SaveField
     @Getter
     private boolean isInverted = false;
 
-    @Persisted
+    @SaveField
     @Getter
     private int minRedstoneStrength = 1;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     @Nullable
     private ControllerMode controllerMode = ControllerMode.MACHINE;
 
     @Getter
     @Accessors(fluent = true)
-    @Persisted
+    @SaveField
     private boolean preventPowerFail = false;
 
     public MachineControllerCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -118,6 +110,8 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         resetCurrentControllable();
 
         this.controllerMode = controllerMode;
+        syncDataHolder.markClientSyncFieldDirty("filterMode");
+
         updateAll();
     }
 
@@ -143,7 +137,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {
@@ -196,7 +190,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     private int getInputSignal() {
         Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
+        BlockPos sourcePos = coverHolder.getBlockPos().relative(attachedSide);
 
         return level.getSignal(sourcePos, attachedSide);
     }

@@ -38,11 +38,11 @@ public class LaserNetHandler implements ILaserContainer {
 
     @Nullable
     private ILaserContainer getInnerContainer() {
-        if (net == null || pipe == null || pipe.isInValid() || (facing == null || pipe.isBlocked(facing))) {
+        if (net == null || pipe == null || pipe.isRemoved() || (facing == null || pipe.isBlocked(facing))) {
             return null;
         }
 
-        LaserRoutePath data = net.getNetData(pipe.getPipePos(), facing);
+        LaserRoutePath data = net.getNetData(pipe.getBlockPos(), facing);
         if (data == null) {
             return null;
         }

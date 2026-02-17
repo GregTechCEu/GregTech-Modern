@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -93,7 +92,7 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
     @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderPartModel(List<BakedQuad> quads, IMultiController controller, IMultiPart part,
+    public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller, IMultiPart part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (this.fireboxIdleModel == null) {
@@ -106,13 +105,12 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
             this.casingModel = ModelUtils.getModelForState(casing);
         }
 
-        BlockPos partPos = part.self().getPos();
+        BlockPos partPos = part.self().getBlockPos();
 
-        MultiblockControllerMachine machine = controller.self();
-        BlockPos controllerPos = machine.getPos();
-        Direction multiFront = machine.getFrontFacing();
-        Direction multiUpward = machine.getUpwardsFacing();
-        boolean flipped = machine.isFlipped();
+        BlockPos controllerPos = controller.getBlockPos();
+        Direction multiFront = controller.getFrontFacing();
+        Direction multiUpward = controller.getUpwardsFacing();
+        boolean flipped = controller.isFlipped();
         Direction relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
 
         int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
@@ -120,15 +118,15 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         if (belowControllerY == partY) {
             // firebox
             if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
-                emitQuads(quads, fireboxActiveModel, machine.getLevel(), partPos, fireboxActive,
+                emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {
-                emitQuads(quads, fireboxIdleModel, machine.getLevel(), partPos, fireboxIdle,
+                emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
                         side, rand, modelData, renderType);
             }
         } else {
             // Not exactly one below the controller, so not a firebox
-            emitQuads(quads, casingModel, machine.getLevel(), partPos, casing,
+            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
                     side, rand, modelData, renderType);
         }
     }

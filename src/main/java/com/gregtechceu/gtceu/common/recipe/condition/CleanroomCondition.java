@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -52,16 +51,15 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        if (!ConfigHolder.INSTANCE.machines.enableCleanroom) return true;
         MetaMachine machine = recipeLogic.getMachine();
-        if (machine instanceof ICleanroomReceiver receiver && this.cleanroom != null) {
-            if (ConfigHolder.INSTANCE.machines.cleanMultiblocks && machine instanceof IMultiController) return true;
 
-            ICleanroomProvider provider = receiver.getCleanroom();
-            if (provider == null) return false;
+        if (!ConfigHolder.INSTANCE.machines.enableCleanroom) return true;
+        if (ConfigHolder.INSTANCE.machines.cleanMultiblocks && machine instanceof MultiblockControllerMachine)
+            return true;
 
-            return provider.isClean() && provider.getTypes().contains(this.cleanroom);
-        }
+        CleanroomReceiverTrait receiverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
+
+        if (receiverTrait != null && this.cleanroom != null) return receiverTrait.hasActiveCleanroom(cleanroom);
         return true;
     }
 

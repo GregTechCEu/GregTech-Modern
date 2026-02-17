@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
@@ -32,8 +33,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
-import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 
 public class VanillaRecipeHelper {
 
@@ -65,13 +64,13 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          Ingredient input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
+        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
+        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
@@ -98,7 +97,7 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          ItemStack input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
+        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
@@ -134,13 +133,13 @@ public class VanillaRecipeHelper {
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          Ingredient input, ItemStack output, float experience) {
-        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.blasting(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.blasting(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
@@ -172,13 +171,13 @@ public class VanillaRecipeHelper {
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                         TagKey<Item> input, ItemStack output, float experience) {
-        new SmokingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.smoking(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                         ItemStack input, ItemStack output, float experience) {
-        new SmokingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.smoking(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
@@ -200,7 +199,8 @@ public class VanillaRecipeHelper {
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          ItemStack input, ItemStack output, float experience) {
-        new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.campfireCooking(regName).input(input).output(output).cookingTime(100)
+                .experience(experience)
                 .save(provider);
     }
 
@@ -216,7 +216,8 @@ public class VanillaRecipeHelper {
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
+        SimpleCookingRecipeBuilder.campfireCooking(regName).input(input).output(output).cookingTime(100)
+                .experience(experience)
                 .save(provider);
     }
 
@@ -362,8 +363,9 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof TagKey<?> key) {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof TagPrefix prefix) {
-                    if (prefix.getItemParentTags().length > 0) {
-                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    var parentTags = prefix.getItemParentTags();
+                    if (!parentTags.isEmpty()) {
+                        builder.define(sign, parentTags.get(0));
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
@@ -535,8 +537,9 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof TagKey<?> key) {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof TagPrefix prefix) {
-                    if (prefix.getItemParentTags().length > 0) {
-                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    var parentTags = prefix.getItemParentTags();
+                    if (!parentTags.isEmpty()) {
+                        builder.define(sign, parentTags.get(0));
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
@@ -631,7 +634,7 @@ public class VanillaRecipeHelper {
                                                   @NotNull RecipeCategory category) {
         SmithingTransformRecipeBuilder
                 .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
-                .unlocks(String.format("has_%s", baseInput), has(baseInput))
+                .unlocks(String.format("has_%s", baseInput), InventoryChangeTrigger.TriggerInstance.hasItems(baseInput))
                 .save(provider, regName);
     }
 

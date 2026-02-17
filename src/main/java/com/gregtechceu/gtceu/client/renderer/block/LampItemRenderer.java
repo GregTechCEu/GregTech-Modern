@@ -22,7 +22,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
 
-    public static final LampItemRenderer INSTANCE = new LampItemRenderer();
+    private static LampItemRenderer INSTANCE = null;
+
+    public static LampItemRenderer getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LampItemRenderer();
+        }
+        return INSTANCE;
+    }
 
     protected final ItemRenderer itemRenderer;
     protected final BlockRenderDispatcher blockRenderer;
