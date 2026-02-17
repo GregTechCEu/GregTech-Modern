@@ -132,7 +132,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
         return new Column()
-                .child(IMuiCover.createTitleRow(this.getAttachItem()))
                 .child(new Row()
                         .child(new Column()
                                 .child(IKey.lang("cover.advanced_energy_detector.min").asWidget().alignY(0.15F))

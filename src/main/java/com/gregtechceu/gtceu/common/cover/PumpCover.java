@@ -30,8 +30,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,7 +45,6 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -292,7 +289,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
                 () -> maxFluidTransferRate));
 
         column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2)).marginBottom(2));
+                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2)));
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                 .value(manualIOModeSync)
@@ -301,15 +298,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
                 .build());
 
         return column;
-    }
-
-    @NotNull
-    protected String getUITitle() {
-        return "cover.pump.title";
-    }
-
-    protected void buildAdditionalUI(WidgetGroup group) {
-        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
     protected void configureFilter() {

@@ -297,7 +297,6 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-        VirtualEnderRegistry.release();
     }
 
     @SubscribeEvent

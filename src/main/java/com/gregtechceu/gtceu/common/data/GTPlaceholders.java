@@ -765,7 +765,7 @@ public class GTPlaceholders {
                     if (stack.getOrCreateTag().contains("boundPlayerUUID"))
                         owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
                 }
-                VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
+                VirtualEnderRegistry ender = VirtualEnderRegistry.get((ServerLevel)ctx.level());
                 switch (type) {
                     case "redstone" -> {
                         channel = "ERLink#" + channel;

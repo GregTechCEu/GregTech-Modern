@@ -13,10 +13,7 @@ import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.DrawableStack;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.drawable.*;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
@@ -75,13 +72,16 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(ItemStack stack, int panelWidth, UITexture background) {
-        String machineName = stack.getHoverName().getString();
-        machineName = machineName.replaceAll("§.", "").trim();
+        var name = stack.getHoverName().getString();
+        name = name.replaceAll("§.", "").trim();
+        return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
+    }
 
+    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(machineName);
+        int textTitleWidth = TextRenderer.getFont().width(text);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
@@ -97,11 +97,10 @@ public class GTMuiWidgets {
                 .top(-(textHeight + borderRadius))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(new ItemDrawable(stack)
-                        .asIcon().size(iconSize)
+                .child(icon.size(iconSize)
                         .asWidget()
                         .marginLeft(borderRadius))
-                .child(IKey.str(machineName)
+                .child(IKey.str(text)
                         .asWidget()
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
@@ -517,7 +516,6 @@ public class GTMuiWidgets {
 
         return Flow.row()
                 .coverChildrenHeight()
-                .marginBottom(2)
                 .widthRel(1.0f)
                 .child(new ButtonWidget<>()
                         .width(18)
@@ -612,7 +610,7 @@ public class GTMuiWidgets {
         }
 
         public Flow build() {
-            var row = Flow.row().marginBottom(2).coverChildrenHeight().widthRel(1f);
+            var row = Flow.row().coverChildrenHeight().widthRel(1f);
             if (this.enumValue != null && this.syncValue != null) {
                 for (var enumVal : enumValue.getEnumConstants()) {
                     var button = new ToggleButton().size(18).marginRight(2)

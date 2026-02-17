@@ -77,7 +77,6 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return new Column()
-                .child(IMuiCover.createTitleRow(this.getAttachItem()))
                 .child(SlotGroupWidget.builder()
                         .matrix("IIIIII", "IIIIII", "IIIIII")
                         .key('I', i -> new ItemSlot()

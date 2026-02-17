@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -12,6 +15,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -20,18 +24,15 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
+    private VirtualRedstone storage = new VirtualRedstone();
     @SaveField
     @SyncToClient
-    private VirtualRedstone storage;
-    @SaveField
-    @SyncToClient
-    private UUID uuid;
+    private @Nullable UUID uuid;
 
     public EnderRedstoneLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         if (!isRemote()) {
             uuid = UUID.randomUUID();
-            setVirtualEntry();
         } else uuid = null;
     }
 
@@ -72,13 +73,12 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     }
 
     @Override
-    protected String getUITitle() {
-        return "cover.ender_redstone_link.title";
-    }
-
-    @Override
     public boolean canConnectRedstone() {
         return true;
+    }
+
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
+        return new ParentWidget<>().size(w, h);
     }
 
     @Override

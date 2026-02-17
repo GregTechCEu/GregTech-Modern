@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
@@ -218,7 +219,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         syncManager.syncValue("controllerMode", controllerModeValue);
 
         return GTGuis.createPanel(this, 176, 245)
-                .child(IMuiCover.createTitleRow(this.self().getAttachItem()))
+                .child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.column()
                         .widthRel(1.0f).margin(7, 0)
                         .top(24).coverChildrenHeight()

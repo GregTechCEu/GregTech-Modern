@@ -115,12 +115,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
-
-    @Override
-    protected String getUITitle() {
-        return "cover.fluid.voiding.advanced.title";
-    }
 
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {

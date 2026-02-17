@@ -30,7 +30,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -188,12 +187,6 @@ public class FluidRegulatorCover extends PumpCover {
 
     ///////////////////////////
     // ***** GUI ******//
-    ///////////////////////////
-
-    @Override
-    protected @NotNull String getUITitle() {
-        return "cover.fluid_regulator.title";
-    }
 
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {

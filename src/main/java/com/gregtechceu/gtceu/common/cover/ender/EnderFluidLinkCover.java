@@ -9,12 +9,19 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -29,9 +36,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     public static final int TRANSFER_RATE = 8000; // mB/t
 
-    @SaveField
-    @SyncToClient
-    protected VirtualTank visualTank;
+    protected VirtualTank visualTank = new VirtualTank();
 
     @Getter
     @SaveField
@@ -43,8 +48,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
-        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance()
-                .getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName()));
     }
 
     @Override
@@ -90,6 +93,19 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         return coverHolder.getFluidHandlerCap(attachedSide, false);
     }
 
+    @Override
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
+        if (!(entry instanceof VirtualTank tank)) return new ParentWidget<>().size(w, h);
+
+        manager.getOrCreateSyncHandler("ender_link_cover_fluid_slot", index, FluidSlotSyncHandler.class,
+                () -> SyncHandlers.fluidSlot(tank.getFluidTank()));
+
+        return new FluidSlot()
+                .syncHandler("ender_link_cover_fluid_slot", index)
+                .marginLeft(3)
+                .size(w, h);
+    }
+
     private int doTransferFluids(int platformTransferLimit) {
         var ownFluidHandler = getOwnFluidHandler();
 
@@ -104,14 +120,5 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
         }
         return 0;
-    }
-
-    //////////////////////////////////////
-    // ************ GUI ************ //
-
-    @NotNull
-    @Override
-    protected String getUITitle() {
-        return "cover.ender_fluid_link.title";
     }
 }

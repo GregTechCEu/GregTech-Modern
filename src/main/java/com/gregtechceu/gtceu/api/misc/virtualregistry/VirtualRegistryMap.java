@@ -7,10 +7,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
@@ -30,6 +27,10 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
 
     public void addEntry(String name, VirtualEntry entry) {
         registryMap.computeIfAbsent(entry.getType(), k -> new ConcurrentHashMap<>()).put(name, entry);
+    }
+
+    public <T extends VirtualEntry> Map<String, VirtualEntry> getEntries(EntryTypes<T> type) {
+        return registryMap.get(type);
     }
 
     public boolean contains(EntryTypes<?> type, String name) {
@@ -55,7 +56,7 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @NotNull CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         for (Map.Entry<EntryTypes<?>, Map<String, VirtualEntry>> entry : registryMap.entrySet()) {
             CompoundTag entriesTag = new CompoundTag();
@@ -70,10 +71,9 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         for (String entryTypeString : nbt.getAllKeys()) {
-            EntryTypes<?> type = entryTypeString.contains(":") ?
-                    EntryTypes.fromLocation(ResourceLocation.tryParse(entryTypeString)) :
-                    EntryTypes.fromString(entryTypeString);
-
+            ResourceLocation entryTypeLoc = ResourceLocation.tryParse(entryTypeString);
+            if (entryTypeLoc == null) continue;
+            EntryTypes<?> type = EntryTypes.fromLocation(entryTypeLoc);
             if (type == null) continue;
 
             CompoundTag virtualEntries = nbt.getCompound(entryTypeString);
