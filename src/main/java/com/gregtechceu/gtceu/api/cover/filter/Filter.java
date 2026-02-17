@@ -14,7 +14,9 @@ import java.util.function.Predicate;
 
 public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
-    WidgetGroup openConfigurator(int x, int y);
+    default WidgetGroup openConfigurator(int x, int y) {
+        return null;
+    }
 
     /**
      * @return Filter panel when opened by itself (including the player inventory)

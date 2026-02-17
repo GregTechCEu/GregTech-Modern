@@ -8,8 +8,7 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
@@ -55,7 +54,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
@@ -134,8 +133,9 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        importItems.dropInventoryInWorld();
     }
 
     private void rebuildData(boolean isDataBank) {
@@ -193,7 +193,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         rebuildData(controller instanceof DataBankMachine);
         super.addedToController(controller);
     }

@@ -7,9 +7,18 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -17,6 +26,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -163,6 +173,28 @@ public class RobotArmCover extends ConveyorCover {
     @NotNull
     protected String getUITitle() {
         return "cover.robotic_arm.title";
+    }
+
+    @Override
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var column = super.createCoverUI(data, syncManager, settings);
+
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v);
+
+        syncManager.syncValue("transferMode", transferMode);
+        syncManager.syncValue("transferSize", transferSize);
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
+                .value(transferMode)
+                .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
+                .lang(IKey.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
+                .build());
+
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
+
+        return column;
     }
 
     @Override

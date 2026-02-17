@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -46,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine, IMachineLife {
+public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine {
 
     public static final long AMPS_PER_ITEM = 4L;
 
@@ -117,8 +116,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(chargerInventory);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     //////////////////////////////////////
@@ -239,7 +239,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    machine.doExplosion(GTUtil.getExplosionPower(voltage));
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 

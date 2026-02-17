@@ -126,7 +126,7 @@ public class GTMachines {
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                    .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
+                    .ui(GTSingleblockMachinePanels.STEAM_MACHINE)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
@@ -184,7 +184,7 @@ public class GTMachines {
     public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines("arc_furnace",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
-                    .UI(GTSingleblockMachinePanels.ARC_FURNACE)
+                    .ui(GTSingleblockMachinePanels.ARC_FURNACE)
                     // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("arc_furnace"),
                     // GTRecipeTypes.ARC_FURNACE_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -286,7 +286,7 @@ public class GTMachines {
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
-                    .UI(GTSingleblockMachinePanels.MACERATOR)
+                    .ui(GTSingleblockMachinePanels.MACERATOR)
                     // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
                     // GTRecipeTypes.MACERATOR_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -313,7 +313,7 @@ public class GTMachines {
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"),
                             GTRecipeTypes.ROCK_BREAKER_RECIPES))
-                    .UI(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ROCK_BREAKER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -328,7 +328,7 @@ public class GTMachines {
                     .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("air_scrubber"),
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES))
-                    .UI(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)

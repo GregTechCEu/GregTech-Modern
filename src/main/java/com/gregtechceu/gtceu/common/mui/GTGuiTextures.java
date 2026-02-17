@@ -184,15 +184,18 @@ public class GTGuiTextures {
     // public static final IDrawable PLUS = IKey.str("+").asIcon().marginLeft(1);
     // public static final IDrawable MINUS = IKey.str("-").asIcon().marginLeft(1);
 
-    public static final UITexture[] MANUAL_IO_OVERLAY_IN = slice("textures/gui/overlay/manual_io_overlay_in.png",
-            18, 18 * 3, 18, 18, ColorType.DEFAULT);
+    public static final UITexture INFO = fullImage("textures/gui/widget/information.png");
+
+    public static final UITexture[] MANUAL_IO_OVERLAY_IN = { fullImage("textures/gui/icon/manual_io_mode/disabled.png"),
+            fullImage("textures/gui/icon/manual_io_mode/filtered.png"),
+            fullImage("textures/gui/icon/manual_io_mode/unfiltered.png") };
     public static final UITexture[] MANUAL_IO_OVERLAY_OUT = slice("textures/gui/overlay/manual_io_overlay_out.png",
             18, 18 * 3, 18, 18, ColorType.DEFAULT);
     public static final UITexture[] CONVEYOR_MODE_OVERLAY = slice("textures/gui/overlay/conveyor_mode_overlay.png",
             18, 18 * 2, 18, 18, ColorType.DEFAULT);
 
     public static final UITexture[] TRANSFER_MODE_OVERLAY = slice("textures/gui/overlay/transfer_mode_overlay.png",
-            18, 18 * 3, 18, 18, ColorType.DEFAULT);
+            40, 40 * 3, 40, 40, ColorType.DEFAULT);
 
     public static final UITexture[] FLUID_TRANSFER_MODE_OVERLAY = slice(
             "textures/gui/overlay/fluid_transfer_mode_overlay.png",
@@ -201,6 +204,9 @@ public class GTGuiTextures {
     public static final UITexture[] DISTRIBUTION_MODE_OVERLAY = slice(
             "textures/gui/widget/button_distribution_mode.png",
             16, 48, 16, 16, ColorType.DEFAULT);
+
+    public static final UITexture[] VOIDING_MODES = { fullImage("textures/gui/icon/voiding_mode/void_any.png"),
+            fullImage("textures/gui/icon/voiding_mode/void_overflow.png") };
 
     public static final UITexture BUTTON_VOID = fullImage("textures/gui/widget/button_void.png");
 
@@ -431,6 +437,8 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_CLEAR_GRID = fullImage("textures/gui/widget/button_clear_grid.png", null);
 
     public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
+    public static final UITexture BUTTON_DETECTOR_INVERT = fullImage(
+            "textures/gui/widget/button_detector_cover_inverted.png");
     public static final UITexture BUTTON_REDSTONE_ON = fullImage("textures/gui/widget/button_redstone_on.png");
     public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");

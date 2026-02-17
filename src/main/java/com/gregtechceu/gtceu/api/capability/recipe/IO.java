@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -21,10 +22,13 @@ public enum IO implements EnumSelectorWidget.SelectableEnum {
     public final String tooltip;
     @Getter
     public final IGuiTexture icon;
+    @Getter
+    public final UITexture uiTexture;
 
     IO(String tooltip, String textureName) {
         this.tooltip = tooltip;
         this.icon = new ResourceTexture("gtceu:textures/gui/icon/io_mode/" + textureName + ".png");
+        this.uiTexture = UITexture.fullImage("gtceu:textures/gui/icon/io_mode/" + textureName + ".png");
     }
 
     public boolean support(IO io) {

@@ -5,33 +5,46 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.MouseData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Arrays;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IUIMachine {
+public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IMuiMachine {
 
     @SaveField
     private long voltage = 0;
@@ -180,62 +193,190 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     //////////////////////////////////////
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
-                        value -> {
-                            voltage = Long.parseLong(value);
-                            setTier = GTUtil.getTierByVoltage(voltage);
-                        }).setNumbersOnly(0L, Long.MAX_VALUE))
-                .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
-                .widget(new ButtonWidget(7, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> amps = --amps == -1 ? 0 : amps))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
-                        value -> amps = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new ButtonWidget(149, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
-                        cd -> {
-                            if (amps < Integer.MAX_VALUE) {
-                                amps++;
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        // syncing
+        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v);
+        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = a < 1 ? 1 : a);
+        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t);
+        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b);
+        BooleanSyncValue isActive = new BooleanSyncValue(() -> this.active, (b) -> this.active = b);
+        syncManager.syncValue("tier", tier);
+
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("voltage popup", false,
+                (manager, handler) -> createAmpSelector(voltage, tier));
+
+        return new ModularPanel("main panel")
+                .coverChildrenHeight()
+                .width(166)
+                .background(GTGuiTextures.BACKGROUND)
+                .child(new Column()
+                        .widthRel(1)
+                        .name("main")
+                        .padding(7)
+                        .mainAxisAlignment(Alignment.MainAxis.START)
+                        .coverChildrenHeight()
+                        .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                        .child(createVoltageRow(panelSyncHandler, voltage))
+                        .child(createAmpRow(amps))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(createSourceSelector(sourceSync))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(new Row()
+                                .coverChildrenHeight()
+                                .name("Power")
+                                .coverChildrenHeight()
+                                .child(new ToggleButton()
+                                        .value(isActive)
+                                        .overlay(true, GTGuiTextures.BUTTON_POWER[1])
+                                        .overlay(false, GTGuiTextures.BUTTON_POWER[0]))
+                                .child(IKey.str("Enable")
+                                        .asWidget()
+                                        .paddingLeft(4)
+
+                                )));
+    }
+
+    private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage) {
+        return Flow.row()
+                .coverChildrenHeight()
+                .paddingBottom(4)
+                .child(new TextFieldWidget()
+                        .setTextAlignment(Alignment.CENTER)
+                        .setNumbersLong(() -> 1, () -> Long.MAX_VALUE)
+                        .value(voltage))
+                .child(new ButtonWidget<>()
+                        .height(16)
+                        .width(40)
+                        .overlay(IKey.dynamic(
+                                () -> Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage.getLongValue())]))
+                                .shadow(true))
+
+                        // .width(32)
+                        .marginLeft(4)
+                        .tooltip(new RichTooltip().add("Click to Change Tier"))
+                        .onMousePressed((a, b, c) -> {
+                            if (panel.isPanelOpen()) {
+                                panel.closePanel();
+                            } else {
+                                panel.openPanel();
                             }
-                        }))
-                .widget(new LabelWidget(7, 110,
-                        () -> "Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick))
-                .widget(new SwitchWidget(7, 139, 77, 20, (clickData, value) -> active = value)
-                        .setTexture(
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.on")))
-                        .setPressed(active))
-                .widget(new SwitchWidget(85, 139, 77, 20, (clickData, value) -> {
-                    source = value;
-                    if (source) {
-                        voltage = 0;
-                        amps = 0;
-                        setTier = 0;
-                    } else {
-                        voltage = GTValues.V[14];
-                        amps = Integer.MAX_VALUE;
-                        setTier = 14;
-                    }
-                }).setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.sink")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.source")))
-                        .setPressed(source))
-                .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
-                        .setOnChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            voltage = GTValues.VEX[setTier];
+                            return true;
                         })
-                        .setSupplier(() -> GTValues.VNF[setTier])
-                        .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
-                        .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(GTValues.VNF[setTier]));
+
+                )
+                .child(IKey.str("Voltage").asWidget()
+                        .anchorRight(0)
+                        .paddingRight(4)
+                        .verticalCenter()
+
+                );
+    }
+
+    static Flow createAmpRow(IntSyncValue amps) {
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(
+                        new TextFieldWidget()
+                                .setTextAlignment(Alignment.CENTER)
+                                .setNumbers(1, Integer.MAX_VALUE)
+                                .value(amps)
+                                .setDefaultNumber(1))
+                .child(IKey.lang("gtceu.creative.energy.amperage")
+                        .asWidget()
+                        .anchorRight(0)
+                        .paddingRight(4)
+                        .verticalCenter())
+                .child(new ButtonWidget<>()
+                        .overlay(new DynamicDrawable(() -> {
+                            MouseData mouseData = MouseData.create(-1);
+                            if (mouseData.shift()) {
+                                return IKey.str("1/2x");
+                            } else if (mouseData.ctrl()) {
+                                return IKey.str("4x");
+                            } else {
+                                return IKey.str("2x");
+                            }
+
+                        }))
+                        .width(32)
+                        .height(16)
+                        .tooltip(new RichTooltip().addLine("Click to Double Amperage")
+                                .addLine("Shift to half current Amperage"))
+                        .onMousePressed((a, b, c) -> {
+                            MouseData mouseData = MouseData.create(c);
+                            if (mouseData.shift()) {
+                                amps.setValue(amps.getValue() / 2);
+                            } else if (mouseData.ctrl()) {
+                                amps.setValue(amps.getValue() * 4);
+                            } else {
+                                amps.setValue(amps.getValue() * 2);
+                            }
+                            return true;
+                        })
+                        .marginLeft(4));
+    }
+
+    private Flow createSourceSelector(BooleanSyncValue sourceSync) {
+        return Flow.column()
+                .coverChildrenHeight()
+                .child(Flow.row()
+                        .coverChildrenHeight()
+                        .name("button")
+                        .childPadding(2)
+                        .child(new ToggleButton()
+                                .overlay(new DynamicDrawable(() -> {
+                                    if (sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
+                                    }
+                                    return IDrawable.EMPTY;
+                                }))
+                                .value(sourceSync))
+                        .child(IKey.lang("gtceu.creative.energy.source").asWidget())
+                        .paddingBottom(2))
+                .child(Flow.row()
+                        .coverChildrenHeight()
+                        .name("button")
+                        .coverChildrenHeight()
+                        .childPadding(2)
+                        .child(new ToggleButton()
+                                .overlay(new DynamicDrawable(() -> {
+                                    if (!sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
+                                    }
+                                    return IDrawable.EMPTY;
+                                }))
+                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
+                        .child(IKey.lang("gtceu.creative.energy.sink").asWidget()));
+    }
+
+    private ModularPanel createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
+        return new Dialog<>("amp_selector")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .width(72)
+                .height(104)
+                .child(Flow.column()
+                        .child(IKey.lang("gtceu.top.cable_voltage").asWidget().top(4).left(3))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.80f).horizontalCenter().top(19))
+                        .child(new ListWidget<>()
+                                .widthRel(1.0f)
+                                .height(120)
+                                .maxSize(80)
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .children(GTValues.TIER_COUNT, v -> new ButtonWidget<>()
+                                        .width(36)
+                                        .overlay(IKey.lang(Component.literal(GTValues.VNF[v])))
+                                        .onMousePressed((x, y, b) -> {
+                                            voltage.setValue(GTValues.V[v]);
+                                            tier.setValue(v);
+                                            return true;
+                                        }))
+                                .top(20))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.80f).horizontalCenter().top(99)));
     }
 }

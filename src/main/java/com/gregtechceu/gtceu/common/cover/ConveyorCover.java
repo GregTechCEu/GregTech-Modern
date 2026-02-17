@@ -11,31 +11,19 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -49,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -436,18 +423,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel panel = GTGuis.createPanel(this, 176, 192 + 18);
-
-        panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
-
-        return panel.child(createCoverUI(data, syncManager, settings))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-
-        // return IMuiCover.super.buildUI(data, syncManager, settings);
-    }
-
-    @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()
                 .top(7).margin(7, 0)
@@ -460,86 +435,28 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 this::getDistributionMode, this::setDistributionMode);
 
         IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate);
-        StringSyncValue formattedTransferRate = new StringSyncValue(transferRate::getStringValue,
-                transferRate::setStringValue);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
 
         syncManager.syncValue("manualMode", manualMode);
         syncManager.syncValue("distribution", distMode);
         syncManager.syncValue("throughput", transferRate);
+        syncManager.syncValue("io", ioSync);
 
         if (createThroughputRow()) {
-            column.child(Flow.row()
-                    .coverChildrenHeight()
-                    .marginBottom(2)
-                    .widthRel(1.0f)
-                    .child(new ButtonWidget<>()
-                            .left(0).width(18)
-                            .onMousePressed((x, y, button) -> {
-                                int val = transferRate.getIntValue() - getIncrementValue(MouseData.create(button));
-                                val = Mth.clamp(val, 1, maxItemTransferRate);
-                                transferRate.setIntValue(val, true, true);
-                                return true;
-                            })
-                            .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                    .child(new TextFieldWidget()
-                            .left(18).right(18)
-                            .setTextAlignment(Alignment.Center)
-                            .setTextColor(Color.WHITE.darker(1))
-                            .setNumbers(1, maxItemTransferRate)
-                            .onMouseScrolled((mouseX, mouseY, delta) -> {
-                                int inc = (int) delta * getIncrementValue(MouseData.create(-1));
-                                int val = Mth.clamp(transferRate.getIntValue() + inc, 1, maxItemTransferRate);
-                                transferRate.setIntValue(val, true, true);
-                                return true;
-                            })
-                            .value(formattedTransferRate)
-                            .background(GTGuiTextures.DISPLAY))
-                    .child(new ButtonWidget<>()
-                            .right(0).width(18)
-                            .onMousePressed((x, y, button) -> {
-                                int val = transferRate.getIntValue() + getIncrementValue(MouseData.create(button));
-                                val = Mth.clamp(val, 1, maxItemTransferRate);
-                                transferRate.setIntValue(val, true, true);
-                                return true;
-                            })
-                            .onUpdateListener(w -> w.overlay(createAdjustOverlay(true)))));
+            column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, () -> 1, () -> maxItemTransferRate));
         }
 
         if (createFilterRow()) {
-            var filterSlot = filterHandler.getFilterSlot();
-            // TODO get the panel to use the right sync handler when swapping from one item filter to the next
-            var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                    (sm, sh) -> ItemFilter.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
-
-            DynamicSyncHandler filterButton = new DynamicSyncHandler()
-                    .widgetProvider((sm, buf) -> {
-                        ItemStack stack = buf.readItem();
-                        if (stack.isEmpty()) return new EmptyWidget();
-                        stack = filterSlot.getStackInSlot(0);
-                        ItemFilter filter = ItemFilter.loadFilter(stack);
-
-                        return new ButtonWidget<>()
-                                .onMousePressed((x, y, b) -> {
-                                    panelHandler.openPanel();
-                                    return true;
-                                });
-                    });
-
-            column.child(Flow.row()
-                    .coverChildrenHeight()
-                    .child(new ItemSlot()
-                            .slot(new ModularSlot(filterSlot, 0)
-                                    .changeListener((stack, amount, client, init) -> {
-                                        filterButton.notifyUpdate(packet -> packet.writeItem(stack));
-                                    }))
-                            .marginRight(4))
-                    .child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
+            column.child(
+                    GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings)
+                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2))
+                            .marginBottom(2));
         }
 
         if (createConveyorIORow()) {}
 
         if (createDistributionModeRow()) {
-            column.child(new EnumRowBuilder<>(DistributionMode.class)
+            column.child(new GTMuiWidgets.EnumRowBuilder<>(DistributionMode.class)
                     .value(distMode)
                     .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
                     .lang(IKey.dynamic(() -> Component.translatable(distributionMode.localeName)))
@@ -547,7 +464,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createManualIOModeRow()) {
-            column.child(new EnumRowBuilder<>(ManualIOMode.class)
+            column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                     .value(manualMode)
                     .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                     .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))
@@ -577,49 +494,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     protected boolean createManualIOModeRow() {
         return true;
     }
-
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * final var group = new WidgetGroup(0, 0, 176, 137);
-     * group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
-     *
-     * group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
-     * .setMin(1).setMax(maxItemTransferRate));
-     *
-     * final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
-     * DistributionMode.values(), distributionMode, this::setDistributionMode);
-     *
-     * distributionSelector.setVisible(shouldRespectDistributionMode());
-     * group.addWidget(distributionSelector);
-     *
-     * ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
-     * (clickData, value) -> {
-     * setIo(value ? IO.IN : IO.OUT);
-     * distributionSelector.setVisible(shouldRespectDistributionMode());
-     * ioModeSwitch.setHoverTooltips(
-     * LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-     * })
-     * .setTexture(
-     * new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
-     * new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
-     * .setPressed(io == IO.IN)
-     * .setHoverTooltips(
-     * LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-     * group.addWidget(ioModeSwitch);
-     *
-     * group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
-     * ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-     * .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
-     *
-     * group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-     * group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
-     *
-     * buildAdditionalUI(group);
-     *
-     * return group;
-     * }
-     */
 
     @NotNull
     protected String getUITitle() {

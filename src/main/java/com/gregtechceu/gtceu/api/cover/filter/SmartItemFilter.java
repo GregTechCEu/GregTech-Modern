@@ -1,26 +1,38 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.ColorType;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 
@@ -29,6 +41,7 @@ public class SmartItemFilter implements ItemFilter {
     protected Consumer<ItemFilter> itemWriter = filter -> {};
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
+    @Getter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
     protected SmartItemFilter() {}
@@ -73,16 +86,23 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
-                SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
-        return group;
-    }
-
-    @Override
     public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return null;
+        EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
+                this::getFilterMode, this::setFilterMode);
+
+        syncManager.syncValue("mode", mode);
+
+        return new Dialog<>("smart_item_filter")
+                .setDisablePanelsBelow(false)
+                .setDraggable(true)
+                .setCloseOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
+                        .value(mode)
+                        .overlay(16, SmartFilteringMode.getTextures())
+                        .lang(IKey.dynamic(() -> Component.translatable(filterMode.localeName)))
+                        .build().margin(7))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     @Override
@@ -141,6 +161,13 @@ public class SmartItemFilter implements ItemFilter {
         @Override
         public String getTooltip() {
             return "cover.item_smart_filter.filtering_mode." + localeName;
+        }
+
+        public static UITexture[] getTextures() {
+            return Arrays.stream(VALUES)
+                    .map(v -> UITexture.fullImage(GTCEu.MOD_ID,
+                            "textures/block/machines/" + v.localeName + "/overlay_front.png", ColorType.DEFAULT))
+                    .toArray(UITexture[]::new);
         }
 
         @Override

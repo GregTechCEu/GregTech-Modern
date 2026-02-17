@@ -49,13 +49,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return new InfiniteCache(this);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
     @Override
@@ -132,7 +129,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                         .orElse(InteractionResult.PASS);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
