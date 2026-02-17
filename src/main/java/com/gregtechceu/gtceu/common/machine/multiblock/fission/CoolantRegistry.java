@@ -41,5 +41,7 @@ public class CoolantRegistry {
 
     private static void init() {
         register(GTMaterials.Water, GTMaterials.Steam, 10, 1000, 0.3f);
+        register(GTMaterials.DistilledWater, GTMaterials.Steam, 15, 1500, 0.4f);
+        register(GTMaterials.SodiumPotassium, GTMaterials.HotSodiumPotassium, 25, 2500, 0.5f);
     }
 }
