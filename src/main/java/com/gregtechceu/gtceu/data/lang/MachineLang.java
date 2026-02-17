@@ -994,16 +994,21 @@ public class MachineLang {
         provider.add("gtceu.machine.fission_coolant_inlet.tooltip", "§7Coolant input for the Fission Reactor");
 
         // Fission Reactor multiblock UI
-        provider.add("gtceu.multiblock.fission.status", "Status: %s");
-        provider.add("gtceu.multiblock.fission.vessel_heat", "Vessel Heat: %s / %s");
-        provider.add("gtceu.multiblock.fission.height", "Reactor Height: %s");
+        provider.add("gtceu.multiblock.fission.status.online", "ONLINE");
+        provider.add("gtceu.multiblock.fission.status.offline", "OFFLINE");
+        provider.add("gtceu.multiblock.fission.label.vessel_heat", "Vessel Heat");
+        provider.add("gtceu.multiblock.fission.label.heat_gen", "Heat Gen");
+        provider.add("gtceu.multiblock.fission.label.cooling", "Cooling");
+        provider.add("gtceu.multiblock.fission.label.fuel_rods", "Fuel Rods");
+        provider.add("gtceu.multiblock.fission.label.coolant", "Coolant");
+        provider.add("gtceu.multiblock.fission.value.vessel_heat", "%s/%s (%s)");
+        provider.add("gtceu.multiblock.fission.value.heat_gen", "%s HU/t");
+        provider.add("gtceu.multiblock.fission.value.cooling", "%s / %s HU/t");
+        provider.add("gtceu.multiblock.fission.value.fuel_rods", "%s/%s active");
+        provider.add("gtceu.multiblock.fission.value.coolant", "%s mB/t %s");
+        provider.add("gtceu.multiblock.fission.value.coolant.none", "None");
         provider.add("gtceu.multiblock.fission.overheating", "OVERHEATING!");
         provider.add("gtceu.multiblock.fission.meltdown_warning", "MELTDOWN — SCRAM ACTIVE");
-        provider.add("gtceu.multiblock.fission.heat_gen", "Heat Gen: %s HU/t");
-        provider.add("gtceu.multiblock.fission.cooling", "Cooling: %s / %s HU/t");
-        provider.add("gtceu.multiblock.fission.fuel_rods", "Fuel Rods: %s/%s active");
-        provider.add("gtceu.multiblock.fission.coolant_flow", "Coolant: %s mB/t");
-        provider.add("gtceu.multiblock.fission.coolant_type", "Coolant Type: %s");
         provider.add("gtceu.multiblock.fission.start", "Start Reactor");
         provider.add("gtceu.multiblock.fission.shutdown", "Shutdown Reactor");
 
@@ -1020,13 +1025,27 @@ public class MachineLang {
                 "Missing required capstone blocks in inventory");
         provider.add("gtceu.multiblock.fission.bottom.missing_casings",
                 "Missing Reactor Casings in inventory to replace capstones");
-        provider.add("gtceu.multiblock.fission.bottom.applied", "Applied %s bottom layer blocks");
+        provider.add("gtceu.multiblock.fission.bottom.applied", "Bottom layer applied");
         provider.add("gtceu.multiblock.fission.bottom.nothing_to_revert", "No bottom capstones to revert");
-        provider.add("gtceu.multiblock.fission.bottom.reverted", "Reverted %s blocks to casings");
+        provider.add("gtceu.multiblock.fission.bottom.reverted", "Bottom layer reverted");
 
         // Fission part heat readout
         provider.add("gtceu.multiblock.fission.part.heat", "Column Heat: %s / %s (%s)");
         provider.add("gtceu.multiblock.fission.part.not_formed", "Not part of a formed reactor");
+
+        // Fission heatmap tooltip
+        provider.add("gtceu.multiblock.fission.component.fuel_rod", "Fuel Rod");
+        provider.add("gtceu.multiblock.fission.component.coolant_channel", "Coolant Channel");
+        provider.add("gtceu.multiblock.fission.component.heat_exchanger", "Heat Exchanger");
+        provider.add("gtceu.multiblock.fission.component.neutron_reflector", "Neutron Reflector");
+        provider.add("gtceu.multiblock.fission.component.moderator", "Moderator");
+        provider.add("gtceu.multiblock.fission.component.control_rod", "Control Rod");
+        provider.add("gtceu.multiblock.fission.component.casing", "Casing");
+        provider.add("gtceu.multiblock.fission.component.controller", "Controller");
+        provider.add("gtceu.multiblock.fission.component.vessel", "Vessel");
+        provider.add("gtceu.multiblock.fission.heatmap.depleted", "Depleted");
+        provider.add("gtceu.multiblock.fission.heatmap.inactive", "Inactive");
+        provider.add("gtceu.multiblock.fission.heatmap.heat", "Heat: %s%%");
 
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");

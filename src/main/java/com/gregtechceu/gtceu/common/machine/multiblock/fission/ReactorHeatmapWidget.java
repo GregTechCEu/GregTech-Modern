@@ -120,19 +120,25 @@ public class ReactorHeatmapWidget extends Widget<ReactorHeatmapWidget> {
         if (hoveredCell != null && isHovering()) {
             int absX = (int) context.getAbsMouseX();
             int absY = (int) context.getAbsMouseY();
-            String typeName = hoveredCell.type.name().replace('_', ' ');
-
             List<Component> tooltip = new ArrayList<>();
+            var typeLine = Component.translatable(hoveredCell.type.getLangKey());
             if (hoveredCell.type == ReactorComponentType.CASING ||
                     hoveredCell.type == ReactorComponentType.CONTROLLER ||
                     hoveredCell.type == ReactorComponentType.VESSEL) {
-                tooltip.add(Component.literal(typeName));
+                tooltip.add(typeLine);
             } else {
-                String status = hoveredCell.depleted ? " (Depleted)" :
-                        (!hoveredCell.active ? " (Inactive)" : "");
-                tooltip.add(Component.literal(typeName + status));
+                if (hoveredCell.depleted) {
+                    typeLine.append(" (")
+                            .append(Component.translatable("gtceu.multiblock.fission.heatmap.depleted"))
+                            .append(")");
+                } else if (!hoveredCell.active) {
+                    typeLine.append(" (")
+                            .append(Component.translatable("gtceu.multiblock.fission.heatmap.inactive"))
+                            .append(")");
+                }
+                tooltip.add(typeLine);
                 int heatVal = (int) (hoveredCell.heatPct * 100);
-                tooltip.add(Component.literal("Heat: " + heatVal + "%")
+                tooltip.add(Component.translatable("gtceu.multiblock.fission.heatmap.heat", heatVal)
                         .withStyle(heatVal > 75 ? net.minecraft.ChatFormatting.RED :
                                 heatVal > 50 ? net.minecraft.ChatFormatting.YELLOW :
                                         net.minecraft.ChatFormatting.GREEN));

@@ -652,20 +652,20 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         return requirements;
     }
 
-    private Component applyBottomLayer(Player player) {
+    private String applyBottomLayer(Player player) {
         if (!isFormed()) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.not_formed");
+            return "gtceu.multiblock.fission.bottom.not_formed";
         }
         if (running) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.running");
+            return "gtceu.multiblock.fission.bottom.running";
         }
         if (!(getLevel() instanceof ServerLevel serverLevel)) {
-            return Component.empty();
+            return "";
         }
 
         Map<BlockPos, MachineDefinition> requirements = computeBottomLayerRequirements();
         if (requirements.isEmpty()) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.nothing_needed");
+            return "gtceu.multiblock.fission.bottom.nothing_needed";
         }
 
         Map<BlockPos, MachineDefinition> toSwap = new HashMap<>();
@@ -677,7 +677,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
             }
         }
         if (toSwap.isEmpty()) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.already_configured");
+            return "gtceu.multiblock.fission.bottom.already_configured";
         }
 
         boolean creative = player.isCreative();
@@ -688,7 +688,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
             }
             for (var entry : needed.entrySet()) {
                 if (countItemInInventory(player.getInventory(), entry.getKey()) < entry.getValue()) {
-                    return Component.translatable("gtceu.multiblock.fission.bottom.missing_items");
+                    return "gtceu.multiblock.fission.bottom.missing_items";
                 }
             }
 
@@ -713,23 +713,23 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         }
 
         scheduleStructureRecheck();
-        return Component.translatable("gtceu.multiblock.fission.bottom.applied", toSwap.size());
+        return "gtceu.multiblock.fission.bottom.applied";
     }
 
-    private Component revertBottomLayer(Player player) {
+    private String revertBottomLayer(Player player) {
         if (!isFormed()) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.not_formed");
+            return "gtceu.multiblock.fission.bottom.not_formed";
         }
         if (running) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.running");
+            return "gtceu.multiblock.fission.bottom.running";
         }
         if (!(getLevel() instanceof ServerLevel serverLevel)) {
-            return Component.empty();
+            return "";
         }
 
         int topY = self().getBlockPos().getY();
         int bottomY = structureBottomY;
-        if (bottomY >= topY) return Component.empty();
+        if (bottomY >= topY) return "";
 
         Block casingBlock = CASING_REACTOR.get();
         Block drainBlock = GTFissionMachines.FISSION_FUEL_ROD_DRAIN.getBlock();
@@ -746,14 +746,14 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         }
 
         if (toRevert.isEmpty()) {
-            return Component.translatable("gtceu.multiblock.fission.bottom.nothing_to_revert");
+            return "gtceu.multiblock.fission.bottom.nothing_to_revert";
         }
 
         boolean creative = player.isCreative();
         if (!creative) {
             int casingsNeeded = toRevert.size();
             if (countItemInInventory(player.getInventory(), casingBlock.asItem()) < casingsNeeded) {
-                return Component.translatable("gtceu.multiblock.fission.bottom.missing_casings");
+                return "gtceu.multiblock.fission.bottom.missing_casings";
             }
             removeItemsFromInventory(player.getInventory(), casingBlock.asItem(), casingsNeeded);
         }
@@ -775,7 +775,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         }
 
         scheduleStructureRecheck();
-        return Component.translatable("gtceu.multiblock.fission.bottom.reverted", toRevert.size());
+        return "gtceu.multiblock.fission.bottom.reverted";
     }
 
     private static int countItemInInventory(Inventory inventory, Item item) {
@@ -874,13 +874,11 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
 
         syncManager.registerServerSyncedAction("apply_bottom", packet -> {
             Player player = syncManager.getPlayer();
-            Component result = applyBottomLayer(player);
-            bottomResultMsg[0] = result.getString();
+            bottomResultMsg[0] = applyBottomLayer(player);
         });
         syncManager.registerServerSyncedAction("revert_bottom", packet -> {
             Player player = syncManager.getPlayer();
-            Component result = revertBottomLayer(player);
-            bottomResultMsg[0] = result.getString();
+            bottomResultMsg[0] = revertBottomLayer(player);
         });
 
         var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
@@ -896,28 +894,36 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
                     if (!formed.get()) {
                         return Component.translatable("gtceu.multiblock.invalid_structure");
                     }
-                    return Component.literal(runningSync.getBoolValue() ? "ONLINE" : "OFFLINE")
-                            .withStyle(runningSync.getBoolValue() ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY);
+                    return Component
+                            .translatable(runningSync.getBoolValue() ? "gtceu.multiblock.fission.status.online" :
+                                    "gtceu.multiblock.fission.status.offline")
+                            .withStyle(runningSync.getBoolValue() ? ChatFormatting.GREEN : ChatFormatting.BLACK);
                 })))
-                .child(statLabel("Vessel Heat", formed))
+                .child(statLabel("gtceu.multiblock.fission.label.vessel_heat", formed))
                 .child(statValue(() -> {
                     int heat = heatSync.getIntValue();
                     float pct = vesselHeatMax > 0 ? (float) heat / vesselHeatMax * 100 : 0;
-                    return String.format("%d/%d (%.1f%%)", heat, vesselHeatMax, pct);
+                    return Component.translatable("gtceu.multiblock.fission.value.vessel_heat",
+                            heat, vesselHeatMax, String.format("%.1f%%", pct));
                 }, formed))
-                .child(statLabel("Heat Gen", formed))
-                .child(statValue(() -> heatGenSync.getIntValue() + " HU/t", formed))
-                .child(statLabel("Cooling", formed))
-                .child(statValue(() -> coolingSync.getIntValue() + " / " + coolingCapSync.getIntValue() + " HU/t",
-                        formed))
-                .child(statLabel("Fuel Rods", formed))
-                .child(statValue(() -> activeRodsSync.getIntValue() + "/" + totalRodsSync.getIntValue() + " active",
-                        formed))
-                .child(statLabel("Coolant", formed))
+                .child(statLabel("gtceu.multiblock.fission.label.heat_gen", formed))
+                .child(statValue(() -> Component.translatable(
+                        "gtceu.multiblock.fission.value.heat_gen", heatGenSync.getIntValue()), formed))
+                .child(statLabel("gtceu.multiblock.fission.label.cooling", formed))
+                .child(statValue(() -> Component.translatable(
+                        "gtceu.multiblock.fission.value.cooling",
+                        coolingSync.getIntValue(), coolingCapSync.getIntValue()), formed))
+                .child(statLabel("gtceu.multiblock.fission.label.fuel_rods", formed))
+                .child(statValue(() -> Component.translatable(
+                        "gtceu.multiblock.fission.value.fuel_rods",
+                        activeRodsSync.getIntValue(), totalRodsSync.getIntValue()), formed))
+                .child(statLabel("gtceu.multiblock.fission.label.coolant", formed))
                 .child(statValue(() -> {
                     String name = coolantNameSync.getStringValue();
-                    if (name == null || name.isEmpty()) return "None";
-                    return coolantFlowSync.getIntValue() + " mB/t " + name;
+                    if (name == null || name.isEmpty())
+                        return Component.translatable("gtceu.multiblock.fission.value.coolant.none");
+                    return Component.translatable("gtceu.multiblock.fission.value.coolant",
+                            coolantFlowSync.getIntValue(), name);
                 }, formed))
                 .child(new TextWidget<>(IKey.dynamic(() -> {
                     if (meltdownSync.getBoolValue()) {
@@ -947,7 +953,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
                 .child(Flow.row().coverChildren().childPadding(4)
                         .child(Flow.column().coverChildren().padding(3)
                                 .background(GTGuiTextures.MUI_DISPLAY)
-                                .child(new ReactorHeatmapWidget(heatmapSync).size(110, 100)))
+                                .child(new ReactorHeatmapWidget(heatmapSync).size(110, 101)))
                         .child(statsColumn))
                 .child(Flow.column().widthRel(1.0f).coverChildrenHeight()
                         .childPadding(2)
@@ -957,7 +963,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
                             if (status == null || status.isEmpty()) return Component.empty();
                             return Component.translatable(
                                     "gtceu.multiblock.fission.bottom.status", status)
-                                    .withStyle(ChatFormatting.DARK_GRAY);
+                                    .withStyle(ChatFormatting.BLACK);
                         })))
                         .child(Flow.row().coverChildren().childPadding(4).alignX(0.5f)
                                 .child(powerButton)
@@ -980,7 +986,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
                         .child(new TextWidget<>(IKey.dynamic(() -> {
                             String msg = bottomResultSync.getStringValue();
                             if (msg == null || msg.isEmpty()) return Component.empty();
-                            return Component.literal(msg).withStyle(ChatFormatting.YELLOW);
+                            return Component.translatable(msg).withStyle(ChatFormatting.YELLOW);
                         })))));
 
         int invLeft = (panelWidth - 162) / 2;
@@ -989,17 +995,17 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         return panel;
     }
 
-    private static TextWidget<?> statLabel(String label, Supplier<Boolean> formed) {
+    private static TextWidget<?> statLabel(String langKey, Supplier<Boolean> formed) {
         return new TextWidget<>(IKey.dynamic(() -> {
             if (!formed.get()) return Component.empty();
-            return Component.literal(label).withStyle(ChatFormatting.BLACK);
+            return Component.translatable(langKey).withStyle(ChatFormatting.BLACK);
         }));
     }
 
-    private static TextWidget<?> statValue(Supplier<String> value, Supplier<Boolean> formed) {
+    private static TextWidget<?> statValue(Supplier<Component> value, Supplier<Boolean> formed) {
         return new TextWidget<>(IKey.dynamic(() -> {
             if (!formed.get()) return Component.empty();
-            return Component.literal(value.get()).withStyle(ChatFormatting.BLACK);
+            return value.get().copy().withStyle(ChatFormatting.BLACK);
         }));
     }
 }
