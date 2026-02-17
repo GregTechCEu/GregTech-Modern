@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,7 +26,6 @@ public final class EntryTypes<T extends VirtualEntry> {
     // ENDER_ENERGY("ender_energy", null),
     private final ResourceLocation location;
     private final Supplier<T> factory;
-
     private EntryTypes(ResourceLocation location, Supplier<T> supplier) {
         this.location = location;
         this.factory = supplier;

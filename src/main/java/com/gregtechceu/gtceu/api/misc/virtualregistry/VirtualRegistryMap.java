@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -51,17 +52,18 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
         registryMap.clear();
     }
 
-    public Set<String> getEntryNames(EntryTypes<?> type) {
-        return new HashSet<>(registryMap.getOrDefault(type, Collections.emptyMap()).keySet());
+    public boolean isEmpty() {
+        return registryMap.isEmpty();
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         for (Map.Entry<EntryTypes<?>, Map<String, VirtualEntry>> entry : registryMap.entrySet()) {
-            CompoundTag entriesTag = new CompoundTag();
-            for (Map.Entry<String, VirtualEntry> subEntry : entry.getValue().entrySet()) {
-                entriesTag.put(subEntry.getKey(), subEntry.getValue().serializeNBT());
+            ListTag entriesTag = new ListTag();
+            for (VirtualEntry innerEntry : entry.getValue().values()) {
+                if (innerEntry.canRemove()) continue;
+                entriesTag.add(innerEntry.serializeNBT());
             }
             tag.put(entry.getKey().toString(), entriesTag);
         }
@@ -76,11 +78,25 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
             EntryTypes<?> type = EntryTypes.fromLocation(entryTypeLoc);
             if (type == null) continue;
 
-            CompoundTag virtualEntries = nbt.getCompound(entryTypeString);
-            for (String name : virtualEntries.getAllKeys()) {
-                CompoundTag entryTag = virtualEntries.getCompound(name);
-                addEntry(name, type.createInstance(entryTag));
+            Tag virtualEntries = nbt.get(entryTypeString);
+
+            // backwards compat
+            if (virtualEntries instanceof CompoundTag compoundTag) {
+                for (String name : compoundTag.getAllKeys()) {
+                    CompoundTag entryTag = compoundTag.getCompound(name);
+                    VirtualEntry entry = type.createInstance(entryTag);
+                    if (entry.canRemove()) continue;
+                    addEntry(entry.getColorStr(), type.createInstance(entryTag));
+                }
+            } else {
+                ListTag listTag = (ListTag)virtualEntries;
+                for (int i = 0; i< Objects.requireNonNull(listTag).size(); i++) {
+                    var entry = type.createInstance(listTag.getCompound(i));
+                    if (entry.canRemove()) continue;
+                    addEntry(entry.getColorStr(), entry);
+                }
             }
+
         }
     }
 }

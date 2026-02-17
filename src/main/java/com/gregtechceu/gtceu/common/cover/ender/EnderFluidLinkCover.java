@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -21,12 +20,10 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -69,11 +66,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected EntryTypes<VirtualTank> getEntryType() {
         return EntryTypes.ENDER_FLUID;
-    }
-
-    @Override
-    protected String identifier() {
-        return "EFLink#";
     }
 
     @Override

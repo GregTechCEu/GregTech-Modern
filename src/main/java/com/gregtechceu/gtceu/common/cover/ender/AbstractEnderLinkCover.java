@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -44,6 +45,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
@@ -75,7 +77,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
+        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isWorkingEnabled);
     }
 
     @Override
@@ -88,22 +90,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public abstract boolean canAttach();
 
     @Override
-    public void onRemoved() {
-        super.onRemoved();
-        subscriptionHandler.unsubscribe();
-        if (!isRemote()) {
-            VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel())
-                    .tryDeleteEntry(getOwner(), getEntryType(), getChannelName());
-        }
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
         subscriptionHandler.unsubscribe();
         if (!isRemote()) {
             VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel())
-                    .tryDeleteEntry(getOwner(), getEntryType(), getChannelName());
+                    .tryDeleteEntry(getOwner(), getEntryType(), getColorStr());
         }
     }
 
@@ -131,12 +123,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return null;
     }
 
-    protected boolean isSubscriptionActive() {
-        return isWorkingEnabled();
-    }
-
-    protected abstract String identifier();
-
     protected @Nullable abstract VirtualEntry getEntry();
 
     protected abstract void setEntry(VirtualEntry entry);
@@ -158,15 +144,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return null;
     }
 
-
-    protected final String getChannelName() {
-        return identifier() + this.colorStr;
-    }
-
     protected void setColorStr(String str) {
         if (isRemote()) return;
         if (str.length() != 8) str = str.concat("F".repeat(8-str.length()));
-        VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(), getChannelName());
+        VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(), getColorStr());
         this.colorStr = str;
         syncDataHolder.markClientSyncFieldDirty("colorStr");
         setVirtualEntry();
@@ -174,14 +155,14 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected void setPermission(Permissions permission) {
         if (isRemote()) return;
-        VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(), getChannelName());
+        VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(), getColorStr());
         this.permission = permission;
         syncDataHolder.markClientSyncFieldDirty("permission");
         setVirtualEntry();
     }
 
     protected void setVirtualEntry() {
-        setEntry(VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).getOrCreateEntry(getOwner(), getEntryType(), getChannelName()));
+        setEntry(VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).getOrCreateEntry(getOwner(), getEntryType(), getColorStr()));
         Objects.requireNonNull(getEntry()).setColor(this.colorStr);
         subscriptionHandler.updateSubscription();
     }
@@ -191,8 +172,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         if (timer % 5 != 0) return;
 
         if (isWorkingEnabled() && !isRemote()) {
-            var entry = VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).getOrCreateEntry(getOwner(), getEntryType(),
-                    getChannelName());
+            var entry = VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).getOrCreateEntry(getOwner(), getEntryType(), getColorStr());
             if (!entry.getColorStr().equals(this.colorStr)) {
                 entry.setColor(this.colorStr);
             }
@@ -245,6 +225,15 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("color", colorSyncer);
 
+        var currentEntry = new GenericSyncValue.Builder<>(VirtualEntry.class)
+                .getter(this::getEntry)
+                .adapter(new VirtualEntryAdapter()).build();
+        syncManager.syncValue("currentEntry", currentEntry);
+
+        DynamicLinkedSyncHandler<GenericSyncValue<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                currentEntry)
+                .widgetProvider((manager, entriesListSyncer) -> createVirtualEntryWidget(manager, entriesListSyncer.getValue(), 18, 18, 0));
+
         column.child(coverUIRow()
                 .child(createColorBlock(colorSyncer::getIntValue, 18).asWidget().size(18))
                 .child(new CycleButtonWidget()
@@ -261,7 +250,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
                         .addTooltipLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.channel_name"))))
-                .child(createVirtualEntryWidget(syncManager, getEntry(), 18, 18, 0))
+                .child(new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler))
                 .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
                     channelManager.openPanel();
                     return true;
@@ -283,12 +272,29 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
+
+        TextWidget<?> str;
+        if (entry.getDescription().isBlank()) {
+            str = IKey.lang(Component.translatable("cover.ender_link.description_empty")).asWidget().size(98, 12).color(Color.GREY.darker(1));
+        } else {
+            str = IKey.str(entry.getDescription()).asWidget().size(98, 12);
+        }
         return coverUIRow()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
                         .tooltip(t -> t.addLine(entry.getColorStr()))
                         .size(18, 18))
-                .child(IKey.str(entry.getDescription()).asWidget().size(92, 12))
-                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx));
+                .child(str)
+                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
+                .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((x, y, button) -> {
+                    MouseData mouseData = MouseData.create(button);
+                    if (mouseData.mouseButton() == 1) {
+                        syncManager.callSyncedAction("deleteEntry", buffer -> {
+                            buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8);
+                        });
+                        return true;
+                    }
+                    return false;
+                }).align(Alignment.CenterRight));
     }
 
     public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
@@ -300,6 +306,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 (context, x, y, w, h, widgetTheme) -> new Rectangle().color(colorSupplier.getAsInt())
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
+
 
     protected ModularPanel createChannelManagerPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = new Dialog<>("channel_manager")
@@ -324,10 +331,23 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         list.child(getChannelStatusRowShort(manager, entryList.get(i), i));
                     }
                     return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
-                            .size(162, 58);
+                            .size(162, 154);
                 });
 
-        panel.child(new DynamicSyncedWidget<>().size(162, 58).syncHandler(dynamicLinkedSyncHandler));
+        syncManager.registerServerSyncedAction("deleteEntry", (packet) -> {
+            var colorString = packet.readCharSequence(8, StandardCharsets.UTF_8).toString();
+            VirtualEntry entry = VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getEntry(getOwner(), getEntryType(), colorString);
+            if (entry != null) {
+                entry.setDescription("");
+                VirtualEnderRegistry.get((ServerLevel)coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(), colorString);
+            }
+        });
+
+        panel.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicLinkedSyncHandler)
+                .top(7).margin(7, 0)
+                .widthRel(1.0f).coverChildrenHeight());
+
         return panel;
     }
 
@@ -336,7 +356,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         @Override
         public VirtualEntry deserialize(FriendlyByteBuf buffer) {
             VirtualEntry entry = getEntryType().createInstance();
-            entry.deserializeNBT(buffer.readNbt());
+            var nbt = buffer.readNbt();
+            if (nbt == null) return entry;
+            entry.deserializeNBT(nbt);
             return entry;
         }
 
@@ -347,7 +369,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         @Override
         public boolean areEqual(VirtualEntry t1, VirtualEntry t2) {
-            return t1.equals(t2);
+            return t1.getColor() == t2.getColor() && t1.getDescription().equals(t2.getDescription());
         }
     }
 }

@@ -768,26 +768,8 @@ public class GTPlaceholders {
                 VirtualEnderRegistry ender = VirtualEnderRegistry.get((ServerLevel)ctx.level());
                 switch (type) {
                     case "redstone" -> {
-                        channel = "ERLink#" + channel;
                         if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel))
                             return MultiLineComponent.literal(0);
-                        if (args.size() > 4) {
-                            if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                            int slot = PlaceholderUtils.toInt(args.get(3));
-                            PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
-                            ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
-                            UUID uuid;
-                            if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
-                                uuid = stack.getOrCreateTag().getUUID("enderRedstoneLinkTransmitterUUID");
-                            } else {
-                                uuid = UUID.randomUUID();
-                                stack.getOrCreateTag().putUUID("enderRedstoneLinkTransmitterUUID", uuid);
-                            }
-                            int power = PlaceholderUtils.toInt(args.get(4));
-                            PlaceholderUtils.checkRange("redstone signal", 0, 15, power);
-                            ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).setSignal(uuid, power);
-                            return MultiLineComponent.empty();
-                        }
                         return MultiLineComponent
                                 .literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
                     }

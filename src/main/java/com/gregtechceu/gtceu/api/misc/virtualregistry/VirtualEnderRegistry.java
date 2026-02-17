@@ -103,6 +103,7 @@ public class VirtualEnderRegistry extends SavedData {
         var privateTag = new CompoundTag();
         tag.put(PUBLIC_KEY, PUBLIC_REGISTRY.serializeNBT());
         for (var owner : VIRTUAL_REGISTRIES.keySet()) {
+            if (VIRTUAL_REGISTRIES.get(owner).isEmpty()) continue;
             var mapTag = VIRTUAL_REGISTRIES.get(owner).serializeNBT();
             privateTag.put(owner.toString(), mapTag);
         }

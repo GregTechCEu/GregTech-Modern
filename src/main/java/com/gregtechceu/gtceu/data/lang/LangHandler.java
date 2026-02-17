@@ -483,11 +483,15 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_east", "Control Cover (East)");
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
+
+        provider.add("cover.ender_link.tooltip.channel_description", "Channel description");
+        provider.add("cover.ender_link.tooltip.channel_name", "Channel ID (32-bit hexadecimal value)");
+        provider.add("cover.ender_link.description_empty", "Empty Description");
+
+
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_item_link.title", "Ender Item Link");
         provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
-        provider.add("cover.ender_link.tooltip.channel_description", "Channel description");
-        provider.add("cover.ender_link.tooltip.channel_name", "Channel ID (32-bit hexadecimal value)");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.list_button", "Show channel list");

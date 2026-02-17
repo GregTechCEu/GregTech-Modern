@@ -80,9 +80,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     @Override
     public void markAsChanged() {
-        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
-            syncEntity.markAsChanged();
-        }
+        coverHolder.markAsChanged();
     }
 
     /**

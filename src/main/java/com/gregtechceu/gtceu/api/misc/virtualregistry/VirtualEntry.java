@@ -75,6 +75,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     }
 
     public boolean canRemove() {
-        return this.description.isEmpty();
+        return this.description.isBlank();
     }
 }

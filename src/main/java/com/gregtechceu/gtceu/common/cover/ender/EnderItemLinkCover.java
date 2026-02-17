@@ -51,11 +51,6 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    protected String identifier() {
-        return "EILink#";
-    }
-
-    @Override
     protected VirtualItemStorage getEntry() {
         return storage;
     }

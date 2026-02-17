@@ -2,21 +2,17 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -38,7 +34,7 @@ import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeRedstoneBetweenVal
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IUICover {
+public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IMuiCover {
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
@@ -116,8 +112,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
-
-    @Override
+    /*
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
@@ -148,6 +143,11 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
 
         return group;
+    }*/
+
+    @Override
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+
     }
 
     @Override
