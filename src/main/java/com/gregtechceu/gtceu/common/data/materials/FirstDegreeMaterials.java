@@ -1320,6 +1320,13 @@ public class FirstDegreeMaterials {
                 .components(Sodium, 1, Potassium, 1)
                 .buildAndRegister();
 
+        HotSodiumPotassium = new Material.Builder(GTCEu.id("hot_sodium_potassium"))
+                .liquid(new FluidBuilder().temperature(1058))
+                .color(0xFC6464)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Sodium, 1, Potassium, 1)
+                .buildAndRegister();
+
         SamariumMagnetic = new Material.Builder(GTCEu.id("magnetic_samarium"))
                 .ingot()
                 .color(0xc5c5b3).secondaryColor(0x183e3f).iconSet(MAGNETIC)
