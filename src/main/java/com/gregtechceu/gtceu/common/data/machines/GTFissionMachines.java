@@ -18,6 +18,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_REACTOR;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_REACTOR_INTERIOR;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_REACTOR_VESSEL;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -129,7 +130,7 @@ public class GTFissionMachines {
                     .aisle("  VVV  ", " VBBBV ", "VBBBBBV", "VBBBBBV", "VBBBBBV", " VBBBV ", "  VVV  ")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('V', blocks(CASING_REACTOR_VESSEL.get()))
-                    .where('F', blocks(CASING_REACTOR.get()))
+                    .where('F', blocks(CASING_REACTOR_INTERIOR.get()))
                     .where('T', blocks(CASING_REACTOR.get())
                             .or(abilities(PartAbility.FISSION_FUEL_PORT))
                             .or(abilities(PartAbility.FISSION_COOLANT_OUTLET))
@@ -150,6 +151,7 @@ public class GTFissionMachines {
                         .where('S', definition, Direction.NORTH)
                         .where('V', CASING_REACTOR_VESSEL.get())
                         .where('R', CASING_REACTOR.get())
+                        .where('G', CASING_REACTOR_INTERIOR.get())
                         .where('P', FISSION_FUEL_ROD_PORT, Direction.UP)
                         .where('O', FISSION_COOLANT_OUTLET, Direction.UP)
                         .where('H', FISSION_HEAT_EXCHANGER, Direction.UP)
@@ -159,7 +161,7 @@ public class GTFissionMachines {
                         .where('D', FISSION_FUEL_ROD_DRAIN, Direction.DOWN)
                         .where('I', FISSION_COOLANT_INLET, Direction.DOWN);
                 String[] bRow = { "  VVV  ", " VRRRV ", "VRDRRRV", "VRRIRRV", "VRDRRRV", " VRRRV ", "  VVV  " };
-                String[] fRow = { "  VVV  ", " VRRRV ", "VRRRRRV", "VRRRRRV", "VRRRRRV", " VRRRV ", "  VVV  " };
+                String[] fRow = { "  VVV  ", " VGGGV ", "VGGGGGV", "VGGGGGV", "VGGGGGV", " VGGGV ", "  VVV  " };
                 String[] tRow = { "  VVV  ", " VHOHV ", "VCPMPCV", "VOPSROV", "VNPMPCV", " VMOHV ", "  VVV  " };
 
                 for (int repeats = 1; repeats <= 5; repeats++) {
@@ -208,7 +210,7 @@ public class GTFissionMachines {
                             "  VBBBBBBBBBV  ", "   VVBBBBBVV   ", "     VVVVV     ")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('V', blocks(CASING_REACTOR_VESSEL.get()))
-                    .where('F', blocks(CASING_REACTOR.get()))
+                    .where('F', blocks(CASING_REACTOR_INTERIOR.get()))
                     .where('T', blocks(CASING_REACTOR.get())
                             .or(abilities(PartAbility.FISSION_FUEL_PORT))
                             .or(abilities(PartAbility.FISSION_COOLANT_OUTLET))
@@ -228,6 +230,7 @@ public class GTFissionMachines {
                         .where('S', definition, Direction.NORTH)
                         .where('V', CASING_REACTOR_VESSEL.get())
                         .where('R', CASING_REACTOR.get())
+                        .where('G', CASING_REACTOR_INTERIOR.get())
                         .where('P', FISSION_FUEL_ROD_PORT, Direction.UP)
                         .where('O', FISSION_COOLANT_OUTLET, Direction.UP)
                         .where('H', FISSION_HEAT_EXCHANGER, Direction.UP)
@@ -240,9 +243,9 @@ public class GTFissionMachines {
                         " VRRRRRRRRRRRV ", "VRRRRRRRRRRRRRV", "VRRRRRRRRRRRRRV", "VRRIRRRRRRRIRRV", "VRRRRRRRRRRRRRV",
                         "VRRRRRRRRRRRRRV", " VRRRRRRRRRRRV ", " VDRRRRRRRRRDV ", "  VRRRRRRRRRV  ", "   VVDRRRDVV   ",
                         "     VVVVV     " };
-                String[] fRow = { "     VVVVV     ", "   VVRRRRRVV   ", "  VRRRRRRRRRV  ", " VRRRRRRRRRRRV ",
-                        " VRRRRRRRRRRRV ", "VRRRRRRRRRRRRRV", "VRRRRRRRRRRRRRV", "VRRRRRRRRRRRRRV", "VRRRRRRRRRRRRRV",
-                        "VRRRRRRRRRRRRRV", " VRRRRRRRRRRRV ", " VRRRRRRRRRRRV ", "  VRRRRRRRRRV  ", "   VVRRRRRVV   ",
+                String[] fRow = { "     VVVVV     ", "   VVGGGGGVV   ", "  VGGGGGGGGGV  ", " VGGGGGGGGGGGV ",
+                        " VGGGGGGGGGGGV ", "VGGGGGGGGGGGGGV", "VGGGGGGGGGGGGGV", "VGGGGGGGGGGGGGV", "VGGGGGGGGGGGGGV",
+                        "VGGGGGGGGGGGGGV", " VGGGGGGGGGGGV ", " VGGGGGGGGGGGV ", "  VGGGGGGGGGV  ", "   VVGGGGGVV   ",
                         "     VVVVV     " };
                 String[] tRow = { "     VVVVV     ", "   VVHOHOHVV   ", "  VCPRRRRRPCV  ", " VOPRRRRRRRPOV ",
                         " VMPRRRRRRRPMV ", "VHORRRRRRRRROHV", "VCPRRRRRRRRRPCV", "VOCPMPCSCPMPCOV", "VCPRRRRRRRRRPCV",

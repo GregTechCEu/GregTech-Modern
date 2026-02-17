@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.fission;
 
-import com.gregtechceu.gtceu.common.data.machines.GTFissionMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 
 import net.minecraft.world.item.Item;
 
@@ -40,11 +40,11 @@ public class FuelRodRegistry {
     }
 
     private static void init() {
-        register(GTFissionMachines.FUEL_ROD_LEU.asItem(), GTFissionMachines.DEPLETED_ROD_LEU.asItem(),
-                72000, 500, 1.5f);
-        register(GTFissionMachines.FUEL_ROD_MOX.asItem(), GTFissionMachines.DEPLETED_ROD_MOX.asItem(),
+        register(GTMaterialItems.FUEL_ROD_LEU.asItem(), GTMaterialItems.DEPLETED_ROD_LEU.asItem(),
+                72000, 300, 1.5f);
+        register(GTMaterialItems.FUEL_ROD_MOX.asItem(), GTMaterialItems.DEPLETED_ROD_MOX.asItem(),
                 36000, 800, 2.0f);
-        register(GTFissionMachines.FUEL_ROD_THORIUM.asItem(), GTFissionMachines.DEPLETED_ROD_THORIUM.asItem(),
+        register(GTMaterialItems.FUEL_ROD_THORIUM.asItem(), GTMaterialItems.DEPLETED_ROD_THORIUM.asItem(),
                 144000, 300, 1.2f);
     }
 }

@@ -997,14 +997,32 @@ public class MachineLang {
         provider.add("gtceu.multiblock.fission.status", "Status: %s");
         provider.add("gtceu.multiblock.fission.vessel_heat", "Vessel Heat: %s / %s");
         provider.add("gtceu.multiblock.fission.height", "Reactor Height: %s");
-        provider.add("gtceu.multiblock.fission.overheating", "§cOVERHEATING!");
+        provider.add("gtceu.multiblock.fission.overheating", "OVERHEATING!");
+        provider.add("gtceu.multiblock.fission.meltdown_warning", "MELTDOWN — SCRAM ACTIVE");
         provider.add("gtceu.multiblock.fission.heat_gen", "Heat Gen: %s HU/t");
-        provider.add("gtceu.multiblock.fission.cooling", "Cooling: %s HU/t");
+        provider.add("gtceu.multiblock.fission.cooling", "Cooling: %s / %s HU/t");
         provider.add("gtceu.multiblock.fission.fuel_rods", "Fuel Rods: %s/%s active");
         provider.add("gtceu.multiblock.fission.coolant_flow", "Coolant: %s mB/t");
         provider.add("gtceu.multiblock.fission.coolant_type", "Coolant Type: %s");
         provider.add("gtceu.multiblock.fission.start", "Start Reactor");
         provider.add("gtceu.multiblock.fission.shutdown", "Shutdown Reactor");
+
+        // Fission bottom layer configurator
+        provider.add("gtceu.multiblock.fission.bottom.status", "Bottom Layer: %s configured");
+        provider.add("gtceu.multiblock.fission.bottom.apply", "Apply Bottom");
+        provider.add("gtceu.multiblock.fission.bottom.revert", "Revert Bottom");
+        provider.add("gtceu.multiblock.fission.bottom.not_formed", "Reactor is not formed");
+        provider.add("gtceu.multiblock.fission.bottom.running", "Cannot modify while reactor is running");
+        provider.add("gtceu.multiblock.fission.bottom.nothing_needed",
+                "No bottom layer ports needed for this layout");
+        provider.add("gtceu.multiblock.fission.bottom.already_configured", "Bottom layer is already configured");
+        provider.add("gtceu.multiblock.fission.bottom.missing_items",
+                "Missing required capstone blocks in inventory");
+        provider.add("gtceu.multiblock.fission.bottom.missing_casings",
+                "Missing Reactor Casings in inventory to replace capstones");
+        provider.add("gtceu.multiblock.fission.bottom.applied", "Applied %s bottom layer blocks");
+        provider.add("gtceu.multiblock.fission.bottom.nothing_to_revert", "No bottom capstones to revert");
+        provider.add("gtceu.multiblock.fission.bottom.reverted", "Reverted %s blocks to casings");
 
         // Fission part heat readout
         provider.add("gtceu.multiblock.fission.part.heat", "Column Heat: %s / %s (%s)");

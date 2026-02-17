@@ -623,6 +623,7 @@ public class GTMaterials {
     public static Material Steam;
     public static Material DistilledWater;
     public static Material SodiumPotassium;
+    public static Material HotSodiumPotassium;
     public static Material SamariumMagnetic;
     public static Material ManganesePhosphide;
     public static Material MagnesiumDiboride;

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
+import com.gregtechceu.gtceu.common.machine.multiblock.fission.FuelRodItem;
 
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -172,9 +173,10 @@ public class GTMaterialItems {
     //Not Sure Where to put these, these aren't actual materials but uh, shrug?
     public static final ItemEntry<Item> FUEL_ROD_LEU = REGISTRATE.item("fuel_rod_leu", Item::new)
             .lang("LEU Fuel Rod").register();
-    public static final ItemEntry<Item> FUEL_ROD_MOX = REGISTRATE.item("fuel_rod_mox", Item::new)
+    public static final ItemEntry<FuelRodItem> FUEL_ROD_MOX = REGISTRATE.item("fuel_rod_mox", FuelRodItem::new)
             .lang("MOX Fuel Rod").register();
-    public static final ItemEntry<Item> FUEL_ROD_THORIUM = REGISTRATE.item("fuel_rod_thorium", Item::new)
+    public static final ItemEntry<FuelRodItem> FUEL_ROD_THORIUM = REGISTRATE
+            .item("fuel_rod_thorium", FuelRodItem::new)
             .lang("Thorium Fuel Rod").register();
 
     public static final ItemEntry<Item> DEPLETED_ROD_LEU = REGISTRATE.item("depleted_rod_leu", Item::new)
@@ -183,7 +185,4 @@ public class GTMaterialItems {
             .lang("Depleted MOX Fuel Rod").register();
     public static final ItemEntry<Item> DEPLETED_ROD_THORIUM = REGISTRATE.item("depleted_rod_thorium", Item::new)
             .lang("Depleted Thorium Fuel Rod").register();
-
-
-
 }

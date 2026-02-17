@@ -9,10 +9,10 @@ import lombok.Setter;
 public class ReactorComponent {
 
     private final ReactorComponentType type;
-    private final int maxHeat;
+    private int maxHeat;
     @Setter
     private int baseHeatGeneration;
-    private final int baseCoolingRate;
+    private int baseCoolingRate;
     @Setter
     private boolean active;
     private int heat;
@@ -54,13 +54,25 @@ public class ReactorComponent {
         if (type != ReactorComponentType.FUEL_ROD || maxLifetimeTicks <= 0) {
             return baseHeatGeneration;
         }
+        float thermalBonus = getThermalEfficiency();
         int threshold = (int) (maxLifetimeTicks * 0.8f);
         if (ticksAlive <= threshold) {
-            return baseHeatGeneration;
+            return (int) (baseHeatGeneration * thermalBonus);
         }
         float progress = (float) (ticksAlive - threshold) / (maxLifetimeTicks - threshold);
-        float multiplier = 1.0f + (endOfLifeMultiplier - 1.0f) * Math.min(progress, 1.0f);
-        return (int) (baseHeatGeneration * multiplier);
+        float eolMultiplier = 1.0f + (endOfLifeMultiplier - 1.0f) * Math.min(progress, 1.0f);
+        return (int) (baseHeatGeneration * eolMultiplier * thermalBonus);
+    }
+
+    public float getThermalEfficiency() {
+        float pct = heatPercent();
+        return switch (type) {
+            case FUEL_ROD -> 1.0f + pct * 0.5f;
+            case MODERATOR -> 1.0f + pct * 0.4f;
+            case COOLANT_CHANNEL -> pct < 0.8f ? 1.0f : 1.0f - (pct - 0.8f) / 0.2f * 0.6f;
+            case HEAT_EXCHANGER -> pct < 0.9f ? 1.0f : 1.0f - (pct - 0.9f) / 0.1f * 0.5f;
+            default -> 1.0f;
+        };
     }
 
     public boolean isDepleted() {
@@ -99,6 +111,12 @@ public class ReactorComponent {
         comp.setMaxLifetimeTicks(tag.getInt("maxLifetime"));
         comp.setEndOfLifeMultiplier(tag.getFloat("eolMultiplier"));
         return comp;
+    }
+
+    public void applyBaseStats(int maxHeat, int baseHeatGeneration, int baseCoolingRate) {
+        this.maxHeat = maxHeat;
+        this.baseHeatGeneration = baseHeatGeneration;
+        this.baseCoolingRate = baseCoolingRate;
     }
 
     public static ReactorComponent fuelRod(int maxHeat, int heatGen) {

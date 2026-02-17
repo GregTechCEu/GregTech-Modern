@@ -15,6 +15,7 @@
     "gtceu:palladium_substation",
     "gtceu:reactor_vessel_casing",
     "gtceu:reactor_casing",
+    "gtceu:reactor_interior_casing",
     "gtceu:nonconducting_casing",
     "gtceu:vibration_safe_casing",
     "gtceu:watertight_casing",
