@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
@@ -14,9 +13,6 @@ import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -98,15 +94,6 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     public @Nullable IItemHandler getOwnItemHandler() {
         return coverHolder.getItemHandlerCap(attachedSide, false);
-    }
-
-    @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        WidgetGroup group = new WidgetGroup(x, y, width, height);
-        for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
-            group.addWidget(new SlotWidget(((VirtualItemStorage) entry).getHandler(), i, 8 * i, 0, canClick, canClick));
-        }
-        return group;
     }
 
     @Override

@@ -92,7 +92,7 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
                 .top(7).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
 
-        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager,
+        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, data, syncManager,
                 settings);
         filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
                 .marginRight(2));

@@ -379,22 +379,21 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
-                                                                              Function<ItemStack, S> filterLoader,
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(ParentWidget<?> existingRow, FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
         // TODO get the panel to use the right sync handler when swapping from one item filter to the next
         var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterLoader.apply(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
+                (sm, sh) -> filterHandler.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
 
         DynamicSyncHandler filterButton = new DynamicSyncHandler()
                 .widgetProvider((sm, buf) -> {
                     ItemStack stack = buf.readItem();
                     if (stack.isEmpty()) return new EmptyWidget();
                     stack = filterSlot.getStackInSlot(0);
-                    S filter = filterLoader.apply(stack);
+                    S filter = filterHandler.loadFilter(stack);
 
                     return new ButtonWidget<>()
                             .onMousePressed((x, y, b) -> {
@@ -402,16 +401,18 @@ public class GTMuiWidgets {
                                 return true;
                             });
                 });
-
-        return Flow.row()
-                .coverChildrenHeight()
-                .child(new ItemSlot()
+        return existingRow.child(new ItemSlot()
                         .slot(new ModularSlot(filterSlot, 0)
-                                .changeListener((stack, amount, client, init) -> {
-                                    filterButton.notifyUpdate(packet -> packet.writeItem(stack));
-                                }))
+                                .changeListener((stack, amount, client, init) -> filterButton.notifyUpdate(packet -> packet.writeItem(stack))))
                         .marginLeft(2))
                 .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
+    }
+
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
+                                                                              SidedPosGuiData data,
+                                                                              PanelSyncManager syncManager,
+                                                                              UISettings settings) {
+        return createFilterRow(Flow.row().coverChildrenHeight(), filterHandler, data, syncManager, settings);
     }
 
     private static int getIncrementValue(MouseData data) {

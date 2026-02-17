@@ -31,7 +31,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -119,7 +118,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     //////////////////////////////////////
 
     @Override
-    protected @NotNull String getUITitle() {
+    protected String getUITitle() {
         return "cover.fluid.voiding.advanced.title";
     }
 

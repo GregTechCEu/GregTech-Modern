@@ -291,7 +291,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         column.child(GTMuiWidgets.createIntInputWithBucketMode(transferRateSync, bucketModeSync,
                 () -> maxFluidTransferRate));
 
-        column.child(GTMuiWidgets.createFilterRow(filterHandler, FluidFilter::loadFilter, data, syncManager, settings)
+        column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
                 .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2)).marginBottom(2));
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)

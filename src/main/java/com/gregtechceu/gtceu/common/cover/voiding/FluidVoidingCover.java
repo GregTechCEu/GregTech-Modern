@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
@@ -94,12 +93,13 @@ public class FluidVoidingCover extends PumpCover {
                 .top(7).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
 
-        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, FluidFilter::loadFilter, data, syncManager,
-                settings);
-        filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
+        var row = Flow.row().coverChildrenHeight();
+        row.child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
                 .marginRight(2));
+        GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager,
+                settings);
 
-        return column.child(filterRow);
+        return column.child(row);
     }
 
     @NotNull
