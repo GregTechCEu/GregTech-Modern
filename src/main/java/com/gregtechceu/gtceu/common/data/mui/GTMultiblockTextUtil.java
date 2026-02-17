@@ -241,7 +241,8 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
 
-    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
+                                                     PanelSyncManager syncManager) {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),

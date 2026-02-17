@@ -28,9 +28,9 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
