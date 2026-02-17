@@ -108,7 +108,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
-    public static TextWidget<?> addProgressLinePercentOnly(IWorkableMultiController rlMachine,
+    public static TextWidget<?> addProgressLinePercentOnly(WorkableMultiblockMachine rlMachine,
                                                            PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
@@ -241,14 +241,14 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
 
-    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
     }
 
-    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager,
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager,
                                                      Supplier<Component> workPaused,
                                                      Supplier<Component> runningPerfectly,
                                                      Supplier<Component> idling) {
