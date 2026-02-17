@@ -4,13 +4,10 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -56,7 +53,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -277,18 +273,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
-            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
-            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
-                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
-
-                if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
-                }
-            }
-            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
-        }
+        InteractionResult machineInteractResult = machine.onUse(state, world, pos, player, hand, hit);
+        if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
 
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
             return itemStack.getItem().use(world, player, hand).getResult();
@@ -298,19 +284,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-        for (var trait : machine.getTraitHolder().getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
-                if (result != InteractionResult.PASS) return result;
-            }
-        }
-
-        if (machine instanceof IInteractedMachine interactedMachine) {
-            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
-            if (result != InteractionResult.PASS) return result;
-        }
-        if (shouldOpenUi &&
-                MachineOwner.canOpenOwnerMachine(player, machine)) {
+        if (shouldOpenUi && MachineOwner.canOpenOwnerMachine(player, machine)) {
             if (machine.getDefinition().getUI() != null) {
                 return machine.getDefinition().getUI().tryToOpenUI(player, hand, hit);
             } else if (machine instanceof IMuiMachine muiMachine) {

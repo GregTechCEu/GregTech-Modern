@@ -658,8 +658,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         for (MonitorGroup group : monitorGroups) {
-            clearInventory(group.getItemStackHandler());
-            clearInventory(group.getPlaceholderSlotsHandler());
+            group.getItemStackHandler().dropInventoryInWorld(getLevel(), getBlockPos());;
+            group.getPlaceholderSlotsHandler().dropInventoryInWorld(getLevel(), getBlockPos());
         }
     }
 }

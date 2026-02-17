@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.data.mui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.FluidDrawable;
@@ -83,7 +83,7 @@ public class GTMultiblockTextUtil {
                 .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
     }
 
-    public static TextWidget<?> addProgressLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addProgressLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
 
@@ -146,7 +146,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue());
     }
 
-    public static TextWidget<?> addParallelLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
@@ -163,7 +163,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addBatchModeLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addBatchModeLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         BooleanSyncValue batchEnabled = syncManager.getOrCreateSyncHandler("batchEnabled", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
@@ -182,7 +182,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine,
+    public static TextWidget<?> addSubtickParallelsLine(WorkableMultiblockMachine rlMachine,
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
@@ -200,7 +200,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> subtickAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addTotalRunsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
@@ -275,7 +275,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> isFormed.getBoolValue());
     }
 
-    public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,
+    public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
                 GenericSyncValue.class,

@@ -22,7 +22,13 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
-
+    private static final RenderType MONITOR = RenderType.create("central_monitor",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(NO_CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .createCompositeState(false));
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,
@@ -66,6 +72,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType getLightRing() {
         return LIGHT_RING;
+    }
+
+    public static RenderType getMonitor() {
+        return MONITOR;
     }
 
     public static RenderType guiTexture(ResourceLocation texture) {
