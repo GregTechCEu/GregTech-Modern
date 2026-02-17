@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.fission;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
@@ -31,7 +31,7 @@ public class FissionCapstonePartMachine extends MultiblockPartMachine {
 
     @Nullable
     protected ReactorComponent getReactorComponent() {
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             if (controller instanceof FissionReactorMachine reactor) {
                 return reactor.getGrid().getComponent(self().getBlockPos());
             }
