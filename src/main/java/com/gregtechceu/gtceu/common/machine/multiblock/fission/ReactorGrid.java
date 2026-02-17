@@ -55,14 +55,8 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
         adjacencyCache.clear();
     }
 
-    public Set<BlockPos> collectMeltdowns() {
-        Set<BlockPos> melted = new HashSet<>();
-        for (var entry : components.entrySet()) {
-            if (entry.getValue().getHeat() >= entry.getValue().getMaxHeat()) {
-                melted.add(entry.getKey());
-            }
-        }
-        return melted;
+    public boolean isVesselCritical() {
+        return vesselHeat >= vesselHeatMax;
     }
 
     public List<BlockPos> getNeighbors(BlockPos pos) {
@@ -80,8 +74,12 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
 
     private static final float AMBIENT_BLEED_FRACTION = 0.02f;
 
-    public int tick(float heightBurnMultiplier, float heightOutputMultiplier,
-                    int coolingBudget, @Nullable CoolantDefinition coolantDef) {
+    public int[] tick(float heightBurnMultiplier, float heightOutputMultiplier,
+                      int coolingBudget, @Nullable CoolantDefinition coolantDef,
+                      boolean meltdownState) {
+        float reactionMultiplier = meltdownState ? 2.0f : 1.0f;
+        float coolantMultiplier = meltdownState ? 4.0f : 1.0f;
+
         // Phase 1: fuel rods generate heat + age
         int totalHeatGenerated = 0;
         for (var entry : components.entrySet()) {
@@ -92,20 +90,21 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             comp.tickFuelAge();
 
             int adjacentRods = countAdjacentOfType(entry.getKey(), ReactorComponentType.FUEL_ROD);
-            int adjacentModerators = countAdjacentOfType(entry.getKey(), ReactorComponentType.MODERATOR);
+            float adjacentModBonus = sumAdjacentModeratorBonus(entry.getKey());
             int adjacentReflectors = countAdjacentOfType(entry.getKey(), ReactorComponentType.NEUTRON_REFLECTOR);
 
             float rodMultiplier = 1.0f + adjacentRods * 0.5f;
-            float modMultiplier = 1.0f + adjacentModerators * 0.5f;
+            float modMultiplier = 1.0f + adjacentModBonus;
             float reflectorMultiplier = 1.0f + adjacentReflectors * 0.15f;
-            float totalMultiplier = rodMultiplier * modMultiplier * reflectorMultiplier * heightBurnMultiplier;
+            float totalMultiplier = rodMultiplier * modMultiplier * reflectorMultiplier * heightBurnMultiplier *
+                    reactionMultiplier;
 
             int heatGenerated = (int) (comp.getEffectiveHeatGeneration() * totalMultiplier);
             comp.addHeat(heatGenerated);
             totalHeatGenerated += heatGenerated;
         }
 
-        // Phase 1b: ambient vessel bleed — fraction of heat gen always goes to vessel
+        // Phase 1b: ambient vessel bleed
         vesselHeat += (int) (totalHeatGenerated * AMBIENT_BLEED_FRACTION);
 
         // Phase 2: natural heat diffusion
@@ -122,7 +121,7 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             }
         }
 
-        // Phase 3: heat exchangers equalize among neighbors
+        // Phase 3: heat exchangers equalize among neighbors (efficiency-scaled)
         for (var entry : components.entrySet()) {
             var comp = entry.getValue();
             if (comp.getType() != ReactorComponentType.HEAT_EXCHANGER) continue;
@@ -130,6 +129,7 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             List<BlockPos> neighbors = getNeighbors(entry.getKey());
             if (neighbors.isEmpty()) continue;
 
+            float efficiency = comp.getThermalEfficiency();
             int totalHeat = comp.getHeat();
             int count = 1;
             for (BlockPos n : neighbors) {
@@ -138,22 +138,28 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             }
             int avg = totalHeat / count;
 
-            comp.setHeat(avg);
+            int selfDelta = (int) ((avg - comp.getHeat()) * efficiency);
+            comp.addHeat(selfDelta);
             for (BlockPos n : neighbors) {
-                components.get(n).setHeat(avg);
+                var neighbor = components.get(n);
+                int neighborDelta = (int) ((avg - neighbor.getHeat()) * efficiency);
+                neighbor.addHeat(neighborDelta);
             }
         }
 
-        // Phase 4: coolant channels absorb heat (budget-limited by available coolant)
-        int totalHeatAbsorbed = coolantCooling(coolingBudget, coolantDef);
+        // Phase 4: coolant channels absorb heat (efficiency + budget limited)
+        int[] coolingResult = coolantCooling(
+                (int) (coolingBudget * coolantMultiplier), coolantDef);
+        int totalHeatAbsorbed = coolingResult[0];
 
-        // Phase 5: control rods suppress neighbors (proportional to insertion depth)
+        // Phase 5: control rods suppress neighbors
         for (var entry : components.entrySet()) {
             var comp = entry.getValue();
             if (comp.getType() != ReactorComponentType.CONTROL_ROD) continue;
             if (!comp.isActive() || comp.getInsertionDepth() <= 0) continue;
 
             float suppressionFraction = comp.getInsertionDepth() / 15.0f;
+            if (meltdownState) suppressionFraction *= 0.5f;
             List<BlockPos> neighbors = getNeighbors(entry.getKey());
             for (BlockPos n : neighbors) {
                 var neighbor = components.get(n);
@@ -179,11 +185,13 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
         }
         vesselHeat = Math.min(vesselHeat, vesselHeatMax);
 
-        return totalHeatAbsorbed;
+        return coolingResult;
     }
 
-    private int coolantCooling(int coolingBudget, @Nullable CoolantDefinition coolantDef) {
-        if (coolingBudget <= 0) return 0;
+    private static final float REFERENCE_HEAT_CAPACITY = 10.0f;
+
+    private int[] coolantCooling(int coolingBudget, @Nullable CoolantDefinition coolantDef) {
+        if (coolingBudget <= 0) return new int[] { 0, 0 };
 
         int channelCount = 0;
         for (var comp : components.values()) {
@@ -191,19 +199,25 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
                 channelCount++;
             }
         }
-        if (channelCount == 0) return 0;
+        if (channelCount == 0) return new int[] { 0, 0 };
         int budgetPerChannel = coolingBudget / channelCount;
+
+        float coolantPotency = coolantDef != null ? coolantDef.getHeatCapacity() / REFERENCE_HEAT_CAPACITY : 1.0f;
+
         int totalAbsorbed = 0;
+        int totalCapacity = 0;
         for (var entry : components.entrySet()) {
             var comp = entry.getValue();
             if (comp.getType() != ReactorComponentType.COOLANT_CHANNEL) continue;
             if (!comp.isActive()) continue;
-            int channelCap = comp.getBaseCoolingRate();
+            int channelCap = (int) (comp.getBaseCoolingRate() * coolantPotency);
+            totalCapacity += channelCap;
             int effectiveBudget = Math.min(budgetPerChannel, channelCap);
+            float channelEfficiency = comp.getThermalEfficiency();
             if (coolantDef != null) {
-                float efficiency = coolantDef.getEfficiency(comp.getHeat(), comp.getMaxHeat());
-                effectiveBudget = (int) (effectiveBudget * efficiency);
+                channelEfficiency *= coolantDef.getEfficiency(comp.getHeat(), comp.getMaxHeat());
             }
+            effectiveBudget = (int) (effectiveBudget * channelEfficiency);
             int selfAbsorb = Math.min(comp.getHeat(), effectiveBudget / 2);
             comp.removeHeat(selfAbsorb);
             int absorbed = selfAbsorb;
@@ -221,15 +235,15 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             totalAbsorbed += absorbed;
         }
 
-        return totalAbsorbed;
+        return new int[] { totalAbsorbed, totalCapacity };
     }
 
     public float getVesselHeatPercent() {
         return vesselHeatMax > 0 ? (float) vesselHeat / vesselHeatMax : 0;
     }
 
-    public boolean isOverheating() {
-        return getVesselHeatPercent() > 0.75f;
+    public boolean isMeltdownState() {
+        return getVesselHeatPercent() > 0.9f;
     }
 
     private int countAdjacentOfType(BlockPos pos, ReactorComponentType type) {
@@ -238,6 +252,17 @@ public class ReactorGrid implements INBTSerializable<CompoundTag> {
             if (components.get(n).getType() == type) count++;
         }
         return count;
+    }
+
+    private float sumAdjacentModeratorBonus(BlockPos pos) {
+        float bonus = 0;
+        for (BlockPos n : getNeighbors(pos)) {
+            var neighbor = components.get(n);
+            if (neighbor.getType() == ReactorComponentType.MODERATOR) {
+                bonus += 0.5f * neighbor.getThermalEfficiency();
+            }
+        }
+        return bonus;
     }
 
     @Override
