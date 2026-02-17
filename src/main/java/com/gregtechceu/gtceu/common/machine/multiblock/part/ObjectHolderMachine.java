@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -38,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder {
+public class ObjectHolderMachine extends MultiblockPartMachine {
 
     // purposefully not exposed to automation or capabilities
     @SaveField
@@ -47,6 +46,9 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     @SaveField
     @SyncToClient
     private boolean isLocked;
+
+    @Getter
+    private NotifiableItemStackHandler handler;
 
     public ObjectHolderMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -58,27 +60,22 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
         syncDataHolder.markClientSyncFieldDirty("isLocked");
     }
 
-    @Override
     public @NotNull ItemStack getHeldItem(boolean remove) {
         return getHeldItem(0, remove);
     }
 
-    @Override
     public void setHeldItem(@NotNull ItemStack heldItem) {
         heldItems.setStackInSlot(0, heldItem);
     }
 
-    @Override
     public @NotNull ItemStack getDataItem(boolean remove) {
         return getHeldItem(1, remove);
     }
 
-    @Override
     public void setDataItem(@NotNull ItemStack dataItem) {
         heldItems.setStackInSlot(1, dataItem);
     }
 
-    @Override
     public @NotNull NotifiableItemStackHandler getAsHandler() {
         return heldItems;
     }
@@ -95,7 +92,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(this.heldItems.storage);
+        heldItems.storage.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override

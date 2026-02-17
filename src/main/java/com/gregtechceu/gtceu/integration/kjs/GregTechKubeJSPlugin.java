@@ -70,10 +70,8 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -93,9 +91,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
-import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -109,7 +105,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.DataResult;
-import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.client.LangEventJS;
@@ -212,23 +207,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
     }
 
-    // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
-    public static RuntimeBlockStateProvider RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockStateProvider(
-            GTRegistration.REGISTRATE, new PackOutput(KubeJSPaths.DIRECTORY),
-            (loc, json) -> {
-                if (!loc.getPath().endsWith(".json")) {
-                    loc = loc.withSuffix(".json");
-                }
-                GTDynamicResourcePack.addResource(loc, json);
-            });
-
     public static void generateMachineBlockModels() {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
             try {
                 builderBase.generateAssetJsons(null);
             } catch (IllegalStateException ignored) {}
         });
-        GregTechKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER.run();
     }
 
     @Override

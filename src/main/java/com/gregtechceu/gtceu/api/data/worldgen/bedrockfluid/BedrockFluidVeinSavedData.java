@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -12,9 +11,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -86,8 +85,8 @@ public class BedrockFluidVeinSavedData extends SavedData {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinFluids.containsKey(pos)) {
             BedrockFluidDefinition definition = null;
-            int query = RandomSource
-                    .create(GTMath.hashLongs(serverLevel.getSeed(), getVeinCoord(chunkX), getVeinCoord(chunkZ)))
+            int query = new XoroshiroRandomSource(
+                    serverLevel.getSeed() ^ ChunkPos.asLong(getVeinCoord(chunkX), getVeinCoord(chunkZ)))
                     .nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
@@ -108,7 +107,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
                 }
             }
 
-            var random = RandomSource.create(31L * 31 * chunkX + chunkZ * 31L + Long.hashCode(serverLevel.getSeed()));
+            var random = new XoroshiroRandomSource(serverLevel.getSeed() ^ ChunkPos.asLong(chunkX, chunkZ));
 
             int maximumYield = 0;
             if (definition != null) {

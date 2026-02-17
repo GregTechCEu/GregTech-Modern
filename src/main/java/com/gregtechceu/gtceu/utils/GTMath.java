@@ -3,12 +3,16 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.utils.math.ParseResult;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -175,7 +179,22 @@ public class GTMath {
         return count <= 0 ? 1 : (int) Math.ceil(x);
     }
 
-    public static int min(int @Nullable... values) {
+    public static float min(float @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.min(values[0], values[1]);
+        float min = Float.MAX_VALUE;
+        for (float i : values) {
+            if (i < min) {
+                min = i;
+            }
+        }
+        return min;
+    }
+
+    public static int min(int @NotNull... values) {
+        // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.min(values[0], values[1]);
@@ -188,7 +207,22 @@ public class GTMath {
         return min;
     }
 
-    public static int max(int @Nullable... values) {
+    public static float max(float @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.max(values[0], values[1]);
+        float max = Float.MIN_VALUE;
+        for (float i : values) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    public static int max(int @NotNull... values) {
+        // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.max(values[0], values[1]);
@@ -199,6 +233,39 @@ public class GTMath {
             }
         }
         return max;
+    }
+
+    public static Pair<Vector3f, Vector3f> getCoordinates(@Nullable Direction dir, float min, float max) {
+        float x1 = min, y1 = min, z1 = min, x2 = max, y2 = max, z2 = max;
+        if (dir != null) {
+            switch (dir) {
+                case DOWN -> {
+                    y1 = 0;
+                    y2 = min;
+                }
+                case UP -> {
+                    y1 = max;
+                    y2 = 16;
+                }
+                case NORTH -> {
+                    z1 = 0;
+                    z2 = min;
+                }
+                case SOUTH -> {
+                    z1 = max;
+                    z2 = 16;
+                }
+                case WEST -> {
+                    x1 = 0;
+                    x2 = min;
+                }
+                case EAST -> {
+                    x1 = max;
+                    x2 = 16;
+                }
+            }
+        }
+        return ImmutablePair.of(new Vector3f(x1, y1, z1), new Vector3f(x2, y2, z2));
     }
 
     public static float arithmeticGeometricMean(float a, float b) {

@@ -7,16 +7,23 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.client.renderer.placeholder.ModulePlaceholderRenderer;
+import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer;
+import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -37,8 +44,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -84,6 +94,7 @@ public class GTPlaceholders {
     }
 
     public static void initPlaceholders() {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
             @Override
@@ -130,10 +141,10 @@ public class GTPlaceholders {
                         .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
                 if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    if (ctx.itemStackHandler() == null)
+                        throw new NotSupportedException();
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     try {
-                        if (ctx.itemStackHandler() == null)
-                            throw new NotSupportedException();
                         return MultiLineComponent.literal(countItems(
                                 ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
                     } catch (NullPointerException e) {
@@ -253,9 +264,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.cover() instanceof IPlaceholderInfoProviderCover cover)
-                    return MultiLineComponent.literal(cover.getTicksSincePlaced());
-                throw new NotSupportedException();
+                return MultiLineComponent.literal(ctx.level().getGameTime());
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("select") {
@@ -281,7 +290,7 @@ public class GTPlaceholders {
                         throw new InvalidArgsException();
                     return MultiLineComponent.literal(ctx.level()
                             .getSignal(ctx.pos().relative(direction), direction));
-                } else if (GTStringUtils.equals(args.get(1), "set")) {
+                } else if (GTStringUtils.equals(args.get(0), "set")) {
                     int power = PlaceholderUtils.toInt(args.get(1));
                     PlaceholderUtils.checkRange("redstone power", 0, 15, power);
                     if (ctx.cover() == null) throw new NotSupportedException();
@@ -397,8 +406,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                     int capacity = -1;
                     if (stack.getItem() instanceof ComponentItem componentItem) {
@@ -459,8 +468,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1, true);
                 int slot = GTStringUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 Tag tag = ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag();
                 for (int i = 1; i < args.size() - 1; i++) {
                     if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
@@ -544,8 +553,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 2);
                 int slot = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                 int capacity = -1;
                 if (stack.getItem() instanceof ComponentItem componentItem) {
@@ -557,6 +566,9 @@ public class GTPlaceholders {
                     }
                 }
                 if (capacity == -1) throw new MissingItemException("any data item", slot);
+                if (!stack.getOrCreateTag().contains("computer_monitor_cover_data")) {
+                    stack.getOrCreateTag().put("computer_monitor_cover_data", new ListTag());
+                }
                 ListTag tag = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
                 int operationsLeft = 5000;
                 int p = 0, start = 0, cnt = 0;
@@ -584,19 +596,27 @@ public class GTPlaceholders {
                 if (cur != null) codeBuilder.append(cnt).append(cur);
                 String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
-                if (!getData(ctx).getBoolean("completed")) {
-                    p = getData(ctx).getInt("pointer");
-                    start = getData(ctx).getInt("index");
+                if (!getData(ctx).contains(String.valueOf(ctx.index()))) {
+                    getData(ctx).put(String.valueOf(ctx.index()), new CompoundTag());
                 }
-                getData(ctx).putBoolean("completed", true);
+                CompoundTag data = getData(ctx).getCompound(String.valueOf(ctx.index()));
                 int num = 0;
+                if (!data.getBoolean("completed")) {
+                    p = data.getInt("pointer");
+                    start = data.getInt("index");
+                    num = data.getInt("num");
+                }
+                data.putBoolean("completed", true);
                 for (int i = start; i < code.length(); i++) {
                     if (operationsLeft <= 0) {
-                        getData(ctx).putBoolean("completed", false);
-                        getData(ctx).putInt("pointer", p);
-                        getData(ctx).putInt("index", i);
+                        data.putBoolean("completed", false);
+                        data.putInt("pointer", p);
+                        data.putInt("index", i);
+                        data.putInt("num", num);
                         break;
                     }
+                    if (p > capacity) p = p % capacity;
+                    if (p < 0) p = (capacity - ((-p) % capacity)) % capacity;
                     while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
                     if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
                     switch (code.charAt(i)) {
@@ -612,7 +632,7 @@ public class GTPlaceholders {
                         case '[' -> loops.push(i);
                         case ']' -> {
                             if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
-                            else i = loops.peek();
+                            else i = loops.peek() + 1;
                         }
                     }
                     if (Character.isDigit(code.charAt(i))) {
@@ -631,7 +651,7 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                 int slot = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                 if (!stack.getOrCreateTag().contains("boundPlayerPermLevel"))
                     throw new MissingItemException("any data item bound to player", slot);
@@ -706,10 +726,11 @@ public class GTPlaceholders {
                         1000000000L, "B",
                         1000000000000L, "T");
                 long max = 1;
-                for (Long i : suffixes.keySet()) {
+                for (long i : suffixes.keySet()) {
                     if (n >= i && max < i) max = i;
                 }
-                return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+                return MultiLineComponent.literal(String.format(Locale.ROOT, "%.2f%s",
+                        ((double) n) / max, suffixes.get(max)));
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("click") {
@@ -739,7 +760,7 @@ public class GTPlaceholders {
                 if (args.size() > 2 && !args.get(2).toString().isEmpty()) {
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                     int slot = PlaceholderUtils.toInt(args.get(2));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                     if (stack.getOrCreateTag().contains("boundPlayerUUID"))
                         owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
@@ -753,7 +774,7 @@ public class GTPlaceholders {
                         if (args.size() > 4) {
                             if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                             int slot = PlaceholderUtils.toInt(args.get(3));
-                            PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                            PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                             ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                             UUID uuid;
                             if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
@@ -827,6 +848,127 @@ public class GTPlaceholders {
                 return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
             }
         });
+        PlaceholderHandler.addPlaceholder(new Placeholder("module") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 3);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                double x = PlaceholderUtils.toDouble(args.get(1));
+                double y = PlaceholderUtils.toDouble(args.get(2));
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
+                if (stack.getItem() instanceof IComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof IMonitorModuleItem module) module.tickInPlaceholder(stack, ctx);
+                    }
+                }
+                return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                        x, y, x, y,
+                        "module",
+                        stack.serializeNBT()));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("setImage") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                String url = args.get(1).toString();
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
+                if (stack.getItem() instanceof IComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof ImageModuleBehaviour module) {
+                            module.setUrl(stack, url);
+                        }
+                    }
+                }
+                return MultiLineComponent.empty();
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("rect") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 5);
+                double x = PlaceholderUtils.toDouble(args.get(0));
+                double y = PlaceholderUtils.toDouble(args.get(1));
+                double width = PlaceholderUtils.toDouble(args.get(2));
+                double height = PlaceholderUtils.toDouble(args.get(3));
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                CompoundTag renderData = new CompoundTag();
+                renderData.putDouble("x", x);
+                renderData.putDouble("y", y);
+                renderData.putDouble("width", width);
+                renderData.putDouble("height", height);
+                renderData.putInt("color", 0xFF000000 | PlaceholderUtils.toInt(args.get(4)));
+                return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                        x, y, x + width, y + height,
+                        "rect",
+                        renderData));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("quad") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 12);
+                CompoundTag renderData = new CompoundTag();
+                float x1 = PlaceholderUtils.toFloat(args.get(0));
+                float y1 = PlaceholderUtils.toFloat(args.get(1));
+                float x2 = PlaceholderUtils.toFloat(args.get(2));
+                float y2 = PlaceholderUtils.toFloat(args.get(3));
+                float x3 = PlaceholderUtils.toFloat(args.get(4));
+                float y3 = PlaceholderUtils.toFloat(args.get(5));
+                float x4 = PlaceholderUtils.toFloat(args.get(6));
+                float y4 = PlaceholderUtils.toFloat(args.get(7));
+                renderData.putFloat("x1", 0);
+                renderData.putFloat("y1", 0);
+                renderData.putFloat("x2", x2 - x1);
+                renderData.putFloat("y2", y2 - y1);
+                renderData.putFloat("x3", x3 - x1);
+                renderData.putFloat("y3", y3 - y1);
+                renderData.putFloat("x4", x4 - x1);
+                renderData.putFloat("y4", y4 - y1);
+                renderData.putInt("color1", 0xFF000000 + PlaceholderUtils.toInt(args.get(8)));
+                renderData.putInt("color2", 0xFF000000 + PlaceholderUtils.toInt(args.get(9)));
+                renderData.putInt("color3", 0xFF000000 + PlaceholderUtils.toInt(args.get(10)));
+                renderData.putInt("color4", 0xFF000000 + PlaceholderUtils.toInt(args.get(11)));
+                return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                        GTMath.min(x1, x2, x3, x4), GTMath.min(y1, y2, y3, y4), GTMath.max(x1, x2, x3, x4),
+                        GTMath.max(y1, y2, y3, y4),
+                        "quad",
+                        renderData));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("item") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
+                return MultiLineComponent.literal(ctx.itemStackHandler().getStackInSlot(slot - 1).toString());
+            }
+        });
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void initRenderers() {
+        PlaceholderHandler.addRenderer("module", new ModulePlaceholderRenderer());
+        PlaceholderHandler.addRenderer("rect", new RectPlaceholderRenderer());
+        PlaceholderHandler.addRenderer("quad", new QuadPlaceholderRenderer());
         PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
 
             @Override

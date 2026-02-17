@@ -328,6 +328,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return storage.isItemValid(slot, stack);
     }
 
+    public void dropInventoryInWorld() {
+        storage.dropInventoryInWorld(getLevel(), getMachine().getBlockPos());
+    }
+
     public static class KJSCallWrapper {
 
         public static ItemStack applyIngredientAction(CustomItemStackHandler storage, int index,

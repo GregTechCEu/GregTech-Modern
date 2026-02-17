@@ -3,6 +3,56 @@ title: "Migrating from LDLib SyncData"
 ---
 # Migrating from LDLib SyncData
 
+### Simple example
+
+This simple example covers the majority of use cases when adding sync/save fields to a standard machine, machine trait or cover.
+
+#### With LDLib:
+```java
+class CustomMachine extends SimpleTieredMachine {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CustomMachine.class,
+            SimpleTieredMachine.MANAGED_FIELD_HOLDER);
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Getter 
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    protected int customIntValue;
+    
+    @Persisted(key = "customNBTKey")
+    protected String customStringValue;
+
+    public void setCustomIntValue(int newValue) {
+        this.customIntValue = newValue;
+    }
+}
+```
+
+#### New System:
+```java
+class CustomMachine extends SimpleTieredMachine {
+    @Getter 
+    @SaveField
+    @SyncToClient
+    protected int customIntValue;
+    
+    @SaveField(nbtKey = "customNBTKey")
+    protected String customStringValue;
+    
+    public void setCustomIntValue(int newValue) {
+        this.customIntValue = newValue;
+        ////// IMPORTANT: markClientSyncFieldDirty must be called to update client synced fields.
+        getSyncDataHolder().markClientSyncFieldDirty("customIntValue");
+    }
+}
+
+```
+
 ### General migration guidelines
 
 - Remove all `ManagedFieldHolder` fields.

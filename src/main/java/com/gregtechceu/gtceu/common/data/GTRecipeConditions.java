@@ -21,6 +21,7 @@ public final class GTRecipeConditions {
 
     // spotless:off
     public static final RecipeConditionType<BiomeCondition> BIOME = register("biome", BiomeCondition::new, BiomeCondition.CODEC);
+    public static final RecipeConditionType<BiomeTagCondition> BIOME_TAG = register("biome_tag", BiomeTagCondition::new, BiomeTagCondition.CODEC);
     public static final RecipeConditionType<DimensionCondition> DIMENSION = register("dimension", DimensionCondition::new, DimensionCondition.CODEC);
     public static final RecipeConditionType<PositionYCondition> POSITION_Y = register("pos_y", PositionYCondition::new, PositionYCondition.CODEC);
     public static final RecipeConditionType<RainingCondition> RAINING = register("rain", RainingCondition::new, RainingCondition.CODEC);

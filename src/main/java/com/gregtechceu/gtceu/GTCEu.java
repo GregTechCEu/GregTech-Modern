@@ -37,6 +37,8 @@ public class GTCEu {
         License.iConfirmNonCommercialUse("GTCEu");
     }
 
+    public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
+
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;

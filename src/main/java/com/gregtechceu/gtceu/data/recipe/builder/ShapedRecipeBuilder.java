@@ -30,6 +30,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
     protected ResourceLocation id;
     protected String group;
     protected boolean isStrict;
+    protected boolean matchSize;
 
     public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -97,6 +98,12 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         return this;
     }
 
+    public ShapedRecipeBuilder matchSize(boolean matchSize) {
+        if (matchSize) this.isStrict = true;
+        this.matchSize = matchSize;
+        return this;
+    }
+
     @Override
     public ShapedRecipeBuilder shallowCopy() {
         var builder = super.shallowCopy();
@@ -124,6 +131,8 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
             symbolMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
             json.add("key", key);
         }
+
+        json.addProperty("matchSize", matchSize);
 
         if (output.isEmpty()) {
             GTCEu.LOGGER.error("shaped recipe {} output is empty", id);

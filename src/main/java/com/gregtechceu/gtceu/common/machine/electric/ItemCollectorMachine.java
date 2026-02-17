@@ -112,6 +112,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         this.output = createOutputItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
         this.autoOutput = AutoOutputTrait.ofItems(this, output);
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
@@ -167,15 +168,10 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
-    }
-
-    @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(output.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        output.dropInventoryInWorld();
     }
 
     //////////////////////////////////////
