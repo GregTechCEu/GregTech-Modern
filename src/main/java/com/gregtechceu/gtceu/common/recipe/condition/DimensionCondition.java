@@ -82,7 +82,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
-        return level != null && dimension.equals(level.dimension().location());
+        return level != null && dimension.location().equals(level.dimension().location());
     }
 
     @Override

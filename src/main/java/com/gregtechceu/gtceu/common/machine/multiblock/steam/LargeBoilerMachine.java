@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -40,6 +39,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -60,7 +60,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IMuiMachine {
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMuiMachine {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
@@ -170,15 +170,15 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
                 // check explosion
                 if (drained < maxDrain) {
-                    doExplosion(2f);
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2f);
                     var center = getBlockPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
-                        doExplosion(center, 2f);
+                        GTUtil.doExplosion(getLevel(), center, 2f);
                     }
                     for (Direction x : Direction.Plane.HORIZONTAL) {
                         for (Direction y : Direction.Plane.HORIZONTAL) {
                             if (GTValues.RNG.nextInt(100) > 80) {
-                                doExplosion(center.relative(x).relative(y), 2f);
+                                GTUtil.doExplosion(getLevel(), center.relative(x).relative(y), 2f);
                             }
                         }
                     }

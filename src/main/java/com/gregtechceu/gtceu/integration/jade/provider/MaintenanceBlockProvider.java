@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -36,7 +36,7 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
         if (cap != null) {
             return cap;
         }
-        if (MetaMachine.getMachine(level, blockPos) instanceof IMultiController controller) {
+        if (MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller) {
             for (var part : controller.getParts()) {
                 if (part instanceof IMaintenanceMachine maintenanceMachine) {
                     return maintenanceMachine;

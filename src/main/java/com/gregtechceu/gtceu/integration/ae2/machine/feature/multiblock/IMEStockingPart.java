@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
 import net.minecraft.server.TickTask;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public interface IMEStockingPart extends IAutoPullPart {
 
     @Override
-    default void addedToController(IMultiController controller) {
+    default void addedToController(MultiblockControllerMachine controller) {
         // ensure that no other stocking bus on this multiblock is configured to hold the same item.
         // that we have in our own bus.
         setAutoPullTest(stack -> !this.testConfiguredInOtherPart(stack));
@@ -25,7 +25,7 @@ public interface IMEStockingPart extends IAutoPullPart {
     }
 
     @Override
-    default void removedFromController(IMultiController controller) {
+    default void removedFromController(MultiblockControllerMachine controller) {
         setAutoPullTest($ -> false);
         if (isAutoPull()) {
             getSlotList().clearInventory(0);
