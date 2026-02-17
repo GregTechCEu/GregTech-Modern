@@ -137,11 +137,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
-<<<<<<< jj/mui2/data-bank
-    public static TextWidget<?> addProgressLinePercentOnly(IWorkableMultiController rlMachine,
-=======
     public static TextWidget<?> addProgressLinePercentOnly(WorkableMultiblockMachine rlMachine,
->>>>>>> mui2-refactor
                                                            PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
@@ -274,23 +270,15 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
 
-<<<<<<< jj/mui2/data-bank
-    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
-=======
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
                                                      PanelSyncManager syncManager) {
->>>>>>> mui2-refactor
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
     }
 
-<<<<<<< jj/mui2/data-bank
-    public static TextWidget<?> addWorkingStatusLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager,
-=======
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager,
->>>>>>> mui2-refactor
                                                      Supplier<Component> workPaused,
                                                      Supplier<Component> runningPerfectly,
                                                      Supplier<Component> idling) {
@@ -317,11 +305,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> isFormed.getBoolValue());
     }
 
-<<<<<<< jj/mui2/data-bank
-    public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,
-=======
     public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
->>>>>>> mui2-refactor
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
                 GenericSyncValue.class,
