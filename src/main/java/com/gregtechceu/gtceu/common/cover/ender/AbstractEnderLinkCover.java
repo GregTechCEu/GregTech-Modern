@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -120,6 +121,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             var owner = mcc.getMachine().getOwner();
             return owner != null ? owner.getPlayerUUID() : null;
         }
+        if (permission == Permissions.PROTECTED && coverHolder instanceof MachineCoverContainer mcc) {
+            var owner = mcc.getMachine().getOwner();
+            return owner != null ? owner.getUUID() : null;
+        }
         return null;
     }
 
@@ -202,8 +207,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     protected enum Permissions {
-        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled"),
-        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled");
+        PUBLIC("cover.ender_link.public.tooltip"),
+        PROTECTED("cover.ender_link.protected.tooltip"),
+        PRIVATE("cover.ender_link.private.tooltip");
 
         @Getter
         private final String tooltip;
@@ -239,10 +245,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new CycleButtonWidget()
                         .stateCount(2)
                         .stateOverlay(Permissions.PUBLIC, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
+                        .stateOverlay(Permissions.PROTECTED, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
                         .stateOverlay(Permissions.PRIVATE, GTGuiTextures.PRIVATE_MODE_BUTTON[1])
-                        .tooltip(0, t -> t.addLine(IKey.lang(Permissions.PUBLIC.tooltip + ".0"))
-                                .addLine(IKey.lang(Permissions.PUBLIC.tooltip + ".1")))
-                        .tooltip(1, t -> t.addLine(IKey.lang(Permissions.PRIVATE.tooltip)))
+                        .tooltip(0, t -> t.addLine(IKey.lang(Permissions.PUBLIC.tooltip)))
+                        .tooltip(1, t -> t.addLine(IKey.lang(Permissions.PROTECTED.tooltip)))
+                        .tooltip(2, t -> t.addLine(IKey.lang(Permissions.PRIVATE.tooltip)))
                         .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
                                 this::setPermission)))
                 .child(new TextFieldWidget()
@@ -254,7 +261,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
                     channelManager.openPanel();
                     return true;
-                }).align(Alignment.CenterRight))
+                }).align(Alignment.CenterRight).tooltip(new RichTooltip().addLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.list_button")))))
         );
 
         column.child(coverUIRow().child(new TextFieldWidget()
