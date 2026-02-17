@@ -151,8 +151,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
      *
      * @return A widget to represent the entry type for this cover
      */
-    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h,
-                                                        int index);
+    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int idx);
 
     @Nullable
     protected FilterHandler<?, ?> getFilterHandler() {
@@ -235,7 +234,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
         var channelManager = syncManager.syncedPanel("channelManager", true,
                 (sm, sh) -> createChannelManagerPanel(data, sm, settings));
@@ -246,14 +245,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("color", colorSyncer);
 
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .childPadding(2)
-                .widthRel(1.0f).coverChildrenHeight();
-
-        column.child(Flow.row()
-                .coverChildrenHeight()
-                .childPadding(3)
+        column.child(coverUIRow()
                 .child(createColorBlock(colorSyncer::getIntValue, 18).asWidget().size(18))
                 .child(new CycleButtonWidget()
                         .stateCount(2)
@@ -269,38 +261,34 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
                         .addTooltipLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.channel_name"))))
-                        .child(createVirtualEntryWidget(syncManager, getEntry(), 18, 18, 0))
+                .child(createVirtualEntryWidget(syncManager, getEntry(), 18, 18, 0))
                 .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
                     channelManager.openPanel();
                     return true;
                 }).align(Alignment.CenterRight))
         );
 
-        column.child(Flow.row().coverChildrenHeight().child(new TextFieldWidget()
+        column.child(coverUIRow().child(new TextFieldWidget()
                 .setMaxLength(32)
                 .widthRel(1f)
                 .addTooltipLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.channel_description")))
                 .value(new StringSyncValue(this::getDescription, this::setDescription))));
 
-        Flow bottomRow = Flow.row().coverChildrenHeight().childPadding(3);
+        Flow bottomRow = coverUIRow();
         bottomRow.child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));
         bottomRow.child(GTMuiWidgets.createIOCycleButton(ioSync, false));
         if (getFilterHandler() != null) GTMuiWidgets.createFilterRow(bottomRow, getFilterHandler(), data, syncManager, settings);
         column.child(bottomRow);
 
-        return column;
     }
 
     protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
-        return Flow.row()
+        return coverUIRow()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
                         .tooltip(t -> t.addLine(entry.getColorStr()))
                         .size(18, 18))
                 .child(IKey.str(entry.getDescription()).asWidget().size(92, 12))
-                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
-                .alignX(0F)
-                .childPadding(3)
-                .coverChildren();
+                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx));
     }
 
     public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {

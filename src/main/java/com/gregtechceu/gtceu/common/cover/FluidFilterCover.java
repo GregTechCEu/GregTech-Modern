@@ -88,11 +88,7 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
-
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
                 this::getFilterMode, this::setFilterMode);
 
@@ -112,9 +108,7 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
                             return true;
                         }));
 
-        column.child(Flow.row()
-                .coverChildrenHeight()
-                .child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
+        column.child(coverUIRow().child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
                 .value(filterMode)
@@ -128,7 +122,6 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
                 .lang(IKey.dynamic(() -> Component.translatable(getAllowFlow().getTooltip())))
                 .build());
 
-        return column;
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

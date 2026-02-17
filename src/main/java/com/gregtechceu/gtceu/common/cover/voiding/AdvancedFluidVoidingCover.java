@@ -117,8 +117,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     // *********** GUI ***********//
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
                 this::getVoidingMode, this::setVoidingMode);
@@ -142,7 +142,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
                         .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
                         .setEnabledIf($ -> shouldShowStackSize()));
 
-        return column;
     }
 
     private int getCurrentBucketModeTransferSize() {

@@ -176,8 +176,8 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v);
@@ -194,7 +194,6 @@ public class RobotArmCover extends ConveyorCover {
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
 
-        return column;
     }
 
     @Override

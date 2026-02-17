@@ -87,17 +87,10 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
-
-        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, data, syncManager,
-                settings);
-        filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
-                .marginRight(2));
-
-        return column.child(filterRow);
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        column.child(GTMuiWidgets.createFilterRow(coverUIRow().child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)),
+                filterHandler, data, syncManager,
+                settings));
     }
 
     @NotNull

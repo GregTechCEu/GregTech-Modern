@@ -290,11 +290,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         // return IMuiCover.super.buildUI(data, syncManager, settings);
     }
 
-    @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return null;
-    }
-
     private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, IKey title) {
         return Flow.column().coverChildrenHeight().width(18)
                 .child(title.asWidget().size(16).marginBottom(2).alignment(Alignment.Center))

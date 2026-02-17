@@ -423,11 +423,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
-
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
                 this::getManualIOMode, this::setManualIOMode);
 
@@ -447,10 +443,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createFilterRow()) {
-            column.child(
-                    GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2))
-                            .marginBottom(2));
+            column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
+                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
         }
 
         if (createConveyorIORow()) {}
@@ -471,8 +465,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                     .build());
 
         }
-
-        return column;
     }
 
     protected boolean createThroughputRow() {

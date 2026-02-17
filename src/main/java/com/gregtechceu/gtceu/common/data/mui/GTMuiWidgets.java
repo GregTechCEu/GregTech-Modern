@@ -403,7 +403,7 @@ public class GTMuiWidgets {
         return existingRow.child(new ItemSlot()
                         .slot(new ModularSlot(filterSlot, 0)
                                 .changeListener((stack, amount, client, init) -> filterButton.notifyUpdate(packet -> packet.writeItem(stack))))
-                        .marginLeft(2))
+                        )
                 .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
     }
 
@@ -411,7 +411,7 @@ public class GTMuiWidgets {
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
-        return createFilterRow(Flow.row().coverChildrenHeight(), filterHandler, data, syncManager, settings);
+        return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager, settings);
     }
 
     private static int getIncrementValue(MouseData data) {
@@ -470,7 +470,6 @@ public class GTMuiWidgets {
 
         return Flow.row()
                 .coverChildrenHeight()
-                .marginBottom(2)
                 .widthRel(1.0f)
                 .child(new ButtonWidget<>()
                         .left(0).width(18)

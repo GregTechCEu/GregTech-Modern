@@ -189,8 +189,8 @@ public class FluidRegulatorCover extends PumpCover {
     // ***** GUI ******//
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit);
@@ -212,7 +212,6 @@ public class FluidRegulatorCover extends PumpCover {
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> MAX_STACK_SIZE)
                 .setEnabledIf($ -> shouldShowTransferSize()));
 
-        return column;
     }
 
     private boolean shouldShowTransferSize() {

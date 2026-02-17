@@ -125,8 +125,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
                 this::getVoidingMode, this::setVoidingMode);
@@ -144,8 +144,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-
-        return column;
     }
 
     @Override

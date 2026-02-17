@@ -269,10 +269,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
         IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate);
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
@@ -289,15 +286,13 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
                 () -> maxFluidTransferRate));
 
         column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2)));
+                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                 .value(manualIOModeSync)
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                 .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))
                 .build());
-
-        return column;
     }
 
     protected void configureFilter() {

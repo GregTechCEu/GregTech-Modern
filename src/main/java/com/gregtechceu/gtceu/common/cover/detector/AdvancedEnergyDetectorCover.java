@@ -129,10 +129,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
-        return new Column()
-                .child(new Row()
+        column.child(new Row()
                         .child(new Column()
                                 .child(IKey.lang("cover.advanced_energy_detector.min").asWidget().alignY(0.15F))
                                 .child(IKey.lang("cover.advanced_energy_detector.max").asWidget().alignY(0.85F))
@@ -165,9 +164,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         .childPadding(5)
                         .coverChildren())
                 .rightRel(0.5F)
-                .margin(3)
-                .childPadding(3)
-                .coverChildren();
+                .margin(3);
     }
 
     private Flow createFieldRow(LongSyncValue voltageSyncer) {

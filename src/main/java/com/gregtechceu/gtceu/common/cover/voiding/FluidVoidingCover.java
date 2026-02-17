@@ -87,18 +87,12 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
+    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
-        var row = Flow.row().coverChildrenHeight();
-        row.child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
-                .marginRight(2));
-        GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager,
-                settings);
+        var row = coverUIRow().child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));
+        GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager, settings);
 
-        return column.child(row);
+        column.child(row);
     }
 
     @Override
