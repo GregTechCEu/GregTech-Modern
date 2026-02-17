@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -68,8 +69,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IMuiMachine, IExplosionMachine, IDataInfoProvider,
-                                         IInteractedMachine {
+                                         implements IMuiMachine, IDataInfoProvider {
 
     @SaveField
     public final NotifiableFluidTank waterTank;
@@ -199,7 +199,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
-                    doExplosion(2.0f);
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2.0f);
                 } else {
                     this.hasNoWater = !hasDrainedWater;
                 }
@@ -312,12 +312,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 return InteractionResult.SUCCESS;
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = GTGuis.createPanel(this, 176, 166);

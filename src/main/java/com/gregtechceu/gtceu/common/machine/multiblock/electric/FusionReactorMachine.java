@@ -177,7 +177,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
-            return ModifierFunction.NULL;
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -187,7 +188,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
         }
         // if the remaining energy needed is more than stored, do not run
-        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff) return ModifierFunction.NULL;
+        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
