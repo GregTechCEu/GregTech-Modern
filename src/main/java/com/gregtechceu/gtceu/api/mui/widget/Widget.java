@@ -47,7 +47,7 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
 
     // other
     @Getter
-    private boolean excludeAreaInXei = false;
+    private boolean excludeAreaInRecipeViewer = false;
     // sizing
     private BiConsumer<W, IViewportStack> transform;
     // syncing
@@ -134,8 +134,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
         if (!getScreen().isClientOnly()) {
             initialiseSyncHandler(getScreen().getSyncManager(), late);
         }
-        if (isExcludeAreaInXei()) {
-            getContext().getXeiSettings().addExclusionArea(this);
+        if (isExcludeAreaInRecipeViewer()) {
+            getContext().getRecipeViewerSettings().addExclusionArea(this);
         }
     }
 
@@ -153,7 +153,6 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
             }
         }
         if (handler != null) setSyncOrValue(handler);
-        setSyncHandler(handler);
         if (this.syncHandler instanceof ValueSyncHandler<?> valueSyncHandler &&
                 valueSyncHandler.getChangeListener() == null) {
             valueSyncHandler.setChangeListener(this::markTooltipDirty);
@@ -173,8 +172,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
                     getScreen().removeGuiActionListener(action);
                 }
             }
-            if (isExcludeAreaInXei()) {
-                getContext().getXeiSettings().removeExclusionArea(this);
+            if (isExcludeAreaInRecipeViewer()) {
+                getContext().getRecipeViewerSettings().removeExclusionArea(this);
             }
         }
         super.dispose();
@@ -642,49 +641,26 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
         return getThis();
     }
 
-    /**
-     * Used for widgets to set a value handler. <br />
-     * Will also call {@link #setSyncHandler(SyncHandler)} if it is a SyncHandler
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    protected void setValue(IValue<?> value) {
-        this.value = value;
-        if (value instanceof SyncHandler handler) {
-            setSyncHandler(handler);
-        }
-    }
-
-    /**
-     * Used for widgets to set a sync handler.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    protected void setSyncHandler(@Nullable SyncHandler syncHandler) {
-        if (syncHandler != null) checkValidSyncOrValue(syncHandler);
-        this.syncHandler = syncHandler;
-    }
-
     @MustBeInvokedByOverriders
     protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         if (!syncOrValue.isSyncHandler() && !syncOrValue.isValueHandler()) return;
         checkValidSyncOrValue(syncOrValue);
-        if (syncOrValue instanceof SyncHandler syncHandler1) setSyncHandler(syncHandler1);
-        if (syncOrValue instanceof IValue<?> value1) setValue(value1);
+        if (syncOrValue instanceof SyncHandler syncHandler) this.syncHandler = syncHandler;
+        if (syncOrValue instanceof IValue<?> value) this.value = value;
     }
 
     // -------------
     // === Other ===
     // -------------
 
-    public W excludeAreaInXei() {
-        return excludeAreaInXei(true);
+    public W excludeAreaInRecipeViewer() {
+        return excludeAreaInRecipeViewer(true);
     }
 
-    public W excludeAreaInXei(boolean val) {
-        this.excludeAreaInXei = val;
+    public W excludeAreaInRecipeViewer(boolean val) {
+        this.excludeAreaInRecipeViewer = val;
         if (isValid()) {
-            getContext().getXeiSettings().addExclusionArea(this);
+            getContext().getRecipeViewerSettings().addExclusionArea(this);
         }
         return getThis();
     }
@@ -706,15 +682,6 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
             return IDragResizeable.getDragResizeCorner(dragResizeable, getArea(), viewportStack, mouseX, mouseY);
         }
         return null;
-    }
-
-    /**
-     * @deprecated this got renamed to name
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public W debugName(String name) {
-        return name(name);
     }
 
     /**

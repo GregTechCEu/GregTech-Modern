@@ -263,6 +263,7 @@ public class TextFieldHandler {
     }
 
     public void onChanged() {
+        this.textFieldWidget.onTextChanged();
         this.textFieldWidget.markTooltipDirty();
     }
 

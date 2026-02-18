@@ -1,5 +1,73 @@
 # ChangeLog
 
+## Version [v7.5.2](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.5.1-1.20.1...v7.5.2-1.20.1)
+### Fixed
+
+- Turn groupColor field value into optional field codec by @jurrejelle in [#4593](https://github.com/GregTechCEu/GregTech-Modern/pull/4593)
+- Fix wrong argument check for 'redstone set #' placeholder by @FyreDrakon in [#4595](https://github.com/GregTechCEu/GregTech-Modern/pull/4595)
+- Fix ore vein consistency by sorting the cache by @jurrejelle in [#4602](https://github.com/GregTechCEu/GregTech-Modern/pull/4602)
+- Fix CR being displayed on CM when pasting text on windows by @TarLaboratories in [#4603](https://github.com/GregTechCEu/GregTech-Modern/pull/4603)
+
+ 
+## Version [v7.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.5.0-1.20.1...v7.5.1-1.20.1)
+### Fixed
+
+- Fix access protection issue in netherite tools + lamprenderer issues by @jurrejelle in [#4579](https://github.com/GregTechCEu/GregTech-Modern/pull/4579)
+
+ 
+## Version [v7.5.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.4.1-1.20.1...v7.5.0-1.20.1)
+### Added
+
+- 7.4.x Haze small fusion ctm tweaks bc it was bothering me by @HazeVista in [#4432](https://github.com/GregTechCEu/GregTech-Modern/pull/4432)
+- Add option to display temperatures in Celsius by @TarLaboratories in [#3839](https://github.com/GregTechCEu/GregTech-Modern/pull/3839)
+- Spray cans with AE2 IColorableBlockEntity support by @zetrock1 in [#4264](https://github.com/GregTechCEu/GregTech-Modern/pull/4264)
+- Rework machine copy/paste card to support copying pipes, covers, cover settings, and more machine settings by @gustovafing in [#4272](https://github.com/GregTechCEu/GregTech-Modern/pull/4272)
+- Add Hotkey for StepAssist by @zetrock1 in [#4291](https://github.com/GregTechCEu/GregTech-Modern/pull/4291)
+- Add HV, IV screwdriver and chainsaw by @zetrock1 in [#4310](https://github.com/GregTechCEu/GregTech-Modern/pull/4310)
+- Jade battery provider by @zetrock1 in [#4317](https://github.com/GregTechCEu/GregTech-Modern/pull/4317)
+- Add CC: Tweaked peripheral for ghost programmed circuit by @blockninja124 in [#4468](https://github.com/GregTechCEu/GregTech-Modern/pull/4468)
+- Trinium spring by @zetrock1 in [#4470](https://github.com/GregTechCEu/GregTech-Modern/pull/4470)
+- Output bus filtering by @zetrock1 in [#4337](https://github.com/GregTechCEu/GregTech-Modern/pull/4337)
+- Allow rendering other modules from placeholders by @TarLaboratories in [#3900](https://github.com/GregTechCEu/GregTech-Modern/pull/3900)
+- Add gem slurry from purified ore recipes by @SpicyNoodle5 in [#4413](https://github.com/GregTechCEu/GregTech-Modern/pull/4413)
+- Recipe Fail Reason Display by @illuciaz23 in [#4487](https://github.com/GregTechCEu/GregTech-Modern/pull/4487)
+- Add biomeTag recipe condition by @chloecat34 in [#4419](https://github.com/GregTechCEu/GregTech-Modern/pull/4419)
+
+### Fixed
+
+- Fix overwriting FOV when on concrete by @zetrock1 in [#4446](https://github.com/GregTechCEu/GregTech-Modern/pull/4446)
+- Stop placeholder execution when an exception is encountered by @TarLaboratories in [#4455](https://github.com/GregTechCEu/GregTech-Modern/pull/4455)
+- Fix tank valve info by @zetrock1 in [#4454](https://github.com/GregTechCEu/GregTech-Modern/pull/4454)
+- Fix voltage display by @illuciaz23 in [#4462](https://github.com/GregTechCEu/GregTech-Modern/pull/4462)
+- Fixed Multi Smelter texture again. by @Conity723 in [#4469](https://github.com/GregTechCEu/GregTech-Modern/pull/4469)
+- Terminal tooltip change to ensure consistent terminology  by @HazeVista in [#4458](https://github.com/GregTechCEu/GregTech-Modern/pull/4458)
+- Only allow http and https by @TarLaboratories in [#4457](https://github.com/GregTechCEu/GregTech-Modern/pull/4457)
+- Add check to not cache invalid recipes by @jurrejelle in [#4486](https://github.com/GregTechCEu/GregTech-Modern/pull/4486)
+- Remove BlockEntity Check in MinerLogic by @lilpaladin1 in [#4488](https://github.com/GregTechCEu/GregTech-Modern/pull/4488)
+- Fix autogenerating mortar recipes by @jurrejelle in [#4498](https://github.com/GregTechCEu/GregTech-Modern/pull/4498)
+- Replace mandatory air with any in blast chiler structure by @jurrejelle in [#4502](https://github.com/GregTechCEu/GregTech-Modern/pull/4502)
+- Fix CME with parts and partpositions when calling getParts in addedToController by @jurrejelle in [#4505](https://github.com/GregTechCEu/GregTech-Modern/pull/4505)
+- Fix missing/invalid pipe model issues by @screret in [#4530](https://github.com/GregTechCEu/GregTech-Modern/pull/4530)
+- Fix bug in NBTPredicateIngredient serializer by @Mqrius in [#4536](https://github.com/GregTechCEu/GregTech-Modern/pull/4536)
+- Fix dust disassembly recipes by @TarLaboratories in [#4456](https://github.com/GregTechCEu/GregTech-Modern/pull/4456)
+- Fix pipes missing break particle textures by @screret in [#4533](https://github.com/GregTechCEu/GregTech-Modern/pull/4533)
+- Simplify material block models and fix issues they had with shaders by @screret in [#4532](https://github.com/GregTechCEu/GregTech-Modern/pull/4532)
+- Fix pipes' block break animation being the wrong shape by @screret in [#4543](https://github.com/GregTechCEu/GregTech-Modern/pull/4543)
+- Fixed tooltip order for Large Assembler by @HazeVista in [#4552](https://github.com/GregTechCEu/GregTech-Modern/pull/4552)
+- Match Painted Output Busses to Painted Input Busses by @DilithiumThoride in [#4273](https://github.com/GregTechCEu/GregTech-Modern/pull/4273)
+- Improve bedrock vein randomness by @Gaider10 in [#4574](https://github.com/GregTechCEu/GregTech-Modern/pull/4574)
+
+### Changed
+
+- Two-Phase Recipe Addition System by @TechLord22 in [#3981](https://github.com/GregTechCEu/GregTech-Modern/pull/3981)
+- Correction and update of the new uk_ua by @MetenBouldry in [#4452](https://github.com/GregTechCEu/GregTech-Modern/pull/4452)
+- Use Generic Builder pattern for MachineBuilder by @jurrejelle in [#4422](https://github.com/GregTechCEu/GregTech-Modern/pull/4422)
+- Distribute display voltage logic to machine implementations by @toapuro in [#4459](https://github.com/GregTechCEu/GregTech-Modern/pull/4459)
+- DFS stack-based recipe lookup implementation by @jurrejelle in [#3986](https://github.com/GregTechCEu/GregTech-Modern/pull/3986)
+- Pipe model rework by @screret in [#4283](https://github.com/GregTechCEu/GregTech-Modern/pull/4283)
+- Remove muffler hatch requirement from Large Distillery by @GirixK in [#4195](https://github.com/GregTechCEu/GregTech-Modern/pull/4195)
+
+ 
 ## Version [v7.4.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.4.0-1.20.1...v7.4.1-1.20.1)
 ### Added
 

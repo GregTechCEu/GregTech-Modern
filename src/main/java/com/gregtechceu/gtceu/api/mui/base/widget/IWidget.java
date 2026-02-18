@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.google.common.base.CharMatcher;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +23,7 @@ import java.util.function.Consumer;
 /**
  * A widget in a GUI.
  */
-public interface IWidget extends IGuiElement, ITreeNode<IWidget> {
+public interface IWidget extends ITreeNode<IWidget> {
 
     String WIDGET_TRANSLATION_KEY_FORMAT = "widget.%s.name";
     /**
@@ -73,7 +72,6 @@ public interface IWidget extends IGuiElement, ITreeNode<IWidget> {
     /**
      * @return the area this widget occupies
      */
-    @Override
     Area getArea();
 
     /**
@@ -312,42 +310,9 @@ public interface IWidget extends IGuiElement, ITreeNode<IWidget> {
     boolean requiresResize();
 
     /**
-     * @return flex of this widget
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Nullable
-    default StandardResizer getFlex() {
-        return resizer();
-    }
-
-    /**
-     * @return flex of this widget. Creates a new one if it doesn't already have one.
-     */
-    @NotNull
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    default StandardResizer flex() {
-        return resizer();
-    }
-
-    /**
-     * Does the same as {@link IPositioned#resizer(Consumer)}
-     *
-     * @param builder function to build flex
-     * @return this
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    default IWidget flexBuilder(Consumer<StandardResizer> builder) {
-        return resizerBuilder(builder);
-    }
-
-    /**
      * @return resizer of this widget
      */
     @NotNull
-    @Override
     StandardResizer resizer();
 
     default IWidget resizerBuilder(Consumer<StandardResizer> builder) {
@@ -377,7 +342,6 @@ public interface IWidget extends IGuiElement, ITreeNode<IWidget> {
      *
      * @return if this element is enabled
      */
-    @Override
     boolean isEnabled();
 
     void setEnabled(boolean enabled);

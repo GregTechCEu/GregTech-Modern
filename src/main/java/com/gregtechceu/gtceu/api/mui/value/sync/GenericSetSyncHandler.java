@@ -53,12 +53,36 @@ public class GenericSetSyncHandler<T> extends GenericCollectionSyncHandler<T, Se
         for (int i = 0; i < size; i++) {
             this.cache.add(deserializeValue(buffer));
         }
-        onSetCache(getValue(), true, false);
+        onSetCache(true, false);
     }
 
     @Override
     public Class<Set<T>> getValueType() {
         return (Class<Set<T>>) (Object) Set.class;
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method forces a sync after the modification.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(Consumer<Set<T>> consumer) {
+        modifyValue(true, true, consumer);
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method can automatically sync the cache after the modification. Be careful with potential issues when the
+     * sync arg is false.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(boolean setSource, boolean sync, Consumer<Set<T>> consumer) {
+        consumer.accept(this.cache);
+        onSetCache(setSource, sync);
     }
 
     public static <T> Builder<T> builder() {

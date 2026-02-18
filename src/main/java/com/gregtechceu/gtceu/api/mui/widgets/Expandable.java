@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.animation.MutableObjectAnimator;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
-import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
@@ -122,20 +120,6 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
             context.getStencil().pop();
-        }
-    }
-
-    @Override
-    public void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
-        if (isInside(stack, x, y)) {
-            widgets.add(this, stack.peek(), getAdditionalHoverInfo(stack, x, y));
-        }
-    }
-
-    @Override
-    public void getWidgetsAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
-        if (hasChildren()) {
-            IViewport.getChildrenAt(this, stack, widgets, x, y);
         }
     }
 

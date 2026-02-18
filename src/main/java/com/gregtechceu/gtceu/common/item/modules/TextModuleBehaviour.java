@@ -62,10 +62,15 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {
+        this.updateText(stack, context);
+    }
+
+    @Override
+    public IMonitorRenderer getRenderer(ItemStack stack) {
         return new MonitorTextRenderer(
                 getText(stack).toImmutable(),
-                getScale(stack));
+                Math.max(getScale(stack), .0001));
     }
 
     @Override
@@ -95,7 +100,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public MultiLineComponent getText(ItemStack stack) {
-        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().get("text"));
     }
 
     public double getScale(ItemStack stack) {
@@ -120,7 +125,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public void setPlaceholderText(ItemStack stack, String text) {
         ListTag listTag = new ListTag();
-        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line));
+        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line.replaceAll("\r", "")));
         stack.getOrCreateTag().put("formatStringLines", listTag);
     }
 

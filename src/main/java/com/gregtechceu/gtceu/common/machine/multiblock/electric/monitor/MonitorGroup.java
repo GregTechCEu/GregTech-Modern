@@ -47,6 +47,7 @@ public class MonitorGroup {
                     Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
                     .apply(instance, MonitorGroup::new));
 
+    @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();
     @Setter
     @Getter
@@ -136,10 +137,6 @@ public class MonitorGroup {
 
     public boolean isEmpty() {
         return monitorPositions.isEmpty();
-    }
-
-    public Set<BlockPos> getRelativePositions() {
-        return monitorPositions;
     }
 
     public @Nullable CoverBehavior getTargetCover(Level level) {

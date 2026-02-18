@@ -20,7 +20,8 @@ import org.jetbrains.annotations.ApiStatus;
  * With the difference, that the method from this interface also works on server
  * side.
  * </p>
- * Synced panels must be created with {@link PanelSyncManager#panel(String, PanelSyncHandler.IPanelBuilder, boolean)}.
+ * Synced panels must be created with
+ * {@link PanelSyncManager#syncedPanel(String, boolean, PanelSyncHandler.IPanelBuilder)}.
  * If the panel does not contain any synced widgets, a simple panel handler using
  * {@link #simple(ModularPanel, SecondaryPanel.IPanelBuilder, boolean)}
  * is likely what you need.

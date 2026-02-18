@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -20,17 +18,21 @@ public interface ValueTransformer<T> {
     /**
      * A record holding information about the context from which this value transformer is currently being invoked.
      * 
-     * @param holder       The sync object which holds the specific field being serialized by this transformer.
-     * @param type         An object describing the type of the field currently being serialized/deserialized.
-     * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
-     * @param fieldName    The name of the field being serialized, or a string denoting the current sync context if not
-     *                     being invoked directly on a field.
-     * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
-     *                     being
-     *                     written to the server save.
+     * @param holder         The sync object which holds the specific field being serialized by this transformer.
+     * @param type           An object describing the type of the field currently being serialized/deserialized.
+     * @param currentValue   The current value (if any) of the field currently being serialized/deserialized.
+     * @param fieldName      The name of the field being serialized, or a string denoting the current sync context if
+     *                       not
+     *                       being invoked directly on a field.
+     * @param isClientSync   Whether NBT is currently being generated as part of a sync update to the client, not as NBT
+     *                       being
+     *                       written to the server save.
+     * @param fullClientSync Whether NBT is currently being generated to send to the client as part of a clientside
+     *                       chunk load
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
-                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
+    record TransformerContext<U>(ISyncManaged holder, TypeDeclaration type,
+                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
+                                 boolean fullClientSync) {}
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.
@@ -43,20 +45,6 @@ public interface ValueTransformer<T> {
             throw new ClassCastException("Sync: Invalid tag type: expected %s, got %s [%s, field %s]"
                     .formatted(cls.toString(), tag.getClass().getName(), ctx.holder(), ctx.fieldName));
         }
-    }
-
-    /**
-     * Extracts the actual data tag from an LDLib tag structure which is present in some serialized objects.
-     */
-    static Tag stripLdlibWrapper(Tag t) {
-        if (!(t instanceof CompoundTag tag)) return t;
-        if (tag.contains("p") && tag.contains("t")) {
-            return tag.getCompound("p");
-        }
-        if (tag.contains("t", Tag.TAG_COMPOUND)) {
-            return tag.getCompound("t").getCompound("p");
-        }
-        return tag;
     }
 
     /**

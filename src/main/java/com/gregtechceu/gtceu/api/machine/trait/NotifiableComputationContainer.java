@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -71,7 +71,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                     if (!part.isFormed()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.requestCWUt(cwut, simulate, seen);
                         }
@@ -112,7 +112,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                     if (!part.isFormed()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (!controller.isFormed()) {
                             continue;
                         }
@@ -155,7 +155,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                     if (!part.isFormed()) {
                         return false;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (!controller.isFormed()) {
                             continue;
                         }
@@ -204,7 +204,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                             rlm.getRecipeLogic().progress -= 1;
                             rlm.getRecipeLogic().progress += drawn;
                         } else if (machine instanceof IMultiPart multiPart) {
-                            for (IMultiController controller : multiPart.getControllers()) {
+                            for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().progress -= 1;
                                     rlm.getRecipeLogic().progress += drawn;

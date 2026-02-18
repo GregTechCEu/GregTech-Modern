@@ -11,8 +11,8 @@ dependencies {
     jarJar(modApi(forge.configuration.get()))
 
     // Math Parser
-    jarJar(implementation(libs.mxparser.get()))
-    additionalRuntimeClasspath(libs.mxparser.get())
+    jarJar(implementation(libs.evalEx.get()))
+    additionalRuntimeClasspath(libs.evalEx.get())
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })

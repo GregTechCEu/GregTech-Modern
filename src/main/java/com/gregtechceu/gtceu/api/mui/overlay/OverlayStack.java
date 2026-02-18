@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -124,15 +123,6 @@ public class OverlayStack {
     public static void onOpenScreen(Screen newScreen) {
         closeAll();
         if (newScreen != null) {
-            // backwards compat
-            for (OverlayHandler handler : OverlayManager.overlays) {
-                if (handler.isValidFor(newScreen)) {
-                    ModularScreen overlay = Objects.requireNonNull(handler.createOverlay(newScreen),
-                            "Overlays must not be null!");
-                    overlay.constructOverlay(newScreen);
-                    OverlayStack.open(overlay);
-                }
-            }
 
             OpenScreenEvent event = new OpenScreenEvent(newScreen);
             MinecraftForge.EVENT_BUS.post(event);

@@ -168,8 +168,8 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
 
     @Override
     public boolean hasSyncHandler(SyncHandler syncHandler) {
-        return syncHandler.isValid() && syncHandler.getSyncManager() == this &&
-                this.reverseSyncHandlers.containsKey(syncHandler);
+        if (this.reverseSyncHandlers.containsKey(syncHandler)) return true;
+        return this != getHyperVisor() && getHyperVisor().hasSyncHandler(syncHandler);
     }
 
     private void putSyncValue(String name, int id, SyncHandler syncHandler) {
@@ -211,19 +211,6 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
         Objects.requireNonNull(syncHandler, "Sync Handler must not be null");
         putSyncValue(name, id, syncHandler);
         return this;
-    }
-
-    /**
-     * @deprecated replaced by {@link #syncedPanel(String, boolean, PanelSyncHandler.IPanelBuilder)}
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.3.0")
-    @Deprecated
-    public IPanelHandler panel(String key, PanelSyncHandler.IPanelBuilder panelBuilder, boolean subPanel) {
-        SyncHandler sh = this.subPanels.get(key);
-        if (sh != null) return (IPanelHandler) sh;
-        PanelSyncHandler syncHandler = new PanelSyncHandler(panelBuilder, subPanel);
-        this.subPanels.put(key, syncHandler);
-        return syncHandler;
     }
 
     /**
@@ -374,12 +361,6 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
 
     public Collection<SlotGroup> getSlotGroups() {
         return this.slotGroups.values();
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public @Nullable SyncHandler getSyncHandler(String mapKey) {
-        return getSyncHandlerFromMapKey(mapKey);
     }
 
     public @Nullable SyncHandler getSyncHandlerFromMapKey(String mapKey) {

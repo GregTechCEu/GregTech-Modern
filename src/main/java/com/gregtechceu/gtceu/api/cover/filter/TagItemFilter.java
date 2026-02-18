@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
@@ -26,21 +27,26 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     private static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
         var handler = new TagItemFilter();
         handler.itemWriter = itemWriter;
-        handler.oreDictFilterExpression = tag.getString("oreDict");
+        handler.filterString = tag.getString("oreDict");
         handler.matchExpr = null;
         handler.cache.clear();
-        handler.matchExpr = TagExprFilter.parseExpression(handler.oreDictFilterExpression);
+        handler.matchExpr = TagExprFilter.parseExpression(handler.filterString);
         return handler;
     }
 
-    public void setOreDict(String oreDict) {
+    public void setFilterString(String oreDict) {
         cache.clear();
-        super.setOreDict(oreDict);
+        super.setFilterString(oreDict);
+    }
+
+    @Override
+    protected ItemStack getFilterItem() {
+        return GTItems.TAG_FILTER.asStack();
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        if (oreDictFilterExpression.isEmpty()) return false;
+        if (filterString.isEmpty()) return false;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
         if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);

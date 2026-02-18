@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerScreenAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.ScreenAccessor;
-import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
-import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;

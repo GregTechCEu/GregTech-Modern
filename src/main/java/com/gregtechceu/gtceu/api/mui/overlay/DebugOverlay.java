@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.NamedDrawableRow;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
@@ -23,6 +24,8 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
 
 public class DebugOverlay extends CustomModularScreen {
 
@@ -47,8 +50,9 @@ public class DebugOverlay extends CustomModularScreen {
                         .background(
                                 new Rectangle()
                                         .color(Color.withAlpha(
-                                                Long.decode(ConfigHolder.INSTANCE.dev.mui.outlineColor).intValue(),
-                                                0.4f)))
+                                                Color.parseString(ConfigHolder.INSTANCE.dev.mui.outlineColor),
+                                                0.4f))
+                                        .cornerRadius(4))
                         .disableHoverBackground()
                         .overlay(IKey.str("Debug Options"))
                         .openUp()
@@ -83,18 +87,12 @@ public class DebugOverlay extends CustomModularScreen {
                                                 .child(new ListWidget<>()
                                                         .maxSize(100)
                                                         .widthRel(1f)
-                                                        .child(toggleOption(0, "Any",
-                                                                ConfigHolder.INSTANCE.dev.mui.showHovered))
-                                                        .child(toggleOption(1, "Pos",
-                                                                ConfigHolder.INSTANCE.dev.mui.showPos))
-                                                        .child(toggleOption(2, "Size",
-                                                                ConfigHolder.INSTANCE.dev.mui.showSize))
-                                                        .child(toggleOption(3, "Widget Theme",
-                                                                ConfigHolder.INSTANCE.dev.mui.showWidgetTheme))
-                                                        .child(toggleOption(4, "Extra info",
-                                                                ConfigHolder.INSTANCE.dev.mui.showExtra))
-                                                        .child(toggleOption(5, "Outline",
-                                                                ConfigHolder.INSTANCE.dev.mui.showOutline)))))
+                                                        .child(toggleOption(0, "Any", "showHovered"))
+                                                        .child(toggleOption(1, "Pos", "showPos"))
+                                                        .child(toggleOption(2, "Size", "showSize"))
+                                                        .child(toggleOption(3, "Widget Theme", "showWidgetTheme"))
+                                                        .child(toggleOption(4, "Extra info", "showExtra"))
+                                                        .child(toggleOption(5, "Outline", "showOutline")))))
                                 .child(new ContextMenuButton<>("menu_parent_hover_info")
                                         .name("menu_button_parent_hover_info")
                                         .height(10)
@@ -108,25 +106,43 @@ public class DebugOverlay extends CustomModularScreen {
                                                 .child(new ListWidget<>()
                                                         .maxSize(100)
                                                         .widthRel(1f)
-                                                        .child(toggleOption(10, "Any",
-                                                                ConfigHolder.INSTANCE.dev.mui.showParent))
-                                                        .child(toggleOption(11, "Pos",
-                                                                ConfigHolder.INSTANCE.dev.mui.showParentPos))
-                                                        .child(toggleOption(12, "Size",
-                                                                ConfigHolder.INSTANCE.dev.mui.showParentSize))
+                                                        .child(toggleOption(10, "Any", "showParent"))
+                                                        .child(toggleOption(11, "Pos", "showParentPos"))
+                                                        .child(toggleOption(12, "Size", "showParentSize"))
                                                         .child(toggleOption(13, "Widget Theme",
-                                                                ConfigHolder.INSTANCE.dev.mui.showParentWidgetTheme))
-                                                        .child(toggleOption(14, "Outline",
-                                                                ConfigHolder.INSTANCE.dev.mui.showParentOutline)))))));
+                                                                "showParentWidgetTheme"))
+                                                        .child(toggleOption(14, "Outline", "showParentOutline")))))));
     }
 
-    public static IWidget toggleOption(int i, String name, boolean boolValue) {
+    public static IWidget toggleOption(int i, String name, String field) {
+        ConfigHolder.DeveloperConfigs.MuiConfigs c = ConfigHolder.INSTANCE.dev.mui;
+        Field f;
+        try {
+            f = c.getClass().getField(field);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+
+        IBoolValue<?> val = new BoolValue.Dynamic(() -> {
+            try {
+                return (boolean) f.get(c);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }, v -> {
+            try {
+                f.set(c, v);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         return new ToggleButton()
                 .name("hover_info_toggle" + i)
                 .invisible()
                 .widthRel(1f)
                 .height(12)
-                .value(new BoolValue(boolValue))
+                .value(val)
                 .overlay(true, new NamedDrawableRow()
                         .name(IKey.str(name))
                         .drawable(CHECKMARK))

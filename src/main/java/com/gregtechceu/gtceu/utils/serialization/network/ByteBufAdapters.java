@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.utils.serialization.network;
 
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
@@ -7,6 +9,7 @@ import com.gregtechceu.gtceu.utils.NetworkUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -31,7 +34,16 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf());
-    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, (a, b) -> Objects.equals(a.toString(), b.toString()));
+
+    public static final IByteBufAdapter<Integer> INT = makeAdapter(FriendlyByteBuf::readInt, FriendlyByteBuf::writeInt, null);
+    public static final IByteBufAdapter<Long> LONG = makeAdapter(FriendlyByteBuf::readLong, FriendlyByteBuf::writeLong, null);
+    public static final IByteBufAdapter<Float> FLOAT = makeAdapter(FriendlyByteBuf::readFloat, FriendlyByteBuf::writeFloat, null);
+    public static final IByteBufAdapter<Double> DOUBLE = makeAdapter(FriendlyByteBuf::readDouble, FriendlyByteBuf::writeDouble, null);
+    public static final IByteBufAdapter<Boolean> BOOL = makeAdapter(FriendlyByteBuf::readBoolean, FriendlyByteBuf::writeBoolean, null);
+    public static final IByteBufAdapter<Byte> BYTE = makeAdapter(FriendlyByteBuf::readByte, (buffer, b) -> buffer.writeByte(b), null);
+    public static final IByteBufAdapter<Short> SHORT = makeAdapter(FriendlyByteBuf::readShort, (buffer, b) -> buffer.writeShort(b), null);
+    public static final IByteBufAdapter<Character> CHAR = makeAdapter(FriendlyByteBuf::readChar, (buffer, b) -> buffer.writeChar(b), null);
+    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, Objects::equals);
     // spotless:on
 
     public static final IByteBufAdapter<byte[]> BYTE_ARR = new IByteBufAdapter<>() {
@@ -87,7 +99,7 @@ public class ByteBufAdapters {
 
         @Override
         public void serialize(FriendlyByteBuf buffer, BigInteger u) {
-            buffer.writeBytes(u.toByteArray());
+            buffer.writeByteArray(u.toByteArray());
         }
 
         @Override
@@ -112,6 +124,34 @@ public class ByteBufAdapters {
         @Override
         public boolean areEqual(@NotNull BigDecimal t1, @NotNull BigDecimal t2) {
             return t1.equals(t2);
+        }
+    };
+
+    public static final IByteBufAdapter<GTRecipe> GTRECIPE = new IByteBufAdapter<>() {
+
+        @Override
+        public GTRecipe deserialize(FriendlyByteBuf buffer) {
+            if (!buffer.readBoolean()) {
+                return null;
+            }
+            ResourceLocation id = buffer.readResourceLocation();
+            return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buffer);
+        }
+
+        @Override
+        public void serialize(FriendlyByteBuf buffer, GTRecipe u) {
+            if (u == null) {
+                buffer.writeBoolean(false);
+                return;
+            }
+            buffer.writeBoolean(true);
+            buffer.writeResourceLocation(u.getId());
+            GTRecipeSerializer.SERIALIZER.toNetwork(buffer, u);
+        }
+
+        @Override
+        public boolean areEqual(@NotNull GTRecipe t1, @NotNull GTRecipe t2) {
+            return EqualityTest.wrapNullSafe(GTRecipe::equals).areEqual(t1, t2);
         }
     };
 

@@ -1,19 +1,25 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.client.mui.screen.ContainerScreenWrapper;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 
-import com.tterrag.registrate.util.entry.MenuEntry;
-
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 public class GTMenuTypes {
 
-    @SuppressWarnings("deprecation")
-    public static final MenuEntry<ModularContainerMenu> MODULAR_CONTAINER = REGISTRATE
-            .<ModularContainerMenu, ContainerScreenWrapper>menu("modular",
-                    ModularContainerMenu::new, () -> ContainerScreenWrapper::new)
-            .register();
+    private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU,
+            GTCEu.MOD_ID);
 
-    public static void init() {}
+    public static final RegistryObject<MenuType<ModularContainerMenu>> MODULAR_CONTAINER = MENU_TYPES.register(
+            "modular",
+            () -> IForgeMenuType.create(ModularContainerMenu::new));
+
+    public static void init(IEventBus modBus) {
+        MENU_TYPES.register(modBus);
+    }
 }

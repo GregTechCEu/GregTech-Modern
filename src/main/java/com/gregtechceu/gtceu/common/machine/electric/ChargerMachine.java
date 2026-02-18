@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine, IMachineLife {
+public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine {
 
     public static final long AMPS_PER_ITEM = 4L;
 
@@ -117,8 +117,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(chargerInventory);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     //////////////////////////////////////
@@ -128,6 +129,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
+
+        DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getEnergyPercentage));
+
         return new ModularPanel(getDefinition().getName())
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
@@ -140,7 +145,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
-                                .progress(this::getEnergyPercentage)
+                                .value(energyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
                                 .verticalCenter()
@@ -162,7 +167,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                         .bottom(16)
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager)))
@@ -239,7 +244,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    machine.doExplosion(GTUtil.getExplosionPower(voltage));
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 

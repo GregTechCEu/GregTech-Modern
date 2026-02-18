@@ -25,6 +25,7 @@ public class ConfigHolder {
         }
     }
 
+    @Configurable.ValueUpdateCallback(method = "myMethod")
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();
     @Configurable
@@ -583,10 +584,6 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
-
-        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
@@ -823,12 +820,18 @@ public class ConfigHolder {
             public boolean renderGrowingPlants = true;
 
             @Configurable
+            @Configurable.Comment({ "Whether or not to color material/ore block highlights in the material color",
+                    "Default: true" })
+            public boolean coloredMaterialBlockOutline = true;
+
+            @Configurable
             @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
                     "Default: true" })
             public boolean coloredTieredMachineOutline = true;
 
             @Configurable
-            @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier",
+            @Configurable.Comment({
+                    "Whether or not to color wire/cable highlights based on voltage tier or material color",
                     "Default: true" })
             public boolean coloredWireOutline = true;
         }
@@ -913,6 +916,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+        @Configurable
+        @Configurable.Comment({ "Executes ./gradlew :processResources when F3+T is pressed",
+                "Only works in a development environment", "Default: false" })
+        public boolean autoRebuildResources = false;
 
         @Configurable
         public DeveloperConfigs.MuiConfigs mui = new DeveloperConfigs.MuiConfigs();

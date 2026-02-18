@@ -156,6 +156,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     public void onChildChangeEnabled(IWidget child, boolean enabled) {
         if (this.collapseDisabledChild) {
             ILayoutWidget.super.onChildChangeEnabled(child, enabled);
+            checkScrollbarActive(true);
         }
     }
 

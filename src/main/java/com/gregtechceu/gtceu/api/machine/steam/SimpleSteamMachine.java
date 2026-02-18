@@ -86,9 +86,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
-        clearInventory(exportItems.storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        importItems.dropInventoryInWorld();
+        exportItems.dropInventoryInWorld();
     }
 
     //////////////////////////////////////
