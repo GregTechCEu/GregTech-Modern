@@ -74,6 +74,7 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine {
         super(info, tier);
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
         this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
@@ -85,11 +86,6 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine {
     public void onLoad() {
         super.onLoad();
         subscribeServerTick(this::update);
-    }
-
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
     }
 
     //////////////////////////////////////

@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -35,7 +35,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
-    protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
+    protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
 
     private @Nullable RecipeHandlerList handlerList;
 
@@ -58,12 +58,11 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     // Not sure if necessary, but added to match the Controller class
-    @SuppressWarnings("unused")
     @ClientFieldChangeListener(fieldName = "controllerPositions")
     public void onControllersUpdated() {
         controllers.clear();
         for (BlockPos blockPos : controllerPositions) {
-            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
+            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
                 controllers.add(controller);
             }
         }
@@ -71,7 +70,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @Override
     @UnmodifiableView
-    public SortedSet<IMultiController> getControllers() {
+    public SortedSet<MultiblockControllerMachine> getControllers() {
         // Necessary to rebuild the set of controllers on client-side
         if (controllers.size() != controllerPositions.size()) {
             onControllersUpdated();
@@ -108,8 +107,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         super.onUnload();
         if (getLevel() instanceof ServerLevel serverLevel) {
             // Need to copy if > 1 so that we can call removedFromController safely without CME
-            Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
-            for (IMultiController controller : toIter) {
+            Set<MultiblockControllerMachine> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) :
+                    controllers;
+            for (MultiblockControllerMachine controller : toIter) {
                 if (serverLevel.isLoaded(controller.self().getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
@@ -126,7 +126,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         controllerPositions.remove(controller.self().getBlockPos());
         controllers.remove(controller);
 
@@ -141,7 +141,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         controllerPositions.add(controller.self().getBlockPos());
         controllers.add(controller);
 

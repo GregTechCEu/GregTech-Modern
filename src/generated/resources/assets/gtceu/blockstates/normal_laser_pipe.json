@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/normal_laser_pipe"
+    },
+    "active=true": {
+      "model": "gtceu:block/normal_laser_pipe_active"
+    }
+  }
+}

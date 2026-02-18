@@ -222,7 +222,10 @@ public class RecipeHelper {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
-        if (result.isSuccess() || result.capability() == null) return result;
+        if (result.isSuccess() || result.capability() == null) {
+            recipe.groupColor = runner.getGroupColor();
+            return result;
+        }
 
         if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",

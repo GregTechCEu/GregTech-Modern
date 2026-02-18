@@ -94,6 +94,11 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         syncDataHolder.markClientSyncFieldDirty("isMuffled");
     }
 
+    @Override
+    public WorkableMultiblockMachine self() {
+        return this;
+    }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////

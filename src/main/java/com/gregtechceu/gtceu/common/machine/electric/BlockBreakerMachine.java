@@ -81,8 +81,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
-
         this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 
     public static float getEfficiencyMultiplier(int tier) {
@@ -262,11 +262,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     protected void chargeBattery() {
         if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
             updateBatterySubscription();
-    }
-
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
     }
 
     public void setWorkingEnabled(boolean workingEnabled) {

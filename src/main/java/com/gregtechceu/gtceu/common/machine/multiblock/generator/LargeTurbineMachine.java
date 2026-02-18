@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -46,9 +46,9 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     @Nullable
-    private IRotorHolderMachine getRotorHolder() {
+    private RotorHolderPartMachine getRotorHolder() {
         for (IMultiPart part : getParts()) {
-            if (part instanceof IRotorHolderMachine rotorHolder) {
+            if (part instanceof RotorHolderPartMachine rotorHolder) {
                 return rotorHolder;
             }
         }

@@ -61,6 +61,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         super(info);
     }
 
+    @Override
+    public WorkableElectricMultiblockMachine self() {
+        return this;
+    }
+
     //////////////////////////////////////
     // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
@@ -127,6 +132,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic)
+                .addRecipeFailReasonLine(recipeLogic)
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);

@@ -28,6 +28,7 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
+        RecipeLogicLang.init(provider);
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
@@ -1234,6 +1235,9 @@ public class LangHandler {
         provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
+        provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
+        provider.add("gtceu.debug.resource_rebuild.start",
+                "Invoking gradle resource rebuild (./gradlew :processResources)");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
@@ -1264,12 +1268,7 @@ public class LangHandler {
         provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
         provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
-        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
-        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
-        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1669,6 +1668,27 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.module",
+                "Renders the module in the specified slot onto the central monitor (does not work in a cover)",
+                "Usage:",
+                "  {module <slot> <x> <y>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.setImage",
+                "Sets the image URL in an image module in the specified slot",
+                "Usage:",
+                "  {setImage <slot> <url>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.rect",
+                "Draws a rectangle at the specified position with the specified coordinates and size",
+                "Usage:",
+                "  {rect <x> <y> <width> <height> <colorARGB>} -> empty string",
+                "  {rect 0.5 0.25 2 1 0xFFFFFFFF} -> draws a white rectangle at (0.5, 0.25) with the size (2, 1)");
+        multiLang(provider, "gtceu.placeholder_info.quad",
+                "Draws a quad (must specify parameters for all 4 vertices)",
+                "Usage:",
+                "  {quad <x1> <y1> <x2> <y2> <x3> <y3> <x4> <y4> <color1> <color2> <color3> <color4>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.item",
+                "Returns the amount and id of the item in a specified slot",
+                "Usage:",
+                "  {item <slot>} -> \"31 minecraft:diamond\" (for example)");
         multiLang(provider, "gtceu.placeholder_info.bufferText",
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",
