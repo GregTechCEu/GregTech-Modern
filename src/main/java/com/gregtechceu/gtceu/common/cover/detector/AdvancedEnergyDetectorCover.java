@@ -105,7 +105,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     public void setMinValue(long value) {
-        this.minValue = GTMath.clamp(minValue, 0, maxValue - 1);
+        this.minValue = GTMath.clamp(value, 0, maxValue - 1);
         if (this.minValue < 0) this.minValue = 0;
     }
 
@@ -164,11 +164,11 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
 
         if (usePercent && !wasPercent) {
             minValue = GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100);
-            setMaxValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
+            maxValue = GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100);
         } else {
             if (wasPercent) {
                 minValue = GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity);
-                setMaxValue(GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                maxValue = GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity);
             }
         }
     }

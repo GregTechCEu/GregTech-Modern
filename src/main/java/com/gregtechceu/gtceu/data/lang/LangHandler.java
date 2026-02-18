@@ -473,6 +473,7 @@ public class LangHandler {
                 "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
         multilineLang(provider, "cover.machine_controller.invert.disabled",
                 "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
+        provider.add("cover.machine_controller.control", "Controller Target");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
         provider.add("cover.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");

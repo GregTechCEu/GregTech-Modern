@@ -2092,6 +2092,7 @@
   "cover.item_smart_filter.filtering_mode.electrolyzer": "Electrolyzer",
   "cover.item_smart_filter.filtering_mode.sifter": "Sifter",
   "cover.item_smart_filter.title": "Smart Item Filter",
+  "cover.machine_controller.control": "Controller Target",
   "cover.machine_controller.invert.disabled.0": "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run",
   "cover.machine_controller.invert.enabled.0": "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run",
   "cover.machine_controller.inverted": "Inverted",
