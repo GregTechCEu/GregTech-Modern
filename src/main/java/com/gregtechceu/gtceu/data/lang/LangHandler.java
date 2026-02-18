@@ -492,8 +492,8 @@ public class LangHandler {
 
         provider.add("cover.ender_link.public.tooltip", "Public mode: Accessible to all players");
         provider.add("cover.ender_link.protected.tooltip", "Protected Mode: Accessible to players on the same team.");
-        provider.add("cover.ender_link.private.tooltip", "Private mode: Only accessible to the player who placed this cover");
-
+        provider.add("cover.ender_link.private.tooltip",
+                "Private mode: Only accessible to the player who placed this cover");
 
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_item_link.title", "Ender Item Link");

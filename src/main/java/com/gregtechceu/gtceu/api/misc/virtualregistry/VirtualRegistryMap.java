@@ -1,16 +1,15 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
 
@@ -90,8 +89,8 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
                     addEntry(entry.getColorStr(), type.createInstance(entryTag));
                 }
             } else {
-                ListTag listTag = (ListTag)virtualEntries;
-                for (int i = 0; i< Objects.requireNonNull(listTag).size(); i++) {
+                ListTag listTag = (ListTag) virtualEntries;
+                for (int i = 0; i < Objects.requireNonNull(listTag).size(); i++) {
                     var entry = type.createInstance(listTag.getCompound(i));
                     if (entry.canRemove()) continue;
                     addEntry(entry.getColorStr(), entry);

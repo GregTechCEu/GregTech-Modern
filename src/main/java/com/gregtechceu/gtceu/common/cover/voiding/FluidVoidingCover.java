@@ -31,7 +31,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Set;
 
@@ -87,9 +86,10 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-        var row = coverUIRow().child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        var row = coverUIRow()
+                .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));
         GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager, settings);
 
         column.child(row);

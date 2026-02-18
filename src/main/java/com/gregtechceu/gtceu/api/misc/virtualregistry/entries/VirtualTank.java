@@ -8,7 +8,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class VirtualTank extends VirtualEntry {
 

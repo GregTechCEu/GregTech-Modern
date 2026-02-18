@@ -34,7 +34,6 @@ import net.minecraftforge.items.IItemHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -177,7 +176,8 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
@@ -194,7 +194,6 @@ public class RobotArmCover extends ConveyorCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-
     }
 
     @Override

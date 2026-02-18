@@ -29,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -75,12 +74,13 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void createCoverUIRows(Flow parent, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow parent, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         parent.child(SlotGroupWidget.builder()
-                        .matrix("IIIIII", "IIIIII", "IIIIII")
-                        .key('I', i -> new ItemSlot()
-                                .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
-                        .build())
+                .matrix("IIIIII", "IIIIII", "IIIIII")
+                .key('I', i -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
+                .build())
                 .rightRel(0.5F)
                 .margin(3)
                 .coverChildren();

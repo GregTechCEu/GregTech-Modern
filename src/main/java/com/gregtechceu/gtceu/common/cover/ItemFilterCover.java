@@ -37,7 +37,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -98,7 +97,8 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
                 this::getFilterMode, this::setFilterMode);
 

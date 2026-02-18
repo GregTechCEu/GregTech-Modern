@@ -31,7 +31,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.UnknownNullability;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -118,7 +117,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     // *********** GUI ***********//
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
@@ -142,7 +142,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
                 GTMuiWidgets
                         .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
                         .setEnabledIf($ -> shouldShowStackSize()));
-
     }
 
     private int getCurrentBucketModeTransferSize() {

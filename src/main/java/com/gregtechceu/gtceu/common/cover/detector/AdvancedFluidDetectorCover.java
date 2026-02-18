@@ -15,11 +15,10 @@ import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -122,8 +121,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
     //////////////////////////////////////
     ///
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
         var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
 
@@ -145,9 +144,10 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
         GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
 
         column.child(coverUIRow().child(IKey.lang("cover.advanced_fluid_detector.min").asWidget().width(50))
-                        .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
+                .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
                 .child(coverUIRow().child(IKey.lang("cover.advanced_fluid_detector.max").asWidget().width(50))
-                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE).width(110)))
+                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE)
+                                .width(110)))
                 .child(buttonRow);
     }
 

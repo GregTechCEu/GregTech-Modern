@@ -50,7 +50,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.Map;
@@ -423,7 +422,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
                 this::getManualIOMode, this::setManualIOMode);
 
@@ -444,7 +444,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
         if (createFilterRow()) {
             column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
+                    .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
         }
 
         if (createConveyorIORow()) {}

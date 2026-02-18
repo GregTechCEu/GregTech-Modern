@@ -68,7 +68,6 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
         return new ParentWidget<>().size(w, h);
     }
 
-
     @Override
     public void onRemoved() {
         if (storage != null) storage.removeMember(this);

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry.entries;
 
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-
 import com.gregtechceu.gtceu.common.cover.ender.EnderRedstoneLinkCover;
 
 import it.unimi.dsi.fastutil.objects.Object2ShortMap;

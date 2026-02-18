@@ -39,8 +39,8 @@ import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import com.gregtechceu.gtceu.utils.GTMath;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -364,7 +364,6 @@ public class GTMuiWidgets {
     }
 
     public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
-
         // Done so the cycle button doesn't create states for every IO enum entry
 
         IntSyncValue syncVal = new IntSyncValue(syncValue::getIntValue, syncValue::setIntValue);
@@ -385,7 +384,8 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(ParentWidget<?> existingRow, FilterHandler<T, S> filterHandler,
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(ParentWidget<?> existingRow,
+                                                                              FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
@@ -408,9 +408,9 @@ public class GTMuiWidgets {
                             });
                 });
         return existingRow.child(new ItemSlot()
-                        .slot(new ModularSlot(filterSlot, 0)
-                                .changeListener((stack, amount, client, init) -> filterButton.notifyUpdate(packet -> packet.writeItem(stack))))
-                        )
+                .slot(new ModularSlot(filterSlot, 0)
+                        .changeListener((stack, amount, client, init) -> filterButton
+                                .notifyUpdate(packet -> packet.writeItem(stack)))))
                 .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
     }
 
@@ -418,7 +418,8 @@ public class GTMuiWidgets {
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
-        return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager, settings);
+        return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager,
+                settings);
     }
 
     private static int getIncrementValue(MouseData data, int step) {
@@ -506,7 +507,8 @@ public class GTMuiWidgets {
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
     }
 
-    public static ParentWidget<?> createLongInputWithButtons(LongSyncValue syncValue, LongSupplier minValue, LongSupplier maxValue) {
+    public static ParentWidget<?> createLongInputWithButtons(LongSyncValue syncValue, LongSupplier minValue,
+                                                             LongSupplier maxValue) {
         return createLongInputWithButtons(syncValue, minValue, maxValue, 1, GTGuiTextures.DISPLAY);
     }
 
@@ -522,7 +524,8 @@ public class GTMuiWidgets {
                         .width(18)
                         .onMousePressed((x, y, button) -> {
                             long value = syncValue.getLongValue() - getIncrementValue(MouseData.create(button), step);
-                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()), true, true);
+                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()),
+                                    true, true);
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
@@ -535,8 +538,9 @@ public class GTMuiWidgets {
                             long inc = (long) delta * getIncrementValue(MouseData.create(-1), 1);
                             long min = minValue.getAsLong();
                             long max = maxValue.getAsLong();
-                            long value = syncValue.getLongValue()+inc;
-                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()), true, true);
+                            long value = syncValue.getLongValue() + inc;
+                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()),
+                                    true, true);
                             return true;
                         })
                         .value(formattedValue)

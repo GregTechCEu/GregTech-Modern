@@ -30,7 +30,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.UnknownNullability;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -190,7 +189,8 @@ public class FluidRegulatorCover extends PumpCover {
     // ***** GUI ******//
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
@@ -212,7 +212,6 @@ public class FluidRegulatorCover extends PumpCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> MAX_STACK_SIZE)
                 .setEnabledIf($ -> shouldShowTransferSize()));
-
     }
 
     private boolean shouldShowTransferSize() {

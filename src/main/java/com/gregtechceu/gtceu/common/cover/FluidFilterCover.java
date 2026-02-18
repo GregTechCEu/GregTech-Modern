@@ -34,7 +34,6 @@ import net.minecraftforge.fluids.FluidStack;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -88,7 +87,8 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
                 this::getFilterMode, this::setFilterMode);
 
@@ -121,7 +121,6 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                 .lang(IKey.dynamic(() -> Component.translatable(getAllowFlow().getTooltip())))
                 .build());
-
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

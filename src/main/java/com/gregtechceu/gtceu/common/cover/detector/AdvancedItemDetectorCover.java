@@ -117,8 +117,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
         var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
 
@@ -132,17 +132,18 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
                         .tooltip(false, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled"))
                         .tooltip(true, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled")))
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
-                                .overlay(false, GTGuiTextures.BUTTON_LOCK)
-                                .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                                .tooltip(false, t -> t.addMultiLine("cover.advanced_detector.latch.disabled"))
-                                .tooltip(true, t -> t.addMultiLine("cover.advanced_detector.latch.enabled")));
+                        .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                        .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                        .tooltip(false, t -> t.addMultiLine("cover.advanced_detector.latch.disabled"))
+                        .tooltip(true, t -> t.addMultiLine("cover.advanced_detector.latch.enabled")));
 
         GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
 
         column.child(coverUIRow().child(IKey.lang("cover.advanced_item_detector.min").asWidget().width(50))
                 .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
                 .child(coverUIRow().child(IKey.lang("cover.advanced_item_detector.max").asWidget().width(50))
-                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE).width(110)))
+                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE)
+                                .width(110)))
                 .child(buttonRow);
     }
 

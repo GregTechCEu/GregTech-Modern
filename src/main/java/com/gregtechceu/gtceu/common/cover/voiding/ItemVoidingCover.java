@@ -29,7 +29,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Set;
 
@@ -87,8 +86,11 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        column.child(GTMuiWidgets.createFilterRow(coverUIRow().child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)),
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        column.child(GTMuiWidgets.createFilterRow(
+                coverUIRow().child(
+                        GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)),
                 filterHandler, data, syncManager,
                 settings));
     }

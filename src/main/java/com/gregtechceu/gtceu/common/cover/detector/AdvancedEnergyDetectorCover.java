@@ -163,11 +163,11 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         long energyCapacity = getEnergyCapacity();
 
         if (usePercent && !wasPercent) {
-            setMinValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
+            minValue = GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100);
             setMaxValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
         } else {
             if (wasPercent) {
-                setMinValue(GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValue = GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity);
                 setMaxValue(GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }

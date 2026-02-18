@@ -33,7 +33,6 @@ import net.minecraftforge.items.IItemHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Map;
 
@@ -126,7 +125,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
