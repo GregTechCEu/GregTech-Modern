@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -105,6 +106,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         String[] matrix;
         if (inventorySize == 8) matrix = new String[] { "BBBB", "BBBB" };
         else matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
+
+        DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getEnergyPercentage));
+
         return new ModularPanel("battery_buffer")
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
@@ -117,7 +122,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
-                                .progress(this::getEnergyPercentage)
+                                .value(energyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
                                 .verticalCenter()

@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -352,6 +353,9 @@ public class FisherMachine extends TieredEnergyMachine
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
 
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
+
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .coverChildrenHeight()
@@ -367,7 +371,7 @@ public class FisherMachine extends TieredEnergyMachine
                         .child(new ProgressWidget()
                                 .alignY(Alignment.Center)
                                 .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
-                                .progress(() -> progress / (double) maxProgress))
+                                .value(progressPercent))
                         .child(new Column()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)

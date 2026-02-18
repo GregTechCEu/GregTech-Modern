@@ -128,10 +128,17 @@ public class GTMuiWidgets {
                 syncManager);
     }
 
-    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, UITexture texture, int size) {
+    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
+                                                   UITexture texture, int size) {
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (workableMachine.getMaxProgress() == 0.0f) return 0.0f;
+                    return workableMachine.getProgress() / (double) workableMachine.getMaxProgress();
+                }));
+
         return new ProgressWidget()
                 .texture(texture, size)
-                .progress(() -> workableMachine.getProgress() / (double) workableMachine.getMaxProgress());
+                .value(progressPercent);
     }
 
     public static FluidSlot createTankWidget() {

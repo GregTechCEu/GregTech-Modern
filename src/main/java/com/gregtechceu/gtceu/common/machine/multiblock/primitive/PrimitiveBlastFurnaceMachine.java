@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -155,11 +156,20 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
+
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (recipeLogic == null) return -1f;
+                    return recipeLogic.getProgressPercent();
+                }));
+
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
                 .child(createImportItemSlot(syncManager, theme).margin(52, 16))
-                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
+                .child(new ProgressWidget()
+                        .value(progressPercent)
+                        .size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(77, 35))
                 .child(createExportItemSlot(syncManager, theme).margin(104, 0, 34, 0))
 

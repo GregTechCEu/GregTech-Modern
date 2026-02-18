@@ -182,6 +182,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                 .size(176, 220)       // set a static size for the main panel
                 .align(Alignment.Center);    // center the panel in the screen
 
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class, () ->
+                new DoubleSyncValue(() -> (this.progress / (double) this.duration)));
+
         var babyFop = new Fox(EntityType.FOX, data.getLevel());
         babyFop.setAge(-1);
         panel.child(new Row()
@@ -323,10 +326,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 // .widthRel(0.5f)
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> (this.progress / (double) this.duration))
+                                                                        .value(progressPercent)
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 20))
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> (this.progress / (double) this.duration))
+                                                                        .value(progressPercent)
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_MIXER, 20)
                                                                         .direction(
                                                                                 ProgressWidget.Direction.CIRCULAR_CW))

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -85,6 +86,12 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
 
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (recipeLogic == null) return -1f;
+                    return recipeLogic.getProgressPercent();
+                }));
+
         return super.buildUI(data, syncManager, settings)
                 .child(new Row()
                         .coverChildren()
@@ -94,8 +101,9 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
                         .child(new ProgressWidget()
                                 .size(18)
                                 .texture(progressTexture, 18)
-                                .progress(recipeLogic::getProgressPercent)
-                                .direction(ProgressWidget.Direction.UP))
+                                .value(progressPercent)
+                                .direction(ProgressWidget.Direction.UP)
+                                .setEnabledIf((w) -> progressPercent.getFloatValue() > -1f))
                         .child(new FluidSlot()
                                 .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])
                                         .canFillSlot(true).canDrainSlot(true))

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -127,6 +128,12 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
 
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (recipeLogic == null) return -1f;
+                    return recipeLogic.getProgressPercent();
+                }));
+
         return super.buildUI(data, syncManager, settings)
                 .child(new Column()
                         .coverChildren()
@@ -138,7 +145,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                         .child(new ProgressWidget()
                                 .size(18)
                                 .texture(progressTexture, 18)
-                                .progress(recipeLogic::getProgressPercent)
+                                .value(progressPercent)
                                 .direction(ProgressWidget.Direction.UP))
                         .child(new ItemSlot()
                                 .slot(new ModularSlot(this.ashHandler, 0))));

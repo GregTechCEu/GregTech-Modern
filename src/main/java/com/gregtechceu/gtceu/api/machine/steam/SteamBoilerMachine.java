@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -327,6 +328,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_BRONZE;
 
+        DoubleSyncValue tempPercentage = syncManager.getOrCreateSyncHandler("tempPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getTemperaturePercent));
+
         panel.child(new Row()
                 .top(12)
                 .left(50)
@@ -347,7 +351,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .texture(progressTexture,
                                 GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 54)
                         .size(14, 54)
-                        .progress(this::getTemperaturePercent)
+                        .value(tempPercentage)
                         .direction(ProgressWidget.Direction.UP)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(IKey

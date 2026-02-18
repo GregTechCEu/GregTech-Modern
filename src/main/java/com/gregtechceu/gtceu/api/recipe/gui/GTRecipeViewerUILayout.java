@@ -110,7 +110,7 @@ public class GTRecipeViewerUILayout {
 
             parentWidget.child(new ProgressWidget()
                     .center()
-                    .progress(() -> 0.5f)
+                    // .progress(() -> 0.5f)
                     .name("progressBar")
                     .texture(layout.getProgressBar(), layout.getProgressSize())
                     .size(layout.getProgressSize())

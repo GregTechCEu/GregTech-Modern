@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -128,6 +129,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
+
+        DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getEnergyPercentage));
+
         return new ModularPanel(getDefinition().getName())
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
@@ -140,7 +145,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
-                                .progress(this::getEnergyPercentage)
+                                .value(energyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
                                 .verticalCenter()
