@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.utils.NetworkUtils;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,6 +38,7 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<Byte> BYTE = makeAdapter(FriendlyByteBuf::readByte, (buffer, b) -> buffer.writeByte(b), null);
     public static final IByteBufAdapter<Short> SHORT = makeAdapter(FriendlyByteBuf::readShort, (buffer, b) -> buffer.writeShort(b), null);
     public static final IByteBufAdapter<Character> CHAR = makeAdapter(FriendlyByteBuf::readChar, (buffer, b) -> buffer.writeChar(b), null);
+    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, Objects::equals);
     // spotless:on
 
     public static final IByteBufAdapter<byte[]> BYTE_ARR = new IByteBufAdapter<>() {

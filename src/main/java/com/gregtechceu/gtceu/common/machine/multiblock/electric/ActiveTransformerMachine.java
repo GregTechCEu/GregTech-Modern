@@ -12,11 +12,33 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.Icon;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -158,54 +180,136 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
     }
 
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // // super.addDisplayText(textList); idek what it does stop doing what you do for a minute pls
-    // // Assume That the Structure is ALWAYS formed, and has at least 1 In and 1 Out, there is never a case where this
-    // // does not occur.
-    // if (isFormed()) {
-    // if (!isWorkingEnabled()) {
-    // textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-    // } else if (isActive()) {
-    // textList.add(Component.translatable("gtceu.multiblock.running"));
-    // textList.add(Component
-    // .translatable("gtceu.multiblock.active_transformer.max_input",
-    // FormattingUtil.formatNumbers(
-    // Math.abs(powerInput.getInputVoltage() * powerInput.getInputAmperage()))));
-    // textList.add(Component
-    // .translatable("gtceu.multiblock.active_transformer.max_output",
-    // FormattingUtil.formatNumbers(
-    // Math.abs(powerOutput.getOutputVoltage() * powerOutput.getOutputAmperage()))));
-    // textList.add(Component
-    // .translatable("gtceu.multiblock.active_transformer.average_in",
-    // FormattingUtil.formatNumbers(Math.abs(powerInput.getInputPerSec() / 20))));
-    // textList.add(Component
-    // .translatable("gtceu.multiblock.active_transformer.average_out",
-    // FormattingUtil.formatNumbers(Math.abs(powerOutput.getOutputPerSec() / 20))));
-    // if (!ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-    // textList.add(Component
-    // .translatable("gtceu.multiblock.active_transformer.danger_enabled"));
-    // }
-    // } else {
-    // textList.add(Component.translatable("gtceu.multiblock.idling"));
-    // }
-    // }
-    // }
-    //
-    // @Override
-    // public @NotNull Widget createUIWidget() {
-    // var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-    // group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-    // .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-    // .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-    // .setMaxWidthLimit(150)
-    // .clickHandler(this::handleDisplayClick)));
-    // group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-    // return group;
-    // }
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 176, 176);
 
-    // @Override
-    // public @NotNull ModularUI createUI(@NotNull Player entityPlayer) {
-    // return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
-    // }
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(0.95f)
+                        .heightRel(.45f)
+                        .margin(4, 0)
+                        .left(3).top(5)
+                        .child(Flow.row()
+                                .child(getMainTextPanel(syncManager, 170, 84))))
+                .child(Flow.column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this, syncManager))
+                        .child(GTMuiWidgets.createVoidingButton(this, syncManager))
+                        .excludeAreaInXei())
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+        return panel;
+    }
+
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>();
+        listWidget
+                .width(width - 6)
+                .height(height - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .alignX(Alignment.CenterLeft)
+                .left(3)
+                .top(3);
+        parentWidget.size(width, height)
+                .background(GTGuiTextures.MUI_DISPLAY);
+        // Machine generic sync handlers
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+        BooleanSyncValue workingEnabled = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this.recipeLogic::isWorkingEnabled, this.recipeLogic::setWorkingEnabled));
+        BooleanSyncValue active = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this.recipeLogic::isActive));
+
+        // Machine specific sync handlers
+        // These will not be called anywhere else, so we can create them directly instead of using
+        // getOrCreateSyncHandler
+
+        LongSyncValue inputVoltage = new LongSyncValue(this.powerInput::getInputVoltage);
+        syncManager.syncValue("inputVoltage", inputVoltage);
+
+        LongSyncValue outputVoltage = new LongSyncValue(this.powerOutput::getOutputVoltage);
+        syncManager.syncValue("outputVoltage", outputVoltage);
+
+        LongSyncValue inputAmperage = new LongSyncValue(this.powerInput::getInputAmperage);
+        syncManager.syncValue("inputAmperage", inputAmperage);
+
+        LongSyncValue outputAmperage = new LongSyncValue(this.powerOutput::getOutputAmperage);
+        syncManager.syncValue("outputAmperage", outputAmperage);
+
+        LongSyncValue inputPerSec = new LongSyncValue(this.powerInput::getInputPerSec);
+        syncManager.syncValue("inputPerSec", inputPerSec);
+
+        LongSyncValue outputPerSec = new LongSyncValue(this.powerOutput::getOutputPerSec);
+        syncManager.syncValue("outputPerSec", outputPerSec);
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.work_paused"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.running"))
+                .asWidget()
+                .setEnabledIf(
+                        (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> Component
+                .translatable("gtceu.multiblock.active_transformer.max_input",
+                        FormattingUtil.formatNumbers(
+                                Math.abs(inputVoltage.getLongValue() * inputAmperage.getLongValue()))))
+                .asWidget()
+                .setEnabledIf(
+                        (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> Component
+                .translatable("gtceu.multiblock.active_transformer.max_output",
+                        FormattingUtil.formatNumbers(
+                                Math.abs(outputVoltage.getLongValue() * outputAmperage.getLongValue()))))
+                .asWidget()
+                .setEnabledIf(
+                        (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> Component
+                .translatable("gtceu.multiblock.active_transformer.average_in",
+                        FormattingUtil.formatNumbers(Math.abs(inputPerSec.getLongValue() / 20))))
+                .asWidget()
+                .setEnabledIf(
+                        (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> Component
+                .translatable("gtceu.multiblock.active_transformer.average_out",
+                        FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20))))
+                .asWidget()
+                .setEnabledIf(
+                        (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.active_transformer.danger_enabled"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
+                        active.getBoolValue() && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
+                        !active.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> {
+            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+        })
+                .asWidget()
+                .setEnabledIf((widget) -> !isFormed.getBoolValue()));
+
+        parentWidget.child(listWidget);
+        return parentWidget;
+    }
 }

@@ -18,13 +18,32 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.Icon;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
@@ -34,16 +53,21 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -66,6 +90,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
+import static com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters.COMPONENT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -451,58 +476,153 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return machine instanceof PrimitivePumpMachine;
     }
 
-    /*
-     * @Override
-     * public void addDisplayText(List<Component> textList) {
-     * if (isFormed()) {
-     * var maxVoltage = getMaxVoltage();
-     * if (maxVoltage > 0) {
-     * String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
-     * textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-     * }
-     * 
-     * if (cleanroomType != null) {
-     * textList.add(Component.translatable(cleanroomType.getTranslationKey()));
-     * }
-     * 
-     * if (!isWorkingEnabled()) {
-     * textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-     * 
-     * } else if (isActive()) {
-     * textList.add(Component.translatable("gtceu.multiblock.running"));
-     * int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-     * double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
-     * double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
-     * textList.add(
-     * Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-     * String.format("%.2f", (float) maxInSec), currentProgress));
-     * } else {
-     * textList.add(Component.translatable("gtceu.multiblock.idling"));
-     * }
-     * 
-     * if (recipeLogic.isWaiting()) {
-     * textList.add(Component.translatable("gtceu.multiblock.waiting")
-     * .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-     * }
-     * 
-     * if (cleanroomProviderTrait.isActive()) {
-     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
-     * } else {
-     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
-     * }
-     * textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
-     * textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
-     * textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
-     * fDist + bDist + 1));
-     * } else {
-     * Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-     * .withStyle(ChatFormatting.GRAY);
-     * textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-     * .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-     * .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
-     * }
-     * }
-     */
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 176, 176);
+
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(0.95f)
+                        .heightRel(.45f)
+                        .margin(4, 0)
+                        .left(3).top(5)
+                        .child(Flow.row()
+                                .child(getMainTextPanel(syncManager, 170, 84))))
+                .child(Flow.column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this, syncManager))
+                        .child(GTMuiWidgets.createVoidingButton(this, syncManager))
+                        .excludeAreaInXei())
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+        return panel;
+    }
+
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>();
+        listWidget
+                .width(width - 6)
+                .height(height - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .alignX(Alignment.CenterLeft)
+                .left(3)
+                .top(3);
+        parentWidget.size(width, height)
+                .background(GTGuiTextures.MUI_DISPLAY);
+        // Machine generic sync handlers
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+        BooleanSyncValue workingEnabled = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this.recipeLogic::isWorkingEnabled, this.recipeLogic::setWorkingEnabled));
+        BooleanSyncValue active = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this.recipeLogic::isActive));
+        BooleanSyncValue waiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this.recipeLogic::isWaiting));
+
+        // Energy bank specific sync handlers
+        // These will not be called anywhere else, so we can create them directly instead of using
+        // getOrCreateSyncHandler
+
+        LongSyncValue maxVoltage = new LongSyncValue(this::getMaxVoltage);
+        syncManager.syncValue("maxVoltage", maxVoltage);
+
+        StringSyncValue cleanroomTranslationKey = new StringSyncValue(() -> {
+            if (this.cleanroomType == null) return "";
+            return this.cleanroomType.getTranslationKey();
+        });
+        syncManager.syncValue("cleanroomTranslationKey", cleanroomTranslationKey);
+
+        BooleanSyncValue cleanroomTypeIsNull = new BooleanSyncValue(() -> this.cleanroomType == null);
+        syncManager.syncValue("cleanroomTypeIsNull", cleanroomTypeIsNull);
+
+        BooleanSyncValue cleanroomProviderTraitIsActive = new BooleanSyncValue(
+                () -> this.cleanroomProviderTrait != null && this.cleanroomProviderTrait.isActive());
+        syncManager.syncValue("cleanroomProviderTrait", cleanroomProviderTraitIsActive);
+
+        IntSyncValue cleanAmount = new IntSyncValue(() -> this.cleanAmount);
+        syncManager.syncValue("cleanAmount", cleanAmount);
+
+        GenericSyncValue<Component> distComponent = new GenericSyncValue.Builder<>(Component.class)
+                .adapter(COMPONENT)
+                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
+                        fDist + bDist + 1))
+                .build();
+        syncManager.syncValue("distComponent", distComponent);
+
+        listWidget.child(IKey.dynamic(() -> {
+            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+        })
+                .asWidget()
+                .setEnabledIf((widget) -> !isFormed.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> {
+            String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
+            return Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage.getLongValue(),
+                    voltageName);
+        })
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && maxVoltage.getLongValue() > 0));
+
+        listWidget.child(IKey.dynamic(() -> {
+            if (cleanroomTypeIsNull.getBoolValue()) {
+                return Component.empty();
+            } else {
+                return Component.translatable(cleanroomTranslationKey.getStringValue());
+            }
+        })
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomTypeIsNull.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
+
+        listWidget.child(GTMultiblockTextUtil.addProgressLine(this, syncManager));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
+                        !active.getBoolValue()));
+
+        listWidget.child(IKey
+                .lang(Component.translatable("gtceu.multiblock.waiting")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && waiting.getBoolValue()));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.cleanroom.clean_state"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && cleanroomProviderTraitIsActive.getBoolValue()));
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomProviderTraitIsActive.getBoolValue()));
+
+        listWidget.child(IKey.dynamic(
+                () -> Component.translatable("gtceu.multiblock.cleanroom.clean_amount", cleanAmount.getIntValue()))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue()));
+
+        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.dimensions.0"))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue()));
+        listWidget.child(IKey.dynamic(() -> distComponent.getValue())
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue()));
+
+        parentWidget.child(listWidget);
+        return parentWidget;
+    }
 
     /**
      * Adjust the cleanroom's clean amount
