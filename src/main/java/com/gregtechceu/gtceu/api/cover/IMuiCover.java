@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import org.jetbrains.annotations.UnknownNullability;
 
 public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
@@ -54,7 +55,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     /**
      * The default cover UI panel builds a single column with rows added by each cover.
      */
-    default void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {}
+    default void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {}
 
     /* Helper methods for UI creation with covers that are commonly used */
 
@@ -67,6 +68,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     default Flow coverUIRow() {
         return Flow.row()
                 .coverChildrenHeight()
+                .widthRel(1f)
                 .childPadding(2);
     }
 

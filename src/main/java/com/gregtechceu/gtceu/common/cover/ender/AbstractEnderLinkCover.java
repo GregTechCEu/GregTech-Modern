@@ -45,6 +45,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -220,7 +221,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
         var channelManager = syncManager.syncedPanel("channelManager", true,
                 (sm, sh) -> createChannelManagerPanel(data, sm, settings));
@@ -243,7 +244,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         column.child(coverUIRow()
                 .child(createColorBlock(colorSyncer::getIntValue, 18).asWidget().size(18))
                 .child(new CycleButtonWidget()
-                        .stateCount(2)
+                        .stateCount(3)
                         .stateOverlay(Permissions.PUBLIC, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
                         .stateOverlay(Permissions.PROTECTED, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
                         .stateOverlay(Permissions.PRIVATE, GTGuiTextures.PRIVATE_MODE_BUTTON[1])

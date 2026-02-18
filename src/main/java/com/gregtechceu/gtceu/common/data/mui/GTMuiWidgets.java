@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -363,10 +364,16 @@ public class GTMuiWidgets {
     }
 
     public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
+
+        // Done so the cycle button doesn't create states for every IO enum entry
+
+        IntSyncValue syncVal = new IntSyncValue(syncValue::getIntValue, syncValue::setIntValue);
+
         var cycleButton = new CycleButtonWidget()
                 .stateCount(allowExtendedIO ? 4 : 2)
                 .stateOverlay(IO.IN, IO.IN.getUiTexture())
                 .stateOverlay(IO.OUT, IO.OUT.getUiTexture())
+                .value(syncVal)
                 .tooltipBuilder(
                         r -> r.addLine(IKey.dynamic(() -> Component.translatable(syncValue.getValue().getTooltip()))));
 
@@ -414,12 +421,16 @@ public class GTMuiWidgets {
         return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager, settings);
     }
 
-    private static int getIncrementValue(MouseData data) {
-        return getIncrementValue(data, 1);
-    }
-
     private static int getIncrementValue(MouseData data, int step) {
         int adjust = step;
+        if (data.shift()) adjust *= 4;
+        if (data.ctrl()) adjust *= 16;
+        if (data.alt()) adjust *= 64;
+        return adjust;
+    }
+
+    private static long getIncrementValue(MouseData data, long step) {
+        long adjust = step;
         if (data.shift()) adjust *= 4;
         if (data.ctrl()) adjust *= 16;
         if (data.alt()) adjust *= 64;
@@ -430,7 +441,7 @@ public class GTMuiWidgets {
         return createAdjustOverlay(increment, 1);
     }
 
-    private static IKey createAdjustOverlay(boolean increment, int step) {
+    private static IKey createAdjustOverlay(boolean increment, long step) {
         final StringBuilder builder = new StringBuilder();
         builder.append(increment ? '+' : '-');
         builder.append(getIncrementValue(MouseData.create(-1), step));
@@ -454,16 +465,6 @@ public class GTMuiWidgets {
     }
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
-                                                            IntSupplier maxValue, int step) {
-        return createIntInputWithButtons(syncValue, minValue, maxValue, step, GTGuiTextures.DISPLAY);
-    }
-
-    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
-                                                            IntSupplier maxValue, IDrawable background) {
-        return createIntInputWithButtons(syncValue, minValue, maxValue, 1, background);
-    }
-
-    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
                                                             IntSupplier maxValue, int step, IDrawable background) {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
@@ -472,7 +473,7 @@ public class GTMuiWidgets {
                 .coverChildrenHeight()
                 .widthRel(1.0f)
                 .child(new ButtonWidget<>()
-                        .left(0).width(18)
+                        .width(18)
                         .onMousePressed((x, y, button) -> {
                             int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button), step);
                             val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
@@ -486,7 +487,7 @@ public class GTMuiWidgets {
                         .setTextColor(Color.WHITE.darker(1))
                         .setNumbers(minValue, maxValue)
                         .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta * getIncrementValue(MouseData.create(-1));
+                            int inc = (int) delta * getIncrementValue(MouseData.create(-1), 1);
                             int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
                                     maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
@@ -495,11 +496,58 @@ public class GTMuiWidgets {
                         .value(formattedValue)
                         .background(background))
                 .child(new ButtonWidget<>()
-                        .right(0).width(18)
+                        .width(18).right(0)
                         .onMousePressed((x, y, button) -> {
                             int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button), step);
                             val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
+    }
+
+    public static ParentWidget<?> createLongInputWithButtons(LongSyncValue syncValue, LongSupplier minValue, LongSupplier maxValue) {
+        return createLongInputWithButtons(syncValue, minValue, maxValue, 1, GTGuiTextures.DISPLAY);
+    }
+
+    public static ParentWidget<?> createLongInputWithButtons(LongSyncValue syncValue, LongSupplier minValue,
+                                                             LongSupplier maxValue, long step, IDrawable background) {
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
+                syncValue::setStringValue);
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .width(18)
+                        .onMousePressed((x, y, button) -> {
+                            long value = syncValue.getLongValue() - getIncrementValue(MouseData.create(button), step);
+                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()), true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
+                .child(new TextFieldWidget()
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbersLong(minValue, maxValue)
+                        .onMouseScrolled((mouseX, mouseY, delta) -> {
+                            long inc = (long) delta * getIncrementValue(MouseData.create(-1), 1);
+                            long min = minValue.getAsLong();
+                            long max = maxValue.getAsLong();
+                            long value = syncValue.getLongValue()+inc;
+                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()), true, true);
+                            return true;
+                        })
+                        .value(formattedValue)
+                        .background(background))
+                .child(new ButtonWidget<>()
+                        .width(18).right(0)
+                        .onMousePressed((x, y, button) -> {
+                            long value = syncValue.getLongValue() + getIncrementValue(MouseData.create(button), step);
+                            long min = minValue.getAsLong();
+                            long max = maxValue.getAsLong();
+                            syncValue.setLongValue(value < min ? min : Math.min(value, max), true, true);
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
@@ -519,7 +567,7 @@ public class GTMuiWidgets {
                 .child(new ButtonWidget<>()
                         .width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button)) *
+                            int val = intSyncValue.getIntValue() - (getIncrementValue(MouseData.create(button), 1) *
                                     bucketModeSyncValue.getValue().multiplier);
                             val = Mth.clamp(val, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
@@ -532,7 +580,7 @@ public class GTMuiWidgets {
                         .setTextColor(Color.WHITE.darker(1))
                         .setNumbers(0, maxMB.getAsInt())
                         .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1)) *
+                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1), 1) *
                                     bucketModeSyncValue.getValue().multiplier);
                             int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
@@ -544,7 +592,7 @@ public class GTMuiWidgets {
                         .right(18)
                         .width(18)
                         .onMousePressed((x, y, button) -> {
-                            int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button)) *
+                            int val = intSyncValue.getIntValue() + (getIncrementValue(MouseData.create(button), 1) *
                                     bucketModeSyncValue.getValue().multiplier);
                             val = Mth.clamp(val, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);

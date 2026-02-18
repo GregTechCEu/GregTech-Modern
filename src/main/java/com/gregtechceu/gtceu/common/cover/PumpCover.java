@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -46,6 +45,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -269,17 +269,17 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
         IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate);
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
                 this::setBucketMode);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
         EnumSyncValue<ManualIOMode> manualIOModeSync = new EnumSyncValue<>(ManualIOMode.class, this::getManualIOMode,
                 this::setManualIOMode);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
 
-        syncManager.syncValue("transferRate", transferRateSync);
         syncManager.syncValue("io", ioSync);
+        syncManager.syncValue("transferRate", transferRateSync);
         syncManager.syncValue("manualIO", manualIOModeSync);
 
         column.child(GTMuiWidgets.createIntInputWithBucketMode(transferRateSync, bucketModeSync,

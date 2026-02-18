@@ -3,26 +3,22 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -118,43 +114,34 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    /*
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
-
-        group.addWidget(new TextBoxWidget(10, 55, 65,
-                List.of(LocalizationUtils.format("cover.advanced_item_detector.min"))));
-
-        group.addWidget(new TextBoxWidget(10, 80, 65,
-                List.of(LocalizationUtils.format("cover.advanced_item_detector.max"))));
-
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
-
-        // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_item_detector.invert"));
-
-        group.addWidget(new ToggleButtonWidget(31, 21, 18, 18,
-                GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
-                .setShouldUseBaseBackground()
-                .isMultiLang()
-                .setTooltipText("cover.advanced_detector.latch"));
-
-        // Item Filter UI:
-        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
-
-        return group;
-    }*/
-
     @Override
-    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        IMuiCover.super.createCoverUIRows(column, data, syncManager, settings);
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+
+        var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
+        var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
+
+        syncManager.syncValue("minValue", minValueSync);
+        syncManager.syncValue("maxValue", maxValueSync);
+
+        var buttonRow = coverUIRow()
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                        .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
+                        .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
+                        .tooltip(false, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled"))
+                        .tooltip(true, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled")))
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
+                                .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                                .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                                .tooltip(false, t -> t.addMultiLine("cover.advanced_detector.latch.disabled"))
+                                .tooltip(true, t -> t.addMultiLine("cover.advanced_detector.latch.enabled")));
+
+        GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
+
+        column.child(coverUIRow().child(IKey.lang("cover.advanced_item_detector.min").asWidget().width(50))
+                .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
+                .child(coverUIRow().child(IKey.lang("cover.advanced_item_detector.max").asWidget().width(50))
+                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE).width(110)))
+                .child(buttonRow);
     }
 
     @Override

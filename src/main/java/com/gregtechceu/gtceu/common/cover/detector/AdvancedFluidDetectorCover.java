@@ -6,14 +6,20 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -112,42 +118,35 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
-    /*
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
-
-        group.addWidget(new TextBoxWidget(10, 55, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.min"))));
-
-        group.addWidget(new TextBoxWidget(10, 80, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.max"))));
-
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
-
-        // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_fluid_detector.invert"));
-
-        group.addWidget(
-                new ToggleButtonWidget(31, 21, 18, 18, GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
-                        .setShouldUseBaseBackground()
-                        .isMultiLang()
-                        .setTooltipText("cover.advanced_detector.latch"));
-
-        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
-
-        return group;
-    }*/
-
+    ///
     @Override
-    public void createCoverUIRows(ParentWidget<?> column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
+        var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
+        var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
+
+        syncManager.syncValue("minValue", minValueSync);
+        syncManager.syncValue("maxValue", maxValueSync);
+
+        var buttonRow = coverUIRow()
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                        .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
+                        .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
+                        .tooltip(false, t -> t.addMultiLine("cover.advanced_fluid_detector.invert.disabled"))
+                        .tooltip(true, t -> t.addMultiLine("cover.advanced_fluid_detector.invert.enabled")))
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
+                        .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                        .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                        .tooltip(false, t -> t.addMultiLine("cover.advanced_detector.latch.disabled"))
+                        .tooltip(true, t -> t.addMultiLine("cover.advanced_detector.latch.enabled")));
+
+        GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
+
+        column.child(coverUIRow().child(IKey.lang("cover.advanced_fluid_detector.min").asWidget().width(50))
+                        .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
+                .child(coverUIRow().child(IKey.lang("cover.advanced_fluid_detector.max").asWidget().width(50))
+                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE).width(110)))
+                .child(buttonRow);
     }
 
     @Override

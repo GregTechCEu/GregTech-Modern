@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -13,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
 
-    private final Map<EntryTypes<?>, Map<String, VirtualEntry>> registryMap = new ConcurrentHashMap<>();
+    private final Map<EntryTypes<?>, Map<String, VirtualEntry>> registryMap = new Object2ObjectOpenHashMap<>();
 
     public VirtualRegistryMap() {}
 
@@ -27,11 +28,11 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     }
 
     public void addEntry(String name, VirtualEntry entry) {
-        registryMap.computeIfAbsent(entry.getType(), k -> new ConcurrentHashMap<>()).put(name, entry);
+        registryMap.computeIfAbsent(entry.getType(), k -> new Object2ObjectOpenHashMap<>()).put(name, entry);
     }
 
     public <T extends VirtualEntry> Map<String, VirtualEntry> getEntries(EntryTypes<T> type) {
-        return registryMap.get(type);
+        return registryMap.getOrDefault(type, new Object2ObjectOpenHashMap<>());
     }
 
     public boolean contains(EntryTypes<?> type, String name) {
