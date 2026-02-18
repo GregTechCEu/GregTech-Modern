@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
@@ -207,7 +206,8 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                 .child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().top(7).margin(7, 0)
                         .childPadding(2)
-                        .widthRel(1.0f).coverChildrenHeight()
+                        .widthRel(1.0f)
+                        .coverChildrenHeight()
 
                         .child(coverUIRow()
                                 .child(new ToggleButton()
@@ -252,31 +252,25 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).alignX(0.5f)).margin(0, 2))
 
+                        .child(coverUIRow().child(IKey.lang("cover.machine_controller.control").asWidget()
+                                .height(16)))
+
                         // Controlling selector
-                        .child(coverUIRow().height(16 + 2 + 16)
-                                .child(Flow.column().heightRel(1.0f).coverChildrenWidth()
-                                        .child(IKey.lang("cover.machine_controller.control").asWidget()
-                                                .left(0).height(16))
-                                        .child(modeButton(controllerModeValue, ControllerMode.MACHINE).left(0)))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_UP, IKey.str("U"))
-                                        .right(100))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_DOWN, IKey.str("D"))
-                                        .right(80))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_NORTH, IKey.str("N"))
-                                        .right(60))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_SOUTH, IKey.str("S"))
-                                        .right(40))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_EAST, IKey.str("E"))
-                                        .right(20))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_WEST, IKey.str("W"))
-                                        .right(0))))
+                        .child(coverUIRow()
+                                .child(modeButton(controllerModeValue, ControllerMode.MACHINE).bottom(0))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_UP, IKey.str("U")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_DOWN, IKey.str("D")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_NORTH, IKey.str("N")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_SOUTH, IKey.str("S")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_EAST, IKey.str("E")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_WEST, IKey.str("W")))))
                 .bindPlayerInventory();
     }
 
     private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, IKey title) {
-        return Flow.column().coverChildrenHeight().width(18)
-                .child(title.asWidget().size(16).marginBottom(2).alignment(Alignment.Center))
-                .child(modeButton(syncValue, mode));
+        return Flow.column().width(18).height(28)
+                .child(title.asWidget().height(10).alignX(0.5f))
+                .child(modeButton(syncValue, mode).bottom(0));
     }
 
     private Widget<?> modeButton(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode) {
