@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
@@ -155,12 +154,6 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
             }
             return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
-        if (this instanceof IUICover) {
-            if (playerIn instanceof ServerPlayer serverPlayer) {
-                CoverUIFactory.INSTANCE.openUI(this, serverPlayer);
-            }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
         return InteractionResult.PASS;
     }
 
@@ -194,7 +187,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return toolTypes.contains(GTToolType.CROWBAR) ||
-                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover);
+                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IMuiCover);
     }
 
     @Override
@@ -203,7 +196,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GuiTextures.TOOL_REMOVE_COVER;
         }
-        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover) {
+        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IMuiCover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;
