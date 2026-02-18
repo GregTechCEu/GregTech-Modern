@@ -273,13 +273,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .addWorkingStatusLine();
-        getDefinition().getAdditionalDisplay().accept(this, textList);
-    }
-
     public void setMonitorGroups(List<MonitorGroup> groups) {
         if (!(monitorGroups instanceof ArrayList<MonitorGroup>)) monitorGroups = new ArrayList<>(monitorGroups);
         monitorGroups.clear();

@@ -45,12 +45,12 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 stack.getOrCreateTag().getUUID("placeholderUUID"));
     }
 
-    private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    private void updateText(ItemStack stack, PlaceholderContext context) {
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                getPlaceholderText(stack), getContext(stack, machine, group));
+                getPlaceholderText(stack), context);
         stack.getOrCreateTag().put("text",
                 text.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT)).toTag());
     }
@@ -58,7 +58,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         if (!isPaused(stack))
-            this.updateText(stack, machine, group);
+            this.updateText(stack, getContext(stack, machine, group));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack) {
         return new MonitorTextRenderer(
-                getText(stack).toImmutable(),
+                getText(stack),
                 Math.max(getScale(stack), .0001));
     }
 
@@ -84,12 +84,12 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 () -> getScale(stack),
                 s -> setScale(stack, s));
         IBoolValue<?> pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
-        Runnable updateText = () -> updateText(stack, machine, group);
+        Runnable updateText = () -> updateText(stack, getContext(stack, machine, group));
         assert ctx.itemStackHandler() != null;
         return new ModularPanel("placeholder_editor")
                 .size(400, 250)
                 .resizeableOnDrag(true)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, null, pause,
                         updateText));
     }

@@ -110,7 +110,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         return new Dialog<>("main")
                 .setDraggable(true)
                 .padding(5)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR, 176))
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(1)
@@ -221,7 +221,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(Flow.column()
                         .padding(10)
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
@@ -272,7 +272,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
 
     private ModularPanel createHelpPanel() {
         return new ModularPanel("help_panel")
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .width(500)
                 .height(300)
                 .resizeableOnDrag(true)
