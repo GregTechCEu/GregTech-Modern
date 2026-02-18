@@ -157,7 +157,10 @@ public class CommonProxy {
 
         GTCovers.init();
         GTCreativeModeTabs.init();
-        GTMenuTypes.init();
+
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        GTMenuTypes.init(modBus);
+
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
@@ -217,6 +220,8 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
+
+    public void preInit(FMLConstructModEvent event) {}
 
     private static void initMaterials() {
         // First, register other mods' Registries

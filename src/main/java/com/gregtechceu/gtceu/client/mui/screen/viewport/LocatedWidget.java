@@ -55,6 +55,11 @@ public class LocatedWidget extends LocatedElement<IWidget> {
         this.additionalHoverInfo = additionalHoverInfo;
     }
 
+    @Override
+    public String toString() {
+        return "LocatedWidget[" + getElement() + " | " + additionalHoverInfo + "]";
+    }
+
     public static class HashStrategy implements Hash.Strategy<LocatedWidget> {
 
         @Override

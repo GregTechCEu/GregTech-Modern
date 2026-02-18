@@ -56,34 +56,29 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     }
 
     @Override
-    public void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
-        if (isInside(stack, x, y)) {
-            widgets.add(this, stack.peek(), getAdditionalHoverInfo(stack, x, y));
-        }
-    }
-
-    @Override
     public void getWidgetsAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
-        if (getArea().isInside(x, y) && !getScrollArea().isInsideScrollbarArea(x, y) && hasChildren()) {
-            IViewport.getChildrenAt(this, stack, widgets, x, y);
+        // if 'widgets.peek() == this' is true, only then this widget is hovered
+        // we should require this since a stencil is applied to this widget
+        if (widgets.peek() == this && !getScrollArea().isInsideScrollbarArea(x, y)) {
+            IViewport.super.getWidgetsAt(stack, widgets, x, y);
         }
     }
 
     public void beforeResize(boolean onOpen) {
         super.beforeResize(onOpen);
         this.scroll.applyWidgetTheme(getPanel().getTheme().getScrollbarTheme().getTheme(isHovering()));
-        if (onOpen) checkScrollbarActive(true);
+        checkScrollbarActive(false);
         getScrollArea().getScrollPadding().scrollPaddingAll(0);
         applyAdditionalOffset(this.scroll.getScrollX());
         applyAdditionalOffset(this.scroll.getScrollY());
     }
 
-    private void checkScrollbarActive(boolean onOpen) {
+    protected void checkScrollbarActive(boolean resizeOnChange) {
         boolean scrollYActive = this.scroll.getScrollY() != null &&
                 this.scroll.getScrollY().isScrollBarActive(getScrollArea());
         boolean scrollXActive = this.scroll.getScrollX() != null &&
-                this.scroll.getScrollX().isScrollBarActive(getScrollArea(), this.scrollYActive);
-        if (!onOpen && (scrollYActive != this.scrollYActive || scrollXActive != this.scrollXActive)) {
+                this.scroll.getScrollX().isScrollBarActive(getScrollArea(), scrollYActive);
+        if (resizeOnChange && (scrollYActive != this.scrollYActive || scrollXActive != this.scrollXActive)) {
             scheduleResize();
         }
         this.scrollXActive = scrollXActive;
@@ -135,6 +130,12 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
         checkScrollbarActive(false);
         this.scroll.drag(getContext().getMouseX(), getContext().getMouseY());
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        checkScrollbarActive(true);
     }
 
     @Override

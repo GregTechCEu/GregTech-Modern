@@ -142,7 +142,12 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         this.textForDefaultSize = null;
     }
 
+    @Deprecated
     public W alignment(Alignment alignment) {
+        return textAlign(alignment);
+    }
+
+    public W textAlign(Alignment alignment) {
         this.alignment = alignment;
         return getThis();
     }

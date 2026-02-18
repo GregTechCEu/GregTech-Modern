@@ -376,7 +376,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                                 syncManager))
                         .child(createBatterySlot(syncManager))
                         .child(GTMuiWidgets.createAutoOutputItemButton(autoOutput, syncManager))
-                        .excludeAreaInXei());
+                        .excludeAreaInRecipeViewer());
         return panel;
     }
 

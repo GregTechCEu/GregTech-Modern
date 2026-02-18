@@ -17,14 +17,16 @@ public class Menu<W extends Menu<W>> extends ParentWidget<W> implements IMenuPar
     @Override
     public void onMouseLeaveArea() {
         super.onMouseLeaveArea();
-        checkClose();
+        checkClose(true, true);
     }
 
-    protected void checkClose() {
-        if (this.menuSource != null && !this.menuSource.isBelowMouse() && !isSelfOrChildHovered()) {
-            this.menuSource.closeMenu(true);
-            this.menuSource.checkClose();
+    public void checkClose(boolean soft, boolean requireNoHover) {
+        if (this.menuSource == null) return;
+        if (soft || requireNoHover) {
+            if (this.menuSource.isBelowMouse() || isSelfOrChildHovered()) return;
         }
+        this.menuSource.closeMenu(soft);
+        this.menuSource.checkClose(soft, requireNoHover);
     }
 
     @Override
@@ -41,5 +43,9 @@ public class Menu<W extends Menu<W>> extends ParentWidget<W> implements IMenuPar
     @Override
     protected WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getWidgetTheme(IThemeApi.PANEL);
+    }
+
+    public AbstractMenuButton<?> getMenuSource() {
+        return menuSource;
     }
 }

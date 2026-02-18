@@ -263,8 +263,8 @@ public class GTMuiWidgets {
                 syncManager)
                 .relative(parentPanel)
                 .leftRelOffset(0.0f, -180);
-        IPanelHandler circuitPanelHandler = syncManager.panel("circuit_panel",
-                (sm, sh) -> circuitPanel, true);
+        IPanelHandler circuitPanelHandler = syncManager.syncedPanel("circuit_panel", true,
+                (sm, sh) -> circuitPanel);
 
         return new ButtonWidget<>()
                 .size(18)

@@ -372,7 +372,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(outputItemGrid.length == 0),
-                                        GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                        () -> GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                                                 "output_item_inv", cache.getSize(), 'i',
                                                 syncManager, outputItemGrid)
                                                 .alignX(Alignment.CenterRight))

@@ -24,7 +24,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     private boolean enableTranslation = true;
     private boolean enableScaling = true;
     private float scale = 10f;
-    private float pitch = GTMath.QUART_PI;
+    private float pitch = GTMath.PI_QUART;
     private float yaw = 0;
     private final Vector3f offset = new Vector3f();
 

@@ -17,8 +17,8 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
-import com.gregtechceu.gtceu.integration.emi.handler.EmiStackConverter;
-import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.emi.EmiStackConverter;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSlot;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -78,7 +78,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     @Override
     public void onInit() {
         super.onInit();
-        getContext().getXeiSettings().addGhostIngredientSlot(this);
+        getContext().getRecipeViewerSettings().addGhostIngredientSlot(this);
         editingSlotIndex = -1;
         pendingAmount = "0";
         amountEditorPanel = new SecondaryPanel(getPanel(), this::buildAmountEditor, true);

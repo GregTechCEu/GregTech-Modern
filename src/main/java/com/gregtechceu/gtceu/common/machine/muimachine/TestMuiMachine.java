@@ -209,7 +209,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .top(0)
                         .leftRelOffset(1f, 1)
                         .background(GTGuiTextures.BACKGROUND)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .stencilTransform((r, expanded) -> {
                             r.width = Math.max(20, r.width - 5);
                             r.height = Math.max(20, r.height - 5);

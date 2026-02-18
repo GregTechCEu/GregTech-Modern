@@ -223,12 +223,6 @@ public class ModularSyncManager implements ISyncRegistrar<ModularSyncManager> {
         return this.mainPSM.getSlotGroup(name);
     }
 
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public static String makeSyncKey(String name, int id) {
-        return ISyncRegistrar.makeSyncKey(name, id);
-    }
-
     public boolean isOpen() {
         return this.state == State.OPEN;
     }

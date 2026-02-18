@@ -237,7 +237,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                         .padding(0, 4, 4, 4)
                         .childPadding(2)
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .child(GTMuiWidgets.createPowerButton(this, syncManager)))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
         return panel;

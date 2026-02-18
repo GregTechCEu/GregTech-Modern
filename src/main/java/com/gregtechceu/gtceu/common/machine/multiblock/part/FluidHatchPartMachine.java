@@ -323,7 +323,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                         .padding(8, 0, 4, 4)
                         .childPadding(2)
                         .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
                         .childIf(this.isCircuitSlotEnabled(),

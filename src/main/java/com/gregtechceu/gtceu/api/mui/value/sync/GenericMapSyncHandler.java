@@ -46,22 +46,27 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
         this.valueSerializer = valueSerializer;
         this.equals = equals != null ? EqualityTest.wrapNullSafe(equals) : Objects::equals;
         this.keyCopy = keyCopy != null ? keyCopy : ICopy.ofSerializer(keySerializer, keyDeserializer);
-        this.valueCopy = valueCopy != null ? valueCopy : ICopy.ofSerializer(valueSerializer, valueDeserializer);;
+        this.valueCopy = valueCopy != null ? valueCopy : ICopy.ofSerializer(valueSerializer, valueDeserializer);
+        setCache(this.getter.get());
     }
 
     @Override
     public void setValue(Map<K, V> value, boolean setSource, boolean sync) {
+        setCache(value);
+        onSetCache(setSource, sync);
+    }
+
+    protected void setCache(Map<K, V> value) {
         this.cache.clear();
         for (Map.Entry<K, V> entry : value.entrySet()) {
             this.cache.put(this.keyCopy.createDeepCopy(entry.getKey()),
                     this.valueCopy.createDeepCopy(entry.getValue()));
         }
-        onSetCache(value, setSource, sync);
     }
 
-    protected void onSetCache(Map<K, V> value, boolean setSource, boolean sync) {
+    protected void onSetCache(boolean setSource, boolean sync) {
         if (setSource && this.setter != null) {
-            this.setter.accept(value);
+            this.setter.accept(getValue());
         }
         onValueChanged();
         if (sync) sync();
@@ -108,7 +113,7 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
         for (int i = 0; i < size; i++) {
             this.cache.put(this.keyDeserializer.deserialize(buffer), this.valueDeserializer.deserialize(buffer));
         }
-        onSetCache(getValue(), true, false);
+        onSetCache(true, false);
     }
 
     @Override
@@ -119,6 +124,30 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
     @Override
     public Class<Map<K, V>> getValueType() {
         return (Class<Map<K, V>>) (Object) Map.class;
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method forces a sync after the modification.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(Consumer<Map<K, V>> consumer) {
+        modifyValue(true, true, consumer);
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method can automatically sync the cache after the modification. Be careful with potential issues when the
+     * sync arg is false.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(boolean setSource, boolean sync, Consumer<Map<K, V>> consumer) {
+        consumer.accept(this.cache);
+        onSetCache(setSource, sync);
     }
 
     public static class Builder<K, V> {

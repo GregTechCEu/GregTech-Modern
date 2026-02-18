@@ -69,7 +69,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
 
                 .child(createTankWidget()
-                        .overlayTexture(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
+                        .overlay(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
                         .background(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
                         .syncHandler(new FluidSlotSyncHandler(
                                 exportFluids.getStorages()[0])

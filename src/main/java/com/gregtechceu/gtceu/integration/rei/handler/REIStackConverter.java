@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.integration.rei.handler;
 
-import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
-import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
-import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
-import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
-import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
-import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.EntryList;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidStackList;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidTagList;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemTagList;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.world.item.ItemStack;

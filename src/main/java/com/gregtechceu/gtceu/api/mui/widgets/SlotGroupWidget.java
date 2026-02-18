@@ -82,24 +82,6 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
     }
 
     @Override
-    public void afterInit() {
-        super.afterInit();
-        if (this.slotGroup != null) {
-            for (IWidget widget : getChildren()) {
-                if (widget instanceof ItemSlot itemSlot) {
-                    itemSlot.getSlot().slotGroup(this.slotGroup);
-                }
-            }
-        } else if (this.slotGroupName != null) {
-            for (IWidget widget : getChildren()) {
-                if (widget instanceof ItemSlot itemSlot) {
-                    itemSlot.getSlot().slotGroup(this.slotGroupName);
-                }
-            }
-        }
-    }
-
-    @Override
     protected void onChildAdd(IWidget child) {
         super.onChildAdd(child);
         if (child instanceof SortButtons sortButtons) {
@@ -113,6 +95,12 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
             }
             if (this.sortButtonsEditor != null) {
                 this.sortButtonsEditor.accept(sortButtons);
+            }
+        } else if (child instanceof ItemSlot slot && slot.isSynced() && slot.getSlot() != null) {
+            if (this.slotGroup != null) {
+                slot.getSlot().slotGroup(this.slotGroup);
+            } else if (this.slotGroupName != null) {
+                slot.getSlot().slotGroup(this.slotGroupName);
             }
         }
     }

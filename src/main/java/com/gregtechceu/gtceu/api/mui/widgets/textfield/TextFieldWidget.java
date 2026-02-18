@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.math.NumberFormat;
 import com.gregtechceu.gtceu.utils.math.ParseResult;
 
 import net.minecraft.util.Mth;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.function.*;
 import java.util.regex.Pattern;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
 @Accessors(chain = true)
 public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
 
+    @Getter
     private IStringValue<?> stringValue;
     private Function<String, String> validator = val -> val;
     private boolean numbers = false;
@@ -36,15 +39,27 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     private String mathFailMessage = null;
     private double defaultNumber = 0;
     private boolean tooltipOverride = false;
+    @Getter
+    private boolean autoUpdateOnChange = false;
+    @Getter
+    private boolean acceptsExpression = true;
 
     public double parse(String num) {
-        ParseResult result = GTMath.parseExpression(num, this.defaultNumber, true);
-        double value = result.getResult();
-        if (result.isFailure()) {
-            this.mathFailMessage = result.getError();
-            GTCEu.LOGGER.error("Math expression error in {}: {}", this, this.mathFailMessage);
+        if (!this.acceptsExpression) {
+            try {
+                return NumberFormat.AMOUNT_TEXT.format.parse(num).doubleValue();
+            } catch (ParseException ex) {
+                this.mathFailMessage = "Unable to parse number.";
+                return 0.0;
+            }
         }
-        return value;
+        ParseResult result = GTMath.parseExpression(num, this.defaultNumber, true);
+        if (result.isFailure()) {
+            this.mathFailMessage = result.getErrorMessage();
+            GTCEu.LOGGER.error("Math expression error in {}: {}", this, this.mathFailMessage);
+            return defaultNumber;
+        }
+        return result.getResult().getNumberValue().doubleValue();
     }
 
     public IStringValue<?> createMathFailMessageValue() {
@@ -136,8 +151,35 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     }
 
     @Override
+    protected void onTextChanged() {
+        super.onTextChanged();
+        if (this.autoUpdateOnChange) {
+            String text = this.validator.apply(getText());
+            this.stringValue
+                    .setStringValue(this.numbers ? format.parse(text, new ParsePosition(0)).toString() : getText());
+        }
+    }
+
+    @Override
     public boolean canHover() {
         return true;
+    }
+
+    public TextFieldWidget acceptsExpressions(boolean acceptsExpression) {
+        this.acceptsExpression = acceptsExpression;
+        return this;
+    }
+
+    /**
+     * Sets if the string value should be updated every time the text changes and not just when the widget is unfocused.
+     * This is useful for search text fields.
+     *
+     * @param autoUpdateOnChange if the string value should be updated when text changes
+     * @return this
+     */
+    public TextFieldWidget autoUpdateOnChange(boolean autoUpdateOnChange) {
+        this.autoUpdateOnChange = autoUpdateOnChange;
+        return this;
     }
 
     public TextFieldWidget setMaxLength(int maxLength) {

@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 /**
  * This class contains all the info from {@link GuiContext} and additional MUI specific info like the current
  * {@link ModularScreen},
- * current hovered widget, current dragged widget, current focused widget and XEI settings.
+ * current hovered widget, current dragged widget, current focused widget and recipe viewer settings.
  * An instance can only be obtained from {@link ModularScreen#getContext()}. One instance is created every time a
  * {@link ModularScreen}
  * is created.
@@ -73,7 +73,7 @@ public class ModularGuiContext extends GuiContext {
 
     public ModularGuiContext(ModularScreen screen) {
         this.screen = screen;
-        this.hoveredWidgets = new HoveredIterable(this.screen.getPanelManager());
+        this.hoveredWidgets = new HoveredIterable();
     }
 
     /**
@@ -81,39 +81,6 @@ public class ModularGuiContext extends GuiContext {
      */
     public boolean isHovered() {
         return !this.hovered.isEmpty();
-    }
-
-    /**
-     * @return true if the widget is directly below the mouse
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
-    @Deprecated
-    public boolean isHovered(IWidget guiElement) {
-        return guiElement.isHovering();
-    }
-
-    /**
-     * Checks if a widget is hovered for a certain amount of ticks
-     *
-     * @param guiElement widget
-     * @param ticks      time hovered
-     * @return true if the widget is hovered for at least a certain number of ticks
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
-    @Deprecated
-    public boolean isHoveredFor(IWidget guiElement, int ticks) {
-        // convert from frames per second to ticks per second
-        return guiElement.isHoveringFor(ticks);
-    }
-
-    /**
-     * @return the hovered widget (widget directly below the mouse)
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
-    @Deprecated
-    @Nullable
-    public IWidget getHovered() {
-        return getTopHovered();
     }
 
     public @Nullable IWidget getTopHovered() {
@@ -458,11 +425,11 @@ public class ModularGuiContext extends GuiContext {
         return this.settings;
     }
 
-    public XeiSettingsImpl getXeiSettings() {
+    public RecipeViewerSettingsImpl getRecipeViewerSettings() {
         if (this.screen.isOverlay()) {
             throw new IllegalStateException("Overlays don't have JEI settings!");
         }
-        return (XeiSettingsImpl) getUISettings().getXeiSettings();
+        return (RecipeViewerSettingsImpl) getUISettings().getRecipeViewerSettings();
     }
 
     @ApiStatus.Internal
@@ -476,40 +443,28 @@ public class ModularGuiContext extends GuiContext {
         }
     }
 
-    private static class HoveredIterable implements Iterable<IWidget> {
+    public boolean hasSettings() {
+        return this.settings != null;
+    }
 
-        private final PanelManager panelManager;
-
-        private HoveredIterable(PanelManager panelManager) {
-            this.panelManager = panelManager;
-        }
+    private class HoveredIterable implements Iterable<IWidget> {
 
         @NotNull
         @Override
         public Iterator<IWidget> iterator() {
-            return new Iterator<>() {
+            return new AbstractIterator<>() {
 
-                private final Iterator<ModularPanel> panelIt = HoveredIterable.this.panelManager.getOpenPanels()
-                        .iterator();
+                private final Iterator<ModularPanel> panelIt = ModularGuiContext.this.getScreen()
+                        .getPanelManager().getOpenPanels().iterator();
                 private Iterator<LocatedWidget> widgetIt;
 
                 @Override
-                public boolean hasNext() {
-                    if (this.widgetIt == null) {
-                        if (!this.panelIt.hasNext()) {
-                            return false;
-                        }
-                        this.widgetIt = this.panelIt.next().getHovering().iterator();
+                protected IWidget computeNext() {
+                    while (widgetIt == null || !widgetIt.hasNext()) {
+                        if (!panelIt.hasNext()) return endOfData();
+                        widgetIt = panelIt.next().getHovering().iterator();
                     }
-                    return this.widgetIt.hasNext();
-                }
-
-                @Override
-                public IWidget next() {
-                    if (this.widgetIt == null || !this.widgetIt.hasNext()) {
-                        this.widgetIt = this.panelIt.next().getHovering().iterator();
-                    }
-                    return this.widgetIt.next().getElement();
+                    return widgetIt.next().getElement();
                 }
             };
         }

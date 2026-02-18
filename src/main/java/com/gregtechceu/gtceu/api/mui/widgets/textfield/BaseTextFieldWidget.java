@@ -322,6 +322,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         return Result.STOP;
     }
 
+    protected void onTextChanged() {}
+
     public boolean canScrollHorizontally() {
         return getScrollArea().getScrollX() != null;
     }

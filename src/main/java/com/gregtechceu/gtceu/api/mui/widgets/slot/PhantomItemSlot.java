@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
-import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.RecipeViewerHandler;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -20,7 +20,7 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
     @Override
     public void onInit() {
         super.onInit();
-        getContext().getXeiSettings().addGhostIngredientSlot(this);
+        getContext().getRecipeViewerSettings().addGhostIngredientSlot(this);
     }
 
     @Override

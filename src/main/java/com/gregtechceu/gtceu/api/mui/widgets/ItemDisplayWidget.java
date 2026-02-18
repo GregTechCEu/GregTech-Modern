@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.ObjectValue;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
-import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
-import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.EntryList;
+import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 
 import net.minecraft.world.item.ItemStack;
 
