@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
 import lombok.Getter;
+import net.minecraft.util.Mth;
 
 import java.math.BigInteger;
 
@@ -104,11 +105,14 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     public void setMinValue(long value) {
-        minValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        this.minValue = GTMath.clamp(minValue, 0, maxValue - 1);
+        if (this.minValue < 0) this.minValue = 0;
     }
 
     public void setMaxValue(long value) {
-        maxValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        if (usePercent) maxValue = GTMath.clamp(value, 0, 100);
+        else maxValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        setMinValue(this.getMinValue());
     }
 
     public void setUsePercent(boolean usePercent) {
@@ -132,9 +136,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         syncManager.syncValue("maxValue", maxValueSync);
 
         column.child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.min").asWidget().width(20))
-                        .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getEnergyCapacity).width(142)))
+                        .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
                 .child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.max").asWidget().width(20))
-                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0, this::getEnergyCapacity).width(142)))
+                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0, () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
@@ -159,12 +163,12 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         long energyCapacity = getEnergyCapacity();
 
         if (usePercent && !wasPercent) {
-            minValue = GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100);
-            maxValue = GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100);
+            setMinValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
+            setMaxValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
         } else {
             if (wasPercent) {
-                minValue = GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity);
-                maxValue = GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity);
+                setMinValue(GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity));
+                setMaxValue(GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }
     }

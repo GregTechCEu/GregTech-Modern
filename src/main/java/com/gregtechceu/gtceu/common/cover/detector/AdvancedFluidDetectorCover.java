@@ -109,10 +109,12 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
 
     public void setMinValue(int minValue) {
         this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
+        if (this.minValue < 0) this.minValue = 0;
     }
 
     public void setMaxValue(int maxValue) {
         this.maxValue = Math.max(maxValue, 0);
+        setMinValue(this.getMinValue());
     }
 
     //////////////////////////////////////
