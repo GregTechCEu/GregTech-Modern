@@ -321,7 +321,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .addLine(IKey.lang(stack.getHoverName())));
     }
 
-
     @Override
     public CompoundTag copyConfig(CompoundTag tag) {
         tag.putBoolean("inverted", isInverted);

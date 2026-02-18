@@ -25,7 +25,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
 import lombok.Getter;
-import net.minecraft.util.Mth;
 
 import java.math.BigInteger;
 
@@ -127,7 +126,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
-    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
         var minValueSync = new LongSyncValue(this::getMinValue, this::setMinValue);
         var maxValueSync = new LongSyncValue(this::getMaxValue, this::setMaxValue);
@@ -136,9 +136,10 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         syncManager.syncValue("maxValue", maxValueSync);
 
         column.child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.min").asWidget().width(20))
-                        .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
+                .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
                 .child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.max").asWidget().width(20))
-                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0, () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
+                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
+                                () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
@@ -147,14 +148,13 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .tooltip(true, t -> t.addMultiLine("cover.advanced_energy_detector.invert.enabled")))
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
                                 .selectedBackground(ThemeAPI.INSTANCE.getTheme(settings.getTheme())
-                                    .getToggleButtonTheme().getTheme().getBackground())
+                                        .getToggleButtonTheme().getTheme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
                                 .tooltip(false,
-                                t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.disabled"))
+                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.disabled"))
                                 .tooltip(true,
-                                t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled")))
-                );
+                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled"))));
     }
 
     private void updateEUValues(boolean wasPercent) {
