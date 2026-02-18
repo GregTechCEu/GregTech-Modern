@@ -153,6 +153,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
         super.onRemoveFocus(context);
         validateText();
     }
+
     protected void onTextChanged() {
         super.onTextChanged();
         if (this.autoUpdateOnChange) {

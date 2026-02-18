@@ -61,7 +61,7 @@ public class CustomItemStackHandler extends ItemStackHandler
         for (int slot = 0; slot < getSlots(); slot++) list.add(getStackInSlot(slot));
         return list;
     }
-    
+
     public void dropInventoryInWorld(Level world, BlockPos pos) {
         for (ItemStack stack : stacks) {
             Block.popResource(world, pos, stack);
