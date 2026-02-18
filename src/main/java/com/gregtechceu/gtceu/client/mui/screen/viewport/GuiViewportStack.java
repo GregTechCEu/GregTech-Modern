@@ -12,7 +12,6 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * This class is a matrix stack aka pose stack. It keeps track of widget transformations (including position)
@@ -23,6 +22,7 @@ public class GuiViewportStack implements IViewportStack {
 
     private static final Vector3f sharedVec = new Vector3f();
 
+    private final ObjectArrayList<TransformationMatrix> matrixPool = new ObjectArrayList<>();
     private final ObjectArrayList<TransformationMatrix> viewportStack = new ObjectArrayList<>();
     private final List<Area> viewportAreas = new ArrayList<>();
     private TransformationMatrix top;
@@ -54,15 +54,27 @@ public class GuiViewportStack implements IViewportStack {
             }
             this.topViewport.getArea().clamp(child);
         }
-        this.viewportStack.push(new TransformationMatrix(viewport, child, parent));
+        this.viewportStack.push(newMatrix().construct(viewport, child, parent));
         updateViewport(false);
         this.topViewport = this.viewportStack.top();
     }
 
     @Override
     public void pushMatrix() {
-        this.viewportStack.push(new TransformationMatrix(this.top == null ? null : this.top.getMatrix()));
+        this.viewportStack.push(newMatrix().construct(this.top == null ? null : this.top.getMatrix()));
         updateViewport(false);
+    }
+
+    private TransformationMatrix newMatrix() {
+        return !this.matrixPool.isEmpty() ? this.matrixPool.pop() : new TransformationMatrix();
+    }
+
+    private void pop() {
+        TransformationMatrix matrix = this.viewportStack.pop();
+        matrix.dispose();
+        if (this.matrixPool.size() < 256) {
+            this.matrixPool.add(matrix);
+        }
     }
 
     private Area getCurrentViewportArea() {
@@ -75,7 +87,12 @@ public class GuiViewportStack implements IViewportStack {
     @Override
     public void popViewport(IViewport viewport) {
         if (this.top == null || !this.top.isViewportMatrix() || this.top.getViewport() != viewport) {
-            String name = this.top == null ? "null" : this.top.getViewport().toString();
+            String name;
+            if (this.top == null) {
+                name = "none";
+            } else {
+                name = this.top.isViewportMatrix() ? asString(this.top.getViewport()) : "not a viewport";
+            }
             throw new IllegalStateException(
                     "Viewports must be popped in reverse order they were pushed. Tried to pop '" + viewport +
                             "', but last pushed is '" + name + "'.");
@@ -84,17 +101,21 @@ public class GuiViewportStack implements IViewportStack {
         updateViewport(true);
     }
 
+    private static String asString(IViewport viewport) {
+        return viewport == null ? "screen viewport" : viewport.toString();
+    }
+
     @Override
     public void popMatrix() {
         if (this.top.isViewportMatrix()) {
             throw new IllegalStateException("Tried to pop viewport matrix, but at the top is a normal matrix.");
         }
-        this.viewportStack.pop();
+        pop();
         updateViewport(false);
     }
 
     public void push(TransformationMatrix transformationMatrix) {
-        this.viewportStack.push(new TransformationMatrix(transformationMatrix,
+        this.viewportStack.push(newMatrix().construct(transformationMatrix,
                 this.top == null ? null : this.top.getMatrix()));
         updateViewport(false);
         if (this.top.isViewportMatrix()) {
@@ -106,8 +127,9 @@ public class GuiViewportStack implements IViewportStack {
         if (this.top.getWrapped() != transformationMatrix) {
             throw new IllegalArgumentException();
         }
-        TransformationMatrix tm = this.viewportStack.pop();
-        updateViewport(tm.isViewportMatrix());
+        boolean isViewport = this.top.isViewportMatrix();
+        pop();
+        updateViewport(isViewport);
     }
 
     @Override
@@ -118,7 +140,7 @@ public class GuiViewportStack implements IViewportStack {
     @Override
     public void popUntilIndex(int index) {
         for (int i = this.viewportStack.size() - 1; i > index; i--) {
-            this.viewportStack.pop();
+            pop();
         }
         updateViewport(true);
     }
@@ -127,7 +149,7 @@ public class GuiViewportStack implements IViewportStack {
     public void popUntilViewport(IViewport viewport) {
         int i = this.viewportStack.size();
         while (--i >= 0 && this.viewportStack.top().getViewport() != viewport) {
-            this.viewportStack.pop();
+            pop();
         }
         updateViewport(true);
     }
@@ -191,16 +213,14 @@ public class GuiViewportStack implements IViewportStack {
 
     private void updateViewport(boolean findTopViewport) {
         this.top = this.viewportStack.isEmpty() ? null : this.viewportStack.top();
-        if (!findTopViewport || this.topViewport == null || !this.topViewport.isViewportMatrix()) return;
+        if (!findTopViewport) return;
         // find new top viewport
         this.topViewport = null;
         if (this.viewportStack.isEmpty()) return;
-        ListIterator<TransformationMatrix> it = this.viewportStack.listIterator(this.viewportStack.size() - 1);
-        while (it.hasPrevious()) {
-            TransformationMatrix transformationMatrix1 = it.previous();
-            if (transformationMatrix1.isViewportMatrix()) {
-                this.topViewport = transformationMatrix1;
-                break;
+        for (int i = this.viewportStack.size() - 1; i >= 0; i--) {
+            TransformationMatrix matrix = this.viewportStack.get(i);
+            if (matrix.isViewportMatrix()) {
+                this.topViewport = matrix;
             }
         }
     }

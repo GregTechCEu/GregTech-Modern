@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.jei.circuit;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTProgrammedCircuitWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;

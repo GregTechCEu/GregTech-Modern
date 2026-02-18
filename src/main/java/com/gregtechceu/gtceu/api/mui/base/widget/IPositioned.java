@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.mui.base.widget;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.*;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
@@ -46,12 +44,6 @@ public interface IPositioned<W extends IPositioned<W>> {
     default W expanded() {
         resizer().expanded();
         return getThis();
-    }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    default W relative(IGuiElement guiElement) {
-        return relative(guiElement.getArea());
     }
 
     @Deprecated
@@ -315,6 +307,11 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     default W height(float val, Unit.Measure measure) {
         resizer().height(val, 0, measure);
+        return getThis();
+    }
+
+    default W heightRelOffset(float val, int offset) {
+        resizer().height(val, offset, Unit.Measure.RELATIVE);
         return getThis();
     }
 

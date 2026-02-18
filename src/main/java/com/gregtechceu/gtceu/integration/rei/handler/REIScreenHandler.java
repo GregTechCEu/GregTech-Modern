@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
-import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
-import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
-import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.RecipeViewerHandler;
 
 import net.minecraft.client.gui.screens.Screen;
 
@@ -47,7 +47,7 @@ public class REIScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
                                                                   DraggableStack stack) {
             currentIngredient = stack;
             return context.getScreen().getScreen().getContext()
-                    .getXeiSettings().getGhostIngredientSlots().stream()
+                    .getRecipeViewerSettings().getGhostIngredientSlots().stream()
                     .map(target -> BoundsProvider.ofRectangle(asREIRect(target.getArea())));
         }
 
@@ -55,7 +55,7 @@ public class REIScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
         public DraggedAcceptorResult acceptDraggedStack(DraggingContext<T> context,
                                                         DraggableStack stack) {
             List<GhostIngredientSlot<?>> ghostSlots = context.getScreen().getScreen().getContext()
-                    .getXeiSettings().getGhostIngredientSlots();
+                    .getRecipeViewerSettings().getGhostIngredientSlots();
             for (var slot : ghostSlots) {
                 if (!slot.isEnabled()) {
                     continue;
@@ -87,7 +87,7 @@ public class REIScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
 
     @Override
     public @Nullable DraggableStack getHoveredStack(DraggingContext<T> context, double mouseX, double mouseY) {
-        IGuiElement hovered = context.getScreen().getScreen().getContext().getTopHovered();
+        IWidget hovered = context.getScreen().getScreen().getContext().getTopHovered();
         if (hovered instanceof IngredientProvider<?> provider) {
             var override = provider.ingredientOverride();
             if (override != null) {
@@ -141,7 +141,7 @@ public class REIScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
     @Override
     public Collection<me.shedaniel.math.Rectangle> provide(T screen) {
         return screen.getScreen().getContext()
-                .getXeiSettings().getAllExclusionAreas().stream()
+                .getRecipeViewerSettings().getAllExclusionAreas().stream()
                 .map(REIScreenHandler::asREIRect)
                 .toList();
     }

@@ -126,7 +126,14 @@ public class RichTextCompiler {
                 if (i == 0) {
                     // doesn't fit at the end of the line, try new line
                     if (this.x > 0) i = fr.getSplitter().plainIndexAtWidth(subText, this.maxWidth, Style.EMPTY);
-                    if (i == 0) throw new IllegalStateException("No space for string '" + subText + "'");
+                    if (i <= 0) {
+                        i = 1; // force at least one char
+                        if (subText.charAt(0) == '\u00a7' && subText.length() > 1) {
+                            // include format char if it is one
+                            i++;
+                            if (subText.length() > 2) i++;
+                        }
+                    }
                     newLine();
                 } else if (i < subText.length()) {
                     // the whole string doesn't fit

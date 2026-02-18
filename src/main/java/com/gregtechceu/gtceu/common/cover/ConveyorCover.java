@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -423,11 +422,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
-
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
                 this::getManualIOMode, this::setManualIOMode);
 
@@ -437,20 +433,18 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate);
         EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
 
+        syncManager.syncValue("io", ioSync);
         syncManager.syncValue("manualMode", manualMode);
         syncManager.syncValue("distribution", distMode);
         syncManager.syncValue("throughput", transferRate);
-        syncManager.syncValue("io", ioSync);
 
         if (createThroughputRow()) {
             column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, () -> 1, () -> maxItemTransferRate));
         }
 
         if (createFilterRow()) {
-            column.child(
-                    GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager, settings)
-                            .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false).marginRight(2))
-                            .marginBottom(2));
+            column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
+                    .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
         }
 
         if (createConveyorIORow()) {}
@@ -471,8 +465,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                     .build());
 
         }
-
-        return column;
     }
 
     protected boolean createThroughputRow() {

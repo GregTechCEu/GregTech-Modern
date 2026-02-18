@@ -107,7 +107,7 @@ public class GTSingleblockMachinePanels {
             panel.child(GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
                     .left(190));
         }
-        panel.excludeAreaInXei();
+        panel.excludeAreaInRecipeViewer();
         return panel;
     };
 
@@ -195,7 +195,7 @@ public class GTSingleblockMachinePanels {
             panel.child(GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
                     .left(190));
         }
-        panel.excludeAreaInXei();
+        panel.excludeAreaInRecipeViewer();
         return panel;
     };
 
@@ -283,7 +283,7 @@ public class GTSingleblockMachinePanels {
             panel.child(GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
                     .left(190));
         }
-        panel.excludeAreaInXei();
+        panel.excludeAreaInRecipeViewer();
         return panel;
     };
 

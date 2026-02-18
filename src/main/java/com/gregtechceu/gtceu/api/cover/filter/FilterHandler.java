@@ -53,7 +53,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         this.container = container;
     }
 
-    protected abstract F loadFilter(ItemStack filterItem);
+    public abstract F loadFilter(ItemStack filterItem);
 
     protected abstract F getEmptyFilter();
 

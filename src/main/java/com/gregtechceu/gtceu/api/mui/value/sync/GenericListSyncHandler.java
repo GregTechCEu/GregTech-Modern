@@ -64,12 +64,36 @@ public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, L
         for (int i = 0; i < size; i++) {
             this.cache.add(deserializeValue(buffer));
         }
-        onSetCache(getValue(), true, false);
+        onSetCache(true, false);
     }
 
     @Override
     public Class<List<T>> getValueType() {
         return (Class<List<T>>) (Object) List.class;
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method forces a sync after the modification.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(Consumer<List<T>> consumer) {
+        modifyValue(true, true, consumer);
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method can automatically sync the cache after the modification. Be careful with potential issues when the
+     * sync arg is false.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(boolean setSource, boolean sync, Consumer<List<T>> consumer) {
+        consumer.accept(this.cache);
+        onSetCache(setSource, sync);
     }
 
     public static <T> Builder<T> builder() {

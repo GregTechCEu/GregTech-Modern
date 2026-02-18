@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -125,8 +125,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
                 this::getVoidingMode, this::setVoidingMode);
@@ -144,8 +145,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-
-        return column;
     }
 
     @Override

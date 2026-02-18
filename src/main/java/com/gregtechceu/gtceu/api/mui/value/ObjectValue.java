@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.mui.value;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -26,7 +24,6 @@ public class ObjectValue<T> implements IValue<T> {
         this.value = value;
     }
 
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
     @Deprecated
     public ObjectValue(T value) {
         this.type = value != null ? (Class<T>) value.getClass() : null;

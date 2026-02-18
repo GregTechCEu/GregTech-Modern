@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
@@ -87,17 +86,13 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        Flow column = Flow.column()
-                .top(7).margin(7, 0)
-                .widthRel(1.0f).coverChildrenHeight();
-
-        var filterRow = GTMuiWidgets.createFilterRow(filterHandler, ItemFilter::loadFilter, data, syncManager,
-                settings);
-        filterRow.child(0, GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)
-                .marginRight(2));
-
-        return column.child(filterRow);
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        column.child(GTMuiWidgets.createFilterRow(
+                coverUIRow().child(
+                        GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager)),
+                filterHandler, data, syncManager,
+                settings));
     }
 
     @NotNull

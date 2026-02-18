@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -30,7 +30,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -188,16 +187,11 @@ public class FluidRegulatorCover extends PumpCover {
 
     ///////////////////////////
     // ***** GUI ******//
-    ///////////////////////////
 
     @Override
-    protected @NotNull String getUITitle() {
-        return "cover.fluid_regulator.title";
-    }
-
-    @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var column = super.createCoverUI(data, syncManager, settings);
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit);
@@ -218,8 +212,6 @@ public class FluidRegulatorCover extends PumpCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> MAX_STACK_SIZE)
                 .setEnabledIf($ -> shouldShowTransferSize()));
-
-        return column;
     }
 
     private boolean shouldShowTransferSize() {

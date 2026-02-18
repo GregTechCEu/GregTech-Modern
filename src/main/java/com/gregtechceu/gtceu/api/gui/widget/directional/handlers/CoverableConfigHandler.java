@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.api.gui.widget.directional.handlers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -21,8 +19,6 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -88,9 +84,6 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         }
                 .setChangeListener(this::coverItemChanged)
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY)));
-        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab,
-                () -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
-
         checkCoverBehaviour();
 
         return group;
@@ -170,24 +163,6 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
             @Override
             public IGuiTexture getIcon() {
                 return GuiTextures.CLOSE_ICON;
-            }
-
-            @Override
-            public Widget createConfigurator() {
-                WidgetGroup group = new WidgetGroup(new Position(0, 0));
-
-                if (side == null || !(coverable.getCoverAtSide(side) instanceof IUICover iuiCover))
-                    return group;
-
-                Widget coverConfigurator = iuiCover.createUIWidget();
-                coverConfigurator.addSelfPosition(-1, -20);
-
-                group.addWidget(coverConfigurator);
-                group.setSize(new Size(
-                        Math.max(120, coverConfigurator.getSize().width),
-                        Math.max(80, coverConfigurator.getSize().height - 20)));
-
-                return group;
             }
         };
 

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -78,7 +78,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
                     recipeLogicMachine.getRecipeLogic().isWorking()) {
                 emitPollutionParticles();
@@ -88,7 +88,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
         if (snowSubscription == null) {
             this.snowSubscription = subscribeServerTick(null, this::tryBreakSnow);
@@ -97,7 +97,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     @MustBeInvokedByOverriders
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         if (controllers.isEmpty()) {
             unsubscribe(snowSubscription);
@@ -107,7 +107,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     private void tryBreakSnow() {
         if (getOffsetTimer() % 10 == 0) {
-            for (IMultiController controller : getControllers()) {
+            for (MultiblockControllerMachine controller : getControllers()) {
                 if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
                         recipeLogicMachine.getRecipeLogic().isWorking()) {
                     BlockPos mufflerPos = getBlockPos().relative(getFrontFacing());

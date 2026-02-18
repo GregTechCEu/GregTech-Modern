@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.*;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -127,6 +129,7 @@ public class FisherMachine extends TieredEnergyMachine
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
         autoOutput = AutoOutputTrait.ofItems(this, cache);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 
     public void setWorkingEnabled(boolean enabled) {
@@ -166,16 +169,11 @@ public class FisherMachine extends TieredEnergyMachine
     }
 
     @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
-    }
-
-    @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(baitHandler.storage);
-        clearInventory(cache.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        baitHandler.dropInventoryInWorld();
+        cache.dropInventoryInWorld();
     }
 
     public static int calcMaxProgress(int tier) {
@@ -355,6 +353,9 @@ public class FisherMachine extends TieredEnergyMachine
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
 
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
+
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .coverChildrenHeight()
@@ -370,12 +371,12 @@ public class FisherMachine extends TieredEnergyMachine
                         .child(new ProgressWidget()
                                 .alignY(Alignment.Center)
                                 .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
-                                .progress(() -> progress / (double) maxProgress))
+                                .value(progressPercent))
                         .child(new Column()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(outputItemGrid.length == 0),
-                                        GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                        () -> GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                                                 "output_item_inv", cache.getSize(), 'i',
                                                 syncManager, outputItemGrid)
                                                 .alignX(Alignment.CenterRight))

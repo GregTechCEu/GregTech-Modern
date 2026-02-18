@@ -366,6 +366,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         }
         return super.getTooltip();
     }
+    protected void onTextChanged() {}
 
     public boolean canScrollHorizontally() {
         return getScrollArea().getScrollX() != null;

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -187,9 +188,12 @@ public class GTRecipeTypeUILayout {
 
             backedSlotsPanel.child(backedSlotsRow.left(slotLeftShiftPx));
 
+            DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent",
+                    DoubleSyncValue.class, () -> new DoubleSyncValue(progressSupplier));
+
             backedSlotsPanel.child(new ProgressWidget()
                     .center()
-                    .progress(progressSupplier)
+                    .value(progressPercent)
                     .name("progressBar")
                     .texture(progressBar, progressSize)
                     .size(progressSize)

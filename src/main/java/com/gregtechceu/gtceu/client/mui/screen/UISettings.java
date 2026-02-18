@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.mui.screen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
+import com.gregtechceu.gtceu.api.mui.base.RecipeViewerSettings;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
-import com.gregtechceu.gtceu.api.mui.base.XeiSettings;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 
@@ -34,14 +34,14 @@ public class UISettings {
     @Getter
     private String theme;
     @Getter
-    private final XeiSettings xeiSettings;
+    private final RecipeViewerSettings recipeViewerSettings;
 
     public UISettings() {
-        this(new XeiSettingsImpl());
+        this(new RecipeViewerSettingsImpl());
     }
 
-    public UISettings(XeiSettings xeiSettings) {
-        this.xeiSettings = xeiSettings;
+    public UISettings(RecipeViewerSettings recipeViewerSettings) {
+        this.recipeViewerSettings = recipeViewerSettings;
     }
 
     /**

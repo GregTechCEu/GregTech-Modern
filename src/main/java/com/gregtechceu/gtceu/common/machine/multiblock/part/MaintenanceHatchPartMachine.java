@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -72,7 +71,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMaintenanceMachine, IInteractedMachine {
+                                         implements IMaintenanceMachine {
 
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
@@ -116,7 +115,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(itemStackHandler);
+        itemStackHandler.dropInventoryInWorld();
     }
 
     @Override
@@ -351,7 +350,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     //////////////////////////////////////

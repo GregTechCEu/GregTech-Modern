@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -48,6 +49,13 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
+
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (recipeLogic == null) return -1f;
+                    return recipeLogic.getProgressPercent();
+                }));
+
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
@@ -65,11 +73,14 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(103, 0, 30, 0))
-                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
+                .child(new ProgressWidget()
+                        .value(progressPercent)
+                        .size(20, 15)
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18)
+                        .margin(76, 32))
 
                 .child(createTankWidget()
-                        .overlayTexture(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
+                        .overlay(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
                         .background(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
                         .syncHandler(new FluidSlotSyncHandler(
                                 exportFluids.getStorages()[0])

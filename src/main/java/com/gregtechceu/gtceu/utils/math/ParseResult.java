@@ -1,28 +1,30 @@
 package com.gregtechceu.gtceu.utils.math;
 
+import com.ezylang.evalex.BaseException;
+import com.ezylang.evalex.data.EvaluationValue;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class ParseResult {
 
     @Getter
-    private final double result;
+    private final EvaluationValue result;
     @Getter
-    private final String error;
+    private final BaseException error;
 
-    public static ParseResult success(double result) {
+    public static ParseResult success(EvaluationValue result) {
         return new ParseResult(result, null);
     }
 
-    public static ParseResult failure(@NotNull String error) {
-        return failure(Double.NaN, error);
+    public static ParseResult failure(@NotNull BaseException error) {
+        return failure(null, error);
     }
 
-    public static ParseResult failure(double value, @NotNull String error) {
+    public static ParseResult failure(EvaluationValue value, @NotNull BaseException error) {
         return new ParseResult(value, error);
     }
 
-    private ParseResult(double result, String error) {
+    private ParseResult(EvaluationValue result, BaseException error) {
         this.result = result;
         this.error = error;
     }
@@ -36,6 +38,14 @@ public class ParseResult {
     }
 
     public boolean hasValue() {
-        return !Double.isNaN(this.result);
+        return this.result != null;
+    }
+
+    public String getErrorMessage() {
+        return isFailure() ?
+                String.format("%s for Token %s at %d:%d",
+                        this.error.getMessage(), this.error.getTokenString(),
+                        this.error.getStartPosition(), this.error.getEndPosition()) :
+                null;
     }
 }

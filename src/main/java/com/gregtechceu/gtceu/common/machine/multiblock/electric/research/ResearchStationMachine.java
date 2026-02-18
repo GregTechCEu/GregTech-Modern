@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -11,11 +10,31 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.drawable.Icon;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -33,7 +52,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     @Getter
     private IOpticalComputationProvider computationProvider;
     @Getter
-    private IObjectHolder objectHolder;
+    private ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
         super(info, (m) -> new ResearchStationRecipeLogic((ResearchStationMachine) m));
@@ -48,12 +67,12 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder iObjectHolder) {
-                if (iObjectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
+            if (part instanceof ObjectHolderMachine objectHolder) {
+                if (objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     onStructureInvalid();
                     return;
                 }
-                this.objectHolder = iObjectHolder;
+                this.objectHolder = objectHolder;
             }
 
             part.self()
@@ -81,7 +100,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
         for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder holder) {
+            if (part instanceof ObjectHolderMachine holder) {
                 if (holder == objectHolder) {
                     objectHolder.setLocked(false);
                 }
@@ -96,18 +115,58 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         return false;
     }
 
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // MultiblockDisplayText.builder(textList, isFormed())
-    // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-    // .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
-    // "gtceu.multiblock.research_station.researching")
-    // .addEnergyUsageLine(energyContainer)
-    // .addEnergyTierLine(tier)
-    // .addWorkingStatusLine()
-    // // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
-    // .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
-    // }
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 176, 164);
+
+        var panelUtil = new GTMultiblockPanelUtil(this);
+
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(0.95f)
+                        .heightRel(.45f)
+                        .margin(4, 0)
+                        .left(3).top(5)
+                        .child(new Row()
+                                .child(getMainTextPanel(syncManager, 170, 70))))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this, syncManager))
+                        .child(GTMuiWidgets.createVoidingButton(this, syncManager)))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+
+        return panel;
+    }
+
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>()
+                .width(width - 6)
+                .height(height - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .alignX(Alignment.CenterLeft);
+        parentWidget.size(width, height)
+                .background(GTGuiTextures.MUI_DISPLAY);
+
+        listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gtceu.multiblock.research_station.researching")
+                        .withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY)));
+        listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        listWidget.child(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        listWidget.child(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
+    }
 
     public static class ResearchStationRecipeLogic extends RecipeLogic {
 
@@ -174,14 +233,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io == IO.IN) {
                 // lock the object holder on recipe start
-                IObjectHolder holder = getMachine().getObjectHolder();
+                ObjectHolderMachine holder = getMachine().getObjectHolder();
                 holder.setLocked(true);
                 return ActionResult.SUCCESS;
             }
 
             // "replace" the items in the slots rather than outputting elsewhere
             // unlock the object holder
-            IObjectHolder holder = getMachine().getObjectHolder();
+            ObjectHolderMachine holder = getMachine().getObjectHolder();
             if (lastRecipe == null) {
                 holder.setLocked(false);
                 return ActionResult.SUCCESS;

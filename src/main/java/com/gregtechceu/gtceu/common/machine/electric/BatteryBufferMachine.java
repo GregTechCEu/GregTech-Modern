@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -105,6 +106,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         String[] matrix;
         if (inventorySize == 8) matrix = new String[] { "BBBB", "BBBB" };
         else matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
+
+        DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getEnergyPercentage));
+
         return new ModularPanel("battery_buffer")
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
@@ -117,7 +122,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
-                                .progress(this::getEnergyPercentage)
+                                .value(energyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
                                 .verticalCenter()
@@ -139,7 +144,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         .bottom(16)
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager)))
@@ -215,7 +220,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(batteryInventory);
+        batteryInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override
@@ -312,7 +317,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    machine.doExplosion(GTUtil.getExplosionPower(voltage));
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 

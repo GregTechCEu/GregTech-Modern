@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.mui.screen;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.ScreenResizeNode;
 import com.gregtechceu.gtceu.api.mui.widget.wrapper.WidgetWrapper;
+import com.gregtechceu.gtceu.api.mui.widgets.menu.MenuPanel;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import net.minecraft.client.Minecraft;
@@ -115,19 +115,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      */
     @Getter
     private boolean overlay = false;
-
-    /**
-     * @deprecated use the other constructor
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    public ModularScreen(@NotNull ModularPanel mainPanel) {
-        this(GTCEu.MOD_ID, mainPanel);
-        if (GTCEu.isDev()) {
-            GTCEu.LOGGER.warn("The single arg ModularScreen constructor should not be used. " +
-                    "Use the any of the other ones and pass in your mod id.");
-        }
-    }
 
     /**
      * Creates a new screen with a given owner and {@link ModularPanel}.
@@ -398,12 +385,21 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @return true if the action was consumed and further processing should be canceled
      */
     public boolean onMousePressed(double mouseX, double mouseY, int button) {
+        // call all action listeners
         for (IGuiAction.MousePressed action : getGuiActionListeners(IGuiAction.MousePressed.class)) {
             action.press(mouseX, mouseY, button);
         }
+        // check if any context menu is open and close them if they or their children are not hovered
+        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+            if (panel instanceof MenuPanel menuPanel) {
+                menuPanel.closeAllMenus(false, true);
+            }
+        }
+        // handle dragging of draggable widgets
         if (this.context.onMousePressed(mouseX, mouseY, button)) {
             return true;
         }
+        // finally click hovered widgets
         for (ModularPanel panel : this.panelManager.getOpenPanels()) {
             if (panel.onMousePressed(mouseX, mouseY, button)) {
                 return true;

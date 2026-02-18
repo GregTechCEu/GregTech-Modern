@@ -36,7 +36,7 @@ public class ModularSlot extends SlotItemHandler {
     @Getter
     @Setter(onMethod_ = { @ApiStatus.Internal })
     private boolean enabled = true;
-    private boolean canTake = true, canPut = true;
+    private boolean canTake = true, canPut = true, canDragInto = true;
     private Predicate<ItemStack> filter = stack -> true;
     private IOnSlotChanged changeListener = IOnSlotChanged.DEFAULT;
     @Getter
@@ -95,6 +95,10 @@ public class ModularSlot extends SlotItemHandler {
         return this.canTake && super.mayPickup(playerIn);
     }
 
+    public boolean canDragIntoSlot() {
+        return this.canDragInto;
+    }
+
     @Override
     public int getMaxStackSize(@NotNull ItemStack stack) {
         return this.ignoreMaxStackSize ? getMaxStackSize() : super.getMaxStackSize(stack);
@@ -105,8 +109,9 @@ public class ModularSlot extends SlotItemHandler {
 
     public void onSlotChangedReal(ItemStack itemStack, boolean onlyChangedAmount, boolean client, boolean init) {
         this.changeListener.onChange(itemStack, onlyChangedAmount, client, init);
-        if (!init && isInitialized())
+        if (!init && isInitialized()) {
             getSyncHandler().getSyncManager().getContainer().onSlotChanged(this, itemStack, onlyChangedAmount);
+        }
     }
 
     public void onCraftShiftClick(Player playerIn, ItemStack itemStack) {}
@@ -115,6 +120,7 @@ public class ModularSlot extends SlotItemHandler {
     public void set(@NotNull ItemStack stack) {
         if (ItemStack.matches(stack, getItem())) return;
         super.set(stack);
+        if (this.syncHandler != null) this.syncHandler.checkUpdate();
     }
 
     @Override
@@ -169,6 +175,34 @@ public class ModularSlot extends SlotItemHandler {
     public ModularSlot accessibility(boolean canPut, boolean canTake) {
         this.canPut = canPut;
         this.canTake = canTake;
+        return this;
+    }
+
+    public ModularSlot canPut(boolean canPut) {
+        this.canPut = canPut;
+        return this;
+    }
+
+    public ModularSlot canTake(boolean canTake) {
+        this.canTake = canTake;
+        return this;
+    }
+
+    /**
+     * Sets if this slots accepts items which are dragged across the screen. This is useful to disable when the filter
+     * depends on the items
+     * in the other slots. When dragging, the item in the slot is not real and its only updated once the dragging is
+     * completed.
+     * This method is by default called from
+     * {@link com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu#canDragTo(Slot)}
+     * ModularContainer.canDragIntoSlot(Slot)} which can be
+     * overridden for other custom behavior.
+     *
+     * @param canDragInto if items can be dragged into this slot
+     * @return this
+     */
+    public ModularSlot canDragInto(boolean canDragInto) {
+        this.canDragInto = canDragInto;
         return this;
     }
 

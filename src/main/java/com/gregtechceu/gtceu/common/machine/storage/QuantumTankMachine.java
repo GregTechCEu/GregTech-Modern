@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -63,7 +62,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 @NotNullByDefault
-public class QuantumTankMachine extends TieredMachine implements IInteractedMachine, IDropSaveMachine, IControllable,
+public class QuantumTankMachine extends TieredMachine implements IDropSaveMachine, IControllable,
                                 IMuiMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
@@ -171,7 +170,7 @@ public class QuantumTankMachine extends TieredMachine implements IInteractedMach
                 return InteractionResult.SUCCESS;
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     public boolean isLocked() {
