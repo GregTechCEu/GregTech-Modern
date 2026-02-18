@@ -357,7 +357,7 @@ public class PlaceholderHandler {
                 .child(new SortableListWidget<String>()
                         .widthRel(.2f)
                         .paddingBottom(5)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .children(PlaceholderHandler.getAllPlaceholderNames()
                                 .stream()
                                 .sorted()
@@ -365,7 +365,7 @@ public class PlaceholderHandler {
                                 .map(w -> w
                                         .child(new TextWidget<>(w.getWidgetValue())
                                                 .sizeRel(1)
-                                                .alignment(Alignment.CENTER))
+                                                .align(Alignment.CENTER))
                                         .tooltip(new RichTooltip()
                                                 .addDrawableLines(LangHandler
                                                         .getSingleOrMultiLang(
