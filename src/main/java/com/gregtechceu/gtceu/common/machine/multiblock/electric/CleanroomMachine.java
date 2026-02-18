@@ -498,7 +498,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this, syncManager))
                         .child(GTMuiWidgets.createVoidingButton(this, syncManager))
-                        .excludeAreaInXei())
+                        .excludeAreaInRecipeViewer())
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
         return panel;
     }
