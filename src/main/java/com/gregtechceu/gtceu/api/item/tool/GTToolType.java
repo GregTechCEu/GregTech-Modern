@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
@@ -376,6 +377,44 @@ public class GTToolType {
             .defaultAbilities(ItemAbilities.AXE_DIG, ItemAbilities.SWORD_DIG, ItemAbilities.HOE_DIG,
                     GTItemAbilities.SAW_DIG)
             .build();
+    public static final GTToolType CHAINSAW_HV = GTToolType.builder("hv_chainsaw")
+            .idFormat("hv_%s_chainsaw")
+            .toolTag(ToolItemTagType.MATCH, ItemTags.AXES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_CHAINSAW)
+            .harvestTag(BlockTags.MINEABLE_WITH_AXE)
+            .harvestTag(BlockTags.SWORD_EFFICIENT)
+            .harvestTag(BlockTags.MINEABLE_WITH_HOE)
+            .definition(b -> b.blockBreaking()
+                    .efficiencyMultiplier(3.0F)
+                    .attackDamage(5.0F).attackSpeed(-3.2F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
+                    .behaviors(HarvestIceBehavior.INSTANCE, DisableShieldBehavior.INSTANCE,
+                            TreeFellingBehavior.INSTANCE))
+            .sound(GTSoundEntries.CHAINSAW_TOOL, true)
+            .electric(GTValues.HV)
+            .toolClasses(GTToolType.AXE)
+            .defaultAbilities(ItemAbilities.AXE_DIG, ItemAbilities.SWORD_DIG, ItemAbilities.HOE_DIG,
+                    GTItemAbilities.SAW_DIG)
+            .build();
+    public static final GTToolType CHAINSAW_IV = GTToolType.builder("iv_chainsaw")
+            .idFormat("iv_%s_chainsaw")
+            .toolTag(ToolItemTagType.MATCH, ItemTags.AXES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_CHAINSAW)
+            .harvestTag(BlockTags.MINEABLE_WITH_AXE)
+            .harvestTag(BlockTags.SWORD_EFFICIENT)
+            .harvestTag(BlockTags.MINEABLE_WITH_HOE)
+            .definition(b -> b.blockBreaking()
+                    .efficiencyMultiplier(4.0F)
+                    .attackDamage(5.0F).attackSpeed(-3.2F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
+                    .behaviors(HarvestIceBehavior.INSTANCE, DisableShieldBehavior.INSTANCE,
+                            TreeFellingBehavior.INSTANCE))
+            .sound(GTSoundEntries.CHAINSAW_TOOL, true)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.AXE)
+            .defaultAbilities(ItemAbilities.AXE_DIG, ItemAbilities.SWORD_DIG, ItemAbilities.HOE_DIG,
+                    GTItemAbilities.SAW_DIG)
+            .build();
     public static final GTToolType WRENCH_LV = GTToolType.builder("lv_wrench")
             .idFormat("lv_%s_wrench")
             .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WRENCHES)
@@ -493,6 +532,32 @@ public class GTToolType {
             .toolClasses(GTToolType.SCREWDRIVER)
             .defaultAbilities(GTItemAbilities.DEFAULT_SCREWDRIVER_ACTIONS)
             .build();
+    public static final GTToolType SCREWDRIVER_HV = GTToolType.builder("hv_screwdriver")
+            .idFormat("hv_%s_screwdriver")
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SCREWDRIVERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
+            .definition(b -> b.crafting().sneakBypassUse()
+                    .attackDamage(-1.0F).attackSpeed(3.0F)
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityType.SPIDER))
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
+            .sound(GTSoundEntries.SCREWDRIVER_TOOL)
+            .electric(GTValues.HV)
+            .toolClasses(GTToolType.SCREWDRIVER)
+            .defaultAbilities(GTItemAbilities.DEFAULT_SCREWDRIVER_ACTIONS)
+            .build();
+    public static final GTToolType SCREWDRIVER_IV = GTToolType.builder("iv_screwdriver")
+            .idFormat("iv_%s_screwdriver")
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SCREWDRIVERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
+            .definition(b -> b.crafting().sneakBypassUse()
+                    .attackDamage(-1.0F).attackSpeed(3.0F)
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityType.SPIDER))
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
+            .sound(GTSoundEntries.SCREWDRIVER_TOOL)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.SCREWDRIVER)
+            .defaultAbilities(GTItemAbilities.DEFAULT_SCREWDRIVER_ACTIONS)
+            .build();
 
     public final String name;
     public final String idFormat;
@@ -555,7 +620,7 @@ public class GTToolType {
     public enum ToolItemTagType {
         NONE,
         MATCH,
-        CRAFTING;
+        CRAFTING
     }
 
     @FunctionalInterface

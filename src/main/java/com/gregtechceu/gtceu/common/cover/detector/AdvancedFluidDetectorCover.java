@@ -20,6 +20,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -147,5 +149,24 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
 
         return group;
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("min", minValue);
+        tag.putInt("max", maxValue);
+        tag.putBoolean("latched", isLatched);
+        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setMinValue(tag.getInt("min"));
+        setMaxValue(tag.getInt("max"));
+        setLatched(tag.getBoolean("latched"));
+        filterHandler.setFilterItem(ItemStack.parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter"))
+                .orElse(ItemStack.EMPTY));
+        super.pasteConfig(player, tag);
     }
 }

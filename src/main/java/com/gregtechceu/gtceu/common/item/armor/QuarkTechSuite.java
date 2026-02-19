@@ -101,10 +101,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("metaarmor.qts.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
@@ -170,7 +170,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 boostedJump = !boostedJump;
                 boostedJumpTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
             }
             if (boostedJump) {
                 if (!level.isClientSide) {
@@ -203,6 +203,15 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     }
                 }
             }
+
+            if (data.boostedJumpTimer() == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
+                data.stepAssist(!data.stepAssist());
+                data.boostedJumpTimer((byte) 5);
+                if (level.isClientSide()) player.displayClientMessage(Component
+                        .translatable("metaarmor.qts.step_assist." + (data.stepAssist() ? "enabled" : "disabled")),
+                        true);
+            }
+
             data.boostedJump(boostedJump);
 
             if (boostedJumpTimer > 0) boostedJumpTimer--;
@@ -364,7 +373,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
-            lines.add(Component.translatable("metaarmor.tooltip.stepassist"));
+            GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY);
+            if (data.stepAssist())
+                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
+            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }

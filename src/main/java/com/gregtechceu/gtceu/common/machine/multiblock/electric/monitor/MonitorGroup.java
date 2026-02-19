@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 
@@ -24,6 +27,7 @@ import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
+    @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();
     @Getter
     private final String name;
@@ -40,13 +44,29 @@ public class MonitorGroup {
     @Getter
     private int dataSlot = 0;
 
+    public static boolean isModule(ItemStack stack) {
+        if (stack.getItem() instanceof IComponentItem componentItem) {
+            for (IItemComponent itemComponent : componentItem.getComponents()) {
+                if (itemComponent instanceof IMonitorModuleItem) return true;
+            }
+        }
+        return false;
+    }
+
+    public static CustomItemStackHandler createModuleHandler() {
+        CustomItemStackHandler customItemStackHandler = new CustomItemStackHandler(1);
+        customItemStackHandler.setFilter(MonitorGroup::isModule);
+        return customItemStackHandler;
+    }
+
     public MonitorGroup(String name) {
-        this(name, new CustomItemStackHandler(1), new CustomItemStackHandler(8));
+        this(name, createModuleHandler(), new CustomItemStackHandler(8));
     }
 
     public MonitorGroup(String name, CustomItemStackHandler handler, CustomItemStackHandler placeholderSlotsHandler) {
         this.name = name;
         this.itemStackHandler = handler;
+        this.itemStackHandler.setFilter(MonitorGroup::isModule);
         this.placeholderSlotsHandler = placeholderSlotsHandler;
     }
 
@@ -81,10 +101,6 @@ public class MonitorGroup {
 
     public boolean isEmpty() {
         return monitorPositions.isEmpty();
-    }
-
-    public Set<BlockPos> getRelativePositions() {
-        return monitorPositions;
     }
 
     public @Nullable CoverBehavior getTargetCover(Level level) {

@@ -24,11 +24,11 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalHazardCondition> {
 
-    public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(
-                            MedicalCondition.CODEC.fieldOf("condition").forGetter(val -> val.condition))
-                    .apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:off
+    public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            MedicalCondition.CODEC.fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
+    ).apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:on
 
     @Getter
     private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;

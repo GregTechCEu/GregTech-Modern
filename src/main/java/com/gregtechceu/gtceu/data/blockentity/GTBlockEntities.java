@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.common.blockentity.*;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
 
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
@@ -13,7 +15,7 @@ public class GTBlockEntities {
 
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
-            .blockEntity("cable", CableBlockEntity::create)
+            .blockEntity("cable", CableBlockEntity::new)
             .validBlocks(GTMaterialBlocks.CABLE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
@@ -25,12 +27,13 @@ public class GTBlockEntities {
 
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<ItemPipeBlockEntity> ITEM_PIPE = REGISTRATE
-            .blockEntity("item_pipe", ItemPipeBlockEntity::create)
+            .blockEntity("item_pipe", ItemPipeBlockEntity::new)
             .validBlocks(GTMaterialBlocks.ITEM_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
     public static final BlockEntityEntry<LaserPipeBlockEntity> LASER_PIPE = REGISTRATE
-            .blockEntity("laser_pipe", LaserPipeBlockEntity::create)
+            .blockEntity("laser_pipe", LaserPipeBlockEntity::new)
+            .onRegister(LaserPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.LASER_PIPES)
             .register();
 
@@ -40,9 +43,17 @@ public class GTBlockEntities {
             .register();
 
     public static final BlockEntityEntry<DuctPipeBlockEntity> DUCT_PIPE = REGISTRATE
-            .blockEntity("duct_pipe", DuctPipeBlockEntity::create)
+            .blockEntity("duct_pipe", DuctPipeBlockEntity::new)
             .onRegister(DuctPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.DUCT_PIPES)
+            .register();
+
+    public static final BlockEntityEntry<SignBlockEntity> GT_SIGN = REGISTRATE
+            .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
+            .validBlocks(GTBlocks.RUBBER_SIGN,
+                    GTBlocks.RUBBER_WALL_SIGN,
+                    GTBlocks.TREATED_WOOD_SIGN,
+                    GTBlocks.TREATED_WOOD_WALL_SIGN)
             .register();
 
     public static void init() {}

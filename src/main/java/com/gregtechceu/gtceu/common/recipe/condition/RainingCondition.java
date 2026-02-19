@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class RainingCondition extends RecipeCondition<RainingCondition> {
 
-    public static final MapCodec<RainingCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-                    .apply(instance, RainingCondition::new));
+    // spotless:off
+    public static final MapCodec<RainingCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.FLOAT.fieldOf("level").forGetter(val -> val.level)
+    ).apply(instance, RainingCondition::new));
+    // spotless:on
 
-    public final static RainingCondition INSTANCE = new RainingCondition();
     private float level;
 
     public RainingCondition(boolean isReverse, float level) {

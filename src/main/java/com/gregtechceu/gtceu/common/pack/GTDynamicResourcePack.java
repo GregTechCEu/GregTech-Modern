@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSources;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +18,9 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
@@ -46,10 +51,9 @@ public class GTDynamicResourcePack implements PackResources {
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
 
     private static final FileToIdConverter ATLAS_ID_CONVERTER = FileToIdConverter.json("atlases");
-    private static final FileToIdConverter TEXTURE_ID_CONVERTER = SpriteSource.TEXTURE_ID_CONVERTER;
-    private static final FileToIdConverter BLOCKSTATE_ID_CONVERTER = FileToIdConverter.json("blockstates");
-    private static final FileToIdConverter BLOCK_MODEL_ID_CONVERTER = FileToIdConverter.json("models/block");
-    private static final FileToIdConverter ITEM_MODEL_ID_CONVERTER = FileToIdConverter.json("models/item");
+    public static final FileToIdConverter TEXTURE_ID_CONVERTER = SpriteSource.TEXTURE_ID_CONVERTER;
+    public static final FileToIdConverter BLOCKSTATE_ID_CONVERTER = FileToIdConverter.json("blockstates");
+    public static final FileToIdConverter MODEL_ID_CONVERTER = FileToIdConverter.json("models");
 
     private final PackLocationInfo info;
 
@@ -76,77 +80,83 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addResource(ResourceLocation location, byte[] data) {
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(location, null, parent, data);
         }
         CONTENTS.addToData(location, data);
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
-        ResourceLocation l = getBlockModelLocation(loc);
-        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, modelBytes);
+        if (!loc.getPath().startsWith("block/")) {
+            loc = loc.withPrefix("block/");
         }
-        CONTENTS.addToData(l, modelBytes);
+        addModel(loc, obj);
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
         addBlockModel(loc, obj.get());
     }
 
-    public static void addItemModel(ResourceLocation loc, JsonElement obj) {
-        ResourceLocation l = getItemModelLocation(loc);
-        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
+    public static void addBlockModel(BlockModelBuilder builder) {
+        addBlockModel(builder.getLocation(), builder.toJson());
+    }
 
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, modelBytes);
+    public static void addItemModel(ResourceLocation loc, JsonElement obj) {
+        if (!loc.getPath().startsWith("item/")) {
+            loc = loc.withPrefix("item/");
         }
-        CONTENTS.addToData(l, modelBytes);
+        addModel(loc, obj);
+    }
+
+    public static void addItemModel(ItemModelBuilder builder) {
+        addItemModel(builder.getLocation(), builder.toJson());
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
         addItemModel(loc, obj.get());
     }
 
-    public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
-        ResourceLocation l = getBlockStateLocation(loc);
-        byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
+    public static void addModel(ResourceLocation loc, JsonElement obj) {
+        loc = MODEL_ID_CONVERTER.idToFile(loc);
+        addResource(loc, obj);
+    }
 
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, stateBytes);
-        }
-        CONTENTS.addToData(l, stateBytes);
+    public static void addModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+        addModel(loc, obj.get());
+    }
+
+    public static <T extends ModelBuilder<T>> void addModel(T builder) {
+        addModel(builder.getLocation(), builder.toJson());
+    }
+
+    public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
+        loc = BLOCKSTATE_ID_CONVERTER.idToFile(loc);
+        addResource(loc, stateJson);
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
         addBlockState(loc, generator.get());
     }
 
+    public static void addBlockState(BlockStateGenerator generator) {
+        addBlockState(BuiltInRegistries.BLOCK.getKey(generator.getBlock()), generator.get());
+    }
+
     public static void addAtlasSpriteSource(ResourceLocation atlasLoc, SpriteSource source) {
         addAtlasSpriteSourceList(atlasLoc, Collections.singletonList(source));
     }
 
-    public static void addAtlasSpriteSourceList(ResourceLocation atlasLoc, List<SpriteSource> sources) {
-        ResourceLocation l = getAtlasLocation(atlasLoc);
-        JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, sources).getOrThrow();
-        byte[] sourceBytes = sourceJson.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, sourceBytes);
-        }
-        CONTENTS.addToData(l, sourceBytes);
+    public static void addAtlasSpriteSourceList(ResourceLocation loc, List<SpriteSource> sources) {
+        loc = ATLAS_ID_CONVERTER.idToFile(loc);
+        JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, sources)
+                .getOrThrow();
+        addResource(loc, sourceJson);
     }
 
     public static void addBlockTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("block", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
         }
         CONTENTS.addToData(l, data);
@@ -155,7 +165,7 @@ public class GTDynamicResourcePack implements PackResources {
     public static void addItemTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("item", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
         }
         CONTENTS.addToData(l, data);
@@ -233,26 +243,10 @@ public class GTDynamicResourcePack implements PackResources {
         // NOOP
     }
 
-    public static ResourceLocation getBlockStateLocation(ResourceLocation blockId) {
-        return BLOCKSTATE_ID_CONVERTER.idToFile(blockId);
-    }
-
-    public static ResourceLocation getBlockModelLocation(ResourceLocation blockId) {
-        return BLOCK_MODEL_ID_CONVERTER.idToFile(blockId);
-    }
-
-    public static ResourceLocation getItemModelLocation(ResourceLocation itemId) {
-        return ITEM_MODEL_ID_CONVERTER.idToFile(itemId);
-    }
-
     public static ResourceLocation getTextureLocation(@Nullable String path, ResourceLocation textureId) {
         if (path == null) {
             return TEXTURE_ID_CONVERTER.idToFile(textureId);
         }
         return TEXTURE_ID_CONVERTER.idToFile(textureId.withPrefix(path + "/"));
-    }
-
-    public static ResourceLocation getAtlasLocation(ResourceLocation atlasId) {
-        return ATLAS_ID_CONVERTER.idToFile(atlasId);
     }
 }

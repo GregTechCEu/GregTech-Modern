@@ -111,6 +111,6 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?> builder);
+        void apply(int tier, MachineBuilder<?, ?> builder);
     }
 }

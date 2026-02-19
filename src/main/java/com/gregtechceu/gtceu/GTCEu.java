@@ -43,6 +43,7 @@ public class GTCEu {
 
     public static final String NAME = "GTCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
     @ApiStatus.Internal
     public static IEventBus gtModBus;

@@ -3,9 +3,12 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+
+import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +54,15 @@ public class ParallelLogic {
         for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                minimum = Math.min(minimum, cap.getMaxParallelByInput(holder, recipe, parallelLimit, false));
+                var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, false);
+                if (capParallel == 0) {
+                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ")
+                            .append(cap.getName());
+                    RecipeLogic.putFailureReason(holder, recipe, reason);
+                    return 0;
+                }
+                minimum = Math.min(minimum, capParallel);
             }
         }
 
@@ -59,10 +70,24 @@ public class ParallelLogic {
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                minimum = Math.min(minimum, cap.getMaxParallelByInput(holder, recipe, parallelLimit, true));
+                var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, true);
+                if (capParallel == 0) {
+                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ")
+                            .append(cap.getName());
+                    RecipeLogic.putFailureReason(holder, recipe, reason);
+                    return 0;
+                }
+                minimum = Math.min(minimum, capParallel);
             }
         }
-        if (minimum == Integer.MAX_VALUE) return 0;
+        if (minimum == Integer.MAX_VALUE) {
+            Component reason = Component.translatable("gtceu.recipe_logic.no_capabilities")
+                    .append(Component.literal(": "))
+                    .append(Component.translatable(IO.IN.tooltip));
+            RecipeLogic.putFailureReason(holder, recipe, reason);
+            return 0;
+        }
         return minimum;
     }
 
@@ -87,6 +112,10 @@ public class ParallelLogic {
                 int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, false);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
+                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_out")
+                            .append(": ")
+                            .append(cap.getName());
+                    RecipeLogic.putFailureReason(holder, recipe, reason);
                     return 0;
                 }
                 max = Math.min(max, limit);
@@ -101,6 +130,10 @@ public class ParallelLogic {
                 int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, true);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
+                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_out")
+                            .append(": ")
+                            .append(cap.getName());
+                    RecipeLogic.putFailureReason(holder, recipe, reason);
                     return 0;
                 }
                 max = Math.min(max, limit);

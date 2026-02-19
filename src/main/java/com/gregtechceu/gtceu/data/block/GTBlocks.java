@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
-import com.gregtechceu.gtceu.common.item.OpticalPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
@@ -121,7 +120,7 @@ public class GTBlocks {
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -151,13 +150,13 @@ public class GTBlocks {
                 .lang("Optical Fiber Cable")
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> OpticalPipeBlock::tintedColor)
-                .item(OpticalPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
@@ -179,12 +178,12 @@ public class GTBlocks {
                 .block("%s_duct_pipe".formatted(type.getSerializedName()), (p) -> new DuctPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
-                .item(DuctPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();

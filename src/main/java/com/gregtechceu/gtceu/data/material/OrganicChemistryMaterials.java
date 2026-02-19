@@ -509,7 +509,7 @@ public class OrganicChemistryMaterials {
                 .color(0x353529).secondaryColor(0x080808)
                 .toolStats(
                         ToolProperty.Builder.of(1.0F, 1.0F, 256, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
-                .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
+                .flags(GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 5, Hydrogen, 8)
                 .buildAndRegister();
 

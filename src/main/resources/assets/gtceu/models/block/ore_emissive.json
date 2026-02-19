@@ -1,6 +1,6 @@
 {
     "parent": "block/block",
-    "loader": "neoforge:composite",
+    "loader": "neoneoforge:composite",
     "textures": {
 
     },

@@ -124,6 +124,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic)
+                .addRecipeFailReasonLine(recipeLogic)
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
@@ -255,7 +256,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -270,6 +271,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 return highestVoltage;
             }
         }
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**

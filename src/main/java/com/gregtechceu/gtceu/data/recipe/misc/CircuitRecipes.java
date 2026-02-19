@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 
@@ -336,6 +337,7 @@ public class CircuitRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BALL)
                 .outputItems(GLASS_TUBE)
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .duration(160).EUt(16).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_glass_tube")

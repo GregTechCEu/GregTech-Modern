@@ -100,7 +100,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -229,7 +229,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
     }
 
     // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
-    public static RuntimeBlockStateProvider RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockStateProvider(
+    public static RuntimeBlockstateProvider RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockstateProvider(
             GTRegistration.REGISTRATE, new PackOutput(KubeJSPaths.DIRECTORY),
             (loc, json) -> {
                 if (!loc.getPath().endsWith(".json")) {

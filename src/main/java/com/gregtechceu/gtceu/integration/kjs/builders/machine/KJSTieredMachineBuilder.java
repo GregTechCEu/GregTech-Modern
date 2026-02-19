@@ -34,7 +34,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefinition @NotNull []>
                                      implements IMachineBuilderKJS {
 
-    private final MachineBuilder<?>[] builders = new MachineBuilder[TIER_COUNT];
+    private final MachineBuilder<?, ?>[] builders = new MachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -113,12 +113,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
         MachineDefinition @NotNull [] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
-                    GTMachineUtils.defaultTankSizeFunction);
-
-            MachineBuilder<?> builder = GTRegistration.REGISTRATE.machine(
+            MachineBuilder<?, ?> builder = GTRegistration.REGISTRATE.machine(
                     String.format("%s_%s", tierName, this.id.getPath()),
-                    holder -> machine.create(holder, tier, tankFunction));
+                    holder -> machine.create(holder, tier, tankScalingFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);
@@ -160,6 +157,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?> builder);
+        void apply(int tier, MachineBuilder<?, ?> builder);
     }
 }

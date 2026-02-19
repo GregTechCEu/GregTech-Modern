@@ -1,6 +1,13 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
@@ -72,5 +79,22 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
         // should never happen.
         throw new IllegalStateException("Empty tiered multiblock builder " + Arrays.toString(tieredBuilder.get()) +
                 " With id " + tieredBuilder.id);
+    }
+
+    public static MultiblockMachineBuilder<?, ?> createKJSMulti(ResourceLocation id) {
+        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
+                WorkableElectricMultiblockMachine::new,
+                MetaMachineBlock::new,
+                MetaMachineItem::new,
+                MetaMachineBlockEntity::new);
+    }
+
+    public static MultiblockMachineBuilder<?, ?> createKJSMulti(ResourceLocation id,
+                                                                KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
+        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
+                machine::create,
+                MetaMachineBlock::new,
+                MetaMachineItem::new,
+                MetaMachineBlockEntity::new);
     }
 }

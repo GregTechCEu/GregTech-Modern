@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.command;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
+import com.gregtechceu.gtceu.common.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
 
 import net.minecraft.commands.CommandBuildContext;
@@ -18,7 +20,9 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +32,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -35,7 +40,11 @@ import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
 
 import static net.minecraft.commands.Commands.*;
@@ -266,6 +275,25 @@ public class GTCommands {
         } else {
             throw ERROR_USE_FAILED.create(player.getDisplayName(), cape);
         }
+    }
+
+    private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
+                                            Registry<T> registry, Codec<T> codec, String folder) {
+        Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
+        var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
+        int dumpedCount = 0;
+        for (ResourceLocation id : registry.keySet()) {
+            T entry = registry.get(id);
+            JsonElement json = codec.encodeStart(ops, entry).getOrThrow();
+            GTDynamicDataPack.writeJson(id, folder, parent, json.toString().getBytes(StandardCharsets.UTF_8));
+            dumpedCount++;
+        }
+        final int result = dumpedCount;
+        context.getSource().sendSuccess(
+                () -> Component.translatable("command.gtceu.dump_data.success", result,
+                        registry, parent.toString()),
+                true);
+        return result;
     }
 
     private static int placeVein(CommandContext<CommandSourceStack> context,

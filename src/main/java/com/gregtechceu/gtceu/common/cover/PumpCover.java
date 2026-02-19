@@ -32,7 +32,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -391,5 +393,26 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
             }
             return super.drain(resource, action);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferRate", getTransferRate());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        tag.putInt("bucketMode", getBucketMode().ordinal());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferRate(tag.getInt("transferRate"));
+        setIo(IO.values()[tag.getInt("io")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        filterHandler.setFilterItem(ItemStack.parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter"))
+                .orElse(ItemStack.EMPTY));
+        setBucketMode(BucketMode.values()[tag.getInt("bucketMode")]);
+        super.pasteConfig(player, tag);
     }
 }

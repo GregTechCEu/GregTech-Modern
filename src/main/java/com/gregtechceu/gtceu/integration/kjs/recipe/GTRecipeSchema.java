@@ -913,12 +913,13 @@ public interface GTRecipeSchema {
             return addCondition(new CleanroomCondition(cleanroomType));
         }
 
-        public GTKubeRecipe dimension(ResourceKey<Level> dimension, boolean reverse) {
-            return addCondition(new DimensionCondition(dimension).setReverse(reverse));
+        public GTKubeRecipe dimension(ResourceLocation dimension, boolean reverse) {
+            return addCondition(
+                    new DimensionCondition(ResourceKey.create(Registries.DIMENSION, dimension)).setReverse(reverse));
         }
 
         public GTKubeRecipe dimension(ResourceKey<Level> dimension) {
-            return dimension(dimension, false);
+            return dimension(dimension.location(), false);
         }
 
         public GTKubeRecipe biome(ResourceKey<Biome> biome, boolean reverse) {
@@ -927,6 +928,14 @@ public interface GTRecipeSchema {
 
         public GTKubeRecipe biome(ResourceKey<Biome> biome) {
             return biome(biome, false);
+        }
+
+        public GTKubeRecipe biomeTag(ResourceLocation biome, boolean reverse) {
+            return addCondition(new BiomeTagCondition(TagKey.create(Registries.BIOME, biome)).setReverse(reverse));
+        }
+
+        public GTKubeRecipe biomeTag(ResourceLocation biome) {
+            return biomeTag(biome, false);
         }
 
         public GTKubeRecipe rain(float level, boolean reverse) {
@@ -969,25 +978,6 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
         }
 
-        public GTKubeRecipe adjacentFluid(Fluid... fluids) {
-            return adjacentFluid(false, fluids);
-        }
-
-        public GTKubeRecipe adjacentFluid(boolean isReverse, Fluid... fluids) {
-            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
-        }
-
-        public GTKubeRecipe adjacentFluid(ResourceLocation... tagNames) {
-            return adjacentFluid(false, tagNames);
-        }
-
-        public GTKubeRecipe adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.FLUID, id))
-                    .toList();
-            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
-        }
-
         public GTKubeRecipe adjacentFluidTag(ResourceLocation... tagNames) {
             return adjacentFluidTag(false, tagNames);
         }
@@ -1007,30 +997,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
         }
 
-        public GTKubeRecipe adjacentBlock(Block... blocks) {
-            return adjacentBlock(false, blocks);
-        }
-
-        public GTKubeRecipe adjacentBlock(boolean isReverse, Block... blocks) {
-            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
-        }
-
         public GTKubeRecipe adjacentBlockTag(ResourceLocation... tagNames) {
             return adjacentBlockTag(false, tagNames);
         }
 
         public GTKubeRecipe adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Block>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.BLOCK, id))
-                    .toList();
-            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
-        }
-
-        public GTKubeRecipe adjacentBlock(ResourceLocation... tagNames) {
-            return adjacentBlock(false, tagNames);
-        }
-
-        public GTKubeRecipe adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
             List<TagKey<Block>> tags = Arrays.stream(tagNames)
                     .map(id -> TagKey.create(Registries.BLOCK, id))
                     .toList();

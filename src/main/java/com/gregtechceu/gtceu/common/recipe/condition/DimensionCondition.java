@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -32,14 +31,13 @@ import org.jetbrains.annotations.NotNull;
 public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     // spotless:off
-    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-            .and(ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimensionCondition::getDimension)
-            ).apply(instance, DimensionCondition::new));
+    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimensionCondition::getDimension)
+    ).apply(instance, DimensionCondition::new));
     // spotless:on
 
     @Getter
-    private ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION,
-            ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Level> dimension;
 
     public DimensionCondition(ResourceKey<Level> dimension) {
         this.dimension = dimension;
@@ -85,7 +83,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
-        return level != null && dimension == level.dimension();
+        return level != null && dimension.location().equals(level.dimension().location());
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,6 +125,14 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default boolean shouldWorkingPlaySound() {
         return ConfigHolder.INSTANCE.machines.machineSounds &&
                 (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());
+    }
+
+    /**
+     * Display recipe voltage used by {@link RecipeLogicProvider}
+     */
+
+    default long getDisplayRecipeVoltage() {
+        return -1;
     }
 
     //////////////////////////////////////

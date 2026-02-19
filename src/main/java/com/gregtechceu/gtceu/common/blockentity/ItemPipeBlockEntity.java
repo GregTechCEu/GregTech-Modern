@@ -47,10 +47,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         super(type, pos, blockState);
     }
 
-    public static ItemPipeBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new ItemPipeBlockEntity(type, pos, blockState);
-    }
-
     public long getLevelTime() {
         return hasLevel() ? getLevel().getGameTime() : 0L;
     }

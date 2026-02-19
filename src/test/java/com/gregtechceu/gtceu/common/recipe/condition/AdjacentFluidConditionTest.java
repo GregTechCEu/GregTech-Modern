@@ -32,23 +32,25 @@ public class AdjacentFluidConditionTest {
     public static void prepare(ServerLevel level) {
         ROCK_BREAKER_RECIPE_TYPE = TestUtils.createRecipeType("adjacent_fluid_conditions_tests",
                 GTRecipeTypes.ROCK_BREAKER_RECIPES);
-        ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().beginStaging();
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().addStaging(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
-                .adjacentFluidTag(FluidTags.WATER)
+                .adjacentFluids(FluidTags.WATER)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .build());
 
-        ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().addStaging(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions_multiple_fluids"))
                 .inputItems(new ItemStack(Blocks.OAK_WOOD))
                 .outputItems(new ItemStack(Items.CHARCOAL))
-                .adjacentFluidTag(FluidTags.WATER, FluidTags.LAVA)
+                .adjacentFluids(FluidTags.WATER, FluidTags.LAVA)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .build());
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     // Test for checking if the rock breaker works when the condition is fulfilled

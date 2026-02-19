@@ -2,89 +2,60 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.RotationState;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
 
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDefinition> {
+public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
+        TYPE extends MultiblockMachineBuilder<DEFINITION, TYPE>> extends MachineBuilder<DEFINITION, TYPE> {
 
-    @Setter
     private boolean generator;
-    @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
     /**
      * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
      */
-    @Setter
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
-    @Setter
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    @Setter
-    @Nullable
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
-    @Setter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
+                                    BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                                     BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                     TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, MultiblockMachineDefinition::new, metaMachine::apply, blockFactory,
+        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)), metaMachine::apply,
+                blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
         allowCoverOnFront(true);
@@ -92,396 +63,66 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
+    public TYPE generator(boolean generator) {
+        this.generator = generator;
+        return getThis();
+    }
+
+    public TYPE pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
+        this.pattern = pattern;
+        return getThis();
+    }
+
+    public TYPE allowFlip(boolean allowFlip) {
+        this.allowFlip = allowFlip;
+        return getThis();
+    }
+
+    public TYPE partSorter(Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter) {
+        this.partSorter = partSorter;
+        return getThis();
+    }
+
+    public TYPE partAppearance(TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
+        this.partAppearance = partAppearance;
+        return getThis();
+    }
+
+    public TYPE additionalDisplay(BiConsumer<IMultiController, List<Component>> additionalDisplay) {
+        this.additionalDisplay = additionalDisplay;
+        return getThis();
+    }
+
+    public TYPE shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
         this.shapeInfos.add(d -> List.of(shape.apply(d)));
-        return this;
+        return getThis();
     }
 
-    public MultiblockMachineBuilder shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
+    public TYPE shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
         this.shapeInfos.add(shapes);
-        return this;
+        return getThis();
     }
 
-    public MultiblockMachineBuilder recoveryItems(Supplier<ItemLike[]> items) {
+    public TYPE recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
-        return this;
+        return getThis();
     }
 
-    public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public TYPE recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
-        return this;
-    }
-
-    @Override
-    public MultiblockMachineBuilder machine(Function<IMachineBlockEntity, MetaMachine> metaMachine) {
-        return (MultiblockMachineBuilder) super.machine(metaMachine);
-    }
-
-    @Override
-    public MultiblockMachineBuilder model(@Nullable MachineBuilder.ModelInitializer model) {
-        return (MultiblockMachineBuilder) super.model(model);
-    }
-
-    @Override
-    public MultiblockMachineBuilder blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
-        return (MultiblockMachineBuilder) super.blockModel(blockModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder shape(VoxelShape shape) {
-        return (MultiblockMachineBuilder) super.shape(shape);
-    }
-
-    @Override
-    public MultiblockMachineBuilder multiblockPreviewRenderer(boolean multiBlockWorldPreview,
-                                                              boolean multiBlockXEIPreview) {
-        return (MultiblockMachineBuilder) super.multiblockPreviewRenderer(multiBlockWorldPreview, multiBlockXEIPreview);
-    }
-
-    @Override
-    public MultiblockMachineBuilder rotationState(RotationState rotationState) {
-        return (MultiblockMachineBuilder) super.rotationState(rotationState);
-    }
-
-    @Override
-    public MultiblockMachineBuilder hasBER(boolean hasBER) {
-        return (MultiblockMachineBuilder) super.hasBER(hasBER);
-    }
-
-    @Override
-    public MultiblockMachineBuilder blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
-        return (MultiblockMachineBuilder) super.blockProp(blockProp);
-    }
-
-    @Override
-    public MultiblockMachineBuilder itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
-        return (MultiblockMachineBuilder) super.itemProp(itemProp);
-    }
-
-    @Override
-    public MultiblockMachineBuilder blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
-        return (MultiblockMachineBuilder) super.blockBuilder(blockBuilder);
-    }
-
-    @Override
-    public MultiblockMachineBuilder itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        return (MultiblockMachineBuilder) super.itemBuilder(itemBuilder);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeTypes(GTRecipeType... recipeTypes) {
-        return (MultiblockMachineBuilder) super.recipeTypes(recipeTypes);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeType(GTRecipeType recipeTypes) {
-        return (MultiblockMachineBuilder) super.recipeType(recipeTypes);
-    }
-
-    @Override
-    public MultiblockMachineBuilder tier(int tier) {
-        return (MultiblockMachineBuilder) super.tier(tier);
-    }
-
-    public MultiblockMachineBuilder recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
-        return (MultiblockMachineBuilder) super.recipeOutputLimits(map);
-    }
-
-    @Override
-    public MultiblockMachineBuilder addOutputLimit(RecipeCapability<?> capability, int limit) {
-        return (MultiblockMachineBuilder) super.addOutputLimit(capability, limit);
-    }
-
-    @Override
-    public MultiblockMachineBuilder itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
-        return (MultiblockMachineBuilder) super.itemColor(itemColor);
-    }
-
-    @Override
-    public MultiblockMachineBuilder simpleModel(ResourceLocation model) {
-        return (MultiblockMachineBuilder) super.simpleModel(model);
-    }
-
-    @Override
-    public MultiblockMachineBuilder defaultModel() {
-        return (MultiblockMachineBuilder) super.defaultModel();
-    }
-
-    @Override
-    public MultiblockMachineBuilder tieredHullModel(ResourceLocation model) {
-        return (MultiblockMachineBuilder) super.tieredHullModel(model);
-    }
-
-    @Override
-    public MultiblockMachineBuilder overlayTieredHullModel(String name) {
-        return (MultiblockMachineBuilder) super.overlayTieredHullModel(name);
-    }
-
-    @Override
-    public MultiblockMachineBuilder overlayTieredHullModel(ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.overlayTieredHullModel(overlayModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay,
-                                                                @Nullable String pipeOverlay,
-                                                                @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay,
-                                                                @Nullable ResourceLocation pipeOverlay,
-                                                                @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder workableTieredHullModel(ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.workableTieredHullModel(workableModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder simpleGeneratorModel(ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.simpleGeneratorModel(workableModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.workableCasingModel(baseCasing, overlayModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder sidedOverlayCasingModel(ResourceLocation baseCasing,
-                                                            ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.sidedOverlayCasingModel(baseCasing, workableModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder sidedWorkableCasingModel(ResourceLocation baseCasing,
-                                                             ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(baseCasing, workableModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
-        return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);
-    }
-
-    @Override
-    public MultiblockMachineBuilder appearance(@Nullable Supplier<BlockState> state) {
-        return (MultiblockMachineBuilder) super.appearance(state);
-    }
-
-    @Override
-    public MultiblockMachineBuilder appearanceBlock(Supplier<? extends Block> block) {
-        return (MultiblockMachineBuilder) super.appearanceBlock(block);
-    }
-
-    @Override
-    public MultiblockMachineBuilder langValue(@Nullable String langValue) {
-        return (MultiblockMachineBuilder) super.langValue(langValue);
-    }
-
-    @Override
-    public MultiblockMachineBuilder overlaySteamHullModel(String name) {
-        return (MultiblockMachineBuilder) super.overlaySteamHullModel(name);
-    }
-
-    @Override
-    public MultiblockMachineBuilder overlaySteamHullModel(ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.overlaySteamHullModel(overlayModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay,
-                                                               @Nullable ResourceLocation pipeOverlay,
-                                                               @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay,
-                                                               @Nullable ResourceLocation pipeOverlay,
-                                                               @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay);
-    }
-
-    @Override
-    public MultiblockMachineBuilder workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.workableSteamHullModel(isHighPressure, workableModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder tooltips(@Nullable Component... components) {
-        return (MultiblockMachineBuilder) super.tooltips(components);
-    }
-
-    @Override
-    public MultiblockMachineBuilder tooltips(List<? extends Component> components) {
-        return (MultiblockMachineBuilder) super.tooltips(components);
-    }
-
-    @Override
-    public MultiblockMachineBuilder conditionalTooltip(Component component, BooleanSupplier condition) {
-        return (MultiblockMachineBuilder) super.conditionalTooltip(component, condition);
-    }
-
-    @Override
-    public MultiblockMachineBuilder conditionalTooltip(Component component, boolean condition) {
-        return (MultiblockMachineBuilder) super.conditionalTooltip(component, condition);
+        return getThis();
     }
 
     @Tolerate
-    public MultiblockMachineBuilder partSorter(Comparator<IMultiPart> sorter) {
+    public TYPE partSorter(Comparator<IMultiPart> sorter) {
         this.partSorter = $ -> sorter;
-        return this;
-    }
-
-    @Override
-    public MultiblockMachineBuilder abilities(PartAbility... abilities) {
-        return (MultiblockMachineBuilder) super.abilities(abilities);
-    }
-
-    @Override
-    public MultiblockMachineBuilder modelProperty(Property<?> property) {
-        return (MultiblockMachineBuilder) super.modelProperty(property);
-    }
-
-    @Override
-    public <T extends Comparable<T>> MultiblockMachineBuilder modelProperty(Property<T> property,
-                                                                            @Nullable T defaultValue) {
-        return (MultiblockMachineBuilder) super.modelProperty(property, defaultValue);
-    }
-
-    @Override
-    public MultiblockMachineBuilder modelProperties(Property<?>... properties) {
-        return (MultiblockMachineBuilder) super.modelProperties(properties);
-    }
-
-    @Override
-    public MultiblockMachineBuilder modelProperties(Collection<Property<?>> properties) {
-        return (MultiblockMachineBuilder) super.modelProperties(properties);
-    }
-
-    @Override
-    public MultiblockMachineBuilder modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
-        return (MultiblockMachineBuilder) super.modelProperties(properties);
-    }
-
-    @Override
-    public MultiblockMachineBuilder removeModelProperty(Property<?> property) {
-        return (MultiblockMachineBuilder) super.removeModelProperty(property);
-    }
-
-    @Override
-    public MultiblockMachineBuilder clearModelProperties() {
-        return (MultiblockMachineBuilder) super.clearModelProperties();
-    }
-
-    @Override
-    public MultiblockMachineBuilder paintingColor(int paintingColor) {
-        return (MultiblockMachineBuilder) super.paintingColor(paintingColor);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeModifier(RecipeModifier recipeModifier) {
-        return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
-        return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeModifiers(RecipeModifier... recipeModifiers) {
-        return (MultiblockMachineBuilder) super.recipeModifiers(recipeModifiers);
-    }
-
-    @Override
-    public MultiblockMachineBuilder recipeModifiers(boolean alwaysTryModifyRecipe, RecipeModifier... recipeModifiers) {
-        return (MultiblockMachineBuilder) super.recipeModifiers(alwaysTryModifyRecipe, recipeModifiers);
-    }
-
-    public MultiblockMachineBuilder noRecipeModifier() {
-        return (MultiblockMachineBuilder) super.noRecipeModifier();
-    }
-
-    @Override
-    public MultiblockMachineBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
-        return (MultiblockMachineBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
-    }
-
-    @Override
-    public MultiblockMachineBuilder beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
-        return (MultiblockMachineBuilder) super.beforeWorking(beforeWorking);
-    }
-
-    @Override
-    public MultiblockMachineBuilder onWorking(Predicate<IRecipeLogicMachine> onWorking) {
-        return (MultiblockMachineBuilder) super.onWorking(onWorking);
-    }
-
-    @Override
-    public MultiblockMachineBuilder onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
-        return (MultiblockMachineBuilder) super.onWaiting(onWaiting);
-    }
-
-    @Override
-    public MultiblockMachineBuilder afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
-        return (MultiblockMachineBuilder) super.afterWorking(afterWorking);
-    }
-
-    @Override
-    public MultiblockMachineBuilder regressWhenWaiting(boolean regressWhenWaiting) {
-        return (MultiblockMachineBuilder) super.regressWhenWaiting(regressWhenWaiting);
-    }
-
-    @Override
-    public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
-        return (MultiblockMachineBuilder) super.editableUI(editableUI);
-    }
-
-    @Override
-    public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
-        return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
-    }
-
-    @Override
-    public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
-        return (MultiblockMachineBuilder) super.allowExtendedFacing(allowExtendedFacing);
-    }
-
-    @Override
-    public MultiblockMachineBuilder allowCoverOnFront(boolean allowCoverOnFront) {
-        return (MultiblockMachineBuilder) super.allowCoverOnFront(allowCoverOnFront);
+        return getThis();
     }
 
     @Override
     @HideFromJS
-    public MultiblockMachineDefinition register() {
+    public DEFINITION register() {
         var definition = super.register();
         definition.setGenerator(generator);
         // noinspection ConstantValue it can be null by mistake.

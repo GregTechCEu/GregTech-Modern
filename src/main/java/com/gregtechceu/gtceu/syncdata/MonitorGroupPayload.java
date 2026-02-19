@@ -22,10 +22,8 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", payload.getName());
         ListTag list = new ListTag();
-        payload.getRelativePositions().forEach(pos -> {
-            CompoundTag subtag = new CompoundTag();
-            subtag.put("pos", NbtUtils.writeBlockPos(pos));
-            list.add(subtag);
+        payload.getMonitorPositions().forEach(pos -> {
+            list.add(NbtUtils.writeBlockPos(pos));
         });
         if (payload.getTargetRaw() != null) {
             tag.put("targetPos", NbtUtils.writeBlockPos(payload.getTargetRaw()));

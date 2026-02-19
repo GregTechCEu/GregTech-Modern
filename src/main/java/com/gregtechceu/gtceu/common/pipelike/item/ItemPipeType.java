@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.model.PipeModel;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -72,25 +74,18 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(Material material) {
-        PipeModel model;
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
+        ResourceLocation sideTexture = GTCEu.id("block/pipe/pipe_side");
+        ResourceLocation endTexture = GTCEu.id("block/pipe/pipe_%s_in"
+                .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name));
         if (material.hasProperty(PropertyKey.WOOD)) {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"),
-                    () -> GTCEu.id("block/pipe/pipe_%s_in_wood"
-                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
-                    null, null);
-        } else {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"),
-                    () -> GTCEu.id("block/pipe/pipe_%s_in"
-                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
-                    null, null/*
-                               * () -> GTCEu.id("block/pipe/pipe_side_secondary"), () ->
-                               * GTCEu.id("block/pipe/pipe_%s_in_secondary".formatted(this.isRestrictive() ?
-                               * values()[this.ordinal() - 4].name : name)) TODO enable once the textures are added
-                               */);
+            sideTexture = sideTexture.withSuffix("_wood");
+            endTexture = endTexture.withSuffix("_wood");
         }
+
+        PipeModel model = new PipeModel(block, provider, thickness, sideTexture, endTexture);
         if (isRestrictive()) {
-            model.setSideOverlayTexture(GTCEu.id("block/pipe/pipe_restrictive"));
+            model.setSideOverlay(GTCEu.id("block/pipe/pipe_restrictive"));
         }
         return model;
     }

@@ -561,7 +561,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                         BlockPos blockPos = new BlockPos(x, y, z);
                         BlockState state = level.getBlockState(blockPos);
                         if (state.getDestroySpeed(level, blockPos) >= 0 &&
-                                level.getBlockEntity(blockPos) == null &&
                                 state.is(Tags.Blocks.ORES)) {
                             blocks.addLast(blockPos);
                         }

@@ -19,8 +19,8 @@
 // import net.minecraft.util.valueproviders.UniformInt;
 // import net.minecraft.world.item.ItemStack;
 // import net.minecraft.world.item.Items;
-// import net.minecraftforge.gametest.GameTestHolder;
-// import net.minecraftforge.gametest.PrefixGameTestTemplate;
+// import net.neoforged.neoforge.gametest.GameTestHolder;
+// import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 // import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
 // import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;

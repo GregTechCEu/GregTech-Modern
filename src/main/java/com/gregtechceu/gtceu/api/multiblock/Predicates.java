@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
@@ -25,11 +26,13 @@ import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import org.apache.commons.lang3.ArrayUtils;
@@ -40,6 +43,8 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.BORDERLESS_LAMPS;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.LAMPS;
 
 public class Predicates {
 
@@ -100,6 +105,32 @@ public class Predicates {
 
     public static TraceabilityPredicate air() {
         return new TraceabilityPredicate(SimplePredicate.AIR);
+    }
+
+    @SafeVarargs
+    public static TraceabilityPredicate lamps(BlockEntry<LampBlock>... lampEntries) {
+        return new TraceabilityPredicate(blockWorldState -> {
+            BlockState state = blockWorldState.getBlockState();
+            for (BlockEntry<LampBlock> entry : lampEntries) {
+                if (state.is(entry.get())) return true;
+            }
+            return false;
+        }, () -> Arrays.stream(lampEntries)
+                .map(entry -> new BlockInfo(entry.get().defaultBlockState(), null))
+                .toArray(BlockInfo[]::new));
+    }
+
+    public static TraceabilityPredicate anyLamp() {
+        List<BlockEntry<LampBlock>> all = new ArrayList<>();
+        all.addAll(LAMPS.values());
+        all.addAll(BORDERLESS_LAMPS.values());
+        return lamps(all.toArray(BlockEntry[]::new));
+    }
+
+    private static final Map<DyeColor, TraceabilityPredicate> LAMPS_BY_COLOR = new EnumMap<>(DyeColor.class);
+
+    public static TraceabilityPredicate lampsByColor(DyeColor color) {
+        return LAMPS_BY_COLOR.computeIfAbsent(color, c -> lamps(LAMPS.get(c), BORDERLESS_LAMPS.get(c)));
     }
 
     public static TraceabilityPredicate abilities(PartAbility... abilities) {

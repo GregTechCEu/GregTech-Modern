@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic.Status;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.GTModels;
+import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
@@ -23,31 +24,47 @@ public class HPCAOverlay {
     // spotless:off
     public static HPCAOverlay get(ResourceLocation normalSprite, ResourceLocation damagedSprite,
                                   ExistingFileHelper fileHelper) {
-        // normal
-        if (!fileHelper.exists(normalSprite, GTBlockstateProvider.TEXTURE)) {
-            return HPCAOverlay.EMPTY;
+        if (fileHelper instanceof RuntimeExistingFileHelper runtimeFileHelper) {
+            // if fileHelper is an instance of RuntimeExistingFileHelper, we have to enable its existence checking.
+            // the AutoCloseable warning is suppressed here because there's no clean way to
+            // use a try-with-resources statement in this.
+            //noinspection resource
+            fileHelper = runtimeFileHelper.activeHelper();
         }
-        ResourceLocation activeSprite = normalSprite.withSuffix("_active");
-        if (!fileHelper.exists(activeSprite, GTBlockstateProvider.TEXTURE)) activeSprite = normalSprite;
 
-        ResourceLocation damagedActiveSprite = damagedSprite.withSuffix("_active");
-        if (!fileHelper.exists(damagedActiveSprite, GTBlockstateProvider.TEXTURE)) damagedActiveSprite = damagedSprite;
+        try {
+            // normal
+            if (!fileHelper.exists(normalSprite, GTBlockstateProvider.TEXTURE)) {
+                return HPCAOverlay.EMPTY;
+            }
+            ResourceLocation activeSprite = normalSprite.withSuffix("_active");
+            if (!fileHelper.exists(activeSprite, GTBlockstateProvider.TEXTURE)) activeSprite = normalSprite;
 
-        // emissive
-        ResourceLocation normalSpriteEmissive = normalSprite.withSuffix("_emissive");
-        if (!fileHelper.exists(normalSpriteEmissive, GTBlockstateProvider.TEXTURE)) normalSpriteEmissive = null;
+            ResourceLocation damagedActiveSprite = damagedSprite.withSuffix("_active");
+            if (!fileHelper.exists(damagedActiveSprite, GTBlockstateProvider.TEXTURE)) damagedActiveSprite = damagedSprite;
 
-        ResourceLocation activeSpriteEmissive = activeSprite.withSuffix("_emissive");
-        if (!fileHelper.exists(activeSpriteEmissive, GTBlockstateProvider.TEXTURE)) activeSpriteEmissive = null;
+            // emissive
+            ResourceLocation normalSpriteEmissive = normalSprite.withSuffix("_emissive");
+            if (!fileHelper.exists(normalSpriteEmissive, GTBlockstateProvider.TEXTURE)) normalSpriteEmissive = null;
 
-        ResourceLocation damagedSpriteEmissive = damagedSprite.withSuffix("_emissive");
-        if (!fileHelper.exists(damagedSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedSpriteEmissive = null;
+            ResourceLocation activeSpriteEmissive = activeSprite.withSuffix("_emissive");
+            if (!fileHelper.exists(activeSpriteEmissive, GTBlockstateProvider.TEXTURE)) activeSpriteEmissive = null;
 
-        ResourceLocation damagedActiveSpriteEmissive = damagedActiveSprite.withSuffix("_emissive");
-        if (!fileHelper.exists(damagedActiveSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedActiveSpriteEmissive = null;
+            ResourceLocation damagedSpriteEmissive = damagedSprite.withSuffix("_emissive");
+            if (!fileHelper.exists(damagedSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedSpriteEmissive = null;
 
-        return new HPCAOverlay(normalSprite, activeSprite, damagedSprite, damagedActiveSprite,
-                normalSpriteEmissive, activeSpriteEmissive, damagedSpriteEmissive, damagedActiveSpriteEmissive);
+            ResourceLocation damagedActiveSpriteEmissive = damagedActiveSprite.withSuffix("_emissive");
+            if (!fileHelper.exists(damagedActiveSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedActiveSpriteEmissive = null;
+
+            return new HPCAOverlay(normalSprite, activeSprite, damagedSprite, damagedActiveSprite,
+                    normalSpriteEmissive, activeSpriteEmissive, damagedSpriteEmissive, damagedActiveSpriteEmissive);
+        } finally {
+            if (fileHelper instanceof RuntimeExistingFileHelper.Active activeHelper) {
+                // close the active helper, just for good measure.
+                // Also in case we ever make it do anything, this won't be forgotten.
+                activeHelper.close();
+            }
+        }
     }
     // spotless:on
 

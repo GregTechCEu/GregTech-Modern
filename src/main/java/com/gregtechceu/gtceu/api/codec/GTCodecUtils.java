@@ -1,16 +1,22 @@
 package com.gregtechceu.gtceu.api.codec;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class GTCodecUtils {
+public final class GTCodecUtils {
+
+    private GTCodecUtils() {}
 
     public static final Codec<Long> NON_NEGATIVE_LONG = longRangeWithMessage(0, Long.MAX_VALUE,
             (val) -> "Value must be non-negative: " + val);
@@ -55,5 +61,27 @@ public class GTCodecUtils {
         var ex = new JsonParseException(msg);
         ex.setStackTrace(new StackTraceElement[0]);
         return ex;
+    }
+
+    public static <T> Codec<Supplier<T>> lazyParsingCodec(Codec<T> delegate) {
+        return new LazyParsingCodec<>(delegate);
+    }
+
+    private record LazyParsingCodec<A>(Codec<A> codec) implements Codec<Supplier<A>> {
+
+        @Override
+        public <T> DataResult<Pair<Supplier<A>, T>> decode(DynamicOps<T> ops, T input) {
+            return DataResult.success(Pair.of(GTMemoizer.memoize(() -> deferredDecode(ops, input)), input));
+        }
+
+        @Override
+        public <T> DataResult<T> encode(Supplier<A> input, DynamicOps<T> ops, T prefix) {
+            return input.get() == null ? DataResult.success(prefix) : this.codec.encode(input.get(), ops, prefix);
+        }
+
+        private <T> A deferredDecode(DynamicOps<T> ops, T input) {
+            return this.codec.decode(ops, input)
+                    .map(Pair::getFirst).getOrThrow();
+        }
     }
 }

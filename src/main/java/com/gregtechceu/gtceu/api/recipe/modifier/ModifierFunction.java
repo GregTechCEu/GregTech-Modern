@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 
+import net.minecraft.network.chat.Component;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
@@ -35,6 +37,7 @@ import java.util.Map;
 @FunctionalInterface
 public interface ModifierFunction {
 
+    // TODO: Add reasons for any NULL ModifierFunction (replace them with cancel)
     /**
      * Use this static to denote that the recipe should be cancelled
      */
@@ -42,7 +45,22 @@ public interface ModifierFunction {
     /**
      * Use this static to denote that the recipe doesn't get modified
      */
-    ModifierFunction IDENTITY = recipe -> recipe;
+    ModifierFunction IDENTITY = ModifierFunction.builder().build();
+
+    static ModifierFunction cancel(Component reason) {
+        return new ModifierFunction() {
+
+            @Override
+            public @Nullable GTRecipe apply(@NotNull GTRecipe recipe) {
+                return null;
+            }
+
+            @Override
+            public Component getFailReason() {
+                return reason;
+            }
+        };
+    }
 
     /**
      * Applies this modifier to the passed recipe
@@ -77,6 +95,12 @@ public interface ModifierFunction {
     private GTRecipe applySafe(@Nullable GTRecipe recipe) {
         if (recipe == null) return null;
         return apply(recipe);
+    }
+
+    static final Component DEFAULT_FAILURE = Component.translatable("gtceu.recipe_modifier.default_fail");
+
+    default Component getFailReason() {
+        return DEFAULT_FAILURE;
     }
 
     /**
@@ -159,7 +183,7 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
-                        recipe.data, recipe.duration, recipe.recipeCategory);
+                        recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
                 copied.parallels = recipe.parallels * parallels;
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;

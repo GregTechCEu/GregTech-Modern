@@ -46,7 +46,8 @@ public class MultipleEnergyHatchTest {
         LCR_RECIPE_TYPE = TestUtils.createRecipeType("multiple_energy_hatch_lcr_tests",
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCR_RECIPE_TYPE.getAdditionHandler().beginStaging();
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiple_energy_hatch_ev"))
                 .inputItems(new ItemStack(Items.CYAN_BED))
                 .outputItems(new ItemStack(Items.CYAN_BED))
@@ -54,7 +55,7 @@ public class MultipleEnergyHatchTest {
                 .duration(16)
                 .build());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiple_energy_hatch_iv"))
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Items.BROWN_BED))
@@ -62,13 +63,14 @@ public class MultipleEnergyHatchTest {
                 .duration(16)
                 .build());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiple_energy_hatch_iv"))
                 .inputItems(new ItemStack(Items.GREEN_BED))
                 .outputItems(new ItemStack(Items.GREEN_BED))
                 .EUt(GTValues.V[GTValues.LuV])
                 .duration(16)
                 .build());
+        LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus, ItemBusPartMachine outputBus,

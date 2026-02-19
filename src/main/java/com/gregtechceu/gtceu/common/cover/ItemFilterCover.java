@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -141,5 +142,22 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
             }
             return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("manualIO", getAllowFlow().ordinal());
+        tag.putInt("filterMode", getFilterMode().ordinal());
+        tag.put("filter", attachItem.save(coverHolder.getLevel().registryAccess()));
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
+        itemFilter = ItemFilter.loadFilter(ItemStack
+                .parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")).orElse(ItemStack.EMPTY));
+        super.pasteConfig(player, tag);
     }
 }

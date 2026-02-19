@@ -122,6 +122,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         spreadEnvironmentalHazard();
     }
 
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return GTValues.V[this.tier];
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////

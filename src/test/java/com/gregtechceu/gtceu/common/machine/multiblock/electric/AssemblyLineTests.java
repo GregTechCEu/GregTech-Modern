@@ -33,7 +33,10 @@ public class AssemblyLineTests {
     @BeforeBatch(batch = "Assline")
     public static void prepare(ServerLevel level) {
         ASSLINE_RECIPE_TYPE = TestUtils.createRecipeType("assline_tests", ASSEMBLY_LINE_RECIPES);
-        ASSLINE_RECIPE_TYPE.getLookup().addRecipe(ASSLINE_RECIPE_TYPE
+        var assLineHandler = ASSLINE_RECIPE_TYPE.getAdditionHandler();
+        assLineHandler.beginStaging();
+
+        assLineHandler.addStaging(ASSLINE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_assline"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.ACACIA_WOOD))
                 .inputFluids(new FluidStack(Fluids.WATER, 1), new FluidStack(Fluids.LAVA, 1))
@@ -41,6 +44,7 @@ public class AssemblyLineTests {
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 // NBT has a schematic in it with an EV energy input hatch
                 .build());
+        assLineHandler.completeStaging();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2,

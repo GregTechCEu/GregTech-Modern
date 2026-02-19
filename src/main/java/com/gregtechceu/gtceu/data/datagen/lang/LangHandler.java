@@ -29,6 +29,7 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
+        RecipeLogicLang.init(provider);
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
@@ -245,6 +246,7 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
         replace(provider, "item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
         replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        replace(provider, "item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
         replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
         provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
@@ -255,6 +257,10 @@ public class LangHandler {
         provider.add("item.gtceu.tool.lv_buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.hv_screwdriver", "%s Screwdriver (HV)");
+        provider.add("item.gtceu.tool.hv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.iv_screwdriver", "%s Screwdriver (IV)");
+        provider.add("item.gtceu.tool.iv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
@@ -307,12 +313,16 @@ public class LangHandler {
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
-        provider.add("metaarmor.nms.boosted_jump.enabled", "NanoMuscle™ Suite: Jump Boost Enabled");
-        provider.add("metaarmor.nms.boosted_jump.disabled", "NanoMuscle™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
         provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
+        provider.add("metaarmor.nms.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.nms.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.qts.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
+        provider.add("metaarmor.qts.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
         provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
         provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
@@ -792,13 +802,30 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
-        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
-        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
-        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
-        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
-        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
-        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
-        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
+
+        provider.add("behaviour.memory_card.tooltip.copy",
+                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
+        provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
+        provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
+        provider.add("behaviour.memory_card.client_msg.copied", "Copied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.pasted", "Applied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.missing_items", "Missing items required to paste configuration");
+        provider.add("behaviour.memory_card.tooltip.items_to_paste",
+                "The following items are needed to paste this configuration:");
+        provider.add("behaviour.memory_card.enabled", "§aEnabled§r");
+        provider.add("behaviour.memory_card.disabled", "§cDisabled§r");
+        provider.add("behaviour.memory_card.copy_target", "Copying: %s");
+
+        provider.add("behaviour.setting.tooltip.item_io", "Item Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.fluid_io", "Fluid Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.auto_output", "§2Auto Output§r");
+        provider.add("behaviour.setting.tooltip.allow_input", "§2Allow Input§r");
+        provider.add("behaviour.setting.tooltip.auto_output_allow_input", "§2Auto Output/Allow Input§r");
+        provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
+        provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
+        provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
+        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: ");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
@@ -996,7 +1023,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU (%s)");
@@ -1044,7 +1071,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
-        provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
+        provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
@@ -1141,7 +1168,7 @@ public class LangHandler {
         provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
@@ -1273,10 +1300,15 @@ public class LangHandler {
         provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
+        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
+        provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
+        provider.add("gtceu.debug.resource_rebuild.start",
+                "Invoking gradle resource rebuild (./gradlew :processResources)");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
+        provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
@@ -1304,12 +1336,7 @@ public class LangHandler {
         provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
         provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
-        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
-        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
-        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1711,6 +1738,27 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.module",
+                "Renders the module in the specified slot onto the central monitor (does not work in a cover)",
+                "Usage:",
+                "  {module <slot> <x> <y>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.setImage",
+                "Sets the image URL in an image module in the specified slot",
+                "Usage:",
+                "  {setImage <slot> <url>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.rect",
+                "Draws a rectangle at the specified position with the specified coordinates and size",
+                "Usage:",
+                "  {rect <x> <y> <width> <height> <colorARGB>} -> empty string",
+                "  {rect 0.5 0.25 2 1 0xFFFFFFFF} -> draws a white rectangle at (0.5, 0.25) with the size (2, 1)");
+        multiLang(provider, "gtceu.placeholder_info.quad",
+                "Draws a quad (must specify parameters for all 4 vertices)",
+                "Usage:",
+                "  {quad <x1> <y1> <x2> <y2> <x3> <y3> <x4> <y4> <color1> <color2> <color3> <color4>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.item",
+                "Returns the amount and id of the item in a specified slot",
+                "Usage:",
+                "  {item <slot>} -> \"31 minecraft:diamond\" (for example)");
         multiLang(provider, "gtceu.placeholder_info.bufferText",
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",

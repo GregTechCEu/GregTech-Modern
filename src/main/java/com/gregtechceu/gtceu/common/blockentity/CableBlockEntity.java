@@ -68,10 +68,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         super(type, pos, blockState);
     }
 
-    public static CableBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new CableBlockEntity(type, pos, blockState);
-    }
-
     @Override
     public boolean canAttachTo(Direction side) {
         if (level != null) {

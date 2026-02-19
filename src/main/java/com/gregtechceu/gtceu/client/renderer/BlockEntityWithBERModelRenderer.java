@@ -45,7 +45,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
         BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
-            if (berModel.getBlockEntityType() != blockEntity.getType()) return;
+            if (berModel.getBlockEntityType() != null && berModel.getBlockEntityType() != blockEntity.getType()) return;
 
             ((IBlockEntityRendererBakedModel<T>) berModel).render(blockEntity, partialTick,
                     poseStack, buffer, packedLight, packedOverlay);
@@ -79,7 +79,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
         BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
-            if (berModel.getBlockEntityType() == blockEntity.getType()) {
+            if (berModel.getBlockEntityType() != null && berModel.getBlockEntityType() == blockEntity.getType()) {
                 return ((IBlockEntityRendererBakedModel<T>) berModel).shouldRenderOffScreen(blockEntity);
             }
         }
@@ -92,7 +92,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
         BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
-            if (berModel.getBlockEntityType() == blockEntity.getType()) {
+            if (berModel.getBlockEntityType() != null && berModel.getBlockEntityType() == blockEntity.getType()) {
                 return ((IBlockEntityRendererBakedModel<T>) berModel).shouldRender(blockEntity, cameraPos);
             }
         }

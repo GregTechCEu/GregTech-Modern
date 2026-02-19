@@ -430,7 +430,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = new MultiblockMachineBuilder(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
@@ -441,7 +441,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = new MultiblockMachineBuilder(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 machine::create,
                 MetaMachineBlock::new,

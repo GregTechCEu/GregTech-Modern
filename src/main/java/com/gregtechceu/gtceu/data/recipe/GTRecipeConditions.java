@@ -14,6 +14,7 @@ public final class GTRecipeConditions {
             GTCEu.id("biome"), new RecipeConditionType<>(BiomeCondition::new, BiomeCondition.CODEC));
     public static final RecipeConditionType<DimensionCondition> DIMENSION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("dimension"), new RecipeConditionType<>(DimensionCondition::new, DimensionCondition.CODEC));
+    public static final RecipeConditionType<BiomeTagCondition> BIOME_TAG = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, GTCEu.id("biome_tag"), new RecipeConditionType<>(BiomeTagCondition::new, BiomeTagCondition.CODEC));
     public static final RecipeConditionType<PositionYCondition> POSITION_Y = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("pos_y"), new RecipeConditionType<>(PositionYCondition::new, PositionYCondition.CODEC));
     public static final RecipeConditionType<RainingCondition> RAINING = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,

@@ -25,12 +25,11 @@ import org.jetbrains.annotations.NotNull;
 public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
     private static final Long2ObjectMap<QuestObject> QUEST_CACHE = new Long2ObjectOpenHashMap<>();
-    public static final MapCodec<FTBQuestCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId))
-                    .apply(instance, FTBQuestCondition::new));
-
-    public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
+    // spotless:off
+    public static final MapCodec<FTBQuestCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId)
+    ).apply(instance, FTBQuestCondition::new));
+    // spotless:on
 
     private long parsedQuestId;
 
@@ -74,7 +73,7 @@ public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
     }
 
     @Override
-    public RecipeCondition<FTBQuestCondition> createTemplate() {
+    public FTBQuestCondition createTemplate() {
         return new FTBQuestCondition();
     }
 }

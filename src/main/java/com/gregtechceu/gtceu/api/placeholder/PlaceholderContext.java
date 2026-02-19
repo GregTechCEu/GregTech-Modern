@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import lombok.With;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -17,4 +18,16 @@ public record PlaceholderContext(Level level,
                                  @Nullable ItemStackHandler itemStackHandler,
                                  @Nullable CoverBehavior cover,
                                  @Nullable MultiLineComponent previousText,
-                                 UUID uuid) {}
+                                 UUID uuid,
+                                 @With int index) {
+
+    public PlaceholderContext(Level level,
+                              BlockPos pos,
+                              Direction side,
+                              @Nullable ItemStackHandler itemStackHandler,
+                              @Nullable CoverBehavior cover,
+                              @Nullable MultiLineComponent previousText,
+                              UUID uuid) {
+        this(level, pos, side, itemStackHandler, cover, previousText, uuid, 0);
+    }
+}

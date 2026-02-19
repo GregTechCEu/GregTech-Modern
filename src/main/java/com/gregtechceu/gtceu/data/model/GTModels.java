@@ -2,10 +2,7 @@ package com.gregtechceu.gtceu.data.model;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
-import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.block.IFilterType;
-import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
@@ -43,6 +40,8 @@ import java.io.IOException;
 public class GTModels {
 
     public static final ResourceLocation BLANK_TEXTURE = GTCEu.id("block/void");
+
+    public static final String ACTIVE_SUFFIX = "_active";
 
     // region BLOCK MODELS
 
@@ -298,6 +297,12 @@ public class GTModels {
                     .partialState().with(GTBlockStateProperties.ACTIVE, true)
                     .modelForState().modelFile(active).addModel();
         };
+    }
+
+    public static void createPipeBlockModel(DataGenContext<Block, ? extends PipeBlock<?, ?, ?>> ctx,
+                                            GTBlockstateProvider prov) {
+        // the pipe model generator handles adding its models to the provider by itself
+        ctx.getEntry().createPipeModel(prov).initModels();
     }
 
     // endregion

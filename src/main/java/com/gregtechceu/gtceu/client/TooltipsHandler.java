@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
 import com.gregtechceu.gtceu.data.fluid.GTFluids;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -125,7 +126,8 @@ public class TooltipsHandler {
             tooltips.accept(Component.translatable(key));
         }
 
-        tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
+        tooltips.accept(Component.translatable("gtceu.fluid.temperature",
+                FormattingUtil.formatTemperature(fluidType.getTemperature())));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
             tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
         }

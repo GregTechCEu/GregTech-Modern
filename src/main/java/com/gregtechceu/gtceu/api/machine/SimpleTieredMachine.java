@@ -305,6 +305,15 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         }
     }
 
+    /// //////////////////////////////////
+    // ****** RECIPE LOGIC *******//
+    /// //////////////////////////////////
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return GTValues.V[this.tier];
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////

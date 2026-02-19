@@ -58,22 +58,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
     @Getter(lazy = true)
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
-
-    public GTRecipe(GTRecipeType recipeType,
-                    Map<RecipeCapability<?>, List<Content>> inputs,
-                    Map<RecipeCapability<?>, List<Content>> outputs,
-                    Map<RecipeCapability<?>, List<Content>> tickInputs,
-                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
-                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition<?>> conditions,
-                    @NotNull CompoundTag data, int duration, @NotNull GTRecipeCategory recipeCategory) {
-        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
-                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, Collections.emptyList(), data, duration, recipeCategory);
-    }
+    public int groupColor = -1;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -88,10 +73,30 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, recipeCategory);
+                conditions, ingredientActions, data, duration, recipeCategory, groupColor);
+    }
+
+    public GTRecipe(GTRecipeType recipeType,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, List.of(), data, duration, recipeCategory, groupColor);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -108,7 +113,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
+                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -127,6 +132,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this.data = data;
         this.duration = duration;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
+        this.groupColor = groupColor;
     }
 
     public GTRecipe copy() {
@@ -144,7 +150,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }

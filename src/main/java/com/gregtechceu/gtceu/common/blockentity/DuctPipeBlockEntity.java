@@ -31,12 +31,8 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     @Getter
     protected DuctNetHandler defaultHandler;
 
-    protected DuctPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public DuctPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-    }
-
-    public static DuctPipeBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new DuctPipeBlockEntity(type, pos, blockState);
     }
 
     public static void onBlockEntityRegister(BlockEntityType<DuctPipeBlockEntity> ductBlockEntityBlockEntityType) {}

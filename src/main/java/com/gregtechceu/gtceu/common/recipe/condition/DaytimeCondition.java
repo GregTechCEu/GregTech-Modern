@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
-    public static final MapCodec<DaytimeCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .apply(instance, DaytimeCondition::new));
+    // spotless:off
+    public static final MapCodec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
+    // spotless:off
 
     public DaytimeCondition(boolean isReverse) {
         super(isReverse);

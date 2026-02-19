@@ -115,7 +115,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
                 }
             }
 
-            var random = RandomSource.create(31L * 31 * chunkX + chunkZ * 31L + Long.hashCode(serverLevel.getSeed()));
+            var random = RandomSource.create(serverLevel.getSeed() ^ ChunkPos.asLong(chunkX, chunkZ));
 
             int maximumYield = 0;
             if (definition != null) {

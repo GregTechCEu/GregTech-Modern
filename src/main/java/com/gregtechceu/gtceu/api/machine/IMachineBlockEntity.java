@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.core.mixins.LevelAccessor;
 
@@ -14,12 +14,10 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.extensions.IBlockEntityExtension;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,11 +28,8 @@ import org.jetbrains.annotations.Nullable;
  * <p/>
  * Also delivers most of the Information about TileEntities.
  */
-public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
+public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
                                      IAutoPersistBlockEntity, IPaintable, IBlockEntityExtension {
-
-    ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
-    ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     default BlockEntity self() {
         return (BlockEntity) this;

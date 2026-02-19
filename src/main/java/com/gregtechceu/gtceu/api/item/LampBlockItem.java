@@ -1,19 +1,26 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.model.BakedModelWrapper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,10 +28,19 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LampBlockItem extends BlockItem implements IItemRendererProvider {
+import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class LampBlockItem extends BlockItem {
 
     public LampBlockItem(LampBlock block, Properties properties) {
         super(block, properties);
+
+        if (GTCEu.isClientSide()) {
+            ClientCallWrapper.registerEventListener(this);
+        }
     }
 
     @NotNull
@@ -54,15 +70,39 @@ public class LampBlockItem extends BlockItem implements IItemRendererProvider {
         }
     }
 
-    @Nullable
     @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        BlockState state = getBlock().defaultBlockState();
-        LampData data = stack.getOrDefault(GTDataComponents.LAMP_DATA, LampData.EMPTY);
-        state = state.setValue(LampBlock.INVERTED, data.inverted())
-                .setValue(LampBlock.BLOOM, data.bloom())
-                .setValue(LampBlock.LIGHT, data.lit());
-        return getBlock().getRenderer(state);
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return LampItemRenderer.getInstance();
+            }
+        });
+    }
+
+    private static class ClientCallWrapper {
+
+        private static void registerEventListener(LampBlockItem item) {
+            ModelUtils.registerBakeEventListener(false, event -> {
+                ResourceLocation model = BuiltInRegistries.ITEM.getKey(item).withPrefix("item/");
+                BakedModel original = event.getModels().get(model);
+                ModelResourceLocation modelLoc;
+                if (original == null) {
+                    modelLoc = ModelResourceLocation.inventory(model);
+                    original = event.getModels().get(model);
+                } else {
+                    modelLoc = ModelResourceLocation.inventory(model);
+                }
+                event.getModels().put(modelLoc, new BakedModelWrapper<>(original) {
+
+                    @Override
+                    public boolean isCustomRenderer() {
+                        return true;
+                    }
+                });
+            });
+        }
     }
 
     public record LampData(boolean inverted, boolean bloom, boolean lit) {

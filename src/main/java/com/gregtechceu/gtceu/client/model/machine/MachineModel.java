@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
@@ -53,14 +54,11 @@ import com.mojang.math.Transformation;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
                                 IBlockEntityRendererBakedModel<BlockEntity> {
@@ -139,7 +137,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings("deprecation")
     @Override
-    public @NotNull TextureAtlasSprite getParticleIcon() {
+    public TextureAtlasSprite getParticleIcon() {
         if (particleIcon != null) {
             return particleIcon;
         } else if (multiPart != null) {
@@ -153,9 +151,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData) {
-        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
-        BlockPos pos = modelData.get(MODEL_DATA_POS);
+    public TextureAtlasSprite getParticleIcon(ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
 
         MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         MachineRenderState renderState = machine != null ? machine.getRenderState() :
@@ -172,11 +170,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
-                                           @NotNull BlockState state, @NotNull ModelData modelData) {
+    public ModelData getModelData(BlockAndTintGetter level, BlockPos pos,
+                                  BlockState state, ModelData modelData) {
         ModelData.Builder builder = modelData.derive()
-                .with(MODEL_DATA_LEVEL, level)
-                .with(MODEL_DATA_POS, pos);
+                .with(GTModelProperties.LEVEL, level)
+                .with(GTModelProperties.POS, pos);
         MetaMachine machine = MetaMachine.getMachine(level, pos);
         MachineRenderState renderState = machine == null ? definition.defaultRenderState() : machine.getRenderState();
 
@@ -194,9 +192,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             @NotNull RandomSource rand,
-                                             @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                    RandomSource rand,
+                                    ModelData modelData, @Nullable RenderType renderType) {
         // If there is a root transform, undo the ModelState transform, apply it,
         // then re-apply the ModelState transform.
         // This is necessary because of things like UV locking, which should only respond to the ModelState,
@@ -207,7 +205,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         List<BakedQuad> quads;
-        if (modelData.has(MODEL_DATA_LEVEL) && modelData.has(MODEL_DATA_POS)) {
+        if (modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS)) {
             quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
@@ -218,10 +216,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     public List<BakedQuad> getMachineQuads(@Nullable BlockState blockState, @Nullable Direction side,
-                                           @NotNull RandomSource rand, @NotNull ModelData modelData,
+                                           RandomSource rand, ModelData modelData,
                                            @Nullable RenderType renderType) {
-        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
-        BlockPos pos = modelData.get(MODEL_DATA_POS);
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
 
         MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         // render machine quads
@@ -262,7 +260,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public List<BakedQuad> renderMachine(@Nullable MetaMachine machine, @Nullable BlockAndTintGetter level,
                                          @Nullable BlockPos pos, @Nullable BlockState blockState,
                                          @Nullable Direction side, RandomSource rand,
-                                         @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                         ModelData modelData, @Nullable RenderType renderType) {
         List<BakedQuad> quads = new LinkedList<>();
 
         MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
@@ -284,9 +282,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         return quads;
     }
 
-    public void renderBaseModel(List<BakedQuad> quads, @NotNull MachineRenderState renderState,
+    public void renderBaseModel(List<BakedQuad> quads, MachineRenderState renderState,
                                 @Nullable BlockState blockState, @Nullable Direction side, RandomSource rand,
-                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                ModelData modelData, @Nullable RenderType renderType) {
         if (multiPart != null) {
             quads.addAll(multiPart.getMachineQuads(definition, renderState, blockState,
                     side, rand, modelData, renderType));
@@ -388,8 +386,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void render(@NotNull BlockEntity blockEntity, float partialTick,
-                       @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+    public void render(BlockEntity blockEntity, float partialTick,
+                       PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
         if (machineBE.getDefinition() != getDefinition()) return;
@@ -450,7 +448,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public boolean shouldRender(BlockEntity blockEntity, @NotNull Vec3 cameraPos) {
+    public boolean shouldRender(BlockEntity blockEntity, Vec3 cameraPos) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
         if (machineBE.getDefinition() != getDefinition()) return false;
         if (machineBE.getMetaMachine().getCoverContainer().hasDynamicCovers()) return true;

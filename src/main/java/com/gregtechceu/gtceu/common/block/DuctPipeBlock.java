@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
@@ -8,8 +9,8 @@ import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -34,15 +35,11 @@ import java.util.List;
 
 public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, LevelDuctPipeNet> {
 
-    public final PipeBlockRenderer renderer;
-    public final PipeModel model;
     private final DuctPipeProperties properties;
 
     public DuctPipeBlock(Properties properties, DuctPipeType type) {
         super(properties, type);
         this.properties = new DuctPipeProperties(type.getRateMultiplier());
-        this.model = type.createPipeModel();
-        this.renderer = new PipeBlockRenderer(this.model);
     }
 
     @Override
@@ -99,13 +96,9 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     }
 
     @Override
-    public @Nullable PipeBlockRenderer getRenderer(BlockState state) {
-        return renderer;
-    }
-
-    @Override
-    protected PipeModel getPipeModel() {
-        return model;
+    public PipeModel createPipeModel(GTBlockstateProvider provider) {
+        return new PipeModel(this, provider, this.pipeType.getThickness(),
+                GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.model.PipeModel;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -72,26 +74,20 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(Material material) {
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
+        String side = "block/pipe/pipe%s_side";
+        String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {
-            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"),
-                    () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(name)), null, null);
+            side += "_wood";
+            end += "_wood";
         }
         if (channels == 9) {
-            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_non_side"),
-                    () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
-                    null, null);
+            side = side.formatted("_non");
         } else if (channels == 4) {
-            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_quad_side"),
-                    () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
-                    null, null);
+            side = side.formatted("_quad");
+        } else {
+            side = side.formatted("");
         }
-        return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"),
-                () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
-                null, null/*
-                           * () -> GTCEu.id("block/pipe/pipe_side_secondary"), () ->
-                           * GTCEu.id("block/pipe/pipe_%s_in_secondary".formatted(name)) TODO enable once the textures
-                           * are added
-                           */);
+        return new PipeModel(block, provider, thickness, GTCEu.id(side), GTCEu.id(end));
     }
 }

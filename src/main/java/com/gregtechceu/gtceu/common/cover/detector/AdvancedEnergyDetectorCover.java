@@ -19,6 +19,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -183,5 +185,21 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putLong("min", minValue);
+        tag.putLong("max", maxValue);
+        tag.putBoolean("percent", usePercent);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setMinValue(tag.getLong("min"));
+        setMaxValue(tag.getLong("max"));
+        setUsePercent(tag.getBoolean("percent"));
+        super.pasteConfig(player, tag);
     }
 }

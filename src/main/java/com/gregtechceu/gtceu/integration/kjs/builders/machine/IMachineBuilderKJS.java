@@ -13,7 +13,7 @@ public interface IMachineBuilderKJS {
 
     void generateMachineModels();
 
-    default void generateMachineModel(@Nullable MachineBuilder<?> builder, @Nullable MachineDefinition definition) {
+    default void generateMachineModel(@Nullable MachineBuilder<?, ?> builder, @Nullable MachineDefinition definition) {
         if (builder == null || definition == null) return;
         if (builder.model() == null && builder.blockModel() == null) return;
 

@@ -11,8 +11,9 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.model.PipeModel;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
@@ -71,8 +72,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
 
     @Override
     public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
-        if (pipeType.isCable && index == 0) {
-            return 0xFF404040;
+        if (pipeType.isCable && (index == 0 || index == 2)) {
+            return 0x404040;
         }
         return super.tinted(state, level, pos, index);
     }
@@ -110,8 +111,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    protected PipeModel createPipeModel() {
-        return pipeType.createPipeModel(material);
+    public PipeModel createPipeModel(GTBlockstateProvider provider) {
+        return pipeType.createPipeModel(this, material, provider);
     }
 
     @Override

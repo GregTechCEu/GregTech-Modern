@@ -437,9 +437,9 @@ public class GTResearchMachines {
             .register();
 
     @NotNull
-    private static MachineBuilder<MachineDefinition> registerDataHatch(String name, String displayName, int tier,
-                                                                       Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                       String model, PartAbility... abilities) {
+    private static MachineBuilder<MachineDefinition, ?> registerDataHatch(String name, String displayName, int tier,
+                                                                          Function<IMachineBlockEntity, MetaMachine> constructor,
+                                                                          String model, PartAbility... abilities) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .tier(tier)
@@ -448,9 +448,9 @@ public class GTResearchMachines {
                 .overlayTieredHullModel(model);
     }
 
-    private static MachineBuilder<MachineDefinition> registerHPCAPart(String name, String displayName,
-                                                                      Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                      String texture, boolean isAdvanced) {
+    private static MachineBuilder<MachineDefinition, ?> registerHPCAPart(String name, String displayName,
+                                                                         Function<IMachineBlockEntity, MetaMachine> constructor,
+                                                                         String texture, boolean isAdvanced) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
