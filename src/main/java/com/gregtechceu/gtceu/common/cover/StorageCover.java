@@ -11,9 +11,8 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -75,17 +74,15 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Column()
-                .child(IMuiCover.createTitleRow(this.getAttachItem()))
-                .child(SlotGroupWidget.builder()
-                        .matrix("IIIIII", "IIIIII", "IIIIII")
-                        .key('I', i -> new ItemSlot()
-                                .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
-                        .build())
+    public void createCoverUIRows(Flow parent, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        parent.child(SlotGroupWidget.builder()
+                .matrix("IIIIII", "IIIIII", "IIIIII")
+                .key('I', i -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
+                .build())
                 .rightRel(0.5F)
                 .margin(3)
-                .childPadding(3)
                 .coverChildren();
     }
 

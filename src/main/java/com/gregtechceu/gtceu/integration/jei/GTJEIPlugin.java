@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.mui.screen.ContainerScreenWrapper;
+import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 import com.gregtechceu.gtceu.client.mui.screen.ScreenWrapper;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -13,8 +14,8 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jei.circuit.GTProgrammedCircuitCategory;
-import com.gregtechceu.gtceu.integration.jei.handler.JEIContainerHandler;
-import com.gregtechceu.gtceu.integration.jei.handler.JEIScreenHandler;
+import com.gregtechceu.gtceu.integration.jei.handler.JeiContainerHandler;
+import com.gregtechceu.gtceu.integration.jei.handler.JeiScreenHandler;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
@@ -77,7 +78,7 @@ public class GTJEIPlugin implements IModPlugin {
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (category.shouldRegisterDisplays()) {
-                registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
+                // registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }
         registry.addRecipeCategories(new GTProgrammedCircuitCategory(jeiHelpers));
@@ -151,9 +152,15 @@ public class GTJEIPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-        registration.addGhostIngredientHandler(ScreenWrapper.class, JEIScreenHandler.of(ScreenWrapper.class));
-        registration.addGhostIngredientHandler(ContainerScreenWrapper.class,
-                JEIScreenHandler.of(ContainerScreenWrapper.class));
-        registration.addGuiContainerHandler(ContainerScreenWrapper.class, JEIContainerHandler.INSTANCE);
+
+        JeiScreenHandler.register(ScreenWrapper.class, registration);
+        JeiScreenHandler.register(ContainerScreenWrapper.class, registration);
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
+
+        JeiContainerHandler.register(ModularContainerMenu.class, registration);
     }
 }

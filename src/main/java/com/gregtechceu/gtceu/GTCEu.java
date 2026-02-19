@@ -21,7 +21,6 @@ import dev.emi.emi.config.EmiConfig;
 import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mariuszgromada.math.mxparser.License;
 
 import java.nio.file.Path;
 
@@ -33,9 +32,7 @@ public class GTCEu {
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    static {
-        License.iConfirmNonCommercialUse("GTCEu");
-    }
+    public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
     public GTCEu() {
         GTCEu.init();

@@ -224,7 +224,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
         GuiAxis other = axis.getOther();
         boolean isWrapped = flows.size() > 1;
         // padding is applied in layoutCrossAxis()
-        int availableSize = parent.resizer().hasSize(other) ? parent.getArea().getSize(other) : -1;
+        int availableSize = parent.resizer().isSizeCalculated(other) ? parent.getArea().getSize(other) : -1;
         Box padding = parent.getArea().getPadding();
         if (!isWrapped) {
             // simplified logic for non-wrapped
@@ -236,7 +236,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
             // when covering children we can assume START
             crossAxisAlignment = Alignment.CrossAxis.START;
         }
-        if (crossAxisAlignment != Alignment.CrossAxis.START && !parent.resizer().hasSize(other)) return false;
+        if (crossAxisAlignment != Alignment.CrossAxis.START && !parent.resizer().isSizeCalculated(other)) return false;
         int total = (flows.size() - 1) * crossAxisSpaceBetween; // start with cross axis child padding for total size
         for (SimpleFlow flow : flows) {
             flow.calculateCrossAxisSize(axis);

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -32,6 +33,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -68,8 +70,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IMuiMachine, IExplosionMachine, IDataInfoProvider,
-                                         IInteractedMachine {
+                                         implements IMuiMachine, IDataInfoProvider {
 
     @SaveField
     public final NotifiableFluidTank waterTank;
@@ -199,7 +200,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
-                    doExplosion(2.0f);
+                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2.0f);
                 } else {
                     this.hasNoWater = !hasDrainedWater;
                 }
@@ -312,12 +313,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 return InteractionResult.SUCCESS;
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = GTGuis.createPanel(this, 176, 166);
@@ -325,6 +327,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_BRONZE;
+
+        DoubleSyncValue tempPercentage = syncManager.getOrCreateSyncHandler("tempPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getTemperaturePercent));
 
         panel.child(new Row()
                 .top(12)
@@ -346,7 +351,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .texture(progressTexture,
                                 GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 54)
                         .size(14, 54)
-                        .progress(this::getTemperaturePercent)
+                        .value(tempPercentage)
                         .direction(ProgressWidget.Direction.UP)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(IKey

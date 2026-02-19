@@ -51,6 +51,6 @@ public class SyncHandlers {
     }
 
     public static <T> GenericSyncValue.Builder<T> generic(Class<T> type) {
-        return new GenericSyncValue.Builder<>(type);
+        return GenericSyncValue.builder(type);
     }
 }

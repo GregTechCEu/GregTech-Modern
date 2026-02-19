@@ -603,6 +603,8 @@ public class GTMultiMachines {
             .multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
@@ -625,6 +627,8 @@ public class GTMultiMachines {
             .multiblock("steam_oven", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)

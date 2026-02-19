@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -62,9 +61,9 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         super(GTMenuTypes.MODULAR_CONTAINER.get(), containerId);
     }
 
-    public <T extends GuiData> ModularContainerMenu(MenuType<ModularContainerMenu> type, int containerId,
+    public <T extends GuiData> ModularContainerMenu(int containerId,
                                                     Inventory playerInv, @Nullable FriendlyByteBuf data) {
-        super(type, containerId);
+        this(containerId);
         // TODO: Better integration with menu types for custom containers and screens.
         throw new IllegalArgumentException("Do not open the modular container the forge way. Use an UIFactory!");
     }
@@ -240,6 +239,11 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     }
 
     public void onSlotChanged(ModularSlot slot, ItemStack stack, boolean onlyAmountChanged) {}
+
+    @Override
+    public boolean canDragTo(@NotNull Slot slot) {
+        return !(slot instanceof ModularSlot modularSlot) || modularSlot.canDragIntoSlot();
+    }
 
     @Override
     public boolean stillValid(@NotNull Player playerIn) {

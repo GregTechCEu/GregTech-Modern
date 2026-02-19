@@ -141,7 +141,7 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                         .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput, syncManager))
                         .child(GTMuiWidgets.createInputFromOutputItem(autoOutput, syncManager))
                         .child(GTMuiWidgets.createInputFromOutputFluid(autoOutput, syncManager))
-                        .excludeAreaInXei());
+                        .excludeAreaInRecipeViewer());
     }
     /*
      * @Override
@@ -179,6 +179,6 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(inventory.storage);
+        inventory.dropInventoryInWorld();
     }
 }

@@ -206,7 +206,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                         .bottom(16)
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(new ToggleButton()
                                 .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
@@ -216,7 +216,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
                                         isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
                                                 "behaviour.soft_hammer.disabled")))))
-                        .childIf(io.support(IO.IN), new ToggleButton()
+                        .childIf(io.support(IO.IN), () -> new ToggleButton()
                                 .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
                                 .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
                                 .tooltipAutoUpdate(true)

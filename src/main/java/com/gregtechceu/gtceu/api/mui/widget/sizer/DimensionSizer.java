@@ -356,6 +356,15 @@ public class DimensionSizer {
         return (int) val;
     }
 
+    public void detectConflictingConfiguration() {
+        if (this.expanded && this.coverChildren) {
+            GTCEu.LOGGER.warn(
+                    "Resizer '{}' has expanded() and coverChildren() on {} axis. This conflicts and may cause layout issues.",
+                    this.resizer, this.axis);
+        }
+        // TODO detect when this depends and all siblings depend on parent and parent depends on all children
+    }
+
     /**
      * Tries to find a unit for start, end or size. If p1 and p2 are already used, the first one will be overwritten.
      *

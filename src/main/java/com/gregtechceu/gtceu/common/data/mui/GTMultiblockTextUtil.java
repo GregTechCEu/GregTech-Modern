@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.common.data.mui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.FluidDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
@@ -33,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
@@ -67,6 +69,35 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager) {
+        LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    var energyList = weMachine.getEnergyContainer();
+                    return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
+                }));
+        return addEnergyUsageExactLine(weMachine, syncManager, energyUsage);
+    }
+
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager, LongSyncValue energyUsage) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+
+        return IKey.dynamic(() -> {
+            if (energyUsage.getLongValue() <= 0) return Component.empty();
+            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
+            // wrap in text component to keep it from being formatted
+            Component voltageName = Component.literal(
+                    GTValues.VNF[GTUtil.getTierByVoltage(energyUsage.getLongValue())]);
+
+            return Component.translatable("gtceu.multiblock.energy_consumption",
+                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
+        })
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue());
+    }
+
     public static IKey addEnergyTierLine(boolean formed, int tier) {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return IKey.EMPTY;
@@ -81,7 +112,7 @@ public class GTMultiblockTextUtil {
                 .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
     }
 
-    public static TextWidget<?> addProgressLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addProgressLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
 
@@ -100,6 +131,24 @@ public class GTMultiblockTextUtil {
             float max = (float) maxProgress.getDoubleValue() / 20.f;
             return Component.translatable("gtceu.multiblock.progress",
                     String.format("%.2f", current), String.format("%.2f", max), progress);
+        })
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
+    public static TextWidget<?> addProgressLinePercentOnly(WorkableMultiblockMachine rlMachine,
+                                                           PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
+
+        return IKey.dynamic(() -> {
+            int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
+            return Component.translatable("gtceu.multiblock.progress_percent", currentProgress);
         })
                 .color(Color.WHITE.main)
                 .asWidget()
@@ -126,7 +175,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue());
     }
 
-    public static TextWidget<?> addParallelLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
@@ -140,10 +189,10 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> parallelAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addBatchModeLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addBatchModeLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         BooleanSyncValue batchEnabled = syncManager.getOrCreateSyncHandler("batchEnabled", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
@@ -159,10 +208,10 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine,
+    public static TextWidget<?> addSubtickParallelsLine(WorkableMultiblockMachine rlMachine,
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
@@ -177,10 +226,10 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> subtickAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> subtickAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addTotalRunsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
@@ -194,10 +243,69 @@ public class GTMultiblockTextUtil {
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
-                .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
+                .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
     }
 
-    public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,
+    public static TextWidget<?> addSteamUsageLine(SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
+        IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
+                    if (steamRH == null) return 0;
+                    return steamRH.getSteamTank().getFluidInTank(0).getAmount();
+                }));
+        IntSyncValue steamCapacity = syncManager.getOrCreateSyncHandler("steamCapacity", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
+                    if (steamRH == null) return 0;
+                    return steamRH.getSteamTank().getTankCapacity(0);
+                }));
+
+        BooleanSyncValue hasSteamHandler = syncManager.getOrCreateSyncHandler("hasSteam", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> steamRH != null));
+
+        return IKey
+                .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
+                        FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                        FormattingUtil.formatNumbers(steamCapacity.getIntValue())))
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
+    }
+
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
+                                                     PanelSyncManager syncManager) {
+        return addWorkingStatusLine(rlMachine, syncManager,
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+    }
+
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager,
+                                                     Supplier<Component> workPaused,
+                                                     Supplier<Component> runningPerfectly,
+                                                     Supplier<Component> idling) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
+        BooleanSyncValue isWorkingEnabled = syncManager.getOrCreateSyncHandler("isWorkingEnabled",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWorkingEnabled()));
+
+        return IKey
+                .dynamic(() -> {
+                    if (!isFormed.getBoolValue()) return Component.empty();
+                    if (!isWorkingEnabled.getBoolValue()) {
+                        return workPaused.get();
+                    }
+                    if (isActive.getBoolValue()) {
+                        return runningPerfectly.get();
+                    }
+                    return idling.get();
+                })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue());
+    }
+
+    public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
                 GenericSyncValue.class,

@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 /**
  * Marks a widget as synced
@@ -35,15 +31,6 @@ public interface ISynced<W extends IWidget> {
     void initialiseSyncHandler(ModularSyncManager syncManager, boolean late);
 
     /**
-     * @deprecated use {@link #isValidSyncOrValue(ISyncOrValue)}
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    default boolean isValidSyncHandler(SyncHandler syncHandler) {
-        return false;
-    }
-
-    /**
      * Returns if the given value or sync handler is valid for this widget. This is usually a call to
      * {@link ISyncOrValue#isTypeOrEmpty(Class)}. If the widget must specify a value (disallow null) instanceof check
      * can be used. You can
@@ -55,12 +42,12 @@ public interface ISynced<W extends IWidget> {
      * @return if the value or sync handler is valid for this class
      */
     default boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
-        return !(syncOrValue instanceof SyncHandler syncHandler) || isValidSyncHandler(syncHandler);
+        return false;
     }
 
     /**
      * Checks if the given sync handler is valid for this widget and throws an exception if not.
-     * Override {@link #isValidSyncHandler(SyncHandler)}
+     * Override {@link #isValidSyncOrValue(ISyncOrValue)}
      *
      * @param syncHandler given sync handler
      * @throws IllegalStateException if the given sync handler is invalid for this widget.
@@ -72,42 +59,6 @@ public interface ISynced<W extends IWidget> {
                     "SyncHandler of type '" + syncHandler.getClass().getSimpleName() + "' is not valid " +
                             "for widget '" + this + "'.");
         }
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz) {
-        return castIfTypeElseNull(syncHandler, clazz, null);
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz, @Nullable Consumer<T> setup) {
-        if (syncHandler != null && clazz.isAssignableFrom(syncHandler.getClass())) {
-            T t = (T) syncHandler;
-            if (setup != null) setup.accept(t);
-            return t;
-        }
-        return null;
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz) {
-        return castIfTypeGenericElseNull(syncHandler, clazz, null);
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz,
-                                                              @Nullable Consumer<GenericSyncValue<T>> setup) {
-        if (syncHandler instanceof GenericSyncValue<?> genericSyncValue && genericSyncValue.isOfType(clazz)) {
-            GenericSyncValue<T> t = genericSyncValue.cast();
-            if (setup != null) setup.accept(t);
-            return t;
-        }
-        return null;
     }
 
     /**

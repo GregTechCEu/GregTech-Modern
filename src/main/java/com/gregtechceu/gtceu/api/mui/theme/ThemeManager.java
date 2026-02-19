@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.mui.utils.*;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
-import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -34,12 +34,22 @@ import java.util.stream.Collectors;
 public class ThemeManager extends SimplePreparableReloadListener<Map<String, List<ResourceLocation>>> {
 
     public static final String THEMES_PATH = "themes.json";
-    public static final FileToIdConverter THEME_LISTER = new FileToIdConverter("gtceu/themes", ".json");
+    // public static final FileToIdConverter THEME_LISTER = new FileToIdConverter("gtceu/themes", ".json");
     protected static final WidgetThemeEntry<WidgetTheme> defaultFallbackWidgetTheme = IThemeApi.get().getDefaultTheme()
             .getWidgetTheme(IThemeApi.FALLBACK);
     private static final JsonObject emptyJson = new JsonObject();
 
     public ThemeManager() {}
+
+    public static void reload() {
+        // hackery to reload themes on this thread
+        // usually resources are loaded off-thread to not block the main thread
+        // but this should be fine since it is currently not expected to take longer than a second
+        ThemeManager tm = new ThemeManager();
+        ResourceManager rm = Minecraft.getInstance().getResourceManager();
+        ProfilerFiller p = Minecraft.getInstance().getProfiler();
+        tm.apply(tm.prepare(rm, p), rm, p);
+    }
 
     @Override
     protected @NotNull Map<String, List<ResourceLocation>> prepare(ResourceManager resourceManager,
@@ -202,11 +212,12 @@ public class ThemeManager extends SimplePreparableReloadListener<Map<String, Lis
         boolean override = false;
         for (ResourceLocation path : paths) {
             profiler.push(path.toString());
-            ResourceLocation rl = THEME_LISTER.idToFile(path);
+            ResourceLocation rl = new ResourceLocation(path.getNamespace(), "themes/" + path.getPath() + ".json");
             Resource resource = resourceManager.getResource(rl).orElse(null);
             if (resource == null) {
                 profiler.pop();
-                return null;
+                GTCEu.LOGGER.warn("Theme '{}' was not found at path '{}'", id, rl);
+                continue;
             }
             JsonElement element;
             try (InputStream stream = resource.open()) {

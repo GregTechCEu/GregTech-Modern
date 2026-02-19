@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -62,9 +62,9 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IParallelHatch parallelHatch) {
+        if (blockAccessor.getBlockEntity() instanceof ParallelHatchPartMachine parallelHatch) {
             compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
-        } else if (blockAccessor.getBlockEntity() instanceof IMultiController controller) {
+        } else if (blockAccessor.getBlockEntity() instanceof MultiblockControllerMachine controller) {
             if (controller instanceof IRecipeLogicMachine rlm &&
                     rlm.getRecipeLogic().isActive() &&
                     rlm.getRecipeLogic().getLastRecipe() != null) {

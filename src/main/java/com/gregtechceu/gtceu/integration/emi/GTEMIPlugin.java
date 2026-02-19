@@ -45,6 +45,9 @@ public class GTEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        EmiScreenHandler.register(ScreenWrapper.class, registry);
+        EmiScreenHandler.register(ContainerScreenWrapper.class, registry);
+
         // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -106,12 +109,5 @@ public class GTEMIPlugin implements EmiPlugin {
             FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
             registry.addEmiStack(EmiStack.of(stack.getFluid(), stack.getTag()));
         }
-
-        registry.addExclusionArea(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addExclusionArea(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
-        registry.addDragDropHandler(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addDragDropHandler(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
-        registry.addStackProvider(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addStackProvider(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
     }
 }

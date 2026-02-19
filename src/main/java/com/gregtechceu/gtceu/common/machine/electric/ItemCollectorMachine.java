@@ -112,6 +112,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         this.output = createOutputItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
         this.autoOutput = AutoOutputTrait.ofItems(this, output);
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
@@ -167,15 +168,10 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
-    }
-
-    @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(output.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        output.dropInventoryInWorld();
     }
 
     //////////////////////////////////////
@@ -351,7 +347,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                         .bottom(16)
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))

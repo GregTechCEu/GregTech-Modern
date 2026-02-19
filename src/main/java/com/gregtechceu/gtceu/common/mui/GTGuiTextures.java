@@ -766,6 +766,12 @@ public class GTGuiTextures {
             GuiAxis.X, true,
             32, 28, 4);
 
+    public static final UITexture SEPERATOR_SIMPLE = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/icon/seperator/seperator_simple.png")
+            .imageSize(16, 5)
+            .adaptable(2)
+            .build();
+
     // MISC
 
     public static void init() {/**/}

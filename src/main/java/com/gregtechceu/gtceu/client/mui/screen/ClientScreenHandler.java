@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GuiErrorHandler;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
+import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -24,7 +25,7 @@ import com.gregtechceu.gtceu.common.network.ModularNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerScreenAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.ScreenAccessor;
-import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.RecipeViewerHandler;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -84,6 +85,12 @@ public class ClientScreenHandler {
         onGuiChanged(event.getCurrentScreen(), event.getNewScreen());
     }
 
+    public static void onCloseScreens(Screen closing) {
+        // called when the next screen is null, so that the player returns to the world
+        // we cant use ScreenEvent.Closing since that's also called when transitioning screens
+        onGuiChanged(closing, null);
+    }
+
     @SubscribeEvent
     public static void onInitScreenPost(ScreenEvent.Init.Post event) {
         defaultContext.updateScreenArea(event.getScreen().width, event.getScreen().height);
@@ -96,7 +103,8 @@ public class ClientScreenHandler {
     @SubscribeEvent
     public static void onScreenKeyPressedHigh(ScreenEvent.KeyPressed.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        // TODO: early needs to be before XEI, but emi does mixin into KeyboardHandler so it is before everything
+        // TODO: early needs to be before recipe viewers, but emi does mixin into KeyboardHandler so it is before
+        // everything
         if (keyPressedEvent(event, InputPhase.EARLY)) {
             keyPressedEvent(event, InputPhase.LATE);
         }
@@ -117,7 +125,7 @@ public class ClientScreenHandler {
     @SubscribeEvent
     public static void onScreenKeyReleasedHigh(ScreenEvent.KeyReleased.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        // TODO also needs to be before XEI
+        // TODO also needs to be before recipe viewers
         // dont need late for release event
         keyReleasedEvent(event, InputPhase.EARLY);
     }
@@ -524,8 +532,9 @@ public class ClientScreenHandler {
         graphics.pose().popPose();
     }
 
-    private static void drawVanillaElements(GuiGraphics graphics, Screen mcScreen, int mouseX, int mouseY,
-                                            float partialTicks) {
+    @ApiStatus.Internal
+    public static void drawVanillaElements(GuiGraphics graphics, Screen mcScreen, int mouseX, int mouseY,
+                                           float partialTicks) {
         for (Renderable renderable : mcScreen.renderables) {
             renderable.render(graphics, mouseX, mouseY, partialTicks);
         }
@@ -551,22 +560,35 @@ public class ClientScreenHandler {
 
         int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         int screenH = muiScreen.getScreenArea().height;
-        int outlineColor = Long.decode(ConfigHolder.INSTANCE.dev.mui.outlineColor).intValue();// Color.argb(180, 40,
-                                                                                              // 115, 220);
-        int textColor = Long.decode(ConfigHolder.INSTANCE.dev.mui.textColor).intValue();// Color.argb(180, 40, 115,
-                                                                                        // 220);
+        int outlineColor = Color.parseString(ConfigHolder.INSTANCE.dev.mui.outlineColor);// Color.argb(180, 40,
+                                                                                         // 115, 220);
+        int textColor = Color.parseString(ConfigHolder.INSTANCE.dev.mui.textColor);// Color.argb(180, 40, 115,
+                                                                                   // 220);
         float scale = ConfigHolder.INSTANCE.dev.mui.scale;
         int shift = (int) (11 * scale + 0.5f);
         int lineY = screenH - shift - 2;
-        if (GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded() || GTCEu.Mods.isREILoaded()) lineY -= 20;
+        if ((GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded() || GTCEu.Mods.isREILoaded()) &&
+                muiScreen.getContext().hasSettings() &&
+                muiScreen.getContext().getRecipeViewerSettings().isEnabled(muiScreen)) {
+            lineY -= 20;
+        }
         GuiDraw.drawText(graphics, "Mouse Pos: " + mouseX + ", " + mouseY, 5, lineY, scale, outlineColor, true);
         lineY -= shift;
         GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, lineY, scale, outlineColor, true);
         lineY -= shift;
-        GuiDraw.drawText(graphics, "Theme ID: " + context.getTheme().getId(), 5, lineY, scale, outlineColor, true);
+        // GuiDraw.drawText(graphics, "Theme ID: " + context.getTheme().getId(), 5, lineY, scale, outlineColor, true);
         LocatedWidget locatedHovered = muiScreen.getPanelManager().getTopWidgetLocated(true);
         boolean showHovered = ConfigHolder.INSTANCE.dev.mui.showHovered;
         boolean showParent = ConfigHolder.INSTANCE.dev.mui.showParent;
+
+        ITheme theme;
+        if (locatedHovered != null && (showHovered || showParent)) {
+            theme = locatedHovered.getElement().getPanel().getTheme();
+        } else {
+            theme = context.getTheme();
+        }
+        GuiDraw.drawText(graphics, "Theme ID: " + theme.getId(), 5, lineY, scale, outlineColor, false);
+
         if (locatedHovered != null && (showHovered || showParent)) {
             drawSegmentLine(graphics, lineY -= 4, scale, outlineColor);
             lineY -= 10;
@@ -591,13 +613,13 @@ public class ClientScreenHandler {
             if (showHovered) {
                 if (ConfigHolder.INSTANCE.dev.mui.showWidgetTheme) {
                     GuiDraw.drawText(graphics, "Widget Theme: " +
-                            hovered.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(),
-                            5, lineY, scale, textColor, true);
+                            hovered.getWidgetTheme(hovered.getPanel().getTheme()).getKey().getFullName(),
+                            5, lineY, scale, textColor, false);
                     lineY -= shift;
                 }
                 if (ConfigHolder.INSTANCE.dev.mui.showSize) {
                     GuiDraw.drawText(graphics, "Size: " + area.width + ", " + area.height, 5, lineY, scale, textColor,
-                            true);
+                            false);
                     lineY -= shift;
                 }
                 if (ConfigHolder.INSTANCE.dev.mui.showPos) {
@@ -615,16 +637,22 @@ public class ClientScreenHandler {
                 if (ConfigHolder.INSTANCE.dev.mui.showParentWidgetTheme) {
                     GuiDraw.drawText(graphics, "Widget Theme: " +
                             parent.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(),
-                            5, lineY, scale, textColor, true);
+                            5, lineY, scale, textColor, false);
                     lineY -= shift;
                 }
                 area = parent.getArea();
                 if (ConfigHolder.INSTANCE.dev.mui.showParentSize) {
                     GuiDraw.drawText(graphics, "Parent size: " + area.width + ", " + area.height, 5, lineY, scale,
-                            textColor, true);
+                            textColor, false);
                     lineY -= shift;
                 }
-                GuiDraw.drawText(graphics, "Parent: " + parent, 5, lineY, 1, outlineColor, true);
+                if (ConfigHolder.INSTANCE.dev.mui.showParentPos) {
+                    GuiDraw.drawText(graphics,
+                            "Parent pos: " + area.x + ", " + area.y + "  Rel: " + area.rx + ", " + area.ry, 5, lineY,
+                            scale, textColor, false);
+                    lineY -= shift;
+                }
+                GuiDraw.drawText(graphics, "Parent: " + parent, 5, lineY, scale, textColor, false);
             }
             if (ConfigHolder.INSTANCE.dev.mui.showExtra) {
                 if (hovered instanceof ItemSlot slotWidget) {
@@ -642,7 +670,7 @@ public class ClientScreenHandler {
                         GuiDraw.drawText(graphics,
                                 "Shift-Click Priority: " +
                                         (allowShiftTransfer ? slotGroup.getShiftClickPriority() : "DISABLED"),
-                                5, lineY, scale, textColor, true);
+                                5, lineY, scale, textColor, false);
                     }
                 } else if (hovered instanceof RichTextWidget richTextWidget) {
                     drawSegmentLine(graphics, lineY -= 4, scale, outlineColor);
@@ -650,7 +678,7 @@ public class ClientScreenHandler {
                     locatedHovered.applyMatrix(context);
                     Object hoveredElement = richTextWidget.getHoveredElement();
                     locatedHovered.unapplyMatrix(context);
-                    GuiDraw.drawText(graphics, "Hovered: " + hoveredElement, 5, lineY, scale, textColor, true);
+                    GuiDraw.drawText(graphics, "Hovered: " + hoveredElement, 5, lineY, scale, textColor, false);
                 }
             }
         }

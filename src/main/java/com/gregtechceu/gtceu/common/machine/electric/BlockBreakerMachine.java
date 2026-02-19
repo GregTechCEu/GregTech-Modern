@@ -81,8 +81,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
-
         this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 
     public static float getEfficiencyMultiplier(int tier) {
@@ -139,8 +139,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(chargerInventory);
-        clearInventory(cache.storage);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        cache.dropInventoryInWorld();
     }
 
     @Override
@@ -264,11 +264,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             updateBatterySubscription();
     }
 
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
-    }
-
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
         syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
@@ -381,7 +376,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                                 syncManager))
                         .child(createBatterySlot(syncManager))
                         .child(GTMuiWidgets.createAutoOutputItemButton(autoOutput, syncManager))
-                        .excludeAreaInXei());
+                        .excludeAreaInRecipeViewer());
         return panel;
     }
 

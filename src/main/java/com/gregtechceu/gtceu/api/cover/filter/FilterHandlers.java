@@ -2,16 +2,21 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface FilterHandlers {
 
     static FilterHandler<ItemStack, ItemFilter> item(ISyncManaged container) {
         return new FilterHandler<>(container) {
 
             @Override
-            protected ItemFilter loadFilter(ItemStack filterItem) {
+            public ItemFilter loadFilter(ItemStack filterItem) {
                 return ItemFilter.loadFilter(filterItem);
             }
 
@@ -31,7 +36,7 @@ public interface FilterHandlers {
         return new FilterHandler<>(container) {
 
             @Override
-            protected FluidFilter loadFilter(ItemStack filterItem) {
+            public FluidFilter loadFilter(ItemStack filterItem) {
                 return FluidFilter.loadFilter(filterItem);
             }
 

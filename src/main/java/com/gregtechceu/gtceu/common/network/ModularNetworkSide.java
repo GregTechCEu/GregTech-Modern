@@ -74,6 +74,7 @@ public abstract class ModularNetworkSide {
             msm.receiveWidgetUpdate(packet.panel, packet.key, packet.action, id, packet.packet);
         } catch (IndexOutOfBoundsException e) {
             GTCEu.LOGGER.error("Failed to read packet for sync handler {} in panel {}", packet.key, packet.panel);
+            GTCEu.LOGGER.catching(e);
         }
     }
 

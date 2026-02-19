@@ -6,28 +6,22 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import lombok.Getter;
@@ -110,11 +104,14 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     public void setMinValue(long value) {
-        minValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        this.minValue = GTMath.clamp(value, 0, maxValue - 1);
+        if (this.minValue < 0) this.minValue = 0;
     }
 
     public void setMaxValue(long value) {
-        maxValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        if (usePercent) maxValue = GTMath.clamp(value, 0, 100);
+        else maxValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        setMinValue(this.getMinValue());
     }
 
     public void setUsePercent(boolean usePercent) {
@@ -129,26 +126,21 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
-    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
         syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
-        return new Column()
-                .child(IMuiCover.createTitleRow(this.getAttachItem()))
-                .child(new Row()
-                        .child(new Column()
-                                .child(IKey.lang("cover.advanced_energy_detector.min").asWidget().alignY(0.15F))
-                                .child(IKey.lang("cover.advanced_energy_detector.max").asWidget().alignY(0.85F))
-                                .heightRel(1F)
-                                .coverChildrenWidth())
-                        .child(new Column()
-                                .child(createFieldRow(new LongSyncValue(this::getMinValue, this::setMinValue)))
-                                .child(createFieldRow(new LongSyncValue(this::getMaxValue, this::setMaxValue)))
-                                .childPadding(2)
-                                .expanded()
-                                .coverChildrenHeight())
-                        .widthRel(1F)
-                        .childPadding(3)
-                        .coverChildrenHeight())
-                .child(new Row()
+        var minValueSync = new LongSyncValue(this::getMinValue, this::setMinValue);
+        var maxValueSync = new LongSyncValue(this::getMaxValue, this::setMaxValue);
+
+        syncManager.syncValue("minValue", minValueSync);
+        syncManager.syncValue("maxValue", maxValueSync);
+
+        column.child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.min").asWidget().width(20))
+                .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
+                .child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.max").asWidget().width(20))
+                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
+                                () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
+                .child(coverUIRow()
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
@@ -162,49 +154,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .tooltip(false,
                                         t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.disabled"))
                                 .tooltip(true,
-                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled")))
-                        .childPadding(5)
-                        .coverChildren())
-                .rightRel(0.5F)
-                .margin(3)
-                .childPadding(3)
-                .coverChildren();
-    }
-
-    private Flow createFieldRow(LongSyncValue voltageSyncer) {
-        return new Row()
-                .child(new ButtonWidget<>()
-                        .overlay(new DynamicDrawable(() -> {
-                            int value = getIncrementValue();
-                            return IKey.str("-" + value).scale(1f - (String.valueOf(value).length() * 0.1f));
-                        }))
-                        .onMousePressed((x, y, button) -> {
-                            voltageSyncer.setLongValue(voltageSyncer.getValue() - getIncrementValue());
-                            return true;
-                        })
-                        .width(24))
-                .child(new TextFieldWidget().value(voltageSyncer)
-                        .tooltip(t -> t.add(Component.translatable("gtceu.creative.energy.voltage")))
-                        .setNumbersLong(num -> {
-                            if (usePercent) {
-                                return GTMath.clamp(num, 0, 100);
-                            } else return GTMath.clamp(num, 0, getEnergyCapacity());
-                        })
-                        .widthRelOffset(1f, -52)
-                        .height(16))
-                .child(new ButtonWidget<>()
-                        .overlay(new DynamicDrawable(() -> {
-                            int value = getIncrementValue();
-                            return IKey.str("+" + value).scale(1f - (String.valueOf(value).length() * 0.1f));
-                        }))
-                        .onMousePressed((x, y, button) -> {
-                            voltageSyncer.setLongValue(voltageSyncer.getValue() + getIncrementValue());
-                            return true;
-                        })
-                        .width(24))
-                .onUpdateListener(flow -> flow.scheduleResize())
-                .widthRel(1F)
-                .coverChildrenHeight();
+                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled"))));
     }
 
     private void updateEUValues(boolean wasPercent) {

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -115,7 +115,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
@@ -144,10 +144,10 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         if (!controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
+                circuitInventory.dropInventoryInWorld();
             } else {
                 circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
             }
@@ -157,7 +157,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         for (var c : controllers) {
             if (!c.allowCircuitSlots()) {
@@ -323,7 +323,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                         .padding(8, 0, 4, 4)
                         .childPadding(2)
                         .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
                         .childIf(this.isCircuitSlotEnabled(),

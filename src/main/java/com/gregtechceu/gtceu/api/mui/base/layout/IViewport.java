@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 /**
  * A gui element which can transform its children f.e. a scrollable list.
  */
-public interface IViewport {
+public interface IViewport extends IWidget {
 
     /**
      * Apply shifts of this viewport.
@@ -26,7 +26,11 @@ public interface IViewport {
      * @param x       x position
      * @param y       y position
      */
-    void getWidgetsAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y);
+    default void getWidgetsAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
+        if (hasChildren()) {
+            getChildrenAt(this, stack, widgets, x, y);
+        }
+    }
 
     /**
      * Gathers all children at a position. Transformations from this viewport are not applied.
@@ -37,7 +41,11 @@ public interface IViewport {
      * @param x       x position
      * @param y       y position
      */
-    default void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {}
+    default void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
+        if (isInside(stack, x, y)) {
+            widgets.add(this, stack, getAdditionalHoverInfo(stack, x, y));
+        }
+    }
 
     /**
      * Called during drawing twice (before children are drawn). Once with transformation of this viewport and once
@@ -73,7 +81,7 @@ public interface IViewport {
                 stack.pushMatrix();
                 child.transform(stack);
                 if (child.isInside(stack, x, y)) {
-                    widgetList.add(child, stack.peek(), child.getAdditionalHoverInfo(stack, x, y));
+                    widgetList.add(child, stack, child.getAdditionalHoverInfo(stack, x, y));
                 }
                 if (child.hasChildren()) {
                     getChildrenAt(child, stack, widgetList, x, y);
@@ -119,6 +127,4 @@ public interface IViewport {
         }
         return true;
     }
-
-    IViewport EMPTY = (viewports, widgets, x, y) -> {};
 }

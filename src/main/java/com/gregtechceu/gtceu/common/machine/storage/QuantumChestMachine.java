@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -69,7 +68,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @NotNullByDefault
-public class QuantumChestMachine extends TieredMachine implements IInteractedMachine, IControllable,
+public class QuantumChestMachine extends TieredMachine implements IControllable,
                                  IDropSaveMachine, IMuiMachine {
 
     /**
@@ -210,7 +209,7 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
             INTERACTION_LOGGER.put(player.getUUID(), System.currentTimeMillis());
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     private static boolean isDoubleHit(UUID uuid) {
@@ -218,7 +217,8 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
     }
 
     @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
+    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos,
+                               @Nullable Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (GTToolType.WRENCH.matchTags.stream().anyMatch(player.getItemInHand(hand)::is)) return false;
             if (!stored.isEmpty()) { // pull
@@ -230,7 +230,7 @@ public class QuantumChestMachine extends TieredMachine implements IInteractedMac
                 }
             }
         }
-        return IInteractedMachine.super.onLeftClick(player, world, hand, pos, direction);
+        return super.onLeftClick(player, world, hand, pos, direction);
     }
 
     public boolean isLocked() {

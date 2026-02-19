@@ -59,7 +59,7 @@ public class SyncDataHolder {
         CompoundTag tag = new CompoundTag();
         for (var field : fieldsToSerialize) {
             if (shouldSerializeField(field, writeClientFields, fullSync)) {
-                Tag nbtValue = serializeField(holder, field, writeClientFields);
+                Tag nbtValue = serializeField(holder, field, writeClientFields, fullSync);
                 tag.put(field.nbtSaveKey, nbtValue);
             }
         }
@@ -101,7 +101,7 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     private static Tag serializeField(ISyncManaged holder, FieldSyncData field,
-                                      boolean writeClientFields) {
+                                      boolean writeClientFields, boolean fullSync) {
         Object currentValue = field.handle.get(holder);
 
         if (!field.isSyncManaged && currentValue == null) {
@@ -115,9 +115,9 @@ public class SyncDataHolder {
             if (field.transformer != null) {
                 return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue,
                         new ValueTransformer.TransformerContext<>(holder, field.type, currentValue, field.fieldName,
-                                writeClientFields));
+                                writeClientFields, fullSync));
             } else if (currentValue instanceof ISyncManaged syncObj) {
-                return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
+                return syncObj.getSyncDataHolder().serializeNBT(writeClientFields, fullSync);
             } else {
                 GTCEu.LOGGER.error("Sync: Failed to serialize field {} in class {}: Missing value transformer for {}",
                         field.fieldName, holder.getClass().getName(), field.type);
@@ -150,7 +150,7 @@ public class SyncDataHolder {
                 try {
                     var current = field.handle.get(holder);
                     Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(
-                            holder, field.type, current, field.fieldName, readingClientFields));
+                            holder, field.type, current, field.fieldName, readingClientFields, false));
                     if (result != current) {
                         field.handle.set(holder, result);
                     }

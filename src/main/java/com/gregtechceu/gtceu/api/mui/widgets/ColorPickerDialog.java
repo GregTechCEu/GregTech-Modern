@@ -132,7 +132,7 @@ public class ColorPickerDialog extends Dialog<Integer> {
                                 .name("blue")
                                 .bounds(0, 255)
                                 .value(new DoubleValue.Dynamic(() -> this.blue, this::updateBlue))))
-                .childIf(alphaSlider != null, alphaSlider);
+                .childIf(alphaSlider != null, () -> alphaSlider);
     }
 
     private IWidget createHSVPage(IWidget alphaSlider) {
@@ -159,7 +159,7 @@ public class ColorPickerDialog extends Dialog<Integer> {
                                 .name("value")
                                 .bounds(0, 1)
                                 .value(new DoubleValue.Dynamic(() -> this.value, this::updateValue))))
-                .childIf(alphaSlider != null, alphaSlider);
+                .childIf(alphaSlider != null, () -> alphaSlider);
     }
 
     private static SliderWidget createSlider(IDrawable background) {

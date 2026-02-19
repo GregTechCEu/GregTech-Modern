@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.utils.NetworkUtils;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,6 +29,16 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<String> STRING = makeAdapter(NetworkUtils::readStringSafe, NetworkUtils::writeStringSafe, null);
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
+
+    public static final IByteBufAdapter<Integer> INT = makeAdapter(FriendlyByteBuf::readInt, FriendlyByteBuf::writeInt, null);
+    public static final IByteBufAdapter<Long> LONG = makeAdapter(FriendlyByteBuf::readLong, FriendlyByteBuf::writeLong, null);
+    public static final IByteBufAdapter<Float> FLOAT = makeAdapter(FriendlyByteBuf::readFloat, FriendlyByteBuf::writeFloat, null);
+    public static final IByteBufAdapter<Double> DOUBLE = makeAdapter(FriendlyByteBuf::readDouble, FriendlyByteBuf::writeDouble, null);
+    public static final IByteBufAdapter<Boolean> BOOL = makeAdapter(FriendlyByteBuf::readBoolean, FriendlyByteBuf::writeBoolean, null);
+    public static final IByteBufAdapter<Byte> BYTE = makeAdapter(FriendlyByteBuf::readByte, (buffer, b) -> buffer.writeByte(b), null);
+    public static final IByteBufAdapter<Short> SHORT = makeAdapter(FriendlyByteBuf::readShort, (buffer, b) -> buffer.writeShort(b), null);
+    public static final IByteBufAdapter<Character> CHAR = makeAdapter(FriendlyByteBuf::readChar, (buffer, b) -> buffer.writeChar(b), null);
+    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, Objects::equals);
     // spotless:on
 
     public static final IByteBufAdapter<byte[]> BYTE_ARR = new IByteBufAdapter<>() {
@@ -83,7 +94,7 @@ public class ByteBufAdapters {
 
         @Override
         public void serialize(FriendlyByteBuf buffer, BigInteger u) {
-            buffer.writeBytes(u.toByteArray());
+            buffer.writeByteArray(u.toByteArray());
         }
 
         @Override

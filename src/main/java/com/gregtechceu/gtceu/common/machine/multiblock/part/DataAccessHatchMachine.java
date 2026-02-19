@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
@@ -135,7 +135,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        clearInventory(importItems.storage);
+        importItems.dropInventoryInWorld();
     }
 
     private void rebuildData(boolean isDataBank) {
@@ -193,7 +193,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         rebuildData(controller instanceof DataBankMachine);
         super.addedToController(controller);
     }

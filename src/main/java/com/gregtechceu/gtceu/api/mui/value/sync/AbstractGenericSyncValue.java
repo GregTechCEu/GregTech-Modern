@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +22,11 @@ public abstract class AbstractGenericSyncValue<T> extends ValueSyncHandler<T> {
         this.getter = Objects.requireNonNull(getter);
         this.setter = setter;
         this.cache = getter.get();
-        if (type == null && this.cache != null) {
+        if (type == null) {
+            if (this.cache == null) {
+                throw new IllegalArgumentException(
+                        "If the value class is not give, then the getter must return a non null value!");
+            }
             type = (Class<T>) this.cache.getClass();
         }
         this.type = type;
@@ -44,7 +47,11 @@ public abstract class AbstractGenericSyncValue<T> extends ValueSyncHandler<T> {
             this.setter = serverSetter != null ? serverSetter : clientSetter;
         }
         this.cache = this.getter.get();
-        if (type == null && this.cache != null) {
+        if (type == null) {
+            if (this.cache == null) {
+                throw new IllegalArgumentException(
+                        "If the value class is not give, then the getter must return a non null value!");
+            }
             type = (Class<T>) this.cache.getClass();
         }
         this.type = type;
@@ -66,8 +73,12 @@ public abstract class AbstractGenericSyncValue<T> extends ValueSyncHandler<T> {
     @Override
     public void setValue(T value, boolean setSource, boolean sync) {
         this.cache = createDeepCopyOf(value);
+        onSetCache(setSource, sync);
+    }
+
+    protected void onSetCache(boolean setSource, boolean sync) {
         if (setSource && this.setter != null) {
-            this.setter.accept(value);
+            this.setter.accept(this.cache);
         }
         onValueChanged();
         if (sync) sync();
@@ -100,31 +111,9 @@ public abstract class AbstractGenericSyncValue<T> extends ValueSyncHandler<T> {
         setValue(deserialize(buffer), true, false);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<T> getValueType() {
-        return (Class<T>) getType();
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public @Nullable Class<? extends T> getType() {
-        if (this.type != null) return type;
-        if (this.cache != null) {
-            return (Class<? extends T>) this.cache.getClass();
-        }
-        T t = this.getter.get();
-        if (t != null) {
-            return (Class<? extends T>) t.getClass();
-        }
-        return null;
-    }
-
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public boolean isOfType(Class<?> expectedType) {
-        return isValueOfType(expectedType);
+        return type;
     }
 
     @Override
@@ -139,5 +128,29 @@ public abstract class AbstractGenericSyncValue<T> extends ValueSyncHandler<T> {
     @SuppressWarnings("unchecked")
     public <V> AbstractGenericSyncValue<V> cast() {
         return (AbstractGenericSyncValue<V>) this;
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method forces a sync after the modification.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(Consumer<T> consumer) {
+        modifyValue(true, true, consumer);
+    }
+
+    /**
+     * Allows safe modification of the cached value. Normally modifying the cached value can cause the value to never be
+     * synced.
+     * This method can automatically sync the cache after the modification. Be careful with potential issues when the
+     * sync arg is false.
+     *
+     * @param consumer function that operates on the current cached value
+     */
+    public void modifyValue(boolean setSource, boolean sync, Consumer<T> consumer) {
+        consumer.accept(this.cache);
+        onSetCache(setSource, sync);
     }
 }

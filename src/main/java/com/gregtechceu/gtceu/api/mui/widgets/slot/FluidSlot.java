@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
@@ -13,8 +12,9 @@ import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widgets.AbstractFluidDisplayWidget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
-import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
+import com.gregtechceu.gtceu.utils.IMultiFluidTankHandler;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,6 @@ import net.minecraftforge.fml.ModList;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,7 +132,7 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
 
     @Override
     public void onInit() {
-        getContext().getXeiSettings().addGhostIngredientSlot(this);
+        getContext().getRecipeViewerSettings().addGhostIngredientSlot(this);
     }
 
     @Override
@@ -230,19 +229,6 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
         return this.syncHandler == null ? EMPTY : this.syncHandler.fluidTank();
     }
 
-    /**
-     * Set the offset in x and y (on both sides) at which the fluid should be rendered.
-     * Default is 1 for both.
-     *
-     * @param x x offset
-     * @param y y offset
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public FluidSlot contentOffset(int x, int y) {
-        return contentPaddingLeft(x).contentPaddingTop(y);
-    }
-
     public FluidSlot displayAmount(boolean displayAmount) {
         this.displayAmount = displayAmount;
         return this;
@@ -256,22 +242,25 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
         return this;
     }
 
-    /**
-     * @param overlayTexture texture that is rendered on top of the fluid
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
-    @Deprecated
-    public FluidSlot overlayTexture(@Nullable IDrawable overlayTexture) {
-        return overlay(overlayTexture);
-    }
-
     public FluidSlot syncHandler(IFluidTank fluidTank) {
         return syncHandler(new FluidSlotSyncHandler(fluidTank));
+    }
+
+    public FluidSlot syncHandler(IMultiFluidTankHandler fluidTank, int index) {
+        return syncHandler(fluidTank.getFluidTank(index));
     }
 
     public FluidSlot syncHandler(FluidSlotSyncHandler syncHandler) {
         setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return this;
+    }
+
+    public FluidSlot tank(IFluidTank fluidTank) {
+        return syncHandler(fluidTank);
+    }
+
+    public FluidSlot tank(IMultiFluidTankHandler fluidTank, int index) {
+        return syncHandler(fluidTank, index);
     }
 
     /* === Jei ghost slot === */

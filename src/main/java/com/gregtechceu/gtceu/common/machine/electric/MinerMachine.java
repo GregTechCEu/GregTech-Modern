@@ -95,8 +95,8 @@ public class MinerMachine extends WorkableTieredMachine
         super.onMachineDestroyed();
         // Remove the miner pipes below this miner
         getRecipeLogic().onRemove();
-        clearInventory(exportItems.storage);
-        clearInventory(chargerInventory);
+        exportItems.dropInventoryInWorld();
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override
@@ -252,7 +252,7 @@ public class MinerMachine extends WorkableTieredMachine
                         .bottom(16)
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
