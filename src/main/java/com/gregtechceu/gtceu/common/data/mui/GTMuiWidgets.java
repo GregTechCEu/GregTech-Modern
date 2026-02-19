@@ -265,13 +265,10 @@ public class GTMuiWidgets {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
                 i -> machine.getCircuitInventory().setStackInSlot(0, i),
                 () -> machine.getCircuitInventory().getStackInSlot(0));
-        ModularPanel circuitPanel = createCircuitSlotPanel(
-                circuitSyncValue,
-                syncManager)
-                .relative(parentPanel)
-                .leftRelOffset(0.0f, -180);
         IPanelHandler circuitPanelHandler = syncManager.syncedPanel("circuit_panel", true,
-                (sm, sh) -> circuitPanel);
+                (sm, sh) -> createCircuitSlotPanel(circuitSyncValue, sm)
+                        .relative(parentPanel)
+                        .leftRel(0.0f, -4, 1f));
 
         return new ButtonWidget<>()
                 .size(18)
