@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 

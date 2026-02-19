@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
