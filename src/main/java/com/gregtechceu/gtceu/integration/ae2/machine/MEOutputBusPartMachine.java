@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
@@ -13,8 +12,6 @@ import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -34,16 +31,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife, IInteractedMachine {
+public class MEOutputBusPartMachine extends MEBusPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+    public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////
@@ -51,13 +45,13 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     /////////////////////////////////
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteHandler(this);
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
         var grid = getMainNode().getGrid();
         if (grid != null && !internalBuffer.isEmpty()) {
             for (var entry : internalBuffer) {
@@ -65,11 +59,6 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                         Actionable.MODULATE, actionSource);
             }
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////

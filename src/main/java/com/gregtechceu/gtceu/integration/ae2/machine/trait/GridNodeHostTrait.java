@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import net.minecraft.core.Direction;
 
@@ -15,7 +14,13 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
-    protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHostTrait.class);
+    public static final MachineTraitType<GridNodeHostTrait> TYPE = new MachineTraitType<>(GridNodeHostTrait.class);
+
+    @Override
+    public MachineTraitType<GridNodeHostTrait> getTraitType() {
+        return TYPE;
+    }
+
     private final IManagedGridNode proxy;
 
     public GridNodeHostTrait(MetaMachine machine) {
@@ -26,7 +31,7 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
     }
 
     public void init() {
-        this.proxy.create(machine.getLevel(), machine.getPos());
+        this.proxy.create(machine.getLevel(), machine.getBlockPos());
     }
 
     @Override
@@ -35,17 +40,10 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
     }
 
     @Override
-    public void saveChanges() {
-        machine.onChanged();
-    }
+    public void saveChanges() {}
 
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

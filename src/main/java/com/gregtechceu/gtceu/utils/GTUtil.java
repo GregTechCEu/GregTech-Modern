@@ -52,6 +52,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -62,10 +63,12 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     @SuppressWarnings("UnstableApiUsage")
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
@@ -297,6 +300,25 @@ public class GTUtil {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Returns first non-empty ItemStack from {@code stacks}.
+     *
+     * @param stacks list of candidates
+     * @return an ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack getFirstNonEmpty(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
         if (index >= 0 && index < list.size())
             return list.get(index);
@@ -360,6 +382,40 @@ public class GTUtil {
         return false;
     }
 
+    public static String formatLongNumber(long number, long threshold) {
+        return (number > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
+    }
+
+    public static String formatLongNumber(long number) {
+        return formatLongNumber(number, 10000);
+    }
+
+    public static String getStringRemainTime(long time, long threshold) {
+        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        time /= 60;
+        if (time > 0) {
+            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            time /= 60;
+            if (time > 0) {
+                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                time /= 60;
+                if (time > 0) {
+                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    time /= 24;
+                    if (time > 0) {
+                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                                " " + s;
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    public static String getStringRemainTime(long time) {
+        return getStringRemainTime(time, 10000);
+    }
+
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() &&
                 fluidStack.getAmount() / divisor != 0;
@@ -382,10 +438,10 @@ public class GTUtil {
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
             return FluidType.BUCKET_VOLUME;
-        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidType.BUCKET_VOLUME * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
@@ -614,5 +670,28 @@ public class GTUtil {
 
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
+    }
+
+    public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
+        level.removeBlock(pos, false);
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
+                        Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+    }
+
+    public static void setOnFire(Level level, BlockPos pos, double additionalFireChance) {
+        boolean isFirstFireSpawned = false;
+        for (Direction side : DIRECTIONS) {
+            if (level.isEmptyBlock(pos.relative(side))) {
+                if (!isFirstFireSpawned) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                    if (!level.isEmptyBlock(pos.relative(side))) {
+                        isFirstFireSpawned = true;
+                    }
+                } else if (additionalFireChance >= GTValues.RNG.nextDouble() * 100) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                }
+            }
+        }
     }
 }

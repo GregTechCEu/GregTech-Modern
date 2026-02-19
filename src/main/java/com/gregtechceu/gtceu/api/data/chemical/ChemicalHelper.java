@@ -193,7 +193,7 @@ public class ChemicalHelper {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
                     if (!materialEntry1.isEmpty() &&
-                            Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
+                            materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
@@ -210,7 +210,7 @@ public class ChemicalHelper {
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                    Arrays.stream(prefix.getItemTags(material))
+                    prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
                             .forEach(tagKey -> {
                                 // remove the tag so that the next iteration is faster.
@@ -291,19 +291,19 @@ public class ChemicalHelper {
     @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getBlockTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     @Nullable
     public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getItemTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

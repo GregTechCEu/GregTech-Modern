@@ -18,6 +18,9 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -25,10 +28,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -49,33 +48,31 @@ import java.util.regex.Pattern;
 public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends CoverBehavior
                                             implements IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AbstractEnderLinkCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
     public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("^[0-9a-fA-F]{0,8}$");
 
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected String colorStr = VirtualEntry.DEFAULT_COLOR;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected Permissions permission = Permissions.PUBLIC;
-    @Persisted
+    @SaveField
     @Getter
     protected boolean isWorkingEnabled = true;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected IO io = IO.OUT;
     protected VirtualEntryWidget virtualEntryWidget;
-    @DescSynced
+    @SyncToClient
     boolean isAnyChanged = false;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -136,14 +133,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return virtualEntryWidget;
     }
 
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     public void setIo(IO io) {
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
+            syncDataHolder.markClientSyncFieldDirty("io");
             subscriptionHandler.updateSubscription();
         }
     }
@@ -175,6 +168,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
                 VirtualEntry::canRemove);
         this.colorStr = name;
+        syncDataHolder.markClientSyncFieldDirty("colorStr");
         setVirtualEntry();
     }
 
@@ -187,12 +181,15 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
                 VirtualEntry::canRemove);
         this.permission = permission;
+        syncDataHolder.markClientSyncFieldDirty("permission");
+
         setVirtualEntry();
     }
 
     protected void setVirtualEntry() {
         setEntry(VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), getChannelName()));
         getEntry().setColor(this.colorStr);
+        syncDataHolder.markClientSyncFieldDirty("isAnyChanged");
         this.isAnyChanged = true;
         subscriptionHandler.updateSubscription();
     }
@@ -226,6 +223,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected void setManualIOMode(ManualIOMode manualIOMode) {
         this.manualIOMode = manualIOMode;
+        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
         subscriptionHandler.updateSubscription();
     }
 

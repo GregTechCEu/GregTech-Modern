@@ -22,8 +22,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
-
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdjacentFluidConditionTest {
@@ -34,23 +32,25 @@ public class AdjacentFluidConditionTest {
     public static void prepare(ServerLevel level) {
         ROCK_BREAKER_RECIPE_TYPE = TestUtils.createRecipeType("adjacent_fluid_conditions_tests",
                 GTRecipeTypes.ROCK_BREAKER_RECIPES);
-        ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().beginStaging();
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().addStaging(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
-                .adjacentFluidTag(FluidTags.WATER)
+                .adjacentFluids(FluidTags.WATER)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .buildRawRecipe());
 
-        ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().addStaging(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions_multiple_fluids"))
                 .inputItems(new ItemStack(Blocks.OAK_WOOD))
                 .outputItems(new ItemStack(Items.CHARCOAL))
-                .adjacentFluidTag(FluidTags.WATER, FluidTags.LAVA)
+                .adjacentFluids(FluidTags.WATER, FluidTags.LAVA)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .buildRawRecipe());
+        ROCK_BREAKER_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     // Test for checking if the rock breaker works when the condition is fulfilled
@@ -59,8 +59,7 @@ public class AdjacentFluidConditionTest {
         // Machine is at 1,1,1 so 0,1,1 is next to it
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.WATER);
 
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -81,8 +80,7 @@ public class AdjacentFluidConditionTest {
     // Test for checking if the rock breaker works when there are no fluids
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionNoFluidPresentTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -104,8 +102,7 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionWrongFluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 is next to it
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.LAVA);
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -129,8 +126,7 @@ public class AdjacentFluidConditionTest {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.LAVA);
         helper.setBlock(new BlockPos(1, 1, 0), Blocks.WATER);
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -153,8 +149,7 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionTwoFluidNr1FluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
         helper.setBlock(new BlockPos(1, 1, 0), Blocks.WATER);
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -176,8 +171,7 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionTwoFluidNr2FluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
         helper.setBlock(new BlockPos(1, 1, 0), Blocks.LAVA);
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -197,8 +191,7 @@ public class AdjacentFluidConditionTest {
     // Test for checking if the rock breaker works when one of the two fluids are present
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionTwoFluidNoFluidPresentTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine

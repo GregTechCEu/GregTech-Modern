@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
-import com.gregtechceu.gtceu.api.capability.IObjectHolder;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -37,15 +37,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     @Getter
     private IOpticalComputationProvider computationProvider;
     @Getter
-    private IObjectHolder objectHolder;
+    private ObjectHolderMachine objectHolder;
 
-    public ResearchStationMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new ResearchStationRecipeLogic(this);
+    public ResearchStationMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new ResearchStationRecipeLogic((ResearchStationMachine) m));
     }
 
     @Override
@@ -57,15 +52,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder iObjectHolder) {
-                if (iObjectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
+            if (part instanceof ObjectHolderMachine objectHolder) {
+                if (objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     onStructureInvalid();
                     return;
                 }
-                this.objectHolder = iObjectHolder;
+                this.objectHolder = objectHolder;
             }
 
-            part.self().holder.self()
+            part.self()
                     .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
                     .ifPresent(provider -> this.computationProvider = provider);
         }
@@ -90,7 +85,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
         for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder holder) {
+            if (part instanceof ObjectHolderMachine holder) {
                 if (holder == objectHolder) {
                     objectHolder.setLocked(false);
                 }
@@ -183,14 +178,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io == IO.IN) {
                 // lock the object holder on recipe start
-                IObjectHolder holder = getMachine().getObjectHolder();
+                ObjectHolderMachine holder = getMachine().getObjectHolder();
                 holder.setLocked(true);
                 return ActionResult.SUCCESS;
             }
 
             // "replace" the items in the slots rather than outputting elsewhere
             // unlock the object holder
-            IObjectHolder holder = getMachine().getObjectHolder();
+            ObjectHolderMachine holder = getMachine().getObjectHolder();
             if (lastRecipe == null) {
                 holder.setLocked(false);
                 return ActionResult.SUCCESS;

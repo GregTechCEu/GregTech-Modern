@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
@@ -20,7 +19,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -224,14 +222,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        var blockState = event.getLevel().getBlockState(event.getPos());
-        if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
-                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
-            if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
-                    event.getFace())) {
-                event.setCanceled(true);
-            }
-        }
+        var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
+        if (machine != null) event.setCanceled(machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(),
+                event.getPos(), event.getFace()));
     }
 
     @SubscribeEvent
@@ -415,7 +408,9 @@ public class ForgeCommonEventListener {
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }

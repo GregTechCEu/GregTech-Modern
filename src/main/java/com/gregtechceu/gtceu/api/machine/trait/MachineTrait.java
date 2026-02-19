@@ -1,30 +1,35 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 /**
- * represents an abstract capability held by machine. Such as item, fluid, energy, etc.
- * All trait should be added while MetaMachine is creating. you cannot modify it on the fly。
+ * A machine trait represents a generic capability or behaviour that is attached to a machine.
+ * For example, machine traits may provide a recipe handler that can handle specific inputs/outputs of a recipe (e.g.
+ * {@link NotifiableItemStackHandler for items}).
+ * Machine traits can also attach additional behaviours to a machine (e.g. {@link AutoOutputTrait},
+ * {@link CleanroomProviderTrait})
  */
-public abstract class MachineTrait implements IEnhancedManaged {
+@MethodsReturnNonnullByDefault
+public abstract class MachineTrait implements ISyncManaged {
 
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     @Getter
     protected final MetaMachine machine;
@@ -34,7 +39,31 @@ public abstract class MachineTrait implements IEnhancedManaged {
     public MachineTrait(MetaMachine machine) {
         this.machine = machine;
         this.capabilityValidator = side -> true;
-        machine.attachTraits(this);
+        // Machine should never be null, unless this trait is a recipe handler instantiated outside a machine for
+        // recipe search.
+        if (machine != null) machine.getTraitHolder().attachTrait(this);
+    }
+
+    public abstract MachineTraitType<?> getTraitType();
+
+    public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
+        return machine.subscribeServerTick(last, runnable);
+    }
+
+    public void unsubscribe(TickableSubscription current) {
+        machine.unsubscribe(current);
+    }
+
+    public BlockPos getBlockPos() {
+        return machine.getBlockPos();
+    }
+
+    public Level getLevel() {
+        return machine.getLevel();
+    }
+
+    public boolean isRemote() {
+        return machine.isRemote();
     }
 
     public final boolean hasCapability(@Nullable Direction side) {
@@ -42,15 +71,9 @@ public abstract class MachineTrait implements IEnhancedManaged {
     }
 
     @Override
-    public void onChanged() {
-        machine.onChanged();
+    public void markAsChanged() {
+        machine.markAsChanged();
     }
-
-    public void onMachineLoad() {}
-
-    public void onMachineUnLoad() {}
-
-    public void updateModelData(ModelData.Builder builder) {}
 
     public MachineRenderState getRenderState() {
         return getMachine().getRenderState();
@@ -60,18 +83,13 @@ public abstract class MachineTrait implements IEnhancedManaged {
         getMachine().setRenderState(state);
     }
 
-    /**
-     * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
-     *
-     * @param tag     the CompoundTag to load data from
-     * @param forDrop if the save is done for dropping the machine as an item.
-     */
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {}
-
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {}
-
-    @Override
     public void scheduleRenderUpdate() {
         machine.scheduleRenderUpdate();
     }
+
+    public void onMachineLoad() {}
+
+    public void onMachineUnload() {}
+
+    public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 }

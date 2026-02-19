@@ -78,7 +78,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
-        if (!machine.isFormed() || machine.getFluidOffsets() == null) {
+        if (!machine.self().isFormed() || machine.getFluidOffsets() == null) {
             return;
         }
         if (!fixedFluid) {
@@ -111,7 +111,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
-                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getBlockPos());
             poseStack.popPose();
         }
     }

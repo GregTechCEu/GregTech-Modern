@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -14,7 +12,7 @@ import java.util.Locale;
 
 @Getter
 @Accessors(chain = true)
-public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITagSerializable<CompoundTag> {
+public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
 
     public static final String DEFAULT_COLOR = "FFFFFFFF";
     protected static final String COLOR_KEY = "color";

@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
@@ -89,17 +88,17 @@ public class BlockPattern {
     }
 
     public boolean checkPatternAt(MultiblockState worldState, boolean savePredicate) {
-        IMultiController controller = worldState.getController();
+        MultiblockControllerMachine controller = worldState.getController();
         if (controller == null) {
             worldState.setError(new PatternStringError("no controller found"));
             return false;
         }
-        BlockPos centerPos = controller.self().getPos();
-        Direction frontFacing = controller.self().getFrontFacing();
+        BlockPos centerPos = controller.getBlockPos();
+        Direction frontFacing = controller.getFrontFacing();
         Direction[] facings = controller.hasFrontFacing() ? new Direction[] { frontFacing } :
                 new Direction[] { Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST };
-        Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean allowsFlip = controller.self().allowFlip();
+        Direction upwardsFacing = controller.getUpwardsFacing();
+        boolean allowsFlip = controller.allowFlip();
         for (Direction direction : facings) {
             boolean result = checkPatternAt(worldState, centerPos, direction, upwardsFacing, false, savePredicate);
             if (result) {
@@ -149,8 +148,7 @@ public class BlockPattern {
                             }
                         }
                         boolean canPartShared = true;
-                        if (worldState.getTileEntity() instanceof IMachineBlockEntity machineBlockEntity &&
-                                machineBlockEntity.getMetaMachine() instanceof IMultiPart part) { // add detected parts
+                        if (worldState.getTileEntity() instanceof IMultiPart part) { // add detected parts
                             if (!predicate.isAny()) {
                                 if (part.isFormed() && !part.canShared() &&
                                         !part.hasController(worldState.controllerPos)) { // check part can be shared
@@ -223,11 +221,11 @@ public class BlockPattern {
         Level world = player.level();
         int minZ = -centerOffset[4];
         worldState.clean();
-        IMultiController controller = worldState.getController();
-        BlockPos centerPos = controller.self().getPos();
-        Direction facing = controller.self().getFrontFacing();
-        Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isFlipped = controller.self().isFlipped();
+        MultiblockControllerMachine controller = worldState.getController();
+        BlockPos centerPos = controller.getBlockPos();
+        Direction facing = controller.getFrontFacing();
+        Direction upwardsFacing = controller.getUpwardsFacing();
+        boolean isFlipped = controller.isFlipped();
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
         Map<BlockPos, Object> blocks = new HashMap<>();
@@ -345,8 +343,8 @@ public class BlockPattern {
                                     handler.extractItem(foundSlot, 1, false);
                                 }
                             }
-                            if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
-                                blocks.put(pos, machineBlockEntity.getMetaMachine());
+                            if (world.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
+                                blocks.put(pos, metaMachine);
                             } else {
                                 blocks.put(pos, world.getBlockState(pos));
                             }
@@ -356,9 +354,9 @@ public class BlockPattern {
                 z++;
             }
         }
-        Direction frontFacing = controller.self().getFrontFacing();
+        Direction frontFacing = controller.getFrontFacing();
         blocks.forEach((pos, block) -> { // adjust facing
-            if (!(block instanceof IMultiController)) {
+            if (!(block instanceof MultiblockControllerMachine)) {
                 if (block instanceof BlockState && placeBlockPos.contains(pos)) {
                     resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
                         Object object = blocks.get(p.relative(f));
@@ -502,9 +500,8 @@ public class BlockPattern {
                 if (blockInfo == null || blockInfo.getBlockState().getBlock() == Blocks.AIR) {
                     if (blocks.get(pos).getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) {
                         if (machineBlock.newBlockEntity(BlockPos.ZERO,
-                                machineBlock.defaultBlockState()) instanceof IMachineBlockEntity machineBlockEntity) {
-                            var machine = machineBlockEntity.getMetaMachine();
-                            if (machine instanceof IMultiController) {
+                                machineBlock.defaultBlockState()) instanceof MetaMachine machine) {
+                            if (machine instanceof MultiblockControllerMachine) {
                                 return false;
                             } else {
                                 return machine.isFacingValid(f);

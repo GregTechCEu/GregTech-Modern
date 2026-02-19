@@ -1,17 +1,15 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -34,30 +32,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ConverterMachine extends TieredEnergyMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
 
-    public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
-        super(holder, tier, args, amps);
+    public ConverterMachine(BlockEntityCreationInfo info, int tier, int amps) {
+        super(info, tier, (TieredEnergyMachine machine) -> new ConverterTrait((ConverterMachine) machine, amps));
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        if (args.length > 0 && args[args.length - 1] instanceof Integer ampsValue) {
-            return new ConverterTrait(this, ampsValue);
-        }
-        throw new IllegalArgumentException("ConverterMachine need args [amps] for initialization");
-    }
 
     public ConverterTrait getConverterTrait() {
         return (ConverterTrait) energyContainer;

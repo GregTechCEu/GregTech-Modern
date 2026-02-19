@@ -4,6 +4,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'jacoco'
     alias libs.plugins.modDevGradle
     //alias libs.plugins.shadow
     alias libs.plugins.spotless
@@ -97,4 +98,35 @@ tasks.withType(JavaCompile).configureEach {
 
 lombok {
     version = "1.18.38"
+}
+
+jacoco {
+    applyTo runGameTestServer
+}
+
+jacocoTestReport {
+    doFirst {
+        try {
+            runGameTestServer.exec()
+        } catch (RuntimeException ignored) {}
+    }
+    doLast {
+        println "Coverage report location:"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('index.html')).get()}"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml')).get()}"
+    }
+    executionData runGameTestServer
+    sourceSets sourceSets.test
+    reports {
+        csv.required = false
+        xml.required = true
+        html.outputLocation = layout.buildDirectory.dir('coverage')
+        xml.outputLocation = layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml'))
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: '**/client/**')
+            fileTree(dir: it, exclude: '**/mixins/**')
+        }))
+    }
 }

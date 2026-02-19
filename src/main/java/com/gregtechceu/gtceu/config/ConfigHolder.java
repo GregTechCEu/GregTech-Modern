@@ -582,10 +582,6 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
-
-        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
@@ -739,10 +735,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {
 
+        @Configurable
+        @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
+        public boolean temperaturesInCelsius = false;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
@@ -843,6 +846,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+        @Configurable
+        @Configurable.Comment({ "Executes ./gradlew :processResources when F3+T is pressed",
+                "Only works in a development environment", "Default: false" })
+        public boolean autoRebuildResources = false;
     }
 
     public static class RendererConfigs {
@@ -856,12 +863,17 @@ public class ConfigHolder {
         public boolean renderGrowingPlants = true;
 
         @Configurable
+        @Configurable.Comment({ "Whether or not to color material/ore block highlights in the material color",
+                "Default: true" })
+        public boolean coloredMaterialBlockOutline = true;
+
+        @Configurable
         @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
                 "Default: true" })
         public boolean coloredTieredMachineOutline = true;
 
         @Configurable
-        @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier",
+        @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier or material color",
                 "Default: true" })
         public boolean coloredWireOutline = true;
     }

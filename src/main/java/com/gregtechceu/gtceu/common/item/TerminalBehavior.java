@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +22,7 @@ public class TerminalBehavior implements IInteractionItem {
             Level level = context.getLevel();
             BlockPos blockPos = context.getClickedPos();
             if (context.getPlayer() != null &&
-                    MetaMachine.getMachine(level, blockPos) instanceof IMultiController controller) {
+                    MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller) {
                 if (!controller.isFormed()) {
                     if (!level.isClientSide) {
                         controller.getPattern().autoBuild(context.getPlayer(), controller.getMultiblockState());

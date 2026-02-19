@@ -21,6 +21,7 @@
         "client.MultiPlayerGameModeMixin",
         "client.PlayerInfoAccessor",
         "client.VariantDeserializerMixin",
+        "dev.client.KeyboardHandlerMixin",
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
@@ -57,10 +58,12 @@
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",
+        "SmithingTransformRecipeMixin",
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",
         "client.ItemEntityMixin",
+        "dev.test.GameTestRegistryMixin",
         "emi.EmiRecipeFillerMixin",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
@@ -74,8 +77,7 @@
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",
-        "rei.RecipeFinderMixin",
-        "top.ConfigMixin"
+        "rei.RecipeFinderMixin"
     ],
     "injectors": {
         "defaultRequire": 1,
