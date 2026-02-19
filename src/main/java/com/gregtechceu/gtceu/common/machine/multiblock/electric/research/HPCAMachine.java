@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -18,6 +17,15 @@ import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -25,10 +33,11 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -238,6 +247,35 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             this.hasNotEnoughEnergy = true;
             getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
         }
+    }
+
+    @Override
+    public List<IWidget> getAdditionalWidgets(PanelSyncManager syncManager) {
+        if (isRemote()) {
+            if (isFormed()) {
+                hpcaHandler.tryGatherClientComponents(getLevel(), getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+                        isFlipped());
+            } else hpcaHandler.clearComputationCache();
+        }
+        GenericSyncValue<Component> text = GenericSyncValue.builder(Component.class)
+                .adapter(ByteBufAdapters.COMPONENT)
+                .getter(() -> {
+                    List<Component> list = new ArrayList<>();
+                    hpcaHandler.addErrors(list);
+                    hpcaHandler.addWarnings(list);
+                    hpcaHandler.addInfo(list);
+                    return GTStringUtils.toComponent(list);
+                })
+                .build();
+        syncManager.syncValue("text", text);
+        DoubleSyncValue progress = SyncHandlers
+                .doubleNumber(() -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0, null);
+        syncManager.syncValue("progress", progress);
+        return List.of(
+                new TextWidget<>(IKey.dynamic(text::getValue)),
+                new Grid()
+                        .mapTo(3, 9, i -> hpcaHandler.getComponentTexture(i).asWidget())
+                        .horizontalCenter());
     }
 
     // @Override
@@ -702,13 +740,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        public ResourceTexture getComponentTexture(int index) {
+        public IDrawable getComponentTexture(int index) {
             if (components.size() <= index) {
-                return GuiTextures.BLANK_TRANSPARENT;
+                return GTGuiTextures.BLANK_TRANSPARENT;
             }
             if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine)
                 return componentPartMachine.getComponentIcon();
-            return GuiTextures.BLANK_TRANSPARENT;
+            return GTGuiTextures.BLANK_TRANSPARENT;
         }
 
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,

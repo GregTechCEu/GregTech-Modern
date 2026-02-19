@@ -224,6 +224,14 @@ public class GTStringUtils {
         return component;
     }
 
+    public static Component toComponent(List<Component> components) {
+        MutableComponent component = Component.empty();
+        for (Component comp : components) {
+            component.append(comp).append("\n");
+        }
+        return component;
+    }
+
     public static String formatInt(long n) {
         Map<Long, String> suffixes = Map.of(
                 1L, "",

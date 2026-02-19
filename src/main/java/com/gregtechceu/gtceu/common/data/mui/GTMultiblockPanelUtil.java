@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMultiblockPanelUtil {
 
-    private MultiblockControllerMachine controller;
+    private final MultiblockControllerMachine controller;
 
     public GTMultiblockPanelUtil(MultiblockControllerMachine controller) {
         this.controller = controller;
@@ -51,6 +51,7 @@ public class GTMultiblockPanelUtil {
             listWidget.child(GTMultiblockTextUtil.addTotalRunsLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addOutputLines(rlMachine, syncManager));
         }
+        listWidget.children(controller.getAdditionalWidgets(syncManager));
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
     }
