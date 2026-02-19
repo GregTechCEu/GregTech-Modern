@@ -53,7 +53,11 @@ public abstract class ModularNetwork {
         @Override
         void closeContainer(Player player) {
             // mimics EntityPlayerSP.closeScreenAndDropStack() but without closing the screen
-            player.getInventory().setPickedItem(ItemStack.EMPTY);
+            ItemStack carried = player.containerMenu.getCarried();
+            if (!carried.isEmpty()) {
+                player.drop(carried, false);
+                player.containerMenu.setCarried(ItemStack.EMPTY);
+            }
             player.containerMenu = player.inventoryMenu;
         }
 
