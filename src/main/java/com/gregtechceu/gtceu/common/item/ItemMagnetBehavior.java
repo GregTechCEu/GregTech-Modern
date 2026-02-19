@@ -7,23 +7,22 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.mui.factory.UIFactories;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.PagedWidget;
@@ -39,7 +38,6 @@ import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -70,7 +68,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +85,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         this.energyDraw = GTValues.V[range > 8 ? GTValues.HV : GTValues.LV];
         MinecraftForge.EVENT_BUS.register(this);
     }
-
 
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
@@ -149,41 +145,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .child(pages)
                 .child(SlotGroupWidget.playerInventory(false).left(7).top(75).disableSortButtons());
     }
-    /*
-    @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var held = holder.getHeld();
-        var tag = held.getOrCreateTag();
-        var selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
-        var widgets = new HashSet<Triplet<Filter, Widget, Widget>>();
-        var stacks = new HashMap<Filter, ItemStack>();
-        var ui = new ModularUI(176, 157, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new EnumSelectorWidget<>(146, 5, 20, 20,
-                        Filter.values(), selected, (val) -> updateSelection(tag, val, widgets)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 75, true));
-        for (var f : Filter.values()) {
-            var stack = f.getFilter(held);
-            stack.setTag(tag.getCompound(FILTER_TAG).copy());
-            stacks.put(f, stack);
-            var description = new LabelWidget(5, 5, stack.getDescriptionId());
-            var config = ItemFilter
-                    .loadFilter(stack)
-                    .openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15);
-            var visible = f == selected;
-            description.setVisible(visible);
-            config.setVisible(visible);
-            widgets.add(new Triplet<>(f, description, config));
-            ui.widget(description);
-            ui.widget(config);
-        }
-        ui.registerCloseListener(() -> {
-            var selection = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
-            tag.put(FILTER_TAG, stacks.get(selection).getOrCreateTag());
-        });
-        return ui;
-    }
-    */
 
     private ParentWidget<?> createSimpleFilterPage(SimpleItemFilter filter) {
         SimpleItemFilter.FilterItemStackHandler handler = new SimpleItemFilter.FilterItemStackHandler(filter);
@@ -232,7 +193,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level world, @NotNull Player player,
                                                   InteractionHand hand) {
-        if(!player.level().isClientSide) {
+        if (!player.level().isClientSide) {
             if (player.isShiftKeyDown()) {
                 player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
                         "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
