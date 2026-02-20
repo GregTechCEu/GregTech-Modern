@@ -48,8 +48,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @Setter
     public transient boolean isGenerator = false;
 
-    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
-
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(id);
         this.addDefaultTooltips = false;
@@ -57,11 +55,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
-                                   BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
         super(id);
         this.machine = machine;
-        this.editableUI = editableUI;
         this.isGenerator = isGenerator;
     }
 
@@ -111,9 +107,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
 
             if (builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
-                if (this.editableUI != null && builder.editableUI() == null) {
-                    builder.editableUI(this.editableUI.apply(this.id, recipeType));
-                }
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,

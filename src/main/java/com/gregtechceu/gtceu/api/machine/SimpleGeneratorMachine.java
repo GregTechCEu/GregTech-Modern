@@ -3,37 +3,18 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
-
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-
-import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.function.BiFunction;
 
 public class SimpleGeneratorMachine extends WorkableTieredMachine
-                                    implements IFancyUIMachine, IEnvironmentalHazardEmitter {
+                                    implements IEnvironmentalHazardEmitter {
 
     @Getter
     private final float hazardStrengthPerOperation;
@@ -81,7 +62,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Simple Generator
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
@@ -119,40 +100,4 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     public long getDisplayRecipeVoltage() {
         return GTValues.V[this.tier];
     }
-
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new EditableMachineUI("generator", path, () -> {
-                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 4 + 8,
-                        template.getSize().height + 8);
-                Size size = group.getSize();
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof SimpleGeneratorMachine generatorMachine) {
-                    var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
-                            LinkedHashMap<RecipeCapability<?>, Object>::new);
-                    storages.put(IO.IN, ItemRecipeCapability.CAP, generatorMachine.importItems.storage);
-                    storages.put(IO.OUT, ItemRecipeCapability.CAP, generatorMachine.exportItems.storage);
-                    storages.put(IO.IN, FluidRecipeCapability.CAP, generatorMachine.importFluids);
-                    storages.put(IO.OUT, FluidRecipeCapability.CAP, generatorMachine.exportFluids);
-
-                    generatorMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(
-                            template,
-                            new GTRecipeTypeUI.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
-                                    storages,
-                                    new CompoundTag(),
-                                    Collections.emptyList(),
-                                    false, false));
-                    createEnergyBar().setupUI(template, generatorMachine);
-                }
-            }));
 }
