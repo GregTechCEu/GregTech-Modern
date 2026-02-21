@@ -7,9 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -31,8 +30,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private volatile MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
-    private volatile MachineDefinition hpValue = null;
+    private @Nullable MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
     @Nullable
     private MachineDefinition lpObject = null, hpObject = null;
 
@@ -45,9 +43,9 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     public MachineDefinition createObject() {
         MachineDefinition value = null;
         if (hasLowPressure) {
-            this.lowPressureBuilder = GTRegistration.REGISTRATE.machine(
-                    String.format("lp_%s", this.id.getPath()),
-                    holder -> machine.create(holder, false))
+            this.lowPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+                    .machine(String.format("lp_%s", this.id.getPath()),
+                            holder -> machine.create(holder, false))
                     .langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(0)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
@@ -60,9 +58,9 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
         }
 
         if (hasHighPressure) {
-            this.highPressureBuilder = GTRegistration.REGISTRATE.machine(
-                    String.format("hp_%s", this.id.getPath()),
-                    holder -> machine.create(holder, true))
+            this.highPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+                    .machine(String.format("hp_%s", this.id.getPath()),
+                            holder -> machine.create(holder, true))
                     .langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
@@ -93,10 +91,14 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
         }
     }
 
+    @Override
+    public String getTranslationKeyGroup() {
+        return "block";
+    }
+
     @SuppressWarnings("DataFlowIssue")
     @Override
     public void generateLang(LangKubeEvent lang) {
-        super.generateLang(lang);
         if (lpObject != null) {
             lang.add(GTCEu.MOD_ID, lpObject.getDescriptionId(), lpObject.getLangValue());
         }

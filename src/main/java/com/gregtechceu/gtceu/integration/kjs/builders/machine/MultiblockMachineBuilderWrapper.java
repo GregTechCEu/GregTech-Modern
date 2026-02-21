@@ -57,9 +57,10 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder internal;
+    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal;
 
-    public MultiblockMachineBuilderWrapper(ResourceLocation id, MultiblockMachineBuilder internal) {
+    public MultiblockMachineBuilderWrapper(ResourceLocation id,
+                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal) {
         super(GTResourceLocation.implicitAsGtceu(id));
         this.internal = internal;
         this.dummyBuilder = true;
@@ -419,7 +420,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     @Override
     public void generateLang(LangKubeEvent lang) {
-        super.generateLang(lang);
         if (object != null && object.getLangValue() != null) {
             lang.add(id.getNamespace(), object.getDescriptionId(), object.getLangValue());
         }

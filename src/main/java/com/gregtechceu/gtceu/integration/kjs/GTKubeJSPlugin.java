@@ -56,8 +56,8 @@ import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
+import com.gregtechceu.gtceu.common.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.block.GCYMBlocks;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
@@ -100,12 +100,10 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -114,7 +112,6 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
-import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
@@ -158,6 +155,12 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                 }
                 added++;
             }
+
+            // add all registry objects' namespaces to the dynamic packs so their resources are listed as expected.
+            // although usually only one namespace is used, it's easier and faster to
+            // just always add them to the set than to check if they're already added.
+            if (GTCEu.isClientSide()) GTDynamicResourcePack.addNamespace(builder.id.getNamespace());
+            GTDynamicDataPack.addNamespace(builder.id.getNamespace());
         }
 
         if (!objStorage.objects.isEmpty() && DevProperties.get().logRegistryEventObjects) {
@@ -228,16 +231,6 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         registry.register(GTCEuServerEvents.GROUP);
     }
 
-    // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
-    public static RuntimeBlockstateProvider RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockstateProvider(
-            GTRegistration.REGISTRATE, new PackOutput(KubeJSPaths.DIRECTORY),
-            (loc, json) -> {
-                if (!loc.getPath().endsWith(".json")) {
-                    loc = loc.withSuffix(".json");
-                }
-                GTDynamicResourcePack.addResource(loc, json);
-            });
-
     public static void generateMachineBlockModels() {
         RegistryObjectStorage.of(GTRegistries.MACHINE_REGISTRY).forEach(builder -> {
             if (builder instanceof IMachineBuilderKJS machineBuilder) {
@@ -246,7 +239,6 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                 } catch (IllegalStateException ignored) {}
             }
         });
-        GTKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER.run();
     }
 
     @Override
