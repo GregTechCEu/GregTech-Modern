@@ -89,7 +89,7 @@ public class PipeModel {
             END_OVERLAY_KEY    = "end_overlay";
     // spotless:on
     protected static final ResourceLocation RENDERTYPE_CUTOUT_MIPPED = ResourceLocation
-            .fromNamespaceAndPath("cutout_mipped", "");
+            .withDefaultNamespace("cutout_mipped");
 
     public static final Set<PipeModel> DYNAMIC_MODELS = new HashSet<>();
 
