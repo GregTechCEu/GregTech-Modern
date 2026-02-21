@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import xaero.common.minimap.highlight.ChunkHighlighter;
+import xaero.hud.minimap.info.render.compile.InfoDisplayCompiler;
 
 public class FluidChunkHighlighter extends ChunkHighlighter {
 
@@ -62,7 +63,7 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
     }
 
     @Override
-    public void addChunkHighlightTooltips(xaero.hud.minimap.info.render.compile.InfoDisplayCompiler compiler,
+    public void addChunkHighlightTooltips(InfoDisplayCompiler compiler,
                                           ResourceKey<Level> dimension, int chunkX,
                                           int chunkZ, int width) {}
 

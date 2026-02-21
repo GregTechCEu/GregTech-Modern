@@ -36,6 +36,9 @@ argonauts = "1.2.4"
 create = "6.0.8-168"
 ponder = "1.0.64"
 flywheel = "1.0.5"
+xaerosLib = "1.1.0"
+xaerosWorldMap = "1.40.11"
+xaerosMinimap = "25.3.10"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -47,9 +50,6 @@ modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
 worldStripper = "5592921"
 javd = "5711894"
 trenzalore = "5623160"
-xaerosLib = "1.1.0"
-xaerosWorldMap = "1.40.11"
-xaerosMinimap = "25.3.10"
 journeyMap = "6383889"
 spark = "6225208"
 observable = "5733591"
@@ -99,6 +99,9 @@ ae2wtlib            = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wtlib
 # TODO update these once there's 1.21 versions
 # argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
 # heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }
+xaeroslib           = { module = "xaero.lib:xaerolib-neoforge-1.21.1", version.ref = "xaerosLib" }
+xaerosworldmap      = { module = "xaero.map:xaeroworldmap-neoforge-1.21.1", version.ref = "xaerosWorldMap" }
+xaerosminimap       = { module = "xaero.minimap:xaerominimap-neoforge-1.21.1", version.ref = "xaerosMinimap" }
 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }
@@ -113,9 +116,6 @@ cc-tweaked-forge-impl = { module = "cc.tweaked:cc-tweaked-1.21.1-forge", version
 worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
 javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
 trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = "trenzalore" }
-xaeroslib           = { module = "xaero.lib:xaerolib-neoforge-1.21.1", version.ref = "xaerosLib" }
-xaerosworldmap      = { module = "xaero.map:xaeroworldmap-neoforge-1.21.1", version.ref = "xaerosWorldMap" }
-xaerosminimap       = { module = "xaero.minimap:xaerominimap-neoforge-1.21.1", version.ref = "xaerosMinimap" }
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
