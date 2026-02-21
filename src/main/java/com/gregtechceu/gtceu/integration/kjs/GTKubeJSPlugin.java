@@ -176,7 +176,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         registry.addDefault(GTRegistries.MATERIAL_REGISTRY, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
         registry.of(GTRegistries.TAG_PREFIX_REGISTRY, reg -> {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
-            reg.add(ResourceLocation.parse("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+            reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
         registry.addDefault(GTRegistries.RECIPE_TYPE_REGISTRY, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
@@ -189,25 +189,25 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                             new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
                                     SimpleTieredMachine.EDITABLE_UI_CREATOR, false)));
 
-            reg.add(ResourceLocation.parse("custom"), KJSWrappingMachineBuilder.class,
+            reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
-            reg.add(ResourceLocation.parse("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
-            reg.add(ResourceLocation.parse("generator"), KJSWrappingMachineBuilder.class,
+            reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
+            reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
                             new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
                                     SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)));
 
-            reg.add(ResourceLocation.parse("multiblock"), MultiblockMachineBuilderWrapper.class,
+            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class,
                     MultiblockMachineBuilderWrapper::createKJSMulti);
-            reg.add(ResourceLocation.parse("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
+            reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
                     KJSWrappingMultiblockBuilder::new);
-            reg.add(ResourceLocation.parse("primitive"), MultiblockMachineBuilderWrapper.class,
+            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class,
                     (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {
-            reg.add(ResourceLocation.parse("gtceu:active"), ActiveBlockBuilder.class, ActiveBlockBuilder::new);
-            reg.add(ResourceLocation.parse("gtceu:coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
+            reg.add(GTCEu.id("active"), ActiveBlockBuilder.class, ActiveBlockBuilder::new);
+            reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
         registry.addDefault(GTRegistries.ORE_VEIN_REGISTRY, OreVeinDefinitionBuilder.class,
