@@ -98,18 +98,19 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 220);
+        var panel = GTGuis.createPanel(this, 196, 237);
 
         var panelUtil = new GTMultiblockPanelUtil(this);
 
-        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 196))
                 .child(new ParentWidget<>()
                         .widthRel(0.95f)
-                        .heightRel(.6f)
+                        .heightRel(.65f)
                         .margin(4, 0)
-                        .left(3).top(5)
+                        .left(3).top(2)
+                        .horizontalCenter()
                         .child(Flow.row()
-                                .child(panelUtil.getMainTextPanel(syncManager, 170, 126))))
+                                .child(panelUtil.getMainTextPanel(syncManager, 186, 146))))
                 .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
@@ -120,7 +121,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this, syncManager))
                         .child(GTMuiWidgets.createVoidingButton(this, syncManager)))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7).horizontalCenter());
 
         return panel;
     }
