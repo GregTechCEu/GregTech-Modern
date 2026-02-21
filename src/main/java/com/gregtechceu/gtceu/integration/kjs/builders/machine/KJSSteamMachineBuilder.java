@@ -37,7 +37,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     private MachineDefinition lpObject = null, hpObject = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.dummyBuilder = true;
     }
 

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,8 +42,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    @Nullable
-    public transient Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
+    public transient @Nullable Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public transient boolean addDefaultTooltips = true;
     @Setter
@@ -56,7 +54,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
         this.dummyBuilder = true;
@@ -65,7 +63,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
                                    BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.machine = machine;
         this.editableUI = editableUI;
         this.isGenerator = isGenerator;

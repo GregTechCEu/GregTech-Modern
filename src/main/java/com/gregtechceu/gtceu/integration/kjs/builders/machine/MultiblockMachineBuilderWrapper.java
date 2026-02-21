@@ -60,7 +60,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     private final MultiblockMachineBuilder internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id, MultiblockMachineBuilder internal) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.internal = internal;
         this.dummyBuilder = true;
     }

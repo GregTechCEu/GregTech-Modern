@@ -128,7 +128,11 @@ import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import dev.latvian.mods.kubejs.util.KubeResourceLocation;
+import dev.latvian.mods.rhino.ContextFactory;
 import dev.latvian.mods.rhino.Wrapper;
+import dev.latvian.mods.rhino.util.wrap.TypeWrapper;
+import dev.latvian.mods.rhino.util.wrap.TypeWrapperValidator;
 import org.jetbrains.annotations.ApiStatus;
 
 public class GTKubeJSPlugin implements KubeJSPlugin {
@@ -377,6 +381,19 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
+        // Overwrite the KubeResourceLocation type wrapper.
+        // We can do this safely because KubeJS is always the first plugin to load.
+        // So this'll run after with no risk of KubeJS trying to register its type wrapper again,
+        // which would fail because of a check in TypeWrappers#register
+
+        // this WeakReference can't be freed yet, it's just been assigned. IntelliSense doesn't know that, though.
+        ContextFactory contextFactory = registry.scriptType().console.contextFactory.get();
+        assert contextFactory != null;
+
+        contextFactory.getTypeWrappers().wrappers.put(KubeResourceLocation.class,
+                new TypeWrapper<>(KubeResourceLocation.class, TypeWrapperValidator.ALWAYS_VALID,
+                        GTResourceLocation::wrapWithImplicitGTInRelevantRegistries));
+
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
         registry.register(GTRecipeType.class, o -> {
             o = Wrapper.unwrapped(o);

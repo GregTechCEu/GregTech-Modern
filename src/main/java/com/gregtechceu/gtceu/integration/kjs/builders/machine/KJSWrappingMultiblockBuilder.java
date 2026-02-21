@@ -29,7 +29,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
     public KJSWrappingMultiblockBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.tieredBuilder = new KJSTieredMultiblockBuilder(this.id);
         this.dummyBuilder = true;
     }

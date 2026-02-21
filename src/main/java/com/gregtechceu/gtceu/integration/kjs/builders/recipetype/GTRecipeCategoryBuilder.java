@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.recipetype;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -27,20 +25,16 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     private final transient String name;
     @Setter
-    @NotNull
     private transient GTRecipeType recipeType;
     @Setter
-    @Nullable
-    private transient IGuiTexture icon;
+    private transient @Nullable IGuiTexture icon;
     @Setter
     private transient boolean isXEIVisible;
     @Setter
-    @Nullable
-    private transient String langValue;
+    private transient @Nullable String langValue;
 
     public GTRecipeCategoryBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
-        name = id.getPath();
+        super(id);
         recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;
