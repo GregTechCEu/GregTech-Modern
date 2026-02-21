@@ -84,8 +84,8 @@ repositories {
         forRepository { maven { url = "https://jitpack.io/" } }
         filter { includeGroup("com.github.rtyley") }
     }
-    exclusiveContent {
+    exclusiveContent { // Xaero's
         forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
-        filter { includeGroupByRegex("xaero\\..+") }
+        filter { includeGroupAndSubgroups("xaero") }
     }
 }
