@@ -69,7 +69,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         }
         if (!machine.isRegisteredBloomTicket()) {
             machine.setRegisteredBloomTicket(true);
-            BloomUtil.registerBloomRender(null, new FusionBloomEffect(machine), machine.getHolder().self());
+            BloomUtil.registerBloomRender(null, new FusionBloomEffect(machine), machine.self());
         }
         renderLightRing(machine, partialTick, poseStack, buffer.getBuffer(GTRenderTypes.getLightRing()));
     }
@@ -124,7 +124,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
         @Override
         public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
-            BlockPos pos = machine.getPos();
+            BlockPos pos = machine.getBlockPos();
 
             lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
             poseStack.pushPose();
