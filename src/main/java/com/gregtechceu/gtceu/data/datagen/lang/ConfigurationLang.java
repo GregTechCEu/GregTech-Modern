@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
 import dev.toma.configuration.config.value.ConfigValue;
 import dev.toma.configuration.config.value.ObjectValue;
 
@@ -16,8 +14,7 @@ import java.util.Set;
 public class ConfigurationLang {
 
     public static void init(RegistrateLangProvider provider) {
-        dfs(provider, new HashSet<>(),
-                Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getValueMap());
+        dfs(provider, new HashSet<>(), ConfigHolder.INTERNAL_INSTANCE.getValueMap());
     }
 
     private static void dfs(RegistrateLangProvider provider, Set<String> added, Map<String, ConfigValue<?>> map) {
