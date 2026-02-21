@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GTArmorItem extends ArmorItem {
@@ -40,7 +39,7 @@ public class GTArmorItem extends ArmorItem {
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         String matSpecificKey = String.format("item.%s.%s_%s",
                 material.getModid(), material.getName(), type.getName());
         if (Language.getInstance().has(matSpecificKey)) {
@@ -50,7 +49,7 @@ public class GTArmorItem extends ArmorItem {
     }
 
     @Override
-    public @NotNull Component getDescription() {
+    public Component getDescription() {
         return Component.translatable(getDescriptionId(), material.getLocalizedName());
     }
 

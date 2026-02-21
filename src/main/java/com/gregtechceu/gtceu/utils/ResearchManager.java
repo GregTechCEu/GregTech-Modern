@@ -31,7 +31,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -39,12 +38,10 @@ import java.util.function.Consumer;
 
 public final class ResearchManager {
 
-    @NotNull
     public static ItemStack getDefaultScannerItem() {
         return GTItems.TOOL_DATA_STICK.asStack();
     }
 
-    @NotNull
     public static ItemStack getDefaultResearchStationItem(int cwut) {
         if (cwut > 32) {
             return GTItems.TOOL_DATA_MODULE.asStack();
@@ -59,7 +56,7 @@ public final class ResearchManager {
      * @param isDataBank if the caller is a Data Bank. Pass "true" here if your use-case does not matter for this check.
      * @return if the stack is a data item
      */
-    public static boolean isStackDataItem(@NotNull ItemStack stack, boolean isDataBank) {
+    public static boolean isStackDataItem(ItemStack stack, boolean isDataBank) {
         @Nullable
         DataItem dataItem = stack.get(GTDataComponents.DATA_ITEM);
         return dataItem != null && dataItem.requireDataBank() || isDataBank;
@@ -70,8 +67,7 @@ public final class ResearchManager {
      *
      * @param builder the builder to retrieve recipe info from
      */
-    public static void createDefaultResearchRecipe(@NotNull GTRecipeBuilder builder,
-                                                   RecipeOutput provider) {
+    public static void createDefaultResearchRecipe(GTRecipeBuilder builder, RecipeOutput provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
@@ -84,9 +80,9 @@ public final class ResearchManager {
         }
     }
 
-    public static void createDefaultResearchRecipe(@NotNull GTRecipeType recipeType, @NotNull String researchId,
-                                                   @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
-                                                   @NotNull ItemStack dataItem,
+    public static void createDefaultResearchRecipe(GTRecipeType recipeType, String researchId,
+                                                   ItemStack researchItem, FluidStack researchFluid,
+                                                   ItemStack dataItem,
                                                    int duration, EnergyStack eut, int CWUt,
                                                    RecipeOutput provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
@@ -121,7 +117,7 @@ public final class ResearchManager {
         }
     }
 
-    public record ResearchItem(@NotNull String researchId, @NotNull GTRecipeType recipeType)
+    public record ResearchItem(String researchId, GTRecipeType recipeType)
             implements TooltipProvider {
 
         // spotless:off
@@ -180,7 +176,7 @@ public final class ResearchManager {
             return null;
         }
 
-        private @Nullable GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
+        private @Nullable GTRecipe createDataRecipe(ItemStack first, ItemStack second) {
             ResearchItem researchItem = second.get(GTDataComponents.RESEARCH_ITEM);
             if (researchItem == null) return null;
 

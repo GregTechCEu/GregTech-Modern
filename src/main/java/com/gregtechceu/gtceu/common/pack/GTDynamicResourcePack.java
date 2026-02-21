@@ -230,7 +230,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     @Override
-    public @NotNull PackLocationInfo location() {
+    public PackLocationInfo location() {
         return info;
     }
 
