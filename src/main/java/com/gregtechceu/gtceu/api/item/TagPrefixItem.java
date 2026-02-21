@@ -66,11 +66,6 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
-        return tagPrefix.getUnlocalizedName(material);
-    }
-
-    @Override
     public Component getDescription() {
         return tagPrefix.getLocalizedName(material);
     }

@@ -138,7 +138,8 @@ public final class ResearchManager {
         public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
             Collection<GTRecipe> recipes = recipeType().getDataStickEntry(researchId());
             if (recipes != null && !recipes.isEmpty()) {
-                tooltipAdder.accept(Component.translatable("behavior.data_item.assemblyline.title"));
+                tooltipAdder.accept(Component.translatable("behavior.data_item.title", recipeType().getName()));
+
                 Collection<ItemStack> added = new ObjectOpenHashSet<>();
                 outer:
                 for (GTRecipe recipe : recipes) {
@@ -149,8 +150,7 @@ public final class ResearchManager {
                     }
                     if (added.add(output)) {
                         tooltipAdder.accept(
-                                Component.translatable("behavior.data_item.assemblyline.data",
-                                        output.getDisplayName()));
+                                Component.translatable("behavior.data_item.data", output.getHoverName()));
                     }
                 }
             }

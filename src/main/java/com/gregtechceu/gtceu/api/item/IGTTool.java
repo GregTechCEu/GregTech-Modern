@@ -647,6 +647,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             tooltip.add(Component.translatable(uniqueTooltip));
         }
 
+        // innate enchantments
+        if (stack.has(GTDataComponents.INNATE_ENCHANTMENTS)) {
+            tooltip.add(CommonComponents.EMPTY);
+
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.innate_enchantments"));
+            stack.addToTooltip(GTDataComponents.INNATE_ENCHANTMENTS, context, tooltip::add, flag);
+        }
+
         tooltip.add(CommonComponents.EMPTY);
 
         // valid tools
