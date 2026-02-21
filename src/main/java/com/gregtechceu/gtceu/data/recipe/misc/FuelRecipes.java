@@ -1,21 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
@@ -23,45 +12,8 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class FuelRecipes {
 
-    public static void addBoilerFuel(RecipeOutput provider, Set<Item> added,
-                                     Item item, int burnTime) {
-        if (added.contains(item) || burnTime <= 0) {
-            return;
-        }
-        added.add(item);
-
-        Optional<FluidStack> containedFluid = FluidUtil.getFluidContained(item.getDefaultInstance());
-        if (containedFluid.isEmpty()) {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(id.getNamespace() + "_" + id.getPath()))
-                    .inputItems(item)
-                    .duration(burnTime)
-                    .save(provider);
-        } else {
-            FluidStack fluid = containedFluid.get().copyWithAmount(250);
-            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
-
-            // the lava recipe's duration is 4/9 of the bucket's burn time
-            // the creosote recipe's duration is 7/32 of the bucket's burn time
-            // as such, the mean ratio is 191/576, or approximately 1/3.
-            STEAM_BOILER_RECIPES.recipeBuilder(id.getNamespace() + "_" + id.getPath())
-                    .inputFluids(fluid)
-                    .duration(burnTime / 3)
-                    .save(provider);
-        }
-    }
-
     public static void init(RecipeOutput provider) {
-        // TODO this all needs to be cleaned up, but this will make it somewhat work for now
-        // do these first because for some reason vanilla fuels are not set up yet at this phase?
-        Set<Item> addedItems = new HashSet<>();
-        for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
-            addBoilerFuel(provider, addedItems, fuelEntry.getKey(), fuelEntry.getValue());
-        }
-        for (Item item : BuiltInRegistries.ITEM) {
-            int burnTime = GTUtil.getItemBurnTime(item);
-            addBoilerFuel(provider, addedItems, item, burnTime);
-        }
+        // furnace fuel-based recipes are handled in SteamBoilerLogic for dynamic burn time (and data map) support.
 
         // override the default fluid recipes for lava and creosote
         STEAM_BOILER_RECIPES.recipeBuilder("minecraft_lava")
@@ -90,7 +42,7 @@ public class FuelRecipes {
                 .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil_heavy")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_heavy_oil")
                 .inputFluids(HeavyOil.getFluid(32))
                 .duration(50)
                 .save(provider);

@@ -18,6 +18,6 @@ public class LargeBoilerLogic extends SteamBoilerLogic {
 
     @Override
     protected int modifyBurnTime(int originalBurnTime) {
-        return originalBurnTime / 80;
+        return originalBurnTime / 4;
     }
 }
