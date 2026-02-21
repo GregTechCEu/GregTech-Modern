@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -60,13 +61,13 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatableEscape("recipe.condition.dimension.tooltip", dimension.location());
+        return Component.translatableEscape("recipe.condition.dimension.tooltip", getDimensionName(this.dimension));
     }
 
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOptional(this.dimension.location())
                 .orElse(new DimensionMarker(DimensionMarker.MAX_TIER,
-                        () -> Blocks.BARRIER, this.dimension.location().toString()));
+                        () -> Blocks.BARRIER, getDimensionName(this.dimension)));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);
         SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
@@ -83,11 +84,20 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
-        return level != null && dimension.location().equals(level.dimension().location());
+        return level != null && dimension == level.dimension();
     }
 
     @Override
     public DimensionCondition createTemplate() {
         return new DimensionCondition();
+    }
+
+    public static Component getDimensionName(ResourceKey<Level> dimension) {
+        return getDimensionName(dimension.location());
+    }
+
+    public static Component getDimensionName(ResourceLocation dimension) {
+        return Component.translatableWithFallback(dimension.toLanguageKey(Level.TRANSLATION_PREFIX),
+                dimension.toString());
     }
 }

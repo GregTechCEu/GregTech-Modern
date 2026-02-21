@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.data.misc;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
+import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -27,24 +30,22 @@ public class GTDimensionMarkers {
     public static final BlockEntry<Block> NETHER_MARKER = createMarker("the_nether");
     public static final BlockEntry<Block> END_MARKER = createMarker("the_end");
 
-    public static final DimensionMarker OVERWORLD = createAndRegister(Level.OVERWORLD.location(), 0,
+    public static final DimensionMarker OVERWORLD = createAndRegister(Level.OVERWORLD, 0,
             () -> OVERWORLD_MARKER, null);
-    public static final DimensionMarker NETHER = createAndRegister(Level.NETHER.location(), 0,
+    public static final DimensionMarker NETHER = createAndRegister(Level.NETHER, 0,
             () -> NETHER_MARKER, null);
-    public static final DimensionMarker END = createAndRegister(Level.END.location(), 0,
+    public static final DimensionMarker END = createAndRegister(Level.END, 0,
             () -> END_MARKER, null);
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, ResourceLocation itemKey,
-                                                    @Nullable String overrideName) {
-        DimensionMarker marker = new DimensionMarker(tier, itemKey, overrideName);
-        marker.register(dim);
-        return marker;
-    }
+    public static DimensionMarker createAndRegister(ResourceKey<Level> dimension, int tier, Supplier<ItemLike> supplier,
+                                                    @Nullable Component overrideName) {
+        if (overrideName == null) {
+            // if a special name hasn't been set, use the dimension's 'translated' name as a default
+            overrideName = DimensionCondition.getDimensionName(dimension);
+        }
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, Supplier<ItemLike> supplier,
-                                                    @Nullable String overrideName) {
         DimensionMarker marker = new DimensionMarker(tier, supplier, overrideName);
-        marker.register(dim);
+        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimension.location(), marker);
         return marker;
     }
 
