@@ -35,7 +35,7 @@ public class ReactorComponent {
     }
 
     public void addHeat(int amount) {
-        heat = Math.min(heat + amount, Integer.MAX_VALUE);
+        heat = Math.max(0, Math.min(heat + amount, Integer.MAX_VALUE));
     }
 
     public void removeHeat(int amount) {

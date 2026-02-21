@@ -1007,6 +1007,10 @@ public class MachineLang {
         provider.add("gtceu.multiblock.fission.value.fuel_rods", "%s/%s active");
         provider.add("gtceu.multiblock.fission.value.coolant", "%s mB/t %s");
         provider.add("gtceu.multiblock.fission.value.coolant.none", "None");
+        provider.add("gtceu.multiblock.fission.label.output_mult", "Output");
+        provider.add("gtceu.multiblock.fission.value.output_mult", "%s");
+        provider.add("gtceu.multiblock.fission.label.cooling_eff", "Cooling Eff.");
+        provider.add("gtceu.multiblock.fission.value.cooling_eff", "%s");
         provider.add("gtceu.multiblock.fission.overheating", "OVERHEATING!");
         provider.add("gtceu.multiblock.fission.meltdown_warning", "MELTDOWN — SCRAM ACTIVE");
         provider.add("gtceu.multiblock.fission.start", "Start Reactor");

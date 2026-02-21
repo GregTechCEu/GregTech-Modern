@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.fission;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -116,6 +117,12 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
     @SyncToClient
     @Getter
     private boolean meltdownState;
+    @SyncToClient
+    @Getter
+    private float powerOutputMultiplier;
+    @SyncToClient
+    @Getter
+    private float coolingEfficiency;
 
     private final List<long[]> heatmapLayout = new ArrayList<>();
 
@@ -276,9 +283,14 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         totalCoolingRate = coolingResult[0];
         totalCoolingCapacity = coolingResult[1];
 
+        float vesselHeatPct = vesselHeatMax > 0 ? (float) vesselHeat / vesselHeatMax : 0;
+        powerOutputMultiplier = coolingResult[2] / 1000.0f;
+        coolingEfficiency = ReactorGrid.getCoolingEfficiencyMultiplier(vesselHeatPct);
+
+        int scaledHeatAbsorbed = (int) (totalCoolingRate * powerOutputMultiplier);
         int drained = 0;
-        if (totalCoolingRate > 0 && activeCoolant != null) {
-            drained = processCoolant(totalCoolingRate, activeCoolant);
+        if (scaledHeatAbsorbed > 0 && activeCoolant != null) {
+            drained = processCoolant(scaledHeatAbsorbed, activeCoolant);
         }
         coolantFlowRate = drained;
         activeCoolantName = activeCoolant != null ?
@@ -293,9 +305,18 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         syncDataHolder.markClientSyncFieldDirty("coolantFlowRate");
         syncDataHolder.markClientSyncFieldDirty("activeCoolantName");
         syncDataHolder.markClientSyncFieldDirty("meltdownState");
+        syncDataHolder.markClientSyncFieldDirty("powerOutputMultiplier");
+        syncDataHolder.markClientSyncFieldDirty("coolingEfficiency");
 
-        if (grid.isVesselCritical()) {
-            processVesselFailure();
+        if (grid.isVesselCritical() && !meltdownState) {
+            meltdownState = true;
+            running = false;
+            syncDataHolder.markClientSyncFieldDirty("running");
+            syncDataHolder.markClientSyncFieldDirty("meltdownState");
+            //TODO: FAILURE NOTICE WHEN MASS STATE TESTING :))))))
+            GTCEu.LOGGER.warn("[FISSION] Reactor MELTED at {} — vessel heat {}/{}", self().getBlockPos(),
+                    vesselHeat, vesselHeatMax);
+            // TODO: processVesselFailure() — disabled during balance tuning
         }
     }
 
@@ -833,7 +854,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        int panelWidth = 280;
+        int panelWidth = 320;
         int panelHeight = 230;
 
         IntSyncValue heatSync = new IntSyncValue(this::getVesselHeat, v -> {});
@@ -848,6 +869,10 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         IntSyncValue totalRodsSync = new IntSyncValue(this::getTotalFuelRods, v -> {});
         IntSyncValue coolantFlowSync = new IntSyncValue(this::getCoolantFlowRate, v -> {});
         StringSyncValue coolantNameSync = new StringSyncValue(this::getActiveCoolantName);
+        IntSyncValue outputMultSync = new IntSyncValue(
+                () -> (int) (getPowerOutputMultiplier() * 1000), v -> {});
+        IntSyncValue coolingEffSync = new IntSyncValue(
+                () -> (int) (getCoolingEfficiency() * 1000), v -> {});
         StringSyncValue bottomStatusSync = new StringSyncValue(this::bottomLayerStatusText);
 
         syncManager.syncValue("heat", heatSync);
@@ -862,6 +887,8 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         syncManager.syncValue("total_rods", totalRodsSync);
         syncManager.syncValue("coolant_flow", coolantFlowSync);
         syncManager.syncValue("coolant_name", coolantNameSync);
+        syncManager.syncValue("output_mult", outputMultSync);
+        syncManager.syncValue("cooling_eff", coolingEffSync);
         syncManager.syncValue("bottom_status", bottomStatusSync);
 
         ByteArraySyncValue heatmapSync = new ByteArraySyncValue(this::buildHeatmapData, null);
@@ -888,7 +915,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         Supplier<Boolean> formed = formedSync::getBoolValue;
 
         var statsColumn = Flow.column().width(statsWidth).coverChildrenHeight()
-                .padding(3, 3, 4, 3).childPadding(1)
+                .padding(3, 3, 4, 3)
                 .background(GTGuiTextures.BACKGROUND_INVERSE)
                 .child(new TextWidget<>(IKey.dynamic(() -> {
                     if (!formed.get()) {
@@ -899,32 +926,33 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
                                     "gtceu.multiblock.fission.status.offline")
                             .withStyle(runningSync.getBoolValue() ? ChatFormatting.GREEN : ChatFormatting.BLACK);
                 })))
-                .child(statLabel("gtceu.multiblock.fission.label.vessel_heat", formed))
-                .child(statValue(() -> {
+                .child(statLine("gtceu.multiblock.fission.label.vessel_heat", () -> {
                     int heat = heatSync.getIntValue();
                     float pct = vesselHeatMax > 0 ? (float) heat / vesselHeatMax * 100 : 0;
                     return Component.translatable("gtceu.multiblock.fission.value.vessel_heat",
                             heat, vesselHeatMax, String.format("%.1f%%", pct));
                 }, formed))
-                .child(statLabel("gtceu.multiblock.fission.label.heat_gen", formed))
-                .child(statValue(() -> Component.translatable(
+                .child(statLine("gtceu.multiblock.fission.label.heat_gen", () -> Component.translatable(
                         "gtceu.multiblock.fission.value.heat_gen", heatGenSync.getIntValue()), formed))
-                .child(statLabel("gtceu.multiblock.fission.label.cooling", formed))
-                .child(statValue(() -> Component.translatable(
+                .child(statLine("gtceu.multiblock.fission.label.cooling", () -> Component.translatable(
                         "gtceu.multiblock.fission.value.cooling",
                         coolingSync.getIntValue(), coolingCapSync.getIntValue()), formed))
-                .child(statLabel("gtceu.multiblock.fission.label.fuel_rods", formed))
-                .child(statValue(() -> Component.translatable(
+                .child(statLine("gtceu.multiblock.fission.label.fuel_rods", () -> Component.translatable(
                         "gtceu.multiblock.fission.value.fuel_rods",
                         activeRodsSync.getIntValue(), totalRodsSync.getIntValue()), formed))
-                .child(statLabel("gtceu.multiblock.fission.label.coolant", formed))
-                .child(statValue(() -> {
+                .child(statLine("gtceu.multiblock.fission.label.coolant", () -> {
                     String name = coolantNameSync.getStringValue();
                     if (name == null || name.isEmpty())
                         return Component.translatable("gtceu.multiblock.fission.value.coolant.none");
                     return Component.translatable("gtceu.multiblock.fission.value.coolant",
                             coolantFlowSync.getIntValue(), name);
                 }, formed))
+                .child(statLine("gtceu.multiblock.fission.label.output_mult", () -> Component.translatable(
+                        "gtceu.multiblock.fission.value.output_mult",
+                        String.format("%.0f%%", outputMultSync.getIntValue() / 10.0f)), formed))
+                .child(statLine("gtceu.multiblock.fission.label.cooling_eff", () -> Component.translatable(
+                        "gtceu.multiblock.fission.value.cooling_eff",
+                        String.format("%.0f%%", coolingEffSync.getIntValue() / 10.0f)), formed))
                 .child(new TextWidget<>(IKey.dynamic(() -> {
                     if (meltdownSync.getBoolValue()) {
                         return Component.translatable("gtceu.multiblock.fission.meltdown_warning")
@@ -995,17 +1023,12 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         return panel;
     }
 
-    private static TextWidget<?> statLabel(String langKey, Supplier<Boolean> formed) {
+    private static TextWidget<?> statLine(String labelKey, Supplier<Component> value,
+                                          Supplier<Boolean> formed) {
         return new TextWidget<>(IKey.dynamic(() -> {
             if (!formed.get()) return Component.empty();
-            return Component.translatable(langKey).withStyle(ChatFormatting.BLACK);
-        }));
-    }
-
-    private static TextWidget<?> statValue(Supplier<Component> value, Supplier<Boolean> formed) {
-        return new TextWidget<>(IKey.dynamic(() -> {
-            if (!formed.get()) return Component.empty();
-            return value.get().copy().withStyle(ChatFormatting.BLACK);
+            return Component.translatable(labelKey).append(": ").append(value.get())
+                    .withStyle(ChatFormatting.BLACK);
         }));
     }
 }
