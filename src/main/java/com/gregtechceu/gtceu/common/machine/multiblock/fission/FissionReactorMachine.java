@@ -313,7 +313,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
             running = false;
             syncDataHolder.markClientSyncFieldDirty("running");
             syncDataHolder.markClientSyncFieldDirty("meltdownState");
-            //TODO: FAILURE NOTICE WHEN MASS STATE TESTING :))))))
+            // TODO: FAILURE NOTICE WHEN MASS STATE TESTING :))))))
             GTCEu.LOGGER.warn("[FISSION] Reactor MELTED at {} — vessel heat {}/{}", self().getBlockPos(),
                     vesselHeat, vesselHeatMax);
             // TODO: processVesselFailure() — disabled during balance tuning
@@ -911,7 +911,7 @@ public class FissionReactorMachine extends MultiblockControllerMachine implement
         var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
         panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), panelWidth));
 
-        int statsWidth = panelWidth - 14 - 110 - 6;
+        int statsWidth = panelWidth - 14 - 110 - 10;
         Supplier<Boolean> formed = formedSync::getBoolValue;
 
         var statsColumn = Flow.column().width(statsWidth).coverChildrenHeight()
