@@ -252,10 +252,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Override
     public List<IWidget> getAdditionalWidgets(PanelSyncManager syncManager) {
         if (isRemote()) {
+            hpcaHandler.clearClientComponents();
             if (isFormed()) {
                 hpcaHandler.tryGatherClientComponents(getLevel(), getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                         isFlipped());
-            } else hpcaHandler.clearComputationCache();
+            }
         }
         GenericSyncValue<Component> text = GenericSyncValue.builder(Component.class)
                 .adapter(ByteBufAdapters.COMPONENT)

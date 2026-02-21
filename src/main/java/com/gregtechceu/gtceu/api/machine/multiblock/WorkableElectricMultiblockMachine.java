@@ -100,7 +100,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 164);
+        var panel = GTGuis.createPanel(this, 176, 220);
 
         var panelUtil = new GTMultiblockPanelUtil(this);
 
@@ -111,7 +111,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                         .margin(4, 0)
                         .left(3).top(5)
                         .child(new Row()
-                                .child(panelUtil.getMainTextPanel(syncManager, 170, 70))))
+                                .child(panelUtil.getMainTextPanel(syncManager, 170, 100))))
                 .child(new Column()
                         .coverChildren()
                         .leftRel(1.0f)
