@@ -207,7 +207,7 @@ public class GTMaterialItems {
                 })
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())
-                .color(() -> IGTTool::tintColor)
+                .color(() -> () -> IGTTool::tintColor)
                 .register());
         // spotless:on
     }
