@@ -24,6 +24,9 @@ ccTweaked = "1.114.3"
 create = "6.0.6-150"
 ponder = "1.0.80"
 flywheel = "1.0.4"
+xaerosLib = "1.1.0"
+xaerosWorldMap = "1.40.11"
+xaerosMinimap = "25.3.10"
 
 ## modrinth maven ##
 jade = "11.6.3"
@@ -35,8 +38,6 @@ modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
 worldStripper = "4578579"
 javd = "4803995"
 trenzalore = "4848244"
-xaerosWorldMap = "5658224"
-xaerosMinimap = "5773012"
 journeyMap = "5789363"
 resourcefullib = "5659871"
 argonauts = "5263580"
@@ -88,6 +89,9 @@ jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
+xaeroslib           = { module = "xaero.lib:xaerolib-forge-1.20.1", version.ref = "xaerosLib" }
+xaerosworldmap      = { module = "xaero.map:xaeroworldmap-forge-1.20.1", version.ref = "xaerosWorldMap" }
+xaerosminimap       = { module = "xaero.minimap:xaerominimap-forge-1.20.1", version.ref = "xaerosMinimap" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }
@@ -97,8 +101,6 @@ cc-tweaked-forge-impl = { module = "cc.tweaked:cc-tweaked-1.20.1-forge", version
 worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
 javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
 trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = "trenzalore" }
-xaerosworldmap      = { module = "curse.maven:xaeros-world-map-317780", version.ref = "xaerosWorldMap" }
-xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.ref = "xaerosMinimap" }
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }

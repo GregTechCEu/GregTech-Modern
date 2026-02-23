@@ -8,9 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import xaero.lib.client.gui.widget.Tooltip;
 import xaero.map.WorldMap;
+import xaero.map.common.config.option.WorldMapProfiledConfigOptions;
 import xaero.map.element.MapElementReader;
-import xaero.map.gui.CursorBox;
 import xaero.map.gui.IRightClickableElement;
 import xaero.map.gui.dropdown.rightclick.RightClickOption;
 
@@ -58,12 +59,16 @@ public class OreVeinElementReader extends
 
     @Override
     public int getInteractionBoxTop(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
-        return WorldMap.settings.waypointBackgrounds ? -41 : -12;
+        boolean flag = WorldMap.INSTANCE.getConfigs().getClientConfigManager()
+                .getEffective(WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS);
+        return flag ? -41 : -12;
     }
 
     @Override
     public int getInteractionBoxBottom(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
-        return WorldMap.settings.waypointBackgrounds ? 0 : 12;
+        boolean flag = WorldMap.INSTANCE.getConfigs().getClientConfigManager()
+                .getEffective(WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS);
+        return flag ? 0 : 12;
     }
 
     @Override
@@ -146,10 +151,10 @@ public class OreVeinElementReader extends
     }
 
     @Override
-    public CursorBox getTooltip(OreVeinElement element, OreVeinElementContext context, boolean overMenu) {
+    public Tooltip getTooltip(OreVeinElement element, OreVeinElementContext context, boolean overMenu) {
         List<Component> components = OreRenderLayer.getTooltip(element.getName(), element.getVein());
         // Xaeros requires spaces before/after newlines (see xaero.map.misc.TextSplitter)
         String joined = components.stream().map(Component::getString).collect(Collectors.joining(" \n "));
-        return new CursorBox(joined);
+        return new Tooltip(joined);
     }
 }
