@@ -136,9 +136,6 @@ public class GTDataComponents {
             .registerComponentType("data_copy_tag", builder -> builder.persistent(CustomData.CODEC)
                     .networkSynchronized(CustomData.STREAM_CODEC));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FormatStringList>> FORMAT_STRING_LIST = DATA_COMPONENTS
-            .registerComponentType("format_string_list", builder -> builder.persistent(FormatStringList.CODEC)
-                    .networkSynchronized(FormatStringList.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FormatStringList>> COMPUTER_MONITOR_DATA = DATA_COMPONENTS
             .registerComponentType("computer_monitor_cover_data", builder -> builder.persistent(FormatStringList.CODEC)
                     .networkSynchronized(FormatStringList.STREAM_CODEC));
@@ -151,6 +148,20 @@ public class GTDataComponents {
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextLineList>> TEXT_LINE_LIST = DATA_COMPONENTS
             .registerComponentType("text_line_list", builder -> builder.persistent(TextLineList.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> IMAGE_MODULE_URL = DATA_COMPONENTS
+            .registerComponentType("image_module_url", builder -> builder.persistent(Codec.STRING)
+                    .networkSynchronized(ByteBufCodecs.STRING_UTF8));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPosWithRot>> MONITOR_TARGET = DATA_COMPONENTS
+            .registerComponentType("monitor_target", builder -> builder.persistent(GlobalPosWithRot.CODEC)
+                    .networkSynchronized(GlobalPosWithRot.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> ENDER_REDSTONE_LINK_TRANSMITTER_UUID = DATA_COMPONENTS
+            .registerComponentType("ender_redstone_link_transmitter_uuid",
+                    builder -> builder.persistent(UUIDUtil.CODEC)
+                            .networkSynchronized(UUIDUtil.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> PLACEHOLDER_UUID = DATA_COMPONENTS
+            .registerComponentType("placeholder_uuid",
+                    builder -> builder.persistent(UUIDUtil.CODEC)
+                            .networkSynchronized(UUIDUtil.STREAM_CODEC));
 
     // machine info
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LargeItemContent>> LARGE_ITEM_CONTENT = DATA_COMPONENTS
@@ -180,29 +191,4 @@ public class GTDataComponents {
             .registerComponentType("lighter_open",
                     builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> TEXT_MODULE_SCALE = DATA_COMPONENTS
-            .registerComponentType("text_module_scale", builder -> builder.persistent(Codec.DOUBLE)
-                    .networkSynchronized(ByteBufCodecs.DOUBLE));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> TEXT_MODULE_STRING_LINES = DATA_COMPONENTS
-            .registerComponentType("text_module_string_lines", builder -> builder.persistent(Codec.list(Codec.STRING))
-                    .networkSynchronized(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Component>>> TEXT_MODULE_TEXT = DATA_COMPONENTS
-            .registerComponentType("text_module_text",
-                    builder -> builder.persistent(Codec.list(ComponentSerialization.CODEC))
-                            .networkSynchronized(ComponentSerialization.STREAM_CODEC.apply(ByteBufCodecs.list())));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> IMAGE_MODULE_URL = DATA_COMPONENTS
-            .registerComponentType("image_module_url", builder -> builder.persistent(Codec.STRING)
-                    .networkSynchronized(ByteBufCodecs.STRING_UTF8));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPosWithRot>> MONITOR_TARGET = DATA_COMPONENTS
-            .registerComponentType("monitor_target", builder -> builder.persistent(GlobalPosWithRot.CODEC)
-                    .networkSynchronized(GlobalPosWithRot.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> ENDER_REDSTONE_LINK_TRANSMITTER_UUID = DATA_COMPONENTS
-            .registerComponentType("ender_redstone_link_transmitter_uuid",
-                    builder -> builder.persistent(UUIDUtil.CODEC)
-                            .networkSynchronized(UUIDUtil.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> PLACEHOLDER_UUID = DATA_COMPONENTS
-            .registerComponentType("placeholder_uuid",
-                    builder -> builder.persistent(UUIDUtil.CODEC)
-                            .networkSynchronized(UUIDUtil.STREAM_CODEC));
-    // enderRedstoneLinkTransmitterUUID
 }

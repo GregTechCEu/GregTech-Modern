@@ -46,6 +46,13 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         super(components);
     }
 
+    public static MultiLineComponent of(List<Component> lines) {
+        List<MutableComponent> mutableLines = lines.stream()
+                .map(Component::copy)
+                .toList();
+        return new MultiLineComponent(mutableLines);
+    }
+
     public static MultiLineComponent of(Component c) {
         return new MultiLineComponent(List.of(c.copy()));
     }

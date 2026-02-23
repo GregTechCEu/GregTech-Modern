@@ -31,7 +31,7 @@ public class MonitorTextRenderer implements IMonitorRenderer {
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
         try {
-            BlockPos rel = group.getRow(0, machine::toRelative).get(0);
+            BlockPos rel = group.getRow(0, machine::toRelative).getFirst();
             int row = 0;
             int columns = group.getRow(0, machine::toRelative).size();
             poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
