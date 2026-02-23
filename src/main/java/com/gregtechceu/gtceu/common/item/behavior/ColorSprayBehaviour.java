@@ -12,6 +12,9 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllTags;
+import com.simibubi.create.foundation.utility.BlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -302,7 +305,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return false;
     }
 
-    @SuppressWarnings("RedundantIfStatement")
     private boolean tryPaintSpecialBlock(Level world, BlockPos pos, Block block) {
         if (block.defaultBlockState().is(Tags.Blocks.GLASS)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
@@ -343,6 +345,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             if (recolorBlockNoState(CANDLE_MAP, this.color, world, pos)) {
                 return true;
             }
+        }
+        if (GTCEu.Mods.isCreateLoaded() && block.defaultBlockState().is(AllTags.AllBlockTags.WINDMILL_SAILS.tag)) {
+            return recolorCreateSail(world, pos, color);
         }
         return false;
     }
@@ -404,6 +409,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (block.defaultBlockState().is(BlockTags.CANDLES) && block != Blocks.WHITE_CANDLE) {
             recolorBlockNoState(CANDLE_MAP, DyeColor.WHITE, world, pos);
             return true;
+        }
+        if (GTCEu.Mods.isCreateLoaded() && block.defaultBlockState().is(AllTags.AllBlockTags.WINDMILL_SAILS.tag)) {
+            return recolorCreateSail(world, pos, DyeColor.WHITE);
         }
 
         // General case
@@ -496,5 +504,18 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     child.getPart(childDirection) == null && child.getCableConnectionType(childDirection).isValid() &&
                     parent.getColor() == child.getColor();
         }
+    }
+
+    private static boolean recolorCreateSail(Level world, BlockPos pos, @Nullable DyeColor color) {
+        // logic copied from Create (SailBlock#applyDye).
+        // skip null color, because we're not shears.
+        if (color == null) return false;
+        BlockState oldState = world.getBlockState(pos);
+        BlockState newState = BlockHelper.copyProperties(oldState, AllBlocks.DYED_SAILS.get(color).getDefaultState());
+        if(oldState != newState) {
+            world.setBlockAndUpdate(pos, newState);
+            return true;
+        }
+        return false;
     }
 }
