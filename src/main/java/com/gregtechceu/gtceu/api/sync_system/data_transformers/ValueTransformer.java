@@ -25,11 +25,12 @@ public interface ValueTransformer<T> {
      * @param fieldName    The name of the field being serialized, or a string denoting the current sync context if not
      *                     being invoked directly on a field.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
-     *                     being
-     *                     written to the server save.
+     *                     being written to the server save.
+     *
      */
     record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
-                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
+                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
+                                 boolean isClientFullSyncUpdate) {}
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.
