@@ -49,6 +49,7 @@
         "LevelAccessor",
         "LevelMixin",
         "LootPoolAccessor",
+        "MapColorAccessor",
         "MappedRegistryMixin",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
