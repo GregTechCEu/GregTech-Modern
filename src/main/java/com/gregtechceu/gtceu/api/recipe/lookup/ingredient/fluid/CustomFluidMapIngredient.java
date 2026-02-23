@@ -37,10 +37,7 @@ public class CustomFluidMapIngredient extends AbstractMapIngredient {
 
     public static List<AbstractMapIngredient> from(IntProviderFluidIngredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
-        FluidStack[] stacks = new FluidStack[] { ingredient.getMaxSizeStack() };
-        for (FluidStack stack : stacks) {
-            ingredients.add(new CustomFluidMapIngredient(stack, ingredient));
-        }
+        ingredients.add(new CustomFluidMapIngredient(ingredient.getMaxSizeStack(), ingredient));
         return ingredients;
     }
 

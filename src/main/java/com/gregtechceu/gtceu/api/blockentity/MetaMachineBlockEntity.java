@@ -30,6 +30,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
 
@@ -160,5 +161,14 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     /**
      * Extending interface to make {@link BlockEntity.DataComponentInput} public as it's protected by default.
      */
-    public interface ExDataComponentInput extends BlockEntity.DataComponentInput {}
+    public interface ExDataComponentInput extends BlockEntity.DataComponentInput {
+
+        default boolean has(DataComponentType<?> type) {
+            return get(type) != null;
+        }
+
+        default boolean has(Supplier<? extends DataComponentType<?>> type) {
+            return has(type.get());
+        }
+    }
 }

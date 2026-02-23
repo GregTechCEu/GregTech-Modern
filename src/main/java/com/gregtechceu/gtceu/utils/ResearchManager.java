@@ -117,14 +117,14 @@ public final class ResearchManager {
         }
     }
 
-    public record ResearchItem(String researchId, GTRecipeType recipeType)
-            implements TooltipProvider {
+    public record ResearchItem(String researchId, GTRecipeType recipeType) implements TooltipProvider {
 
         // spotless:off
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
                 GTRecipeSerializer.GT_RECIPE_TYPE_CODEC.fieldOf("research_type").forGetter(ResearchItem::recipeType)
         ).apply(instance, ResearchItem::new));
+        // spotless:on
         public static final StreamCodec<ByteBuf, ResearchItem> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.STRING_UTF8, ResearchItem::researchId,
                 GTRecipeSerializer.GT_RECIPE_TYPE_STREAM_CODEC, ResearchItem::recipeType,
@@ -133,25 +133,25 @@ public final class ResearchManager {
         @Override
         public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
             Collection<GTRecipe> recipes = recipeType().getDataStickEntry(researchId());
-            if (recipes != null && !recipes.isEmpty()) {
-                tooltipAdder.accept(Component.translatable("behavior.data_item.title", recipeType().getName()));
+            if (recipes == null || recipes.isEmpty()) {
+                return;
+            }
+            tooltipAdder.accept(Component.translatable("behavior.data_item.title", recipeType().getName()));
 
-                Collection<ItemStack> added = new ObjectOpenHashSet<>();
-                outer:
-                for (GTRecipe recipe : recipes) {
-                    ItemStack output = ItemRecipeCapability.CAP
-                            .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content).getItems()[0];
-                    for (var item : added) {
-                        if (output.is(item.getItem())) continue outer;
-                    }
-                    if (added.add(output)) {
-                        tooltipAdder.accept(
-                                Component.translatable("behavior.data_item.data", output.getHoverName()));
-                    }
+            Collection<ItemStack> added = new ObjectOpenHashSet<>();
+            outer:
+            for (GTRecipe recipe : recipes) {
+                ItemStack output = ItemRecipeCapability.CAP
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content)
+                        .getItems()[0];
+                for (var item : added) {
+                    if (output.is(item.getItem())) continue outer;
+                }
+                if (added.add(output)) {
+                    tooltipAdder.accept(Component.translatable("behavior.data_item.data", output.getHoverName()));
                 }
             }
         }
-        // spotless:on
     }
 
     public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomRecipeLogic {
