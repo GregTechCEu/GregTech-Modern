@@ -805,7 +805,7 @@ public class ConfigHolder {
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
-        public RendererConfigs renderer = new RendererConfigs();
+        public RendererOptions renderer = new RendererOptions();
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
 
@@ -829,6 +829,32 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class RendererOptions {
+
+            @Configurable
+            @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
+            public boolean renderFluids = true;
+
+            @Configurable
+            @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
+            public boolean renderGrowingPlants = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to color material/ore block highlights in the material color",
+                    "Default: true" })
+            public boolean coloredMaterialBlockOutline = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
+                    "Default: true" })
+            public boolean coloredTieredMachineOutline = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier or material color",
+                    "Default: true" })
+            public boolean coloredWireOutline = true;
         }
 
         public static class TankItemFluidPreview {
@@ -865,31 +891,5 @@ public class ConfigHolder {
         @Configurable.Comment({ "Executes ./gradlew :processResources when F3+T is pressed",
                 "Only works in a development environment", "Default: false" })
         public boolean autoRebuildResources = false;
-    }
-
-    public static class RendererConfigs {
-
-        @Configurable
-        @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
-        public boolean renderFluids = true;
-
-        @Configurable
-        @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
-        public boolean renderGrowingPlants = true;
-
-        @Configurable
-        @Configurable.Comment({ "Whether or not to color material/ore block highlights in the material color",
-                "Default: true" })
-        public boolean coloredMaterialBlockOutline = true;
-
-        @Configurable
-        @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
-                "Default: true" })
-        public boolean coloredTieredMachineOutline = true;
-
-        @Configurable
-        @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier or material color",
-                "Default: true" })
-        public boolean coloredWireOutline = true;
     }
 }
