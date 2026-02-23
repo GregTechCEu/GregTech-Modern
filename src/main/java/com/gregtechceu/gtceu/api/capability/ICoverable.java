@@ -161,9 +161,11 @@ public interface ICoverable extends ITickSubscription, ICopyable {
     }
 
     default boolean hasAnyCover() {
-        for (Direction facing : GTUtil.DIRECTIONS)
-            if (getCoverAtSide(facing) != null)
+        for (Direction facing : GTUtil.DIRECTIONS) {
+            if (getCoverAtSide(facing) != null) {
                 return true;
+            }
+        }
         return false;
     }
 
