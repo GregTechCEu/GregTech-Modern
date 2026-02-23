@@ -190,7 +190,7 @@ public class ToolHelper {
                     if (user != null) {
                         user.breakItem(stack);
                         user.onEquippedItemBroken(stack.getItem(),
-                                user.getSlotForHand(
+                                LivingEntity.getSlotForHand(
                                         user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
                     }
                     stack.shrink(1);
@@ -474,21 +474,19 @@ public class ToolHelper {
      * @return listOfBlockPositions or empty list if none
      */
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        final List<BlockPos> NO_BLOCKS = List.of();
-        if (!hasBehaviorsComponent(stack)) return NO_BLOCKS;
+        if (!hasBehaviorsComponent(stack)) return Collections.emptyList();
 
         var aoeDefinition = getAoEDefinition(stack);
         if (aoeDefinition.isZero()) {
-            return NO_BLOCKS;
+            return Collections.emptyList();
         }
 
-        InteractionHand hand = InteractionHand.MAIN_HAND;
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        UseOnContext context = new UseOnContext(player, hand, hitResult);
+        UseOnContext context = new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
 
-    public static BlockHitResult getPlayerDefaultRaytrace(@NotNull Player player) {
+    public static BlockHitResult getPlayerDefaultRaytrace(Player player) {
         return entityPickBlock(player, player.blockInteractionRange(), 1.0f, false);
     }
 
@@ -511,8 +509,7 @@ public class ToolHelper {
      * @param level  the level in which the click happened
      * @param pos    the position that was clicked
      */
-    public static void onActionDone(@Nullable Player player, @NotNull ItemStack stack,
-                                    @NotNull Level level, @NotNull Vec3 pos) {
+    public static void onActionDone(@Nullable Player player, ItemStack stack, Level level, Vec3 pos) {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
@@ -521,7 +518,6 @@ public class ToolHelper {
         }
     }
 
-    @NotNull
     public static Set<GTToolType> getToolTypes(final ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {
@@ -533,7 +529,6 @@ public class ToolHelper {
         return types;
     }
 
-    @NotNull
     public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {
