@@ -108,7 +108,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (tag == null) return InteractionResult.FAIL;
 
             List<ItemStack> items = new ArrayList<>();
-            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
             });
 
@@ -304,9 +304,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config")
                 .append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
 
-        if (tag.contains("itemsToPaste")) {
+        if (tag.contains(ITEMS_TO_PASTE)) {
             List<ItemStack> items = new ArrayList<>();
-            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
             });
 
