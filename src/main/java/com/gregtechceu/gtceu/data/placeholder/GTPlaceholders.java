@@ -780,10 +780,10 @@ public class GTPlaceholders {
                     int slot = PlaceholderUtils.toInt(args.get(2));
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
-                    // if (stack.getOrCreateTag().contains("boundPlayerUUID"))
-                    // owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
-                    if (stack.has(GTDataComponents.DATA_BOUND_PLAYER))
-                        owner = stack.get(GTDataComponents.DATA_BOUND_PLAYER).uuid();
+
+                    if (stack.has(GTDataComponents.BINDING_DATA)) {
+                        owner = stack.get(GTDataComponents.BINDING_DATA).uuid();
+                    }
                 }
                 VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
                 switch (type) {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -121,16 +122,13 @@ public class MonitorGroup {
         IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
         if (component != null && component.getDataItems() != null) {
             ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
-            BlockPos pos = stack.getOrDefault(GTDataComponents.MONITOR_TARGET, null);
+            GlobalPosWithRot pos = stack.get(GTDataComponents.MONITOR_TARGET);
             if (pos == null) {
                 return null;
             }
-            Direction face = stack.getOrDefault(GTDataComponents.MONITOR_TARGET_FACE, null);
-            if (face == null) {
-                return null;
-            }
+            Direction face = pos.side();
             setTargetCoverSide(face);
-            return pos;
+            return pos.pos();
         }
         return target;
     }
@@ -141,11 +139,10 @@ public class MonitorGroup {
         IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
         if (component != null && component.getDataItems() != null) {
             ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
-            var dim = stack.getOrDefault(GTDataComponents.MONITOR_TARGET_DIMENSION, null);
-            if (dim == null) return level;
+            GlobalPosWithRot pos = stack.get(GTDataComponents.MONITOR_TARGET);
+            if (pos == null) return level;
             if (level.getServer() == null) return level;
-            return level.getServer()
-                    .getLevel(dim);
+            return level.getServer().getLevel(pos.dimension());
         }
         return level;
     }

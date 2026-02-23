@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.item.behavior.DataItemBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.BlockPos;
@@ -192,20 +193,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> IMAGE_MODULE_URL = DATA_COMPONENTS
             .registerComponentType("image_module_url", builder -> builder.persistent(Codec.STRING)
                     .networkSynchronized(ByteBufCodecs.STRING_UTF8));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> MONITOR_TARGET = DATA_COMPONENTS
-            .registerComponentType("monitor_target", builder -> builder.persistent(BlockPos.CODEC)
-                    .networkSynchronized(BlockPos.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Direction>> MONITOR_TARGET_FACE = DATA_COMPONENTS
-            .registerComponentType("monitor_target_face", builder -> builder.persistent(Direction.CODEC)
-                    .networkSynchronized(Direction.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<Level>>> MONITOR_TARGET_DIMENSION = DATA_COMPONENTS
-            .registerComponentType("monitor_target_dimension",
-                    builder -> builder.persistent(ResourceKey.codec(Registries.DIMENSION))
-                            .networkSynchronized(ResourceKey.streamCodec(Registries.DIMENSION)));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataItemBehavior.BoundPlayer>> DATA_BOUND_PLAYER = DATA_COMPONENTS
-            .registerComponentType("data_bound_player",
-                    builder -> builder.persistent(DataItemBehavior.BoundPlayer.CODEC)
-                            .networkSynchronized(DataItemBehavior.BoundPlayer.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPosWithRot>> MONITOR_TARGET = DATA_COMPONENTS
+            .registerComponentType("monitor_target", builder -> builder.persistent(GlobalPosWithRot.CODEC)
+                    .networkSynchronized(GlobalPosWithRot.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> ENDER_REDSTONE_LINK_TRANSMITTER_UUID = DATA_COMPONENTS
             .registerComponentType("ender_redstone_link_transmitter_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)

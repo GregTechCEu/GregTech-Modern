@@ -47,9 +47,15 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -64,6 +70,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -396,13 +403,30 @@ public class CommonEventListener {
     public static void onAttributeTooltipEvent(AddAttributeTooltipsEvent event) {
         ItemStack stack = event.getStack();
 
-        if (stack.has(GTDataComponents.BINDING_DATA)) {
-            stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(),
-                    event::addTooltipLines, event.getContext().flag());
+        stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(),
+                event::addTooltipLines, event.getContext().flag());
+        stack.addToTooltip(GTDataComponents.COMPUTER_MONITOR_CONFIG, event.getContext(),
+                event::addTooltipLines, event.getContext().flag());
+
+        if (stack.has(GTDataComponents.MONITOR_TARGET)) {
+            GlobalPosWithRot target = stack.get(GTDataComponents.MONITOR_TARGET);
+            BlockPos pos = target.pos();
+            event.addTooltipLines(Component.translatable(
+                    "gtceu.tooltip.wireless_transmitter_bind",
+                    Component.literal("" + pos.getX()).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + pos.getY()).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + pos.getZ()).withStyle(ChatFormatting.GOLD),
+                    Component.translatable("gtceu.direction.tooltip." + target.side().getName())
+                            .withStyle(ChatFormatting.DARK_PURPLE),
+                    Component.translatable(target.dimension().location().toLanguageKey(Level.TRANSLATION_PREFIX))
+                            .withStyle(ChatFormatting.DARK_PURPLE)));
         }
-        if (stack.has(GTDataComponents.COMPUTER_MONITOR_CONFIG)) {
-            stack.addToTooltip(GTDataComponents.COMPUTER_MONITOR_CONFIG, event.getContext(),
-                    event::addTooltipLines, event.getContext().flag());
+        if (!stack.has(GTDataComponents.RESEARCH_ITEM) && stack.has(GTDataComponents.DATA_COPY_POS)) {
+            BlockPos pos = stack.get(GTDataComponents.DATA_COPY_POS);
+            event.addTooltipLines(Component.translatable("gtceu.tooltip.proxy_bind",
+                    Component.literal("" + pos.getX()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                    Component.literal("" + pos.getY()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                    Component.literal("" + pos.getZ()).withStyle(ChatFormatting.LIGHT_PURPLE)));
         }
         if (stack.has(GTDataComponents.COMPUTER_MONITOR_DATA)) {
             FormatStringList list = stack.getOrDefault(GTDataComponents.COMPUTER_MONITOR_DATA, FormatStringList.EMPTY);
