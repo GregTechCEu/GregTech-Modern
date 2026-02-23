@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.fluid;
 
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorage.FluidEntry;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
@@ -12,10 +14,12 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -428,6 +432,7 @@ public class FluidBuilder {
                                     Material material, FluidStorageKey key, String langKey) {
         properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+                .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
                 .density(this.density)
                 .lightLevel(this.luminosity)
@@ -447,6 +452,24 @@ public class FluidBuilder {
             @Override
             public Component getDescription(FluidStack stack) {
                 return this.getDescription();
+            }
+
+            @Override
+            public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
+                FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
+                // always vaporize plasmas and gases
+                FluidEntry plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
+                if (plasmaEntry != null) {
+                    FluidBuilder plasmaBuilder = plasmaEntry.getBuilder();
+                    return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
+                }
+                FluidEntry gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
+                if (gasEntry != null) {
+                    var gasBuilder = gasEntry.getBuilder();
+                    return gasBuilder != null && gasBuilder.hasFluidBlock();
+                }
+
+                return false;
             }
         };
         OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
