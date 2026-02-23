@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item;
+package com.gregtechceu.gtceu.common.item.behavior;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
