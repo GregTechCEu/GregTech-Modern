@@ -72,10 +72,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -314,6 +311,19 @@ public class CommonEventListener {
             stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
         } else {
             stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onUnequip(player);
+        }
+        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onEquip(player);
         }
     }
 
