@@ -29,8 +29,9 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
@@ -137,7 +138,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     //////////////////////////////////////
     // ************ GUI ************ //
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
