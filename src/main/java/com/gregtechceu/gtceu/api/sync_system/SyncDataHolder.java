@@ -175,4 +175,20 @@ public class SyncDataHolder {
             GTCEu.LOGGER.error(e);
         }
     }
+
+    public static class SyncManagedTransformer implements ValueTransformer<ISyncManaged> {
+
+        @Override
+        public Tag serializeNBT(ISyncManaged value, TransformerContext<ISyncManaged> context) {
+            return value.getSyncDataHolder().serializeNBT(context.isClientSync(), context.isClientFullSyncUpdate());
+        }
+
+        @Override
+        public @Nullable ISyncManaged deserializeNBT(Tag tag, TransformerContext<ISyncManaged> context) {
+            ISyncManaged syncManaged = context.currentValue();
+            Objects.requireNonNull(syncManaged).getSyncDataHolder().deserializeNBT((CompoundTag) tag,
+                    context.isClientSync());
+            return syncManaged;
+        }
+    }
 }
