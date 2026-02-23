@@ -1250,9 +1250,9 @@ public class GTBlocks {
         }
         STONE_BLOCKS = builder.build();
 
-        STONE_BLOCKS.row(StoneBlockType.COBBLE).forEach((ore, block) -> {
-            if (ore.generateBlocks) {
-                GTBlocks.registerCobbleBlock(ore.getTagPrefix(), block::getDefaultState);
+        STONE_BLOCKS.row(StoneBlockType.COBBLE).forEach((strata, block) -> {
+            if (strata.generateBlocks && strata.natural) {
+                COBBLE_BLOCKS.put(strata.getOreBaseTagPrefix(), block::getDefaultState);
             }
         });
 
@@ -1414,23 +1414,23 @@ public class GTBlocks {
 
     private static void initializeCobbleReplacements() {
         // replacement blocks for mc based stone types
-        registerCobbleBlock(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreRedGranite,
+        COBBLE_BLOCKS.put(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreRedGranite,
                 STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.RED_GRANITE)::getDefaultState);
-        registerCobbleBlock(TagPrefix.oreMarble,
+        COBBLE_BLOCKS.put(TagPrefix.oreMarble,
                 STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.MARBLE)::getDefaultState);
-        registerCobbleBlock(TagPrefix.oreSand, Blocks.SAND::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreGravel, Blocks.GRAVEL::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreRedSand, Blocks.RED_SAND::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreBasalt, Blocks.BASALT::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreBlackstone, Blocks.BLACKSTONE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreEndstone, Blocks.END_STONE::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreNetherrack, Blocks.NETHERRACK::defaultBlockState);
-        registerCobbleBlock(TagPrefix.oreTuff, Blocks.TUFF::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreSand, Blocks.SAND::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreGravel, Blocks.GRAVEL::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreRedSand, Blocks.RED_SAND::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreBasalt, Blocks.BASALT::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreBlackstone, Blocks.BLACKSTONE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreEndstone, Blocks.END_STONE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreNetherrack, Blocks.NETHERRACK::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreTuff, Blocks.TUFF::defaultBlockState);
     }
 
     public static boolean doMetalPipe(Material material) {
