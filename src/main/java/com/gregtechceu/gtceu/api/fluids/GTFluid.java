@@ -21,11 +21,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.extensions.IForgeFluid;
+import net.minecraftforge.fluids.FluidType;
 
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
-import net.minecraftforge.common.extensions.IForgeFluid;
-import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
