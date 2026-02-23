@@ -145,7 +145,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     void notifyBlockUpdate();
 
-    @SuppressWarnings("UnstableApiUsage")
     default void scheduleRenderUpdate() {
         var pos = getPipePos();
         var level = getPipeLevel();
