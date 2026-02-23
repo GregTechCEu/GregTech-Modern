@@ -14,10 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.codec.StreamDecoder;
-import net.minecraft.network.codec.StreamEncoder;
+import net.minecraft.network.codec.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
@@ -116,23 +113,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic));
     }
 
-    public static RecipeCondition<?> conditionReader(RegistryFriendlyByteBuf buf) {
-        RecipeCondition<?> condition = GTRegistries.RECIPE_CONDITIONS.get(buf.readResourceLocation()).factory
-                .createDefault();
-        return condition.fromNetwork(buf);
-    }
-
-    public static RecipeCondition<?> conditionReader(FriendlyByteBuf buf) {
-        // Consume the condition key that's set in conditionWriter
-        buf.readUtf();
-        return RecipeCondition.fromNetwork(buf);
-    }
-
-    public static void conditionWriter(FriendlyByteBuf buf, RecipeCondition<?> condition) {
-        buf.writeResourceLocation(GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
-        condition.toNetwork(buf);
-    }
-
     public static Map<RecipeCapability<?>, List<Content>> tuplesToMap(List<Tuple<RecipeCapability<?>, List<Content>>> entries) {
         Map<RecipeCapability<?>, List<Content>> map = new HashMap<>();
         entries.forEach(entry -> map.put(entry.getA(), entry.getB()));
@@ -159,8 +139,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
 
-        List<RecipeCondition<?>> conditions = buf.readCollection(c -> new ArrayList<>(),
-                GTRecipeSerializer::conditionReader);
+        List<RecipeCondition<?>> conditions = readCollection(buf, RecipeCondition::fromNetwork);
 
         Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = logicTuplesToMap(
                 readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
@@ -212,7 +191,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        writeCollection(recipe.conditions, buf, GTRecipeSerializer::conditionWriter);
+        writeCollectionWithMember(recipe.conditions, buf, RecipeCondition::toNetwork);
 
         writeCollection(recipe.inputChanceLogics.entrySet(), buf,
                 GTRecipeSerializer::changeLogicEntryWriter);
@@ -248,6 +227,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
         for (T t : collection) {
             encoder.encode(buf, t);
+        }
+    }
+
+    public static <T> void writeCollectionWithMember(Collection<T> collection, RegistryFriendlyByteBuf buf,
+                                                     StreamMemberEncoder<? super RegistryFriendlyByteBuf, T> encoder) {
+        buf.writeVarInt(collection.size());
+
+        for (T t : collection) {
+            encoder.encode(t, buf);
         }
     }
 
