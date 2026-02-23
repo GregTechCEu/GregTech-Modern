@@ -30,7 +30,7 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = register("rock_breaker", RockBreakerCondition::new, RockBreakerCondition.CODEC);
     public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
 //     public static RecipeConditionType<GameStageCondition> GAMESTAGE;
-//     public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
+    public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
 
     public static void init() {
         if (GTCEu.Mods.isFTBQuestsLoaded()) {
@@ -39,9 +39,9 @@ public final class GTRecipeConditions {
         // if (GTCEu.Mods.isGameStagesLoaded()) {
         //     GAMESTAGE = register("game_stage", GameStageCondition::new, GameStageCondition.CODEC);
         // }
-        // if (GTCEu.Mods.isHeraclesLoaded()) {
-        //     HERACLES_QUEST = register("heracles_quest", HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC);
-        // }
+        if (GTCEu.Mods.isHeraclesLoaded()) {
+            HERACLES_QUEST = register("heracles_quest", HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC);
+        }
     }
     // spotless:on
 

@@ -1012,19 +1012,19 @@ public interface GTRecipeSchema {
             return daytime(true);
         }
 
-        // public GTKubeRecipe heraclesQuest(String questId, boolean isReverse) {
-        // if (!GTCEu.Mods.isHeraclesLoaded()) {
-        // throw new KubeRuntimeException("Heracles not loaded!");
-        // }
-        // if (questId.isEmpty()) {
-        // throw new KubeRuntimeException(String.format("Quest ID cannot be empty for recipe %s", this.id));
-        // }
-        // return addCondition(new HeraclesQuestCondition(isReverse, questId));
-        // }
+        public GTKubeRecipe heraclesQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isHeraclesLoaded()) {
+                throw new KubeRuntimeException("Heracles not loaded!");
+            }
+            if (questId.isEmpty()) {
+                throw new KubeRuntimeException(String.format("Quest ID cannot be empty for recipe %s", this.id));
+            }
+            return addCondition(new HeraclesQuestCondition(isReverse, questId));
+        }
 
-        // public GTKubeRecipe heraclesQuest(String questId) {
-        // return heraclesQuest(questId, false);
-        // }
+        public GTKubeRecipe heraclesQuest(String questId) {
+            return heraclesQuest(questId, false);
+        }
 
         // public GTKubeRecipe gameStage(String stageName) {
         // return gameStage(stageName, false);

@@ -44,8 +44,8 @@ dependencies {
     compileOnly(forge.ftbteams)
     compileOnly(forge.ftbquests)
     compileOnly(forge.resourcefullib)
-    // compileOnly(forge.argonauts)
-    // compileOnly(forge.heracles)
+    compileOnly(forge.argonauts)
+    compileOnly(forge.heracles)
 
     // Maps
     compileOnly(forge.ftbchunks)
