@@ -199,13 +199,6 @@ public class CommonInit {
         }
         didRunRegistration = true;
 
-        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
-            GTCreateIntegration.init();
-        }
-        if (GTCEu.Mods.isAE2Loaded()) {
-            GTAEPlaceholders.init();
-        }
-
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();

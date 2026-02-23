@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.placeholder;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -25,7 +26,10 @@ import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -99,6 +103,13 @@ public class GTPlaceholders {
 
     public static void initPlaceholders() {
         RegistrateDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.init();
+        }
+
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
             @Override
