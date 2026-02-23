@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 public class GTCEuAPI {
 
     public static final int GT_DATA_VERSION = 4;
-    public static final String NETWORK_VERSION = "3";
+    public static final String NETWORK_VERSION = "4";
 
     /** Will always be available */
     public static GTCEu instance;

@@ -15,7 +15,15 @@ public class DataItemComponentFix extends ItemStackComponentRemainderFix {
     @SuppressWarnings("NullableProblems") // this method is passed to Optional#map, where null is a valid return value.
     @Override
     protected <T> @Nullable Dynamic<T> fixComponent(Dynamic<T> tag) {
-        // remove the old tag entirely to be replaced with the new one
-        return null;
+        Dynamic<T> oldValue = tag;
+
+        tag = tag.emptyMap();
+        if (oldValue.asBoolean().isSuccess()) {
+            tag = tag.set("requires_data_bank", oldValue);
+        }
+        // assign a default capacity of 8 because it has to be set to something
+        tag = tag.set("capacity", tag.createInt(8));
+
+        return tag;
     }
 }
