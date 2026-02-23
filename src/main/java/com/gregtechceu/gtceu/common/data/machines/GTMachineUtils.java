@@ -346,9 +346,9 @@ public class GTMachineUtils {
                         tankScalingFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
@@ -1003,7 +1003,6 @@ public class GTMachineUtils {
                         }
                         return builder
                                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                                .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                                 .rotationState(RotationState.NON_Y_AXIS)
                                 .recipeType(recipeType)
                                 .workableTieredHullModel(GTCEu.id("block/machines/" + name))

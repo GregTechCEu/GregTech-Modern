@@ -147,6 +147,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean regressWhenWaiting = true;
     private boolean allowCoverOnFront = false;
     @Getter
+    @Nullable
     private PanelFactory ui = null;
     @Getter
     private String themeId = ThemeAPI.DEFAULT_ID;
