@@ -216,10 +216,6 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_CURIOS);
         }
 
-        public static boolean isShimmerLoaded() {
-            return isModLoaded(GTValues.MODID_SHIMMER);
-        }
-
         public static boolean isModernFixLoaded() {
             return isModLoaded(GTValues.MODID_MODERNFIX);
         }

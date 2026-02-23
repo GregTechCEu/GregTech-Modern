@@ -35,8 +35,7 @@ dependencies {
     // KJS
     compileOnly(forge.bundles.kjs)
 
-    // Shimmer
-    // compileOnly(forge.shimmer)
+    // Rendering / Optimizations
     compileOnly(forge.sodium)
     compileOnly(forge.iris)
     compileOnly(forge.modernfix)

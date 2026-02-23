@@ -14,7 +14,6 @@ clothconfig = "15.0.140"
 theoneprobe = "1.21_neo-12.0.4-6"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
-# shimmer = "1.20.1-0.2.4"
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
 ftblibrary = "2101.1.12"
 ftbteams = "2101.1.2"
@@ -86,7 +85,6 @@ theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = 
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
-# shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-neoforge", version.ref = "ftbquests" }
