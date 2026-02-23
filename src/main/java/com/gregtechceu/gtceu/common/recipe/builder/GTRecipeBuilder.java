@@ -1631,34 +1631,15 @@ public class GTRecipeBuilder {
         }
     }
 
-    // public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
-    // JsonObject jsonObject = new JsonObject();
-    // contents.forEach((cap, list) -> {
-    // JsonArray contentsJson = new JsonArray();
-    // for (Content content : list) {
-    // contentsJson.add(cap.serializer.toJsonContent(content));
-    // }
-    // jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
-    // });
-    // return jsonObject;
-    // }
-
-    // public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
-    // JsonObject jsonObject = new JsonObject();
-    // chanceLogics.forEach((cap, logic) -> {
-    // String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString();
-    // String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic).toString();
-    // jsonObject.addProperty(capId, logicId);
-    // });
-    // return jsonObject;
-    // }
-
     public void save(RecipeOutput output) {
         if (onSave != null) {
             onSave.accept(this, output);
         }
-        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
-                .map(ResearchCondition.class::cast).orElse(null);
+        ResearchCondition condition = this.conditions.stream()
+                .filter(ResearchCondition.class::isInstance)
+                .findAny()
+                .map(ResearchCondition.class::cast)
+                .orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
                 this.recipeType.addDataStickEntry(entry.researchId(), build());

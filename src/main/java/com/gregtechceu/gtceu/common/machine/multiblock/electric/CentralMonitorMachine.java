@@ -530,7 +530,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 GuiTextureGroup textures = new GuiTextureGroup(texture, new ColorBorderTexture(2, 0xFFFFFF));
                 IMonitorComponent component = getComponent(row, col);
                 if (component == null) {
-                    GTUtil.getLast(imageButtons).add(it -> {});
+                    imageButtons.getLast().add(it -> {});
                     continue;
                 }
                 ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
@@ -657,7 +657,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     else if (click.button == 1) rightClickCallback.run();
                 });
                 componentSelection.addWidget(img);
-                GTUtil.getLast(imageButtons).add(callback);
+                imageButtons.getLast().add(callback);
                 rightClickCallbacks.put(component.getPos(), rightClickCallback);
             }
         }

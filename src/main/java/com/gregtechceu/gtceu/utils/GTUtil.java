@@ -615,10 +615,6 @@ public class GTUtil {
         throw new IllegalArgumentException("Invalid slot '" + slotType + "': " + slotIndex);
     }
 
-    public static <T> T getLast(List<T> list) {
-        return list.get(list.size() - 1);
-    }
-
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
     }
