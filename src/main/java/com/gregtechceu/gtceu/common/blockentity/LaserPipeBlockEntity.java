@@ -40,8 +40,6 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         super(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<LaserPipeBlockEntity> cableBlockEntityBlockEntityType) {}
-
     @Override
     public boolean canHaveBlockedFaces() {
         return false;

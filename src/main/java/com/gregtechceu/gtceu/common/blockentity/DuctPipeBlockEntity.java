@@ -35,8 +35,6 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
         super(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<DuctPipeBlockEntity> ductBlockEntityBlockEntityType) {}
-
     @Override
     public boolean canHaveBlockedFaces() {
         return false;
