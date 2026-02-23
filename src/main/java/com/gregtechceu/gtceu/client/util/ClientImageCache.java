@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -45,7 +46,7 @@ public class ClientImageCache {
                 if (!downloading) {
                     downloading = true;
                     GTCEu.LOGGER.debug("Requesting image {}", url);
-                    GTNetwork.sendToServer(new CPacketImageRequest(url));
+                    PacketDistributor.sendToServer(new CPacketImageRequest(url));
                 }
                 return LOADING_TEXTURE_MARKER;
             }));

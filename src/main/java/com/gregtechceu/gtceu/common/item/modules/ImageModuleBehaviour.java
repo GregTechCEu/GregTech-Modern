@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ImageModuleBehaviour implements IMonitorModuleItem {
 
@@ -34,7 +35,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
             if (!click.isRemote) return;
 
             stack.set(GTDataComponents.IMAGE_MODULE_URL, textField.getCurrentString());
-            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+            PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         builder.addWidget(textField);

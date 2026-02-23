@@ -27,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             try {
                 stack.set(GTDataComponents.TEXT_MODULE_SCALE, Double.parseDouble(scaleInput.getCurrentString()));
             } catch (NumberFormatException ignored) {}
-            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+            PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         List<Boolean> tmp = new ArrayList<>();
@@ -96,7 +97,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             else scaleInput.setTextSupplier(null);
             if (!stack.has(GTDataComponents.TEXT_MODULE_SCALE)) {
                 stack.set(GTDataComponents.TEXT_MODULE_SCALE, 1.0);
-                GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+                PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
                 return "1";
             }
             return String.valueOf(Mth.clamp(stack.get(GTDataComponents.TEXT_MODULE_SCALE), .0001, 1000));

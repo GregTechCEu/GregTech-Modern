@@ -44,11 +44,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +136,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public void tick() {
         Level level = getLevel();
-        if (level == null) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -148,7 +151,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     continue;
                 }
                 module.tick(stack, this, group);
-                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(getPos()),
                         new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
