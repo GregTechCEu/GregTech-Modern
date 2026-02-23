@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -18,17 +17,27 @@ import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -39,6 +48,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -238,6 +249,37 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             this.hasNotEnoughEnergy = true;
             getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
         }
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        if (isRemote()) {
+            hpcaHandler.clearClientComponents();
+            if (isFormed()) {
+                hpcaHandler.tryGatherClientComponents(getLevel(), getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+                        isFlipped());
+            }
+        }
+        GenericSyncValue<Component> text = GenericSyncValue.builder(Component.class)
+                .adapter(ByteBufAdapters.COMPONENT)
+                .getter(() -> {
+                    List<Component> list = new ArrayList<>();
+                    hpcaHandler.addErrors(list);
+                    hpcaHandler.addWarnings(list);
+                    hpcaHandler.addInfo(list);
+                    return GTStringUtils.toComponent(list);
+                })
+                .build();
+        syncManager.syncValue("text", text);
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
+        widgets.add(new TextWidget<>(IKey.dynamic(text::getValue)));
+        widgets.add(new Grid()
+                .mapTo(3, 9, i -> hpcaHandler.getComponentTexture(i).asWidget()
+                        .tooltip(hpcaHandler.getComponentTooltip(i)))
+                .horizontalCenter());
+        return widgets;
     }
 
     // @Override
@@ -635,21 +677,25 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         public void addInfo(List<Component> textList) {
-            // Max Computation
-            MutableComponent data = Component.literal(Integer.toString(getMaxCWUt())).withStyle(ChatFormatting.AQUA);
-            textList.add(Component.translatable("gtceu.multiblock.hpca.info_max_computation", data)
+            // CWU/t
+            Component cwutInfo = Component.literal(cachedCWUt + " / " + getMaxCWUt() + " CWU/t")
+                    .withStyle(ChatFormatting.AQUA);
+            textList.add(Component.translatable("gtceu.multiblock.hpca.computation", cwutInfo)
+                    .withStyle(ChatFormatting.GRAY));
+
+            // Temperature
+            Component tempInfo = Component.literal(Math.round(controller.temperature / 10.0D) + " °C")
+                    .withStyle(controller.getDisplayTemperatureColor());
+            textList.add(Component.translatable("gtceu.multiblock.hpca.temperature", tempInfo)
                     .withStyle(ChatFormatting.GRAY));
 
             // Cooling
             ChatFormatting coolingColor = getMaxCoolingAmount() < getMaxCoolingDemand() ? ChatFormatting.RED :
                     ChatFormatting.GREEN;
-            data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
-            textList.add(Component.translatable("gtceu.multiblock.hpca.info_max_cooling_demand", data)
-                    .withStyle(ChatFormatting.GRAY));
-
-            data = Component.literal(Integer.toString(getMaxCoolingAmount())).withStyle(coolingColor);
-            textList.add(Component.translatable("gtceu.multiblock.hpca.info_max_cooling_available", data)
-                    .withStyle(ChatFormatting.GRAY));
+            MutableComponent data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
+            textList.add(
+                    Component.translatable("gtceu.multiblock.hpca.info_cooling_demand", data, getMaxCoolingAmount())
+                            .withStyle(ChatFormatting.GRAY));
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
@@ -702,13 +748,26 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        public ResourceTexture getComponentTexture(int index) {
+        public IDrawable getComponentTexture(int index) {
             if (components.size() <= index) {
-                return GuiTextures.BLANK_TRANSPARENT;
+                return GTGuiTextures.BLANK_TRANSPARENT;
             }
             if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine)
                 return componentPartMachine.getComponentIcon();
-            return GuiTextures.BLANK_TRANSPARENT;
+            return GTGuiTextures.BLANK_TRANSPARENT;
+        }
+
+        public RichTooltip getComponentTooltip(int index) {
+            if (components.size() <= index) {
+                return new RichTooltip();
+            }
+            if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine) {
+                ItemStack stack = componentPartMachine.getDefinition().asStack();
+                RichTooltip tooltip = new RichTooltip();
+                stack.getTooltipLines(null, TooltipFlag.NORMAL).forEach(tooltip::addLine);
+                return tooltip;
+            }
+            return new RichTooltip();
         }
 
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,

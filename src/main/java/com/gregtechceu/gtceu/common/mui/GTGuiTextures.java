@@ -86,6 +86,8 @@ public class GTGuiTextures {
             .name(IDs.STEEL_BACKGROUND)
             .build();
 
+    public static final UITexture BLANK_TRANSPARENT = fullImage("textures/gui/base/blank_transparent.png");
+
     // todo move to textures/gui/base
     public static final UITexture BACKGROUND_PRIMITIVE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/primitive/primitive_background.png")
@@ -771,6 +773,23 @@ public class GTGuiTextures {
             .imageSize(16, 5)
             .adaptable(2)
             .build();
+
+    // HPCA
+    public static final UITexture HPCA_COMPUTATION_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/computation_component.png");
+    public static final UITexture HPCA_ADVANCED_COMPUTATION_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/advanced_computation_component.png");
+    public static final UITexture HPCA_DAMAGED_COMPUTATION_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/damaged_computation_component.png");
+    public static final UITexture HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/damaged_advanced_computation_component.png");
+    public static final UITexture HPCA_ACTIVE_COOLER_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/active_cooler_component.png");
+    public static final UITexture HPCA_HEAT_SINK_COMPONENT = fullImage(
+            "textures/gui/widget/hpca/heat_sink_component.png");
+    public static final UITexture HPCA_EMPTY_COMPONENT = fullImage("textures/gui/widget/hpca/empty.png");
+    public static final UITexture HPCA_BRIDGE_COMPONENT = fullImage("textures/gui/widget/hpca/bridge_component.png");
+    public static final UITexture HPCA_COMPONENT_OUTLINE = fullImage("textures/gui/widget/hpca/component_outline.png");
 
     // MISC
 

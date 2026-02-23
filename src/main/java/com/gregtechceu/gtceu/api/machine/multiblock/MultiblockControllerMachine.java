@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.machine.trait.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -421,5 +423,16 @@ public class MultiblockControllerMachine extends MetaMachine {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Can be overridden to just add widgets to the black box in the middle instead of overriding the whole UI.
+     * Don't forget to invoke {@code super.getWidgetsForDisplay} to add the default lines (progress, voltage, etc.).
+     *
+     * @param syncManager the sync manager
+     * @return list of widgets to be displayed inside the black box in the middle of a standard multiblock UI
+     */
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        return new ArrayList<>();
     }
 }
