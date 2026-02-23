@@ -16,7 +16,6 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +25,9 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -117,8 +119,11 @@ public class GTRecipeLookupTest {
     }
 
     // Simple recipe test whose lookup should succeed
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupSimpleSuccessTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupSimpleSuccessTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
         GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(SMELT_STONE.equals(resultRecipe),
@@ -128,8 +133,11 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test whose lookup should fail because we pass an ingredient
     // that does not match any of the recipes.
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupSimpleFailureTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupSimpleFailureTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.REDSTONE_TORCH, 1));
         GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
@@ -138,8 +146,11 @@ public class GTRecipeLookupTest {
 
     // Recipe test whose lookup should fail because the predicate for canHandle
     // always evaluates to false.
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupFalsePredicateFailureTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupFalsePredicateFailureTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
         GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_FALSE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
@@ -147,8 +158,11 @@ public class GTRecipeLookupTest {
     }
 
     // Recipe test whose lookup should succeed even when passed ingredients that don't have a recipe
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupMultipleIngredientsSuccessTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupMultipleIngredientsSuccessTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1),
                 new ItemStack(Items.REDSTONE_TORCH, 1));
         GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
@@ -159,8 +173,11 @@ public class GTRecipeLookupTest {
 
     // Recipe test whose lookup should succeed because even though the amount in the recipe is not enough,
     // ingredients don't count items
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupIngredientCountSucceedTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupIngredientCountSucceedTest(ExtendedGameTestHelper helper) {
         // NOTE: RecipeLookup only checks item type, not item count, so this will still work
         var notEnoughIngredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 8));
         GTRecipe resultRecipe = DB.find(notEnoughIngredients, ALWAYS_TRUE);
@@ -175,8 +192,11 @@ public class GTRecipeLookupTest {
     }
 
     // Recipe test with a recipe-based canHandle check
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupCustomCountCanHandleTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupCustomCountCanHandleTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 16));
         // Do a recipe check with a condition that requires at least 4 ingredients in the inputs
         // The recipe has 8, so this should succeed
@@ -201,8 +221,11 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged item input, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupSimpleRangedItemSuccessTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupSimpleRangedItemSuccessTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.RED_WOOL, 4));
         for (int i = 0; i < 100; i++) {
             GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
@@ -214,8 +237,11 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged fluid input, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupSimpleRangedFluidSuccessTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupSimpleRangedFluidSuccessTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(GTMaterials.Helium.getFluid(4));
         for (int i = 0; i < 100; i++) {
             GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
@@ -227,8 +253,11 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged item and fluid inputs, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
-    @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupSimpleRangedItemFluidSuccessTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
+    @GameTest(batch = "GTRecipeLookup")
+    public static void recipeLookupSimpleRangedItemFluidSuccessTest(ExtendedGameTestHelper helper) {
         var ingredients = createIngredients(
                 createIngredients(new ItemStack(Items.BLUE_WOOL, 4)),
                 createIngredients(GTMaterials.Iron.getFluid(4)));

@@ -74,8 +74,10 @@
 // .buildRawRecipe());
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateEqualsTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateEqualsTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putString("foo", "bar");
 // helper.assertTrue(eq("foo", "bar").test(tag), "String equality NBTPredicate failed when it shouldn't have");
@@ -104,8 +106,10 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateComparisonTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateComparisonTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putDouble("num", 10);
 
@@ -140,8 +144,10 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateAnyTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateAnyTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putInt("a", 5);
 // tag.putInt("b", 10);
@@ -164,8 +170,10 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateAllTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateAllTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putInt("x", 3);
 // tag.putInt("y", 9);
@@ -187,8 +195,10 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateNotTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateNotTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putBoolean("enabled", true);
 
@@ -203,8 +213,10 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
-// public static void NBTPredicateEmptyTest(GameTestHelper helper) {
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
+// public static void NBTPredicateEmptyTest(ExtendedGameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 
 // helper.assertFalse(eq("foo", "bar").test(tag), "String equality NBTPredicate succeeded with empty tag");
@@ -231,7 +243,7 @@
 // }
 
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
-// public static void NBTPredicateMachineCRTestSucceeds(GameTestHelper helper) {
+// public static void NBTPredicateMachineCRTestSucceeds(ExtendedGameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
 // helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -252,7 +264,7 @@
 // }
 
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
-// public static void NBTPredicateMachineCRTestDoesntSucceed(GameTestHelper helper) {
+// public static void NBTPredicateMachineCRTestDoesntSucceed(ExtendedGameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
 // helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -273,7 +285,7 @@
 // }
 
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
-// public static void NBTPredicateMachineCRTestChanced(GameTestHelper helper) {
+// public static void NBTPredicateMachineCRTestChanced(ExtendedGameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
 // helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -301,7 +313,7 @@
 // }
 
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
-// public static void NBTPredicateMachineCRTestRanged(GameTestHelper helper) {
+// public static void NBTPredicateMachineCRTestRanged(ExtendedGameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
 // helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -329,7 +341,7 @@
 // }
 
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
-// public static void NBTPredicateMachineCRTestChancedRanged(GameTestHelper helper) {
+// public static void NBTPredicateMachineCRTestChancedRanged(ExtendedGameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
 // helper.getBlockEntity(new BlockPos(0, 1, 0)));
 

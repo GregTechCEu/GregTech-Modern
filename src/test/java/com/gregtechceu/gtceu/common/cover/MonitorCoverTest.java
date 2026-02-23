@@ -13,15 +13,23 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import java.util.List;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class MonitorCoverTest {
 
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void testEnergyPlaceholders(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "coverTests")
+    public static void testEnergyPlaceholders(ExtendedGameTestHelper helper) {
         BatteryBufferMachine machine = (BatteryBufferMachine) TestUtils.setMachine(helper, new BlockPos(0, 1, 0),
                 GTMachines.BATTERY_BUFFER_4[GTValues.HV]);
         machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);
@@ -39,8 +47,10 @@ public class MonitorCoverTest {
         });
     }
 
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void testCombinePlaceholder(GameTestHelper helper) {
+    @TestHolder()
+    @EmptyTemplate("5")
+    @GameTest(batch = "coverTests")
+    public static void testCombinePlaceholder(ExtendedGameTestHelper helper) {
         BatteryBufferMachine machine = (BatteryBufferMachine) TestUtils.setMachine(helper, new BlockPos(0, 1, 0),
                 GTMachines.BATTERY_BUFFER_4[GTValues.HV]);
         ComputerMonitorCover cover = (ComputerMonitorCover) TestUtils.placeCover(helper, machine,

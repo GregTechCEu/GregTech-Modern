@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +30,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import lombok.Getter;
 
@@ -45,6 +47,7 @@ import lombok.Getter;
  */
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "RangedFluidIngredients")
 public class IntProviderFluidIngredientTest {
 
     private static GTRecipeType CR_RECIPE_TYPE;
@@ -160,7 +163,7 @@ public class IntProviderFluidIngredientTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolder getBussesAndFormLCR(GameTestHelper helper) {
+    private static BusHolder getBussesAndFormLCR(ExtendedGameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -182,7 +185,7 @@ public class IntProviderFluidIngredientTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolderBatchParallel getBussesAndFormLCENT(GameTestHelper helper) {
+    private static BusHolderBatchParallel getBussesAndFormLCENT(ExtendedGameTestHelper helper) {
         WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -201,8 +204,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for IntProviderFluidIngredient.test()
+    @TestHolder
+    // TODO this should use JUnit
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedFluidIngredientTestEqualTest(GameTestHelper helper) {
+    public static void rangedFluidIngredientTestEqualTest(ExtendedGameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 5);
         helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(3)),
                 "IntProviderFluidIngredient.test doesn't match when it should have");
@@ -215,8 +220,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for IntProviderFluidIngredient.getStacks()
+    @TestHolder
+    // TODO this should use JUnit
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
+    public static void rangedFluidIngredientGetStacksTest(ExtendedGameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
         var stacks = ingredient.getFluidStacks();
         helper.assertTrue(stacks.length == 1,
@@ -232,8 +239,8 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for IntProviderFluidIngredient.toJson()
-    // @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    // public static void rangedIngredientJsonTest(GameTestHelper helper) {
+    // @TestHolder(template = "empty", batch = "RangedFluidIngredients")
+    // public static void rangedIngredientJsonTest(ExtendedGameTestHelper helper) {
     // var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
 
     // // serialize/deserialize before rolling count
@@ -266,8 +273,9 @@ public class IntProviderFluidIngredientTest {
     // Test for singleblock machine with ranged fluid input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidOutputSabotaged(GameTestHelper helper) {
+    public static void singleblockRangedFluidOutputSabotaged(ExtendedGameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -339,8 +347,9 @@ public class IntProviderFluidIngredientTest {
 
     // Failure Test for singleblock machine with ranged fluid input
     // Provides too little input fluid, should not run recipes.
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidInputFailure(GameTestHelper helper) {
+    public static void singleblockRangedFluidInputFailure(ExtendedGameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -368,8 +377,9 @@ public class IntProviderFluidIngredientTest {
     }
 
     // Test for singleblock machine with ranged fluid input
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidInput(GameTestHelper helper) {
+    public static void singleblockRangedFluidInput(ExtendedGameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -426,8 +436,9 @@ public class IntProviderFluidIngredientTest {
     }
 
     // Test for singleblock machine with ranged fluid input
+    @TestHolder()
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidOutput(GameTestHelper helper) {
+    public static void singleblockRangedFluidOutput(ExtendedGameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -480,9 +491,9 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with ranged fluid input
-    @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients")
-    public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients")
+    public static void multiblockLCRRangedFluidInput(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
         NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
@@ -536,9 +547,9 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with ranged fluid input
-    @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients")
-    public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients")
+    public static void multiblockLCRRangedFluidOutput(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
@@ -589,12 +600,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 200,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+              timeoutTicks = 200, attempts = 10)
+    public static void multiblockLCentRangedFluidInput16Parallel(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
@@ -663,12 +672,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 200,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+            timeoutTicks = 200, attempts = 10)
+    public static void multiblockLCentRangedFluidOutput16Parallel(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
@@ -739,12 +746,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 200,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+              timeoutTicks = 200, attempts = 10)
+    public static void multiblockLCentRangedFluidInputBatched(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
@@ -813,12 +818,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 200,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+              timeoutTicks = 200, attempts = 10)
+    public static void multiblockLCentRangedFluidOutputBatched(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
@@ -889,12 +892,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+              timeoutTicks = 500, attempts = 10)
+    public static void multiblockLCentRangedFluidInput16ParallelBatched(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
@@ -968,12 +969,10 @@ public class IntProviderFluidIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
-    public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
+    @TestHolder()
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16", batch = "RangedFluidIngredients",
+              timeoutTicks = 500, attempts = 10)
+    public static void multiblockLCentRangedFluidOutput16ParallelBatched(ExtendedGameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;

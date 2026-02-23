@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,6 +19,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
@@ -59,7 +60,7 @@ public class AssemblyLineTests {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolder getBussesAndForm(GameTestHelper helper) {
+    private static BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 3, 0)));
         TestUtils.formMultiblock(controller);
@@ -86,8 +87,9 @@ public class AssemblyLineTests {
                 inputHatch1, inputHatch2, inputHatch3, inputHatch4, outputBus1, controller);
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeRunsTest(GameTestHelper helper) {
+    public static void AsslineRecipeRunsTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -102,8 +104,9 @@ public class AssemblyLineTests {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenItemsMovedByOneTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenItemsMovedByOneTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus3.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -120,7 +123,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenFluidsMovedByOneTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenFluidsMovedByOneTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -137,7 +140,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenBothMovedByOneTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenBothMovedByOneTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus3.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -154,7 +157,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeRunsAndOnlyConsumesOneTest(GameTestHelper helper) {
+    public static void AsslineRecipeRunsAndOnlyConsumesOneTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE, 2));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD, 2));
@@ -212,7 +215,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenItemsSwappedTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenItemsSwappedTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -229,7 +232,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenFluidsSwappedTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenFluidsSwappedTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));
@@ -246,7 +249,7 @@ public class AssemblyLineTests {
     }
 
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
-    public static void AsslineRecipeDoesntRunWhenBothSwappedTest(GameTestHelper helper) {
+    public static void AsslineRecipeDoesntRunWhenBothSwappedTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.ACACIA_WOOD));

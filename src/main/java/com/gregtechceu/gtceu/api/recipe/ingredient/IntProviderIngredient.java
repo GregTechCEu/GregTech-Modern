@@ -144,7 +144,7 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
     }
 
     @Override
-    public IngredientType<?> getType() {
+    public IngredientType<IntProviderIngredient> getType() {
         return GTIngredientTypes.INT_PROVIDER_INGREDIENT.get();
     }
 

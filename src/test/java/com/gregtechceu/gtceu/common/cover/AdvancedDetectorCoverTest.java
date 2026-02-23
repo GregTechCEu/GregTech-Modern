@@ -20,6 +20,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -33,8 +35,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdvancedDetectorCoverTest {
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
+    public static void testAdvancedActivityDetectorCoverWithActivity(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
@@ -53,8 +56,9 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
-    public static void BLOCKED_BY_LDLIB_WEIRDNESS_TOO_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
+    public static void BLOCKED_BY_LDLIB_WEIRDNESS_TOO_PROBABLY_testAdvancedActivityDetectorCover(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
@@ -65,8 +69,9 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
+    public static void testAdvancedFluidDetectorCover(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         SimpleTieredMachine machine = (SimpleTieredMachine) ((IMachineBlockEntity) helper
                 .getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
@@ -83,8 +88,9 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
+    public static void testAdvancedItemDetectorCover(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
@@ -96,8 +102,9 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
+    public static void testAdvancedItemDetectorCoverBelowThreshold(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
@@ -110,8 +117,9 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
+    public static void testAdvancedItemDetectorCoverAboveThreshold(ExtendedGameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         machine.getItemHandlerCap(null, false).setStackInSlot(0, new ItemStack(Items.DIRT, 5));

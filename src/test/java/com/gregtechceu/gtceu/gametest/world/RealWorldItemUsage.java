@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 import net.neoforged.testframework.gametest.GameTestPlayer;
 
@@ -31,7 +33,10 @@ public class RealWorldItemUsage {
         });
     }
 
-    @GameTest(template = "empty_5x5")
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest()
     public static void testPickaxeInstantPickup(GameTestHelper _helper) {
         var helper = new ExtendedGameTestHelper(_helper.testInfo);
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);

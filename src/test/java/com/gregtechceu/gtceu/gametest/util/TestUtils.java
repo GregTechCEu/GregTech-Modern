@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -228,17 +228,17 @@ public class TestUtils {
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).freeze();
-        ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).freeze();
+        GTRegistries.RECIPE_CATEGORIES.freeze();
+        BuiltInRegistries.RECIPE_TYPE.freeze();
         return type;
     }
 
-    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+    public static CoverBehavior placeCover(ExtendedGameTestHelper helper, MetaMachine machine, ItemStack stack,
                                            Direction direction) {
         return placeCover(helper, machine, stack, direction, false);
     }
 
-    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+    public static CoverBehavior placeCover(ExtendedGameTestHelper helper, MetaMachine machine, ItemStack stack,
                                            Direction direction, boolean shouldFail) {
         CoverDefinition coverDefinition = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
@@ -256,34 +256,34 @@ public class TestUtils {
         return machine.getCoverContainer().getCoverAtSide(direction);
     }
 
-    public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
+    public static MetaMachine setMachine(ExtendedGameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
         return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
     }
 
-    public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
+    public static void assertEqual(ExtendedGameTestHelper helper, List<MutableComponent> text, String s) {
         MultiLineComponent component = new MultiLineComponent(text);
         helper.assertTrue(component.equalsString(s),
                 "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
     }
 
-    public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2) {
+    public static void assertEqual(ExtendedGameTestHelper helper, ItemStack stack1, ItemStack stack2) {
         helper.assertTrue(isItemStackEqual(stack1, stack2),
                 "Item stacks not equal: \"%s\" != \"%s\"".formatted(stack1.toString(), stack2.toString()));
     }
 
-    public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
+    public static void assertEqual(ExtendedGameTestHelper helper, FluidStack stack1, FluidStack stack2) {
         helper.assertTrue(FluidStack.matches(stack1, stack2),
                 "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
                         stack1.getHoverName().getString(), stack1.getAmount(),
                         stack2.getHoverName().getString(), stack2.getAmount()));
     }
 
-    public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
+    public static void assertLampOn(ExtendedGameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, true);
     }
 
-    public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
+    public static void assertLampOff(ExtendedGameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
     }
 
@@ -302,7 +302,7 @@ public class TestUtils {
      *
      * @param helper GameTestHelper
      */
-    public static void succeedAfterTest(GameTestHelper helper) {
+    public static void succeedAfterTest(ExtendedGameTestHelper helper) {
         succeedAfterTest(helper, 100);
     }
 
@@ -312,15 +312,15 @@ public class TestUtils {
      * @param helper  GameTestHelper
      * @param timeout Ticks to wait until succeeding
      */
-    public static void succeedAfterTest(GameTestHelper helper, long timeout) {
+    public static void succeedAfterTest(ExtendedGameTestHelper helper, long timeout) {
         helper.runAtTickTime(timeout, helper::succeed);
     }
 
-    public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
+    public static void assertEqual(ExtendedGameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
     }
 
-    public static void assertRedstone(GameTestHelper helper, BlockPos pos, int min, int max) {
+    public static void assertRedstone(ExtendedGameTestHelper helper, BlockPos pos, int min, int max) {
         BlockPos absolutePos = helper.absolutePos(pos);
         int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
         if (strength > max || strength < min) {
@@ -330,7 +330,7 @@ public class TestUtils {
         }
     }
 
-    public static void assertRedstoneEither(GameTestHelper helper, BlockPos pos, int... values) {
+    public static void assertRedstoneEither(ExtendedGameTestHelper helper, BlockPos pos, int... values) {
         BlockPos absolutePos = helper.absolutePos(pos);
         int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
         boolean pass = false;

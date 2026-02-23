@@ -11,13 +11,14 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers.*;
@@ -91,7 +92,7 @@ public class OverclockLogicTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolder getBussesAndForm(GameTestHelper helper) {
+    private static BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         controller.setRecipeType(LCR_RECIPE_TYPE);
@@ -106,8 +107,9 @@ public class OverclockLogicTest {
     }
 
     // Test for running HV recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
-    public static void overclockLogicOnTierNothingChanges(GameTestHelper helper) {
+    public static void overclockLogicOnTierNothingChanges(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.RED_BED));
         // One tick to start, 20 for the recipe to run
@@ -121,8 +123,9 @@ public class OverclockLogicTest {
     }
 
     // Test for running LV 1t recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
-    public static void overclockLogicTwoTiersAbove16Parallels(GameTestHelper helper) {
+    public static void overclockLogicTwoTiersAbove16Parallels(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.STICK, 64));
         // One tick to start, 4 for the recipe to run (16/t from ULV recipe to HV)
@@ -136,8 +139,9 @@ public class OverclockLogicTest {
     }
 
     // Test for running EV recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
-    public static void overclockLogicOverTierNothingHappens(GameTestHelper helper) {
+    public static void overclockLogicOverTierNothingHappens(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
         helper.onEachTick(() -> {
@@ -149,8 +153,9 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyPerfectOverclockTest(GameTestHelper helper) {
+    public static void overclockLogicApplyPerfectOverclockTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
@@ -175,8 +180,9 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating non-perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyNonPerfectOverclockTest(GameTestHelper helper) {
+    public static void overclockLogicApplyNonPerfectOverclockTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
@@ -201,8 +207,9 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating subtick perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyPerfectParallelOverclockTest(GameTestHelper helper) {
+    public static void overclockLogicApplyPerfectParallelOverclockTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
@@ -229,8 +236,9 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating subtick non-perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyNonPerfectParallelOverclockTest(GameTestHelper helper) {
+    public static void overclockLogicApplyNonPerfectParallelOverclockTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
@@ -257,8 +265,9 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating non-subtick non-perfect OC on a 1t recipe
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyNonPerfectNonParallel1tOverclockTest(GameTestHelper helper) {
+    public static void overclockLogicApplyNonPerfectNonParallel1tOverclockTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
@@ -285,7 +294,7 @@ public class OverclockLogicTest {
 
     // Test for code wise calculating an overclock on a recipe that can't be run
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicEVRecipeHVMachineTest(GameTestHelper helper) {
+    public static void overclockLogicEVRecipeHVMachineTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
         // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for

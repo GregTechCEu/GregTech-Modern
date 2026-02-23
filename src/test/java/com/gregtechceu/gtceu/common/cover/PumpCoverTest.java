@@ -19,20 +19,28 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @SuppressWarnings("DataFlowIssue")
 @GameTestHolder(GTCEu.MOD_ID)
 @PrefixGameTestTemplate(false)
+@ForEachTest(groups = "coverTests")
 public class PumpCoverTest {
 
-    public static void setupCrates(GameTestHelper helper) {
+    public static void setupCrates(ExtendedGameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
 
     // Test for seeing if pumps pass fluids
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void pumpTransfersFluidsTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "coverTests")
+    public static void pumpTransfersFluidsTest(ExtendedGameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -53,8 +61,11 @@ public class PumpCoverTest {
     }
 
     // Test for seeing if conveyors don't pass items if set to the wrong direction
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void pumpTransfersFluidsWrongDirectionTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "coverTests")
+    public static void pumpTransfersFluidsWrongDirectionTest(ExtendedGameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -77,8 +88,11 @@ public class PumpCoverTest {
     }
 
     // Test for seeing if pumps transfer items
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void pumpDoesntTransferItemsTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "coverTests")
+    public static void pumpDoesntTransferItemsTest(ExtendedGameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();

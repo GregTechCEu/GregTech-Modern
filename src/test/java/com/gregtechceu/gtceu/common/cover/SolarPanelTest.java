@@ -13,14 +13,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class SolarPanelTest {
 
     @BeforeBatch(batch = "SolarTests")
@@ -28,18 +32,21 @@ public class SolarPanelTest {
         level.setDayTime(6000);
     }
 
-    private static BatteryBufferMachine makeBatteryBuffer(GameTestHelper helper, int tier) {
+    private static BatteryBufferMachine makeBatteryBuffer(ExtendedGameTestHelper helper, int tier) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BATTERY_BUFFER_4[tier].getBlock());
         return (BatteryBufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
     }
 
-    private static void placeSolar(GameTestHelper helper, MetaMachine machine) {
+    private static void placeSolar(ExtendedGameTestHelper helper, MetaMachine machine) {
         TestUtils.placeCover(helper, machine, GTItems.COVER_SOLAR_PANEL_HV.asStack(), Direction.UP);
     }
 
-    @GameTest(template = "empty_5x5", batch = "SolarTests")
-    public static void generatesEnergyAtDayTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "SolarTests")
+    public static void generatesEnergyAtDayTest(ExtendedGameTestHelper helper) {
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);
         placeSolar(helper, machine);
@@ -50,8 +57,11 @@ public class SolarPanelTest {
         });
     }
 
-    @GameTest(template = "empty_5x5", batch = "SolarTests")
-    public static void doesntGenerateEnergyAtDayWhenBlockedTest(GameTestHelper helper) {
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    @GameTest(batch = "SolarTests")
+    public static void doesntGenerateEnergyAtDayWhenBlockedTest(ExtendedGameTestHelper helper) {
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         helper.setBlock(new BlockPos(0, 3, 0), Blocks.DIAMOND_BLOCK);
         machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);

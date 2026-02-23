@@ -13,12 +13,13 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +84,7 @@ public class MultipleEnergyHatchTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolder getBussesAndForm(GameTestHelper helper) {
+    private static BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
         WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -111,7 +112,7 @@ public class MultipleEnergyHatchTest {
         }
     }
 
-    private static void checkContainerList(GameTestHelper helper, BusHolder busHolder, List<Hatch> hatches) {
+    private static void checkContainerList(ExtendedGameTestHelper helper, BusHolder busHolder, List<Hatch> hatches) {
         long totalVoltage = 0;
         for (var hatch : hatches) {
             totalVoltage += hatch.EU * hatch.amps;
@@ -122,8 +123,9 @@ public class MultipleEnergyHatchTest {
                 "Hatches on multiblock didn't match expected input voltage");
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void EvPlusMvHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void EvPlusMvHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(MV, 2), new Hatch(EV, 2)));
 
@@ -139,8 +141,9 @@ public class MultipleEnergyHatchTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void EvPlusMvHatchCannotDoIVRecipeTest(GameTestHelper helper) {
+    public static void EvPlusMvHatchCannotDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(MV, 2), new Hatch(EV, 2)));
 
@@ -154,8 +157,9 @@ public class MultipleEnergyHatchTest {
         TestUtils.succeedAfterTest(helper);
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void EvPlusHvHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void EvPlusHvHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 2)));
 
@@ -170,8 +174,9 @@ public class MultipleEnergyHatchTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void EvPlusHvHatchCannotIVRecipeTest(GameTestHelper helper) {
+    public static void EvPlusHvHatchCannotIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 2)));
 
@@ -186,8 +191,9 @@ public class MultipleEnergyHatchTest {
         TestUtils.succeedAfterTest(helper);
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void DoubleEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void DoubleEVHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 2), new Hatch(EV, 2)));
 
@@ -202,8 +208,9 @@ public class MultipleEnergyHatchTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void DoubleEVHatchCanDoIVRecipeTest(GameTestHelper helper) {
+    public static void DoubleEVHatchCanDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 2), new Hatch(EV, 2)));
 
@@ -218,8 +225,9 @@ public class MultipleEnergyHatchTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void FourAEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void FourAEVHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 4)));
 
@@ -234,8 +242,9 @@ public class MultipleEnergyHatchTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void FourAEVHatchCanNotDoIVRecipeTest(GameTestHelper helper) {
+    public static void FourAEVHatchCanNotDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 4)));
 
@@ -250,7 +259,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16)));
 
@@ -266,7 +275,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVHatchCanNotDoIVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVHatchCanNotDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16)));
 
@@ -281,7 +290,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVPlus2AHVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVPlus2AHVHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 16)));
 
@@ -297,7 +306,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVPlus2AHVHatchCanNotDoIVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVPlus2AHVHatchCanNotDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 16)));
 
@@ -312,7 +321,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAPlus4AEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAPlus4AEVHatchCanDoEVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16), new Hatch(EV, 4)));
 
@@ -328,7 +337,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_16a_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAPlus4AEVHatchCanDoIVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAPlus4AEVHatchCanDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16), new Hatch(EV, 4)));
 
@@ -344,7 +353,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_iv_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVPlus2AIVHatchCanDoIVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVPlus2AIVHatchCanDoIVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(IV, 2), new Hatch(EV, 16)));
 
@@ -360,7 +369,7 @@ public class MultipleEnergyHatchTest {
     }
 
     @GameTest(template = "energy/lcr_iv_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
-    public static void SixteenAEVPlus2AIVHatchCannotDoLuVRecipeTest(GameTestHelper helper) {
+    public static void SixteenAEVPlus2AIVHatchCannotDoLuVRecipeTest(ExtendedGameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         checkContainerList(helper, busHolder, List.of(new Hatch(IV, 2), new Hatch(EV, 16)));
 
