@@ -96,7 +96,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationKubeEvent;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.top.TheOneProbePlugin;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
@@ -255,7 +255,7 @@ public class CommonInit {
         WaypointManager.init();
 
         CustomBlockRotations.init();
-        KeyBind.init();
+        SyncedKeyMappings.init();
         MachineOwner.init();
         ChestGenHooks.init();
         GTDataFixers.init();
