@@ -138,11 +138,10 @@ public class SimpleItemFilter implements ItemFilter {
         int totalCount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
-                totalCount += candidate.getCount();
-            }
-            if (!ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
-                totalCount += candidate.getCount();
+            if (ignoreNbt) {
+                if (ItemStack.isSameItem(candidate, itemStack)) totalCount += candidate.getCount();
+            } else {
+                if (ItemStack.isSameItemSameComponents(candidate, itemStack)) totalCount += candidate.getCount();
             }
         }
 
