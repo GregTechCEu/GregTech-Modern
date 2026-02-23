@@ -58,6 +58,7 @@ dependencies {
 
     // Maps
     modCompileOnly(forge.ftbchunks)
+    modCompileOnly(forge.xaeroslib)
     modCompileOnly(forge.xaerosminimap)
     modCompileOnly(forge.xaerosworldmap)
     modCompileOnly(forge.journeymap.api)
