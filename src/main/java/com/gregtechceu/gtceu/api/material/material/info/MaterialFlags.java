@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.material.material.info;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,13 +43,14 @@ public class MaterialFlags {
     /////////////////
 
     /**
-     * Add to material to disable its unification fully
+     * Add to material to disable automatic recipe generation fully
      */
-    @Deprecated
-    public static final MaterialFlag NO_UNIFICATION = new MaterialFlag.Builder("no_unification").build();
-
     public static final MaterialFlag DISABLE_MATERIAL_RECIPES = new MaterialFlag.Builder("disable_material_recipes")
             .build();
+
+    @Deprecated
+    public static final MaterialFlag NO_UNIFICATION = DISABLE_MATERIAL_RECIPES;
+
     /**
      * Enables electrolyzer decomposition recipe generation
      */
