@@ -9,20 +9,17 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.SimpleTier;
 
-import java.util.Objects;
-
 @SuppressWarnings({ "unused", "FieldCanBeLocal" })
 public class GTToolTiers {
 
     private static Tier DURANIUM;
     private static Tier NEUTRONIUM;
 
+    @SuppressWarnings("DataFlowIssue")
     public static void init() {
         DURANIUM = new SimpleTier(CustomTags.INCORRECT_FOR_DURANIUM_TOOL, 8193, 14.0F, 12.0F, 33,
-                () -> Ingredient
-                        .of(Objects.requireNonNull(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium))));
+                () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium)));
         NEUTRONIUM = new SimpleTier(CustomTags.INCORRECT_FOR_NEUTRONIUM_TOOL, 65536, 180.0F, 100.0F, 33,
-                () -> Ingredient
-                        .of(Objects.requireNonNull(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium))));
+                () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium)));
     }
 }
