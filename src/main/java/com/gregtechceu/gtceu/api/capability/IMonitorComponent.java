@@ -17,7 +17,7 @@ public interface IMonitorComponent {
 
     BlockPos getPos();
 
-    default @Nullable net.neoforged.neoforge.items.IItemHandler getDataItems() {
+    default @Nullable IItemHandler getDataItems() {
         return null;
     }
 }

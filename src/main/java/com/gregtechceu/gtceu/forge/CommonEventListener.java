@@ -262,18 +262,18 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
-        if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
-
-            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-                ServerLevel level = serverPlayer.serverLevel();
-                var data = EnvironmentalHazardSavedData.getOrCreate(level);
-                PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
-            }
-            CapeRegistry.detectNewCapes(serverPlayer);
-            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
         }
+        PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
+
+        if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            ServerLevel level = serverPlayer.serverLevel();
+            var data = EnvironmentalHazardSavedData.getOrCreate(level);
+            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+        }
+        CapeRegistry.detectNewCapes(serverPlayer);
+        CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

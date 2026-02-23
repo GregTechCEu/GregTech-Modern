@@ -456,7 +456,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
-            if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+            if (model.shouldRender(machine, cameraPos)) {
                 return true;
             }
         }
