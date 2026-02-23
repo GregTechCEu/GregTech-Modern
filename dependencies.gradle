@@ -25,7 +25,6 @@ dependencies {
 
     // AE2
     compileOnly(forge.ae2)
-    compileOnly(forge.ae2wtlib)
 
     // Create
     compileOnly(forge.ponder)

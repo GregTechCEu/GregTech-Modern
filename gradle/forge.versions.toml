@@ -23,7 +23,6 @@ ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
-ae2wtlib = "19.2.2"
 argonauts = "1.2.4"
 # FIXME for some reason their maven only has versions up to 1.1.10?
 # heracles = "1.1.13"
@@ -92,7 +91,6 @@ ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-neoforge", version.ref
 resourcefullib      = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefullib" }
 # gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1", version.ref = "bookshelf" }
-ae2wtlib            = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wtlib" }
 # TODO update these once there's 1.21 versions
 # argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
 # heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }

@@ -122,7 +122,6 @@ public class GTValues {
             MODID_IRIS = "iris",
             MODID_SODIUM = "sodium",
             MODID_CURIOS = "curios",
-            MODID_AE2WTLIB = "ae2wtlib",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
