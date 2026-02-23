@@ -439,7 +439,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                             }
                         }))
                 .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
-                        stack -> stored.isEmpty() || GTUtil.isSameItemSameTags(stack, stored))
+                        stack -> stored.isEmpty() || ItemStack.isSameItemSameComponents(stack, stored))
                         .setMaxStackSize(1))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
@@ -496,7 +496,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
-                GTUtil.isSameItemSameTags(i, getLockedItem());
+                ItemStack.isSameItemSameComponents(i, getLockedItem());
 
         public ItemCache(MetaMachine holder) {
             super(holder);

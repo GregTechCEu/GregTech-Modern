@@ -141,7 +141,7 @@ public class SimpleItemFilter implements ItemFilter {
             if (ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
-            if (!ignoreNbt && GTUtil.isSameItemSameTags(candidate, itemStack)) {
+            if (!ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

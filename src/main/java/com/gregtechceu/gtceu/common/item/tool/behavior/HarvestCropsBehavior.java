@@ -98,7 +98,7 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
                 var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
                 boolean removedSeed = false;
                 for (ItemStack drop : drops) {
-                    if (!removedSeed && GTUtil.isSameItemSameTags(drop, seed)) {
+                    if (!removedSeed && ItemStack.isSameItemSameComponents(drop, seed)) {
                         drop.shrink(1);
                         removedSeed = true;
                         if (drop.isEmpty()) continue;

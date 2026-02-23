@@ -647,7 +647,7 @@ public class BlockPattern {
                 if (rt != null) {
                     return rt;
                 }
-            } else if (candidates.stream().anyMatch(candidate -> GTUtil.isSameItemSameTags(candidate, stack)) &&
+            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
                     !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                 return IntObjectPair.of(i, handler);
             }

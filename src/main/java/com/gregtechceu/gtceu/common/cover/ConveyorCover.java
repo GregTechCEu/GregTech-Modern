@@ -277,7 +277,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
+                    ItemStack.isSameItemSameComponents(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -309,7 +309,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
+                    ItemStack.isSameItemSameComponents(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {

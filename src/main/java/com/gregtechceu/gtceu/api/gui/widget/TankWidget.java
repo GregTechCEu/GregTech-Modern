@@ -489,7 +489,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (filledResult.isEmpty()) {
                     filledResult = remainingStack.copy();
-                } else if (GTUtil.isSameItemSameTags(filledResult, remainingStack)) {
+                } else if (ItemStack.isSameItemSameComponents(filledResult, remainingStack)) {
                     if (filledResult.getCount() < filledResult.getMaxStackSize())
                         filledResult.grow(1);
                     else
@@ -534,7 +534,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (drainedResult.isEmpty()) {
                     drainedResult = remainingStack.copy();
-                } else if (GTUtil.isSameItemSameTags(drainedResult, remainingStack)) {
+                } else if (ItemStack.isSameItemSameComponents(drainedResult, remainingStack)) {
                     if (drainedResult.getCount() < drainedResult.getMaxStackSize())
                         drainedResult.grow(1);
                     else

@@ -615,10 +615,6 @@ public class GTUtil {
         throw new IllegalArgumentException("Invalid slot '" + slotType + "': " + slotIndex);
     }
 
-    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameComponents(s1, s2);
-    }
-
     public static <T> T getLast(List<T> list) {
         return list.get(list.size() - 1);
     }
