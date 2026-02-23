@@ -18,10 +18,10 @@ theoneprobe = "1.21_neo-12.0.4-6"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
-ftblibrary = "2101.1.12"
-ftbteams = "2101.1.2"
-ftbquests = "2101.1.8"
-ftbchunks = "2101.1.8"
+ftblibrary = "2101.1.30"
+ftbteams = "2101.1.9"
+ftbquests = "2101.1.21"
+ftbchunks = "2101.1.14"
 ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
@@ -46,10 +46,6 @@ xaerosMinimap = "6306189"
 journeyMap = "6383889"
 spark = "6225208"
 observable = "5733591"
-ftblibrary-cm = "6304123"
-ftbteams-cm = "6119437"
-ftbquests-cm = "6371007"
-ftbchunks-cm = "6295696"
 
 
 [libraries]
@@ -114,11 +110,6 @@ xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.re
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
-## cursemaven as a backup ##
-ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
-ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
-ftbquests-cm        = { module = "curse.maven:ftb-quests-forge-289412", version.ref = "ftbquests-cm" }
-ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]
 jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
