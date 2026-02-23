@@ -4,11 +4,14 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record MaterialStackWrapper(Supplier<Material> material, long amount) {
+public record MaterialStackWrapper(@Nullable Supplier<@NotNull Material> material, long amount) {
 
     public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> GTMaterials.NULL, 0);
 

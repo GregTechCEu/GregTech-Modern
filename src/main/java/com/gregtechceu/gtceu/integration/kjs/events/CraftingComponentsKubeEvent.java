@@ -19,6 +19,7 @@ import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.Context;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -132,17 +133,16 @@ public class CraftingComponentsKubeEvent implements KubeStartupEvent {
         }
     }
 
-    private static ItemStack parseItemStack(Context cx, Object o) {
-        if (o instanceof ItemStack) {
-            ItemStack stack = (ItemStack) o;
-            if (stack == null || stack.isEmpty()) return null;
+    private static @Nullable ItemStack parseItemStack(Context cx, Object o) {
+        if (o instanceof ItemStack stack) {
+            if (stack.isEmpty()) return null;
             return stack;
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    private static TagKey<Item> parseTag(Object o) {
+    private static @Nullable TagKey<Item> parseTag(Object o) {
         if (o instanceof TagKey<?> key && key.isFor(Registries.ITEM)) return (TagKey<Item>) key;
         ResourceLocation rl = ID.mc(o);
         if (rl != null) return TagKey.create(Registries.ITEM, rl);

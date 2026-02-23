@@ -98,8 +98,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
-import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
-import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
+import com.gregtechceu.gtceu.integration.kjs.recipe.components.*;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -267,12 +266,12 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerRecipeComponents(RecipeComponentTypeRegistry registry) {
-        registry.register(GTRecipeComponents.TAG.type());
-        registry.register(GTRecipeComponents.RECIPE_CONDITION.type());
-        registry.register(GTRecipeComponents.RESOURCE_LOCATION.type());
-        registry.register(GTRecipeComponents.RECIPE_CAPABILITY.type());
+        registry.register(NbtTagComponent.NBT_TAG);
+        registry.register(RecipeConditionComponent.RECIPE_CONDITION);
+        registry.register(ResourceLocationComponent.RESOURCE_LOCATION);
+        registry.register(RecipeCapabilityComponent.RECIPE_CAPABILITY);
         registry.register(GTRecipeComponents.CHANCE_LOGIC.type());
-        registry.register(CapabilityMapComponent.INSTANCE.type());
+        registry.register(CapabilityMapComponent.CAPABILITY_MAP);
 
         registry.register(GTRecipeComponents.ITEM.type());
         registry.register(GTRecipeComponents.FLUID.type());
