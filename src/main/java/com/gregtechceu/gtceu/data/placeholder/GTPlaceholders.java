@@ -428,7 +428,6 @@ public class GTPlaceholders {
                     int capacity = component.capacity();
 
                     PlaceholderUtils.checkRange("index", 0, capacity - 1, PlaceholderUtils.toInt(args.get(2)));
-                    // <<<<<<< HEAD:src/main/java/com/gregtechceu/gtceu/data/placeholder/GTPlaceholders.java
 
                     FormatStringList immutableData = stack.get(GTDataComponents.COMPUTER_MONITOR_DATA);
                     if (immutableData == null) {

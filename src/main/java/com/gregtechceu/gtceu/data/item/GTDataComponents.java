@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.cover.MonitorCoverConfig;
 import com.gregtechceu.gtceu.common.item.behavior.DataItemBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
@@ -19,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -136,9 +134,6 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>> DATA_COPY_TAG = DATA_COMPONENTS
             .registerComponentType("data_copy_tag", builder -> builder.persistent(CustomData.CODEC)
                     .networkSynchronized(CustomData.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MonitorCoverConfig>> MONITOR_COVER_CONFIG = DATA_COMPONENTS
-            .registerComponentType("monitor_cover_config", builder -> builder.persistent(MonitorCoverConfig.CODEC)
-                    .networkSynchronized(MonitorCoverConfig.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FormatStringList>> FORMAT_STRING_LIST = DATA_COMPONENTS
             .registerComponentType("format_string_list", builder -> builder.persistent(FormatStringList.CODEC)
