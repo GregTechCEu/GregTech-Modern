@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
+import com.gregtechceu.gtceu.data.entity.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -64,6 +64,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -90,7 +91,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CommonEventListener {
 
     @SubscribeEvent
@@ -422,13 +423,11 @@ public class CommonEventListener {
         if (!player.level().isClientSide) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
-            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+            var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
 
             float speedBoost = 0.0f;
-            if (!player.onGround() || player.isInWater() || player.isCrouching()) {
-                speedBoost = 0.0f;
-            } else {
-                var state = player.level().getBlockState(player.getOnPos());
+            if (player.onGround() && !player.isInWater() && !player.isCrouching()) {
+                BlockState state = player.level().getBlockState(player.getOnPos());
                 if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.6f; // value that is added to the base MC speed
                 } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
@@ -441,16 +440,15 @@ public class CommonEventListener {
                 if (speedBoost == speedMod.amount()) {
                     return;
                 } else {
-                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                    speedAttrib.removeModifier(speedMod);
                 }
-            } else {
-                if (speedBoost == 0.0f) return;
             }
-            if (speedBoost != 0.0f) {
-                speedAttrib.addTransientModifier(
-                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST,
-                                speedBoost, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+            if (speedBoost == 0.0f) {
+                return;
             }
+            speedAttrib.addOrUpdateTransientModifier(
+                    new AttributeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST,
+                            speedBoost, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         }
     }
 }
