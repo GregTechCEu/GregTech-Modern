@@ -37,6 +37,7 @@ public class GTValues {
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
     // shortcut for various lengths of time in ticks
+    // REMEMBER TO MULTIPLY BY `level.tickRateManager().tickrate()` OR THIS WILL BE OFF IF TPS IS CHANGED
     public static final long SECONDS = 20;
     public static final long MINUTES = 60 * SECONDS;
     public static final long HOURS = 60 * MINUTES;
