@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.registry.registrate.forge;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -60,7 +59,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Accessors(chain = true, fluent = true)
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowing, P, GTFluidBuilder<P>>
+public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluid.Flowing, P, GTFluidBuilder<P>>
                            implements IGTFluidBuilder {
 
     @Setter
@@ -150,7 +149,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     }
 
     @SuppressWarnings("deprecation")
-    protected void registerRenderType(GTFluidImpl.Flowing entry) {
+    protected void registerRenderType(GTFluid.Flowing entry) {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             OneTimeEventReceiver.addModListener(getOwner(), FMLClientSetupEvent.class, $ -> {
                 if (this.layer != null) {
@@ -188,11 +187,11 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         return block(LiquidBlock::new);
     }
 
-    public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<P>> block(NonNullBiFunction<NonNullSupplier<GTFluidImpl.Flowing>, BlockBehaviour.Properties, ? extends B> factory) {
+    public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<P>> block(NonNullBiFunction<NonNullSupplier<GTFluid.Flowing>, BlockBehaviour.Properties, ? extends B> factory) {
         if (this.defaultBlock == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to block/noBlock per builder allowed");
         }
-        NonNullSupplier<GTFluidImpl.Flowing> supplier = asSupplier();
+        NonNullSupplier<GTFluid.Flowing> supplier = asSupplier();
 
         return getOwner().<B, GTFluidBuilder<P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
@@ -284,8 +283,8 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     }
 
     @Override
-    protected GTFluidImpl.Flowing createEntry() {
-        return new GTFluidImpl.Flowing(this.state, () -> this.source.get(), () -> this.get().get(),
+    protected GTFluid.Flowing createEntry() {
+        return new GTFluid.Flowing(this.state, () -> this.source.get(), () -> this.get().get(),
                 (() -> this.block != null ? this.block.get() : null),
                 (() -> this.bucket != null ? this.bucket.get() : null), this.burnTime, this.fluidType);
     }
@@ -319,7 +318,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public RegistryEntry<GTFluidImpl.Flowing> register() {
+    public RegistryEntry<GTFluid.Flowing> register() {
         // Check the fluid has a type.
         if (this.fluidType != null) {
             // Register the type.
@@ -331,7 +330,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         }
 
         if (defaultSource == Boolean.TRUE) {
-            source(() -> new GTFluidImpl.Source(this.state, () -> this.source.get(), () -> this.get().get(),
+            source(() -> new GTFluid.Source(this.state, () -> this.source.get(), () -> this.get().get(),
                     (() -> this.block != null ? this.block.get() : null),
                     (() -> this.bucket != null ? this.bucket.get() : null), this.burnTime, this.fluidType));
         }
