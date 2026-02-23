@@ -1,7 +1,7 @@
 [versions]
-configuration = "3.1.1-neoforge"
 ldlib = "1.0.35.a"
 registrate = "MC1.21-1.3.0+67"
+configuration = "3.1.1-neoforge"
 
 jei = "19.25.1.328"
 rei = "16.0.799"
@@ -11,6 +11,9 @@ kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
+create = "6.0.8-168"
+ponder = "1.0.64"
+flywheel = "1.0.5"
 theoneprobe = "1.21_neo-12.0.4-6"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
@@ -23,17 +26,10 @@ ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
+# TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
-# FIXME for some reason their maven only has versions up to 1.1.10?
-# heracles = "1.1.13"
-# journeyMapApi = "1.20-1.9-SNAPSHOT"
-# ftblibrary = "2001.2.4"
-# ftbteams = "2001.3.0"
-# ftbquests = "2001.4.11"
-# ftbchunks = "2001.3.4"
-create = "6.0.8-168"
-ponder = "1.0.64"
-flywheel = "1.0.5"
+# FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
+heracles = "1.1.10"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -89,11 +85,16 @@ ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref 
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-neoforge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-neoforge", version.ref = "ftbchunks" }
 resourcefullib      = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefullib" }
-# gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
+# Keep gamestages around so the code doesn't have to be commented out
+gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1", version.ref = "bookshelf" }
+# Keep odyssey quests/allies around so the code doesn't have to be commented out
 # TODO update these once there's 1.21 versions
-# argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
-# heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }
+argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.20.4", version.ref = "argonauts" }
+heracles            = { module = "earth.terrarium.heracles:heracles-forge-1.20.1", version.ref = "heracles" }
+# these will be the new names of the projects when they finally update to 1.21
+# argonauts           = { module = "earth.terrarium.odyssey_allies:odyssey_allies-neoforge-1.21.1`", version.ref = "argonauts" }
+# heracles            = { module = "earth.terrarium.odyssey_quests:odyssey_quests-neoforge-1.21.1", version.ref = "heracles" }
 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }
