@@ -138,8 +138,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     //////////////////////////////////////
     // ************ GUI ************ //
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
 
     @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
