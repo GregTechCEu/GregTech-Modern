@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
+import static com.gregtechceu.gtceu.data.block.GTBlockStateProperties.ACTIVE;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
