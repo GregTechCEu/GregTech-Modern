@@ -5,7 +5,6 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.gametest.framework.BeforeBatch;
@@ -31,6 +30,7 @@ import java.util.function.Predicate;
 @GameTestHolder(GTCEu.MOD_ID)
 public class NBTItemStackMapIngredientLookupTest {
 
+    /*
     private static GTRecipeLookup LOOKUP;
     private static final Predicate<GTRecipe> ALWAYS_TRUE = gtRecipe -> true;
     private static final Predicate<GTRecipe> ALWAYS_FALSE = gtRecipe -> false;
@@ -39,7 +39,6 @@ public class NBTItemStackMapIngredientLookupTest {
 
     private static CompoundTag tag1, tag2;
 
-    /*
     @BeforeBatch(batch = "NBTItemStackMapIngredientLookup")
     public static void prepare(ServerLevel level) {
         RECIPE_TYPE = TestUtils.createRecipeType("NBT_item_stack_map_ingredient_lookup");
