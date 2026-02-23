@@ -1,6 +1,5 @@
-package com.gregtechceu.gtceu.api.capability.forge;
+package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 
 import net.minecraftforge.common.capabilities.Capability;

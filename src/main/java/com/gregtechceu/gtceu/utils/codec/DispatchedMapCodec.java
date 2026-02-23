@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.codec;
+package com.gregtechceu.gtceu.utils.codec;
 
 import com.gregtechceu.gtceu.GTCEu;
 
