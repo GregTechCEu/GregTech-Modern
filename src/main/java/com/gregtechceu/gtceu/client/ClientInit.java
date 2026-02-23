@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
-import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
 import com.gregtechceu.gtceu.data.datagen.model.builder.PipeModelBuilder;
@@ -124,7 +123,6 @@ public class ClientInit {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        MachineOwner.init();
         if (ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration &&
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();

@@ -22,7 +22,8 @@ import org.jetbrains.annotations.Nullable;
 public class GTRecipeCategory {
 
     // Placeholder category used if category isn't defined for a recipe for registration
-    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory("default", GTRecipeTypes.DUMMY_RECIPES);
+    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
+            GTRecipeTypes.DUMMY_RECIPES);
 
     public final ResourceLocation registryKey;
     public final String name;
@@ -44,11 +45,11 @@ public class GTRecipeCategory {
         this.languageKey = recipeType.getTranslationKey();
     }
 
-    public GTRecipeCategory(@NotNull String categoryName, @NotNull GTRecipeType recipeType) {
+    public GTRecipeCategory(@NotNull ResourceLocation registryKey, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
-        this.name = categoryName;
-        this.registryKey = GTCEu.id(categoryName);
-        this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
+        this.name = registryKey.getPath();
+        this.registryKey = registryKey;
+        this.languageKey = registryKey.toLanguageKey("recipe_category");
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
@@ -88,6 +89,6 @@ public class GTRecipeCategory {
 
     @Override
     public String toString() {
-        return "GTRecipeCategory{%s}".formatted(name);
+        return "GTRecipeCategory{%s}".formatted(this.registryKey);
     }
 }

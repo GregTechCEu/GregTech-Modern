@@ -66,11 +66,6 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
-        return getDescriptionId();
-    }
-
-    @Override
     public Component getDescription() {
         return getBlock().getName();
     }

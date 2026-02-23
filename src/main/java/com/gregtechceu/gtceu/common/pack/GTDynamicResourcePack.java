@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pack;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -27,15 +28,10 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,7 +54,7 @@ public class GTDynamicResourcePack implements PackResources {
     private final PackLocationInfo info;
 
     static {
-        CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "neoforge", "c"));
+        CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "neoforge", "c", "kubejs"));
     }
 
     public GTDynamicResourcePack(PackLocationInfo info) {
@@ -68,6 +64,14 @@ public class GTDynamicResourcePack implements PackResources {
     public GTDynamicResourcePack(PackLocationInfo info, Collection<String> domains) {
         this.info = info;
         CLIENT_DOMAINS.addAll(domains);
+
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            GTKubeJSPlugin.generateMachineBlockModels();
+        }
+    }
+
+    public static void addNamespace(String namespace) {
+        CLIENT_DOMAINS.add(namespace);
     }
 
     public static void clearClient() {
@@ -81,7 +85,7 @@ public class GTDynamicResourcePack implements PackResources {
     public static void addResource(ResourceLocation location, byte[] data) {
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeJson(location, null, parent, data);
+            writeJson(location, parent, data);
         }
         CONTENTS.addToData(location, data);
     }
@@ -153,44 +157,6 @@ public class GTDynamicResourcePack implements PackResources {
         addResource(loc, sourceJson);
     }
 
-    public static void addBlockTexture(ResourceLocation loc, byte[] data) {
-        ResourceLocation l = getTextureLocation("block", loc);
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeByteArray(l, null, parent, data);
-        }
-        CONTENTS.addToData(l, data);
-    }
-
-    public static void addItemTexture(ResourceLocation loc, byte[] data) {
-        ResourceLocation l = getTextureLocation("item", loc);
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeByteArray(l, null, parent, data);
-        }
-        CONTENTS.addToData(l, data);
-    }
-
-    @ApiStatus.Internal
-    public static void writeByteArray(ResourceLocation id, @Nullable String subdir, Path parent, byte[] data) {
-        try {
-            Path file;
-            if (subdir != null) {
-                // assume PNG
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png");
-            } else {
-                // assume the file type is also appended if a full path is given.
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
-            }
-            Files.createDirectories(file.getParent());
-            try (OutputStream output = Files.newOutputStream(file)) {
-                output.write(data);
-            }
-        } catch (IOException e) {
-            GTCEu.LOGGER.error("Failed to write JSON export for file {}", id, e);
-        }
-    }
-
     @Override
     public @Nullable IoSupplier<InputStream> getRootResource(String... elements) {
         if (elements.length > 0 && elements[0].equals("pack.png")) {
@@ -230,23 +196,12 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     @Override
-    public @NotNull PackLocationInfo location() {
+    public PackLocationInfo location() {
         return info;
-    }
-
-    public boolean isBuiltin() {
-        return true;
     }
 
     @Override
     public void close() {
         // NOOP
-    }
-
-    public static ResourceLocation getTextureLocation(@Nullable String path, ResourceLocation textureId) {
-        if (path == null) {
-            return TEXTURE_ID_CONVERTER.idToFile(textureId);
-        }
-        return TEXTURE_ID_CONVERTER.idToFile(textureId.withPrefix(path + "/"));
     }
 }

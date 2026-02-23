@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
@@ -68,8 +68,12 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
     }
 
     @Override
+    public String getTranslationKeyGroup() {
+        return "block";
+    }
+
+    @Override
     public void generateLang(LangKubeEvent lang) {
-        super.generateLang(lang);
         for (int tier : tiers) {
             MachineDefinition def = object[tier];
             if (def != null && def.getLangValue() != null) {
@@ -89,9 +93,10 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder builder = GTRegistration.REGISTRATE.multiblock(
-                    String.format("%s_%s", tierName, this.id.getPath()),
-                    holder -> machine.create(holder, tier));
+            MultiblockMachineBuilder<MultiblockMachineDefinition, ?> builder = GTRegistrate
+                    .createIgnoringListenerErrors(this.id.getNamespace())
+                    .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
+                            holder -> machine.create(holder, tier));
 
             builder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);

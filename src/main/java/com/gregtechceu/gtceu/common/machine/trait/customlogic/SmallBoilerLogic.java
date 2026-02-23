@@ -18,6 +18,6 @@ public class SmallBoilerLogic extends SteamBoilerLogic {
 
     @Override
     protected int modifyBurnTime(int originalBurnTime) {
-        return originalBurnTime * 12;
+        return originalBurnTime;
     }
 }
