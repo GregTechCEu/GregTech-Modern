@@ -32,6 +32,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -314,7 +315,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
-        group.addWidget(filterHandler.createFilterSlotUI(-115 + (18 * rowSize) / 2, 35 + 11 * rowSize));
+        if (this.io == IO.OUT) {
+            group.addWidget(filterHandler.createFilterSlotUI(71 + (18 * rowSize) / 2, 35 + 9 * rowSize)
+                    .setHoverTooltips(Component.translatable("cover.item_filter.title")));
+        }
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
