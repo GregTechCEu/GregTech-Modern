@@ -25,9 +25,6 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
-    maven { url = "https://maven.createmod.net" }
-
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository {
             maven { url = "https://maven.createmod.net" }
