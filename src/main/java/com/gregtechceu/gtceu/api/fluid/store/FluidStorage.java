@@ -7,7 +7,6 @@ import net.minecraft.world.level.material.Fluid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -40,15 +39,18 @@ public interface FluidStorage {
      * @param key the key corresponding with the FluidBuilder
      * @return the fluid builder queued to be registered
      */
-    @Nullable FluidBuilder getQueuedBuilder(FluidStorageKey key);
+    @Nullable
+    FluidBuilder getQueuedBuilder(FluidStorageKey key);
 
     /**
      * @param key the key corresponding with the fluid
      * @return the fluid associated with the key
      */
-    @Nullable Fluid get(FluidStorageKey key);
+    @Nullable
+    Fluid get(FluidStorageKey key);
 
-    @Nullable FluidEntry getEntry(FluidStorageKey key);
+    @Nullable
+    FluidEntry getEntry(FluidStorageKey key);
 
     /**
      * @param key   the key to associate with the fluid

@@ -66,7 +66,8 @@ public class ProspectingBehavior implements IToolBehavior<ProspectingBehavior> {
         int found = 0;
         for (BlockState state : foundBlocks) {
             if (state.is(Tags.Blocks.ORES)) {
-                result.add(Component.translatable("item.gtceu.tool.behavior.prospecting.found", state.getBlock().getName()));
+                result.add(Component.translatable("item.gtceu.tool.behavior.prospecting.found",
+                        state.getBlock().getName()));
             } else if (state.isAir()) {
                 result.add(Component.translatable("item.gtceu.tool.behavior.prospecting.air"));
             } else {
@@ -95,7 +96,8 @@ public class ProspectingBehavior implements IToolBehavior<ProspectingBehavior> {
         }
     }
 
-    private static Function<Direction, List<BlockPos>> SURROUNDING_BLOCK_OFFSETS = Util.memoize(ProspectingBehavior::getSurroundingBlocks);
+    private static Function<Direction, List<BlockPos>> SURROUNDING_BLOCK_OFFSETS = Util
+            .memoize(ProspectingBehavior::getSurroundingBlocks);
 
     private static List<BlockPos> getSurroundingBlocks(Direction dir) {
         List<BlockPos> out = new ArrayList<>();

@@ -28,7 +28,8 @@ public class IDRecipeConstructor extends RecipeConstructor {
     public KubeRecipe create(Context cx, SourceLine sourceLine, RecipeTypeFunction type, RecipeSchemaType schemaType,
                              ComponentValueMap from) {
         var r = super.create(cx, sourceLine, type, schemaType, from);
-        r.id(KubeResourceLocation.wrap(from.getValue(new RecipeScriptContext.Impl(cx, r, new ErrorStack()), GTRecipeSchema.ID)));
+        r.id(KubeResourceLocation
+                .wrap(from.getValue(new RecipeScriptContext.Impl(cx, r, new ErrorStack()), GTRecipeSchema.ID)));
         return r;
     }
 

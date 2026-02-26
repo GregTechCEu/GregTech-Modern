@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.*;
 import net.minecraft.resources.ResourceLocation;
@@ -255,7 +254,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
                             RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                            quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
+                            quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", isKubeLoaded).forGetter(val -> val.duration),
                             GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
                     .apply(instance, GTRecipe::new));
@@ -273,7 +272,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     IngredientActionHolder.CODEC.listOf().optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", isKubeLoaded).forGetter(val -> val.duration),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                     Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
             .apply(instance, GTRecipe::new));

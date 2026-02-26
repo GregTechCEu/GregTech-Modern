@@ -7,11 +7,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncdata.*;
 
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
-import com.lowdragmc.lowdraglib.syncdata.payload.FluidStackPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
-
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
 

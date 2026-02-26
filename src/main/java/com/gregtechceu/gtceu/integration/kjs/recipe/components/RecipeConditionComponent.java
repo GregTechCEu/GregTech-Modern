@@ -14,7 +14,6 @@ public class RecipeConditionComponent implements RecipeComponent<RecipeCondition
     public static final RecipeComponentType<RecipeCondition<?>> RECIPE_CONDITION = RecipeComponentType.unit(GTCEu.id("recipe_condition"), new RecipeConditionComponent());
     // spotless:on
 
-
     @Override
     public Codec<RecipeCondition<?>> codec() {
         return RecipeCondition.CODEC;

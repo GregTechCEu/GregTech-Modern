@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.data.entity.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
 import com.gregtechceu.gtceu.data.command.GTClientCommands;
 import com.gregtechceu.gtceu.data.effect.GTMobEffects;
+import com.gregtechceu.gtceu.data.entity.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 

@@ -14,7 +14,6 @@ public class RecipeCapabilityComponent implements RecipeComponent<RecipeCapabili
     public static final RecipeComponentType<RecipeCapability<?>> RECIPE_CAPABILITY = RecipeComponentType.unit(GTCEu.id("recipe_capability"), new RecipeCapabilityComponent());
     // spotless:on
 
-
     @Override
     public Codec<RecipeCapability<?>> codec() {
         return RecipeCapability.DIRECT_CODEC;

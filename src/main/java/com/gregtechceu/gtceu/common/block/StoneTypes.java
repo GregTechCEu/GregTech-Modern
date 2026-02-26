@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 

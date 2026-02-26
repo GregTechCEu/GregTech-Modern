@@ -131,7 +131,8 @@ public final class ResearchManager {
                 ResearchItem::new);
 
         @Override
-        public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
+        public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder,
+                                 TooltipFlag tooltipFlag) {
             Collection<GTRecipe> recipes = recipeType().getDataStickEntry(researchId());
             if (recipes == null || recipes.isEmpty()) {
                 return;

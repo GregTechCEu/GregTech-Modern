@@ -17,10 +17,12 @@ import java.util.function.Function;
 
 public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap> {
 
+    // spotless:off
     public static final Codec<CapabilityMap> CODEC = RecipeCapability.CODEC
             .xmap(CapabilityMap::new, Function.identity());
     public static final CapabilityMapComponent INSTANCE = new CapabilityMapComponent();
-    public static final RecipeComponentType<CapabilityMap> CAPABILITY_MAP = RecipeComponentType.<CapabilityMap>unit(ResourceLocation.parse("capability_map"), INSTANCE);
+    public static final RecipeComponentType<CapabilityMap> CAPABILITY_MAP = RecipeComponentType.unit(ResourceLocation.parse("capability_map"), INSTANCE);
+    // spotless:on
 
     @Override
     public Codec<CapabilityMap> codec() {

@@ -19,11 +19,11 @@ public record GlobalPosWithRot(BlockPos pos, Direction side, ResourceKey<Level> 
             Direction.CODEC.fieldOf("side").forGetter(GlobalPosWithRot::side),
             Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(GlobalPosWithRot::dimension)
     ).apply(instance, GlobalPosWithRot::new));
-    // spotless:on
     public static final StreamCodec<ByteBuf, GlobalPosWithRot> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, GlobalPosWithRot::pos,
             Direction.STREAM_CODEC, GlobalPosWithRot::side,
             ResourceKey.streamCodec(Registries.DIMENSION), GlobalPosWithRot::dimension,
             GlobalPosWithRot::new
     );
+    // spotless:on
 }

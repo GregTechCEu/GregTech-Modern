@@ -430,7 +430,8 @@ public class GTUtil {
      * Determines map color nearest to specified RGB color
      */
     public static MapColor determineMapColor(int rgbColor) {
-        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(), c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
+                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
     }
 
     private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {

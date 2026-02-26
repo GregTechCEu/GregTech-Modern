@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.material.material.info;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;

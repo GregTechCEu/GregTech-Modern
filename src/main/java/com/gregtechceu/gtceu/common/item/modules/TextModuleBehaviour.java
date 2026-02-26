@@ -142,7 +142,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         for (String line : text.split("\n")) {
             lines.add(Component.literal(line));
         }
-        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY, textLineList -> textLineList.withLines(lines));
+        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY,
+                textLineList -> textLineList.withLines(lines));
     }
 
     public String getPlaceholderText(ItemStack stack) {

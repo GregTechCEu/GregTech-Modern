@@ -41,8 +41,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.data.block.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
+import static com.gregtechceu.gtceu.data.block.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.BORDERLESS_LAMPS;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.LAMPS;
 

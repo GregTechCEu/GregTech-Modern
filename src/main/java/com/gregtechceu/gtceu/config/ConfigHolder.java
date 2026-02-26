@@ -852,7 +852,8 @@ public class ConfigHolder {
             public boolean coloredTieredMachineOutline = true;
 
             @Configurable
-            @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier or material color",
+            @Configurable.Comment({
+                    "Whether or not to color wire/cable highlights based on voltage tier or material color",
                     "Default: true" })
             public boolean coloredWireOutline = true;
         }

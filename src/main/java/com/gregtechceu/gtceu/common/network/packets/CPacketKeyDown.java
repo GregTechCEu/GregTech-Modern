@@ -19,8 +19,8 @@ public class CPacketKeyDown implements CustomPacketPayload {
 
     public static final ResourceLocation ID = GTCEu.id("key_down");
     public static final Type<CPacketKeyDown> TYPE = new Type<>(ID);
-    public static final StreamCodec<ByteBuf, CPacketKeyDown> CODEC = ByteBufCodecs.
-            map(size -> (Int2BooleanMap) new Int2BooleanOpenHashMap(size), ByteBufCodecs.VAR_INT, ByteBufCodecs.BOOL)
+    public static final StreamCodec<ByteBuf, CPacketKeyDown> CODEC = ByteBufCodecs
+            .map(size -> (Int2BooleanMap) new Int2BooleanOpenHashMap(size), ByteBufCodecs.VAR_INT, ByteBufCodecs.BOOL)
             .map(CPacketKeyDown::new, packet -> packet.updateKeys);
 
     private final Int2BooleanMap updateKeys;

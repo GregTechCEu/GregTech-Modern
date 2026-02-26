@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;

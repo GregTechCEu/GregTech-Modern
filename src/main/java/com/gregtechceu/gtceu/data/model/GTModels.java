@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.model;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.*;
-import com.gregtechceu.gtceu.data.block.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.gregtechceu.gtceu.data.block.GTBlockStateProperties;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -418,6 +418,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             pipeBlockEntity = pipe;
         }
 
+        // spotless:off
         // check all cases where the pipe tune grid should render
         // slightly cleaner this way (than the massive if statement that was here before, that is)
         if (player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) {
@@ -440,6 +441,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             // basically a fallback for the 2nd check in this chain
             return Shapes.block();
         }
+        // spotless:on
         return shape;
     }
 

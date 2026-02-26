@@ -16,8 +16,6 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.recipe.schema.function.RecipeFunctionInstance;
-import dev.latvian.mods.kubejs.recipe.schema.function.SetFunction;
 import dev.latvian.mods.kubejs.recipe.special.KubeJSCraftingRecipe;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TinyMap;
