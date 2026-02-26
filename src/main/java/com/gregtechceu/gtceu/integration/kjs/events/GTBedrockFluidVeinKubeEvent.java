@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
 
 import net.minecraft.core.RegistrationInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,7 +14,6 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.SourceLine;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 
 import java.util.Set;
@@ -27,76 +24,54 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class GTBedrockFluidVeinKubeEvent implements KubeEvent {
 
-    public GTBedrockFluidVeinKubeEvent() {}
+    private final WritableRegistry<BedrockFluidDefinition> registry;
 
-    public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        var biomes = registries.access().lookupOrThrow(Registries.BIOME);
-
-        BedrockFluidBuilder builder = new BedrockFluidBuilder(id);
-        consumer.accept(builder);
-        register(registry, id, builder.createTransformedObject());
+    public GTBedrockFluidVeinKubeEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+        this.registry = registry;
     }
 
-    private void register(Registry<BedrockFluidDefinition> registry, ResourceLocation id, BedrockFluidDefinition def) {
-        if (registry instanceof WritableRegistry<BedrockFluidDefinition> writable) {
-            writable.register(createKey(id), def, RegistrationInfo.BUILT_IN);
-        }
+    public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
+        BedrockFluidBuilder builder = new BedrockFluidBuilder(id);
+        consumer.accept(builder);
+        register(id, builder.createTransformedObject());
+    }
+
+    private void register(ResourceLocation id, BedrockFluidDefinition def) {
+        registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
     }
 
     public void modify(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        var biomes = registries.access().lookupOrThrow(Registries.BIOME);
-
         var vein = registry.get(id);
         if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
         var builder = BedrockFluidBuilder.from(vein, id);
         consumer.accept(builder);
-        register(registry, id, builder.createTransformedObject());
+        register(id, builder.createTransformedObject());
     }
 
     public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockFluidBuilder> consumer) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        var biomes = registries.access().lookupOrThrow(Registries.BIOME);
-
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.forEach(id -> {
             var vein = registry.get(id);
             if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
             var builder = BedrockFluidBuilder.from(vein, id);
             consumer.accept(id, builder);
-            register(registry, id, builder.createTransformedObject());
+            register(id, builder.createTransformedObject());
         });
     }
 
-    public void remove(Context cx, ResourceLocation id) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        remove(cx, registry, id);
-    }
-
     public void removeAll(Context cx) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
-        keys.forEach(key -> remove(cx, registry, key));
+        keys.forEach(key -> remove(cx, key));
     }
 
     public void removeAll(Context cx, BiPredicate<ResourceLocation, BedrockFluidDefinition> predicate) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.stream()
                 .filter(key -> predicate.test(key, registry.get(key)))
-                .forEach(key -> remove(cx, registry, key));
+                .forEach(key -> remove(cx, key));
     }
 
-    private void remove(Context cx, Registry<BedrockFluidDefinition> registry, ResourceLocation id) {
+    public void remove(Context cx, ResourceLocation id) {
         if (!registry.containsKey(id)) {
             ConsoleJS.SERVER.error("", new KubeRuntimeException("Trying to remove nonexistent bedrock ore vein " + id)
                     .source(SourceLine.of(cx)));

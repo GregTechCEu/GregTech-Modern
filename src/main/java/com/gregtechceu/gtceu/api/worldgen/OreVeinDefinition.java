@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
@@ -181,6 +182,7 @@ public class OreVeinDefinition {
         return this;
     }
 
+    @HideFromJS
     public OreVeinDefinition biomes(TagKey<Biome> biomes) {
         if (biomeLookup == null) {
             GTRegistries.builtinRegistry().registry(GTRegistries.ORE_VEIN_REGISTRY)
