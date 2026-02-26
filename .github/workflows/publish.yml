@@ -145,9 +145,9 @@ jobs:
           RELEASE_BODY: ${{ inputs.release-body }}
           CHANGELOG_TITLE: ${{ inputs.changelog-title }}
         run: |
-          RELEASE_BODY=$( echo -e "$RELEASE_BODY" | head -n -1 - | tail -n +1 - )
+          BODY=$( echo -e "$RELEASE_BODY" | head -n -1 - | tail -n +1 - )
           
-          { head -n 2 CHANGELOG.md; echo -e "$CHANGELOG_TITLE"; echo -e "$RELEASE_BODY"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
+          { head -n 2 CHANGELOG.md; echo -e "$CHANGELOG_TITLE"; echo -e "$BODY"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
           git commit -am "Updated CHANGELOG"
       - name: Push and PR
         env:
