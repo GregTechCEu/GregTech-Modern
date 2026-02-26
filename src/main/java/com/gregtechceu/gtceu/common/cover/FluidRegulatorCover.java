@@ -103,7 +103,7 @@ public class FluidRegulatorCover extends PumpCover {
                 continue;
 
             int insertableAmount = destination.fill(drained.copy(), FluidAction.SIMULATE);
-            if (insertableAmount <= 0)
+            if (insertableAmount != supplyAmount)
                 continue;
 
             drained.setAmount(insertableAmount);

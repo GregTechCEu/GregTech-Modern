@@ -80,4 +80,8 @@ repositories {
         forRepository { maven { url = "https://maven.squiddev.cc" } }
         filter { includeGroup("cc.tweaked") }
     }
+    exclusiveContent { // Xaero's
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupAndSubgroups("xaero") }
+    }
 }

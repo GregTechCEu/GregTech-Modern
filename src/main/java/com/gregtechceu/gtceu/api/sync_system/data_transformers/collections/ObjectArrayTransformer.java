@@ -23,7 +23,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
                                                                        ValueTransformer.TransformerContext<T[]> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
                 parentContext.type().getArrayComponentType(), elem, parentContext.fieldName() + "[element]",
-                parentContext.isClientSync());
+                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
     }
 
     @Override
