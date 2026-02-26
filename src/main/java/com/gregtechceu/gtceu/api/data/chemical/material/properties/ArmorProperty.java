@@ -56,11 +56,11 @@ public class ArmorProperty implements IMaterialProperty {
     private float knockbackResistance;
 
     @Setter
-    private Supplier<Ingredient> repairIngredient;
+    private Supplier<@Nullable Ingredient> repairIngredient;
     private boolean noRepair;
 
     @Setter
-    private String name = "metal";
+    private ResourceLocation textureName = GTCEu.id("metal");
     @Getter
     @Setter
     private CustomTextureGetter customTextureGetter = (stack, entity, slot, overlay) -> null;
@@ -103,7 +103,7 @@ public class ArmorProperty implements IMaterialProperty {
         }
 
         if (this.layers == null) {
-            this.layers = List.of(new ArmorMaterial.Layer(GTCEu.id(this.name), "", this.dyeable));
+            this.layers = List.of(new ArmorMaterial.Layer(this.textureName, "", this.dyeable));
         }
         if (this.armorMaterial == null) {
             GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(this.material.getModid());

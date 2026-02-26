@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
@@ -113,9 +114,12 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
         MachineDefinition @NotNull [] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MachineBuilder<?, ?> builder = GTRegistration.REGISTRATE.machine(
-                    String.format("%s_%s", tierName, this.id.getPath()),
-                    holder -> machine.create(holder, tier, tankScalingFunction));
+            final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
+                    GTMachineUtils.defaultTankSizeFunction);
+
+            MachineBuilder<?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+                    .machine(String.format("%s_%s", tierName, this.id.getPath()),
+                            holder -> machine.create(holder, tier, tankFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);

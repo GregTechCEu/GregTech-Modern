@@ -60,8 +60,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.logging.log4j.LogManager;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -124,7 +122,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //////////////////////////////////////
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
+    public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -157,11 +155,14 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(GTRegistries.builtinRegistry()));
+        var registry = Objects.requireNonNullElse(MixinHelpers.getCurrentBERegistries(),
+                GTRegistries.builtinRegistry());
+
+        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(registry));
         if (!stored.isEmpty()) {
-            tag.put("stored", stored.save(GTRegistries.builtinRegistry()));
+            tag.put("stored", stored.save(registry));
         } else {
             tag.remove("stored");
         }
@@ -169,18 +170,16 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+    public void loadCustomPersistedData(CompoundTag tag) {
         super.loadCustomPersistedData(tag);
-
-        var from = tag.contains("cache") ? tag.getCompound("cache") : tag;
         var registry = Objects.requireNonNullElse(MixinHelpers.getCurrentBERegistries(),
                 GTRegistries.builtinRegistry());
+
+        CompoundTag from = tag.contains("cache") ? tag.getCompound("cache") : tag;
         this.lockedFluid.readFromNBT(registry, from.getCompound("lockedFluid"));
 
         if (tag.contains("stored")) {
-            var v = MixinHelpers.getCurrentBERegistries();
-            LogManager.getLogger().warn("{}", v);
-            var stored = FluidStack.parseOptional(registry, tag.getCompound("stored"));
+            FluidStack stored = FluidStack.parseOptional(registry, tag.getCompound("stored"));
             this.stored = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
         } else {
             this.stored = FluidStack.EMPTY;
@@ -192,7 +191,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
+    public void applyImplicitComponents(MetaMachineBlockEntity.ExDataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         LargeFluidContent storage = componentInput.getOrDefault(GTDataComponents.LARGE_FLUID_CONTENT,
                 LargeFluidContent.EMPTY);
@@ -201,13 +200,13 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         components.set(GTDataComponents.LARGE_FLUID_CONTENT, new LargeFluidContent(stored, storedAmount));
     }
 
     @Override
-    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
+    public void removeItemComponentsFromTag(CompoundTag tag) {
         super.removeItemComponentsFromTag(tag);
         tag.remove("stored");
         tag.remove("storedAmount");
@@ -438,7 +437,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return stored.copyWithAmount(GTMath.saturatedCast(storedAmount));
         }
 
@@ -458,7 +457,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (stored.isEmpty()) return FluidStack.EMPTY;
             long toDrain = Math.min(storedAmount, maxDrain);
             var copy = stored.copyWithAmount((int) toDrain);
@@ -471,7 +470,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!FluidStack.isSameFluidSameComponents(resource, stored)) return FluidStack.EMPTY;
             return drain(resource.getAmount(), action);
         }
@@ -487,11 +486,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return filter.test(stack);
         }
 
-        public void exportToNearby(@NotNull Direction... facings) {
+        public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
             var pos = getMachine().getPos();

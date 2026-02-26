@@ -36,7 +36,7 @@ public class FacadeCoverRecipe extends CustomRecipe {
 
     @Override
     public boolean matches(CraftingInput container, @NotNull Level level) {
-        int platesCount = 0;
+        boolean foundPlate = false;
         boolean foundBlockItem = false;
         for (int i = 0; i < container.size(); i++) {
             var item = container.getItem(i);
@@ -47,14 +47,15 @@ public class FacadeCoverRecipe extends CustomRecipe {
                 }
                 foundBlockItem = true;
             } else if (item.is(IRON_PLATE_TAG)) {
-                if (++platesCount > 1) {
+                if (foundPlate) {
                     return false;
                 }
+                foundPlate = true;
             } else {
                 return false;
             }
         }
-        return foundBlockItem && platesCount == 1;
+        return foundBlockItem && foundPlate;
     }
 
     @Override

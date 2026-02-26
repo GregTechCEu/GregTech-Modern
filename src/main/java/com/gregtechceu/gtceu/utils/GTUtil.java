@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -65,7 +66,6 @@ public class GTUtil {
     public static final Direction[] DIRECTIONS = Direction.values();
     public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
-    @SuppressWarnings("UnstableApiUsage")
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
         var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
         BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
@@ -76,17 +76,6 @@ public class GTUtil {
     });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
-
-    private static final MapColor[] MAP_COLORS;
-
-    static {
-        int maxId = MapColor.GLOW_LICHEN.id;
-        MAP_COLORS = new MapColor[maxId];
-        for (int i = 0; i < maxId; i++) {
-            // Skip MapColor.NONE
-            MAP_COLORS[i] = MapColor.byId(i + 1);
-        }
-    }
 
     /**
      * Convenience method to get from VN -> Tier
@@ -441,7 +430,8 @@ public class GTUtil {
      * Determines map color nearest to specified RGB color
      */
     public static MapColor determineMapColor(int rgbColor) {
-        return closestColor(rgbColor, MAP_COLORS, c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
+                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
     }
 
     private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
@@ -613,14 +603,6 @@ public class GTUtil {
         }
 
         throw new IllegalArgumentException("Invalid slot '" + slotType + "': " + slotIndex);
-    }
-
-    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameComponents(s1, s2);
-    }
-
-    public static <T> T getLast(List<T> list) {
-        return list.get(list.size() - 1);
     }
 
     public static <T> ArrayList<T> list(T obj) {

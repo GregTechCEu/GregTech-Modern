@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
@@ -68,6 +69,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in the same bus.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationSingleBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -83,6 +85,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses without separation.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithoutSeparationTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -98,6 +101,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with one undyed and one dyed.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithOneColorTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -114,6 +118,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with both dyed the same color.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithTheSameColorTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -131,6 +136,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with two dyed different colors.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithDifferentColorsTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -146,6 +152,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with one distinct.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesOneDistinctTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -160,6 +167,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with both distinct.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesTwoDistinctTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -175,6 +183,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with two distinct and dyed different colors.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesTwoDistinctAndColoredTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

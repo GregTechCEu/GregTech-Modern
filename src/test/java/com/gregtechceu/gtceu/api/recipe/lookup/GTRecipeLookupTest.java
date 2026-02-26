@@ -26,6 +26,8 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -117,6 +119,9 @@ public class GTRecipeLookupTest {
     }
 
     // Simple recipe test whose lookup should succeed
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
@@ -128,6 +133,9 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test whose lookup should fail because we pass an ingredient
     // that does not match any of the recipes.
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.REDSTONE_TORCH, 1));
@@ -138,6 +146,9 @@ public class GTRecipeLookupTest {
 
     // Recipe test whose lookup should fail because the predicate for canHandle
     // always evaluates to false.
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupFalsePredicateFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
@@ -147,6 +158,9 @@ public class GTRecipeLookupTest {
     }
 
     // Recipe test whose lookup should succeed even when passed ingredients that don't have a recipe
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupMultipleIngredientsSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1),
@@ -159,6 +173,9 @@ public class GTRecipeLookupTest {
 
     // Recipe test whose lookup should succeed because even though the amount in the recipe is not enough,
     // ingredients don't count items
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupIngredientCountSucceedTest(GameTestHelper helper) {
         // NOTE: RecipeLookup only checks item type, not item count, so this will still work
@@ -175,6 +192,9 @@ public class GTRecipeLookupTest {
     }
 
     // Recipe test with a recipe-based canHandle check
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupCustomCountCanHandleTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 16));
@@ -201,6 +221,9 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged item input, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleRangedItemSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.RED_WOOL, 4));
@@ -214,6 +237,9 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged fluid input, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleRangedFluidSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(GTMaterials.Helium.getFluid(4));
@@ -227,6 +253,9 @@ public class GTRecipeLookupTest {
 
     // Simple recipe test with ranged item and fluid inputs, whose lookup should succeed
     // Repeats 100 times to make sure there's no random roll interference
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleRangedItemFluidSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(

@@ -25,11 +25,18 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class EnderCoversTest {
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void fluidLinkCoverTest(GameTestHelper helper) {
         QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
@@ -53,6 +60,9 @@ public class EnderCoversTest {
         });
     }
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void itemLinkCoverTest(GameTestHelper helper) {
         QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
@@ -75,6 +85,9 @@ public class EnderCoversTest {
         });
     }
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void redstoneLinkCoverTest(GameTestHelper helper) {
         QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),

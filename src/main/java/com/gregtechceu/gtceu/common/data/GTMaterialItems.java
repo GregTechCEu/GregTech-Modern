@@ -208,7 +208,7 @@ public class GTMaterialItems {
                 })
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())
-                .color(() -> IGTTool::tintColor)
+                .color(() -> () -> IGTTool::tintColor)
                 .register());
         // spotless:on
     }
@@ -232,7 +232,7 @@ public class GTMaterialItems {
         final ArmorProperty property = material.getProperty(PropertyKey.ARMOR);
         String id = "%s_%s".formatted(material.getName(), type.getName());
         ARMOR_ITEMS.put(material, type, registrate
-                .item(id, p -> new GTArmorItem(property.getArmorMaterial(), type, p, material, property))
+                .item(id, p -> new GTArmorItem(type, p, material, property))
                 .properties(p -> p.durability(type.getDurability(property.getDurabilityMultiplier())))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())

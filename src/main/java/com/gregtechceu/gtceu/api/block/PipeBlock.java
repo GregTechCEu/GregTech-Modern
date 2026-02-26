@@ -392,41 +392,57 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
-        var pipeNode = getPipeTile(pLevel, pPos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var pipeNode = getPipeTile(level, pos);
         var connections = 0;
-        if (pipeNode != null) {
-            if (!pipeNode.getFrameMaterial().isNull()) {
-                return Shapes.block();
-            }
-            connections = pipeNode.getVisualConnections();
-            VoxelShape shape = getShapes(connections);
-            shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
+        if (pipeNode == null) {
+            return getShapes(connections);
+        }
+        if (!pipeNode.getFrameMaterial().isNull()) {
+            return Shapes.block();
+        }
+        connections = pipeNode.getVisualConnections();
+        VoxelShape shape = getShapes(connections);
+        shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
 
-            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
-                var coverable = pipeNode.getCoverContainer();
-                var held = player.getMainHandItem();
-                Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
-                PipeBlockEntity<?, ?> pipeBlockEntity = null;
-                BlockEntity tile = pLevel.getBlockEntity(pPos);
-                if (tile instanceof PipeBlockEntity<?, ?> pipeTile) {
-                    types = Set.of(pipeTile.getPipeTuneTool());
-                    pipeBlockEntity = pipeTile;
-                }
-
-                if ((player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) ||
-                        types.stream().anyMatch(type -> type.matchTags.stream().anyMatch(held::is)) ||
-                        CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
-                                coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
-                        (held.getItem() instanceof BlockItem blockItem &&
-                                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
-                                pipeBlock.pipeType.type().equals(pipeType.type()))) {
-                    return Shapes.block();
-                }
-            }
+        if (!(context instanceof EntityCollisionContext entityCtx) ||
+                !(entityCtx.getEntity() instanceof Player player)) {
             return shape;
         }
-        return getShapes(connections);
+        ICoverable coverable = pipeNode.getCoverContainer();
+        ItemStack held = player.getMainHandItem();
+        Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
+        PipeBlockEntity<?, ?> pipeBlockEntity = null;
+        if (pipeNode instanceof PipeBlockEntity<?, ?> pipe) {
+            types = Set.of(pipe.getPipeTuneTool());
+            pipeBlockEntity = pipe;
+        }
+
+        // spotless:off
+        // check all cases where the pipe tune grid should render
+        // slightly cleaner this way (than the massive if statement that was here before, that is)
+        if (player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) {
+            // crouched with empty hand and block has a cover
+            return Shapes.block();
+        } else if (pipeBlockEntity != null && pipeBlockEntity.hasCorrectAction(held)) {
+            // has a tool that can configure this pipe's connections
+            return Shapes.block();
+        } else if (CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
+                coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
+            // has a placeable cover
+            return Shapes.block();
+        } else if (held.getItem() instanceof BlockItem blockItem &&
+                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
+                pipeBlock.pipeType.type().equals(pipeType.type())) {
+            // holding the same kind of pipe
+            return Shapes.block();
+        } else if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is))) {
+            // has a correctly tagged tool without the proper tool action
+            // basically a fallback for the 2nd check in this chain
+            return Shapes.block();
+        }
+        // spotless:on
+        return shape;
     }
 
     @Nullable

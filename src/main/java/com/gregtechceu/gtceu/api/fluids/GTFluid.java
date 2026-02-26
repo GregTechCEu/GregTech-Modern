@@ -26,14 +26,14 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     @Getter
     private final int burnTime;
 
-    public GTFluid(@NotNull FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
+    public GTFluid(FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
         super(properties);
         this.state = state;
         this.burnTime = burnTime;
     }
 
     @Override
-    public void addAttribute(@NotNull FluidAttribute attribute) {
+    public void addAttribute(FluidAttribute attribute) {
         attributes.add(attribute);
     }
 
@@ -72,7 +72,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
 
     public static class Source extends GTFluid {
 
-        public Source(@NotNull FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
+        public Source(FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
             super(state, burnTime, properties);
         }
 
@@ -89,7 +89,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
 
     public static class Flowing extends GTFluid {
 
-        public Flowing(@NotNull FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
+        public Flowing(FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
             super(state, burnTime, properties);
             registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
         }

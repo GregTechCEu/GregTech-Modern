@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -31,18 +29,19 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngred
 /**
  * Allows an {@link Ingredient} to be created with a ranged {@code count}, which will be randomly rolled upon recipe
  * start (input) / completion (output).
- * Instantiated using {@link IntProviderIngredient#of()}, with a {@link Ingredient} or {@link ItemStack},
+ * Instantiated using {@link IntProviderIngredient#of}, with a {@link Ingredient} or {@link ItemStack},
  * and an {@link IntProvider}.
  * Functions similarly to {@link IntProviderFluidIngredient}.
  */
 public class IntProviderIngredient implements ICustomIngredient, IRangedIngredient {
 
+    // spotless:off
     public static final MapCodec<IntProviderIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.fieldOf("inner").forGetter(IntProviderIngredient::getInner),
             IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderIngredient::getCountProvider),
-            NeoForgeExtraCodecs.optionalFieldAlwaysWrite(Codec.INT, "sampledCount", FluidType.BUCKET_VOLUME)
-                    .forGetter(IRangedIngredient::getSampledCount))
-            .apply(instance, IntProviderIngredient::new));
+            Codec.INT.optionalFieldOf("sampled_count", -1).forGetter(IRangedIngredient::getSampledCount)
+    ).apply(instance, IntProviderIngredient::new));
+    // spotless:on
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
 
@@ -60,7 +59,7 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
     @Getter
     protected final Ingredient inner;
     @Setter
-    protected ItemStack @NotNull [] itemStacks = null;
+    protected ItemStack @Nullable [] itemStacks = null;
 
     protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         this.inner = inner;
@@ -144,7 +143,7 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
     }
 
     @Override
-    public IngredientType<?> getType() {
+    public IngredientType<IntProviderIngredient> getType() {
         return GTIngredientTypes.INT_PROVIDER_INGREDIENT.get();
     }
 

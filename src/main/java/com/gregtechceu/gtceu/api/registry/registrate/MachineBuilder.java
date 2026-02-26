@@ -91,12 +91,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @Setter
     protected Function<ResourceLocation, DEFINITION> definition;
     protected Function<IMachineBlockEntity, MetaMachine> machine;
-    @Nullable
     @Getter
-    private MachineBuilder.ModelInitializer model = null;
-    @Nullable
+    private MachineBuilder.@Nullable ModelInitializer model = null;
     @Getter
-    private NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
+    private @Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
     @Getter
     protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
     private VoxelShape shape = Shapes.block();
@@ -110,10 +108,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean renderMultiblockXEIPreview = true;
     private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
-    @Nullable
-    private Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
-    @Nullable
-    private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
+    private @Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
+    private @Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
@@ -125,32 +121,25 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
-    @Nullable
-    private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+    private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
     private boolean alwaysTryModifyRecipe;
-    @NotNull
     @Getter
     private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @NotNull
     @Getter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @NotNull
     @Getter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @NotNull
     @Getter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
     @Getter
     private boolean regressWhenWaiting = true;
     private boolean allowCoverOnFront = false;
-    private Supplier<BlockState> appearance;
+    private @Nullable Supplier<BlockState> appearance;
     @Getter // getter for KJS
-    @Nullable
-    private EditableMachineUI editableUI;
+    private @Nullable EditableMachineUI editableUI;
     @Getter // getter for KJS
-    @Nullable
-    private String langValue = null;
+    private @Nullable String langValue = null;
 
     public MachineBuilder(GTRegistrate registrate, String name,
                           Function<ResourceLocation, DEFINITION> definition,
@@ -178,7 +167,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
+    public TYPE blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         this.blockModel = blockModel;
         return getThis();
     }
@@ -223,12 +212,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
+    public TYPE blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         this.blockBuilder = blockBuilder;
         return getThis();
     }
 
-    public TYPE itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
+    public TYPE itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
         this.itemBuilder = itemBuilder;
         return getThis();
     }
@@ -258,7 +247,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public TYPE tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         this.tooltipBuilder = tooltipBuilder;
         return getThis();
     }
@@ -298,17 +287,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE appearance(Supplier<BlockState> appearance) {
+    public TYPE appearance(@Nullable Supplier<BlockState> appearance) {
         this.appearance = appearance;
         return getThis();
     }
 
-    public TYPE editableUI(EditableMachineUI editableUI) {
+    public TYPE editableUI(@Nullable EditableMachineUI editableUI) {
         this.editableUI = editableUI;
         return getThis();
     }
 
-    public TYPE langValue(String langValue) {
+    public TYPE langValue(@Nullable String langValue) {
         this.langValue = langValue;
         return getThis();
     }
@@ -355,7 +344,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         }
     }
 
-    public TYPE model(MachineBuilder.ModelInitializer model) {
+    public TYPE model(MachineBuilder.@Nullable ModelInitializer model) {
         this.model = model;
         return getThis();
     }
@@ -639,7 +628,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     @HideFromJS
-    public @NotNull DEFINITION register() {
+    public DEFINITION register() {
         this.registrate.object(name);
         var definition = createDefinition();
 
@@ -716,9 +705,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @FunctionalInterface
     public interface ModelInitializer {
 
-        void configureModel(@NotNull DataGenContext<Block, ? extends Block> context,
-                            @NotNull GTBlockstateProvider provider,
-                            @NotNull MachineModelBuilder<BlockModelBuilder> builder);
+        void configureModel(DataGenContext<Block, ? extends Block> context, GTBlockstateProvider provider,
+                            MachineModelBuilder<BlockModelBuilder> builder);
 
         default ModelInitializer andThen(ModelInitializer after) {
             Objects.requireNonNull(after);

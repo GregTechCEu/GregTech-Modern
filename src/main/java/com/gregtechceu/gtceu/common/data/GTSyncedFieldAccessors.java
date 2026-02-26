@@ -7,11 +7,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncdata.*;
 
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
-import com.lowdragmc.lowdraglib.syncdata.payload.FluidStackPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
-
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
 
@@ -28,7 +25,6 @@ public class GTSyncedFieldAccessors {
         registerSimple(MachineRenderStatePayload.class, MachineRenderStatePayload::new, MachineRenderState.class, 1);
         registerSimple(MaterialPayload.class, MaterialPayload::new, Material.class, 1);
         registerSimple(GTRecipePayload.class, GTRecipePayload::new, GTRecipe.class, 100);
-        registerSimple(FluidStackPayload.class, FluidStackPayload::new, FluidStack.class, -1);
         registerSimple(MonitorGroupPayload.class, MonitorGroupPayload::new, MonitorGroup.class, 1);
     }
 }

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -179,10 +180,9 @@ public class GTOreVeinWidget extends WidgetGroup {
             int rowSlots = (width - 10 + interval) / (16 + interval);
 
             DimensionMarker[] dimMarkers = dimensionFilter.stream()
-                    .map(ResourceKey::location)
-                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOptional(loc)
-                            .orElse(new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
-                                    loc.toString())))
+                    .map(dimension -> GTRegistries.DIMENSION_MARKERS.getOptional(dimension.location())
+                            .orElseGet(() -> new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
+                                    DimensionCondition.getDimensionName(dimension))))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                     .toArray(DimensionMarker[]::new);
             var handler = new CustomItemStackHandler(dimMarkers.length);

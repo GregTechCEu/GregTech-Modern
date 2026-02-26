@@ -17,9 +17,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class RobotArmTest {
 
     public static void setupCrates(GameTestHelper helper) {
@@ -28,6 +32,9 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers more than keepExact's limit
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmKeepExactTest(GameTestHelper helper) {
         setupCrates(helper);
@@ -53,6 +60,9 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers correct amount when using transfer exact
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmTransferExactTest(GameTestHelper helper) {
         setupCrates(helper);
@@ -78,6 +88,9 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers all items when using transfer any
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmTransferAnyTest(GameTestHelper helper) {
         setupCrates(helper);

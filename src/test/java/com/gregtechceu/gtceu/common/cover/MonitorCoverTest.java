@@ -13,13 +13,20 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 import java.util.List;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class MonitorCoverTest {
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void testEnergyPlaceholders(GameTestHelper helper) {
         BatteryBufferMachine machine = (BatteryBufferMachine) TestUtils.setMachine(helper, new BlockPos(0, 1, 0),
@@ -39,6 +46,8 @@ public class MonitorCoverTest {
         });
     }
 
+    @TestHolder()
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void testCombinePlaceholder(GameTestHelper helper) {
         BatteryBufferMachine machine = (BatteryBufferMachine) TestUtils.setMachine(helper, new BlockPos(0, 1, 0),

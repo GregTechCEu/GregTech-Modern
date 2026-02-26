@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -191,11 +192,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private static BlockState findMiningReplacementBlock(Level level, BlockPos pos) {
         if (ConfigHolder.INSTANCE.machines.replaceWithCobbleVersion) {
             BlockState oreState = level.getBlockState(pos);
-            if (oreState.getBlock().asItem() instanceof MaterialBlockItem matBlockItem) {
-                var prefix = matBlockItem.tagPrefix;
-                if (!GTBlocks.COBBLE_BLOCKS.containsKey(prefix)) return Blocks.COBBLESTONE.defaultBlockState();
-                return GTBlocks.COBBLE_BLOCKS.get(prefix).get();
-            }
+            TagPrefix prefix = ChemicalHelper.getPrefix(oreState.getBlock());
+            if (prefix.isEmpty() || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
+                return Blocks.COBBLESTONE.defaultBlockState();
+            return GTBlocks.COBBLE_BLOCKS.get(prefix).get();
         }
 
         try {

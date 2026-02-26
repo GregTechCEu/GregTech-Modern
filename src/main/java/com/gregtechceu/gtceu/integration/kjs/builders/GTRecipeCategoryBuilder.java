@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -19,15 +18,12 @@ import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true, fluent = true)
 public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
-    private final transient String name;
     @Setter
-    @NotNull
     private transient GTRecipeType recipeType;
     @Setter
     @Nullable
@@ -40,7 +36,6 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     public GTRecipeCategoryBuilder(ResourceLocation id) {
         super(GTResourceLocation.implicitAsGtceu(id));
-        name = id.getPath();
         recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;
@@ -51,12 +46,12 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     public void generateLang(LangKubeEvent lang) {
         super.generateLang(lang);
         if (langValue != null) lang.add(get().getLanguageKey(), langValue);
-        else lang.add(GTCEu.MOD_ID, get().getLanguageKey(), FormattingUtil.toEnglishName(get().name));
+        else lang.add(id.getNamespace(), get().getLanguageKey(), FormattingUtil.toEnglishName(get().name));
     }
 
     @Override
     public GTRecipeCategory createObject() {
-        return GTRecipeCategories.register(name, recipeType)
+        return GTRecipeCategories.register(id, recipeType)
                 .setIcon(icon)
                 .setXEIVisible(isXEIVisible);
     }

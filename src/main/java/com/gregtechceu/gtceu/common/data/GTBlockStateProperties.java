@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.block.property;
+package com.gregtechceu.gtceu.common.data;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;

@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -25,7 +24,8 @@ public enum StoneTypes implements StringRepresentable {
     ANDESITE("andesite", MapColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, false),
     GRANITE("granite", MapColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, () -> GTMaterials.Granite, false),
     DIORITE("diorite", MapColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, () -> GTMaterials.Diorite, false),
-    BASALT("basalt", MapColor.TERRACOTTA_BLACK, true, () -> Blocks.BASALT::defaultBlockState, () -> GTMaterials.Basalt, false),
+    BASALT("basalt", MapColor.COLOR_BLACK, true, () -> Blocks.BASALT::defaultBlockState, () -> GTMaterials.Basalt, false),
+    BLACKSTONE("blackstone", MapColor.COLOR_BLACK, true, () -> Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone, false),
     CONCRETE_LIGHT("light_concrete", MapColor.STONE, false, () -> GTBlocks.LIGHT_CONCRETE::getDefaultState, () -> GTMaterials.Concrete),
     CONCRETE_DARK("dark_concrete", MapColor.STONE, false, () -> GTBlocks.DARK_CONCRETE::getDefaultState, () -> GTMaterials.Concrete),
             ;
@@ -41,12 +41,12 @@ public enum StoneTypes implements StringRepresentable {
 
     public final boolean generateBlocks;
 
-    StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
+    StoneTypes(String name, MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
                Supplier<Material> material) {
         this(name, mapColor, natural, state, material, true);
     }
 
-    StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
+    StoneTypes(String name, MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
                Supplier<Material> material, boolean generateBlocks) {
         this.name = name;
         this.mapColor = mapColor;
@@ -56,18 +56,34 @@ public enum StoneTypes implements StringRepresentable {
         this.generateBlocks = generateBlocks;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return this.name;
     }
 
     public TagPrefix getTagPrefix() {
+        // disabled, always return block
+        if (false && this.natural) {
+            return TagPrefix.rock;
+        } else {
+            return TagPrefix.block;
+        }
+    }
+
+    public TagPrefix getOreBaseTagPrefix() {
         return switch (this) {
-            // case RED_GRANITE, MARBLE ->
-            // TagPrefix.ore;
-            case CONCRETE_LIGHT, CONCRETE_DARK -> TagPrefix.block;
-            default -> TagPrefix.block;
+            case STONE -> TagPrefix.ore;
+            case DEEPSLATE -> TagPrefix.oreDeepslate;
+            case RED_GRANITE -> TagPrefix.oreRedGranite;
+            case MARBLE -> TagPrefix.oreMarble;
+            case ANDESITE -> TagPrefix.oreAndesite;
+            case GRANITE -> TagPrefix.oreGranite;
+            case DIORITE -> TagPrefix.oreDiorite;
+            case BASALT -> TagPrefix.oreBasalt;
+            default -> {
+                if (this.natural) yield TagPrefix.ore;
+                else yield TagPrefix.NULL_PREFIX;
+            }
         };
     }
 

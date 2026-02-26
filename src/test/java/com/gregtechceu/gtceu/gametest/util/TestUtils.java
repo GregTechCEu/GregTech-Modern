@@ -228,8 +228,8 @@ public class TestUtils {
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).freeze();
-        ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).freeze();
+        GTRegistries.RECIPE_CATEGORIES.freeze();
+        BuiltInRegistries.RECIPE_TYPE.freeze();
         return type;
     }
 

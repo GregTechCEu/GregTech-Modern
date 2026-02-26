@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -122,6 +123,7 @@ public class MultipleEnergyHatchTest {
                 "Hatches on multiblock didn't match expected input voltage");
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void EvPlusMvHatchCanDoEVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -135,10 +137,11 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void EvPlusMvHatchCannotDoIVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -154,6 +157,7 @@ public class MultipleEnergyHatchTest {
         TestUtils.succeedAfterTest(helper);
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void EvPlusHvHatchCanDoEVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -166,10 +170,11 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void EvPlusHvHatchCannotIVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -186,6 +191,7 @@ public class MultipleEnergyHatchTest {
         TestUtils.succeedAfterTest(helper);
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void DoubleEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -198,10 +204,11 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void DoubleEVHatchCanDoIVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -214,10 +221,11 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item didn't craft at the right tick with an 1-above-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void FourAEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -230,10 +238,11 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
+    @TestHolder()
     @GameTest(template = "energy/lcr_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void FourAEVHatchCanNotDoIVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -261,7 +270,7 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
@@ -292,7 +301,7 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
@@ -323,7 +332,7 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.CYAN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
@@ -339,7 +348,7 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
@@ -355,7 +364,7 @@ public class MultipleEnergyHatchTest {
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item didn't craft at the right tick with an on-tier recipe" +
-                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 

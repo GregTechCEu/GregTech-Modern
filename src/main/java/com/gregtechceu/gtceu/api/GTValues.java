@@ -37,6 +37,7 @@ public class GTValues {
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
     // shortcut for various lengths of time in ticks
+    // REMEMBER TO MULTIPLY BY `level.tickRateManager().tickrate()` OR THIS WILL BE OFF IF TPS IS CHANGED
     public static final long SECONDS = 20;
     public static final long MINUTES = 60 * SECONDS;
     public static final long HOURS = 60 * MINUTES;
@@ -121,8 +122,6 @@ public class GTValues {
             MODID_IRIS = "iris",
             MODID_SODIUM = "sodium",
             MODID_CURIOS = "curios",
-            MODID_AE2WTLIB = "ae2wtlib",
-            MODID_SHIMMER = "shimmer",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",

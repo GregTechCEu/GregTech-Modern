@@ -27,11 +27,9 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
     ).apply(instance, BiomeCondition::new));
-    // spotless:on
 
     @Getter
-    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME,
-            ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
     // spotless:on
 
     public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {

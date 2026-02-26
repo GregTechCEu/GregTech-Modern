@@ -11,6 +11,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
@@ -62,13 +65,16 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
+@ApiStatus.Internal
 public class MixinHelpers {
 
     /**
@@ -391,18 +397,19 @@ public class MixinHelpers {
         });
     }
 
-    public static void postKJSVeinEvents(WritableRegistry<?> registry) {
+    public static void postKJSVeinEvents(RegistryAccess.Frozen registries) {
         if (!GTCEu.Mods.isKubeJSLoaded()) {
             return;
         }
 
-        if (registry.key() == GTRegistries.ORE_VEIN_REGISTRY) {
-            KJSCallWrapper.postOreVeinEvent();
-        } else if (registry.key() == GTRegistries.BEDROCK_FLUID_REGISTRY) {
-            KJSCallWrapper.postBedrockFluidEvent();
-        } else if (registry.key() == GTRegistries.BEDROCK_ORE_REGISTRY) {
-            KJSCallWrapper.postBedrockOreEvent();
-        }
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postOreVeinEvent,
+                registries.registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY));
+
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockFluidEvent,
+                registries.registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY));
+
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockOreEvent,
+                registries.registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY));
     }
 
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
@@ -417,16 +424,26 @@ public class MixinHelpers {
 
     private static final class KJSCallWrapper {
 
-        private static void postOreVeinEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+        private static <T> void postEventWithRegistry(Consumer<WritableRegistry<T>> eventProvider,
+                                                      Registry<T> registry) {
+            if (registry instanceof MappedRegistry<T> writable) {
+                // unfreeze the registry, register to it, refreeze it.
+                writable.unfreeze();
+                eventProvider.accept(writable);
+                writable.freeze();
+            }
         }
 
-        private static void postBedrockFluidEvent() {
-            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS());
+        private static void postOreVeinEvent(WritableRegistry<GTOreDefinition> registry) {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS(registry));
         }
 
-        private static void postBedrockOreEvent() {
-            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS());
+        private static void postBedrockFluidEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS(registry));
+        }
+
+        private static void postBedrockOreEvent(WritableRegistry<BedrockOreDefinition> registry) {
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS(registry));
         }
     }
 

@@ -63,7 +63,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.ExtensionMethod;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1255,82 +1254,6 @@ public class GTRecipeBuilder {
         return addCondition(new AdjacentFluidCondition(isReverse, List.copyOf(fluids)));
     }
 
-    /**
-     * @deprecated use {@link #adjacentFluids(Fluid...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public final GTRecipeBuilder adjacentFluid(Fluid... fluids) {
-        return adjacentFluids(fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, Fluid...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public final GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
-        return adjacentFluids(isReverse, fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluidTag(TagKey<Fluid>... tags) {
-        return adjacentFluids(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluidTag(boolean isReverse, TagKey<Fluid>... tags) {
-        return adjacentFluids(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
-        return adjacentFluids(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
-        return adjacentFluids(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(Collection)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids) {
-        return adjacentFluids(fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(Collection, boolean)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids, boolean isReverse) {
-        return adjacentFluids(fluids, isReverse);
-    }
-
     public GTRecipeBuilder adjacentBlocks(Block... blocks) {
         return adjacentBlocks(false, blocks);
     }
@@ -1369,86 +1292,6 @@ public class GTRecipeBuilder {
         return addCondition(new AdjacentBlockCondition(isReverse, List.copyOf(blocks)));
     }
 
-    /**
-     * @deprecated use {@link #adjacentBlocks(Block...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Block... blocks) {
-        return adjacentBlock(false, blocks);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, Block...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(boolean isReverse, Block... blocks) {
-        if (blocks.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
-            GTCEu.LOGGER.error("Adjacent block condition has too many blocks, not adding to recipe. id: {}", this.id);
-            return this;
-        }
-        return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
-        return adjacentBlocks(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
-        return adjacentBlocks(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlockTag(TagKey<Block>... tags) {
-        return adjacentBlocks(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlockTag(boolean isReverse, TagKey<Block>... tags) {
-        return adjacentBlocks(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(Collection)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks) {
-        return adjacentBlocks(blocks);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(Collection, boolean)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks, boolean isReverse) {
-        return adjacentBlocks(blocks, isReverse);
-    }
-
     public GTRecipeBuilder daytime(boolean isNight) {
         return addCondition(new DaytimeCondition().setReverse(isNight));
     }
@@ -1457,21 +1300,21 @@ public class GTRecipeBuilder {
         return daytime(false);
     }
 
-    // public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
-    // if (!GTCEu.Mods.isHeraclesLoaded()) {
-    // GTCEu.LOGGER.error("Heracles not loaded!");
-    // return this;
-    // }
-    // if (questId.isEmpty()) {
-    // GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
-    // return this;
-    // }
-    // return addCondition(new HeraclesQuestCondition(isReverse, questId));
-    // }
+    public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
+        if (!GTCEu.Mods.isHeraclesLoaded()) {
+            GTCEu.LOGGER.error("Heracles not loaded!");
+            return this;
+        }
+        if (questId.isEmpty()) {
+            GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
+            return this;
+        }
+        return addCondition(new HeraclesQuestCondition(isReverse, questId));
+    }
 
-    // public GTRecipeBuilder heraclesQuest(String questId) {
-    // return heraclesQuest(questId, false);
-    // }
+    public GTRecipeBuilder heraclesQuest(String questId) {
+        return heraclesQuest(questId, false);
+    }
 
     // public GTRecipeBuilder gameStage(String stageName) {
     // return gameStage(stageName, false);
@@ -1631,34 +1474,15 @@ public class GTRecipeBuilder {
         }
     }
 
-    // public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
-    // JsonObject jsonObject = new JsonObject();
-    // contents.forEach((cap, list) -> {
-    // JsonArray contentsJson = new JsonArray();
-    // for (Content content : list) {
-    // contentsJson.add(cap.serializer.toJsonContent(content));
-    // }
-    // jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
-    // });
-    // return jsonObject;
-    // }
-
-    // public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
-    // JsonObject jsonObject = new JsonObject();
-    // chanceLogics.forEach((cap, logic) -> {
-    // String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString();
-    // String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic).toString();
-    // jsonObject.addProperty(capId, logicId);
-    // });
-    // return jsonObject;
-    // }
-
     public void save(RecipeOutput output) {
         if (onSave != null) {
             onSave.accept(this, output);
         }
-        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
-                .map(ResearchCondition.class::cast).orElse(null);
+        ResearchCondition condition = this.conditions.stream()
+                .filter(ResearchCondition.class::isInstance)
+                .findAny()
+                .map(ResearchCondition.class::cast)
+                .orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
                 this.recipeType.addDataStickEntry(entry.researchId(), build());

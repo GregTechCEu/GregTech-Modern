@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -58,8 +57,11 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.TaskHandler;
-
+import com.gregtechceu.gtceu.co
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -75,6 +77,8 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -82,10 +86,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -105,7 +106,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CommonEventListener {
 
     @SubscribeEvent
@@ -276,18 +277,18 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
-        if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
-
-            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-                ServerLevel level = serverPlayer.serverLevel();
-                var data = EnvironmentalHazardSavedData.getOrCreate(level);
-                PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
-            }
-            CapeRegistry.detectNewCapes(serverPlayer);
-            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
         }
+        PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
+
+        if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            ServerLevel level = serverPlayer.serverLevel();
+            var data = EnvironmentalHazardSavedData.getOrCreate(level);
+            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+        }
+        CapeRegistry.detectNewCapes(serverPlayer);
+        CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -328,6 +329,19 @@ public class CommonEventListener {
             stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
         } else {
             stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onUnequip(player);
+        }
+        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onEquip(player);
         }
     }
 
@@ -400,13 +414,30 @@ public class CommonEventListener {
     public static void onAttributeTooltipEvent(AddAttributeTooltipsEvent event) {
         ItemStack stack = event.getStack();
 
-        if (stack.has(GTDataComponents.BINDING_DATA)) {
-            stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(),
-                    event::addTooltipLines, event.getContext().flag());
+        stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(),
+                event::addTooltipLines, event.getContext().flag());
+        stack.addToTooltip(GTDataComponents.COMPUTER_MONITOR_CONFIG, event.getContext(),
+                event::addTooltipLines, event.getContext().flag());
+
+        if (stack.has(GTDataComponents.MONITOR_TARGET)) {
+            GlobalPosWithRot target = stack.get(GTDataComponents.MONITOR_TARGET);
+            BlockPos pos = target.pos();
+            event.addTooltipLines(Component.translatable(
+                    "gtceu.tooltip.wireless_transmitter_bind",
+                    Component.literal("" + pos.getX()).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + pos.getY()).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + pos.getZ()).withStyle(ChatFormatting.GOLD),
+                    Component.translatable("gtceu.direction.tooltip." + target.side().getName())
+                            .withStyle(ChatFormatting.DARK_PURPLE),
+                    Component.translatable(target.dimension().location().toLanguageKey(Level.TRANSLATION_PREFIX))
+                            .withStyle(ChatFormatting.DARK_PURPLE)));
         }
-        if (stack.has(GTDataComponents.COMPUTER_MONITOR_CONFIG)) {
-            stack.addToTooltip(GTDataComponents.COMPUTER_MONITOR_CONFIG, event.getContext(),
-                    event::addTooltipLines, event.getContext().flag());
+        if (!stack.has(GTDataComponents.RESEARCH_ITEM) && stack.has(GTDataComponents.DATA_COPY_POS)) {
+            BlockPos pos = stack.get(GTDataComponents.DATA_COPY_POS);
+            event.addTooltipLines(Component.translatable("gtceu.tooltip.proxy_bind",
+                    Component.literal("" + pos.getX()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                    Component.literal("" + pos.getY()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                    Component.literal("" + pos.getZ()).withStyle(ChatFormatting.LIGHT_PURPLE)));
         }
         if (stack.has(GTDataComponents.COMPUTER_MONITOR_DATA)) {
             FormatStringList list = stack.getOrDefault(GTDataComponents.COMPUTER_MONITOR_DATA, FormatStringList.EMPTY);
@@ -437,13 +468,11 @@ public class CommonEventListener {
         if (!player.level().isClientSide) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
-            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+            var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
 
             float speedBoost = 0.0f;
-            if (!player.onGround() || player.isInWater() || player.isCrouching()) {
-                speedBoost = 0.0f;
-            } else {
-                var state = player.level().getBlockState(player.getOnPos());
+            if (player.onGround() && !player.isInWater() && !player.isCrouching()) {
+                BlockState state = player.level().getBlockState(player.getOnPos());
                 if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.6f; // value that is added to the base MC speed
                 } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
@@ -456,16 +485,15 @@ public class CommonEventListener {
                 if (speedBoost == speedMod.amount()) {
                     return;
                 } else {
-                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                    speedAttrib.removeModifier(speedMod);
                 }
-            } else {
-                if (speedBoost == 0.0f) return;
             }
-            if (speedBoost != 0.0f) {
-                speedAttrib.addTransientModifier(
-                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST,
-                                speedBoost, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+            if (speedBoost == 0.0f) {
+                return;
             }
+            speedAttrib.addOrUpdateTransientModifier(
+                    new AttributeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST,
+                            speedBoost, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         }
     }
 

@@ -142,10 +142,10 @@ public class SimpleFluidFilter implements FluidFilter {
         int totalAmount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
-                totalAmount += candidate.getAmount();
-            } else if (FluidStack.isSameFluidSameComponents(candidate, fluidStack)) {
-                totalAmount += candidate.getAmount();
+            if (ignoreNbt) {
+                if (FluidStack.isSameFluid(candidate, fluidStack)) totalAmount += candidate.getAmount();
+            } else {
+                if (FluidStack.isSameFluidSameComponents(candidate, fluidStack)) totalAmount += candidate.getAmount();
             }
         }
 

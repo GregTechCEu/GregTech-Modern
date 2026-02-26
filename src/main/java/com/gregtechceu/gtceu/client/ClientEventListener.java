@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
+import com.gregtechceu.gtceu.data.entity.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
@@ -34,6 +34,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -94,38 +95,49 @@ public class ClientEventListener {
     public static void updateFOV(ComputeFovModifierEvent event) {
         Player player = event.getPlayer();
 
-        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
+        AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttribute == null || !speedAttribute.hasModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST)) {
+            return;
+        }
 
-        float multi = 1;
-        var state = player.level().getBlockState(player.getOnPos());
+        float multiplier = 1.0f;
+        BlockState state = player.level().getBlockState(player.getOnPos());
 
-        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+        // inverse of the math done with the speed attribute in AbstractClientPlayer
+        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
+            // base speed is 0.1, boost is 0.1*0.6 -> boosted speed = 0.16
+            // the FOV modifier is `1 + (speed / base speed + 1) / 2`, so `1 + (0.16 / 0.1 + 1) / 2 = 1.3`
+            // thus, divide by 1.3 to get back to original FOV before the 'fast block boost' modifier
+            multiplier /= 1.3f;
+        } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
+            // same as above but the speed boost is 0.25
+            multiplier /= 1.125f;
+        }
 
-        multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
-        event.setNewFovModifier(event.getNewFovModifier() * multi);
+        multiplier = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0, multiplier);
+        event.setNewFovModifier(event.getNewFovModifier() * multiplier);
     }
 
-    private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
-        double base = attrib.getBaseValue();
-        Map<AttributeModifier.Operation, List<AttributeModifier>> mods = attrib.getModifiers().stream()
-                .collect(Collectors.groupingBy(t -> t.operation()));
+    private static double getValueWithoutWalkingBoost(AttributeInstance attribute) {
+        double base = attribute.getBaseValue();
+        Map<AttributeModifier.Operation, List<AttributeModifier>> modifiers = attribute.getModifiers().stream()
+                .collect(Collectors.groupingBy(AttributeModifier::operation));
 
-        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_VALUE)) {
+        for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_VALUE)) {
             base += mod.amount();
         }
 
         double applied = base;
-        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
-            if (mod.id() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
+        for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
+            if (mod.id() == GTAttributeModifierIds.BLOCK_SPEED_BOOST) continue;
             applied += base * mod.amount();
         }
 
-        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
+        for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
             applied *= 1 + mod.amount();
         }
 
-        return attrib.getAttribute().value().sanitizeValue(applied);
+        return attribute.getAttribute().value().sanitizeValue(applied);
     }
 
     @SubscribeEvent

@@ -96,7 +96,7 @@ public class CentralMonitorPeripheral implements GenericPeripheral {
         }
 
         @LuaFunction
-        public void setScale(double scale) {
+        public void setScale(float scale) {
             if (getModuleItem() instanceof TextModuleBehaviour textModule) {
                 textModule.setScale(stack, scale);
             }

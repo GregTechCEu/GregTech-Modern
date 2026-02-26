@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
@@ -54,6 +55,7 @@ public class AdjacentFluidConditionTest {
     }
 
     // Test for checking if the rock breaker works when the condition is fulfilled
+    @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionCorrectFluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 is next to it
@@ -77,6 +79,7 @@ public class AdjacentFluidConditionTest {
     }
 
     // Test for checking if the rock breaker works when there are no fluids
+    @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionNoFluidPresentTest(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -96,6 +99,7 @@ public class AdjacentFluidConditionTest {
     }
 
     // Test for checking if the rock breaker works when there is the wrong fluids
+    @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionWrongFluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 is next to it
@@ -118,6 +122,7 @@ public class AdjacentFluidConditionTest {
     }
 
     // Test for checking if the rock breaker works when two fluids are present
+    @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionTwoFluidCorrectFluidsPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
@@ -141,6 +146,7 @@ public class AdjacentFluidConditionTest {
     }
 
     // Test for checking if the rock breaker works when one of the two fluids are present
+    @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionTwoFluidNr1FluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it

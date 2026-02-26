@@ -18,9 +18,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class SolarPanelTest {
 
     @BeforeBatch(batch = "SolarTests")
@@ -38,6 +42,9 @@ public class SolarPanelTest {
         TestUtils.placeCover(helper, machine, GTItems.COVER_SOLAR_PANEL_HV.asStack(), Direction.UP);
     }
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "SolarTests")
     public static void generatesEnergyAtDayTest(GameTestHelper helper) {
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
@@ -50,6 +57,9 @@ public class SolarPanelTest {
         });
     }
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "SolarTests")
     public static void doesntGenerateEnergyAtDayWhenBlockedTest(GameTestHelper helper) {
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);

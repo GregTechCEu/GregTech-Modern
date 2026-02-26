@@ -4,11 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class WirelessTransmitterCoverTest {
 
+    // @TestHolder()
     // @GameTest(template = "central_monitor", batch = "coverTests")
     // public static void wirelessTransmitterCoverTest(GameTestHelper helper) {
     // CentralMonitorMachine machine = (CentralMonitorMachine) TestUtils

@@ -125,7 +125,6 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
-        provider.add("argument.material.id.invalid", "Unknown material '%s'");
         provider.add("argument.medical_condition.id.invalid", "Unknown medical condition '%s'");
 
         provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
@@ -199,10 +198,8 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
         provider.add("item.gtceu.tool.behavior.dowse_campfire", "§1Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
-        provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
         provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
-        provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
-        provider.add("item.gtceu.tool.behavior.prospecting.lava", "Found lava");
+        provider.add("item.gtceu.tool.behavior.prospecting.found", "Found %s");
         provider.add("item.gtceu.tool.behavior.prospecting.changing", "Detected material change");
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
@@ -276,6 +273,7 @@ public class LangHandler {
                 "§dNetherite", "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
+        provider.add("item.gtceu.tool.tooltip.innate_enchantments", "§5Innate Enchantments:");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
@@ -615,11 +613,6 @@ public class LangHandler {
         replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
         replace(provider, GTMaterials.Stellite100.getUnlocalizedName(), "Stellite-100");
         replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
-        replace(provider, GTMaterials.HeavyOil.getUnlocalizedName(), "Heavy Oil");
-        replace(provider, GTMaterials.LightOil.getUnlocalizedName(), "Light Oil");
-        replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
-        replace(provider, GTMaterials.Oil.getUnlocalizedName(), "Oil");
-        replace(provider, GTMaterials.Creosote.getUnlocalizedName(), "Creosote");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
@@ -631,8 +624,8 @@ public class LangHandler {
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_UV.get().getDescriptionId(), "UV Lapotronic Capacitor");
         replace(provider, GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
 
-        provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
-        provider.add("block.surface_rock", "%s Surface Rock");
+        provider.add("block.gtceu.netherrack_nether_quartz_ore", "Nether Quartz Ore");
+        provider.add("block.gtceu.surface_rock", "%s Surface Rock");
 
         provider.add("item.gtceu.tiny_gunpowder_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gtceu.small_gunpowder_dust", "Small Pile of Gunpowder");
@@ -866,8 +859,7 @@ public class LangHandler {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =",
-                " null!");
+        provider.add("behavior.portable_scanner.debug_machine_invalid_null", " invalid! MetaTileEntity = null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
         provider.add("behavior.portable_scanner.divider", "=========================");
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");
@@ -908,8 +900,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
-        provider.add("behavior.data_item.assemblyline.title", "§nAssembly Line Construction Data:");
-        provider.add("behavior.data_item.assemblyline.data", "- §a%s");
+        provider.add("behavior.data_item.title", "§n%s Construction Data:");
+        provider.add("behavior.data_item.data", "- §a%s");
 
         provider.add("metaitem.terminal.tooltip", "Sharp tools make good work");
         provider.add("metaitem.terminal.tooltip.creative", "§bCreative Mode");

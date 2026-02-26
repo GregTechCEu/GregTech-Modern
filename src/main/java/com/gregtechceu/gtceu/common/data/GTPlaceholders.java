@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.placeholder;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -26,6 +27,9 @@ import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -99,6 +103,13 @@ public class GTPlaceholders {
 
     public static void initPlaceholders() {
         RegistrateDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.init();
+        }
+
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
             @Override
@@ -428,7 +439,6 @@ public class GTPlaceholders {
                     int capacity = component.capacity();
 
                     PlaceholderUtils.checkRange("index", 0, capacity - 1, PlaceholderUtils.toInt(args.get(2)));
-                    // <<<<<<< HEAD:src/main/java/com/gregtechceu/gtceu/data/placeholder/GTPlaceholders.java
 
                     FormatStringList immutableData = stack.get(GTDataComponents.COMPUTER_MONITOR_DATA);
                     if (immutableData == null) {
@@ -781,10 +791,10 @@ public class GTPlaceholders {
                     int slot = PlaceholderUtils.toInt(args.get(2));
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
-                    // if (stack.getOrCreateTag().contains("boundPlayerUUID"))
-                    // owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
-                    if (stack.has(GTDataComponents.DATA_BOUND_PLAYER))
-                        owner = stack.get(GTDataComponents.DATA_BOUND_PLAYER).uuid();
+
+                    if (stack.has(GTDataComponents.BINDING_DATA)) {
+                        owner = stack.get(GTDataComponents.BINDING_DATA).uuid();
+                    }
                 }
                 VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
                 switch (type) {

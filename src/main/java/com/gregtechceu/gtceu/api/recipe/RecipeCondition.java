@@ -7,22 +7,19 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.util.GsonHelper;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -99,19 +96,13 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
         return CODEC.decode(ops, config).getOrThrow().getFirst();
     }
 
-    public final void toNetwork(FriendlyByteBuf buf) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        DataResult<JsonElement> dataresult = CODEC.encodeStart(ops, this);
-        buf.writeUtf(new Gson().toJson(dataresult.getOrThrow(
-                (s) -> new EncoderException("Failed to encode: " + s + " " + this))));
+    public final void toNetwork(RegistryFriendlyByteBuf buf) {
+        var ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
+        buf.writeWithCodec(ops, CODEC, this);
     }
 
-    public static RecipeCondition<?> fromNetwork(FriendlyByteBuf buf) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        // Code below was taken from buf.readJsonWithCodec to include our RegistryOps
-        JsonElement jsonelement = GsonHelper.fromJson(new Gson(), buf.readUtf(), JsonElement.class);
-        DataResult<RecipeCondition<?>> dataresult = CODEC.parse(ops, jsonelement);
-        return dataresult.getOrThrow(
-                (s) -> new DecoderException("Failed to decode json: " + s));
+    public static RecipeCondition<?> fromNetwork(RegistryFriendlyByteBuf buf) {
+        var ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
+        return buf.readWithCodec(ops, CODEC, NbtAccounter.create(FriendlyByteBuf.DEFAULT_NBT_QUOTA));
     }
 }

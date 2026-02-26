@@ -29,7 +29,6 @@ public class GTBlockEntities {
 
     public static final BlockEntityEntry<LaserPipeBlockEntity> LASER_PIPE = REGISTRATE
             .blockEntity("laser_pipe", LaserPipeBlockEntity::new)
-            .onRegister(LaserPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.LASER_PIPES)
             .register();
 
@@ -40,7 +39,6 @@ public class GTBlockEntities {
 
     public static final BlockEntityEntry<DuctPipeBlockEntity> DUCT_PIPE = REGISTRATE
             .blockEntity("duct_pipe", DuctPipeBlockEntity::new)
-            .onRegister(DuctPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.DUCT_PIPES)
             .register();
 
