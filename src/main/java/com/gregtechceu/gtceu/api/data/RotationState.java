@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data;
 
-import com.gregtechceu.gtceu.data.block.GTBlockStateProperties;
+import com.gregtechceu.gtceu.common.data.GTBlockStateProperties;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;

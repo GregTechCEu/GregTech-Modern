@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.registry.registrate.provider;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
-
 import com.gregtechceu.gtceu.common.data.GTBlockStateProperties;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;

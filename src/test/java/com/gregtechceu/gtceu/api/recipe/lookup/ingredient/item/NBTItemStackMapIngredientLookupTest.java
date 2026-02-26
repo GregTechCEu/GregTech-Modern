@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 // spotless:off
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 

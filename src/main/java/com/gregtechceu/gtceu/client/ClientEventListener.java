@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
+import com.gregtechceu.gtceu.common.data.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
-import com.gregtechceu.gtceu.data.entity.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 

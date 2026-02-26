@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;

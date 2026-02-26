@@ -45,6 +45,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.BORDERLESS_LAMPS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LAMPS;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
+
 public class Predicates {
 
     public static TraceabilityPredicate controller(TraceabilityPredicate predicate) {

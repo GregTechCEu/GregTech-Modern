@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
