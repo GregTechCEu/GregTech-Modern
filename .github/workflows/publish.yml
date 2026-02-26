@@ -145,7 +145,7 @@ jobs:
           RELEASE_BODY: ${{ inputs.release-body }}
           CHANGELOG_TITLE: ${{ inputs.changelog-title }}
         run: |
-          BODY=$( echo -e "$RELEASE_BODY" | head -n -1 - | tail -n +1 - )
+          BODY=$( echo -e "$RELEASE_BODY" | head -n -1 - | tail -n +2 - )
           
           { head -n 2 CHANGELOG.md; echo -e "$CHANGELOG_TITLE"; echo -e "$BODY"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
           git commit -am "Updated CHANGELOG"
