@@ -300,6 +300,25 @@ public class GTUtil {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Returns first non-empty ItemStack from {@code stacks}.
+     *
+     * @param stacks list of candidates
+     * @return an ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack getFirstNonEmpty(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
         if (index >= 0 && index < list.size())
             return list.get(index);

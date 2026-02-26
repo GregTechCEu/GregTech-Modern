@@ -102,7 +102,7 @@ Properties can be applied to a material to decide how they behave. An example of
 - `.washedIn(string fluid)`
     - `string fluid` Is what fluid it uses for if it has the ore prop and is making crushed->refined. For example, the sodium persulfate and mercury ore washing recipes.
 - `.separatedInto(list material)`
-    - `list material` Is the list of materials that are obtained when processing purified dusts in the centrifuge.
+    - `list material` Is the list of materials that are obtained when processing purified dusts in the electromagnetic seperator. There is a max of two materials.
 - `.oreSmeltInto(string material)`
     - `string material` Is what is obtained through directly smelting the ore.
   
