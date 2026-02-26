@@ -32,7 +32,7 @@ repositories {
         filter {
             includeGroup("net.createmod.ponder")
             includeGroup("com.simibubi.create")
-            includeGroup("dev.engine-room.flywheel")
+            includeGroupAndSubgroups("dev.engine-room")
         }
     }
     exclusiveContent { // Configuration
