@@ -15,11 +15,11 @@ on:
         required: true
         type: string
       release-body:
-        description: 'Body for published release notes'
+        description: 'Body for published release notes, also inserted into CHANGELOG.md'
         required: false
         type: string
-      changelog-body:
-        description: 'Body of change notes to insert into CHANGELOG.md'
+      changelog-title:
+        description: 'Title of change notes to insert into CHANGELOG.md'
         required: false
         type: string
 
@@ -166,9 +166,17 @@ jobs:
           sed -i "s/= ${{ needs.build.outputs.ver }}/= ${BUMPED}/" gradle.properties
           git commit -am "Bump version to ${BUMPED}"
       - name: Prepend to CHANGELOG
-        if: inputs.changelog-body
+        if: ${{ inputs.release-body && inputs.changelog-title }}
+        # Insert these into environment variables because using GitHub's input replacement with multi-line inputs will more often than not break the script, as they're inserted 'as-is'.
+        # e.g. if the input contains ` (backtick) characters, bash tries to use those backticks' contents as actual function input.
+        # Environment variables don't have that issue.
+        env:
+          RELEASE_BODY: ${{ inputs.release-body }}
+          CHANGELOG_TITLE: ${{ inputs.changelog-title }}
         run: |
-          { head -n 2 CHANGELOG.md; echo -e "${{ inputs.changelog-body }}"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
+          RELEASE_BODY=$( echo -e "$RELEASE_BODY" | head -n -1 - | tail -n +1 - )
+          
+          { head -n 2 CHANGELOG.md; echo -e "$CHANGELOG_TITLE"; echo -e "$RELEASE_BODY"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
           git commit -am "Updated CHANGELOG"
       - name: Push and PR
         env:

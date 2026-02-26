@@ -26,7 +26,7 @@ jobs:
           CONFIG: ${{ contains(github.ref_name, '1.21') && '-1.21' || '' }}
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          configuration: './.github/json/config${{ env.CONFIG }}.json'
+          configuration: './.github/json/config-title-only${{ env.CONFIG }}.json'
           ignorePreReleases: true
           fetchViaCommits: true
           failOnError: true
@@ -42,7 +42,7 @@ jobs:
       branch: '1.20.1'
       tag-name: ${{ github.ref_name }}
       release-body: ${{ github.event.release.body }}
-      changelog-body: ${{ needs.meta.outputs.CHANGELOG }}
+      changelog-title: ${{ needs.meta.outputs.CHANGELOG }}
 
   publish-21:
     name: 1.21.1
@@ -55,4 +55,4 @@ jobs:
       branch: '1.21'
       tag-name: ${{ github.ref_name }}
       release-body: ${{ github.event.release.body }}
-      changelog-body: ${{ needs.meta.outputs.CHANGELOG }}
+      changelog-title: ${{ needs.meta.outputs.CHANGELOG }}
