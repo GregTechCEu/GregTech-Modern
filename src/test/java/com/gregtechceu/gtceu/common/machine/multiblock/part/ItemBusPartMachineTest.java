@@ -18,7 +18,6 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -31,8 +30,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoImportTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoImportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -53,8 +52,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoImportFalseWhenOffTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoImportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -77,8 +76,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoExportTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoExportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -99,8 +98,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoExportFalseWhenOffTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoExportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -123,8 +122,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoPassthroughTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoPassthroughTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
@@ -148,8 +147,8 @@ public class ItemBusPartMachineTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "ItemBusPartMachine")
-    public static void ItemBusPartMachineAutoPassthroughFalseWhenOffTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
+    public static void ItemBusPartMachineAutoPassthroughFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());

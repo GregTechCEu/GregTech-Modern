@@ -20,7 +20,6 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import static com.gregtechceu.gtceu.data.cover.GTCovers.*;
 
@@ -29,7 +28,7 @@ import static com.gregtechceu.gtceu.data.cover.GTCovers.*;
 @ForEachTest(groups = "coverTests")
 public class RobotArmTest {
 
-    public static void setupCrates(ExtendedGameTestHelper helper) {
+    public static void setupCrates(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BRONZE_CRATE.getBlock());
     }
@@ -38,8 +37,8 @@ public class RobotArmTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void robotArmKeepExactTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void robotArmKeepExactTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -66,8 +65,8 @@ public class RobotArmTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void robotArmTransferExactTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void robotArmTransferExactTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -94,8 +93,8 @@ public class RobotArmTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void robotArmTransferAnyTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void robotArmTransferAnyTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();

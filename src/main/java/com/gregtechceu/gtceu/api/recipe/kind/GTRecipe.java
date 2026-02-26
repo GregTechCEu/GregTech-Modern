@@ -267,6 +267,6 @@ public class GTRecipe implements Recipe<RecipeInput> {
 
     @Override
     public String toString() {
-        return id.toString();
+        return id != null ? id.toString() : "null id";
     }
 }

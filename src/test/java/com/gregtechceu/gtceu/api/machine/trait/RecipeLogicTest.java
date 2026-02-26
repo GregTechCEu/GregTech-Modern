@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
@@ -69,7 +69,7 @@ public class RecipeLogicTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static RecipeLogicTest.BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
+    private static RecipeLogicTest.BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -86,7 +86,7 @@ public class RecipeLogicTest {
 
     @TestHolder
     @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
-    public static void recipeLogicMultiBlockTest(ExtendedGameTestHelper helper) {
+    public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
 
         RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
@@ -164,7 +164,7 @@ public class RecipeLogicTest {
     /*
     @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RecipeLogic")
-    public static void recipeLogicSingleBlockTest(ExtendedGameTestHelper helper) {
+    public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
         WorkableTieredMachine machine = (WorkableTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
@@ -238,7 +238,7 @@ public class RecipeLogicTest {
     // Test for putting both ingredients in the same bus in 2 stacks.
     @TestHolder
     @GameTest(template = "lcr_input_separation", batch = "RecipeLogicTest")
-    public static void recipeLogicInTwoStacksTest(ExtendedGameTestHelper helper) {
+    public static void recipeLogicInTwoStacksTest(GameTestHelper helper) {
         RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 10));
         busHolder.inputBus1.getInventory().setStackInSlot(1, new ItemStack(Blocks.STONE, 6));

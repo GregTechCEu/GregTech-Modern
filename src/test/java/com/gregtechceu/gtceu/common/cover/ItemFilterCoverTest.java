@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -22,7 +23,6 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -37,7 +37,7 @@ public class ItemFilterCoverTest {
         return stack;
     }
 
-    public static void setupCrates(ExtendedGameTestHelper helper) {
+    public static void setupCrates(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
@@ -46,8 +46,8 @@ public class ItemFilterCoverTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void conveyorTransfersFilteredItemsTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorTransfersFilteredItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -76,8 +76,8 @@ public class ItemFilterCoverTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void conveyorDoesntTransferFilteredItemsTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorDoesntTransferFilteredItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();

@@ -19,7 +19,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
+import net.minecraft.gametest.framework.GameTestHelper;
 
 import com.simibubi.create.foundation.recipe.trie.AbstractIngredient;
 
@@ -107,8 +107,8 @@ public class NBTItemStackMapIngredientLookupTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate
-    @GameTest(batch = "NBTItemStackMapIngredientLookup")
-    public static void NBTItemStackMapIngredientMatchingPartialTag1Test(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty", batch = "NBTItemStackMapIngredientLookup")
+    public static void NBTItemStackMapIngredientMatchingPartialTag1Test(GameTestHelper helper) {
 // Partial tag 1 fits in Partial tag 1
         GTRecipe resultRecipe = LOOKUP.recurseIngredientTreeFindRecipe(
                 List.of(
@@ -143,8 +143,8 @@ public class NBTItemStackMapIngredientLookupTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate
-    @GameTest(batch = "NBTItemStackMapIngredientLookup")
-    public static void NBTItemStackMapIngredientMatchingPartialTag2Test(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty", batch = "NBTItemStackMapIngredientLookup")
+    public static void NBTItemStackMapIngredientMatchingPartialTag2Test(GameTestHelper helper) {
 // Partial tag 1 should not fit in partial tag 2
         GTRecipe resultRecipe = LOOKUP.recurseIngredientTreeFindRecipe(
                 List.of(
@@ -178,8 +178,8 @@ public class NBTItemStackMapIngredientLookupTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate
-    @GameTest(batch = "NBTItemStackMapIngredientLookup")
-    public static void NBTItemStackMapIngredientMatchingStrictTag1Test(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty", batch = "NBTItemStackMapIngredientLookup")
+    public static void NBTItemStackMapIngredientMatchingStrictTag1Test(GameTestHelper helper) {
 // Partial tag 1 and 2 should not fit in strict tag 1
         GTRecipe resultRecipe = LOOKUP.recurseIngredientTreeFindRecipe(
                 List.of(
@@ -213,8 +213,8 @@ public class NBTItemStackMapIngredientLookupTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate
-    @GameTest(batch = "NBTItemStackMapIngredientLookup")
-    public static void NBTItemStackMapIngredientMatchingStrictTag2Test(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty", batch = "NBTItemStackMapIngredientLookup")
+    public static void NBTItemStackMapIngredientMatchingStrictTag2Test(GameTestHelper helper) {
 // Partial tag 1 and 2 should not fit in strict tag 2
         GTRecipe resultRecipe = LOOKUP.recurseIngredientTreeFindRecipe(
                 List.of(

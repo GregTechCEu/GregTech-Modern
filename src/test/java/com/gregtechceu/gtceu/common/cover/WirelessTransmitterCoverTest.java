@@ -13,7 +13,7 @@ public class WirelessTransmitterCoverTest {
 
     // @TestHolder()
     // @GameTest(template = "central_monitor", batch = "coverTests")
-    // public static void wirelessTransmitterCoverTest(ExtendedGameTestHelper helper) {
+    // public static void wirelessTransmitterCoverTest(GameTestHelper helper) {
     // CentralMonitorMachine machine = (CentralMonitorMachine) TestUtils
     // .getMetaMachine(helper.getBlockEntity(new BlockPos(1, 3, 2)));
     // DataAccessHatchMachine dataHatch = (DataAccessHatchMachine) TestUtils

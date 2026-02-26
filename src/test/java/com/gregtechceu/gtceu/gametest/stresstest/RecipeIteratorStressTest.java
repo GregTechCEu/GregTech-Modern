@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,7 +27,6 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class RecipeIteratorStressTest {
         LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
-    private static BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
+    private static BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -78,8 +78,8 @@ public class RecipeIteratorStressTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate
-    @GameTest(batch = "StressTests")
-    public static void iteratorStressTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty", batch = "StressTests")
+    public static void iteratorStressTest(GameTestHelper helper) {
         if (!DO_RUN_RECIPE_ITERATOR_STRESSTEST) {
             helper.succeed();
             return;
@@ -110,7 +110,7 @@ public class RecipeIteratorStressTest {
     }
 
     @GameTest(template = "lcr_input_separation", batch = "StressTests")
-    public static void iteratorOnMachineStressTest(ExtendedGameTestHelper helper) {
+    public static void iteratorOnMachineStressTest(GameTestHelper helper) {
         if (!DO_RUN_RECIPE_ITERATOR_STRESSTEST) {
             helper.succeed();
             return;

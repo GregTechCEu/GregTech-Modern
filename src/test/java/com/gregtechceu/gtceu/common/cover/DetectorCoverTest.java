@@ -15,7 +15,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -23,7 +22,7 @@ public class DetectorCoverTest {
 
     @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testActivityDetectorCover(ExtendedGameTestHelper helper) {
+    public static void testActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         SimpleTieredMachine machine = (SimpleTieredMachine) ((IMachineBlockEntity) helper
                 .getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
@@ -37,7 +36,7 @@ public class DetectorCoverTest {
 
     @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testFluidDetectorCover(ExtendedGameTestHelper helper) {
+    public static void testFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         SimpleTieredMachine machine = (SimpleTieredMachine) ((IMachineBlockEntity) helper
                 .getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
@@ -51,7 +50,7 @@ public class DetectorCoverTest {
 
     @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
-    public static void testItemDetectorCover(ExtendedGameTestHelper helper) {
+    public static void testItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         SimpleTieredMachine machine = (SimpleTieredMachine) ((IMachineBlockEntity) helper
                 .getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();

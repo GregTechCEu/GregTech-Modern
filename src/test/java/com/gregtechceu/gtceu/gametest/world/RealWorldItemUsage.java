@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -36,9 +34,9 @@ public class RealWorldItemUsage {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest()
-    public static void testPickaxeInstantPickup(GameTestHelper _helper) {
-        var helper = new ExtendedGameTestHelper(_helper.testInfo);
+    // TODO disabled until we implement the NeoForge test framework
+    // @GameTest(template = "empty_5x5")
+    public static void testPickaxeInstantPickup(ExtendedGameTestHelper helper) {
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(new Vec3(2.5, 2.0, 2.5)));
         player.setItemSlot(EquipmentSlot.MAINHAND,

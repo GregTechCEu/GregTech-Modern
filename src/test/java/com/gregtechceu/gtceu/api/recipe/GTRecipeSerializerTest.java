@@ -12,9 +12,11 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -23,8 +25,8 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("deprecation")
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class GTRecipeSerializerTest {
@@ -40,8 +43,10 @@ public class GTRecipeSerializerTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate("5")
-    @GameTest()
-    public static void serializeTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5")
+    public static void serializeTest(GameTestHelper helper) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, helper.getLevel().registryAccess());
+
         // Create Fluid Condition based on fluidSetIn
         TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
@@ -63,13 +68,20 @@ public class GTRecipeSerializerTest {
         AdjacentBlockCondition blockCondition = new AdjacentBlockCondition(blockSetIn);
 
         // Serialize and back
-        JsonObject fluidConditionJson = new JsonObject();
-
-        GTRecipeBuilder.ofRaw().addCondition(fluidCondition).addCondition(blockCondition).build();
-
-        GTRecipe recipe = GTRecipeSerializer.CODEC.codec()
-                .parse(RegistryOps.create(JsonOps.INSTANCE, helper.getLevel().registryAccess()), fluidConditionJson)
+        GTRecipe originalRecipe = GTRecipeBuilder.ofRaw()
+                .addCondition(fluidCondition)
+                .addCondition(blockCondition)
+                .build();
+        JsonElement recipeJson = Recipe.CODEC.encodeStart(ops, originalRecipe)
                 .getOrThrow(GameTestAssertException::new);
+
+        Recipe<?> parsedRecipe = Recipe.CODEC.parse(ops, recipeJson)
+                .getOrThrow(GameTestAssertException::new);
+        if (!(parsedRecipe instanceof GTRecipe recipe)) {
+            helper.fail("Expected recipe to deserialize back to itself, but it didn't. Got %s instead"
+                    .formatted(parsedRecipe));
+            return;
+        }
 
         // Validate
         boolean foundFluid = false, foundBlock = false;
@@ -98,8 +110,8 @@ public class GTRecipeSerializerTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate("5")
-    @GameTest()
-    public static void testSerializingFluidCondition(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5")
+    public static void testSerializingFluidCondition(GameTestHelper helper) {
         TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
@@ -124,8 +136,8 @@ public class GTRecipeSerializerTest {
     @TestHolder()
     // TODO this should use JUnit
     @EmptyTemplate("5")
-    @GameTest()
-    public static void testSerializingBlockCondition(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5")
+    public static void testSerializingBlockCondition(GameTestHelper helper) {
         TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());

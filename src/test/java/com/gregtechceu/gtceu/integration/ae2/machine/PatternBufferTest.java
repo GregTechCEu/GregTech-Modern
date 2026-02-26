@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,7 +22,6 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CalculationStrategy;
@@ -70,7 +70,7 @@ public class PatternBufferTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-    private static BusHolder getBussesAndForm(ExtendedGameTestHelper helper) {
+    private static BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -93,7 +93,7 @@ public class PatternBufferTest {
     // Test for putting ingredient on the normal input bus when the pattern buffer exists on machine
     @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
-    public static void patternBufferNormalInputBusTest(ExtendedGameTestHelper helper) {
+    public static void patternBufferNormalInputBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.patternBuffer.getPatternInventory().onContentsChanged(0);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
@@ -109,7 +109,7 @@ public class PatternBufferTest {
     // Test for checking if pattern buffers work at all
     @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
-    public static void patternBufferBasicRequestTest(ExtendedGameTestHelper helper) {
+    public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.patternBuffer.getPatternInventory().onContentsChanged(0);
 
@@ -151,7 +151,7 @@ public class PatternBufferTest {
 
     // Test for checking if pattern buffers work if you set distinct
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
-    public static void patternBufferDistinctDoesNothingTest(ExtendedGameTestHelper helper) {
+    public static void patternBufferDistinctDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.patternBuffer.setDistinct(true);
 
@@ -194,7 +194,7 @@ public class PatternBufferTest {
 
     // Test for checking if pattern buffers work if you dye them
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
-    public static void patternBufferDyeingDoesNothingTest(ExtendedGameTestHelper helper) {
+    public static void patternBufferDyeingDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.patternBuffer.setPaintingColor(0xff);
 

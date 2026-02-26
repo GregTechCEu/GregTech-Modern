@@ -28,7 +28,6 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -38,8 +37,8 @@ public class EnderCoversTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void fluidLinkCoverTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void fluidLinkCoverTest(GameTestHelper helper) {
         QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_TANK[1]);
         QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
@@ -64,8 +63,8 @@ public class EnderCoversTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void itemLinkCoverTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void itemLinkCoverTest(GameTestHelper helper) {
         QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_CHEST[1]);
         QuantumChestMachine chest2 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
@@ -89,8 +88,8 @@ public class EnderCoversTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void redstoneLinkCoverTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void redstoneLinkCoverTest(GameTestHelper helper) {
         QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_TANK[1]);
         QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),

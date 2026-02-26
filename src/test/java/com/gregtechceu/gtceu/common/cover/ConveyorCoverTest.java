@@ -19,13 +19,12 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class ConveyorCoverTest {
 
-    public static void setupCrates(ExtendedGameTestHelper helper) {
+    public static void setupCrates(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
@@ -34,8 +33,8 @@ public class ConveyorCoverTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void conveyorTransfersItemsTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorTransfersItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -59,8 +58,8 @@ public class ConveyorCoverTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void conveyorTransfersItemsWrongDirectionTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorTransfersItemsWrongDirectionTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -86,8 +85,8 @@ public class ConveyorCoverTest {
     @TestHolder()
     // TODO this should use an actual structure instead of building it here
     @EmptyTemplate("5")
-    @GameTest(batch = "coverTests")
-    public static void conveyorPumpDoesntTransferItemsTest(ExtendedGameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorPumpDoesntTransferItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
