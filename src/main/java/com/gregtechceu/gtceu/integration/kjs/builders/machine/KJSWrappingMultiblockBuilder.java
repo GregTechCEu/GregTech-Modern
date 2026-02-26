@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 
