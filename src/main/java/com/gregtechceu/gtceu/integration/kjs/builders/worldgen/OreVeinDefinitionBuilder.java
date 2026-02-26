@@ -43,7 +43,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     private int weight;
     private IWorldGenLayer layer = WorldGenLayers.STONE;
     @Setter
-    private Set<ResourceKey<Level>> dimensionFilter;
+    private Set<ResourceKey<Level>> dimensionFilter = Set.of();
     @Setter
     private HeightRangePlacement heightRange;
     @Setter
