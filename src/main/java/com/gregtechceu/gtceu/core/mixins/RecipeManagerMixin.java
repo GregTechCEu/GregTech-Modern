@@ -40,7 +40,7 @@ public abstract class RecipeManagerMixin {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }
-            gtRecipeType.getAdditionHandler().beginStaging();
+            gtRecipeType.beginStagingRecipes();
             gtRecipeType.getProxyRecipes().forEach((type, list) -> {
                 var recipesByID = recipes.get(type);
                 if (recipesByID == null) {

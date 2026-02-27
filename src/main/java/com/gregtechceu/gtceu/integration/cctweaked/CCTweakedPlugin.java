@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.cctweaked;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
