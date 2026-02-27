@@ -46,9 +46,7 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
     }
 
     @Override
-    default void saveChanges() {
-        self().onChanged();
-    }
+    default void saveChanges() {}
 
     @Override
     default void onMainNodeStateChanged(IGridNodeListener.State reason) {

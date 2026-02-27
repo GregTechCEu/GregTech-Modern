@@ -6,31 +6,28 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class,
-            NotifiableEnergyContainer.MANAGED_FIELD_HOLDER);
 
     /**
      * If TRUE, the front facing of the machine will OUTPUT EU, other sides INPUT FE.
      * If FALSE, the front facing of the machine will OUTPUT FE, other sides INPUT EU.
      */
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean feToEu;
     @Getter
     private final int amps;
@@ -39,7 +36,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(ConverterMachine machine, int amps) {
+    public ConverterTrait(@NotNull ConverterMachine machine, int amps) {
         super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
                 GTValues.V[machine.getTier()], amps);
         this.amps = amps;
@@ -52,14 +49,11 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     ////////////////////////////////
     // ***** Initialization ******//
     ////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
+        syncDataHolder.markClientSyncFieldDirty("feToEu");
         machine.notifyBlockUpdate();
     }
 
@@ -77,7 +71,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         } else { // output fe
             var fontFacing = machine.getFrontFacing();
             var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getPos().relative(fontFacing), fontFacing.getOpposite());
+                    machine.getBlockPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);
@@ -94,7 +88,12 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     private class FEContainer extends MachineTrait implements IEnergyStorage {
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FEContainer.class);
+        public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
+
+        @Override
+        public MachineTraitType<FEContainer> getTraitType() {
+            return TYPE;
+        }
 
         public FEContainer(MetaMachine machine) {
             super(machine);
@@ -144,11 +143,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         @Override
         public boolean canReceive() {
             return feToEu;
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 }

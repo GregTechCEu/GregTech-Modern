@@ -1,22 +1,21 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,34 +34,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeChestMachine extends QuantumChestMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class,
-            QuantumChestMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DropSaved
-    private int itemsPerCycle = 1;
-    @Getter
-    @Persisted
-    @DropSaved
-    private int ticksPerCycle = 1;
+    @SaveField
+    private int itemsPerCycle, ticksPerCycle = 1;
 
-    public CreativeChestMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, -1);
+    public CreativeChestMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX, -1);
     }
 
     @Override
-    protected ItemCache createCacheItemHandler(Object... args) {
-        return new InfiniteCache(this);
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                cache.exportToNearby(getOutputFacingItems());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    protected ItemCache createCacheItemHandler() {
+        return new InfiniteCache(this);
     }
 
     private InteractionResult updateStored(ItemStack item) {
@@ -74,6 +62,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     private void setTicksPerCycle(String value) {
         if (value.isEmpty()) return;
         ticksPerCycle = Integer.parseInt(value);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 
@@ -81,6 +70,18 @@ public class CreativeChestMachine extends QuantumChestMachine {
         if (value.isEmpty()) return;
         itemsPerCycle = Integer.parseInt(value);
         onItemChanged();
+    }
+
+    @Override
+    public void saveToItem(CompoundTag tag) {
+        tag.putInt("itemsPerCycle", itemsPerCycle);
+        tag.putInt("ticksPerCycle", ticksPerCycle);
+    }
+
+    @Override
+    public void loadFromItem(CompoundTag tag) {
+        itemsPerCycle = tag.getInt("itemsPerCycle");
+        ticksPerCycle = tag.getInt("ticksPerCycle");
     }
 
     @Override
@@ -101,7 +102,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                 return updateStored(heldItem);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
@@ -110,8 +111,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
         group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
                 .setClearSlotOnRightClick(true)
                 .setMaxStackSize(1)
-                .setBackgroundTexture(GuiTextures.SLOT)
-                .setChangeListener(this::markDirty));
+                .setBackgroundTexture(GuiTextures.SLOT));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
         group.addWidget(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
         group.addWidget(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), this::setItemsPerCycle)
@@ -132,11 +132,6 @@ public class CreativeChestMachine extends QuantumChestMachine {
                 .setPressed(isWorkingEnabled()));
 
         return group;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class InfiniteCache extends ItemCache {

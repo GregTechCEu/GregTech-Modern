@@ -40,10 +40,10 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
             return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);
-        if (tags.length == 0) {
+        if (tags.isEmpty()) {
             return tagPrefix.name + "/" + material.getName();
         }
-        return tags[0].location().toString();
+        return tags.get(0).location().toString();
     }
 
     public static @Nullable MaterialEntry of(Object o) {

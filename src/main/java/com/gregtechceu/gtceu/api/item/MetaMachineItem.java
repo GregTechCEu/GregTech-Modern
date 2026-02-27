@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -25,12 +25,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MetaMachineItem extends BlockItem {
 
-    public MetaMachineItem(IMachineBlock block, Properties properties) {
-        super(block.self(), properties);
+    public MetaMachineItem(MetaMachineBlock block, Properties properties) {
+        super(block, properties);
     }
 
     public MachineDefinition getDefinition() {
-        return ((IMachineBlock) getBlock()).getDefinition();
+        return ((MetaMachineBlock) getBlock()).getDefinition();
     }
 
     @Override
