@@ -843,12 +843,14 @@ public interface GTRecipeSchema {
                 if (fluid == null || fluid.ingredient() == null || fluid.ingredient().getStacks() == null) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }
-
-                for (var stack : fluid.ingredient().getStacks()) {
-                    if (stack == null || stack.isEmpty()) {
-                        throw new RecipeExceptionJS(
-                                String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                if (fluid.ingredient().getStacks().length == 0) {
+                    String tagInfo = "";
+                    var values = fluid.ingredient().values;
+                    if (values.length == 1 && values[0] instanceof FluidIngredient.TagValue tagValue) {
+                        tagInfo = " (empty or unknown tag: #" + tagValue.tag().location() + ")";
                     }
+                    throw new RecipeExceptionJS(String.format(
+                            "Invalid or empty %s fluid (recipe ID: %s)%s", type, id, tagInfo));
                 }
             }
         }
