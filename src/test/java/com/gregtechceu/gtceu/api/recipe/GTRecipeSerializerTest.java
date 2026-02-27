@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentBlockCondition;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
-
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
