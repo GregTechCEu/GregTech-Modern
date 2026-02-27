@@ -12,9 +12,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllTags;
-import com.simibubi.create.foundation.utility.BlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +44,9 @@ import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllTags;
+import com.simibubi.create.foundation.utility.BlockHelper;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.Nullable;
 
@@ -512,7 +512,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (color == null) return false;
         BlockState oldState = world.getBlockState(pos);
         BlockState newState = BlockHelper.copyProperties(oldState, AllBlocks.DYED_SAILS.get(color).getDefaultState());
-        if(oldState != newState) {
+        if (oldState != newState) {
             world.setBlockAndUpdate(pos, newState);
             return true;
         }
