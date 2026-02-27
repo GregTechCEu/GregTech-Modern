@@ -24,6 +24,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
@@ -791,6 +793,15 @@ public interface GTRecipeSchema {
             for (var stack : items) {
                 if (stack == null || stack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+                if (stack.ingredient.getItems().length == 0) {
+                    String tagInfo = "";
+                    var values = ((IngredientAccessor) stack.ingredient).getValues();
+                    if (values.length == 1 && values[0] instanceof Ingredient.TagValue tagValue) {
+                        tagInfo = " (empty or unknown tag: #" + ((TagValueAccessor) tagValue).getTag().location() + ")";
+                    }
+                    throw new RecipeExceptionJS(
+                            String.format("Invalid or empty %s item (recipe ID: %s)%s", type, id, tagInfo));
                 }
             }
         }
