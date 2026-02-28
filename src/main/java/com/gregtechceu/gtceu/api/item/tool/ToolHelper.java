@@ -26,12 +26,13 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.DummyRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -421,25 +422,17 @@ public class ToolHelper {
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
                 RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-                        new InfiniteEnergyContainer(null, GTValues.V[GTValues.LV],
-                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-                        new NotifiableItemStackHandler(null, 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
+                        new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
+                        new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silktouchDrop)));
 
-                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(null, 2, IO.OUT));
-                DummyRecipeCapabilityHolder capHolder = new DummyRecipeCapabilityHolder(dummyInputs, dummyOutputs);
-
-                Map<RecipeCapability<?>, Object2IntMap<?>> cacheChances = new IdentityHashMap<>();
-                for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
-                    cacheChances.put(cap, cap.makeChanceCache());
-                }
+                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT, new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
+                DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(dummyInputs, dummyOutputs);
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
                         r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null &&
-                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, cacheChances).isSuccess()) {
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances()).isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {
