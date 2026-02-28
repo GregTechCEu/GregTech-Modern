@@ -8,13 +8,14 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import lombok.Getter;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -26,6 +27,7 @@ public class DummyRecipeUtils {
         private final long energyCapacity;
         private long energyStored;
         private final long maxAmps;
+
         public DummyEnergyContainer(long capacity, long stored, long maxAmps) {
             energyStored = stored;
             energyCapacity = capacity;
@@ -60,7 +62,6 @@ public class DummyRecipeUtils {
             }
 
             return left.isEmpty() ? null : left;
-
         }
 
         @Override
@@ -80,6 +81,7 @@ public class DummyRecipeUtils {
     }
 
     public static class DummyItemHandler implements IRecipeHandler<Ingredient> {
+
         @Getter
         public CustomItemStackHandler storage;
         @Getter
