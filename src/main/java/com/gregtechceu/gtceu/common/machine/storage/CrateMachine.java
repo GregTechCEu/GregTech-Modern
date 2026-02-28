@@ -14,22 +14,18 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -88,21 +84,21 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IDropSaveMa
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.isCrouching() && !isTaped) {
-            if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var stack = context.getItemInHand();
+        var player = context.getPlayer();
+        if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
+            if (player != null && player.isCrouching() && !isTaped) {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
                 isTaped = true;
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 syncDataHolder.markClientSyncFieldDirty("isTaped");
-                return InteractionResult.sidedSuccess(world.isClientSide);
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(context);
     }
 
     @Override
