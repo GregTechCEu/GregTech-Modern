@@ -15,10 +15,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -132,8 +129,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player player, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
         return InteractionResult.SUCCESS;
     }

@@ -34,7 +34,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -171,7 +170,6 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-
         if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             var hit = context.getHitResult();
 
@@ -206,7 +204,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     }
 
     @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos,
+    public boolean onLeftClick(Player player, InteractionHand hand,
                                @Nullable Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (GTToolType.WRENCH.matchTags.stream().anyMatch(player.getItemInHand(hand)::is)) return false;
@@ -214,12 +212,12 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                 var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (!player.addItem(drained)) {
-                        Block.popResourceFromFace(world, getBlockPos(), getFrontFacing(), drained);
+                        Block.popResourceFromFace(getLevel(), getBlockPos(), getFrontFacing(), drained);
                     }
                 }
             }
         }
-        return super.onLeftClick(player, world, hand, pos, direction);
+        return super.onLeftClick(player, hand, direction);
     }
 
     public boolean isLocked() {

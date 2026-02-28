@@ -262,7 +262,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         }
     }
 
-
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
@@ -277,7 +276,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
         InteractionResult machineInteractResult;
         if (itemStack.isEmpty()) {
-            machineInteractResult = machine.onUse(state, world, pos, player, hand, hit);
+            machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         } else {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
         }

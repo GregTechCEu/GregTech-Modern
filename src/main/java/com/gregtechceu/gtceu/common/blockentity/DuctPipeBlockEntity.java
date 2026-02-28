@@ -56,8 +56,6 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
                     LazyOptional.of(() -> handlers.getOrDefault(side, defaultHandler)));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
     }
