@@ -321,7 +321,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        if (!isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
+        if (!isFormed() && player.isShiftKeyDown()) {
             if (world.isClientSide()) {
                 MultiblockInWorldPreviewRenderer.showPreview(pos, this,
                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);

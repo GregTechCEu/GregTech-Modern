@@ -20,10 +20,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.ISubscription;
+import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -295,14 +292,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(player, hand, waterTank)) {
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), waterTank)) {
                 return InteractionResult.SUCCESS;
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(context);
     }
 
     //////////////////////////////////////

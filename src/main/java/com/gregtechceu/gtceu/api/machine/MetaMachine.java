@@ -44,6 +44,7 @@ import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
@@ -102,9 +103,6 @@ import java.util.function.Predicate;
 
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
-
-    public static final ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
-    public static final ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -392,7 +390,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when a machine is right clicked.
+     * Called when a machine is right clicked with an item.
+     */
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when a machine is right clicked without an item.
      */
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {

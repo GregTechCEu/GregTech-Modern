@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -261,6 +262,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         }
     }
 
+
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
@@ -273,7 +275,13 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        InteractionResult machineInteractResult = machine.onUse(state, world, pos, player, hand, hit);
+        InteractionResult machineInteractResult;
+        if (itemStack.isEmpty()) {
+            machineInteractResult = machine.onUse(state, world, pos, player, hand, hit);
+        } else {
+            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        }
+
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
 
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {

@@ -19,10 +19,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -41,7 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -174,16 +170,19 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
-            // Check to see if the hit is within the glass frame of the chest
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+            var hit = context.getHitResult();
+
             var aabb = new AABB(hit.getBlockPos()).deflate(0.12);
             var hitVector = hit.getLocation().relative(getFrontFacing(), -0.5);
             if (!aabb.contains(hitVector)) return InteractionResult.PASS;
 
-            var held = player.getMainHandItem();
-            if (!held.isEmpty() && cache.canInsert(held)) { // push
+            var held = context.getItemInHand();
+            var player = context.getPlayer();
+
+            if (cache.canInsert(held)) { // push
                 var remaining = cache.insertItem(0, held, false);
                 player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
                 return InteractionResult.SUCCESS;
@@ -196,8 +195,10 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
             }
             INTERACTION_LOGGER.put(player.getUUID(), System.currentTimeMillis());
             return InteractionResult.SUCCESS;
+
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+
+        return super.onUseWithItem(context);
     }
 
     private static boolean isDoubleHit(UUID uuid) {

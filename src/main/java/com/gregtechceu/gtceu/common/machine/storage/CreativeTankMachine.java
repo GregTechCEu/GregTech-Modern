@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -93,18 +94,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
-            // Clear fluid if empty + shift-rclick
-            if (heldItem.isEmpty()) {
-                if (player.isCrouching() && !stored.isEmpty()) {
-                    return updateStored(FluidStack.EMPTY);
-                }
-                return InteractionResult.PASS;
-            }
-
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var heldItem = context.getItemInHand();
+        var player = context.getPlayer();
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
                 return FluidUtil.getFluidContained(heldItem)
@@ -123,13 +116,26 @@ public class CreativeTankMachine extends QuantumTankMachine {
             }
 
             if (!result.isEmpty()) {
-                player.setItemInHand(hand, result);
+                player.setItemInHand(context.getHand(), result);
                 return InteractionResult.SUCCESS;
             } else {
                 return FluidUtil.getFluidContained(heldItem)
                         .map(this::updateStored)
                         .orElse(InteractionResult.PASS);
             }
+        }
+        return super.onUseWithItem(context);
+    }
+
+    @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            // Clear fluid if empty + shift-rclick
+            if (player.isCrouching() && !stored.isEmpty()) {
+                return updateStored(FluidStack.EMPTY);
+            }
+            return InteractionResult.PASS;
         }
         return super.onUse(state, world, pos, player, hand, hit);
     }
