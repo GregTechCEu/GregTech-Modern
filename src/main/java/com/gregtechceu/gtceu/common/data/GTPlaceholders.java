@@ -138,12 +138,10 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 String expression = args.stream().map(MultiLineComponent::toString).reduce("", (a, b) -> a + b);
-                ParseResult result = GTMath.parseExpression(expression, true);
+                ParseResult result = GTMath.parseExpression(expression, 0, true);
                 if (result.isFailure())
                     throw new PlaceholderException(result.getError().toString());
-                double res = (double) result.getResult().getValue();
-                if ((int) res == res) return MultiLineComponent.literal((int) res);
-                return MultiLineComponent.literal(result.getResult().toString());
+                return MultiLineComponent.literal(result.getResult().getNumberValue().toString());
             }
 
             @Override
