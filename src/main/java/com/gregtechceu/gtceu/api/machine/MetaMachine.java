@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -49,7 +47,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
@@ -101,7 +98,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
+                         IPaintable, IMachineFeature, ICopyable {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -756,23 +753,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     //////////////////////////////////////
     // ******** GUI *********//
-    //////////////////////////////////////
-    @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        return GuiTextures.INFO_ICON;
-    }
-
-    @Override
-    public final List<Component> getFancyTooltip() {
-        var tooltips = new ArrayList<Component>();
-        onAddFancyInformationTooltip(tooltips);
-        return tooltips;
-    }
-
-    @Override
-    public boolean showFancyTooltip() {
-        return !getFancyTooltip().isEmpty();
-    }
 
     public void onAddFancyInformationTooltip(List<Component> tooltips) {
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
 import net.minecraft.core.Direction;
@@ -172,7 +173,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public VoxelShape getShape(Direction direction) {
         if (shape.isEmpty() || shape == Shapes.block() || direction == Direction.NORTH) return shape;
-        return this.cache.computeIfAbsent(direction, dir -> ShapeUtils.rotate(shape, dir));
+        return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
     }
 
     @Override

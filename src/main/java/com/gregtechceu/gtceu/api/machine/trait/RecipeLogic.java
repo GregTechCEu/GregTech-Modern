@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -27,8 +25,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -48,7 +44,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
-public class RecipeLogic extends MachineTrait implements IWorkable, IFancyTooltip {
+public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
 
@@ -624,16 +620,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         }
     }
 
-    @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        if (showFancyTooltip()) {
-            return GuiTextures.INSUFFICIENT_INPUT;
-        }
-        return IGuiTexture.EMPTY;
-    }
-
-    @Override
-    public List<Component> getFancyTooltip() {
+    public List<Component> getReasonText() {
         if (isWaiting() && waitingReason != null) {
             return List.of(waitingReason);
         }
@@ -643,8 +630,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return Collections.emptyList();
     }
 
-    @Override
-    public boolean showFancyTooltip() {
+    public boolean hasReasonText() {
         return waitingReason != null || !failureReasons.isEmpty();
     }
 

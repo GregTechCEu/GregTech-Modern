@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
@@ -11,10 +9,6 @@ import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +37,6 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
 
     private @Nullable F filter;
     private @Nullable CustomItemStackHandler filterSlot;
-    private @Nullable WidgetGroup filterGroup;
 
     private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
     private @NotNull Consumer<F> onFilterRemoved = (filter) -> {};
@@ -62,21 +55,6 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     //////////////////////////////////
 
     public abstract boolean canInsertFilterItem(ItemStack itemStack);
-
-    public Widget createFilterSlotUI(int xPos, int yPos) {
-        return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
-                .setChangeListener(this::updateFilter)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
-    }
-
-    public Widget createFilterConfigUI(int xPos, int yPos, int width, int height) {
-        this.filterGroup = new WidgetGroup(xPos, yPos, width, height);
-        if (!this.filterItem.isEmpty()) {
-            this.filterGroup.addWidget(getFilter().openConfigurator(0, 0));
-        }
-
-        return this.filterGroup;
-    }
 
     public boolean isFilterPresent() {
         return filter != null || !filterItem.isEmpty();
@@ -171,18 +149,6 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
                 }
             }
             this.onFilterLoaded.accept(this.filter);
-        }
-        updateFilterGroupUI();
-    }
-
-    private void updateFilterGroupUI() {
-        if (this.filterGroup == null)
-            return;
-
-        this.filterGroup.clearAllWidgets();
-
-        if (!this.filterItem.isEmpty() && this.filter != null) {
-            this.filterGroup.addWidget(this.filter.openConfigurator(0, 0));
         }
     }
 

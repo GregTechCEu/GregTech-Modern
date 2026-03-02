@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import org.jetbrains.annotations.NotNull;
 
 public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
 
@@ -20,12 +21,12 @@ public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
     }
 
     @Override
-    public String getTooltip() {
+    public @NotNull String getTooltip() {
         return "cover.universal.manual_import_export.mode." + localeName;
     }
 
     @Override
-    public IGuiTexture getIcon() {
+    public @NotNull IGuiTexture getIcon() {
         return new ResourceTexture("gtceu:textures/gui/icon/manual_io_mode/" + localeName + ".png");
     }
 }
