@@ -76,6 +76,7 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
 
     public W value(IStringValue<?> stringValue) {
         this.stringValue = stringValue;
+        super.setSyncOrValue(stringValue);
         return getThis();
     }
 }

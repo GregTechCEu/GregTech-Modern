@@ -154,15 +154,6 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
         validateText();
     }
 
-    protected void onTextChanged() {
-        super.onTextChanged();
-        if (this.autoUpdateOnChange) {
-            String text = this.validator.apply(getText());
-            this.stringValue
-                    .setStringValue(this.numbers ? format.parse(text, new ParsePosition(0)).toString() : getText());
-        }
-    }
-
     @Override
     public boolean canHover() {
         return true;

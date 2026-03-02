@@ -6,6 +6,7 @@
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.KeyboardHandlerMixin",
         "client.AbstractClientPlayerAccessor",
         "client.AbstractContainerScreenAccessor",
         "client.AbstractContainerScreenMixin",
@@ -15,6 +16,7 @@
         "client.BlockModelMixin",
         "client.ClientLevelAccessor",
         "client.FaceBakeryMixin",
+        "client.GameRendererMixin",
         "client.GuiGraphicsAccessor",
         "client.GuiGraphicsMixin",
         "client.GuiHeartTypeMixin",

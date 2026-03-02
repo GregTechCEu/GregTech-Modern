@@ -17,6 +17,7 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public class SyncHandlerPacket implements GTNetwork.INetPacket {
 
+    public int inWorldID;
     public int networkId;
     public String panel;
     public String key;
@@ -25,6 +26,7 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(this.inWorldID);
         buf.writeVarInt(this.networkId);
         NetworkUtils.writeStringSafe(buf, this.panel, 256, true);
         NetworkUtils.writeStringSafe(buf, this.key, 256, true);
@@ -33,6 +35,7 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
     }
 
     public SyncHandlerPacket(FriendlyByteBuf buf) {
+        this.inWorldID = buf.readVarInt();
         this.networkId = buf.readVarInt();
         this.panel = NetworkUtils.readStringSafe(buf);
         this.key = NetworkUtils.readStringSafe(buf);

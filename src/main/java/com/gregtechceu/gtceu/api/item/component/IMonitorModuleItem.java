@@ -16,7 +16,7 @@ public interface IMonitorModuleItem extends IItemComponent {
 
     default void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {}
 
-    IMonitorRenderer getRenderer(ItemStack stack);
+    IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
     ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                     PanelSyncManager syncManager, IPanelHandler panelHandler);

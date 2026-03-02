@@ -62,8 +62,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private static TraceabilityPredicate MULTI_PREDICATE = null;
 
-    public CentralMonitorMachine(BlockEntityCreationInfo info) {
-        super(info, CentralMonitorLogic::new);
+    public CentralMonitorMachine(BlockEntityCreationInfo holder) {
+        super(holder, CentralMonitorLogic::new);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {

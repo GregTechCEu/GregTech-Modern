@@ -190,7 +190,9 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
             if (!currentKey.equals(key)) {
                 boolean auto = name.startsWith(ModularSyncManager.AUTO_SYNC_PREFIX);
                 if (auto != currentKey.startsWith(ModularSyncManager.AUTO_SYNC_PREFIX)) {
-                    throw new IllegalStateException("Old and new sync handler must both be either not auto or auto!");
+                    throw new IllegalStateException(
+                            "Old and new sync handler must both be either not auto or auto! (old key = \"%s\", new key = \"%s\""
+                                    .formatted(currentKey, key));
                 }
                 if (auto && !currentKey.startsWith(name)) {
                     throw new IllegalStateException("Sync Handler was previously added with a different panel!");

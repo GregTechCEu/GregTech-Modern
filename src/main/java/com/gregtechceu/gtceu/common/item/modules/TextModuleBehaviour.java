@@ -45,12 +45,12 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 stack.getOrCreateTag().getUUID("placeholderUUID"));
     }
 
-    private void updateText(ItemStack stack, PlaceholderContext context) {
+    private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                getPlaceholderText(stack), context);
+                getPlaceholderText(stack), getContext(stack, machine, group));
         stack.getOrCreateTag().put("text",
                 text.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT)).toTag());
     }
@@ -58,16 +58,11 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         if (!isPaused(stack))
-            this.updateText(stack, getContext(stack, machine, group));
+            this.updateText(stack, machine, group);
     }
 
     @Override
-    public void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {
-        this.updateText(stack, context);
-    }
-
-    @Override
-    public IMonitorRenderer getRenderer(ItemStack stack) {
+    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
                 getText(stack),
                 Math.max(getScale(stack), .0001));
@@ -84,7 +79,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 () -> getScale(stack),
                 s -> setScale(stack, s));
         IBoolValue<?> pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
-        Runnable updateText = () -> updateText(stack, getContext(stack, machine, group));
+        Runnable updateText = () -> updateText(stack, machine, group);
         assert ctx.itemStackHandler() != null;
         return new ModularPanel("placeholder_editor")
                 .size(400, 250)

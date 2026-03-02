@@ -140,8 +140,10 @@ public class GTPlaceholders {
                 String expression = args.stream().map(MultiLineComponent::toString).reduce("", (a, b) -> a + b);
                 ParseResult result = GTMath.parseExpression(expression, true);
                 if (result.isFailure())
-                    throw new PlaceholderException(result.getError().getMessage());
-                return MultiLineComponent.literal(result.getResult().getStringValue());
+                    throw new PlaceholderException(result.getError().toString());
+                double res = (double) result.getResult().getValue();
+                if ((int) res == res) return MultiLineComponent.literal((int) res);
+                return MultiLineComponent.literal(result.getResult().toString());
             }
 
             @Override
@@ -507,6 +509,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
+                    slot = Math.max(slot, 1);
+                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);

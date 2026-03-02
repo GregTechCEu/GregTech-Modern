@@ -775,6 +775,7 @@ public class GTGuiTextures {
     public static final UITexture MONITOR = UITexture.fullImage(GTCEu.MOD_ID, "item/computer_monitor_cover");
     public static final UITexture DATA_HATCH = UITexture.fullImage(GTCEu.MOD_ID, "textures/item/data_module.png")
             .getSubArea(0, 0, 1, 1 / 13f);
+
     public static final UITexture SEPERATOR_SIMPLE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/icon/seperator/seperator_simple.png")
             .imageSize(16, 5)

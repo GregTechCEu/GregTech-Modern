@@ -11,6 +11,8 @@ import java.util.List;
 
 public class AnimatorManager {
 
+    public static final AnimatorManager INSTANCE = new AnimatorManager();
+
     private static final List<IAnimator> animators = new ArrayList<>(16);
     private static final List<IAnimator> queuedAnimators = new ArrayList<>(8);
     private static long lastTime = 0;
@@ -25,7 +27,7 @@ public class AnimatorManager {
     private AnimatorManager() {}
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(new AnimatorManager());
+        MinecraftForge.EVENT_BUS.register(INSTANCE);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

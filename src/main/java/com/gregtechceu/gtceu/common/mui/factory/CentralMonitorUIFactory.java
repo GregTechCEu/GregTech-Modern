@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
@@ -34,7 +34,6 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -47,6 +46,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
+import static com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters.MONITOR_GROUPS;
+
 public class CentralMonitorUIFactory implements PanelFactory {
 
     public static final CentralMonitorUIFactory INSTANCE = new CentralMonitorUIFactory();
@@ -55,11 +56,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
     public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                         MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
-        GenericSyncValue<List<MonitorGroup>> groupSync = new GenericSyncValue.Builder<List<MonitorGroup>>(null)
-                .adapter(ByteBufAdapters.MONITOR_GROUPS)
-                .setter(machine::setMonitorGroups)
-                .getter(machine::getMonitorGroups)
-                .build();
+        GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
+                machine::setMonitorGroups, MONITOR_GROUPS);
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
         SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
@@ -139,7 +137,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     }
 
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
-                                                GenericSyncValue<List<MonitorGroup>> groupSync,
+                                                GenericListSyncHandler<MonitorGroup> groupSync,
                                                 CentralMonitorMachine machine, MonitorGroup group,
                                                 List<MonitorGroup> groups,
                                                 IPanelHandler helpPanel) {

@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,9 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
+
+    @Getter
+    private boolean playerInventory = false;
 
     public static SlotGroupWidget playerInventory(boolean positioned) {
         return positioned ? playerInventory(7, true) : playerInventory((index, slot) -> slot);
@@ -44,9 +48,10 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
      * @return player inventory group
      */
     public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer) {
-        SlotGroupWidget slotGroupWidget = new SlotGroupWidget()
-                .coverChildren()
-                .name("player_inventory");
+        SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
+        slotGroupWidget.playerInventory = true;
+        slotGroupWidget.coverChildren();
+        slotGroupWidget.name("player_inventory");
         String key = "player";
         for (int i = 0; i < 9; i++) {
             slotGroupWidget.child(slotConsumer.apply(i, new ItemSlot())

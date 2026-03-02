@@ -115,13 +115,13 @@ public class PlaceholderHandler {
     }
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                        PlaceholderContext context,
-                                                        Object2IntOpenHashMap<String> indices) throws PlaceholderException {
+                                                        @Nullable PlaceholderContext context) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
-        String name = placeholder.get(0).toString();
-        indices.addTo(name, 1);
-        return placeholders.get(name).apply(context.withIndex(indices.getInt(name)),
+        if (context != null && context.level().isClientSide &&
+                !placeholders.get(placeholder.get(0).toString()).isView())
+            GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
+        return placeholders.get(placeholder.get(0).toString()).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -189,7 +189,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {
@@ -366,7 +366,7 @@ public class PlaceholderHandler {
                                 .map(w -> w
                                         .child(new TextWidget<>(w.getWidgetValue())
                                                 .sizeRel(1)
-                                                .align(Alignment.CENTER))
+                                                .alignment(Alignment.CENTER))
                                         .tooltip(new RichTooltip()
                                                 .addDrawableLines(LangHandler
                                                         .getSingleOrMultiLang(

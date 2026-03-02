@@ -57,6 +57,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     @OnlyIn(Dist.CLIENT)
     private ModularScreen optionalScreen;
 
+    public int inWorldID = -1;
+
     public ModularContainerMenu(int containerId) {
         super(GTMenuTypes.MODULAR_CONTAINER.get(), containerId);
     }

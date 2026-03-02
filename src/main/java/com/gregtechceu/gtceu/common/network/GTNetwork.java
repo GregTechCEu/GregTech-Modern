@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectB
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockOre;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 import com.gregtechceu.gtceu.common.network.packets.ui.*;
+import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
+import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -123,6 +125,9 @@ public class GTNetwork {
 
         register(OpenGuiPacket.class, OpenGuiPacket::new, null);
         register(SyncHandlerPacket.class, SyncHandlerPacket::new, null);
+        register(SContainerSetContent.class, SContainerSetContent::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(SContainerSetData.class, SContainerSetData::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(SContainerSetSlot.class, SContainerSetSlot::new, NetworkDirection.PLAY_TO_CLIENT);
         register(CloseAllGuiPacket.class, CloseAllGuiPacket::new, null);
         register(CloseGuiPacket.class, CloseGuiPacket::new, null);
         register(ReopenGuiPacket.class, ReopenGuiPacket::new, null);
