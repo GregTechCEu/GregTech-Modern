@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -14,8 +14,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -191,13 +190,13 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
+    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                        Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
-            return GuiTextures.TOOL_REMOVE_COVER;
+            return GTGuiTextures.TOOL_REMOVE_COVER;
         }
         if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IMuiCover) {
-            return GuiTextures.TOOL_COVER_SETTINGS;
+            return GTGuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;
     }

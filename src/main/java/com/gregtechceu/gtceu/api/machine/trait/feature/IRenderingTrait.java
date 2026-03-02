@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait.feature;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,9 +34,9 @@ public interface IRenderingTrait extends ITraitFeature {
      * Called when the machine grid overlay is being rendered to determine the icon to be rendered within the grid
      * segment on a specifc side.
      */
-    default @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                         Set<GTToolType> toolTypes,
-                                                         Direction side) {
+    default @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
+                                                   Set<GTToolType> toolTypes,
+                                                   Direction side) {
         return null;
     }
 
