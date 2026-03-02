@@ -1,13 +1,7 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
-import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
-import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurable;
-import com.lowdragmc.lowdraglib.syncdata.IPersistedSerializable;
-import java.util.function.Consumer;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -19,16 +13,19 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.function.Consumer;
+
 @Setter
-public class BlockInfo implements IPersistedSerializable, IConfigurable {
+public class BlockInfo {
+
     public static final BlockInfo EMPTY;
     @Getter
-    @Configurable
     private BlockState blockState;
     private boolean hasBlockEntity;
-    @Configurable
     private CompoundTag tag;
-    @Configurable
     private ItemStack itemStack;
     private Consumer<BlockEntity> postCreate;
     private BlockEntity lastEntity;
@@ -42,14 +39,15 @@ public class BlockInfo implements IPersistedSerializable, IConfigurable {
     }
 
     public BlockInfo(BlockState blockState, boolean hasBlockEntity) {
-        this(blockState, hasBlockEntity, (ItemStack)null, null);
+        this(blockState, hasBlockEntity, (ItemStack) null, null);
     }
 
     public BlockInfo(BlockState blockState, Consumer<BlockEntity> postCreate) {
-        this(blockState, true, (ItemStack)null, postCreate);
+        this(blockState, true, (ItemStack) null, postCreate);
     }
 
-    public BlockInfo(BlockState blockState, boolean hasBlockEntity, ItemStack itemStack, Consumer<BlockEntity> postCreate) {
+    public BlockInfo(BlockState blockState, boolean hasBlockEntity, ItemStack itemStack,
+                     Consumer<BlockEntity> postCreate) {
         this.blockState = blockState;
         this.hasBlockEntity = hasBlockEntity;
         this.itemStack = itemStack;
@@ -59,13 +57,12 @@ public class BlockInfo implements IPersistedSerializable, IConfigurable {
     public static BlockInfo fromBlockState(BlockState state) {
         try {
             if (state.getBlock() instanceof EntityBlock) {
-                BlockEntity blockEntity = ((EntityBlock)state.getBlock()).newBlockEntity(BlockPos.ZERO, state);
+                BlockEntity blockEntity = ((EntityBlock) state.getBlock()).newBlockEntity(BlockPos.ZERO, state);
                 if (blockEntity != null) {
                     return new BlockInfo(state, true);
                 }
             }
-        } catch (Exception var2) {
-        }
+        } catch (Exception var2) {}
 
         return new BlockInfo(state);
     }
@@ -82,7 +79,7 @@ public class BlockInfo implements IPersistedSerializable, IConfigurable {
         if (this.hasBlockEntity) {
             Block var3 = this.blockState.getBlock();
             if (var3 instanceof EntityBlock) {
-                EntityBlock entityBlock = (EntityBlock)var3;
+                EntityBlock entityBlock = (EntityBlock) var3;
                 if (this.lastEntity != null && this.lastEntity.getBlockPos().equals(pos)) {
                     return this.lastEntity;
                 }
@@ -122,7 +119,8 @@ public class BlockInfo implements IPersistedSerializable, IConfigurable {
     }
 
     public ItemStack getItemStackForm(BlockAndTintGetter level, BlockPos pos) {
-        return this.itemStack != null ? this.itemStack : this.blockState.getBlock().getCloneItemStack(new FacadeBlockAndTintGetter(level, pos, this.blockState, null), pos, this.blockState);
+        return this.itemStack != null ? this.itemStack : this.blockState.getBlock().getCloneItemStack(
+                new FacadeBlockAndTintGetter(level, pos, this.blockState, null), pos, this.blockState);
     }
 
     public void apply(Level world, BlockPos pos) {
@@ -131,15 +129,13 @@ public class BlockInfo implements IPersistedSerializable, IConfigurable {
         if (blockEntity != null) {
             world.setBlockEntity(blockEntity);
         }
-
     }
 
     public void clearBlockEntityCache() {
         this.lastEntity = null;
     }
 
-    public BlockInfo() {
-    }
+    public BlockInfo() {}
 
     static {
         EMPTY = new BlockInfo(Blocks.AIR);

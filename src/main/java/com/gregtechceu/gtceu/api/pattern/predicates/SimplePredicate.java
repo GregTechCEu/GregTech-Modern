@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.api.pattern.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

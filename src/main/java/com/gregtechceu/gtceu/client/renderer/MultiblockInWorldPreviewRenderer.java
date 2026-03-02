@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.scene.forge.WorldSceneRendererImpl;
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.Camera;
@@ -203,7 +203,7 @@ public class MultiblockInWorldPreviewRenderer {
             }
         }
 
-        LEVEL.addBlocks(blockMap);
+        // LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
             LEVEL.setInnerBlockEntity(controllerBase.self());
         }

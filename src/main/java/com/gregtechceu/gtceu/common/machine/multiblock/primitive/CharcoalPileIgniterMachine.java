@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -15,8 +16,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

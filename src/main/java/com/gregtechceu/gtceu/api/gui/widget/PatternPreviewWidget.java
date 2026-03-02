@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -20,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
@@ -395,7 +395,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
 
-        LEVEL.addBlocks(blockMap);
+        // LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
             LEVEL.setInnerBlockEntity(controllerBase);
         }

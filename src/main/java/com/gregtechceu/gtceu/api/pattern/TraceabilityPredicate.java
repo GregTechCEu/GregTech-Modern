@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
-
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;

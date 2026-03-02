@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.gregtechceu.gtceu.api.pattern.BlockInfo;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

@@ -3,15 +3,10 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import net.minecraft.util.StringRepresentable;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -33,7 +28,7 @@ public interface IVoidable extends IMachineFeature {
         return VoidingMode.VOID_NONE;
     }
 
-    enum VoidingMode implements StringRepresentable, EnumSelectorWidget.SelectableEnum {
+    enum VoidingMode implements StringRepresentable {
 
         VOID_NONE("gtceu.gui.no_voiding", cap -> false),
         VOID_ITEMS("gtceu.gui.item_voiding", cap -> cap == ItemRecipeCapability.CAP),
@@ -44,14 +39,11 @@ public interface IVoidable extends IMachineFeature {
         public static final VoidingMode[] VALUES = values();
 
         private final String localeName;
-        @Getter
-        private final IGuiTexture icon;
         private final Predicate<RecipeCapability<?>> canVoid;
 
         VoidingMode(String name, Predicate<RecipeCapability<?>> canVoid) {
             this.localeName = name;
             this.canVoid = canVoid;
-            this.icon = GuiTextures.BUTTON_VOID_MULTIBLOCK.getSubTexture(0, ordinal() * 0.25, 1, 0.25);
         }
 
         public boolean canVoid(RecipeCapability<?> capability) {
@@ -64,7 +56,6 @@ public interface IVoidable extends IMachineFeature {
             return localeName;
         }
 
-        @Override
         public @NotNull String getTooltip() {
             return localeName;
         }
