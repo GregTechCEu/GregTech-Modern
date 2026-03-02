@@ -5926,5 +5926,11 @@
     "config.jade.plugin_gtceu.battery_info": "[GTCEu] Информация о батареи",
     "config.jade.plugin_gtceu.ldp_endpoint": "[GTCEu] Информация о Конечной точке трубопровода",
     "gtceu.ender_item_link_cover.tooltip": "Переносит §fПредметы§7 с помощью §fБеспроводного §dЭндер§f соединения§7 как §fУлучшение механизма§7.",
-    "gtceu.ender_redstone_link_cover.tooltip": "Переносит §fРедстоун сигнал§7 с помощью §fБеспроводного §dЭндер§f соединения§7 как §fУлучшение механизма§7."
+    "gtceu.ender_redstone_link_cover.tooltip": "Переносит §fРедстоун сигнал§7 с помощью §fБеспроводного §dЭндер§f соединения§7 как §fУлучшение механизма§7.",
+    "gtceu.gui.all_voiding": "§7Удалять §cВсё",
+    "gtceu.gui.directional_setting.tab_tooltip": "Изменить настройку направления",
+    "gtceu.gui.directional_setting.title": "Настройка направления",
+    "gtceu.gui.fluid_auto_output.disabled": "Жид. Авто. вывод: §cОтключен",
+    "gtceu.gui.fluid_auto_output.enabled": "Жид. Авто. вывод: §cВключен",
+    "gtceu.gui.fluid_auto_output.other_direction.0": "Жид. Авто. вывод: §cДругие направления"
 }
