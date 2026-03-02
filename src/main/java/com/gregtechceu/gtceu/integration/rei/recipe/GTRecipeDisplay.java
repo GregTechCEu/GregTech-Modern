@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;

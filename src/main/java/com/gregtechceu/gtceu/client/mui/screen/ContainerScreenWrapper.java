@@ -31,7 +31,7 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
      *
      * @deprecated Internal use only.
      */
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({ "DataFlowIssue", "DeprecatedIsStillUsed" })
     @Deprecated
     @ApiStatus.Internal
     public ContainerScreenWrapper(ModularContainerMenu container, Inventory playerInventory, Component title) {

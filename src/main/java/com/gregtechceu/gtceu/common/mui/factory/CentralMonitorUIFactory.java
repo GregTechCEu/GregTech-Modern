@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -107,7 +108,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         return new Dialog<>("main")
                 .setDraggable(true)
                 .padding(5)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR, 176))
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(1)
@@ -214,11 +215,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine, groups.indexOf(group));
-        MutableBoolean moduleChanged = new MutableBoolean(false);
+        BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(Flow.column()
                         .padding(10)
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
@@ -234,7 +235,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
                                                     if (!amount && !init)
-                                                        moduleChanged.setTrue();
+                                                        moduleChanged.setValue(true);
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .background(
@@ -269,7 +270,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
 
     private ModularPanel createHelpPanel() {
         return new ModularPanel("help_panel")
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .width(500)
                 .height(300)
                 .resizeableOnDrag(true)

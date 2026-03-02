@@ -127,6 +127,8 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         FLUID(Component.translatable("gtceu.mode.fluid")),
         BOTH(Component.translatable("gtceu.mode.both"));
 
+        public static final WrenchModeType[] VALUES = values();
+
         private final Component name;
 
         WrenchModeType(Component name) {

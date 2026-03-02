@@ -101,9 +101,9 @@ public class ScrollArea extends Area {
      */
     public boolean mouseScroll(int x, int y, double scroll, boolean shift) {
         ScrollData data;
-        if (this.scrollX != null) {
-            data = this.scrollY == null || shift ? this.scrollX : this.scrollY;
-        } else if (this.scrollY != null) {
+        if (this.scrollX != null && this.scrollX.isScrollBarActive(this)) {
+            data = this.scrollY == null || !this.scrollY.isScrollBarActive(this) || shift ? this.scrollX : this.scrollY;
+        } else if (this.scrollY != null && this.scrollY.isScrollBarActive(this)) {
             data = this.scrollY;
         } else {
             // no scroll data present -> cant be scrolled

@@ -2,15 +2,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -22,7 +19,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -49,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
-                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife, ICentralMonitor {
+                                   implements IMonitorComponent, IDataInfoProvider {
 
     @SaveField
     @SyncToClient
@@ -122,7 +119,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
         getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
-        getSyncDataHolder().markClientSyncFieldDirty("recipeLogic");
+        recipeLogic.getSyncDataHolder().markClientSyncFieldDirty("status");
     }
 
     @Override
@@ -276,13 +273,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .addWorkingStatusLine();
-        getDefinition().getAdditionalDisplay().accept(this, textList);
-    }
-
     public void setMonitorGroups(List<MonitorGroup> groups) {
         if (!(monitorGroups instanceof ArrayList<MonitorGroup>)) monitorGroups = new ArrayList<>(monitorGroups);
         monitorGroups.clear();
@@ -307,10 +297,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         for (MonitorGroup group : monitorGroups) {
-            clearInventory(group.getItemStackHandler());
-            clearInventory(group.getPlaceholderSlotsHandler());
+            group.getItemStackHandler().dropInventoryInWorld(getLevel(), getBlockPos());;
+            group.getPlaceholderSlotsHandler().dropInventoryInWorld(getLevel(), getBlockPos());
         }
     }
 }

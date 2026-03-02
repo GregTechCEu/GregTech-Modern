@@ -171,12 +171,13 @@ public class ArraySchema implements ISchema {
             return where(c, block.defaultBlockState());
         }
 
+        public Builder where(char c, String registryName) {
+            return where(c, new ResourceLocation(registryName));
+        }
+
         public Builder where(char c, ResourceLocation registryName) {
-            Optional<Block> block = BuiltInRegistries.BLOCK.getOptional(registryName);
-            if (block.isEmpty()) {
-                throw new IllegalArgumentException(registryName + " isn't a valid block");
-            }
-            return where(c, block.get());
+            return where(c, BuiltInRegistries.BLOCK.getOptional(registryName)
+                    .orElseThrow(() -> new IllegalArgumentException(registryName + " isn't a valid block")));
         }
 
         private void validate() {

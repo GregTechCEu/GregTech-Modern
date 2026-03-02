@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.codec.GTCodecUtils;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
@@ -93,7 +93,12 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.adjacent_fluid.tooltip");
+        var tooltips = Component.translatable("recipe.condition.adjacent_fluid.tooltip");
+        fluids.forEach(set -> {
+            var id = set.get().get(0).get().getFluidType().getDescription();
+            tooltips.append(" ").append(id);
+        });
+        return tooltips;
     }
 
     @Override

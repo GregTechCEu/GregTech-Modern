@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
+import com.gregtechceu.gtceu.api.mui.base.RecipeViewerSettings;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
-import com.gregtechceu.gtceu.api.mui.base.XeiSettings;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
@@ -81,7 +81,7 @@ public class GuiManager {
         if (player instanceof FakePlayer || openedContainers.contains(player)) return;
         if (!inWorldUI) openedContainers.add(player);
         // create panel, collect sync handlers and create menu
-        UISettings settings = new UISettings(XeiSettings.DUMMY);
+        UISettings settings = new UISettings(RecipeViewerSettings.DUMMY);
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(false);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);

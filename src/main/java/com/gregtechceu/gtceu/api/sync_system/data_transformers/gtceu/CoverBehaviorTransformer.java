@@ -20,7 +20,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     public Tag serializeNBT(@Nullable CoverBehavior value,
                             CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         if (value != null) {
-            return serialize(value, context.isClientSync());
+            return serialize(value, context.isClientSync(), context.isClientFullSyncUpdate());
         }
         return new CompoundTag();
     }
@@ -36,12 +36,12 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         return null;
     }
 
-    private CompoundTag serialize(CoverBehavior cover, boolean isSync) {
+    private CompoundTag serialize(CoverBehavior cover, boolean isSync, boolean fullSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync);
+        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync, fullSync);
         compound.put("data", serializedCover);
 
         return compound;

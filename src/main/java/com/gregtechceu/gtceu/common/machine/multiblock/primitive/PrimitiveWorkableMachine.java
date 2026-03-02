@@ -4,22 +4,23 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidType;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
-                                      implements IMachineLife, IEnvironmentalHazardEmitter {
+public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
@@ -30,12 +31,17 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     @SaveField
     public final NotifiableFluidTank exportFluids;
 
+    @Getter
+    private final EnvironmentalHazardEmitterTrait hazardEmitter;
+
     public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
         super(info);
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
         this.importFluids = createImportFluidHandler();
         this.exportFluids = createExportFluidHandler();
+        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                0.1f);
     }
 
     //////////////////////////////////////
@@ -61,19 +67,15 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
-        clearInventory(exportItems.storage);
-    }
-
-    @Override
-    public float getHazardStrengthPerOperation() {
-        return 0.1f;
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        importItems.dropInventoryInWorld();
+        exportItems.dropInventoryInWorld();
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-        spreadEnvironmentalHazard();
+        hazardEmitter.emitHazard();
     }
 }

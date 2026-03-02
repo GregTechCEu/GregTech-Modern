@@ -27,8 +27,8 @@ public interface IUIHolder<T extends GuiData> {
     @OnlyIn(Dist.CLIENT)
     default ModularScreen createScreen(T data, ModularPanel mainPanel) {
         GTCEu.LOGGER
-                .warn("IGuiHolder.createScreen() should be overridden to pass your own mod id to the ModularScreen. " +
-                        "In future versions this method must be overridden or else it will crash!");
+                .warn("IGuiHolder.createScreen() should be overridden to pass your own mod id to the ModularScreen." +
+                        " In future versions this method must be overridden or else it will crash!");
         return new ModularScreen(GTCEu.MOD_ID, mainPanel);
     }
 

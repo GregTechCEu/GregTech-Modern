@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -21,7 +20,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEConfigWidget;
@@ -49,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEInputBusPartMachine extends MEBusPartMachine
-                                   implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
+                                   implements IDataStickInteractable, IHasCircuitSlot {
 
     protected final static int CONFIG_SIZE = 16;
 
@@ -64,7 +63,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     /////////////////////////////////
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
         flushInventory();
     }
 

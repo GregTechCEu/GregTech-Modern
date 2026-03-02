@@ -971,8 +971,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.warning_no_computation", "- No computation providers");
         provider.add("gtceu.multiblock.hpca.warning_low_cooling", "- Not enough cooling");
         provider.add("gtceu.multiblock.hpca.info_max_computation", "Max CWU/t: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_demand", "Cooling Demand: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_available", "Cooling Available: %s");
+        provider.add("gtceu.multiblock.hpca.info_cooling_demand", "Cooling Demand: %s / %d");
         provider.add("gtceu.multiblock.hpca.info_max_coolant_required", "Coolant Needed: %s");
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");

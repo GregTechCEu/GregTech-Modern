@@ -16,10 +16,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
-import com.gregtechceu.gtceu.api.item.DrumMachineItem;
-import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -41,6 +38,8 @@ import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.mui.GTSingleblockMachinePanels;
+import com.gregtechceu.gtceu.common.item.DrumMachineItem;
+import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
@@ -48,10 +47,7 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.LaserHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.TankValvePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
@@ -350,9 +346,9 @@ public class GTMachineUtils {
                         tankScalingFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
@@ -377,7 +373,7 @@ public class GTMachineUtils {
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
                         .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                        .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
+                        .ui(GTSingleblockMachinePanels.STEAM_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -884,7 +880,7 @@ public class GTMachineUtils {
                                 new TraceabilityPredicate(
                                         new SimplePredicate(
                                                 state -> MetaMachine.getMachine(state.getWorld(),
-                                                        state.getPos()) instanceof IRotorHolderMachine rotorHolder &&
+                                                        state.getPos()) instanceof RotorHolderPartMachine rotorHolder &&
                                                         state.getWorld()
                                                                 .getBlockState(state.getPos()
                                                                         .relative(rotorHolder.self().getFrontFacing()))
@@ -1007,13 +1003,12 @@ public class GTMachineUtils {
                         }
                         return builder
                                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                                .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                                 .rotationState(RotationState.NON_Y_AXIS)
                                 .recipeType(recipeType)
                                 .workableTieredHullModel(GTCEu.id("block/machines/" + name))
                                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
-                                .UI(panelFactory)
+                                .ui(panelFactory)
                                 .register();
                     },
                     tiers);

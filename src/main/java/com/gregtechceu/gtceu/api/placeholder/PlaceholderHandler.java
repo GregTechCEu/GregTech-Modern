@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketExcepti
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -42,6 +43,13 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -80,6 +88,27 @@ public class PlaceholderHandler {
         return placeholders.containsKey(placeholder.toString());
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public static void addRenderer(String id, IPlaceholderRenderer renderer) {
+        RendererHolder.renderers.put(id, renderer);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static @Nullable IMonitorRenderer getRenderer(String id, CompoundTag renderData) {
+        if (!RendererHolder.renderers.containsKey(id)) {
+            GTCEu.LOGGER.warn("Attempt to access a placeholder renderer that doesn't exist ({})", id);
+            return null;
+        }
+        IPlaceholderRenderer renderer = RendererHolder.renderers.get(id);
+        CompoundTag tag = renderData.copy();
+        return (machine, group,
+                partialTick, poseStack, buffer,
+                packedLight, packedOverlay) -> renderer.render(
+                        machine, group,
+                        partialTick, poseStack, buffer,
+                        packedLight, packedOverlay, tag);
+    }
+
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         @Nullable PlaceholderContext context) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
@@ -93,6 +122,7 @@ public class PlaceholderHandler {
 
     public static MultiLineComponent processPlaceholders(String s, @Nullable PlaceholderContext ctx) {
         List<Exception> exceptions = new ArrayList<>();
+        Object2IntOpenHashMap<String> indices = new Object2IntOpenHashMap<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
@@ -154,7 +184,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {
@@ -323,7 +353,7 @@ public class PlaceholderHandler {
                 .child(new SortableListWidget<String>()
                         .widthRel(.2f)
                         .paddingBottom(5)
-                        .excludeAreaInXei()
+                        .excludeAreaInRecipeViewer()
                         .children(PlaceholderHandler.getAllPlaceholderNames()
                                 .stream()
                                 .sorted()

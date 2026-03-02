@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
 
     public static final UITexture DEFAULT = fullImage("gui/options_background", ColorType.DEFAULT);
+    public static final FileToIdConverter GUI_TEXTURE_ID_CONVERTER = new FileToIdConverter("textures/gui", ".png");
 
     private static final ResourceLocation ICONS_LOCATION = GTCEu.id("textures/gui/icons.png");
 
@@ -172,6 +174,11 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, lerpU(uStart),
                 lerpV(vStart), lerpU(uEnd),
                 lerpV(vEnd), this.nonOpaque);
+    }
+
+    @Override
+    public boolean canApplyTheme() {
+        return this.colorType != null;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -74,12 +75,18 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL :
                 GTGuiTextures.PROGRESS_BAR_SOLAR_BRONZE;
 
+        DoubleSyncValue canSeeSun = syncManager.getOrCreateSyncHandler("canSeeSun", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (GTUtil.canSeeSunClearly(getLevel(), getBlockPos())) return 1.0f;
+                    return 0.0f;
+                }));
+
         return super.buildUI(data, syncManager, settings)
                 .child(new ProgressWidget()
                         .top(30).right(18)
                         .size(18)
                         .texture(progressTexture, 20)
-                        .progress(() -> GTUtil.canSeeSunClearly(getLevel(), getBlockPos()) ? 1.0 : 0.0));
+                        .value(canSeeSun));
     }
 
     @Override

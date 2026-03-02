@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.widget.sizer;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GuiError;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.IExpander;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
 
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +24,7 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
 
     private final DimensionSizer x;
     private final DimensionSizer y;
+    @Getter
     private boolean expanded = false;
 
     private boolean childrenResized = false;
@@ -52,6 +56,9 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         this.childrenResized = false;
         this.layoutResized = false;
         super.initResizing(onOpen);
+        if (onOpen) {
+            detectConflictingConfiguration();
+        }
     }
 
     @Override
@@ -63,6 +70,15 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     public void resetPosition() {
         this.x.resetPosition();
         this.y.resetPosition();
+    }
+
+    public void detectConflictingConfiguration() {
+        if (!GTCEu.isDev()) return;
+        if (this.expanded && !(getParent() instanceof IExpander)) {
+            GTCEu.LOGGER.warn("Resizer '{}' has expanded() but the parent is not a Flow!", this);
+        }
+        this.x.detectConflictingConfiguration();
+        this.y.detectConflictingConfiguration();
     }
 
     @Override
@@ -433,11 +449,6 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         this.expanded = true;
         scheduleResize();
         return this;
-    }
-
-    @Override
-    public boolean isExpanded() {
-        return this.expanded;
     }
 
     @Override

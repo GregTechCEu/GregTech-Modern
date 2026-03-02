@@ -158,8 +158,11 @@ public abstract class SyncHandler implements ISyncOrValue {
         return this.syncManager;
     }
 
-    public final boolean isRegistered() {
-        return isValid() && this.syncManager.hasSyncHandler(this);
+    public final boolean isRegistered(PanelSyncManager syncManager) {
+        if (isValid() && this.syncManager.hasSyncHandler(this)) {
+            return true;
+        }
+        return syncManager.hasSyncHandler(this);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.handler.EmiScreenHandler;
@@ -45,6 +45,9 @@ public class GTEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        EmiScreenHandler.register(ScreenWrapper.class, registry);
+        EmiScreenHandler.register(ContainerScreenWrapper.class, registry);
+
         // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -106,12 +109,5 @@ public class GTEMIPlugin implements EmiPlugin {
             FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
             registry.addEmiStack(EmiStack.of(stack.getFluid(), stack.getTag()));
         }
-
-        registry.addExclusionArea(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addExclusionArea(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
-        registry.addDragDropHandler(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addDragDropHandler(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
-        registry.addStackProvider(ScreenWrapper.class, EmiScreenHandler.of(ScreenWrapper.class));
-        registry.addStackProvider(ContainerScreenWrapper.class, EmiScreenHandler.of(ContainerScreenWrapper.class));
     }
 }

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -37,7 +37,7 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
@@ -50,8 +50,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -82,6 +80,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
@@ -166,17 +165,15 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(1, () -> {
-                for (int i = 0; i < patternInventory.getSlots(); i++) {
-                    var pattern = patternInventory.getStackInSlot(i);
-                    var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
-                    if (patternDetails != null) {
-                        this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
-                    }
+        if (!isRemote()) {
+            for (int i = 0; i < patternInventory.getSlots(); i++) {
+                var pattern = patternInventory.getStackInSlot(i);
+                var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
+                if (patternDetails != null) {
+                    this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
                 }
-                needPatternSync = true;
-            }));
+            }
+            needPatternSync = true;
         }
     }
 
@@ -258,7 +255,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
     }
 
-    private void onPatternChange(int index) {
+    @VisibleForTesting
+    public void onPatternChange(int index) {
         if (isRemote()) return;
 
         // remove old if applicable
@@ -483,8 +481,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public PatternContainerGroup getTerminalGroup() {
         // Has controller
         if (isFormed()) {
-            IMultiController controller = getControllers().first();
-            MultiblockMachineDefinition controllerDefinition = controller.self().getDefinition();
+            MultiblockControllerMachine controller = getControllers().first();
+            MultiblockMachineDefinition controllerDefinition = controller.getDefinition();
             // has customName
             if (!customName.isEmpty()) {
                 return new PatternContainerGroup(
@@ -521,9 +519,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(patternInventory);
-        clearInventory(shareInventory);
+    public void onMachineDestroyed() {
+        patternInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        shareInventory.dropInventoryInWorld();
     }
 
     @Override

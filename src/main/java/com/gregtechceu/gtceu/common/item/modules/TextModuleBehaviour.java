@@ -62,9 +62,9 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public IMonitorRenderer getRenderer(ItemStack stack) {
         return new MonitorTextRenderer(
-                getText(stack).toImmutable(),
+                getText(stack),
                 Math.max(getScale(stack), .0001));
     }
 
@@ -84,7 +84,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         return new ModularPanel("placeholder_editor")
                 .size(400, 250)
                 .resizeableOnDrag(true)
-                .excludeAreaInXei()
+                .excludeAreaInRecipeViewer()
                 .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, null, pause,
                         updateText));
     }
@@ -95,10 +95,12 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public MultiLineComponent getText(ItemStack stack) {
-        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().get("text"));
     }
 
     public double getScale(ItemStack stack) {
+        if (!stack.getOrCreateTag().contains("scale"))
+            return 1;
         return Math.max(stack.getOrCreateTag().getDouble("scale"), .0001);
     }
 
@@ -118,7 +120,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public void setPlaceholderText(ItemStack stack, String text) {
         ListTag listTag = new ListTag();
-        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line));
+        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line.replaceAll("\r", "")));
         stack.getOrCreateTag().put("formatStringLines", listTag);
     }
 

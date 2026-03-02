@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -30,7 +32,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -62,7 +64,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemBusPartMachine extends TieredIOPartMachine
-                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
+                                implements IDistinctPart, IHasCircuitSlot, IPaintable {
 
     @Getter
     @SaveField
@@ -84,12 +86,19 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SaveField
     @SyncToClient
     private boolean isDistinct = false;
+    @SaveField
+    @SyncToClient
+    @Getter
+    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         super(info, tier, io);
         this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        filterHandler = FilterHandlers.item(this);
+
+        inventory.setFilter(this::matchesFilter);
     }
 
     //////////////////////////////////////
@@ -105,6 +114,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return new NotifiableItemStackHandler(this, getInventorySize(), io, IO.BOTH);
     }
 
+    protected boolean matchesFilter(ItemStack stack) {
+        if (filterHandler.isFilterPresent())
+            return filterHandler.getFilter().test(stack);
+        return true;
+    }
+
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
@@ -117,11 +132,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void onMachineRemoved() {
-        clearInventory(getInventory().storage);
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        getInventory().dropInventoryInWorld();
 
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
+            circuitInventory.dropInventoryInWorld();
         }
     }
 
@@ -158,10 +174,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
+                circuitInventory.dropInventoryInWorld();
             } else {
                 circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
             }
@@ -171,7 +187,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         if (!hasCircuitSlot) return;
         for (var c : controllers) {

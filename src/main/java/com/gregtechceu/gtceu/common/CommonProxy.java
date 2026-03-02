@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.UIFactories;
@@ -50,7 +49,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
-import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
@@ -100,7 +98,6 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
@@ -131,7 +128,6 @@ public class CommonProxy {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
         UIFactory.register(MachineUIFactory.INSTANCE);
-        UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
@@ -157,7 +153,10 @@ public class CommonProxy {
 
         GTCovers.init();
         GTCreativeModeTabs.init();
-        GTMenuTypes.init();
+
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        GTMenuTypes.init(modBus);
+
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
@@ -217,6 +216,8 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
+
+    public void preInit(FMLConstructModEvent event) {}
 
     private static void initMaterials() {
         // First, register other mods' Registries
