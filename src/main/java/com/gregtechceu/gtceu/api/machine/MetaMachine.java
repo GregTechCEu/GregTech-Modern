@@ -44,6 +44,7 @@ import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
@@ -67,20 +68,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -100,11 +98,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
+public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
-
-    public static final ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
-    public static final ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -282,55 +277,44 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
      *         animations will be played
      */
-    @Override
-    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType,
-                                                                           ItemStack itemStack,
-                                                                           UseOnContext context) {
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         // the side hit from the machine grid
-        var playerIn = context.getPlayer();
-        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
+        var player = context.getPlayer();
+        if (player == null) return Pair.of(null, InteractionResult.PASS);
 
-        var hand = context.getHand();
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
-                context.getClickedPos(), false);
-        Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
-        if (gridSide == null) gridSide = hitResult.getDirection();
+        var toolType = context.getToolType();
 
         Pair<@Nullable GTToolType, InteractionResult> result = null;
 
-        // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
-            if (coverBehavior != null) {
-                result = Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
-            }
-        } else if (toolType.contains(GTToolType.SCREWDRIVER)) {
-            if (coverBehavior != null) {
-                result = Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
-            } else result = Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
-            if (coverBehavior != null) {
-                result = Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
-            } else result = Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.WRENCH)) {
-            result = Pair.of(GTToolType.WRENCH, onWrenchClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.CROWBAR)) {
-            if (coverBehavior != null) {
-                if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide, playerIn);
-                }
+        // Prioritize covers
+        var cover = getCoverContainer().getCoverAtSide(context.getClickedFace());
+        if (cover != null) {
+            result = cover.onToolClick(context);
+            if (result.getSecond() != InteractionResult.PASS) return result;
 
+            if (toolType.contains(GTToolType.CROWBAR) && !isRemote()) {
+                getCoverContainer().removeCover(context.getGridSide(), player);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.SUCCESS);
             }
-            result = Pair.of(GTToolType.CROWBAR, onCrowbarClick(playerIn, hand, gridSide, hitResult));
+        }
+
+        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+            result = Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
+        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
+            result = Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(context));
+        } else if (toolType.contains(GTToolType.WRENCH)) {
+            result = Pair.of(GTToolType.WRENCH, onWrenchClick(context));
+        } else if (toolType.contains(GTToolType.CROWBAR)) {
+            result = Pair.of(GTToolType.CROWBAR, onCrowbarClick(context));
         } else if (toolType.contains(GTToolType.HARD_HAMMER)) {
-            result = Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
+            result = Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(context));
         }
 
         if (result != null && result.getSecond() != InteractionResult.PASS) return result;
 
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
-                var r = interactionTrait.onToolClick(toolType, playerIn, hand, gridSide, hitResult);
+                var r = interactionTrait.onToolClick(context);
                 if (r.getSecond() != InteractionResult.PASS) return r;
             }
         }
@@ -338,32 +322,31 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return result != null ? result : Pair.of(null, InteractionResult.PASS);
     }
 
-    protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
+    protected InteractionResult onHardHammerClick(ExtendedUseOnContext context) {
         if (this instanceof IMufflableMachine mufflableMachine) {
             if (!isRemote()) {
                 mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
-                playerIn.sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
+                context.getPlayer().sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
                         "gtceu.machine.muffle.on" : "gtceu.machine.muffle.off"));
             }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+            return InteractionResult.sidedSuccess(isRemote());
         }
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onCrowbarClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                               BlockHitResult hitResult) {
+    protected InteractionResult onCrowbarClick(ExtendedUseOnContext context) {
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(ExtendedUseOnContext context) {
+        var player = context.getPlayer();
+        var gridSide = context.getGridSide();
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
+            setUpwardsFacing(player.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
             return InteractionResult.sidedSuccess(isRemote());
         }
-        if (playerIn.isShiftKeyDown()) {
+        if (player.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
@@ -373,34 +356,31 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
+    protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), context.getGridSide());
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-            playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+            context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
-        return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+        return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
 
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote()) return InteractionResult.SUCCESS;
         return InteractionResult.PASS;
     }
 
     /**
-     * Called when a machine is right clicked.
+     * Called when a machine is right clicked with an item.
      */
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var types = context.getToolType();
+        var itemStack = context.getItemInHand();
+        var player = context.getPlayer();
         if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
-            var result = onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            var result = onToolClick(context);
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
@@ -410,10 +390,21 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
             if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
         }
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called when a machine is right clicked without an item.
+     */
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (context.getPlayer().isShiftKeyDown()) {
+            var cover = coverContainer.getCoverAtSide(context.getClickedFace());
+            if (cover != null) cover.onScrewdriverClick(context);
+        }
 
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
-                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
+                InteractionResult result = interactionTrait.onUse(context);
                 if (result != InteractionResult.PASS) return result;
             }
         }
@@ -426,8 +417,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * 
      * @return true to cancel the click event, false to continue processing
      */
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos,
-                               @Nullable Direction face) {
+    public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
         return false;
     }
 
@@ -630,7 +620,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public @NotNull ModelData getModelData() {
+    public ModelData getModelData() {
         ModelData.Builder data = super.getModelData().derive();
         updateModelData(data);
         return data.build();
@@ -641,7 +631,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 Direction.NORTH;
     }
 
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
@@ -681,7 +671,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void animateTick(RandomSource random) {}
 
-    @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                          BlockState sourceState, BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
@@ -737,7 +726,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return 0;
     }
 
-    public boolean canConnectRedstone(@NotNull Direction side) {
+    public boolean canConnectRedstone(Direction side) {
         // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover == null) return false;
@@ -898,7 +887,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         var result = getCapability(this, cap, side);
         return result.isPresent() ? result : super.getCapability(cap, side);
     }
@@ -915,12 +904,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return list;
     }
 
-    public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
-                                                             @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, Capability<T> cap,
+                                                    @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
-        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
         } else if (cap == GTCapability.CAPABILITY_WORKABLE) {
             if (machine instanceof IWorkable workable) {
                 return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
