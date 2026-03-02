@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,20 +28,6 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
             this.stringValue = new StringValue("");
         }
         setText(this.stringValue.getStringValue());
-    }
-
-    @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        if (syncHandler instanceof IStringValue<?> iStringValue &&
-                syncHandler instanceof ValueSyncHandler<?> valueSyncHandler) {
-            this.stringValue = iStringValue;
-            valueSyncHandler.setChangeListener(() -> {
-                markTooltipDirty();
-                setText(this.stringValue.getValue().toString());
-            });
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -92,7 +76,7 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
 
     public W value(IStringValue<?> stringValue) {
         this.stringValue = stringValue;
-        setValue(stringValue);
+        super.setSyncOrValue(stringValue);
         return getThis();
     }
 }

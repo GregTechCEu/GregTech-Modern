@@ -29,7 +29,7 @@ import java.util.List;
 public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack) {
+    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorImageRenderer(getUrl(stack));
     }
 

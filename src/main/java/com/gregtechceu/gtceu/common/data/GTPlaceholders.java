@@ -140,10 +140,10 @@ public class GTPlaceholders {
                 String expression = args.stream().map(MultiLineComponent::toString).reduce("", (a, b) -> a + b);
                 ParseResult result = GTMath.parseExpression(expression, true);
                 if (result.isFailure())
-                    throw new PlaceholderException(result.getError());
-                double res = result.getResult();
+                    throw new PlaceholderException(result.getError().toString());
+                double res = (double) result.getResult().getValue();
                 if ((int) res == res) return MultiLineComponent.literal((int) res);
-                return MultiLineComponent.literal(result.getResult());
+                return MultiLineComponent.literal(result.getResult().toString());
             }
 
             @Override
@@ -318,11 +318,6 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 return MultiLineComponent.literal(ctx.level().getGameTime());
-            }
-
-            @Override
-            public boolean isView() {
-                return true;
             }
 
             @Override
@@ -881,11 +876,6 @@ public class GTPlaceholders {
                 }
                 return MultiLineComponent.literal(String.format(Locale.ROOT, "%.2f%s",
                         ((double) n) / max, suffixes.get(max)));
-            }
-
-            @Override
-            public boolean isPure() {
-                return true;
             }
 
             @Override

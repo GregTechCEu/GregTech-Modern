@@ -62,7 +62,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack) {
+    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
                 getText(stack),
                 Math.max(getScale(stack), .0001));

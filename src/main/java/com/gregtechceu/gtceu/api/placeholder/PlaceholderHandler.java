@@ -42,7 +42,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
@@ -75,6 +74,12 @@ public class PlaceholderHandler {
     public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
             List.of("\\\\.", "\\{", "\\}", " ", "\"", "\\['", "'\\]"),
             TokenFormatter::new);
+
+    @OnlyIn(Dist.CLIENT)
+    private static final class RendererHolder {
+
+        public static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
+    }
 
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
@@ -184,7 +189,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {

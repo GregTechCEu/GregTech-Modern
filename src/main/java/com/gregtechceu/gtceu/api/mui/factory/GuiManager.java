@@ -125,7 +125,7 @@ public class GuiManager {
                                                           @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
-        if (inWorldUI) settings.getXeiSettings().forceDisabled();
+        if (inWorldUI) settings.getRecipeViewerSettings().disable();
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(true);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);
