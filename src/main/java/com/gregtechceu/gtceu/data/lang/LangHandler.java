@@ -1727,7 +1727,60 @@ public class LangHandler {
         provider.add("gtceu.gui.central_monitor.text_scale", "Text scale");
         provider.add("gtceu.gui.central_monitor.group", "Group: %s");
         provider.add("gtceu.gui.central_monitor.group_default_name", "Group #%d");
-        provider.add("gtceu.gui.central_monitor.none", "none");
+        provider.add("gtceu.gui.central_monitor.pause",
+                "Pause placeholder execution.\nText won't be updated, and code won't be run.");
+        provider.add("gtceu.gui.central_monitor.resume", "Unpause placeholder execution.");
+        provider.add("gtceu.gui.central_monitor.update_once",
+                "Update text and run all placeholders in it exactly once.");
+        provider.add("gtceu.gui.central_monitor.help",
+                """
+                        A monitor group is a collection of any amount of monitors in the multiblock.
+                        For a group to display anything, it needs 2 things:
+                         - you to select the monitors that you want to display something on
+                         - an inserted and configured monitor module
+                        A module must be inserted in the slot to the right of the group name textbox.
+                        When you insert it, a button will appear to configure the module (for example just enter the text to display)
+                        Then you have to select at least 1 monitor in the grid below the group name textbox, here are types of selections:""");
+        provider.add("gtceu.gui.central_monitor.in_group",
+                "Monitors selected this way are added to the group, and will be used to display stuff");
+        provider.add("gtceu.gui.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
+        provider.add("gtceu.gui.central_monitor.target",
+                "The block selected this way is considered a target, to be used with placeholders in a text module.");
+        provider.add("gtceu.gui.central_monitor.right_click",
+                "Select a block by right-clicking it. Only 1 block can be a target.");
+        provider.add("gtceu.gui.central_monitor.in_group_and_target",
+                "The monitor selected this way is used for displaying and as a target at the same time.");
+        provider.add("gtceu.gui.central_monitor.data_hatch_target",
+                "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
+        provider.add("gtceu.gui.central_monitor.text_module_help",
+                """
+                        This module displays text that can have placeholders.
+                        Placeholders are strings like "{energy}" that when displayed, will display their value instead (in this case the amount of energy).
+                        They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.
+                        Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the
+                        central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.
+                        Select a target in the monitor group editing window, check out the help page there for more info.
+                        Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
+                        """);
+        provider.add("gtceu.gui.central_monitor.url", "Input image URL:");
+        provider.add("gtceu.gui.central_monitor.gui_module_info",
+                "To select a block to get the GUI from, select a target in the monitor group editor.");
+        provider.add("gtceu.gui.central_monitor.module_editor_disabled",
+                "You recently changed the module, please re-open this GUI to edit it");
+        provider.add("gtceu.gui.central_monitor.module_editor_button", "Edit module");;
+        provider.add("gtceu.item.tooltip.image_url", "Image URL: %s");
+        provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket (\"}\")");
+        provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets (\"}\") are unclosed");
+        provider.add("gtceu.placeholder_editor.unclosed_escape", "Unclosed escape (\"']\")");
+        provider.add("gtceu.placeholder_editor.unclosed_escapes", "%d escapes (\"']\") are unclosed");
+        provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
+        provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
+        provider.add("gtceu.placeholder_editor.constant_value",
+                "This expression always evaluates to the same result.\nConsider replacing it with a constant.");
+        provider.add("gtceu.placeholder_editor.write_in_if", """
+                Placeholders inside {if} are executed regardless of the condition.
+                This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
+                To avoid this, use "{eval {if <condition> "<code>" "<else_code>"}}".""");
         provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");
@@ -1745,9 +1798,11 @@ public class LangHandler {
                 "Input string to display on line %d here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
                 "Placeholders can also be inside other placeholders.");
-        multiLang(provider, "gtceu.gui.computer_monitor_cover.slot_tooltip",
-                "A slot for items that some placeholders can reference",
-                "Slot number: %d");
+        provider.add("gtceu.gui.computer_monitor_cover.slot_tooltip",
+                """
+                        A slot for items that some placeholders can reference
+                        Slot number: %d
+                        """);
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
@@ -1757,6 +1812,10 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
         provider.add("gtceu.computer_monitor_cover.error.not_supported",
                 "This feature is not supported by this block/cover!");
+        provider.add("gtceu.central_monitor.gui.monitor_groups", "Monitor groups");
+        provider.add("gtceu.central_monitor.gui.group_editor", "Editing monitor group");
+        provider.add("gtceu.central_monitor.gui.group_name", "Name:");
+        provider.add("gtceu.central_monitor.gui.data_slot", "Set slot number of data stick");
         provider.add("gtceu.central_monitor.gui.create_group", "Create group");
         provider.add("gtceu.central_monitor.gui.remove_from_group", "Remove from group");
         provider.add("gtceu.central_monitor.gui.set_target", "Set target");

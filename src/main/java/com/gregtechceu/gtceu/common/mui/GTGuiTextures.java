@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.mui.drawable.ColorType;
 import com.gregtechceu.gtceu.api.mui.drawable.TabTexture;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
+import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 
 public class GTGuiTextures {
@@ -30,6 +32,8 @@ public class GTGuiTextures {
 
         public static final String STANDARD_BUTTON = "gregtech_standard_button";
     }
+
+    public static final ResourceLocation MONOCRAFT_FONT = GTCEu.id("monocraft");
 
     // ICONS
 
@@ -768,6 +772,9 @@ public class GTGuiTextures {
             GuiAxis.X, true,
             32, 28, 4);
 
+    public static final UITexture MONITOR = UITexture.fullImage(GTCEu.MOD_ID, "item/computer_monitor_cover");
+    public static final UITexture DATA_HATCH = UITexture.fullImage(GTCEu.MOD_ID, "textures/item/data_module.png")
+            .getSubArea(0, 0, 1, 1 / 13f);
     public static final UITexture SEPERATOR_SIMPLE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/icon/seperator/seperator_simple.png")
             .imageSize(16, 5)

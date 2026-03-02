@@ -3,14 +3,19 @@ package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.theme.TextFieldTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.HorizontalScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
+import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widgets.VoidWidget;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -18,16 +23,20 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -69,7 +78,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {
-        super(new HorizontalScrollData(false, 4), null);
+        super(new HorizontalScrollData(false, 4), new VerticalScrollData());
         this.handler.setRenderer(this.renderer);
         this.handler.setScrollArea(getScrollArea());
         padding(4, 0);
@@ -213,7 +222,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 }
                 this.lastClickTime = 0;
             }
-            this.handler.setCursor(this.renderer.getCursorPos(this.handler.getText(), x, y), true);
+            this.handler.setCursor(
+                    this.renderer.getCursorPos(this.handler.getTextAsComponents(), this.handler.getText(), x, y), true);
             this.lastClickTime = Util.getMillis();
         }
         return Result.SUCCESS;
@@ -225,7 +235,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         if (isFocused() && !getScrollArea().isDragging()) {
             int x = getContext().getMouseX() + getScrollX();
             int y = getContext().getMouseY() + getScrollY();
-            this.handler.setMainCursor(this.renderer.getCursorPos(this.handler.getText(), x, y), true);
+            this.handler.setMainCursor(
+                    this.renderer.getCursorPos(this.handler.getTextAsComponents(), this.handler.getText(), x, y), true);
         }
     }
 
@@ -322,6 +333,40 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         return Result.STOP;
     }
 
+    @Override
+    public @Nullable RichTooltip getTooltip() {
+        try {
+            int x = getContext().getMouseX() + getScrollX();
+            int y = getContext().getMouseY() + getScrollY();
+            List<Component> text = handler.getTextAsComponents();
+            Point p = renderer.getCursorPos(text, text.stream().map(Component::getString).toList(), x, y);
+            Component component = text.get(p.y);
+            if (p.x > FontRenderHelper.length(component.getVisualOrderText())) return super.getTooltip();
+            List<Integer> curX = new ArrayList<>();
+            curX.add(0);
+            Optional<Style> underCursor = component.visit((style, s) -> {
+                curX.set(0, curX.get(0) + s.length());
+                if (curX.get(0) > p.x) return Optional.of(style);
+                return Optional.empty();
+            }, Style.EMPTY);
+            if (underCursor.isEmpty()) return super.getTooltip();
+            HoverEvent hover = underCursor.get().getHoverEvent();
+            if (hover != null) {
+                Component tooltipText = hover.getValue(HoverEvent.Action.SHOW_TEXT);
+                if (tooltipText != null) {
+                    return new RichTooltip().add(tooltipText);
+                }
+                HoverEvent.ItemStackInfo item = hover.getValue(HoverEvent.Action.SHOW_ITEM);
+                if (item != null) {
+                    return new RichTooltip().add(new ItemDrawable(item.getItemStack()));
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            return super.getTooltip();
+        }
+        return super.getTooltip();
+    }
+
     protected void onTextChanged() {}
 
     public boolean canScrollHorizontally() {
@@ -384,5 +429,9 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
 
     public static char getGroupSeparator() {
         return format.getDecimalFormatSymbols().getGroupingSeparator();
+    }
+
+    public List<Component> getTextAsComponents() {
+        return FontRenderHelper.asComponents(this.handler.getText());
     }
 }

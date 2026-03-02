@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.ICopy;
+import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufDeserializer;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufSerializer;
 
@@ -27,6 +28,11 @@ public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, L
                                   @NotNull IByteBufSerializer<T> serializer, @Nullable EqualityTest<T> equals,
                                   @Nullable ICopy<T> copy) {
         super(getter, setter, deserializer, serializer, equals, copy);
+    }
+
+    public GenericListSyncHandler(@NotNull Supplier<List<T>> getter, @Nullable Consumer<List<T>> setter,
+                                  IByteBufAdapter<T> adapter) {
+        this(getter, setter, adapter, adapter, adapter, null);
     }
 
     @Override

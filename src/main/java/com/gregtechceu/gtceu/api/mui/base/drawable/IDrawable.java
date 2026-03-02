@@ -194,4 +194,26 @@ public interface IDrawable {
             this.drawable.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
+
+    /**
+     * A widget wrapping multiple drawables
+     */
+    class MultiDrawableWidget extends Widget<MultiDrawableWidget> {
+
+        private final IDrawable[] drawables;
+
+        public MultiDrawableWidget(IDrawable... drawables) {
+            this.drawables = drawables;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            for (IDrawable drawable : this.drawables) {
+                drawable.draw(context, getArea().getPadding().left(), getArea().getPadding().top(),
+                        getArea().paddedWidth(), getArea().paddedHeight(),
+                        getActiveWidgetTheme(widgetTheme, isHovering()));
+            }
+        }
+    }
 }

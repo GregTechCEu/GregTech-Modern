@@ -36,4 +36,12 @@ public abstract class Placeholder {
             placeholderData.put(ctx.uuid().toString(), new CompoundTag());
         return placeholderData.getCompound(ctx.uuid().toString());
     }
+
+    public boolean isView() {
+        return isPure();
+    }
+
+    public boolean isPure() {
+        return false;
+    }
 }

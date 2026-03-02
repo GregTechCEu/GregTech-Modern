@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils.serialization.network;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
@@ -12,12 +13,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 public class ByteBufAdapters {
@@ -29,6 +33,7 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<String> STRING = makeAdapter(NetworkUtils::readStringSafe, NetworkUtils::writeStringSafe, null);
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
+    public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf());
 
     public static final IByteBufAdapter<Integer> INT = makeAdapter(FriendlyByteBuf::readInt, FriendlyByteBuf::writeInt, null);
     public static final IByteBufAdapter<Long> LONG = makeAdapter(FriendlyByteBuf::readLong, FriendlyByteBuf::writeLong, null);
@@ -168,6 +173,28 @@ public class ByteBufAdapters {
             @Override
             public boolean areEqual(@NotNull T t1, @NotNull T t2) {
                 return tester != null ? tester.areEqual(t1, t2) : Objects.equals(t1, t2);
+            }
+        };
+    }
+
+    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec) {
+        return new IByteBufAdapter<>() {
+
+            @Override
+            public T deserialize(FriendlyByteBuf buffer) {
+                return buffer.readJsonWithCodec(codec);
+            }
+
+            @Override
+            public void serialize(FriendlyByteBuf buffer, T u) {
+                buffer.writeJsonWithCodec(codec, u);
+            }
+
+            @Override
+            public boolean areEqual(@NotNull T a, @NotNull T b) {
+                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
+                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                return Objects.equals(encoded1, encoded2);
             }
         };
     }

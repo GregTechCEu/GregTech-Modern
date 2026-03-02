@@ -1,22 +1,32 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorImageRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
-public class ImageModuleBehaviour implements IMonitorModuleItem {
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack) {
@@ -24,21 +34,19 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
     }
 
     @Override
-    public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        WidgetGroup builder = new WidgetGroup();
-        TextFieldWidget textField = new TextFieldWidget(0, 0, 100, 10, null, null);
-        textField.setCurrentString(getUrl(stack));
-
-        ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
-            if (!click.isRemote) return;
-
-            setUrl(stack, textField.getCurrentString());
-            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
-        });
-        saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
-        builder.addWidget(textField);
-        builder.addWidget(saveButton);
-        return builder;
+    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                           PanelSyncManager syncManager, IPanelHandler panelHandler) {
+        return new ModularPanel("image_module_editor")
+                .size(200, 50)
+                .child(Flow.column()
+                        .marginTop(5)
+                        .align(Alignment.CENTER)
+                        .widthRel(1)
+                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.url")))
+                        .child(new TextFieldWidget()
+                                .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s)))
+                                .align(Alignment.CENTER)
+                                .widthRel(.8f)));
     }
 
     @Override
@@ -52,5 +60,12 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
 
     public void setUrl(ItemStack stack, String url) {
         stack.getOrCreateTag().putString("url", url);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        tooltipComponents.add(Component.translatable("gtceu.item.tooltip.image_url", getUrl(stack))
+                .withStyle(ChatFormatting.DARK_AQUA));
     }
 }

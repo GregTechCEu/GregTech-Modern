@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
-import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollArea;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -90,6 +89,8 @@ public class TextFieldHandler {
 
     public void setMainCursor(int linePos, int charPos, boolean animate) {
         Point main = getMainCursor();
+        if (linePos >= this.text.size()) linePos = this.text.size() - 1;
+        if (linePos < 0) linePos = 0;
         if (main.x != charPos || main.y != linePos) {
             main.set(charPos, linePos);
             if (!this.text.isEmpty() && this.renderer != null && this.scrollArea != null) {
@@ -97,16 +98,28 @@ public class TextFieldHandler {
                 this.renderer.setSimulate(true);
                 this.renderer.draw(guiContext.getGraphics(), getTextAsComponents());
                 this.renderer.setSimulate(false);
-                this.scrollArea.getScrollX().setScrollSize((int) (this.renderer.getLastWidth() + 0.5f));
+                this.scrollArea.getScrollX().setScrollSize((int) (this.renderer.getLastWidth() + 1.5f));
+                this.scrollArea.getScrollY().setScrollSize((int) (this.renderer.getLastHeight() + 1.5f));
                 if (this.scrollArea.getScrollX().isScrollBarActive(this.scrollArea)) {
                     String line = this.text.get(main.y);
                     int scrollTo = (int) this.renderer
-                            .getPosOf(this.renderer.measureStringLines(Collections.singletonList(line)), main).x;
-                    scrollTo -= this.scrollArea.getScrollX().getFullVisibleSize(this.scrollArea) / 2;
+                            .getPosOf(this.renderer.measureStringLines(Collections.singletonList(line)),
+                                    new Point(main.x, 0)).x;
+                    scrollTo -= this.scrollArea.getScrollX().getVisibleSize(this.scrollArea) / 2;
                     if (animate) {
                         this.scrollArea.getScrollX().animateTo(this.scrollArea, scrollTo);
                     } else {
                         this.scrollArea.getScrollX().scrollTo(this.scrollArea, scrollTo);
+                    }
+                }
+                if (this.scrollArea.getScrollY().isScrollBarActive(this.scrollArea)) {
+                    int scrollTo = (int) this.renderer.getPosOf(this.renderer.measureStringLines(this.text),
+                            new Point(0, main.y)).y;
+                    scrollTo -= this.scrollArea.getScrollY().getVisibleSize(this.scrollArea) / 2;
+                    if (animate) {
+                        this.scrollArea.getScrollY().animateTo(this.scrollArea, scrollTo);
+                    } else {
+                        this.scrollArea.getScrollY().scrollTo(this.scrollArea, scrollTo);
                     }
                 }
             }
@@ -207,7 +220,7 @@ public class TextFieldHandler {
         if (this.text.isEmpty()) return;
         Point main = getMainCursor();
         if (main.y > 0) {
-            setCursor(main.y - 1, main.x, !shift, true);
+            setCursor(main.y - 1, Math.min(main.x, getText().get(main.y - 1).length()), !shift, true);
         } else {
             setCursor(main.y, 0, !shift, true);
         }
@@ -217,7 +230,7 @@ public class TextFieldHandler {
         if (this.text.isEmpty()) return;
         Point main = getMainCursor();
         if (main.y < this.text.size() - 1) {
-            setCursor(main.y + 1, main.x, !shift, true);
+            setCursor(main.y + 1, Math.min(main.x, getText().get(main.y + 1).length()), !shift, true);
         } else {
             setCursor(main.y, this.text.get(main.y).length(), !shift, true);
         }
@@ -238,7 +251,7 @@ public class TextFieldHandler {
     }
 
     public List<Component> getTextAsComponents() {
-        return FontRenderHelper.asComponents(this.text);
+        return this.textFieldWidget.getTextAsComponents();
     }
 
     public boolean isTextEmpty() {
@@ -265,7 +278,7 @@ public class TextFieldHandler {
         builder.append(this.text.get(min.y).substring(min.x));
         if (max.y > min.y + 2) {
             for (int i = min.y + 1; i < max.y - 1; i++) {
-                builder.append(this.text.get(i));
+                builder.append(this.text.get(i)).append('\n');
             }
         }
         builder.append(this.text.get(max.y), 0, max.x);
@@ -325,7 +338,7 @@ public class TextFieldHandler {
             x = insertion.get(insertion.size() - 1).length();
             y += 1;
             if (insertion.size() > 2) {
-                text.addAll(this.cursor.y + 1, text.subList(1, insertion.size() - 1));
+                text.addAll(this.cursor.y + 1, insertion.subList(1, insertion.size() - 1));
                 x = insertion.get(insertion.size() - 1).length();
                 y += insertion.size() - 1;
             }

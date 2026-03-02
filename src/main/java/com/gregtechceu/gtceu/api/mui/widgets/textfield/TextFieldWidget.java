@@ -135,9 +135,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
         }
     }
 
-    @Override
-    public void onRemoveFocus(ModularGuiContext context) {
-        super.onRemoveFocus(context);
+    public void validateText() {
         if (this.handler.getText().isEmpty()) {
             this.handler.getText().add(this.validator.apply(""));
         } else if (this.handler.getText().size() == 1) {
@@ -151,6 +149,11 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     }
 
     @Override
+    public void onRemoveFocus(ModularGuiContext context) {
+        super.onRemoveFocus(context);
+        validateText();
+    }
+
     protected void onTextChanged() {
         super.onTextChanged();
         if (this.autoUpdateOnChange) {
