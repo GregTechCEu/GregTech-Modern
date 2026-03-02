@@ -1,34 +1,25 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class HazardCleanerBlockProvider extends CapabilityBlockProvider<IEnvironmentalHazardCleaner> {
+public class HazardCleanerBlockProvider extends MachineTraitProvider<EnvironmentalHazardCleanerTrait> {
 
     public HazardCleanerBlockProvider() {
-        super(GTCEu.id("hazard_cleaner_provider"));
+        super(GTCEu.id("hazard_cleaner_provider"), EnvironmentalHazardCleanerTrait.TYPE);
     }
 
     @Override
-    protected @Nullable IEnvironmentalHazardCleaner getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getBlockEntity(pos) instanceof IEnvironmentalHazardCleaner cleaner ? cleaner : null;
-    }
-
-    @Override
-    protected void write(CompoundTag data, IEnvironmentalHazardCleaner capability) {
+    protected void write(CompoundTag data, BlockAccessor block, EnvironmentalHazardCleanerTrait capability) {
         data.putFloat("Cleaned", capability.getRemovedLastSecond());
     }
 
