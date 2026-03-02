@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern.predicates;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;

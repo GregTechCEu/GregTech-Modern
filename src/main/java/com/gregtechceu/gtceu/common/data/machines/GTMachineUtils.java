@@ -57,7 +57,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtceu.api.pattern.BlockInfo;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
