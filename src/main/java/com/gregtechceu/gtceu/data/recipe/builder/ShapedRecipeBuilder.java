@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
 
-import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,15 +21,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
 import java.util.function.Consumer;
 
-public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder> {
+public class ShapedRecipeBuilder {
 
     protected ItemStack output = ItemStack.EMPTY;
-    protected ResourceLocation id;
-    protected String group;
+    protected @Nullable ResourceLocation id;
+    protected @Nullable String group;
     protected boolean isStrict;
     protected boolean matchSize;
+
+    protected List<String[]> shape = new ArrayList<>();
+    protected Map<Character, Ingredient> ingredientMap = new LinkedHashMap<>();
 
     public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -38,6 +41,16 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
 
     public ShapedRecipeBuilder() {
         this(null);
+    }
+
+    public ShapedRecipeBuilder aisle(String... data) {
+        this.shape.add(data);
+        return this;
+    }
+
+    public ShapedRecipeBuilder where(char symbol, Ingredient value) {
+        this.ingredientMap.put(symbol, value);
+        return this;
     }
 
     public ShapedRecipeBuilder pattern(String slice) {
@@ -62,13 +75,13 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
 
     public ShapedRecipeBuilder output(ItemStack itemStack) {
         this.output = itemStack.copy();
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
@@ -104,9 +117,10 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         return this;
     }
 
-    @Override
     public ShapedRecipeBuilder shallowCopy() {
-        var builder = super.shallowCopy();
+        ShapedRecipeBuilder builder = new ShapedRecipeBuilder();
+        builder.shape = new ArrayList<>(this.shape);
+        builder.ingredientMap = new HashMap<>(this.ingredientMap);
         builder.output = output.copy();
         return builder;
     }
@@ -126,9 +140,9 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
             json.add("pattern", pattern);
         }
 
-        if (!symbolMap.isEmpty()) {
+        if (!ingredientMap.isEmpty()) {
             JsonObject key = new JsonObject();
-            symbolMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
+            ingredientMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
             json.add("key", key);
         }
 

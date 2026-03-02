@@ -76,5 +76,4 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
                 .margin(3)
                 .coverChildren();
     }
-
 }

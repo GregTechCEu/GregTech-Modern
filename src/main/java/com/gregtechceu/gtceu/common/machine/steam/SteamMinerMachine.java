@@ -42,7 +42,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -164,18 +163,18 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
         panel.child(new Grid()
-                        .coverChildren()
-                        .top(10)
-                        .alignX(0.75f)
-                        .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
-                                .slot(SyncHandlers.itemSlot(exportItems, index)
-                                        .slotGroup(group)
-                                        .changeListener((newItem, amount, client, init) -> {
-                                            if (amount) {
-                                                exportItems.onContentsChanged();
-                                            }
-                                        })
-                                        .accessibility(false, true))))
+                .coverChildren()
+                .top(10)
+                .alignX(0.75f)
+                .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(exportItems, index)
+                                .slotGroup(group)
+                                .changeListener((newItem, amount, client, init) -> {
+                                    if (amount) {
+                                        exportItems.onContentsChanged();
+                                    }
+                                })
+                                .accessibility(false, true))))
                 .child(new ListWidget<>()
                         .top(10)
                         .alignX(0.25f)
@@ -193,14 +192,21 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     List<IWidget> getDisplayTextWidgets() {
         List<IWidget> widgets = new ArrayList<>();
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        widgets.add(IKey.lang("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()).asWidget());
-        widgets.add(IKey.lang("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()).asWidget());
-        widgets.add(IKey.lang("gtceu.machine.miner.z", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()).asWidget());
+        widgets.add(
+                IKey.lang("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()).asWidget());
+        widgets.add(
+                IKey.lang("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()).asWidget());
+        widgets.add(
+                IKey.lang("gtceu.machine.miner.z", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()).asWidget());
         widgets.add(IKey.lang("gtceu.universal.tooltip.working_area", workingArea, workingArea).asWidget());
         if (this.getRecipeLogic().isDone())
-            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.done").withStyle(ChatFormatting.GREEN)).asWidget());
+            widgets.add(IKey
+                    .lang(Component.translatable("gtceu.multiblock.large_miner.done").withStyle(ChatFormatting.GREEN))
+                    .asWidget());
         else if (this.getRecipeLogic().isWorking())
-            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.working").withStyle(ChatFormatting.GOLD)).asWidget());
+            widgets.add(IKey
+                    .lang(Component.translatable("gtceu.multiblock.large_miner.working").withStyle(ChatFormatting.GOLD))
+                    .asWidget());
         else if (!this.isWorkingEnabled())
             widgets.add(IKey.lang("gtceu.multiblock.work_paused").asWidget());
         if (getRecipeLogic().isInventoryFull())

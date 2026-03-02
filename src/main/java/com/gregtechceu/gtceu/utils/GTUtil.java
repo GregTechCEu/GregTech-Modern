@@ -732,10 +732,12 @@ public class GTUtil {
     }
 
     public static VoxelShape rotateVoxelShape(VoxelShape shape, Vector3f axis, double degree) {
-        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, axis, degree))).reduce(Shapes.empty(), Shapes::or);
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, axis, degree)))
+                .reduce(Shapes.empty(), Shapes::or);
     }
 
     public static VoxelShape rotateVoxelShape(VoxelShape shape, Direction dir) {
-        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, dir))).reduce(Shapes.empty(), Shapes::or);
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, dir))).reduce(Shapes.empty(),
+                Shapes::or);
     }
 }

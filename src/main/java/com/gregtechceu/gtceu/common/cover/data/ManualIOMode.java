@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import org.jetbrains.annotations.NotNull;
 
 public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
