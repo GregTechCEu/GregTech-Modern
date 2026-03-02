@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

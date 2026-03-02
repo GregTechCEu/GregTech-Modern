@@ -2,22 +2,28 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -31,6 +37,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.IntStream;
 
@@ -40,7 +47,7 @@ import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquar
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IMuiMachine {
+public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine {
 
     @Getter
     private final int recoveryChance;
@@ -49,18 +56,21 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     private final CustomItemStackHandler inventory;
 
     private TickableSubscription snowSubscription;
+    @Getter
+    private final EnvironmentalHazardEmitterTrait hazardEmitter;
 
     public MufflerPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
+        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                2.5f / Math.max(tier, 1));
     }
 
     //////////////////////////////////////
     // ******** Muffler *********//
     //////////////////////////////////////
 
-    @Override
     public void recoverItemsTable(ItemStack... recoveryItems) {
         int numRolls = Math.min(recoveryItems.length, inventory.getSlots());
         IntStream.range(0, numRolls).forEach(slot -> {
@@ -85,6 +95,21 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                 break;
             }
         }
+    }
+
+    @Override
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        return isFrontFaceFree() ? recipe : super.modifyRecipe(recipe);
+    }
+
+    @Override
+    public boolean afterWorking(IWorkableMultiController controller) {
+        hazardEmitter.emitHazard();
+        var supplier = controller.self().getDefinition().getRecoveryItems();
+        if (supplier != null) {
+            recoverItemsTable(supplier.get());
+        }
+        return super.afterWorking(controller);
     }
 
     @Override
@@ -115,6 +140,38 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                 }
             }
         }
+    }
+
+    public boolean isFrontFaceFree() {
+        var frontPos = self().getBlockPos().relative(self().getFrontFacing());
+        return self().getLevel().getBlockState(frontPos).isAir() ||
+                GTCapabilityHelper.getHazardContainer(self().getLevel(),
+                        frontPos, self().getFrontFacing().getOpposite()) != null;
+    }
+
+    public void emitPollutionParticles() {
+        var pos = self().getBlockPos();
+        var facing = self().getFrontFacing();
+
+        IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
+                pos.relative(facing), facing.getOpposite());
+        if (container != null) {
+            // do not emit particles if front face has a duct on it.
+            return;
+        }
+
+        var center = pos.getCenter();
+        var offset = .75f;
+        var xPos = (float) (center.x + facing.getStepX() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+        var yPos = (float) (center.y + facing.getStepY() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+        var zPos = (float) (center.z + facing.getStepZ() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+
+        var ySpd = facing.getStepY() + (GTValues.RNG.nextFloat() - .15f) * .5f;
+        var xSpd = facing.getStepX() + (GTValues.RNG.nextFloat() - .5f) * .5f;
+        var zSpd = facing.getStepZ() + (GTValues.RNG.nextFloat() - .5f) * .5f;
+
+        self().getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
+                xPos, yPos, zPos, xSpd, ySpd, zSpd);
     }
 
     //////////////////////////////////////
@@ -148,28 +205,4 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                                 .align(Alignment.CENTER).coverChildren().child(
                                         SlotGroupWidget.playerInventory(false))));
     }
-
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * int rowSize = (int) Math.sqrt(inventory.getSlots());
-     * int xOffset = rowSize == 10 ? 9 : 0;
-     * var modular = new ModularUI(176 + xOffset * 2,
-     * 18 + 18 * rowSize + 94, this, entityPlayer)
-     * .background(GuiTextures.BACKGROUND)
-     * .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset,
-     * 18 + 18 * rowSize + 12, true));
-     *
-     * for (int y = 0; y < rowSize; y++) {
-     * for (int x = 0; x < rowSize; x++) {
-     * int index = y * rowSize + x;
-     * modular.widget(new SlotWidget(inventory, index,
-     * (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, false)
-     * .setBackgroundTexture(GuiTextures.SLOT));
-     * }
-     * }
-     * return modular;
-     * }
-     */
 }

@@ -20,7 +20,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     public Tag serializeNBT(@Nullable CoverBehavior value,
                             CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         if (value != null) {
-            return serialize(value, context.isClientSync(), context.fullClientSync());
+            return serialize(value, context.isClientSync(), context.isClientFullSyncUpdate());
         }
         return new CompoundTag();
     }

@@ -6,28 +6,26 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
@@ -100,19 +98,20 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 164);
+        var panel = GTGuis.createPanel(this, 196, 237);
 
         var panelUtil = new GTMultiblockPanelUtil(this);
 
-        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 196))
                 .child(new ParentWidget<>()
                         .widthRel(0.95f)
-                        .heightRel(.45f)
+                        .heightRel(.65f)
                         .margin(4, 0)
-                        .left(3).top(5)
-                        .child(new Row()
-                                .child(panelUtil.getMainTextPanel(syncManager, 170, 70))))
-                .child(new Column()
+                        .left(3).top(2)
+                        .horizontalCenter()
+                        .child(Flow.row()
+                                .child(panelUtil.getMainTextPanel(syncManager, 186, 146))))
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)
@@ -122,9 +121,18 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this, syncManager))
                         .child(GTMuiWidgets.createVoidingButton(this, syncManager)))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7).horizontalCenter());
 
         return panel;
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.addAll(super.getWidgetsForDisplay(syncManager));
+        return widgets;
     }
 
     // @Override

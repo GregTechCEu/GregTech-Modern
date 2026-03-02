@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
@@ -18,15 +16,13 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMultiblockPanelUtil {
 
-    private MultiblockControllerMachine controller;
+    private final MultiblockControllerMachine controller;
 
     public GTMultiblockPanelUtil(MultiblockControllerMachine controller) {
         this.controller = controller;
     }
 
     public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
-        boolean isFormed = controller.isFormed();
-
         var parentWidget = new ParentWidget<>();
         var listWidget = new ListWidget<>()
                 .width(width - 6)
@@ -37,20 +33,7 @@ public class GTMultiblockPanelUtil {
         parentWidget.size(width, height)
                 .background(GTGuiTextures.MUI_DISPLAY);
 
-        if (controller instanceof WorkableMultiblockMachine rlMachine) {
-            listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager));
-
-            if (rlMachine instanceof WorkableElectricMultiblockMachine workableElectricMachine) {
-                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager));
-                listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(workableElectricMachine, syncManager));
-            }
-            listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(rlMachine, syncManager));
-            listWidget.child(GTMultiblockTextUtil.addParallelLine(rlMachine, syncManager));
-            listWidget.child(GTMultiblockTextUtil.addBatchModeLine(rlMachine, syncManager));
-            listWidget.child(GTMultiblockTextUtil.addSubtickParallelsLine(rlMachine, syncManager));
-            listWidget.child(GTMultiblockTextUtil.addTotalRunsLine(rlMachine, syncManager));
-            listWidget.child(GTMultiblockTextUtil.addOutputLines(rlMachine, syncManager));
-        }
+        listWidget.children(controller.getWidgetsForDisplay(syncManager));
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
     }
