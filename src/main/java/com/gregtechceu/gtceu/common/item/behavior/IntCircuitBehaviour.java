@@ -9,11 +9,8 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -60,23 +57,6 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
             itemStack.setTag(compound);
         }
         return isCircuit;
-    }
-
-    // deprecated, not needed (for now)
-    @Deprecated
-    public static void adjustConfiguration(HeldItemUIFactory.HeldItemHolder holder, int amount) {
-        adjustConfiguration(holder.getHeld(), amount);
-        holder.markAsDirty();
-    }
-
-    // deprecated, not needed (for now)
-    @Deprecated
-    public static void adjustConfiguration(ItemStack stack, int amount) {
-        if (!isIntegratedCircuit(stack)) return;
-        int configuration = getCircuitConfiguration(stack);
-        configuration += amount;
-        configuration = Mth.clamp(configuration, 0, CIRCUIT_MAX);
-        setCircuitConfiguration(stack, configuration);
     }
 
     @Override

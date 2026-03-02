@@ -41,6 +41,9 @@ import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
@@ -55,6 +58,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
@@ -693,5 +697,47 @@ public class GTUtil {
                 }
             }
         }
+    }
+
+    public static AABB rotateAABB(AABB AABB, Direction facing) {
+        switch (facing) {
+            case SOUTH -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 180);
+            }
+            case EAST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), -90);
+            }
+            case WEST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 90);
+            }
+            case UP -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), 90);
+            }
+            case DOWN -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), -90);
+            }
+        }
+        return AABB;
+    }
+
+    public static AABB rotateAABB(AABB AABB, Vector3f axis, double degree) {
+        Vector3f min = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        Vector3f max = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        float radians = (float) Math.toRadians(degree);
+        min.rotateAxis(radians, axis.x, axis.y, axis.z);
+        max.rotateAxis(radians, axis.x, axis.y, axis.z);
+        min.add(0.5f, 0.5f, 0.5f);
+        max.add(0.5f, 0.5f, 0.5f);
+        return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Vector3f axis, double degree) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, axis, degree)))
+                .reduce(Shapes.empty(), Shapes::or);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Direction dir) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, dir))).reduce(Shapes.empty(),
+                Shapes::or);
     }
 }
