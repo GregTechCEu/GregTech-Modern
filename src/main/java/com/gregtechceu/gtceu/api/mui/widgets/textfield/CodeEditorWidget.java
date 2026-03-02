@@ -57,7 +57,8 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
 
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
-        return syncOrValue.isTypeOrEmpty(GenericListSyncHandler.class) || syncOrValue.isTypeOrEmpty(StringSyncValue.class);
+        return syncOrValue.isTypeOrEmpty(GenericListSyncHandler.class) ||
+                syncOrValue.isTypeOrEmpty(StringSyncValue.class);
     }
 
     @Override

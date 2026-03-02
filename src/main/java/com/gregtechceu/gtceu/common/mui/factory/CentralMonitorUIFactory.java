@@ -119,7 +119,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                 .setOnMousePressed(mouseData -> {
                                                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
                                                     groups.add(group);
-                                                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups, syncManager.isClient());
+                                                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups,
+                                                            syncManager.isClient());
                                                     groupSync.setValue(groups, true, false);
                                                     listHandler.notifyUpdate(buf -> {});
                                                 })))

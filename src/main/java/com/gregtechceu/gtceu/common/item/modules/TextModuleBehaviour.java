@@ -76,7 +76,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         BooleanSyncValue pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
         Runnable updateText = () -> updateText(stack, machine, group);
         assert ctx.itemStackHandler() != null;
-        return PlaceholderHandler.createPlaceholderEditor("text_module_" + group.getName(), syncManager, ctx, code, scale, null, pause,
+        return PlaceholderHandler.createPlaceholderEditor("text_module_" + group.getName(), syncManager, ctx, code,
+                scale, null, pause,
                 updateText);
     }
 

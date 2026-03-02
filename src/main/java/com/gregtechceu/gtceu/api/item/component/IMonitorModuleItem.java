@@ -18,7 +18,7 @@ public interface IMonitorModuleItem extends IItemComponent {
     IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
     IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
-                                    PanelSyncManager syncManager);
+                                     PanelSyncManager syncManager);
 
     default String getType() {
         return "unknown";

@@ -281,12 +281,12 @@ public class PlaceholderHandler {
     }
 
     public static IPanelHandler createPlaceholderEditor(String name, PanelSyncManager syncManager,
-                                               PlaceholderContext ctx,
-                                               IStringValue<?> code,
-                                               @Nullable DoubleSyncValue scaleDouble,
-                                               @Nullable IIntValue<?> updateInterval,
-                                               @Nullable IBoolValue<?> pause,
-                                               @Nullable Runnable updateText) {
+                                                        PlaceholderContext ctx,
+                                                        IStringValue<?> code,
+                                                        @Nullable DoubleSyncValue scaleDouble,
+                                                        @Nullable IIntValue<?> updateInterval,
+                                                        @Nullable IBoolValue<?> pause,
+                                                        @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
                 true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
@@ -315,7 +315,8 @@ public class PlaceholderHandler {
                                 .child(Flow.row()
                                         .height(20)
                                         .childIf(scaleDouble != null,
-                                                () -> new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_scale")))
+                                                () -> new TextWidget<>(
+                                                        IKey.lang("gtceu.gui.central_monitor.text_scale")))
                                         .childIf(scaleDouble != null, () -> new TextFieldWidget()
                                                 .setNumbersDouble(x -> Math.max(x, 0))
                                                 .setDefaultNumber(1.0)
