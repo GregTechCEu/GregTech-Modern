@@ -4,25 +4,32 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.Icon;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -31,7 +38,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -48,7 +54,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamMinerMachine extends SteamWorkableMachine implements IControllable,
-                               IUIMachine, IDataInfoProvider, IMiner {
+                               IDataInfoProvider, IMiner, IMuiMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
@@ -148,65 +154,65 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        int rowSize = (int) Math.sqrt(inventorySize);
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel panel = GTGuis.createPanel(this, 176, 166);
 
-        ModularUI builder = new ModularUI(175, 176, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure()));
-        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                GuiTextures.SLOT_STEAM.get(isHighPressure()), 7,
-                94, true));
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176));
+        int rowSize = 2;
 
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                builder.widget(new SlotWidget(exportItems, index, 142 - rowSize * 9 + x * 18, 18 + y * 18, true, false)
-                        .setBackgroundTexture(GuiTextures.SLOT_STEAM.get(isHighPressure())));
-            }
-        }
+        SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
+        panel.child(new Grid()
+                        .coverChildren()
+                        .top(10)
+                        .alignX(0.75f)
+                        .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
+                                .slot(SyncHandlers.itemSlot(exportItems, index)
+                                        .slotGroup(group)
+                                        .changeListener((newItem, amount, client, init) -> {
+                                            if (amount) {
+                                                exportItems.onContentsChanged();
+                                            }
+                                        })
+                                        .accessibility(false, true))))
+                .child(new ListWidget<>()
+                        .top(10)
+                        .alignX(0.25f)
+                        .coverChildren()
+                        .childSeparator(Icon.EMPTY_2PX)
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .alignX(Alignment.CenterLeft).children(getDisplayTextWidgets()))
+                .child(SlotGroupWidget.playerInventory(true)
+                        .left(7)
+                        .bottom(7));
 
-        builder.widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()));
-        builder.widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure()))
-                .setPredicate(() -> !drainInput(true)));
-        builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(isHighPressure())));
-        builder.widget(new ComponentPanelWidget(10, 19, this::addDisplayText)
-                .setMaxWidthLimit(84));
-        builder.widget(new ComponentPanelWidget(70, 19, this::addDisplayText2)
-                .setMaxWidthLimit(84));
-
-        return builder;
+        return panel;
     }
 
-    void addDisplayText(List<Component> textList) {
+    List<IWidget> getDisplayTextWidgets() {
+        List<IWidget> widgets = new ArrayList<>();
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        textList.add(Component.translatable("gtceu.machine.miner.startx", this.getRecipeLogic().getX()));
-        textList.add(Component.translatable("gtceu.machine.miner.starty", this.getRecipeLogic().getY()));
-        textList.add(Component.translatable("gtceu.machine.miner.startz", this.getRecipeLogic().getZ()));
-        textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+        widgets.add(IKey.lang("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()).asWidget());
+        widgets.add(IKey.lang("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()).asWidget());
+        widgets.add(IKey.lang("gtceu.machine.miner.z", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()).asWidget());
+        widgets.add(IKey.lang("gtceu.universal.tooltip.working_area", workingArea, workingArea).asWidget());
         if (this.getRecipeLogic().isDone())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                    .withStyle(ChatFormatting.GREEN));
+            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.done").withStyle(ChatFormatting.GREEN)).asWidget());
         else if (this.getRecipeLogic().isWorking())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.working")
-                    .withStyle(ChatFormatting.GOLD));
+            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.working").withStyle(ChatFormatting.GOLD)).asWidget());
         else if (!this.isWorkingEnabled())
-            textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+            widgets.add(IKey.lang("gtceu.multiblock.work_paused").asWidget());
         if (getRecipeLogic().isInventoryFull())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
-                    .withStyle(ChatFormatting.RED));
+            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.invfull")
+                    .withStyle(ChatFormatting.RED)).asWidget());
         if (exhaustVentTrait.isVentingBlocked())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.vent")
-                    .withStyle(ChatFormatting.RED));
+            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.vent")
+                    .withStyle(ChatFormatting.RED)).asWidget());
         else if (!drainInput(true))
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.steam")
-                    .withStyle(ChatFormatting.RED));
-    }
-
-    void addDisplayText2(List<Component> textList) {
-        textList.add(Component.translatable("gtceu.machine.miner.minex", this.getRecipeLogic().getMineX()));
-        textList.add(Component.translatable("gtceu.machine.miner.miney", this.getRecipeLogic().getMineY()));
-        textList.add(Component.translatable("gtceu.machine.miner.minez", this.getRecipeLogic().getMineZ()));
+            widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.large_miner.steam")
+                    .withStyle(ChatFormatting.RED)).asWidget());
+        return widgets;
     }
 
     @Override
@@ -220,7 +226,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
         return false;
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

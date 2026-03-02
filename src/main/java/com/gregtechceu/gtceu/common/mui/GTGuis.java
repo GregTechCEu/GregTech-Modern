@@ -20,8 +20,8 @@ public class GTGuis {
         return ModularPanel.defaultPanel(name, width, height);
     }
 
-    public static ModularPanel createPanel(MetaMachine mte, int width, int height) {
-        return createPanel(mte.getDefinition().getId().getPath(), width, height);
+    public static ModularPanel createPanel(MetaMachine machine, int width, int height) {
+        return createPanel(machine.getDefinition().getId().getPath(), width, height);
     }
 
     public static ModularPanel createPanel(CoverBehavior cover, int width, int height) {

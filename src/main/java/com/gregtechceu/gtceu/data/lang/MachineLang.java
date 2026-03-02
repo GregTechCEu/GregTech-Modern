@@ -476,12 +476,9 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
-        provider.add("gtceu.machine.miner.startx", "sX: %d");
-        provider.add("gtceu.machine.miner.starty", "sY: %d");
-        provider.add("gtceu.machine.miner.startz", "sZ: %d");
-        provider.add("gtceu.machine.miner.minex", "mX: %d");
-        provider.add("gtceu.machine.miner.miney", "mY: %d");
-        provider.add("gtceu.machine.miner.minez", "mZ: %d");
+        provider.add("gtceu.machine.miner.x", "sX: %d, mX: %d");
+        provider.add("gtceu.machine.miner.y", "sY: %d, mY: %d");
+        provider.add("gtceu.machine.miner.z", "sZ: %d, mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
         provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");

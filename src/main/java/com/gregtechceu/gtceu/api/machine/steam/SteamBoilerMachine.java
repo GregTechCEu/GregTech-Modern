@@ -361,32 +361,6 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return panel;
     }
 
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * return new ModularUI(176, 166, this, entityPlayer)
-     * .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-     * .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-     * .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
-     * .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
-     * GuiTextures.PROGRESS_BAR_BOILER_HEAT)
-     * .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-     * .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature",
-     * currentTemperature + 274, getMaxTemperature() + 274)))
-     * .widget(new TankWidget(waterTank.getStorages()[0], 83, 26, 10, 54, false, true)
-     * .setShowAmount(false)
-     * .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-     * .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-     * .widget(new TankWidget(steamTank.getStorages()[0], 70, 26, 10, 54, true, false)
-     * .setShowAmount(false)
-     * .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-     * .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-     * .widget(new ImageWidget(43, 44, 18, 18, GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure)))
-     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-     * GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
-     * }
-     */
-
     //////////////////////////////////////
     // ********* Client *********//
     //////////////////////////////////////
