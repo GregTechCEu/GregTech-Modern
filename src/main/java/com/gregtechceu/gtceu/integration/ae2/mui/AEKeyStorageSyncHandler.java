@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
+package com.gregtechceu.gtceu.integration.ae2.mui;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;

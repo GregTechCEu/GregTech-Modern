@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
+package com.gregtechceu.gtceu.integration.ae2.mui;
 
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;

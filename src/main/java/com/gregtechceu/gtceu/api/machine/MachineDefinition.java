@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
@@ -128,7 +127,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private EditableMachineUI editableUI;
     @Getter
     @Setter
-    private PanelFactory UI;
+    private @Nullable PanelFactory UI;
     @Getter
     @Setter
     private String themeId = ThemeAPI.DEFAULT_ID;

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.gui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -24,9 +23,6 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
 
     @Override
     protected ModularUI createUITemplate(MetaMachine holder, Player entityPlayer) {
-        if (holder instanceof IUIMachine machine) {
-            return machine.createUI(entityPlayer);
-        }
         return null;
     }
 

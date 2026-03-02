@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -88,15 +87,12 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @SaveField
     private double temperature = IDLE_TEMPERATURE; // start at idle temperature
 
-    private final TimedProgressSupplier progressSupplier;
-
     @Nullable
     protected TickableSubscription tickSubs;
 
     public HPCAMachine(BlockEntityCreationInfo info) {
         super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
-        this.progressSupplier = new TimedProgressSupplier(200, 47, false);
         this.hpcaHandler = new HPCAGridHandler(this);
     }
 

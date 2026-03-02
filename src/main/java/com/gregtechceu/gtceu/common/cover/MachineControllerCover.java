@@ -50,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MachineControllerCover extends CoverBehavior implements IMuiCover {// IUICover {
+public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     @SaveField
     @Getter

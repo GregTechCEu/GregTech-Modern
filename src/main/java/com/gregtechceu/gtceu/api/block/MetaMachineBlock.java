@@ -289,8 +289,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
                 return machine.getDefinition().getUI().tryToOpenUI(player, hand, hit);
             } else if (machine instanceof IMuiMachine muiMachine) {
                 return muiMachine.tryToOpenUI(player, hand, hit);
-            } else if (machine instanceof IUIMachine uiMachine) {
-                return uiMachine.tryToOpenUI(player, hand, hit);
             }
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;

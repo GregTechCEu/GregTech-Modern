@@ -22,9 +22,9 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEKeyStorageSyncHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEStackDisplayWidget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.ScrollPreservingGrid;
+import com.gregtechceu.gtceu.integration.ae2.mui.AEKeyStorageSyncHandler;
+import com.gregtechceu.gtceu.integration.ae2.mui.AEStackDisplayWidget;
+import com.gregtechceu.gtceu.integration.ae2.mui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 
