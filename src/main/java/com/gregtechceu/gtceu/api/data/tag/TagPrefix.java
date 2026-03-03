@@ -1085,13 +1085,13 @@ public class TagPrefix {
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
                                  BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
                                  boolean doubleDrops) {
-        return registerOre(stoneType, material, properties, baseModelLocation, doubleDrops, false, false);
+        return registerOre(stoneType, material, properties, baseModelLocation, false, false, false);
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
                                  BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
                                  boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
-        return registerOre(stoneType, material, () -> properties, baseModelLocation, doubleDrops, isSand,
+        return registerOre(stoneType, material, () -> properties, baseModelLocation, false, isSand,
                 shouldDropAsItem);
     }
 
@@ -1099,7 +1099,7 @@ public class TagPrefix {
                                  Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation,
                                  boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
         ORES.put(this,
-                new OreType(stoneType, material, properties, baseModelLocation, doubleDrops, isSand, shouldDropAsItem));
+                new OreType(stoneType, material, properties, baseModelLocation, false, isSand, shouldDropAsItem));
         if (shouldDropAsItem) {
             GTOreByProduct.addOreByProductPrefix(this);
         }
