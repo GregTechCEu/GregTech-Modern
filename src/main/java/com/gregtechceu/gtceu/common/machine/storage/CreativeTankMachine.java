@@ -1,28 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -30,35 +25,31 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CreativeTankMachine extends QuantumTankMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
-            QuantumTankMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int mBPerCycle = 1000;
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 1;
 
-    public CreativeTankMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, 1);
+    public CreativeTankMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX, 1);
     }
 
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new InfiniteCache(this);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
     @Override
@@ -85,18 +76,22 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
-            // Clear fluid if empty + shift-rclick
-            if (heldItem.isEmpty()) {
-                if (player.isCrouching() && !stored.isEmpty()) {
-                    return updateStored(FluidStack.EMPTY);
-                }
-                return InteractionResult.PASS;
-            }
+    public void saveToItem(CompoundTag tag) {
+        tag.putInt("mBPerCycle", mBPerCycle);
+        tag.putInt("ticksPerCycle", ticksPerCycle);
+    }
 
+    @Override
+    public void loadFromItem(CompoundTag tag) {
+        mBPerCycle = tag.getInt("mBPerCycle");
+        ticksPerCycle = tag.getInt("ticksPerCycle");
+    }
+
+    @Override
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var heldItem = context.getItemInHand();
+        var player = context.getPlayer();
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
                 return FluidUtil.getFluidContained(heldItem)
@@ -115,7 +110,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
             }
 
             if (!result.isEmpty()) {
-                player.setItemInHand(hand, result);
+                player.setItemInHand(context.getHand(), result);
                 return InteractionResult.SUCCESS;
             } else {
                 return FluidUtil.getFluidContained(heldItem)
@@ -123,7 +118,19 @@ public class CreativeTankMachine extends QuantumTankMachine {
                         .orElse(InteractionResult.PASS);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUseWithItem(context);
+    }
+
+    @Override
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+            // Clear fluid if empty + shift-rclick
+            if (context.getPlayer().isCrouching() && !stored.isEmpty()) {
+                return updateStored(FluidStack.EMPTY);
+            }
+            return InteractionResult.PASS;
+        }
+        return super.onUse(context);
     }
 
     @Override
@@ -152,11 +159,6 @@ public class CreativeTankMachine extends QuantumTankMachine {
                 .setPressed(isWorkingEnabled()));
 
         return group;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class InfiniteCache extends FluidCache {

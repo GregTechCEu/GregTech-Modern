@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -29,11 +28,9 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoImportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -48,11 +45,9 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoImportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
@@ -69,11 +64,9 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoExportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -88,11 +81,9 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoExportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         itemBus.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
@@ -110,13 +101,10 @@ public class ItemBusPartMachineTest {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
-        CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 3, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -132,13 +120,10 @@ public class ItemBusPartMachineTest {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
-        CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) ((MetaMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
-        CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 3, 0)))
-                .getMetaMachine();
+        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
+                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));

@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -33,23 +36,56 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, ICopyable {
+public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
-    Level getLevel();
+    IGregtechBlockEntity getHolder();
 
-    BlockPos getPos();
+    default Level getLevel() {
+        return getHolder().getLevel();
+    }
 
-    long getOffsetTimer();
+    default BlockPos getBlockPos() {
+        return getHolder().getBlockPos();
+    }
 
-    void markDirty();
+    default BlockState getBlockState() {
+        return getHolder().getBlockState();
+    }
 
-    boolean isInValid();
+    default long getOffsetTimer() {
+        return getHolder().getOffsetTimer();
+    }
 
-    void notifyBlockUpdate();
+    default boolean isRemoved() {
+        return getHolder().isRemoved();
+    }
 
-    void scheduleRenderUpdate();
+    default void notifyBlockUpdate() {
+        getHolder().notifyBlockUpdate();
+    }
 
-    void scheduleNeighborShapeUpdate();
+    default void scheduleRenderUpdate() {
+        getHolder().notifyBlockUpdate();
+    }
+
+    default void scheduleNeighborShapeUpdate() {
+        getHolder().scheduleNeighborShapeUpdate();
+    }
+
+    default void markAsChanged() {
+        getHolder().markAsChanged();
+    }
+
+    @Nullable
+    @Override
+    default TickableSubscription subscribeServerTick(Runnable runnable) {
+        return getHolder().subscribeServerTick(runnable);
+    }
+
+    @Override
+    default void unsubscribe(@Nullable TickableSubscription current) {
+        getHolder().unsubscribe(current);
+    }
 
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
 
@@ -90,7 +126,6 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         coverBehavior.onLoad();
         setCoverAtSide(coverBehavior, side);
         notifyBlockUpdate();
-        markDirty();
         scheduleNeighborShapeUpdate();
         // TODO achievement
         // AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
@@ -112,11 +147,10 @@ public interface ICoverable extends ITickSubscription, ICopyable {
             if (player != null && player.getInventory().add(dropStack))
                 continue;
 
-            Block.popResource(getLevel(), getPos(), dropStack);
+            Block.popResource(getLevel(), getBlockPos(), dropStack);
 
         }
         notifyBlockUpdate();
-        markDirty();
         scheduleNeighborShapeUpdate();
         return true;
     }

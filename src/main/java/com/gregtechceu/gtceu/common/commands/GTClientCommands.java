@@ -35,19 +35,19 @@ public class GTClientCommands {
 
         private final List<ClientCacheManager.ProspectionInfo> prospectionData;
         private final UUID sender;
-        private final UUID reciever;
+        private final UUID receiver;
 
-        public ProspectingShareTask(UUID sender, UUID reciever) {
+        public ProspectingShareTask(UUID sender, UUID receiver) {
             prospectionData = ClientCacheManager.getProspectionShareData();
             this.sender = sender;
-            this.reciever = reciever;
+            this.receiver = receiver;
         }
 
         @Override
         public void run() {
             boolean first = true;
             for (ClientCacheManager.ProspectionInfo info : prospectionData) {
-                GTNetwork.sendToServer(new SCPacketShareProspection(sender, reciever, info.cacheName, info.key,
+                GTNetwork.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
                         info.isDimCache, info.dim, info.data, first));
                 first = false;
 

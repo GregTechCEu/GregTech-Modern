@@ -18,17 +18,12 @@ public interface IUICover extends IUIHolder {
 
     @Override
     default boolean isInvalid() {
-        return self().coverHolder.isInValid() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
+        return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
 
     @Override
     default boolean isRemote() {
         return self().coverHolder.isRemote();
-    }
-
-    @Override
-    default void markAsDirty() {
-        self().coverHolder.markDirty();
     }
 
     @Override
@@ -48,4 +43,7 @@ public interface IUICover extends IUIHolder {
     default void onUIClosed() {}
 
     Widget createUIWidget();
+
+    @Override
+    default void markAsDirty() {}
 }

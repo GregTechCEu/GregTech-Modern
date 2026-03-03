@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -43,7 +43,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<IMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -59,8 +59,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
-    @Setter
-    private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
     @Getter
     @Setter
     private @NotNull GTRecipeType @NotNull [] recipeTypes;
@@ -156,10 +154,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return blockEntityTypeSupplier.get();
     }
 
-    public MetaMachine createMetaMachine(IMachineBlockEntity blockEntity) {
-        return machineSupplier.apply(blockEntity);
-    }
-
     public ItemStack asStack() {
         return new ItemStack(getItem());
     }
@@ -174,8 +168,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     @Override
-    public IMachineBlock get() {
-        return (IMachineBlock) blockSupplier.get();
+    public MetaMachineBlock get() {
+        return (MetaMachineBlock) blockSupplier.get();
     }
 
     public String getName() {

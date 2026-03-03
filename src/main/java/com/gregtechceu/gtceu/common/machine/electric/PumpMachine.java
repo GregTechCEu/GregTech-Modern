@@ -1,29 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -46,7 +40,6 @@ import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -60,72 +53,39 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine, IMachineLife {
+public class PumpMachine extends TieredEnergyMachine implements IUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public static final int BASE_PUMP_RADIUS = 16;
     public static final int EXTRA_PUMP_RADIUS = 4;
     public static final int PUMP_SPEED_BASE = 80;
     private final Set<BlockPos> forbiddenBlocks = new ObjectOpenHashSet<>();
     private PumpQueue pumpQueue = null;
     @Getter
-    @Persisted
+    @SaveField
     private int pumpHeadY;
-    @Getter
-    @Setter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    protected boolean autoOutputFluids;
-    @Persisted
-    @DropSaved
+    @SaveField
     protected final NotifiableFluidTank cache;
 
-    public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
-        this.cache = createCacheFluidHandler(args);
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
+
+    public PumpMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
+        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
+                IO.OUT);
+        environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
-    }
-
-    @Override
-    public boolean isAllowInputFromOutputSideFluids() {
-        return false;
-    }
-
-    @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {}
-
-    @Override
-    public Direction getOutputFacingFluids() {
-        return getFrontFacing();
-    }
-
-    @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
-        setFrontFacing(outputFacing);
-    }
 
     @Override
     public void onLoad() {
         super.onLoad();
         subscribeServerTick(this::update);
-    }
-
-    @Override
-    public boolean shouldWeatherOrTerrainExplosion() {
-        return false;
     }
 
     //////////////////////////////////////
@@ -257,7 +217,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             return;
         }
 
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         BlockPos downPos = headPos.below(1);
         var downBlock = getLevel().getBlockState(downPos);
@@ -391,7 +351,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
      */
     private boolean canAdvancePumpHead() {
         // position of the pump head, i.e. the position of the lowest mining pipe
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
@@ -413,9 +373,10 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getPos().relative(Direction.DOWN);
+            var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
                 pos = pos.relative(Direction.DOWN);
@@ -516,8 +477,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     public void update() {
-        if (getOutputFacingFluids() != null) {
-            cache.exportToNearby(getOutputFacingFluids());
+        if (autoOutput.getFluidOutputDirection() != null) {
+            cache.exportToNearby(autoOutput.getFluidOutputDirection());
         }
 
         // do not do anything without enough energy supplied
@@ -579,25 +540,10 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 .widget(new TankWidget(cache.getStorages()[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
+                        GuiTextures.BUTTON_FLUID_OUTPUT, this.autoOutput::isAutoOutputFluids,
+                        this.autoOutput::setAllowAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
-    }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

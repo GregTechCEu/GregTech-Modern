@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -34,21 +34,21 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     private final MachineBuilder<?, ?>[] builders = new MachineBuilder[TIER_COUNT];
 
     @Setter
-    public volatile int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
+    public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
-    public volatile TieredCreationFunction machine;
+    public transient TieredCreationFunction machine;
     @Setter
-    public volatile DefinitionFunction definition = (tier, def) -> def.tier(tier);
+    public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    public volatile Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
+    public transient Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
-    public volatile boolean addDefaultTooltips = true;
+    public transient boolean addDefaultTooltips = true;
     @Setter
-    public volatile boolean addDefaultModel = true;
+    public transient boolean addDefaultModel = true;
     @Setter
-    public volatile boolean isGenerator = false;
+    public transient boolean isGenerator = false;
 
-    public volatile BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
+    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(id);
@@ -130,13 +130,13 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @FunctionalInterface
     public interface TieredCreationFunction {
 
-        MetaMachine create(IMachineBlockEntity holder, int tier, Int2IntFunction tankScaling);
+        MetaMachine create(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScaling);
     }
 
     @FunctionalInterface
     public interface CreationFunction<T extends MetaMachine> {
 
-        T create(IMachineBlockEntity holder);
+        T create(BlockEntityCreationInfo info);
     }
 
     @FunctionalInterface

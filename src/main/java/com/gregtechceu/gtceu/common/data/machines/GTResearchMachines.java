@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -439,7 +439,7 @@ public class GTResearchMachines {
 
     @NotNull
     private static MachineBuilder<MachineDefinition, ?> registerDataHatch(String name, String displayName, int tier,
-                                                                          Function<IMachineBlockEntity, MetaMachine> constructor,
+                                                                          Function<BlockEntityCreationInfo, MetaMachine> constructor,
                                                                           String model, PartAbility... abilities) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
@@ -450,7 +450,7 @@ public class GTResearchMachines {
     }
 
     private static MachineBuilder<MachineDefinition, ?> registerHPCAPart(String name, String displayName,
-                                                                         Function<IMachineBlockEntity, MetaMachine> constructor,
+                                                                         Function<BlockEntityCreationInfo, MetaMachine> constructor,
                                                                          String texture, boolean isAdvanced) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
