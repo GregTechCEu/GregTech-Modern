@@ -168,7 +168,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     public FluidStack[] getStacks() {
         if (changed || this.stacks == null) {
             List<FluidStack> fluidStacks = new ObjectArrayList<>(1);
-            List<Fluid> found = new ObjectArrayList<>(1);
+            Set<Fluid> found = new HashSet<>();
             for (Value value : this.values) {
                 for (Fluid fluid : value.getFluids()) {
                     if (found.contains(fluid)) continue;
