@@ -1,31 +1,27 @@
-tasks.register('slimJar', Jar) {
-    dependsOn("classes")
-    archiveClassifier = "dev-slim"
-    from sourceSets.main.output
-}
-
-obfuscation {
-    reobfuscate(tasks.named('slimJar'), sourceSets.main) {
-        archiveClassifier = "slim"
-    }
+tasks.jar {
+    archiveClassifier = "dev"
+    destinationDirectory = file("$buildDir/devlibs")
+    exclude("META-INF/jarjar/**")
+    from("LICENSE")
 }
 
 // Add sources jar to components.java
 java {
-    artifacts.archives(reobfSlimJar)
     withSourcesJar()
 }
-
-jar.archiveClassifier = "dev"
 
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"
 }
 
 afterEvaluate {
+    tasks.named("sourcesJar", Jar).configure {
+        enabled = false
+    }
+
     reobfJar.archiveClassifier = ""
+    reobfJar.destinationDirectory = file('build/libs/')
     tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
-        destinationDirectory = file('build/libs/')
         manifest.attributes([
                 'MixinConfigs': 'gtceu.mixins.json',
                 'Specification-Title': project.name,

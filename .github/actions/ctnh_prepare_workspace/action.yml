@@ -1,0 +1,174 @@
+name: Prepare CTNH Workspace
+description: Checkout CTNH-Modules and required module repos, then setup Java/Gradle.
+
+inputs:
+  token:
+    description: Token used for all checkouts.
+    required: true
+  module_name:
+    description: Module directory name under CTNH-Modules/modules (e.g. CTNH-Core).
+    required: true
+
+  ctnh_modules_repository:
+    description: CTNH-Modules repository.
+    required: false
+    default: CTNH-Team/CTNH-Modules
+  ctnh_modules_ref:
+    description: CTNH-Modules ref (branch/tag/SHA).
+    required: false
+    default: master
+
+  ctnh_core_repository:
+    description: CTNH-Core repository.
+    required: false
+    default: CTNH-Team/CTNH-Core
+  ctnh_core_ref:
+    description: CTNH-Core ref.
+    required: false
+    default: dev
+
+  ctnh_bio_repository:
+    description: CTNH-Bio repository.
+    required: false
+    default: CTNH-Team/CTNH-Bio
+  ctnh_bio_ref:
+    description: CTNH-Bio ref.
+    required: false
+    default: dev
+
+  ctnh_energy_repository:
+    description: CTNH-Energy repository.
+    required: false
+    default: CTNH-Team/CTNH-Energy
+  ctnh_energy_ref:
+    description: CTNH-Energy ref.
+    required: false
+    default: dev
+
+  ctnh_lib_repository:
+    description: CTNH-Lib repository.
+    required: false
+    default: CTNH-Team/CTNH-Lib
+  ctnh_lib_ref:
+    description: CTNH-Lib ref.
+    required: false
+    default: dev
+
+  ctnh_mana_repository:
+    description: CTNH-Mana repository.
+    required: false
+    default: CTNH-Team/CTNH-Mana
+  ctnh_mana_ref:
+    description: CTNH-Mana ref.
+    required: false
+    default: dev
+
+  ctpp_repository:
+    description: CTPP repository.
+    required: false
+    default: CTNH-Team/CTPP
+  ctpp_ref:
+    description: CTPP ref.
+    required: false
+    default: dev
+
+  gtm_repository:
+    description: GTM repository.
+    required: false
+    default: CTNH-Team/GregTech-Modern
+  gtm_ref:
+    description: GTM ref.
+    required: false
+    default: dev
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout CTNH-Modules
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_modules_repository }}
+        ref: ${{ inputs.ctnh_modules_ref }}
+        path: CTNH-Modules
+
+    - name: Checkout Current Module
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        fetch-depth: 0
+        path: CTNH-Modules/modules/${{ inputs.module_name }}
+
+    - name: Checkout CTNH-Core
+      if: ${{ inputs.module_name != 'CTNH-Core' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_core_repository }}
+        ref: ${{ inputs.ctnh_core_ref }}
+        path: CTNH-Modules/modules/CTNH-Core
+
+    - name: Checkout CTNH-Bio
+      if: ${{ inputs.module_name != 'CTNH-Bio' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_bio_repository }}
+        ref: ${{ inputs.ctnh_bio_ref }}
+        path: CTNH-Modules/modules/CTNH-Bio
+
+    - name: Checkout CTNH-Energy
+      if: ${{ inputs.module_name != 'CTNH-Energy' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_energy_repository }}
+        ref: ${{ inputs.ctnh_energy_ref }}
+        path: CTNH-Modules/modules/CTNH-Energy
+
+    - name: Checkout CTNH-Lib
+      if: ${{ inputs.module_name != 'CTNH-Lib' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_lib_repository }}
+        ref: ${{ inputs.ctnh_lib_ref }}
+        path: CTNH-Modules/modules/CTNH-Lib
+
+    - name: Checkout CTNH-Mana
+      if: ${{ inputs.module_name != 'CTNH-Mana' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_mana_repository }}
+        ref: ${{ inputs.ctnh_mana_ref }}
+        path: CTNH-Modules/modules/CTNH-Mana
+
+    - name: Checkout CTPP
+      if: ${{ inputs.module_name != 'CTPP' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctpp_repository }}
+        ref: ${{ inputs.ctpp_ref }}
+        path: CTNH-Modules/modules/CTPP
+
+    - name: Checkout GTM
+      if: ${{ inputs.module_name != 'GregTech-Modern' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.gtm_repository }}
+        ref: ${{ inputs.gtm_ref }}
+        path: CTNH-Modules/modules/GregTech-Modern
+
+    - name: Setup Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: ${{ github.event_name == 'pull_request' }}

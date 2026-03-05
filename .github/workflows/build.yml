@@ -1,0 +1,87 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      MODULE_NAME: GregTech-Modern
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Path Filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'spotless/**'
+              - 'gradle/**'
+              - '**/*.gradle'
+              - 'settings.gradle'
+              - 'gradle.properties'
+              - 'dependencies.gradle'
+              - 'gradlew'
+              - 'gradlew.bat'
+              - '.github/**'
+
+      - name: Prepare Workspace
+        if: steps.filter.outputs.code == 'true' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        uses: ./.github/actions/ctnh_prepare_workspace
+        with:
+          token: ${{ github.token }}
+          module_name: ${{ env.MODULE_NAME }}
+
+      - name: Build
+        if: steps.filter.outputs.code == 'true' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        working-directory: CTNH-Modules
+        run: ./gradlew :modules:${{ env.MODULE_NAME }}:build
+
+      - name: Version Suffix
+        if: github.event_name != 'release' && (steps.filter.outputs.code == 'true' || github.event_name == 'workflow_dispatch')
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "VERSION_SUFFIX=PR-${{ github.event.number }}" >> "$GITHUB_ENV"
+          else
+            echo "VERSION_SUFFIX=$(echo "${GITHUB_SHA}" | cut -c 1-7)" >> "$GITHUB_ENV"
+          fi
+
+      - name: Rename Jars
+        if: github.event_name != 'release' && (steps.filter.outputs.code == 'true' || github.event_name == 'workflow_dispatch')
+        shell: bash
+        run: |
+          set -euo pipefail
+          libs_dir="CTNH-Modules/modules/${MODULE_NAME}/build/libs"
+          for file in "$libs_dir"/*.jar; do
+            [[ -e "$file" ]] || continue
+            mv "$file" "${file/.jar/-${VERSION_SUFFIX}.jar}"
+          done
+
+      - name: Upload Artifacts
+        if: steps.filter.outputs.code == 'true' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.MODULE_NAME }}-jars
+          path: CTNH-Modules/modules/${{ env.MODULE_NAME }}/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 15
+
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: CTNH-Modules/modules/${{ env.MODULE_NAME }}/build/libs/*.jar

@@ -1,9 +1,0 @@
-name: Label PRs
-
-on:
-  - pull_request_target
-
-jobs:
-  labeler:
-    uses: GregTechCEu/GithubActions/.github/workflows/labeler.yml@main
-    secrets: inherit
