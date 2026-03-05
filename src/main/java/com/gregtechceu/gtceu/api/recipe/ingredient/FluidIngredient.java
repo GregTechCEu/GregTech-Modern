@@ -85,12 +85,13 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
         if (this.values.length == 1) {
             jsonObject.add("value", this.values[0].serialize());
+        } else {
+            JsonArray jsonArray = new JsonArray();
+            for (FluidIngredient.Value value : this.values) {
+                jsonArray.add(value.serialize());
+            }
+            jsonObject.add("value", jsonArray);
         }
-        JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
-            jsonArray.add(value.serialize());
-        }
-        jsonObject.add("value", jsonArray);
         return jsonObject;
     }
 
