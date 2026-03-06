@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -14,11 +14,13 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class DetectorCoverTest {
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -32,6 +34,7 @@ public class DetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -45,6 +48,7 @@ public class DetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));

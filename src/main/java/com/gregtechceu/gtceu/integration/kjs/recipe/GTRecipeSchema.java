@@ -6,33 +6,32 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -913,13 +912,12 @@ public interface GTRecipeSchema {
             return addCondition(new CleanroomCondition(cleanroomType));
         }
 
-        public GTKubeRecipe dimension(ResourceLocation dimension, boolean reverse) {
-            return addCondition(
-                    new DimensionCondition(ResourceKey.create(Registries.DIMENSION, dimension)).setReverse(reverse));
+        public GTKubeRecipe dimension(ResourceKey<Level> dimension) {
+            return dimension(dimension, false);
         }
 
-        public GTKubeRecipe dimension(ResourceKey<Level> dimension) {
-            return dimension(dimension.location(), false);
+        public GTKubeRecipe dimension(ResourceKey<Level> dimension, boolean reverse) {
+            return addCondition(new DimensionCondition(dimension).setReverse(reverse));
         }
 
         public GTKubeRecipe biome(ResourceKey<Biome> biome, boolean reverse) {
@@ -930,11 +928,11 @@ public interface GTRecipeSchema {
             return biome(biome, false);
         }
 
-        public GTKubeRecipe biomeTag(ResourceLocation biome, boolean reverse) {
-            return addCondition(new BiomeTagCondition(TagKey.create(Registries.BIOME, biome)).setReverse(reverse));
+        public GTKubeRecipe biomeTag(TagKey<Biome> biome, boolean reverse) {
+            return addCondition(new BiomeTagCondition(biome).setReverse(reverse));
         }
 
-        public GTKubeRecipe biomeTag(ResourceLocation biome) {
+        public GTKubeRecipe biomeTag(TagKey<Biome> biome) {
             return biomeTag(biome, false);
         }
 
@@ -978,14 +976,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
         }
 
-        public GTKubeRecipe adjacentFluidTag(ResourceLocation... tagNames) {
-            return adjacentFluidTag(false, tagNames);
+        public GTKubeRecipe adjacentFluidTag(List<TagKey<Fluid>> tags) {
+            return adjacentFluidTag(false, tags);
         }
 
-        public GTKubeRecipe adjacentFluidTag(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.FLUID, id))
-                    .toList();
+        public GTKubeRecipe adjacentFluidTag(boolean isReverse, List<TagKey<Fluid>> tags) {
             return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
         }
 
@@ -997,14 +992,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
         }
 
-        public GTKubeRecipe adjacentBlockTag(ResourceLocation... tagNames) {
-            return adjacentBlockTag(false, tagNames);
+        public GTKubeRecipe adjacentBlockTag(List<TagKey<Block>> tags) {
+            return adjacentBlockTag(false, tags);
         }
 
-        public GTKubeRecipe adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Block>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.BLOCK, id))
-                    .toList();
+        public GTKubeRecipe adjacentBlockTag(boolean isReverse, List<TagKey<Block>> tags) {
             return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
         }
 
@@ -1020,19 +1012,19 @@ public interface GTRecipeSchema {
             return daytime(true);
         }
 
-        // public GTKubeRecipe heraclesQuest(String questId, boolean isReverse) {
-        // if (!GTCEu.Mods.isHeraclesLoaded()) {
-        // throw new KubeRuntimeException("Heracles not loaded!");
-        // }
-        // if (questId.isEmpty()) {
-        // throw new KubeRuntimeException(String.format("Quest ID cannot be empty for recipe %s", this.id));
-        // }
-        // return addCondition(new HeraclesQuestCondition(isReverse, questId));
-        // }
+        public GTKubeRecipe heraclesQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isHeraclesLoaded()) {
+                throw new KubeRuntimeException("Heracles not loaded!");
+            }
+            if (questId.isEmpty()) {
+                throw new KubeRuntimeException(String.format("Quest ID cannot be empty for recipe %s", this.id));
+            }
+            return addCondition(new HeraclesQuestCondition(isReverse, questId));
+        }
 
-        // public GTKubeRecipe heraclesQuest(String questId) {
-        // return heraclesQuest(questId, false);
-        // }
+        public GTKubeRecipe heraclesQuest(String questId) {
+            return heraclesQuest(questId, false);
+        }
 
         // public GTKubeRecipe gameStage(String stageName) {
         // return gameStage(stageName, false);
@@ -1210,7 +1202,7 @@ public interface GTRecipeSchema {
 
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
     RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.key("duration", ComponentRole.OTHER).optional(new TickDuration(100));
-    RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data", ComponentRole.OTHER).optional(r -> new CompoundTag());
+    RecipeKey<CompoundTag> DATA = GTRecipeComponents.NBT_TAG.key("data", ComponentRole.OTHER).optional(r -> new CompoundTag());
     RecipeKey<List<RecipeCondition<?>>> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asList().key("recipeConditions", ComponentRole.OTHER).defaultOptional();
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category", ComponentRole.OTHER).defaultOptional();
 

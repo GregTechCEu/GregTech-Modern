@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -18,10 +17,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
@@ -106,6 +106,7 @@ public class OverclockLogicTest {
     }
 
     // Test for running HV recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
     public static void overclockLogicOnTierNothingChanges(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -121,6 +122,7 @@ public class OverclockLogicTest {
     }
 
     // Test for running LV 1t recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
     public static void overclockLogicTwoTiersAbove16Parallels(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -136,6 +138,7 @@ public class OverclockLogicTest {
     }
 
     // Test for running EV recipe at HV
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
     public static void overclockLogicOverTierNothingHappens(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -149,6 +152,7 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
     public static void overclockLogicApplyPerfectOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -175,6 +179,7 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating non-perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
     public static void overclockLogicApplyNonPerfectOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -201,6 +206,7 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating subtick perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
     public static void overclockLogicApplyPerfectParallelOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -229,6 +235,7 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating subtick non-perfect OC
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
     public static void overclockLogicApplyNonPerfectParallelOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -257,6 +264,7 @@ public class OverclockLogicTest {
     }
 
     // Test for code wise calculating non-subtick non-perfect OC on a 1t recipe
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
     public static void overclockLogicApplyNonPerfectNonParallel1tOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

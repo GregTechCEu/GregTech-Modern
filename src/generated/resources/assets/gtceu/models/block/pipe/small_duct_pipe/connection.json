@@ -1,50 +1,50 @@
 {
-  "parent": "minecraft:block/block",
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#end",
-          "tintindex": 1
-        },
-        "east": {
-          "texture": "#side",
-          "tintindex": 0
-        },
-        "north": {
-          "texture": "#side",
-          "tintindex": 0
-        },
-        "south": {
-          "texture": "#side",
-          "tintindex": 0
-        },
-        "up": {
-          "texture": "#end",
-          "tintindex": 1
-        },
-        "west": {
-          "texture": "#side",
-          "tintindex": 0
+    "parent": "minecraft:block/block",
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#end",
+                    "tintindex": 1
+                },
+                "east": {
+                    "texture": "#side",
+                    "tintindex": 0
+                },
+                "north": {
+                    "texture": "#side",
+                    "tintindex": 0
+                },
+                "south": {
+                    "texture": "#side",
+                    "tintindex": 0
+                },
+                "up": {
+                    "texture": "#end",
+                    "tintindex": 1
+                },
+                "west": {
+                    "texture": "#side",
+                    "tintindex": 0
+                }
+            },
+            "from": [
+                5,
+                0,
+                5
+            ],
+            "to": [
+                11,
+                5,
+                11
+            ]
         }
-      },
-      "from": [
-        5,
-        0,
-        5
-      ],
-      "to": [
-        11,
-        5,
-        11
-      ]
+    ],
+    "render_type": "cutout_mipped",
+    "textures": {
+        "end": "gtceu:block/pipe/pipe_duct_in",
+        "particle": "#side",
+        "side": "gtceu:block/pipe/pipe_duct_side"
     }
-  ],
-  "render_type": "minecraft:cutout_mipped",
-  "textures": {
-    "end": "gtceu:block/pipe/pipe_duct_in",
-    "particle": "#side",
-    "side": "gtceu:block/pipe/pipe_duct_side"
-  }
 }

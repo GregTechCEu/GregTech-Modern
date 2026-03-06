@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -19,10 +19,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 @SuppressWarnings("DataFlowIssue")
 @GameTestHolder(GTCEu.MOD_ID)
 @PrefixGameTestTemplate(false)
+@ForEachTest(groups = "coverTests")
 public class PumpCoverTest {
 
     public static void setupCrates(GameTestHelper helper) {
@@ -31,6 +35,9 @@ public class PumpCoverTest {
     }
 
     // Test for seeing if pumps pass fluids
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpTransfersFluidsTest(GameTestHelper helper) {
         setupCrates(helper);
@@ -53,6 +60,9 @@ public class PumpCoverTest {
     }
 
     // Test for seeing if conveyors don't pass items if set to the wrong direction
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpTransfersFluidsWrongDirectionTest(GameTestHelper helper) {
         setupCrates(helper);
@@ -77,6 +87,9 @@ public class PumpCoverTest {
     }
 
     // Test for seeing if pumps transfer items
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpDoesntTransferItemsTest(GameTestHelper helper) {
         setupCrates(helper);

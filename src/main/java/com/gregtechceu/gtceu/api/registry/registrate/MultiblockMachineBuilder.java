@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.BlockPos;
@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
@@ -45,7 +46,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    private @Nullable TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
@@ -83,7 +84,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE partAppearance(TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
+    public TYPE partAppearance(@Nullable TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }

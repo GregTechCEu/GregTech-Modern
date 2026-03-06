@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
@@ -83,6 +83,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ExtensionMethod(SizedIngredientExtensions.class)
 public class MEPatternBufferPartMachine extends MEBusPartMachine
@@ -496,16 +497,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         public List<FluidStack> getFluids() {
             if (fluidStacks == null) {
-                // <<<<<<< HEAD
                 fluidStacks = fluidInventory.object2LongEntrySet().stream()
-                        .map(e -> e.getKey().copyWithAmount(GTMath.saturatedCast(e.getLongValue())))
-                        .toList();
-                // =======
-                // fluidStacks = new ArrayList<>();
-                // fluidInventory.object2LongEntrySet().stream()
-                // .map(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()))
-                // .forEach(fluidStacks::addAll);
-                // >>>>>>> v7.1.3-1.20.1
+                        .flatMap(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()).stream())
+                        .collect(Collectors.toList());
             }
             return fluidStacks;
         }

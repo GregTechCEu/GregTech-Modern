@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.syncdata;
 
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 

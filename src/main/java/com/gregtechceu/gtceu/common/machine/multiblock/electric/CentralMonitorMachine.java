@@ -20,18 +20,16 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.*;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.pattern.*;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -44,11 +42,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +134,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public void tick() {
         Level level = getLevel();
-        if (level == null) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -148,7 +149,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     continue;
                 }
                 module.tick(stack, this, group);
-                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(getPos()),
                         new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
@@ -530,7 +531,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 GuiTextureGroup textures = new GuiTextureGroup(texture, new ColorBorderTexture(2, 0xFFFFFF));
                 IMonitorComponent component = getComponent(row, col);
                 if (component == null) {
-                    GTUtil.getLast(imageButtons).add(it -> {});
+                    imageButtons.getLast().add(it -> {});
                     continue;
                 }
                 ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
@@ -657,7 +658,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     else if (click.button == 1) rightClickCallback.run();
                 });
                 componentSelection.addWidget(img);
-                GTUtil.getLast(imageButtons).add(callback);
+                imageButtons.getLast().add(callback);
                 rightClickCallbacks.put(component.getPos(), rightClickCallback);
             }
         }

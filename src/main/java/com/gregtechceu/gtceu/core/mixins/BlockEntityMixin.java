@@ -25,7 +25,7 @@ public class BlockEntityMixin {
     }
 
     @Inject(method = "saveAdditional", at = @At(value = "RETURN"))
-    private void gtceu$clearRegistries(CompoundTag tag, HolderLookup.Provider registries, CallbackInfo ci) {
+    private void gtceu$clearRegistriesSave(CompoundTag tag, HolderLookup.Provider registries, CallbackInfo ci) {
         if (this instanceof IAutoPersistBlockEntity) {
             MixinHelpers.CURRENT_BE_SAVE_LOAD_REGISTRIES.remove();
         }

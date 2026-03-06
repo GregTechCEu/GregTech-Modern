@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.SurfaceRockBlockItem;
-import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
@@ -167,11 +167,11 @@ public class SurfaceRockBlock extends Block {
 
     @Override
     public String getDescriptionId() {
-        return "block.surface_rock";
+        return "block.gtceu.surface_rock";
     }
 
     @Override
     public MutableComponent getName() {
-        return Component.translatable("block.surface_rock", material.getLocalizedName());
+        return Component.translatable(getDescriptionId(), material.getLocalizedName());
     }
 }

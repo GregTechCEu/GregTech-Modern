@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdvancedDetectorCoverTest {
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -53,6 +55,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
     public static void BLOCKED_BY_LDLIB_WEIRDNESS_TOO_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -65,6 +68,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -83,6 +87,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -96,6 +101,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
@@ -110,6 +116,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));

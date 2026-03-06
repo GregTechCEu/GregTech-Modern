@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
-import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 
 import net.minecraft.client.resources.model.ModelManager;
@@ -36,9 +35,6 @@ public abstract class ModelManagerMixin {
         // turns out these do have to be init in here after all, as they check for asset existence. whoops.
         ModLoader.postEventWrapContainerInModOrder(new RegisterDynamicResourcesEvent());
 
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTKubeJSPlugin.generateMachineBlockModels();
-        }
         if (GTCEu.Mods.isModernFixLoaded()) {
             GTModernFixIntegration.setAsLast();
         }

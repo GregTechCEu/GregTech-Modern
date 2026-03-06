@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
@@ -83,6 +84,7 @@ public class RecipeLogicTest {
         return new RecipeLogicTest.BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
+    @TestHolder
     @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
     public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
@@ -160,6 +162,7 @@ public class RecipeLogicTest {
     // spotless:off
     // Blocked by LDLib sync issues
     /*
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RecipeLogic")
     public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
         WorkableTieredMachine machine = (WorkableTieredMachine) getMetaMachine(
@@ -233,6 +236,7 @@ public class RecipeLogicTest {
     // spotless:on
 
     // Test for putting both ingredients in the same bus in 2 stacks.
+    @TestHolder
     @GameTest(template = "lcr_input_separation", batch = "RecipeLogicTest")
     public static void recipeLogicInTwoStacksTest(GameTestHelper helper) {
         RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);

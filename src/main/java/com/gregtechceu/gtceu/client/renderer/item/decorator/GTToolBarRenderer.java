@@ -17,9 +17,8 @@ public class GTToolBarRenderer implements IItemDecorator {
     @Override
     public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
         if (stack.getItem() instanceof IGTTool gtTool) {
-            ToolChargeBarRenderer.renderBarsTool(guiGraphics, gtTool, stack, x, y);
-            return true;
+            return ToolChargeBarRenderer.renderBarsTool(guiGraphics, gtTool, stack, x, y);
         }
-        return true;
+        return false;
     }
 }

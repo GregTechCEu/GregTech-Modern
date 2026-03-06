@@ -53,11 +53,8 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
             Level level = blockEntity.getLevel();
             BlockPos pos = blockEntity.getBlockPos();
 
-            ModelData modelData;
-            // noinspection DataFlowIssue,UnstableApiUsage
-            if (level.getModelDataManager() == null || (modelData = level.getModelDataManager().getAt(pos)) == null) {
-                modelData = ModelData.EMPTY;
-            }
+            @SuppressWarnings("DataFlowIssue")
+            ModelData modelData = level.getModelData(pos);
 
             long randomSeed = blockState.getSeed(pos);
             RandomSource random = RandomSource.create();

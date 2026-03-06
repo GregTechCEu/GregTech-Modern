@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -47,9 +48,8 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     @Override
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
-        dataStick.set(GTDataComponents.MONITOR_TARGET, coverHolder.getPos());
-        dataStick.set(GTDataComponents.MONITOR_TARGET_FACE, attachedSide);
-        dataStick.set(GTDataComponents.MONITOR_TARGET_DIMENSION, coverHolder.getLevel().dimension());
+        dataStick.set(GTDataComponents.MONITOR_TARGET,
+                new GlobalPosWithRot(coverHolder.getPos(), attachedSide, coverHolder.getLevel().dimension()));
         return InteractionResult.SUCCESS;
     }
 

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.condition;
 
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+
 import com.mojang.serialization.MapCodec;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

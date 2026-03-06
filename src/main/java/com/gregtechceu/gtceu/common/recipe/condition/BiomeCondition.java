@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -27,11 +27,9 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
     ).apply(instance, BiomeCondition::new));
-    // spotless:on
 
     @Getter
-    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME,
-            ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
     // spotless:on
 
     public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {

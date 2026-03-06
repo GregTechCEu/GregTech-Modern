@@ -14,12 +14,11 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
@@ -33,7 +32,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Persisted
     @DescSynced
     public final RecipeLogic recipeLogic;
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private GTRecipeType[] recipeTypes;
     @Getter
     @Setter
@@ -232,7 +231,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         return false;
     }
 
-    @NotNull
     public GTRecipeType getRecipeType() {
         if (activeRecipeType >= recipeTypes.length) {
             GTCEu.LOGGER.warn("Preventing crash from bad recipe type index!");
@@ -241,9 +239,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         return recipeTypes[activeRecipeType];
     }
 
-    // Recipe compat
     @ApiStatus.Internal
-    public void setRecipeType(@NotNull GTRecipeType type) {
+    @VisibleForTesting
+    public void setRecipeType(GTRecipeType type) {
         int recipeIndex = -1;
         for (int i = 0; i < recipeTypes.length; i++) {
             if (type.equals(recipeTypes[i])) {

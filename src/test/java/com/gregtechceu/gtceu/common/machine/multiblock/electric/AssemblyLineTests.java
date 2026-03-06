@@ -20,8 +20,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
@@ -86,6 +87,7 @@ public class AssemblyLineTests {
                 inputHatch1, inputHatch2, inputHatch3, inputHatch4, outputBus1, controller);
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
     public static void AsslineRecipeRunsTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -102,6 +104,7 @@ public class AssemblyLineTests {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
     public static void AsslineRecipeDoesntRunWhenItemsMovedByOneTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

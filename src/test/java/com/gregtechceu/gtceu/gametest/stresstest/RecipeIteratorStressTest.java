@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -25,6 +25,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +75,16 @@ public class RecipeIteratorStressTest {
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
                              FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
 
+    @TestHolder()
+    // TODO this should use JUnit
+    @EmptyTemplate
     @GameTest(template = "empty", batch = "StressTests")
     public static void iteratorStressTest(GameTestHelper helper) {
         if (!DO_RUN_RECIPE_ITERATOR_STRESSTEST) {
             helper.succeed();
             return;
         }
-        List<List<AbstractMapIngredient>> list = new ArrayList();
+        List<List<AbstractMapIngredient>> list = new ArrayList<>();
         for (var item : BuiltInRegistries.ITEM) {
             list.add(MapIngredientTypeManager.getFrom(Ingredient.of(item), ItemRecipeCapability.CAP));
         }

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -142,10 +142,10 @@ public class SimpleFluidFilter implements FluidFilter {
         int totalAmount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
-                totalAmount += candidate.getAmount();
-            } else if (FluidStack.isSameFluidSameComponents(candidate, fluidStack)) {
-                totalAmount += candidate.getAmount();
+            if (ignoreNbt) {
+                if (FluidStack.isSameFluid(candidate, fluidStack)) totalAmount += candidate.getAmount();
+            } else {
+                if (FluidStack.isSameFluidSameComponents(candidate, fluidStack)) totalAmount += candidate.getAmount();
             }
         }
 

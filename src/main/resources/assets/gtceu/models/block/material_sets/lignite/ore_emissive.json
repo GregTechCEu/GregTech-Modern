@@ -20,7 +20,7 @@
         {
           "from": [0,  0,  0 ],
           "to":   [16, 16, 16],
-          "forge_data": { "block_light": 15, "sky_light": 15 },
+          "neoforge_data": { "block_light": 15, "sky_light": 15 },
           "faces": {
             "down":  { "texture": "#layer0", "cullface": "down",  "tintindex": -101 },
             "up":    { "texture": "#layer0", "cullface": "up",    "tintindex": -101 },
@@ -33,7 +33,7 @@
         {
           "from": [0,  0,  0 ],
           "to":   [16, 16, 16],
-          "forge_data": { "block_light": 15, "sky_light": 15 },
+          "neoforge_data": { "block_light": 15, "sky_light": 15 },
           "faces": {
             "down":  { "texture": "#layer1", "cullface": "down",  "tintindex": -102 },
             "up":    { "texture": "#layer1", "cullface": "up",    "tintindex": -102 },

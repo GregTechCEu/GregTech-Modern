@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.data.model.GTModels;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
@@ -456,7 +456,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
-            if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+            if (model.shouldRender(machine, cameraPos)) {
                 return true;
             }
         }
