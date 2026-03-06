@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -65,7 +66,7 @@ public class MultiblockShapeInfo {
 
         private BlockInfo[][][] bake() {
             BlockInfo[][][] Ts = new BlockInfo[shape.get(0)[0].length()][shape.get(0).length][shape.size()];
-            for (int z = 0; z < shape.size(); z++) { //z
+            for (int z = 0; z < shape.size(); z++) { // z
                 String[] aisleEntry = shape.get(z);
                 for (int y = 0; y < shape.get(0).length; y++) {
                     String columnEntry = aisleEntry[y];
@@ -83,7 +84,7 @@ public class MultiblockShapeInfo {
         }
 
         public ShapeInfoBuilder shallowCopy() {
-            ShapeInfoBuilder builder= new ShapeInfoBuilder();
+            ShapeInfoBuilder builder = new ShapeInfoBuilder();
             builder.shape = new ArrayList<>(this.shape);
             builder.symbolMap = new HashMap<>(this.symbolMap);
             return builder;
