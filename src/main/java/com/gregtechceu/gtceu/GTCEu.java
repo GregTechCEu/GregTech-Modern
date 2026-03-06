@@ -9,9 +9,12 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -37,7 +40,17 @@ public class GTCEu {
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;
+
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(this::commonSetup);
+
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            com.gregtechceu.gtceu.compat.ApotheosisCompat.init();
+        });
     }
 
     public static void init() {

@@ -1,6 +1,10 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
+    modRuntimeOnly("curse.maven:apotheosis-313970:6461960")
+    modRuntimeOnly("curse.maven:placebo-283644:6274231")
+    modRuntimeOnly("curse.maven:apothic-attributes-898963:5634071")
+
     // LDLib
     jarJar(modApi(forge.ldlib.get()))
 
