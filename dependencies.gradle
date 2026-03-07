@@ -4,7 +4,9 @@ dependencies {
     modRuntimeOnly("curse.maven:apotheosis-313970:6461960")
     modRuntimeOnly("curse.maven:placebo-283644:6274231")
     modRuntimeOnly("curse.maven:apothic-attributes-898963:5634071")
-
+    modRuntimeOnly("curse.maven:roughly-enough-items-310111:5846923")
+    modRuntimeOnly("curse.maven:architectury-api-419699:5137938")
+    modRuntimeOnly("curse.maven:cloth-config-348521:5729105")
     // LDLib
     jarJar(modApi(forge.ldlib.get()))
 
@@ -77,7 +79,7 @@ dependencies {
 
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
-    modLocalRuntime(forge.ae2)
+    modClientLocalRuntime(forge.ae2)
     modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 

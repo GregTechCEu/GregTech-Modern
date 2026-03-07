@@ -450,7 +450,7 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
 
         multiLang(provider, "gtceu.machine.electric_blast_furnace.tooltip",
-                "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
+                "For every §f700K§7 above the recipe temperature, a multiplicative §f85%%§7 energy multiplier is applied pre-overclocking.",
                 "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
                 "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
 

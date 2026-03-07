@@ -37,7 +37,7 @@ public interface OverclockingLogic {
     double PERFECT_HALF_DURATION_FACTOR = 0.5;
     double PERFECT_HALF_DURATION_FACTOR_INV = 2.0;
 
-    int COIL_EUT_DISCOUNT_TEMPERATURE = 900;
+    int COIL_EUT_DISCOUNT_TEMPERATURE = 700;
 
     OverclockingLogic PERFECT_OVERCLOCK = create(PERFECT_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
     OverclockingLogic NON_PERFECT_OVERCLOCK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
@@ -335,7 +335,7 @@ public interface OverclockingLogic {
         if (recipeTemp < COIL_EUT_DISCOUNT_TEMPERATURE) return 1;
         int amountEUtDiscount = getCoilDiscountAmount(recipeTemp, machineTemp);
         if (amountEUtDiscount < 1) return 1;
-        return Math.min(1, Math.pow(0.95, amountEUtDiscount));
+        return Math.min(1, Math.pow(0.85, amountEUtDiscount));
     }
 
     record OCParams(long eut, int duration, int ocAmount, int maxParallels) {}
