@@ -3,15 +3,10 @@ package com.gregtechceu.gtceu.common.item.modules;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
-import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
@@ -69,24 +64,21 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
-                                           PanelSyncManager syncManager, IPanelHandler panelHandler) {
+    public IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                            PanelSyncManager syncManager) {
         PlaceholderContext ctx = getContext(stack, machine, group);
-        IStringValue<?> code = SyncHandlers.string(
+        StringSyncValue code = SyncHandlers.string(
                 () -> getPlaceholderText(stack),
                 s -> setPlaceholderText(stack, s));
         DoubleSyncValue scale = SyncHandlers.doubleNumber(
                 () -> getScale(stack),
                 s -> setScale(stack, s));
-        IBoolValue<?> pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
+        BooleanSyncValue pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
         Runnable updateText = () -> updateText(stack, machine, group);
         assert ctx.itemStackHandler() != null;
-        return new ModularPanel("placeholder_editor")
-                .size(400, 250)
-                .resizeableOnDrag(true)
-                .excludeAreaInRecipeViewer()
-                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, null, pause,
-                        updateText));
+        return PlaceholderHandler.createPlaceholderEditor("text_module_" + group.getName(), syncManager, ctx, code,
+                scale, null, pause,
+                updateText);
     }
 
     @Override

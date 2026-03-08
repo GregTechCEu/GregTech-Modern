@@ -10,10 +10,7 @@ import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
@@ -283,108 +280,113 @@ public class PlaceholderHandler {
         return out;
     }
 
-    public static Flow createPlaceholderEditor(PanelSyncManager syncManager,
-                                               PlaceholderContext ctx,
-                                               IStringValue<?> code,
-                                               @Nullable DoubleSyncValue scaleDouble,
-                                               @Nullable IIntValue<?> updateInterval,
-                                               @Nullable IBoolValue<?> pause,
-                                               @Nullable Runnable updateText) {
+    public static IPanelHandler createPlaceholderEditor(String name, PanelSyncManager syncManager,
+                                                        PlaceholderContext ctx,
+                                                        IStringValue<?> code,
+                                                        @Nullable DoubleSyncValue scaleDouble,
+                                                        @Nullable IIntValue<?> updateInterval,
+                                                        @Nullable IBoolValue<?> pause,
+                                                        @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
                 true,
-                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1));
+                (syncManager1, panelHandler1) -> createHelpPanel());
         InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
         if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
         syncManager.syncValue("run_code_sync_handler", runCodeOnce);
         // because the args are nullable, intellij complains about everything, even though childIf is used
         // noinspection DataFlowIssue
-        return Flow.row()
-                .childIf(ctx.itemStackHandler() != null, () -> Flow.column()
-                        .coverChildren()
-                        .paddingLeft(4)
-                        .children(
-                                ctx.itemStackHandler().getSlots(),
-                                i -> new ItemSlot()
-                                        .slot(ctx.itemStackHandler(), i)
-                                        .addTooltipLine(
-                                                IKey.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
-                .child(Flow.column()
-                        .widthRel(.8f)
-                        .padding(5)
-                        .child(Flow.row()
-                                .height(20)
-                                .childIf(scaleDouble != null,
-                                        () -> new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_scale")))
-                                .childIf(scaleDouble != null, () -> new TextFieldWidget()
-                                        .setNumbersDouble(x -> Math.max(x, 0))
-                                        .setDefaultNumber(1.0)
-                                        .value(scaleDouble)
-                                        .marginLeft(4))
-                                .childIf(updateInterval != null,
-                                        () -> new TextWidget<>(
-                                                IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
-                                .childIf(updateInterval != null, () -> new TextFieldWidget()
-                                        .setNumbers(1, 1000)
-                                        .setDefaultNumber(1)
-                                        .value(SyncHandlers.string(
-                                                () -> String.valueOf(updateInterval.getIntValue()),
-                                                s -> updateInterval.setIntValue(Integer.parseInt(s))))
-                                        .marginLeft(4))
-                                .childIf(pause != null, () -> new ToggleButton()
-                                        .value(pause)
-                                        .background(false, GTGuiTextures.PAUSE)
-                                        .background(true, GTGuiTextures.PLAY)
-                                        .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
-                                        .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
-                                        .margin(4))
-                                .childIf(updateText != null, () -> new ButtonWidget<>()
-                                        .background(GTGuiTextures.RIGHTLOAD)
-                                        .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
-                                        .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
-                                        .syncHandler("run_code_sync_handler"))
-                                .child(new ButtonWidget<>()
-                                        .background(GTGuiTextures.HELP)
-                                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
-                                        .margin(4)
-                                        .onMousePressed((mouseX, mouseY, button) -> {
-                                            helpPanel.openPanel();
-                                            return true;
-                                        })))
-                        .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION, syncManager)
-                                .value(code)
-                                .langContext(ctx)
-                                .widthRel(.95f)
-                                .heightRelOffset(() -> 1, -25)))
-                .child(new SortableListWidget<String>()
-                        .widthRel(.2f)
-                        .paddingBottom(5)
-                        .excludeAreaInRecipeViewer()
-                        .children(PlaceholderHandler.getAllPlaceholderNames()
-                                .stream()
-                                .sorted()
-                                .map(SortableListWidget.Item::new)
-                                .map(w -> w
-                                        .child(new TextWidget<>(w.getWidgetValue())
-                                                .sizeRel(1)
-                                                .alignment(Alignment.CENTER))
-                                        .tooltip(new RichTooltip()
-                                                .addDrawableLines(LangHandler
-                                                        .getSingleOrMultiLang(
-                                                                "gtceu.placeholder_info." + w.getWidgetValue())
-                                                        .stream()
-                                                        .map(IKey::lang)
-                                                        .map(key -> (IDrawable) key)
-                                                        .toList())))
-                                .toList()));
+        return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel(name)
+                .size(400, 250)
+                .resizeableOnDrag(true)
+                .excludeAreaInRecipeViewer()
+                .child(Flow.row()
+                        .childIf(ctx.itemStackHandler() != null, () -> Flow.column()
+                                .coverChildren()
+                                .paddingLeft(4)
+                                .children(
+                                        ctx.itemStackHandler().getSlots(),
+                                        i -> new ItemSlot()
+                                                .slot(ctx.itemStackHandler(), i)
+                                                .addTooltipLine(
+                                                        IKey.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
+                        .child(Flow.column()
+                                .widthRel(.8f)
+                                .padding(5)
+                                .child(Flow.row()
+                                        .height(20)
+                                        .childIf(scaleDouble != null,
+                                                () -> new TextWidget<>(
+                                                        IKey.lang("gtceu.gui.central_monitor.text_scale")))
+                                        .childIf(scaleDouble != null, () -> new TextFieldWidget()
+                                                .setNumbersDouble(x -> Math.max(x, 0))
+                                                .setDefaultNumber(1.0)
+                                                .value(scaleDouble)
+                                                .marginLeft(4))
+                                        .childIf(updateInterval != null,
+                                                () -> new TextWidget<>(
+                                                        IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
+                                        .childIf(updateInterval != null, () -> new TextFieldWidget()
+                                                .setNumbers(1, 1000)
+                                                .setDefaultNumber(1)
+                                                .value(SyncHandlers.string(
+                                                        () -> String.valueOf(updateInterval.getIntValue()),
+                                                        s -> updateInterval.setIntValue(Integer.parseInt(s))))
+                                                .marginLeft(4))
+                                        .childIf(pause != null, () -> new ToggleButton()
+                                                .value(pause)
+                                                .background(false, GTGuiTextures.PAUSE)
+                                                .background(true, GTGuiTextures.PLAY)
+                                                .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
+                                                .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
+                                                .margin(4))
+                                        .childIf(updateText != null, () -> new ButtonWidget<>()
+                                                .background(GTGuiTextures.RIGHTLOAD)
+                                                .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
+                                                .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
+                                                .syncHandler("run_code_sync_handler"))
+                                        .child(new ButtonWidget<>()
+                                                .background(GTGuiTextures.HELP)
+                                                .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                                .margin(4)
+                                                .onMousePressed((mouseX, mouseY, button) -> {
+                                                    helpPanel.openPanel();
+                                                    return true;
+                                                })))
+                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
+                                        .value(code)
+                                        .langContext(ctx)
+                                        .widthRel(.95f)
+                                        .heightRelOffset(1, -25)))
+                        .child(new SortableListWidget<String>()
+                                .widthRel(.2f)
+                                .paddingBottom(5)
+                                .excludeAreaInRecipeViewer()
+                                .children(PlaceholderHandler.getAllPlaceholderNames()
+                                        .stream()
+                                        .sorted()
+                                        .map(SortableListWidget.Item::new)
+                                        .map(w -> w
+                                                .child(new TextWidget<>(w.getWidgetValue())
+                                                        .sizeRel(1)
+                                                        .align(Alignment.CENTER))
+                                                .tooltip(new RichTooltip()
+                                                        .addDrawableLines(LangHandler
+                                                                .getSingleOrMultiLang(
+                                                                        "gtceu.placeholder_info." + w.getWidgetValue())
+                                                                .stream()
+                                                                .map(IKey::lang)
+                                                                .map(key -> (IDrawable) key)
+                                                                .toList())))
+                                        .toList()))));
     }
 
-    public static ModularPanel createHelpPanel(PanelSyncManager syncManager) {
+    public static ModularPanel createHelpPanel() {
         return new ModularPanel("placeholder_language_help")
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)
                         .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
-                        .child(new CodeEditorWidget<>(LANG_DEFINITION, syncManager)
+                        .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                 .padding(5)
                                 .widthRel(.95f)
                                 .height(100)

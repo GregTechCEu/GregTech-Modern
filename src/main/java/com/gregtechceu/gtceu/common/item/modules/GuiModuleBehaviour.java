@@ -32,12 +32,13 @@ public class GuiModuleBehaviour implements IMonitorModuleItem {
     }
 
     @Override
-    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
-                                           PanelSyncManager syncManager, IPanelHandler panelHandler) {
-        return new ModularPanel("gui_module_info")
-                .coverChildren()
-                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.gui_module_info"))
-                        .height(50)
-                        .width(200));
+    public IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                            PanelSyncManager syncManager) {
+        return syncManager.syncedPanel("gui_module_" + group.getName(), true,
+                (psm, handler) -> new ModularPanel("gui_module_info")
+                        .coverChildren()
+                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.gui_module_info"))
+                                .height(50)
+                                .width(200)));
     }
 }

@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -47,11 +48,17 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
 
     public CodeEditorWidget() {}
 
-    public CodeEditorWidget(@Nullable LanguageDefinition<T> language, PanelSyncManager panelSyncManager) {
+    public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
         this.language = language;
         GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
                 this::getTextAsComponents, this::formattedText, ByteBufAdapters.COMPONENT);
-        panelSyncManager.syncValue("formatted_code", formattedTextSync);
+        setSyncOrValue(formattedTextSync);
+    }
+
+    @Override
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(GenericListSyncHandler.class) ||
+                syncOrValue.isTypeOrEmpty(StringSyncValue.class);
     }
 
     @Override

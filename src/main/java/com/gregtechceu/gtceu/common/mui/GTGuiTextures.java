@@ -799,6 +799,41 @@ public class GTGuiTextures {
     public static final UITexture HPCA_BRIDGE_COMPONENT = fullImage("textures/gui/widget/hpca/bridge_component.png");
     public static final UITexture HPCA_COMPONENT_OUTLINE = fullImage("textures/gui/widget/hpca/component_outline.png");
 
+    // MACHINE GRID OVERLAYS
+
+    public static final UITexture TOOL_FRONT_FACING_ROTATION = fullImage(
+            "textures/gui/overlay/tool_front_facing_rotation.png");
+    public static final UITexture TOOL_IO_FACING_ROTATION = fullImage(
+            "textures/gui/overlay/tool_io_facing_rotation.png");
+    public static final UITexture TOOL_PAUSE = fullImage("textures/gui/overlay/tool_pause.png");
+    public static final UITexture TOOL_START = fullImage("textures/gui/overlay/tool_start.png");
+    public static final UITexture TOOL_COVER_SETTINGS = fullImage(
+            "textures/gui/overlay/tool_cover_settings.png");
+    public static final UITexture TOOL_MUTE = fullImage("textures/gui/overlay/tool_mute.png");
+    public static final UITexture TOOL_SOUND = fullImage("textures/gui/overlay/tool_sound.png");
+    public static final UITexture TOOL_ALLOW_INPUT = fullImage(
+            "textures/gui/overlay/tool_allow_input.png");
+    public static final UITexture TOOL_ATTACH_COVER = fullImage(
+            "textures/gui/overlay/tool_attach_cover.png");
+    public static final UITexture TOOL_REMOVE_COVER = fullImage(
+            "textures/gui/overlay/tool_remove_cover.png");
+    public static final UITexture TOOL_PIPE_BLOCK = fullImage(
+            "textures/gui/overlay/tool_pipe_block.png");
+    public static final UITexture TOOL_PIPE_CONNECT = fullImage(
+            "textures/gui/overlay/tool_pipe_connect.png");
+    public static final UITexture TOOL_WIRE_BLOCK = fullImage(
+            "textures/gui/overlay/tool_wire_block.png");
+    public static final UITexture TOOL_WIRE_CONNECT = fullImage(
+            "textures/gui/overlay/tool_wire_connect.png");
+    public static final UITexture TOOL_AUTO_OUTPUT = fullImage(
+            "textures/gui/overlay/tool_auto_output.png");
+    public static final UITexture TOOL_DISABLE_AUTO_OUTPUT = fullImage(
+            "textures/gui/overlay/tool_disable_auto_output.png");
+    public static final UITexture TOOL_SWITCH_CONVERTER_NATIVE = fullImage(
+            "textures/gui/overlay/tool_wire_block.png");
+    public static final UITexture TOOL_SWITCH_CONVERTER_EU = fullImage(
+            "textures/gui/overlay/tool_wire_connect.png");
+
     // MISC
 
     public static void init() {/**/}

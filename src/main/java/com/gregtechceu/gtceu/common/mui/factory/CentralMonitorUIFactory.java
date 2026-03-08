@@ -18,9 +18,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
@@ -59,8 +57,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
                 machine::setMonitorGroups, MONITOR_GROUPS);
         syncManager.syncValue("monitor_groups_sync", groupSync);
-        List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
-        SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
+        List<MonitorGroup> groups = new ArrayList<>(machine.getMonitorGroups());
         IPanelHandler helpPanel = syncManager.syncedPanel(
                 "help_panel", true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
@@ -93,18 +90,15 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 return true;
                             })));
         };
-        IPanelHandler newGroupPanelHandler = syncManager.syncedPanel(
-                "editor_" + groups.size(), true,
-                (syncManager1, panelHandler1) -> {
-                    MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
-                    groups.add(group);
-                    listWidget.child(processGroupItem.apply(new SortableListWidget.Item<>(group)));
-                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups, syncManager1.isClient());
-                    groupSync.setValue(groups, true, false);
-                    return this.createGroupEditorPanel(
-                            syncManager1, groupSync,
-                            machine, group, groups, helpPanel);
-                });
+        DynamicSyncHandler listHandler = new DynamicSyncHandler()
+                .widgetProvider((psm, buf) -> new SortableListWidget<MonitorGroup>()
+                        .children(groups.stream()
+                                .map(SortableListWidget.Item::new)
+                                .map(processGroupItem)
+                                .toList())
+                        .onChange(groupSync::setValue)
+                        .widthRel(1));
+        listHandler.notifyUpdate(buf -> {});
         return new Dialog<>("main")
                 .setDraggable(true)
                 .padding(5)
@@ -121,18 +115,20 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .alignX(1)
                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
                                         .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
-                                        .onMousePressed((mouseX, mouseY, button) -> {
-                                            newGroupPanelHandler.openPanel();
-                                            return true;
-                                        }))
+                                        .syncHandler(new InteractionSyncHandler()
+                                                .setOnMousePressed(mouseData -> {
+                                                    MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
+                                                    groups.add(group);
+                                                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups,
+                                                            syncManager.isClient());
+                                                    groupSync.setValue(groups, true, false);
+                                                    listHandler.notifyUpdate(buf -> {});
+                                                })))
                                 .widthRel(1).height(20))
-                        .child(listWidget.children(
-                                groups.stream()
-                                        .map(SortableListWidget.Item::new)
-                                        .map(processGroupItem)
-                                        .toList())
-                                .onChange(groupSync::setValue)
-                                .widthRel(1).heightRelOffset(() -> 1, -96))
+                        .child(new DynamicSyncedWidget<>()
+                                .syncHandler(listHandler)
+                                .widthRel(1)
+                                .heightRelOffset(() -> 1, -96))
                         .child(SlotGroupWidget.playerInventory(false)));
     }
 
@@ -214,7 +210,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         IPanelHandler moduleEditor = createModulePanelHandler(
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
-                group, machine, groups.indexOf(group));
+                group, machine);
         BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
@@ -354,7 +350,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     }
 
     private IPanelHandler createModulePanelHandler(PanelSyncManager syncManager, ItemStack stack, MonitorGroup group,
-                                                   CentralMonitorMachine machine, int index) {
+                                                   CentralMonitorMachine machine) {
         IMonitorModuleItem moduleItem = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
@@ -365,10 +361,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
             }
         }
         IMonitorModuleItem finalModuleItem = moduleItem;
-        return moduleItem == null ? null : syncManager.syncedPanel(
-                "module_editor_" + index, true,
-                (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1,
-                        panelHandler1));
+        return moduleItem == null ? null : finalModuleItem.createModularPanel(stack, machine, group, syncManager);
     }
 
     private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {

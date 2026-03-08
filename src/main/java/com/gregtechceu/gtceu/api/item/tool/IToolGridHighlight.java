@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,8 +19,8 @@ public interface IToolGridHighlight {
         return true;
     }
 
-    default @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                               Direction side) {
+    default @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                         Direction side) {
         return null;
     }
 }
