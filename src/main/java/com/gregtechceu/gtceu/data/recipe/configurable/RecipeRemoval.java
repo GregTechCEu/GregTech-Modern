@@ -236,6 +236,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:hopper_minecart"));
         for (DyeColor color : DyeColor.values()) {
             registry.accept(new ResourceLocation(color.getName() + "_bed"));
+            registry.accept(new ResourceLocation(color.getName() + "_carpet"));
         }
         registry.accept(new ResourceLocation("minecraft:fermented_spider_eye"));
         registry.accept(new ResourceLocation("minecraft:fire_charge"));
