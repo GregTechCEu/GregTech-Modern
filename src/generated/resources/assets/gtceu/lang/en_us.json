@@ -5709,6 +5709,8 @@
   "metaarmor.message.nightvision.disabled": "§bNightVision: §cOff",
   "metaarmor.message.nightvision.enabled": "§bNightVision: §aOn",
   "metaarmor.message.nightvision.error": "§cNot enough power!",
+  "metaarmor.message.step_assist.disabled": "§bStep-Assist: §cOff",
+  "metaarmor.message.step_assist.enabled": "§bStep-Assist: §aOn",
   "metaarmor.nms.nightvision.disabled": "NanoMuscle™ Suite: NightVision Disabled",
   "metaarmor.nms.nightvision.enabled": "NanoMuscle™ Suite: NightVision Enabled",
   "metaarmor.nms.nightvision.error": "NanoMuscle™ Suite: §cNot enough power!",
