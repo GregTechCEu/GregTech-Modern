@@ -5932,5 +5932,11 @@
     "gtceu.gui.directional_setting.title": "Настройка направления",
     "gtceu.gui.fluid_auto_output.disabled": "Жид. Авто. вывод: §cОтключен",
     "gtceu.gui.fluid_auto_output.enabled": "Жид. Авто. вывод: §cВключен",
-    "gtceu.gui.fluid_auto_output.other_direction.0": "Жид. Авто. вывод: §cДругие направления"
+    "gtceu.gui.fluid_auto_output.other_direction.0": "Жид. Авто. вывод: §cДругие направления",
+    "gtceu.gui.fluid_auto_output.other_direction.1": "§7Вывод жидкости из механизма направлен в другую сторону.",
+    "gtceu.gui.fluid_auto_output.other_direction.2": "§7Нажмите, чтобы переместить вывод на указанную сторону.",
+    "gtceu.gui.fluid_auto_output.unselected.0": "Автовывод жидкости",
+    "gtceu.gui.fluid_auto_output.unselected.1": "§7Выберите сторону машины, чтобы настроить его вывод.",
+    "gtceu.gui.fluid_voiding": "§7Удалять §cЖидкости",
+    "gtceu.gui.item_auto_output.disabled": "Авто. вывод предметов: §cВыключен"
 }
