@@ -5936,7 +5936,14 @@
     "gtceu.gui.fluid_auto_output.other_direction.1": "§7Вывод жидкости из механизма направлен в другую сторону.",
     "gtceu.gui.fluid_auto_output.other_direction.2": "§7Нажмите, чтобы переместить вывод на указанную сторону.",
     "gtceu.gui.fluid_auto_output.unselected.0": "Автовывод жидкости",
-    "gtceu.gui.fluid_auto_output.unselected.1": "§7Выберите сторону машины, чтобы настроить его вывод.",
+    "gtceu.gui.fluid_auto_output.unselected.1": "§7Выберите сторону механизма, чтобы настроить его вывод.",
     "gtceu.gui.fluid_voiding": "§7Удалять §cЖидкости",
-    "gtceu.gui.item_auto_output.disabled": "Авто. вывод предметов: §cВыключен"
+    "gtceu.gui.item_auto_output.disabled": "Авто. вывод предметов: §cВыключен",
+    "gtceu.gui.item_auto_output.enabled": "Авто. вывод предметов: §aВключен",
+    "gtceu.gui.item_auto_output.other_direction.0": "Авто. вывод предметов: §aДругое направление",
+    "gtceu.gui.item_auto_output.other_direction.1": "§7Вывод предметов из механизма направлен в другую сторону.",
+    "gtceu.gui.item_auto_output.other_direction.2": "§7Нажмите, чтобы переместить вывод на указанную сторону.",
+    "gtceu.gui.item_auto_output.unselected.0": "Авто. вывод предметов",
+    "gtceu.gui.item_auto_output.unselected.1": "§7Выберите сторону механизма, чтобы настроить его вывод.",
+    "gtceu.gui.item_voiding": "§7Удаление §6предметов"
 }
