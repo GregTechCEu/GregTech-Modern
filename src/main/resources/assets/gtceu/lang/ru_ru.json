@@ -5945,5 +5945,9 @@
     "gtceu.gui.item_auto_output.other_direction.2": "§7Нажмите, чтобы переместить вывод на указанную сторону.",
     "gtceu.gui.item_auto_output.unselected.0": "Авто. вывод предметов",
     "gtceu.gui.item_auto_output.unselected.1": "§7Выберите сторону механизма, чтобы настроить его вывод.",
-    "gtceu.gui.item_voiding": "§7Удаление §6предметов"
+    "gtceu.gui.item_voiding": "§7Удаление §6предметов",
+    "gtceu.gui.multiblock.voiding_mode": "Режим удаления:",
+    "gtceu.gui.no_voiding": "§7Не назначено",
+    "gtceu.jade.changes_eu_sec": "%s EU/сек",
+    "gtceu.jade.days": "%s дней"
 }
