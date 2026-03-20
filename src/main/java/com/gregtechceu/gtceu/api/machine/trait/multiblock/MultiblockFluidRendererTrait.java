@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashSet;
