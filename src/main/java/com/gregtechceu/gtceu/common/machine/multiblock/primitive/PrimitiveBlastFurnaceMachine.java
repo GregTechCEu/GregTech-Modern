@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockFluidRendererTrait;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -43,21 +44,23 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine, IFluidRenderMulti {
+public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    private TickableSubscription hurtSubscription;
+    private @Nullable TickableSubscription hurtSubscription;
 
     @Getter
     @SyncToClient
     @RerenderOnChanged
-    private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
+    private final MultiblockFluidRendererTrait fluidRendererTrait;
 
     public PrimitiveBlastFurnaceMachine(BlockEntityCreationInfo info) {
         super(info);
+        fluidRendererTrait = new MultiblockFluidRendererTrait(this, this::saveOffsets);
     }
 
     @Override
@@ -72,28 +75,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 IO.NONE);
     }
 
-    public void setFluidBlockOffsets(Set<BlockPos> offsets) {
-        fluidBlockOffsets = offsets;
-        syncDataHolder.markClientSyncFieldDirty("fluidBlockOffsets");
-    }
-
     @Override
     public void onUnload() {
         super.onUnload();
         unsubscribe(hurtSubscription);
         hurtSubscription = null;
-    }
-
-    @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
-        IFluidRenderMulti.super.onStructureFormed();
-    }
-
-    @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-        IFluidRenderMulti.super.onStructureInvalid();
     }
 
     @Override
@@ -107,8 +93,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    @Override
-    public @NotNull Set<BlockPos> saveOffsets() {
+    public Set<BlockPos> saveOffsets() {
         return Collections.singleton(new BlockPos(getFrontFacing().getOpposite().getNormal()));
     }
 
