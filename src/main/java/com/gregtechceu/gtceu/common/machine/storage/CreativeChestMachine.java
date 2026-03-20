@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -31,6 +32,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Getter
     @SaveField
+    @SaveToItemStack
     private int itemsPerCycle, ticksPerCycle = 1;
 
     public CreativeChestMachine(BlockEntityCreationInfo info) {
@@ -65,18 +67,6 @@ public class CreativeChestMachine extends QuantumChestMachine {
         if (value.isEmpty()) return;
         itemsPerCycle = Integer.parseInt(value);
         onItemChanged();
-    }
-
-    @Override
-    public void saveToItem(CompoundTag tag) {
-        tag.putInt("itemsPerCycle", itemsPerCycle);
-        tag.putInt("ticksPerCycle", ticksPerCycle);
-    }
-
-    @Override
-    public void loadFromItem(CompoundTag tag) {
-        itemsPerCycle = tag.getInt("itemsPerCycle");
-        ticksPerCycle = tag.getInt("ticksPerCycle");
     }
 
     @Override

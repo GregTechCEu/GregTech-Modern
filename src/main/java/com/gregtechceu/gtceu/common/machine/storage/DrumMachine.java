@@ -5,16 +5,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -29,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DrumMachine extends MetaMachine implements IDropSaveMachine {
+public class DrumMachine extends MetaMachine {
 
     @Getter
     private final int maxStoredFluids;
@@ -39,6 +38,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
     protected ISubscription exportFluidSubs;
     @SaveField(nbtKey = "Fluid")
     @SyncToClient
+    @SaveToItemStack(saveToPickedStack = false)
     @Getter
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
@@ -100,25 +100,6 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
     //////////////////////////////////////
 
     @Override
-    public void saveToItem(CompoundTag tag) {
-        tag.put("Fluid", stored.writeToNBT(new CompoundTag()));
-    }
-
-    @Override
-    public void loadFromItem(CompoundTag tag) {
-        if (!tag.contains("Fluid")) {
-            stored = FluidStack.EMPTY;
-        }
-        // "stored" may not be same as cache (due to item's fluid cap). we should update it.
-        cache.getStorages()[0].setFluid(stored.copy());
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (!isRemote()) {
             if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
@@ -132,10 +113,5 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
     }
 }

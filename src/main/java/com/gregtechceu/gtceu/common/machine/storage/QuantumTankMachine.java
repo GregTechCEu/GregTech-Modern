@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -47,7 +47,7 @@ import java.util.function.Predicate;
 
 @NotNullByDefault
 public class QuantumTankMachine extends TieredMachine implements IControllable,
-                                IDropSaveMachine, IFancyUIMachine {
+                                IFancyUIMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
@@ -64,10 +64,12 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     @Getter
     @SyncToClient
     @SaveField
+    @SaveToItemStack(saveToPickedStack = false)
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
     @SyncToClient
     @SaveField
+    @SaveToItemStack
     protected long storedAmount = 0;
 
     @SaveField
@@ -100,16 +102,6 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
             syncDataHolder.markClientSyncFieldDirty("storedAmount");
             syncDataHolder.markClientSyncFieldDirty("stored");
         }
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
     }
 
     //////////////////////////////////////
@@ -179,18 +171,6 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
     public FluidStack getLockedFluid() {
         return lockedFluid.getFluid();
-    }
-
-    @Override
-    public void saveToItem(CompoundTag tag) {
-        tag.put("stored", stored.writeToNBT(new CompoundTag()));
-        tag.putLong("storedAmount", storedAmount);
-    }
-
-    @Override
-    public void loadFromItem(CompoundTag tag) {
-        stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("stored"));
-        storedAmount = tag.getLong("storedAmount");
     }
 
     //////////////////////////////////////

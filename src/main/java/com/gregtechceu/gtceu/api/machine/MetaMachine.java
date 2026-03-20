@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -188,12 +189,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             ownerUUID = sPlayer.getUUID();
         }
 
-        if (this instanceof IDropSaveMachine dropSaveMachine) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null) {
-                dropSaveMachine.loadFromItem(tag);
-            }
-        }
+        var elem = stack.getTagElement("saved");
+        if (elem != null) load(elem);
     }
 
     public void onMachineDestroyed() {
@@ -202,7 +199,15 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public void modifyDrops(List<ItemStack> drops) {}
+    public void modifyDrops(List<ItemStack> drops) {
+        for (ItemStack drop : drops) {
+            if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == getBlockState().getBlock()) {
+                getSyncDataHolder().saveItemStackTag(drop.getOrCreateTag(), false);
+                // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                break;
+            }
+        }
+    }
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//

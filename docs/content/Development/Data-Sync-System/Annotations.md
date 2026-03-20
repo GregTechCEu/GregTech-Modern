@@ -59,3 +59,9 @@ public void isWorkingChanged() {
     setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, isWorkingEnabled));
 }
 ```
+
+### `@SaveToItemStack`
+
+The `@SaveToItemStack` annotation defines a field on a BlockEntity that should be saved when the block is broken or cloned.
+
+The annotation has two parameters, `saveToDroppedStack` and `saveToPickedStack`, which both default to true.

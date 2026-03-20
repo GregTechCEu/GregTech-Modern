@@ -53,11 +53,9 @@ public class SyncDataHolder {
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
-        Set<FieldSyncData> fieldsToSerialize = writeClientFields ? syncData.getClientSyncFields() :
-                syncData.getServerSaveFields();
 
         CompoundTag tag = new CompoundTag();
-        for (var field : fieldsToSerialize) {
+        for (var field : syncData.getManagedFields()) {
             if (shouldSerializeField(field, writeClientFields, fullSync)) {
                 Tag nbtValue = serializeField(holder, field, writeClientFields, fullSync);
                 tag.put(field.nbtSaveKey, nbtValue);
@@ -67,15 +65,13 @@ public class SyncDataHolder {
     }
 
     private boolean shouldSerializeField(FieldSyncData field, boolean writeClient, boolean fullSync) {
-        return !writeClient || fullSync || dirtySyncFields.contains(field.fieldName) || field.isSyncManaged;
+        if (field.saveField && !writeClient) return true;
+        if (field.syncToClient && writeClient) return fullSync || dirtySyncFields.contains(field.fieldName) || field.isSyncManaged;
+        return false;
     }
 
     public void deserializeNBT(CompoundTag tag, boolean readingClientFields) {
-        Set<FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
-                syncData.getServerSaveFields();
-
-        for (var field : fieldsToCheck) {
-
+        for (var field : syncData.getManagedFields()) {
             Tag savedValue = tag.get(field.nbtSaveKey);
             deserializeField(holder, field, savedValue, readingClientFields);
 
@@ -97,6 +93,16 @@ public class SyncDataHolder {
                 if (field.triggerClientRerender) holder.scheduleRenderUpdate();
             }
         }
+    }
+
+    public void saveItemStackTag(CompoundTag tag, boolean pickedStack) {
+        var compound = new CompoundTag();
+        for (var field : syncData.getManagedFields()) {
+            if ((pickedStack && field.saveToPickedStack) || field.saveToDroppedStack) {
+                compound.put(field.nbtSaveKey, serializeField(holder, field, false, false));
+            }
+        }
+        tag.put("saved", compound);
     }
 
     @SuppressWarnings("unchecked")

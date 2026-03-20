@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -33,9 +34,11 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     @Getter
     @SaveField
+    @SaveToItemStack
     private int mBPerCycle = 1000;
     @Getter
     @SaveField
+    @SaveToItemStack
     private int ticksPerCycle = 1;
 
     public CreativeTankMachine(BlockEntityCreationInfo info) {
@@ -73,18 +76,6 @@ public class CreativeTankMachine extends QuantumTankMachine {
         if (value.isEmpty()) return;
         mBPerCycle = Integer.parseInt(value);
         onFluidChanged();
-    }
-
-    @Override
-    public void saveToItem(CompoundTag tag) {
-        tag.putInt("mBPerCycle", mBPerCycle);
-        tag.putInt("ticksPerCycle", ticksPerCycle);
-    }
-
-    @Override
-    public void loadFromItem(CompoundTag tag) {
-        mBPerCycle = tag.getInt("mBPerCycle");
-        ticksPerCycle = tag.getInt("ticksPerCycle");
     }
 
     @Override

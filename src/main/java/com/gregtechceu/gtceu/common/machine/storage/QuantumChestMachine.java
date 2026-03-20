@@ -10,12 +10,12 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 
 @NotNullByDefault
 public class QuantumChestMachine extends TieredMachine implements IControllable,
-                                 IDropSaveMachine, IFancyUIMachine {
+                                 IFancyUIMachine {
 
     /**
      * Sourced from FunctionalStorage's
@@ -74,10 +74,12 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     @Getter
     @SyncToClient
     @SaveField
+    @SaveToItemStack
     protected ItemStack stored = ItemStack.EMPTY;
     @Getter
     @SyncToClient
     @SaveField
+    @SaveToItemStack
     protected long storedAmount = 0;
 
     @SaveField
@@ -106,28 +108,6 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
             syncDataHolder.markClientSyncFieldDirty("storedAmount");
             syncDataHolder.markClientSyncFieldDirty("stored");
         }
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
-    }
-
-    @Override
-    public void saveToItem(CompoundTag tag) {
-        tag.put("stored", stored.save(new CompoundTag()));
-        tag.putLong("storedAmount", storedAmount);
-    }
-
-    @Override
-    public void loadFromItem(CompoundTag tag) {
-        stored = ItemStack.of(tag.getCompound("stored"));
-        storedAmount = tag.getLong("storedAmount");
     }
 
     //////////////////////////////////////

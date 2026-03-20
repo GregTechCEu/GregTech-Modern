@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
@@ -39,11 +40,7 @@ public final class ClassSyncData {
     }
 
     @Getter
-    private final List<FieldSyncData> managedFields = new ObjectArrayList<>();
-    @Getter
-    private final Set<FieldSyncData> clientSyncFields = new ObjectOpenHashSet<>();
-    @Getter
-    private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
+    private final Set<FieldSyncData> managedFields = new ObjectOpenHashSet<>();
 
     private ClassSyncData(Class<?> clazz) {
         MethodHandles.Lookup privateLookup;
@@ -82,7 +79,8 @@ public final class ClassSyncData {
 
             boolean hasSaveField = field.isAnnotationPresent(SaveField.class);
             boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class);
-            if (!hasSaveField && !hasClientSync) continue;
+            boolean hasSaveToItemStack = field.isAnnotationPresent(SaveToItemStack.class);
+            if (!hasSaveField && !hasClientSync && !hasSaveToItemStack) continue;
 
             if (Modifier.isStatic(field.getModifiers()))
                 throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
@@ -101,16 +99,12 @@ public final class ClassSyncData {
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
                     changeListeners.getOrDefault(field.getName(), List.of()));
             managedFields.add(syncData);
-            if (hasClientSync) clientSyncFields.add(syncData);
-            if (hasSaveField) serverSaveFields.add(syncData);
         }
 
         Class<?> parent = clazz.getSuperclass();
         if (parent != Object.class) {
             ClassSyncData parentHandles = CACHE.get(parent);
             managedFields.addAll(parentHandles.managedFields);
-            clientSyncFields.addAll(parentHandles.clientSyncFields);
-            serverSaveFields.addAll(parentHandles.serverSaveFields);
         }
     }
 

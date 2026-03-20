@@ -69,7 +69,7 @@ Client sync fields **do not** automatically detect changes. When changing a clie
 - `@RequireRerender` -> `@RerenderOnChanged`
 - `@Persisted` -> `@SaveField`
 - `@UpdateListener` -> `@ClientFieldChangeListener` on listener method.
-- `@DropSaved` - Removed, make machines implement `IDropSaveMachine` instead
+- `@DropSaved` -> `@SaveToItemStack`
 - `@ReadOnlyManaged` and `@LazyManaged` See usage docs for instructions on complex sync objects 
 
 ### Other changes

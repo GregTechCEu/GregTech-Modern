@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -171,10 +170,10 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
-        if (MetaMachine.getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine &&
-                dropSaveMachine.savePickClone()) {
-            dropSaveMachine.saveToItem(itemStack.getOrCreateTag());
-        }
+
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine != null) machine.getSyncDataHolder().saveItemStackTag(itemStack.getOrCreateTag(), true);
+
         return itemStack;
     }
 
@@ -225,15 +224,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof MetaMachine machine) {
             machine.modifyDrops(drops);
-            if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        dropSaveMachine.saveToItem(drop.getOrCreateTag());
-                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
-                        break;
-                    }
-                }
-            }
         }
         return drops;
     }

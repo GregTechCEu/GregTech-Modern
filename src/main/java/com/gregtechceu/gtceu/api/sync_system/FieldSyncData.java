@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.sync_system;
 
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveToItemStack;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import lombok.Setter;
@@ -18,6 +20,8 @@ import java.util.List;
 public final class FieldSyncData {
 
     public final String fieldName, nbtSaveKey;
+    public final boolean saveField, syncToClient;
+    public final boolean saveToDroppedStack, saveToPickedStack;
     public final VarHandle handle;
     public final boolean triggerClientRerender, isSyncManaged;
     @Setter
@@ -29,7 +33,25 @@ public final class FieldSyncData {
                          List<MethodHandle> changeListenerHandles) {
         fieldName = field.getName();
         SaveField saveField = field.getAnnotation(SaveField.class);
-        this.nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
+        SyncToClient syncToClient = field.getAnnotation(SyncToClient.class);
+        SaveToItemStack saveToStack = field.getAnnotation(SaveToItemStack.class);
+
+        this.saveField = saveField != null;
+        this.syncToClient = syncToClient != null;
+
+        if (saveField != null) {
+            this.nbtSaveKey = !saveField.nbtKey().isBlank() ? saveField.nbtKey() : fieldName;
+        } else {
+            this.nbtSaveKey = fieldName;
+        }
+
+        if (saveToStack != null) {
+            this.saveToDroppedStack = saveToStack.saveToDroppedStack();
+            this.saveToPickedStack = saveToStack.saveToPickedStack();
+        } else {
+            this.saveToDroppedStack = false;
+            this.saveToPickedStack = false;
+        }
         this.isSyncManaged = ISyncManaged.class.isAssignableFrom(field.getType());
         this.handle = handle;
         this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
