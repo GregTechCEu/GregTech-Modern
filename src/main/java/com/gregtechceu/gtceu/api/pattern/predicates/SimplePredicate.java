@@ -15,8 +15,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -172,12 +175,32 @@ public class SimplePredicate {
     public List<ItemStack> getCandidates() {
         if (GTCEu.isClientSide()) {
             return candidates == null ? Collections.emptyList() :
-                    Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                            .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
+                    Arrays.stream(this.candidates.get())
+                            .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                            .map(blockInfo -> {
+                                ItemStack form = blockInfo.getItemStackForm(Minecraft.getInstance().level,
+                                        BlockPos.ZERO);
+                                if (form.isEmpty() || form.is(Items.AIR)) {
+                                    Fluid fluid = blockInfo.getBlockState().getFluidState().getType();
+                                    if (fluid != Fluids.EMPTY) return new ItemStack(fluid.getBucket());
+                                }
+                                return form;
+                            })
+                            .filter(stack -> !stack.isEmpty() && !stack.is(Items.AIR))
                             .collect(Collectors.toList());
         }
         return candidates == null ? Collections.emptyList() :
-                Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                        .map(BlockInfo::getItemStackForm).collect(Collectors.toList());
+                Arrays.stream(this.candidates.get())
+                        .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                        .map(blockInfo -> {
+                            ItemStack form = blockInfo.getItemStackForm();
+                            if (form.isEmpty() || form.is(Items.AIR)) {
+                                Fluid fluid = blockInfo.getBlockState().getFluidState().getType();
+                                if (fluid != Fluids.EMPTY) return new ItemStack(fluid.getBucket());
+                            }
+                            return form;
+                        })
+                        .filter(stack -> !stack.isEmpty() && !stack.is(Items.AIR))
+                        .collect(Collectors.toList());
     }
 }
