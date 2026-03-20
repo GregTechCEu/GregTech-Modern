@@ -53,7 +53,6 @@ public class SyncDataHolder {
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
-
         CompoundTag tag = new CompoundTag();
         for (var field : syncData.getManagedFields()) {
             if (shouldSerializeField(field, writeClientFields, fullSync)) {
@@ -66,7 +65,8 @@ public class SyncDataHolder {
 
     private boolean shouldSerializeField(FieldSyncData field, boolean writeClient, boolean fullSync) {
         if (field.saveField && !writeClient) return true;
-        if (field.syncToClient && writeClient) return fullSync || dirtySyncFields.contains(field.fieldName) || field.isSyncManaged;
+        if (field.syncToClient && writeClient)
+            return fullSync || dirtySyncFields.contains(field.fieldName) || field.isSyncManaged;
         return false;
     }
 
