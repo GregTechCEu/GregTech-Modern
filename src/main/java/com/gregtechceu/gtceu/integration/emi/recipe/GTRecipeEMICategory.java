@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -16,6 +18,8 @@ import net.minecraft.network.chat.Component;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
+import dev.emi.emi.api.render.EmiRenderable;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.ArrayList;
@@ -30,8 +34,25 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     private final GTRecipeCategory category;
 
     private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.registryKey, IGui2Renderable.toDrawable(category.getIcon(), 16, 16));
+        super(category.registryKey, toEmiRenderable(category.getIcon()), toSimplifiedRenderable(category.getIcon()));
         this.category = category;
+    }
+
+    private static EmiRenderable toEmiRenderable(IGuiTexture texture) {
+        if (texture instanceof ItemStackTexture ist && ist.items != null && ist.items.length > 0 &&
+                ist.items[0] != null && !ist.items[0].isEmpty()) {
+            return EmiStack.of(ist.items[0]);
+        }
+        return IGui2Renderable.toDrawable(texture, 16, 16);
+    }
+
+    private static EmiRenderable toSimplifiedRenderable(IGuiTexture texture) {
+        if (texture instanceof ItemStackTexture ist && ist.items != null && ist.items.length > 0 &&
+                ist.items[0] != null && !ist.items[0].isEmpty()) {
+            EmiStack stack = EmiStack.of(ist.items[0]);
+            return (draw, x, y, delta) -> stack.render(draw, x, y, delta, EmiIngredient.RENDER_ICON);
+        }
+        return IGui2Renderable.toDrawable(texture, 16, 16);
     }
 
     public static void registerDisplays(EmiRegistry registry) {
