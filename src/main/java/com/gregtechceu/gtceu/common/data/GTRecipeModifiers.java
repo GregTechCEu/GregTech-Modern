@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +39,8 @@ public class GTRecipeModifiers {
             .memoize(logic -> (machine, recipe) -> {
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
                 if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
-                    return ModifierFunction.NULL;
+                    return ModifierFunction
+                            .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
                 }
                 return logic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
             });
@@ -54,7 +57,7 @@ public class GTRecipeModifiers {
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-                BlockPos machinePos = machine.getPos();
+                BlockPos machinePos = machine.getBlockPos();
                 var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
                 if (zone == null) return ModifierFunction.IDENTITY;
 
@@ -73,6 +76,7 @@ public class GTRecipeModifiers {
             .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
     public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
+    public static final RecipeModifier BATCH_MODE = GTRecipeModifiers::batchMode;
 
     /**
      * Recipe Modifier for <b>Parallel Multiblock Machines</b> - can be used as a valid {@link RecipeModifier}
@@ -80,12 +84,12 @@ public class GTRecipeModifiers {
      * Looks for the Parallel Hatch on a Multiblock and attempts to parallelize the recipe up to the set amount
      * </p>
      *
-     * @param machine an {@link IMultiController} machine
+     * @param machine a {@link MultiblockControllerMachine} machine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Parallel Multiblock
      */
     public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof IMultiController controller && controller.isFormed()) {
+        if (machine instanceof MultiblockControllerMachine controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
@@ -96,6 +100,27 @@ public class GTRecipeModifiers {
                     .eutMultiplier(parallels)
                     .parallels(parallels)
                     .build();
+        }
+        return ModifierFunction.IDENTITY;
+    }
+
+    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (machine instanceof MultiblockControllerMachine controller && controller.isFormed() &&
+                controller.isBatchEnabled()) {
+            if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
+                int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
+                parallel = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallel);
+
+                if (parallel == 0) return ModifierFunction.NULL;
+                if (parallel == 1) return ModifierFunction.IDENTITY;
+
+                return ModifierFunction.builder()
+                        .inputModifier(ContentModifier.multiplier(parallel))
+                        .outputModifier(ContentModifier.multiplier(parallel))
+                        .durationMultiplier(parallel)
+                        .batchParallels(parallel)
+                        .build();
+            }
         }
         return ModifierFunction.IDENTITY;
     }
@@ -152,11 +177,11 @@ public class GTRecipeModifiers {
                 (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
         int recipeTemp = recipe.data.getInt("ebf_temp");
         if (!recipe.data.contains("ebf_temp") || recipeTemp > blastFurnaceTemperature) {
-            return ModifierFunction.NULL;
+            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
         }
 
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-            return ModifierFunction.NULL;
+            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
         }
 
         var discount = ModifierFunction.builder()
@@ -203,10 +228,10 @@ public class GTRecipeModifiers {
      * <p>
      * Modifies the recipe in the following order:
      * <ol>
-     * <li>Calculates the maximum parallel as {@code 32 × coilLevel}</li>
+     * <li>Calculates the maximum parallels as {@code 32 × coilLevel}</li>
      * <li>Finds the actual parallel amount that the smelter can do</li>
      * <li>Sets the recipe duration to {@code 128 × 2 × parallels / maxParallels}</li>
-     * <li>Sets the recipe EUt to {@code parallels / (8 × coilDiscount)}</li>
+     * <li>Sets the recipe EUt to {@code (4 × maxParallels / (8 × coilDiscount))}</li>
      * <li>Applies {@link OverclockingLogic#NON_PERFECT_OVERCLOCK} to this modified recipe</li>
      * <li>Multiplies the recipe contents by the parallel amount</li>
      * </ol>
@@ -227,10 +252,10 @@ public class GTRecipeModifiers {
         if (parallels == 0) return ModifierFunction.NULL;
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
-        long eut = 4 * (long) (parallels / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
+        long eut = (long) (4 * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
         ModifierFunction baseModifier = r -> {
             var copy = r.copy();
-            EURecipeCapability.putEUContent(copy.tickInputs, Math.max(1, eut));
+            EURecipeCapability.putEUContent(copy.tickInputs, new EnergyStack(Math.max(1, eut)));
             copy.duration = Math.max(1, duration);
             return copy;
         };

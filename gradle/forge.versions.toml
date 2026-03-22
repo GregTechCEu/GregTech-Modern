@@ -1,38 +1,43 @@
 [versions]
-ldlib = "1.0.39"
+ldlib = "1.0.40.b"
 registrate = "MC1.20-1.3.11"
 configuration = "2.2.0"
-mixinExtras = "0.2.0"
+mixinExtras = "0.5.0-rc.3"
 
-jei = "15.20.0.105"
+jei = "15.20.0.115"
 rei = "12.1.785"
 emi = "1.1.13+1.20.1"
 ae2 = "15.0.18"
-kubejs = "2001.6.4-build.120"
-rhino = "2001.2.3-build.6"
+kubejs = "2001.6.5-build.16"
+rhino = "2001.2.3-build.10"
 architectury = "9.2.14"
 clothconfig = "11.1.136"
-theoneprobe = "1.20.1-10.0.1-3"
 curios = "5.9.1+1.20.1"
 kotlinforforge = "4.11.0"
 shimmer = "1.20.1-0.2.4"
 journeyMapApi = "1.20-1.9-SNAPSHOT"
 ftblibrary = "2001.2.4"
 ftbteams = "2001.3.0"
-ftbquests= "2001.4.11"
+ftbquests = "2001.4.11"
 ftbchunks = "2001.3.4"
+ccTweaked = "1.114.3"
+create = "6.0.6-150"
+ponder = "1.0.80"
+flywheel = "1.0.4"
+xaerosLib = "1.1.0"
+xaerosWorldMap = "1.40.11"
+xaerosMinimap = "25.3.10"
 
 ## modrinth maven ##
 jade = "11.6.3"
-embeddium = "0.3.19+mc1.20.1"
-oculus = "1.20.1-1.7.0"
+embeddium = "0.3.31+mc1.20.1"
+oculus = "1.20.1-1.8.0"
+modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
 
 ## cursemaven ##
 worldStripper = "4578579"
 javd = "4803995"
 trenzalore = "4848244"
-xaerosWorldMap = "5658224"
-xaerosMinimap = "5773012"
 journeyMap = "5789363"
 resourcefullib = "5659871"
 argonauts = "5263580"
@@ -64,11 +69,14 @@ rei-forge           = { module = "me.shedaniel:RoughlyEnoughItems-forge", versio
 emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
+create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create"}
+ponder              = { module = "net.createmod.ponder:Ponder-Forge-1.20.1", version.ref = "ponder"}
+flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
+flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-forge-1.20.1", version.ref = "flywheel"}
 kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = "kubejs" }
 rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
-theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref = "journeyMapApi" }
@@ -80,12 +88,19 @@ ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
+modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
+xaeroslib           = { module = "xaero.lib:xaerolib-forge-1.20.1", version.ref = "xaerosLib" }
+xaerosworldmap      = { module = "xaero.map:xaeroworldmap-forge-1.20.1", version.ref = "xaerosWorldMap" }
+xaerosminimap       = { module = "xaero.minimap:xaerominimap-forge-1.20.1", version.ref = "xaerosMinimap" }
+
+
+cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }
+cc-tweaked-forge-api  = { module = "cc.tweaked:cc-tweaked-1.20.1-forge-api", version.ref = "ccTweaked" }
+cc-tweaked-forge-impl = { module = "cc.tweaked:cc-tweaked-1.20.1-forge", version.ref = "ccTweaked" }
 
 worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
 javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
 trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = "trenzalore" }
-xaerosworldmap      = { module = "curse.maven:xaeros-world-map-317780", version.ref = "xaerosWorldMap" }
-xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.ref = "xaerosMinimap" }
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }

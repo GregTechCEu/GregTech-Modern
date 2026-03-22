@@ -46,19 +46,25 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
 
     @Override
     public BigInteger of(Object o) {
-        if (o instanceof BigInteger) {
-            return (BigInteger) o;
-        } else if (o instanceof Number) {
-            return BigInteger.valueOf(((Number) o).longValue());
+        if (o instanceof BigInteger b) {
+            return b;
+        } else if (o instanceof Number n) {
+            return BigInteger.valueOf(n.longValue());
         } else if (o instanceof CharSequence) {
             return new BigInteger(o.toString());
+        } else {
+            return BigInteger.ZERO;
         }
-        return BigInteger.ZERO;
     }
 
     @Override
     public BigInteger defaultValue() {
         return BigInteger.ZERO;
+    }
+
+    @Override
+    public Class<BigInteger> contentClass() {
+        return BigInteger.class;
     }
 
     @Override

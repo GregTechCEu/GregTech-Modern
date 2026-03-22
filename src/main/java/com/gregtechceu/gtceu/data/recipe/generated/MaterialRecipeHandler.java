@@ -74,7 +74,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7000, 1000)
+                        .chancedOutput(gemStack, 7500, 0)
                         .duration(1200).EUt(24)
                         .save(provider);
 
@@ -254,8 +254,11 @@ public final class MaterialRecipeHandler {
         ItemStack smallDustStack = ChemicalHelper.get(dustSmall, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
-        VanillaRecipeHelper.addStrictShapedRecipe(provider,
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
+                smallDustStack.copyWithCount(4), " X", "  ", 'X', new MaterialEntry(dust, material));
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
+                String.format("small_dust_disassembling_3x3_%s", material.getName()),
                 smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material.getName()),
                 dustStack, "XX", "XX", 'X', new MaterialEntry(dustSmall, material));
@@ -282,8 +285,11 @@ public final class MaterialRecipeHandler {
         ItemStack tinyDustStack = ChemicalHelper.get(dustTiny, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
-        VanillaRecipeHelper.addStrictShapedRecipe(provider,
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
+                tinyDustStack.copyWithCount(9), "X ", "  ", 'X', new MaterialEntry(dust, material));
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
+                String.format("tiny_dust_disassembling_3x3_%s", material.getName()),
                 tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material.getName()),
                 dustStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(dustTiny, material));
@@ -642,7 +648,9 @@ public final class MaterialRecipeHandler {
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
-                if (!material.hasProperty(PropertyKey.BLAST)) {
+                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
+                        material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
                             .inputItems(dust, material, (int) (materialAmount / M))
                             .notConsumable(GTItems.SHAPE_MOLD_BLOCK)

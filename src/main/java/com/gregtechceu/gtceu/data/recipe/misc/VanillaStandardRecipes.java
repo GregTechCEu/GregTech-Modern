@@ -225,6 +225,7 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BOTTLE)
                 .outputItems(new ItemStack(Items.GLASS_BOTTLE))
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .addMaterialInfo(true)
                 .save(provider);
 
@@ -250,6 +251,7 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BLOCK)
                 .outputItems(new ItemStack(Blocks.GLASS, 1))
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .save(provider);
 
         CUTTER_RECIPES.recipeBuilder("cut_glass_block_to_plate").duration(50).EUt(VA[ULV])
@@ -278,7 +280,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("gravel_to_flint")
                 .inputItems(new ItemStack(Blocks.GRAVEL, 1))
                 .outputItems(dust, Stone)
-                .chancedOutput(new ItemStack(Items.FLINT), 1000, 1000)
+                .chancedOutput(new ItemStack(Items.FLINT), 3300, 0)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -345,7 +347,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_block")
                 .inputItems(new ItemStack(Blocks.MELON))
                 .outputItems(new ItemStack(Items.MELON_SLICE, 8))
-                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8000, 500)
+                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8500, 0)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -378,7 +380,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
-                .chancedOutput(dust, Wood, 8000, 680)
+                .chancedOutput(dust, Wood, 8500, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -1370,11 +1372,13 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.BONE_MEAL))
                 .outputItems(new ItemStack(Items.WHITE_DYE, 1))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("lapis_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("blue_dye")
                 .inputItems(new ItemStack(Items.LAPIS_LAZULI))
                 .outputItems(new ItemStack(Items.BLUE_DYE))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("ink_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("black_dye")
                 .inputItems(new ItemStack(Items.INK_SAC))
                 .outputItems(new ItemStack(Items.BLACK_DYE))
                 .save(provider);

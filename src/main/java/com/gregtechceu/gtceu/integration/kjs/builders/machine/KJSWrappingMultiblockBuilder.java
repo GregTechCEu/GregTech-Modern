@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -13,15 +12,18 @@ import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
     public KJSWrappingMultiblockBuilder(ResourceLocation id, KJSTieredMultiblockBuilder tieredBuilder) {
@@ -45,8 +47,17 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
+    public void generateDataJsons(DataJsonGenerator generator) {
+        tieredBuilder.generateDataJsons(generator);
+    }
+
+    @Override
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+        tieredBuilder.generateAssetJsons(generator);
+    }
+
+    @Override
     public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 
@@ -63,20 +74,18 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
                 " With id " + tieredBuilder.id);
     }
 
-    public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id) {
-        return MultiblockMachineBuilder.createMulti(GTRegistration.REGISTRATE, id.getPath(),
-                WorkableElectricMultiblockMachine::new,
+    public static MultiblockMachineBuilder<?, ?> createKJSMulti(ResourceLocation id) {
+        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                WorkableElectricMultiblockMachine::new);
     }
 
-    public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
-                                                          KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        return MultiblockMachineBuilder.createMulti(GTRegistration.REGISTRATE, id.getPath(),
-                machine::create,
+    public static MultiblockMachineBuilder<?, ?> createKJSMulti(ResourceLocation id,
+                                                                KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
+        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                machine::create);
     }
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -8,42 +9,35 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,8 +53,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                                implements IMiner, IControllable, IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     public static final int CHUNK_LENGTH = 16;
     @Getter
     private final int tier;
@@ -70,29 +62,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     protected FluidHandlerList inputFluidInventory;
     private final int drillingFluidConsumePerTick;
 
-    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune,
+    public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(holder, fortune, speed, maximumChunkDiameter);
+        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
-        if (args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed &&
-                args[args.length - 1] instanceof Integer maxRadius) {
-            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -138,7 +112,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
@@ -160,7 +134,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(
                 Math.max(1, GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()) - this.tier));
-        getRecipeLogic().initPos(getPos(), getRecipeLogic().getCurrentRadius());
+        getRecipeLogic().initPos(getBlockPos(), getRecipeLogic().getCurrentRadius());
     }
 
     public int getEnergyTier() {
@@ -260,8 +234,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction facing,
-                                                BlockHitResult hitResult) {
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote() || !this.isFormed())
             return InteractionResult.SUCCESS;
 
@@ -274,8 +247,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH);
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
-                        workingAreaChunks, workingAreaChunks));
+                context.getPlayer()
+                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                                workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
                     getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
@@ -283,17 +257,16 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH / 2);
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

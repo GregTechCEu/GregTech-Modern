@@ -6,26 +6,23 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class RainingCondition extends RecipeCondition {
+public class RainingCondition extends RecipeCondition<RainingCondition> {
 
-    public static final Codec<RainingCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-                    .apply(instance, RainingCondition::new));
+    // spotless:off
+    public static final Codec<RainingCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.FLOAT.fieldOf("level").forGetter(val -> val.level)
+    ).apply(instance, RainingCondition::new));
+    // spotless:on
 
-    public final static RainingCondition INSTANCE = new RainingCondition();
     private float level;
 
     public RainingCondition(boolean isReverse, float level) {
@@ -38,7 +35,7 @@ public class RainingCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<RainingCondition> getType() {
         return GTRecipeConditions.RAINING;
     }
 
@@ -58,35 +55,7 @@ public class RainingCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public RainingCondition createTemplate() {
         return new RainingCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("level", level);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        level = GsonHelper.getAsFloat(config, "level", 0);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        level = buf.readFloat();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeFloat(level);
     }
 }

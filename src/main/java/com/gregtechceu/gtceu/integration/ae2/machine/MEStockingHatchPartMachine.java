@@ -1,31 +1,29 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
@@ -49,21 +47,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implements IMEStockingPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEStockingHatchPartMachine.class, MEInputHatchPartMachine.MANAGED_FIELD_HOLDER);
-
     private static final int CONFIG_SIZE = 16;
 
-    @DescSynced
-    @Persisted
+    @SyncToClient
+    @SaveField
     @Getter
     private boolean autoPull;
+
+    @Getter
+    @Setter
+    @SaveField
+    private int minStackSize = 1;
+
+    @Getter
+    @Setter
+    @SaveField
+    private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.autoPullTest = $ -> false;
     }
 
@@ -72,26 +77,21 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     /////////////////////////////////
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
         IMEStockingPart.super.addedToController(controller);
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
         return this.aeFluidHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -101,8 +101,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
-        if (autoPull && getOffsetTimer() % 100 == 0) {
-            refreshList();
+        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
+                                                                                                  // Avoid Crash loops.
+        if (getOffsetTimer() % ticksPerCycle == 0) {
+            if (autoPull) {
+                refreshList();
+            }
             syncME();
         }
     }
@@ -116,13 +120,18 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted > 0) {
+                if (extracted >= minStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
             }
             slot.setStock(null);
         }
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -140,7 +149,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         if (config == null) return false;
         if (!isFormed()) return false;
 
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             for (IMultiPart part : controller.getParts()) {
                 if (part instanceof MEStockingHatchPartMachine hatch) {
                     if (hatch == this) continue;
@@ -157,6 +166,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("autoPull");
             if (!this.autoPull) {
                 this.aeFluidHandler.clearInventory(0);
             } else if (updateMEStatus()) {
@@ -183,8 +193,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
             long amount = entry.getLongValue();
-            if (!topFluids.isEmpty() && amount < topFluids.peek().getLongValue()) continue;
-
             AEKey what = entry.getKey();
 
             if (amount <= 0) continue;
@@ -195,12 +203,13 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
-
-            if (topFluids.size() < CONFIG_SIZE) {
-                topFluids.offer(entry);
-            } else if (amount > topFluids.peek().getLongValue()) {
-                topFluids.poll();
-                topFluids.offer(entry);
+            if (amount >= minStackSize) {
+                if (topFluids.size() < CONFIG_SIZE) {
+                    topFluids.offer(entry);
+                } else if (amount > topFluids.peek().getLongValue()) {
+                    topFluids.poll();
+                    topFluids.offer(entry);
+                }
             }
         }
 
@@ -234,6 +243,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     ////////////////////////////////
@@ -241,15 +251,14 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ////////////////////////////////
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             setAutoPull(!autoPull);
             if (autoPull) {
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_enabled"));
             } else {
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
             }
         }

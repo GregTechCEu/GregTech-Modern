@@ -10,12 +10,9 @@ import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.GsonHelper;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -25,13 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnvironmentalHazardCondition extends RecipeCondition {
+public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalHazardCondition> {
 
-    public static final Codec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(
-                            MedicalCondition.CODEC.fieldOf("condition").forGetter(val -> val.condition))
-                    .apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:off
+    public static final Codec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            MedicalCondition.CODEC.fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
+    ).apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:on
 
     @Getter
     private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;
@@ -42,7 +39,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<EnvironmentalHazardCondition> getType() {
         return GTRecipeConditions.ENVIRONMENTAL_HAZARD;
     }
 
@@ -62,40 +59,12 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
             return false;
         }
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getPos());
+        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getBlockPos());
         return zone != null && zone.strength() > 0;
     }
 
-    @NotNull
     @Override
-    public JsonObject serialize() {
-        JsonObject value = super.serialize();
-        value.addProperty("condition", condition.name);
-        return value;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        this.condition = MedicalCondition.CONDITIONS.get(GsonHelper.getAsString(config, "condition"));
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeUtf(this.condition.name);
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        this.condition = MedicalCondition.CONDITIONS.get(buf.readUtf());
-        return this;
-    }
-
-    @Override
-    public RecipeCondition createTemplate() {
+    public EnvironmentalHazardCondition createTemplate() {
         return new EnvironmentalHazardCondition();
     }
 }

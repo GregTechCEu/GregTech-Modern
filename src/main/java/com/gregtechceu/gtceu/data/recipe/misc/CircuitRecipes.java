@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -338,6 +339,7 @@ public class CircuitRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BALL)
                 .outputItems(GLASS_TUBE)
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .duration(160).EUt(16).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_glass_tube")
@@ -690,14 +692,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_emerald")
                 .inputItems(gemExquisite, Emerald)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 1000, 2000)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_olivine")
                 .inputItems(gemExquisite, Olivine)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 1000, 2000)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
@@ -716,14 +718,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_mutagen")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(Mutagen.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8000, 250)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_bacterial_sludge")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(BacterialSludge.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8000, 250)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 

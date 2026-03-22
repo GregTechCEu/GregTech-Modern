@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -76,7 +77,7 @@ public class FirstDegreeMaterials {
                 .gem(3).ore(2, 1)
                 .color(0xdbfeff).secondaryColor(0xa0c4d7).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
-                .components(Aluminium, 2, Silicon, 1, Fluorine, 2, Hydrogen, 2, Oxygen, 6)
+                .components(Aluminium, 2, Silicon, 1, Oxygen, 4, Fluorine, 2)
                 .buildAndRegister();
 
         Bone = new Material.Builder(GTCEu.id("bone"))
@@ -105,6 +106,8 @@ public class FirstDegreeMaterials {
                 .components(Tin, 1, Copper, 3)
                 .toolStats(ToolProperty.Builder.of(3.0F, 2.0F, 192, 2)
                         .enchantability(18).addTypes(GTToolType.MORTAR).build())
+                .armorStats(ArmorProperty.Builder.of(17, new int[] { 3, 7, 6, 2 })
+                        .enchantability(8).build())
                 .rotorStats(115, 105, 2.5f, 192)
                 .fluidPipeProperties(1696, 20, true)
                 .buildAndRegister();
@@ -182,6 +185,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Cooperite = new Material.Builder(GTCEu.id("cooperite"))
+                .langValue("Sheldonite") // greg's humor is now on 1.20...
                 .dust(1).ore()
                 .color(0xe9ffa7).secondaryColor(0x665f2f).iconSet(METALLIC)
                 .components(Platinum, 3, Nickel, 1, Sulfur, 1, Palladium, 1)
@@ -498,6 +502,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         RTMAlloy = new Material.Builder(GTCEu.id("rtm_alloy"))
+                .langValue("RTM Alloy")
                 .ingot().fluid()
                 .color(0x30306B).iconSet(SHINY)
                 .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
@@ -628,6 +633,8 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(5.0F, 3.0F, 512, 3)
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(19, new int[] { 3, 7, 5, 2 })
+                        .enchantability(14).build())
                 .rotorStats(130, 105, 3.0f, 512)
                 .fluidPipeProperties(1855, 50, true)
                 .cableProperties(V[EV], 2, 2)
@@ -645,7 +652,7 @@ public class FirstDegreeMaterials {
         Tetrahedrite = new Material.Builder(GTCEu.id("tetrahedrite"))
                 .dust().ore()
                 .color(0xa3a09b).secondaryColor(0x143313)
-                .components(Copper, 3, Antimony, 1, Sulfur, 3, Iron, 1)
+                .components(Copper, 2, Iron, 1, Antimony, 1, Sulfur, 3)
                 .buildAndRegister();
 
         TinAlloy = new Material.Builder(GTCEu.id("tin_alloy"))
@@ -661,7 +668,7 @@ public class FirstDegreeMaterials {
                 .gem(3).ore()
                 .color(0xe8d73a).secondaryColor(0xf4680f).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
-                .components(Aluminium, 2, Silicon, 1, Fluorine, 1, Hydrogen, 2)
+                .components(Aluminium, 2, Silicon, 1, Oxygen, 5, Fluorine, 1, Hydrogen, 1)
                 .buildAndRegister();
 
         Tungstate = new Material.Builder(GTCEu.id("tungstate"))
@@ -733,12 +740,14 @@ public class FirstDegreeMaterials {
                 .components(Lead, 1, Molybdenum, 1, Oxygen, 4)
                 .buildAndRegister();
 
-        YellowLimonite = new Material.Builder(GTCEu.id("yellow_limonite"))
+        Limonite = new Material.Builder(GTCEu.id("yellow_limonite"))
+                .langValue("Limonite")
                 .dust().ore()
                 .color(0xf5e315).secondaryColor(0xc06f33).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_DOUBLE)
                 .components(Iron, 1, Hydrogen, 1, Oxygen, 2)
                 .buildAndRegister();
+        YellowLimonite = Limonite;
 
         YttriumBariumCuprate = new Material.Builder(GTCEu.id("yttrium_barium_cuprate"))
                 .ingot()
@@ -1050,7 +1059,7 @@ public class FirstDegreeMaterials {
         GlauconiteSand = new Material.Builder(GTCEu.id("glauconite_sand"))
                 .dust().ore(3, 1)
                 .color(0x1da351).secondaryColor(0x1a6e8f).iconSet(SAND)
-                .components(Potassium, 1, Magnesium, 2, Aluminium, 4, Hydrogen, 2, Oxygen, 12)
+                .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water, 1)
                 .buildAndRegister();
 
         Malachite = new Material.Builder(GTCEu.id("malachite"))
@@ -1074,7 +1083,7 @@ public class FirstDegreeMaterials {
         Alunite = new Material.Builder(GTCEu.id("alunite"))
                 .dust().ore(3, 1)
                 .color(0xfbd677).secondaryColor(0xe11e0a).iconSet(METALLIC)
-                .components(Potassium, 1, Aluminium, 3, Silicon, 2, Hydrogen, 6, Oxygen, 14)
+                .components(Potassium, 1, Aluminium, 2, Silicon, 2, Hydrogen, 6, Oxygen, 14)
                 .buildAndRegister();
 
         Talc = new Material.Builder(GTCEu.id("talc"))
@@ -1215,6 +1224,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
+                .langValue("Iron III Chloride")
                 .liquid()
                 .color(0x060B0B)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
@@ -1222,6 +1232,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
+                .langValue("Iron II Chloride")
                 .liquid()
                 .color(0xe8e0be)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
@@ -1267,7 +1278,7 @@ public class FirstDegreeMaterials {
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
                 .dust(1)
                 .color(0xffe3bc).secondaryColor(0xd4918a).iconSet(FINE)
-                .components(Potassium, 1, Aluminium, 1, Silicon, 1, Oxygen, 8)
+                .components(Potassium, 1, Aluminium, 1, Silicon, 3, Oxygen, 8)
                 .buildAndRegister();
 
         NeodymiumMagnetic = new Material.Builder(GTCEu.id("magnetic_neodymium"))
@@ -1540,7 +1551,7 @@ public class FirstDegreeMaterials {
         Pyrochlore = new Material.Builder(GTCEu.id("pyrochlore"))
                 .dust().ore()
                 .color(0x5b4838).secondaryColor(0x331400).iconSet(METALLIC)
-                .components(Calcium, 2, Niobium, 2, Oxygen, 7)
+                .components(Calcium, 2, Niobium, 2, Oxygen, 6, Fluorine, 1)
                 .buildAndRegister();
 
         PotassiumHydroxide = new Material.Builder(GTCEu.id("potassium_hydroxide"))
@@ -1587,7 +1598,7 @@ public class FirstDegreeMaterials {
         CalciumCarbonate = new Material.Builder(GTCEu.id("calcium_carbonate"))
                 .dust()
                 .color(0xd9ca9c).secondaryColor(0xad913b)
-                .components(Calcium, 2, Carbon, 1, Oxygen, 3)
+                .components(Calcium, 1, Carbon, 1, Oxygen, 3)
                 .buildAndRegister();
 
         PotassiumCyanide = new Material.Builder(GTCEu.id("potassium_cyanide"))
@@ -1605,7 +1616,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
-                .gas()
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xa6a6a6)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CHEMICAL_BURNS)

@@ -43,22 +43,27 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {
 
-    public static MaterialStack getMaterialStack(@Nullable Object object) {
-        if (object instanceof MaterialStack materialStack) {
-            return materialStack;
-        } else if (object instanceof MaterialEntry entry) {
-            return getMaterialStack(entry);
+    public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
+        if (object instanceof ItemMaterialInfo materialInfo) {
+            return materialInfo;
+        } else if (object instanceof MaterialStack materialStack) {
+            return new ItemMaterialInfo(materialStack);
         } else if (object instanceof ItemStack itemStack) {
-            return getMaterialStack(itemStack);
+            return ItemMaterialData.getMaterialInfo(itemStack.getItem());
         } else if (object instanceof ItemLike item) {
-            return getMaterialStack(item);
+            return ItemMaterialData.getMaterialInfo(item);
+        } else if (object instanceof MaterialEntry entry) {
+            var items = getItems(entry);
+            if (!items.isEmpty()) {
+                return ItemMaterialData.getMaterialInfo(items.get(0));
+            }
         } else if (object instanceof Ingredient ing) {
             for (var stack : ing.getItems()) {
-                var ms = getMaterialStack(stack);
-                if (!ms.isEmpty()) return ms;
+                var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
+                if (ms != null) return ms;
             }
         }
-        return MaterialStack.EMPTY;
+        return null;
     }
 
     public static MaterialStack getMaterialStack(ItemStack itemStack) {
@@ -188,7 +193,7 @@ public class ChemicalHelper {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
                     if (!materialEntry1.isEmpty() &&
-                            Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
+                            materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
@@ -205,7 +210,7 @@ public class ChemicalHelper {
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                    Arrays.stream(prefix.getItemTags(material))
+                    prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
                             .forEach(tagKey -> {
                                 // remove the tag so that the next iteration is faster.
@@ -286,19 +291,19 @@ public class ChemicalHelper {
     @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getBlockTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     @Nullable
     public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getItemTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

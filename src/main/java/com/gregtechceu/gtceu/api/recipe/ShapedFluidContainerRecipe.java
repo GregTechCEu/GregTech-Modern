@@ -121,7 +121,7 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
             int xSize = pattern[0].length();
             int ySize = pattern.length;
             NonNullList<Ingredient> dissolved = ShapedRecipeAccessor.callDissolvePattern(pattern, key, xSize, ySize);
-            ItemStack result = ShapedEnergyTransferRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            ItemStack result = ShapedFluidContainerRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
             boolean showNotification = GsonHelper.getAsBoolean(json, "show_notification", true);
             return new ShapedFluidContainerRecipe(recipeId, group, category,
                     xSize, ySize,

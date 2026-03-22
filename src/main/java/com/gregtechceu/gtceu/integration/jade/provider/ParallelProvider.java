@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -24,32 +23,59 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("parallel")) {
             int parallel = blockAccessor.getServerData().getInt("parallel");
-            if (parallel > 1) {
+            if (!blockAccessor.getServerData().getBoolean("exact") && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";
-                if (blockAccessor.getServerData().getBoolean("exact")) key += ".exact";
                 iTooltip.add(Component.translatable(key, parallels));
+            } else {
+                int batch = blockAccessor.getServerData().getInt("batch");
+                int subtickParallel = blockAccessor.getServerData().getInt("subtickParallel");
+                int totalRuns = parallel * batch * subtickParallel;
+                if (totalRuns == 1) return;
+                Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.total_runs";
+                iTooltip.add(Component.translatable(key, runs));
+
+                if (parallel > 1) {
+                    Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keyParallel = "gtceu.multiblock.parallel.exact";
+                    iTooltip.add(Component.translatable(keyParallel, parallels));
+                }
+                if (batch > 1) {
+                    Component batches = Component.literal(FormattingUtil.formatNumbers(batch))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keyBatch = "gtceu.multiblock.batch_enabled";
+                    iTooltip.add(Component.translatable(keyBatch, batches));
+                }
+                if (subtickParallel > 1) {
+                    Component subticks = Component.literal(FormattingUtil.formatNumbers(subtickParallel))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keySubtick = "gtceu.multiblock.subtick_parallels";
+                    iTooltip.add(Component.translatable(keySubtick, subticks));
+                }
             }
         }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof IParallelHatch parallelHatch) {
-                compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
-            } else if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                if (controller instanceof IRecipeLogicMachine rlm &&
-                        rlm.getRecipeLogic().isActive() &&
-                        rlm.getRecipeLogic().getLastRecipe() != null) {
-                    compoundTag.putInt("parallel", rlm.getRecipeLogic().getLastRecipe().parallels);
-                    compoundTag.putBoolean("exact", true);
-                } else {
-                    controller.getParallelHatch()
-                            .ifPresent(parallelHatch -> compoundTag.putInt("parallel",
-                                    parallelHatch.getCurrentParallel()));
-                }
+        if (blockAccessor.getBlockEntity() instanceof ParallelHatchPartMachine parallelHatch) {
+            compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
+        } else if (blockAccessor.getBlockEntity() instanceof MultiblockControllerMachine controller) {
+            if (controller instanceof IRecipeLogicMachine rlm &&
+                    rlm.getRecipeLogic().isActive() &&
+                    rlm.getRecipeLogic().getLastRecipe() != null) {
+                compoundTag.putInt("parallel", rlm.getRecipeLogic().getLastRecipe().parallels);
+                compoundTag.putInt("batch", rlm.getRecipeLogic().getLastRecipe().batchParallels);
+                compoundTag.putInt("subtickParallel", rlm.getRecipeLogic().getLastRecipe().subtickParallels);
+                compoundTag.putBoolean("exact", true);
+            } else {
+                controller.getParallelHatch()
+                        .ifPresent(parallelHatch -> compoundTag.putInt("parallel",
+                                parallelHatch.getCurrentParallel()));
             }
         }
     }

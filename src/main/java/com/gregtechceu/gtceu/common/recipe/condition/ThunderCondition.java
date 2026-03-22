@@ -6,26 +6,25 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class ThunderCondition extends RecipeCondition {
+public class ThunderCondition extends RecipeCondition<ThunderCondition> {
 
-    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-                    .apply(instance, ThunderCondition::new));
+    // spotless:off
+    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.FLOAT.fieldOf("level").forGetter(ThunderCondition::getLevel)
+    ).apply(instance, ThunderCondition::new));
+    // spotless:on
 
-    public final static ThunderCondition INSTANCE = new ThunderCondition();
+    @Getter
     private float level;
 
     public ThunderCondition(boolean isReverse, float level) {
@@ -38,17 +37,13 @@ public class ThunderCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<ThunderCondition> getType() {
         return GTRecipeConditions.THUNDER;
     }
 
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.thunder.tooltip", level);
-    }
-
-    public float getLevel() {
-        return level;
     }
 
     @Override
@@ -58,35 +53,7 @@ public class ThunderCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public ThunderCondition createTemplate() {
         return new ThunderCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("level", level);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        level = GsonHelper.getAsFloat(config, "level", 0);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        level = buf.readFloat();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeFloat(level);
     }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:max_dual_input_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/dual_input_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/max/bottom",
+          "side": "gtceu:block/casings/voltage/max/side",
+          "top": "gtceu:block/casings/voltage/max/top"
+        }
+      }
+    },
+    "is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/dual_input_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/max/bottom",
+          "side": "gtceu:block/casings/voltage/max/side",
+          "top": "gtceu:block/casings/voltage/max/top"
+        }
+      }
+    }
+  }
+}

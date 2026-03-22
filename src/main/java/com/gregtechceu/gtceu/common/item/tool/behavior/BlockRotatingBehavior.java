@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ToolAction;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,12 +41,17 @@ public class BlockRotatingBehavior implements IToolBehavior {
     protected BlockRotatingBehavior() {/**/}
 
     @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == GTToolActions.WRENCH_ROTATE;
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockEntity te = level.getBlockEntity(pos);
         // MTEs have special handling on rotation
-        if (te instanceof IMachineBlockEntity) {
+        if (te instanceof MetaMachine) {
             return InteractionResult.PASS;
         }
 

@@ -8,11 +8,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
@@ -24,15 +21,14 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class FTBQuestCondition extends RecipeCondition {
+public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
     private static final Long2ObjectMap<QuestObject> QUEST_CACHE = new Long2ObjectOpenHashMap<>();
-    public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId))
-                    .apply(instance, FTBQuestCondition::new));
-
-    public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
+    // spotless:off
+    public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId)
+    ).apply(instance, FTBQuestCondition::new));
+    // spotless:on
 
     private long parsedQuestId;
 
@@ -50,7 +46,7 @@ public class FTBQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<FTBQuestCondition> getType() {
         return GTRecipeConditions.FTB_QUEST;
     }
 
@@ -76,34 +72,7 @@ public class FTBQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public FTBQuestCondition createTemplate() {
         return new FTBQuestCondition();
-    }
-
-    @Override
-    public @NotNull JsonObject serialize() {
-        var obj = super.serialize();
-        obj.addProperty("questId", parsedQuestId);
-        return obj;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        parsedQuestId = GsonHelper.getAsLong(config, "questId");
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        parsedQuestId = buf.readLong();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeLong(parsedQuestId);
     }
 }

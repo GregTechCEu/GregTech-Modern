@@ -1,0 +1,64 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:ev_input_hatch_9x",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false,is_painted=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe_9x",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "is_formed=false,is_painted=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe_9x",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe_9x",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe_9x",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    }
+  }
+}

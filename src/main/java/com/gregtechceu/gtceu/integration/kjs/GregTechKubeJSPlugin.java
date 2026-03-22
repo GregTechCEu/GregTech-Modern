@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
@@ -40,23 +42,32 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
+import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
@@ -76,22 +87,22 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -119,7 +130,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
@@ -151,7 +161,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
-                                SimpleTieredMachine.EDITABLE_UI_CREATOR)),
+                                SimpleTieredMachine.EDITABLE_UI_CREATOR, false)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
@@ -161,13 +171,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
-                                SimpleGeneratorMachine.EDITABLE_UI_CREATOR)),
+                                SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)),
                 false);
-        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilder.class,
+        GTRegistryInfo.MACHINE.addType("multiblock",
+                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
                 KJSWrappingMultiblockBuilder::createKJSMulti, false);
         GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
                 (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
-        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilder.class,
+        GTRegistryInfo.MACHINE.addType("primitive",
+                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
                 (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new),
                 false);
 
@@ -195,6 +207,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
     }
 
+    public static void generateMachineBlockModels() {
+        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
+            try {
+                builderBase.generateAssetJsons(null);
+            } catch (IllegalStateException ignored) {}
+        });
+    }
+
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateAssetJsons(generator));
@@ -210,6 +230,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerClasses(type, filter);
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
+        filter.deny("com.gregtechceu.gtceu.core");
+        filter.deny("com.gregtechceu.gtceu.common.network");
     }
 
     @Override
@@ -242,12 +264,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtFluidOut", GTRecipeComponents.FLUID_OUT);
         event.register("gtEuIn", GTRecipeComponents.EU_IN);
         event.register("gtEuOut", GTRecipeComponents.EU_OUT);
+        event.register("gtCwuIn", GTRecipeComponents.CWU_IN);
+        event.register("gtCwuOut", GTRecipeComponents.CWU_OUT);
 
         event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
         event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUTPUT);
 
         event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
-        event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
     }
 
     @Override
@@ -275,17 +298,25 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ChemicalHelper", ChemicalHelper.class);
         event.add("PropertyKey", PropertyKey.class);
         event.add("ToolProperty", ToolProperty.class);
+        event.add("ArmorProperty", ArmorProperty.class);
         event.add("GTToolType", GTToolType.class);
         // Block/Item related
         event.add("GTBlocks", GTBlocks.class);
         event.add("GTMaterialBlocks", GTMaterialBlocks.class);
         event.add("GCYMBlocks", GCYMBlocks.class);
+        event.add("GTItems", GTItems.class);
+        event.add("GTMaterialItems", GTMaterialItems.class);
+        // Machine related
         event.add("GTMachines", GTMachines.class);
         event.add("GTMultiMachines", GTMultiMachines.class);
         event.add("GTMachineUtils", GTMachineUtils.class);
         event.add("GCYMMachines", GCYMMachines.class);
-        event.add("GTItems", GTItems.class);
-        event.add("GTMaterialItems", GTMaterialItems.class);
+        // Multiblock related
+        event.add("RotationState", RotationState.class);
+        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
+        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("Predicates", Predicates.class);
+        event.add("PartAbility", PartAbility.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);
@@ -300,17 +331,19 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("CleanroomType", CleanroomType.class);
         event.add("CraftingComponent", CraftingComponent.class);
         event.add("GTCraftingComponents", GTCraftingComponents.class);
+        event.add("EnergyStack", EnergyStack.class);
+        event.add("IOEnergyStack", EnergyStack.WithIO.class);
+        event.add("NBTPredicates", NBTPredicates.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
         // GUI related
         event.add("GuiTextures", GuiTextures.class);
-        // Multiblock related
-        event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
-        event.add("Predicates", Predicates.class);
-        event.add("PartAbility", PartAbility.class);
+        // Client/Server data related
+        event.add("GTModels", GTModels.class);
+        event.add("GTMachineModels", GTMachineModels.class);
+        event.add("GTModelProperties", GTMachineModelProperties.class);
+        event.add("GTDynamicRenders", DynamicRenderHelper.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
@@ -322,7 +355,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOres.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
-        // MaterialColor stuff, for TagPrefix
+        // Cape related
+        event.add("GTCapes", GTCapes.class);
+        event.add("CapeRegistry", CapeRegistry.class);
     }
 
     @Override
@@ -441,7 +476,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
             return null;
         });
-        // jank because Rhino doesn't agree that it's an interface
         typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
@@ -453,6 +487,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
                 GTRecipeComponents.FluidIngredientJS::of);
+        typeWrappers.registerSimple(EnergyStack.class, KJSHelpers::parseEnergyStack);
+        typeWrappers.registerSimple(EnergyStack.WithIO.class, KJSHelpers::parseIOEnergyStack);
     }
 
     @Override
@@ -475,47 +511,45 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
 
         // clone vanilla recipes for stuff like electric furnaces, etc
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                gtRecipeType.getLookup().removeAllRecipes();
-
-                var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
-                    var type = entry.getKey();
-                    var recipes = entry.getValue();
-                    recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream()
-                            .filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
-                    }
-                }
-
-                Stream.concat(
-                        recipesByName.values().stream()
-                                .filter(recipe -> recipe.getType() == gtRecipeType),
-                        proxyRecipes.entrySet().stream()
-                                .flatMap(entry -> entry.getValue().stream()))
-                        .filter(GTRecipe.class::isInstance)
-                        .map(GTRecipe.class::cast)
-                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+        for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
+            if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
+                continue;
             }
+            gtRecipeType.beginStagingRecipes();
+            gtRecipeType.getProxyRecipes().forEach((type, list) -> {
+                RecipeManagerHandler.addProxyRecipesToLookup(recipesByName, gtRecipeType, type, list);
+            });
+            RecipeManagerHandler.addRecipesToLookup(recipesByName, gtRecipeType);
+            gtRecipeType.getAdditionHandler().completeStaging();
         }
+        MapIngredientPool.clear();
     }
 
     private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
-        // get the recipe ID without the leading type path
-        GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
-                .recipeBuilder(gtRecipe.idWithoutType());
+        GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
+        if (gtRecipeType == null) {
+            GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: '{}' with type '{}'", gtRecipe.getId(),
+                    gtRecipe.getType());
+            return;
+        }
 
+        // get the recipe ID without the leading type path
+        GTRecipeBuilder builder = gtRecipeType.recipeBuilder(gtRecipe.idWithoutType());
         if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-            builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            int duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            if (duration <= 0) {
+                GTCEu.LOGGER.error("Duration must be a positive value, skipping recipe id: {}", gtRecipe.getId());
+                return;
+            }
+            builder.duration = duration;
         }
         if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
             builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
         }
         if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
             builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
+            builder.recipeType.setMinRecipeConditions(builder.conditions.size());
         }
         if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
             builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
@@ -574,8 +608,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
         builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
+        builder.setTempItemStacks(gtRecipe.tempItemStacks);
         gtRecipe.itemMaterialStacks = null;
         gtRecipe.fluidMaterialStacks = null;
+        gtRecipe.tempItemStacks = null;
 
         builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
         if (gtRecipe.removeMaterialInfo) {
@@ -621,7 +657,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
             var ingredient = entry.value().kjs$asIngredient();
             var values = ((IngredientAccessor) ingredient).getValues();
-            if (values.length == 0 || values[0] instanceof Ingredient.TagValue) continue;
+            if (values.length == 0) continue;
 
             ItemStack[] stacks = ingredient.getItems();
             ItemStack stack;

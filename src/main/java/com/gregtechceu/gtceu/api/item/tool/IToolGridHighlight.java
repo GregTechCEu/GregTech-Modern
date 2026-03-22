@@ -19,9 +19,8 @@ public interface IToolGridHighlight {
         return true;
     }
 
-    @Nullable
-    default ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                     Direction side) {
+    default @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                               Direction side) {
         return null;
     }
 }

@@ -128,7 +128,7 @@ public class LongDistanceNetwork {
         if (this.endpoints.remove(endpoint)) {
             invalidateEndpoints();
         }
-        onRemovePipe(endpoint.getPos());
+        onRemovePipe(endpoint.getBlockPos());
     }
 
     /**
@@ -144,8 +144,8 @@ public class LongDistanceNetwork {
      */
     public void onPlaceEndpoint(ILDEndpoint endpoint) {
         addEndpoint(endpoint);
-        this.longDistancePipeBlocks.add(endpoint.getPos());
-        this.world.putNetwork(endpoint.getPos(), this);
+        this.longDistancePipeBlocks.add(endpoint.getBlockPos());
+        this.world.putNetwork(endpoint.getBlockPos(), this);
     }
 
     /**
@@ -205,7 +205,7 @@ public class LongDistanceNetwork {
         int thisIndex = this.endpoints.indexOf(endpoint);
         if (thisIndex < 0) {
             // endpoint not found in this network, something is wrong, recalculate network
-            recalculateNetwork(Collections.singleton(endpoint.getPos()));
+            recalculateNetwork(Collections.singleton(endpoint.getBlockPos()));
             return null;
         }
 
@@ -249,7 +249,7 @@ public class LongDistanceNetwork {
     private int find(ILDEndpoint endpoint) {
         for (int i = 0; i < this.endpoints.size(); i++) {
             ILDEndpoint other = this.endpoints.get(i);
-            if (other.isInValid()) {
+            if (other.isRemoved()) {
                 other.invalidateLink();
                 this.endpoints.remove(i--);
                 continue;
@@ -441,7 +441,7 @@ public class LongDistanceNetwork {
                 ListTag endpoints = new ListTag();
                 tag.put("endpoints", endpoints);
                 for (ILDEndpoint endpoint : network.endpoints) {
-                    endpoints.add(LongTag.valueOf(endpoint.getPos().asLong()));
+                    endpoints.add(LongTag.valueOf(endpoint.getBlockPos().asLong()));
                 }
             }
             nbtTagCompound.put("nets", list);

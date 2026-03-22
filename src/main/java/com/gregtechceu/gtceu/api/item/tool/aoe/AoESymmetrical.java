@@ -24,17 +24,17 @@ public class AoESymmetrical {
         this.layer = layer;
     }
 
-    private static final AoESymmetrical NONE = new AoESymmetrical();
+    public static final AoESymmetrical ZERO = new AoESymmetrical();
 
-    public static AoESymmetrical none() {
-        return NONE;
+    public boolean isZero() {
+        return this == ZERO;
     }
 
     public static AoESymmetrical of(int column, int row, int layer) {
         Preconditions.checkArgument(column >= 0, "Height cannot be negative.");
         Preconditions.checkArgument(row >= 0, "Width cannot be negative.");
         Preconditions.checkArgument(layer >= 0, "Depth cannot be negative.");
-        return column == 0 && row == 0 && layer == 0 ? NONE : new AoESymmetrical(column, row, layer);
+        return column == 0 && row == 0 && layer == 0 ? ZERO : new AoESymmetrical(column, row, layer);
     }
 
     public static AoESymmetrical readMax(CompoundTag tag) {
@@ -48,7 +48,7 @@ public class AoESymmetrical {
         if (tag.contains(ToolHelper.MAX_AOE_LAYER_KEY, Tag.TAG_INT)) {
             layer = tag.getInt(ToolHelper.MAX_AOE_LAYER_KEY);
         }
-        return column == 0 && row == 0 && layer == 0 ? NONE : AoESymmetrical.of(column, row, layer);
+        return column == 0 && row == 0 && layer == 0 ? ZERO : AoESymmetrical.of(column, row, layer);
     }
 
     public static AoESymmetrical read(CompoundTag tag, @Nullable AoESymmetrical defaultDefinition) {
@@ -69,7 +69,7 @@ public class AoESymmetrical {
             layer = defaultDefinition == null ? 0 : defaultDefinition.layer;
         }
         if (column == 0 && row == 0 && layer == 0) {
-            return NONE;
+            return ZERO;
         }
         tag.putInt(ToolHelper.AOE_COLUMN_KEY, column);
         tag.putInt(ToolHelper.AOE_ROW_KEY, row);

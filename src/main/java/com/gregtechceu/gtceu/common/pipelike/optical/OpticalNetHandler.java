@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +22,7 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     private final Level world;
     private final Direction facing;
 
+    @Getter
     private OpticalPipeNet net;
 
     public OpticalNetHandler(OpticalPipeNet net, @NotNull OpticalPipeBlockEntity pipe, @Nullable Direction facing) {
@@ -32,10 +34,6 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
 
     public void updateNetwork(OpticalPipeNet net) {
         this.net = net;
-    }
-
-    public OpticalPipeNet getNet() {
-        return net;
     }
 
     @Override
@@ -52,6 +50,7 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
 
     @Override
     public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+        if (cwut == 0) return 0;
         int provided = traverseRequestCWUt(cwut, simulate, seen);
         if (provided > 0) setPipesActive();
         return provided;
@@ -76,13 +75,13 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     }
 
     private boolean isNetInvalidForTraversal() {
-        return net == null || pipe == null || pipe.isInValid();
+        return net == null || pipe == null || pipe.isRemoved();
     }
 
     private boolean traverseRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
         if (isNetInvalidForTraversal()) return false;
 
-        OpticalRoutePath inv = net.getNetData(pipe.getPipePos(), facing);
+        OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return false;
 
         IOpticalDataAccessHatch hatch = inv.getDataHatch();
@@ -116,7 +115,7 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     private IOpticalComputationProvider getComputationProvider(@NotNull Collection<IOpticalComputationProvider> seen) {
         if (isNetInvalidForTraversal()) return null;
 
-        OpticalRoutePath inv = net.getNetData(pipe.getPipePos(), facing);
+        OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return null;
 
         IOpticalComputationProvider hatch = inv.getComputationHatch();

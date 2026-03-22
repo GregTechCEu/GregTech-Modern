@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -29,6 +28,7 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
+        RecipeLogicLang.init(provider);
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
@@ -57,7 +57,7 @@ public class LangHandler {
         provider.add("recipe.condition.biome.tooltip", "Biome: %s");
         provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
-        provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
+        provider.add("recipe.condition.adjacent_fluid.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
         provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
@@ -133,6 +133,7 @@ public class LangHandler {
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
         provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
+        provider.add("command.gtceu.cape.failure.does_not_exist", "Cape %s does not exist");
         provider.add("command.gtceu.cape.give.failed", "No new capes were unlocked");
         provider.add("command.gtceu.cape.give.success.multiple", "Unlocked %s capes for %s players");
         provider.add("command.gtceu.cape.give.success.single", "Unlocked %s capes for %s");
@@ -192,7 +193,13 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§1Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
+        provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
+        provider.add("item.gtceu.tool.behavior.prospecting.lava", "Found lava");
+        provider.add("item.gtceu.tool.behavior.prospecting.changing", "Detected material change");
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
         replace(provider, "item.gtceu.tool.shovel", "%s Shovel");
@@ -235,6 +242,7 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
         replace(provider, "item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
         replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        replace(provider, "item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
         replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
         provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
@@ -245,6 +253,10 @@ public class LangHandler {
         provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.hv_screwdriver", "%s Screwdriver (HV)");
+        provider.add("item.gtceu.tool.hv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.iv_screwdriver", "%s Screwdriver (IV)");
+        provider.add("item.gtceu.tool.iv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
@@ -261,9 +273,16 @@ public class LangHandler {
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
+        provider.add("item.gtceu.tool.tooltip.default_enchantments", "§5Default Enchantments:");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
+
+        provider.add("item.gtceu.armor.helmet", "%s Helmet");
+        provider.add("item.gtceu.armor.chestplate", "%s Chestplate");
+        provider.add("item.gtceu.armor.leggings", "%s Leggings");
+        provider.add("item.gtceu.armor.boots", "%s Boots");
+
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
         provider.add("metaitem.clipboard.tooltip",
                 "Can be written on (without any writing Instrument). Right-click on Wall to place, and Shift-Right-Click to remove");
@@ -292,12 +311,16 @@ public class LangHandler {
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
-        provider.add("metaarmor.nms.boosted_jump.enabled", "NanoMuscle™ Suite: Jump Boost Enabled");
-        provider.add("metaarmor.nms.boosted_jump.disabled", "NanoMuscle™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
         provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
+        provider.add("metaarmor.nms.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.nms.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.qts.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
+        provider.add("metaarmor.qts.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
         provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
         provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
@@ -312,6 +335,8 @@ public class LangHandler {
         provider.add("metaarmor.message.nightvision.enabled", "§bNightVision: §aOn");
         provider.add("metaarmor.message.nightvision.disabled", "§bNightVision: §cOff");
         provider.add("metaarmor.message.nightvision.error", "§cNot enough power!");
+        provider.add("metaarmor.message.step_assist.enabled", "§bStep-Assist: §aOn");
+        provider.add("metaarmor.message.step_assist.disabled", "§bStep-Assist: §cOff");
         provider.add("metaarmor.tooltip.stepassist", "Provides Step-Assist");
         provider.add("metaarmor.tooltip.speed", "Increases Running Speed");
         provider.add("metaarmor.tooltip.jump", "Increases Jump Height and Distance");
@@ -407,7 +432,7 @@ public class LangHandler {
         multilineLang(provider, "cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_prio",
-                "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
+                "Distribution Mode: §bRound Robin with Restriction\n§7Tries to split items equally across connected inventories.\n§7Will not send items down Restrictive item pipes unless no other paths are available.");
         multilineLang(provider, "cover.conveyor.distribution.insert_first",
                 "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         multilineLang(provider, "cover.conveyor.blocks_input.enabled",
@@ -451,6 +476,7 @@ public class LangHandler {
         multilineLang(provider, "cover.machine_controller.invert.disabled",
                 "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
+        provider.add("cover.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.machine_controller.mode.cover_up", "Control Cover (Top)");
         provider.add("cover.machine_controller.mode.cover_down", "Control Cover (Bottom)");
@@ -460,6 +486,8 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
+        provider.add("cover.ender_item_link.title", "Ender Item Link");
+        provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
@@ -519,79 +547,12 @@ public class LangHandler {
         provider.add("cover.shutter.message.disabled", "Opened shutter");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
-        replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
-        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
-                                                                                     // 1.19...
-        replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
-        replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
-        replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
-        replace(provider, GTMaterials.RTMAlloy.getUnlocalizedName(), "RTM Alloy");
-        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA Steel");
 
-        replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
-        replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
-        replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
-        replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
-        replace(provider, GTMaterials.Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
-        replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
         replace(provider, "block.gtceu.oil_light", "Light Oil");
-        replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
         replace(provider, "block.gtceu.oil_medium", "Raw Oil");
-
-        replace(provider, GTMaterials.HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
-        replace(provider, GTMaterials.HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
-        replace(provider, GTMaterials.HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
-        replace(provider, GTMaterials.HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
-        replace(provider, GTMaterials.HydroCrackedEthane.getUnlocalizedName(), "Hydro-Cracked Ethane");
-        replace(provider, GTMaterials.HydroCrackedEthylene.getUnlocalizedName(), "Hydro-Cracked Ethylene");
-        replace(provider, GTMaterials.HydroCrackedPropane.getUnlocalizedName(), "Hydro-Cracked Propane");
-        replace(provider, GTMaterials.HydroCrackedPropene.getUnlocalizedName(), "Hydro-Cracked Propene");
-        replace(provider, GTMaterials.SteamCrackedButadiene.getUnlocalizedName(), "Steam-Cracked Butadiene");
-        replace(provider, GTMaterials.SteamCrackedButane.getUnlocalizedName(), "Steam-Cracked Butane");
-        replace(provider, GTMaterials.SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
-        replace(provider, GTMaterials.SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
-        replace(provider, GTMaterials.SteamCrackedEthane.getUnlocalizedName(), "Steam-Cracked Ethane");
-        replace(provider, GTMaterials.SteamCrackedEthylene.getUnlocalizedName(), "Steam-Cracked Ethylene");
-        replace(provider, GTMaterials.SteamCrackedPropane.getUnlocalizedName(), "Steam-Cracked Propane");
-        replace(provider, GTMaterials.SteamCrackedPropene.getUnlocalizedName(), "Steam-Cracked Propene");
-        replace(provider, GTMaterials.LightlyHydroCrackedGas.getUnlocalizedName(), "Lightly Hydro-Cracked Gas");
-        replace(provider, GTMaterials.LightlyHydroCrackedHeavyFuel.getUnlocalizedName(),
-                "Lightly Hydro-Cracked Heavy Fuel");
-        replace(provider, GTMaterials.LightlyHydroCrackedLightFuel.getUnlocalizedName(),
-                "Lightly Hydro-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(),
-                "Lightly Hydro-Cracked Naphtha");
-        replace(provider, GTMaterials.LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
-        replace(provider, GTMaterials.LightlySteamCrackedHeavyFuel.getUnlocalizedName(),
-                "Lightly Steam-Cracked Heavy Fuel");
-        replace(provider, GTMaterials.LightlySteamCrackedLightFuel.getUnlocalizedName(),
-                "Lightly Steam-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(),
-                "Lightly Steam-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(),
-                "Severely Hydro-Cracked Gas");
-        replace(provider, GTMaterials.SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(),
-                "Severely Hydro-Cracked Heavy Fuel");
-        replace(provider, GTMaterials.SeverelyHydroCrackedLightFuel.getUnlocalizedName(),
-                "Severely Hydro-Cracked Light Fuel");
-        replace(provider, GTMaterials.SeverelyHydroCrackedNaphtha.getUnlocalizedName(),
-                "Severely Hydro-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(),
-                "Severely Steam-Cracked Gas");
-        replace(provider, GTMaterials.SeverelySteamCrackedHeavyFuel.getUnlocalizedName(),
-                "Severely Steam-Cracked Heavy Fuel");
-        replace(provider, GTMaterials.SeverelySteamCrackedLightFuel.getUnlocalizedName(),
-                "Severely Steam-Cracked Light Fuel");
-        replace(provider, GTMaterials.SeverelySteamCrackedNaphtha.getUnlocalizedName(),
-                "Severely Steam-Cracked Naphtha");
-        replace(provider, GTMaterials.LPG.getUnlocalizedName(), "LPG");
-
-        replace(provider, GTMaterials.Zeron100.getUnlocalizedName(), "Zeron-100");
-        replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
-        replace(provider, GTMaterials.Stellite100.getUnlocalizedName(), "Stellite-100");
-        replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
+        replace(provider, "block.gtceu.oil", "Oil");
+        replace(provider, "block.gtceu.creosote", "Creosote");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
@@ -746,7 +707,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
+        provider.add("behaviour.soft_hammer.disabled_cycle", "Working Disabled after current cycle");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
@@ -774,13 +735,30 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
-        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
-        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
-        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
-        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
-        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
-        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
-        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
+
+        provider.add("behaviour.memory_card.tooltip.copy",
+                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
+        provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
+        provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
+        provider.add("behaviour.memory_card.client_msg.copied", "Copied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.pasted", "Applied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.missing_items", "Missing items required to paste configuration");
+        provider.add("behaviour.memory_card.tooltip.items_to_paste",
+                "The following items are needed to paste this configuration:");
+        provider.add("behaviour.memory_card.enabled", "§aEnabled§r");
+        provider.add("behaviour.memory_card.disabled", "§cDisabled§r");
+        provider.add("behaviour.memory_card.copy_target", "Copying: %s");
+
+        provider.add("behaviour.setting.tooltip.item_io", "Item Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.fluid_io", "Fluid Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.auto_output", "§2Auto Output§r");
+        provider.add("behaviour.setting.tooltip.allow_input", "§2Allow Input§r");
+        provider.add("behaviour.setting.tooltip.auto_output_allow_input", "§2Auto Output/Allow Input§r");
+        provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
+        provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
+        provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
+        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: ");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
@@ -855,16 +833,17 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.workable_progress", "Progress: %s s / %s s");
         provider.add("behavior.portable_scanner.workable_stored_energy", "Stored Energy: %s EU / %s EU");
         provider.add("behavior.portable_scanner.mode.caption", "Display mode: %s");
-        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info");
+        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info (excluding internal info)");
         provider.add("behavior.portable_scanner.mode.show_block_info", "Show block info");
         provider.add("behavior.portable_scanner.mode.show_machine_info", "Show machine info");
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.portable_scanner.mode.show_internal_info", "Show internal debugging info");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
-        provider.add("behavior.data_item.assemblyline.title", "§nAssembly Line Construction Data:");
-        provider.add("behavior.data_item.assemblyline.data", "- §a%s");
+        provider.add("behavior.data_item.title", "§n%s Construction Data:");
+        provider.add("behavior.data_item.data", "- §a%s");
 
         provider.add("metaitem.terminal.tooltip", "Sharp tools make good work");
         provider.add("metaitem.terminal.tooltip.creative", "§bCreative Mode");
@@ -919,6 +898,10 @@ public class LangHandler {
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
         provider.add("gtceu.universal.liters", "%s mB");
         provider.add("gtceu.universal.kiloliters", "%s B");
+        provider.add("gtceu.universal.parentheses", "(%s)");
+        provider.add("gtceu.universal.spaced_parentheses", "( %s )");
+        provider.add("gtceu.universal.padded_parentheses", " (%s) ");
+        provider.add("gtceu.universal.padded_spaced_parentheses", " ( %s ) ");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -966,13 +949,15 @@ public class LangHandler {
                 "§4§lWARNING:§r§4 DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r");
         provider.add("gtceu.recipe.total", "Total: %s EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
-        provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
+        provider.add("gtceu.recipe.eu", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
+        provider.add("gtceu.recipe.eu.total", "%s EU/t");
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.amperage", "Amperage: %s");
+        provider.add("gtceu.recipe.voltage", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
@@ -986,6 +971,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
         provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
         provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
+        provider.add("gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
         provider.add("gtceu.fluid.click_to_fill",
                 "§7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).");
         provider.add("gtceu.fluid.click_combined",
@@ -1019,7 +1005,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
-        provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
+        provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
@@ -1065,11 +1051,12 @@ public class LangHandler {
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
         multilineLang(provider, "gtceu.gui.chunkmode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        provider.add("gtceu.gui.multiblock.voiding_mode", "Voiding Mode:");
+        provider.add("gtceu.gui.item_voiding", "§7Voiding §6Items");
+        provider.add("gtceu.gui.fluid_voiding", "§7Voiding §9Fluids");
+        provider.add("gtceu.gui.all_voiding",
+                "§7Voiding §cAll");
+        provider.add("gtceu.gui.no_voiding", "§7Voiding Nothing");
         multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
@@ -1115,7 +1102,7 @@ public class LangHandler {
         provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
@@ -1131,6 +1118,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
+        provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
+        provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
+        provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
+        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
         provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
         provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
@@ -1169,7 +1161,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
-        provider.add("gtceu.multiblock.parallel.exact", "Performing %d Recipes in Parallel");
+        provider.add("gtceu.multiblock.parallel.exact", "- %dx from Parallels");
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
@@ -1200,35 +1192,6 @@ public class LangHandler {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        provider.add("gtceu.command.usage", "Usage: /gtceu <worldgen/hand/recipecheck>");
-        provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
-        provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
-        provider.add("gtceu.command.worldgen.reload.success", "Worldgen successfully reloaded from config.");
-        provider.add("gtceu.command.worldgen.reload.failed",
-                "Worldgen reload failed. Check console for errors.");
-        provider.add("gtceu.command.hand.groovy", "Consider using §6/gs hand");
-        provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
-        provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
-        provider.add("gtceu.command.hand.electric", "Electric Info: %d / %d EU - Tier: %d; Is Battery: %s");
-        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d mB; Can Fill: %s; Can Drain: %s");
-        provider.add("gtceu.command.hand.fluid2", "Fluid Id:");
-        provider.add("gtceu.command.hand.material", "Material Id:");
-        provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
-        provider.add("gtceu.command.hand.meta_item", "MetaItem Id:");
-        provider.add("gtceu.command.hand.tag_entries", "§3Tag entries:");
-        provider.add("gtceu.command.hand.tool_stats", "Tool Stats Class: %s");
-        provider.add("gtceu.command.hand.not_a_player", "This command is only usable by a player.");
-        provider.add("gtceu.command.hand.no_item",
-                "You must hold something in main hand or off hand before executing this command.");
-        provider.add("gtceu.command.recipecheck.usage", "Usage: /gtceu recipecheck");
-        provider.add("gtceu.command.recipecheck.begin", "Starting recipe conflict check...");
-        provider.add("gtceu.command.recipecheck.end",
-                "Recipe conflict check found %d possible conflicts. Check the server log for more info");
-        provider.add("gtceu.command.recipecheck.end_no_conflicts", "No recipe conflicts found!");
-        provider.add("gtceu.command.copy.copied_and_click", "copied to clipboard. Click to copy again");
-        provider.add("gtceu.command.copy.click_to_copy", "Click to copy");
-        provider.add("gtceu.command.copy.copied_start", "Copied [");
-        provider.add("gtceu.command.copy.copied_end", "] to the clipboard");
         provider.add("gtceu.chat.cape",
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
         provider.add("gtceu.universal.clear_nbt_recipe.tooltip", "§cThis will destroy all contents!");
@@ -1271,10 +1234,15 @@ public class LangHandler {
         provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
+        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
+        provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
+        provider.add("gtceu.debug.resource_rebuild.start",
+                "Invoking gradle resource rebuild (./gradlew :processResources)");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
+        provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
@@ -1288,11 +1256,13 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
         provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
+        provider.add("config.jade.plugin_gtceu.data_bank", "[GTCEu] Data Bank Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+        provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         // gui
         provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
@@ -1300,12 +1270,7 @@ public class LangHandler {
         provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
         provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
-        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
-        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
-        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1315,16 +1280,46 @@ public class LangHandler {
                 "allow items input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
                 "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
                 "allow fluids input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
                 "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
+
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
+        provider.add("gtceu.gui.machinemode.tab_tooltip", "Change active Machine Mode");
         provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
         provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
@@ -1334,11 +1329,16 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
         provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_no_boost", "Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_no_boost_logic", "Chance: %s%% (%s)");
         provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
         provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
         provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
+        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.content.range", "%s-%s");
+        provider.add("gtceu.gui.content.times_item", "x %s");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");
@@ -1426,6 +1426,338 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.false", "False");
         provider.add("gtceu.tooltip.status.trinary.true", "True");
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
+
+        provider.add("gtceu.tooltip.wireless_transmitter_bind",
+                "Binding to a transmitter cover at %s %s %s facing %s in %s");
+        provider.add("gtceu.tooltip.computer_monitor_config", "Storing computer monitor cover configuration data");
+        provider.add("gtceu.tooltip.computer_monitor_data", "Storing data: %s");
+
+        provider.add("gtceu.display_source.computer_monitor_cover", "Computer Monitor Cover");
+        provider.add("gtceu.display_target.computer_monitor_cover", "Computer Monitor Cover");
+        multiLang(provider, "gtceu.placeholder_info.energy",
+                "Returns the amount of energy stored.",
+                "Usage:",
+                "  {energy} -> the amount of energy stored");
+        multiLang(provider, "gtceu.placeholder_info.energyCapacity",
+                "Returns the max amount of energy that can be stored",
+                "Usage:",
+                "{energyCapacity} -> the energy capacity");
+        multiLang(provider, "gtceu.placeholder_info.itemCount",
+                "Returns the amount of items (can be filtered).",
+                "Usage:",
+                "  {itemCount} -> total item amount",
+                "  {itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover");
+        multiLang(provider, "gtceu.placeholder_info.calc",
+                "Returns the result of a math function or operation.",
+                "Usage:",
+                "  {calc <any_string>} -> any_string",
+                "  {calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
+                "  {calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation");
+        multiLang(provider, "gtceu.placeholder_info.if",
+                "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.",
+                "Usage:",
+                "  {if <condition> <returned_if_true> [returned_if_false]}");
+        multiLang(provider, "gtceu.placeholder_info.obf",
+                "Returns the text from the first argument, obfuscated.",
+                "Usage:",
+                "  {obf <text>} -> obfuscated text");
+        multiLang(provider, "gtceu.placeholder_info.underline",
+                "Returns the text from the first argument, underlined",
+                "Usage:",
+                "  {underline <text>} -> underlined text");
+        multiLang(provider, "gtceu.placeholder_info.strike",
+                "Returns the text from the first text, displaying it as if it was crossed out",
+                "Usage:",
+                "  {strike <text>} -> crossed-out text");
+        multiLang(provider, "gtceu.placeholder_info.color",
+                "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.",
+                "Usage:",
+                "  {color <color> <text>} -> colored text");
+        multiLang(provider, "gtceu.placeholder_info.tick",
+                "Returns the amount of ticks passed from when this cover was placed.",
+                "Usage:",
+                "  {tick} -> the amount of ticks");
+        multiLang(provider, "gtceu.placeholder_info.block", "Returns the block symbol (█).",
+                "Usage:",
+                "  {block} -> '█'");
+        multiLang(provider, "gtceu.placeholder_info.repeat",
+                "Returns the text from the second arguments, repeated the amount of times specified in the first argument.",
+                "Usage:",
+                "  {repeat <amount> <text>} -> text repeated the specified amount of times");
+        multiLang(provider, "gtceu.placeholder_info.random",
+                "Returns a random number in the specified interval (inclusive).",
+                "Usage:",
+                "  {random <min> <max>} -> a random number between min and max (inclusive)");
+        multiLang(provider, "gtceu.placeholder_info.select",
+                "Returns the argument at the specified index (starting from 0)",
+                "Usage:",
+                "  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index");
+        multiLang(provider, "gtceu.placeholder_info.redstone",
+                "Returns the redstone signal strength or sets the redstone output strength",
+                "Usage:",
+                "  {redstone get <up|down|north|south|east|west>} -> redstone signal strength (0-15) at the specified side",
+                "  {redstone get link <slot_index> <freq_slot_index>} -> redstone signal strength of a Create redstone link frequency specified by a linked controller in slot #slot_index. freq_slot_index is the index of the frequency inside the controller (from left to right, 0-6)",
+                "  {redstone set <power>} -> empty string, sets the redstone output strength from this cover's side",
+                "  {redstone set link <slot_index> <freq_slot_index> <power>} -> empty string, broadcasts the specified redstone power on the specified Create redstone link frequency");
+        multiLang(provider, "gtceu.placeholder_info.fluidCount",
+                "Returns the amount of fluids (can be filtered).",
+                "Usage:",
+                "  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        multiLang(provider, "gtceu.placeholder_info.displayTarget",
+                "Returns the specified line that was transmitted to this cover using a display link.",
+                "Usage:",
+                "  {displayTarget <line_number>} -> the text on the specified line (line number is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.previousText",
+                "Returns the text that was previously displayed by this cover at the specified line (before line-wrapping).",
+                "Usage:",
+                "  {previousText <line>} -> the text previously displayed on the specified line (index starts at 1)");
+        multiLang(provider, "gtceu.placeholder_info.ae2itemCount",
+                "Same as itemCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting by filter or all items may cause lag!",
+                "Usage:",
+                "  {itemCount} -> total item amount",
+                "  {itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover");
+        multiLang(provider, "gtceu.placeholder_info.ae2fluidCount",
+                "Same as fluidCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting all fluids may cause lag!",
+                "Usage:",
+                "  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        multiLang(provider, "gtceu.placeholder_info.progress",
+                "Returns the progress of the currently running recipe of the block this cover is attached to.",
+                "Note that progress is an integer between 0 and {maxProgress}",
+                "Usage:",
+                "  {progress} -> the progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maxProgress",
+                "Returns the maximum progress of the currently running recipe of the block this cover is attached to.",
+                "Example: 'Progress: {calc {calc {progress} / {maxProgress}} * 100}%'",
+                "Usage:",
+                "  {maxProgress} -> the max progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maintenance",
+                "Returns a 1 if there are maintenance problems in the block the cover is attached to, 0 otherwise.",
+                "Example: 'Maintenance status: {if {maintenance} FIXING\\ REQUIRED OK}'",
+                "Usage:",
+                "  {maintenance} -> whether there are maintenance problems");
+        multiLang(provider, "gtceu.placeholder_info.active",
+                "Returns a 1 if the block the cover is attached to is currently running a recipe, 0 otherwise.",
+                "Usage:",
+                "  {active} -> whether there's a currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.voltage",
+                "Returns the voltage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {voltage} -> the voltage in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.amperage",
+                "Returns the amperage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {amperage} -> the amperate in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.ae2energy",
+                "Returns the energy currently stored in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2energy} -> the energy in the ME network (in AE units)");
+        multiLang(provider, "gtceu.placeholder_info.ae2maxPower",
+                "Returns the energy capacity of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2maxPower} -> the energy capacity of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2powerUsage",
+                "Returns the energy consumption of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2powerUsage} -> the energy consumption of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2spatial",
+                "Returns information about spatial I/O in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2spatial power} -> the amount of power required to initiate spatial I/O",
+                "  {ae2spatial efficiency} -> the efficiency of the Spatial Containment Structure (SPS)",
+                "  {ae2spatial size<X|Y|Z>} -> the size of the SPS along the specified axis (example: 'Size: {sizeX}x{sizeY}x{sizeZ}')");
+        multiLang(provider, "gtceu.placeholder_info.ae2crafting",
+                "Returns information about auto-crafting in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2crafting get amount} -> the amount of crafting CPUs in the ME network",
+                "  {ae2crafting get <index> storage} -> the amount of crafting storage the specified CPU has",
+                "  {ae2crafting get <index> threads} -> the amount of co-processors the specified CPU has",
+                "  {ae2crafting get <index> name} -> the name of the specified crafting CPU",
+                "  {ae2crafting get <index> selectionMode} -> the selection mode of the specified crafting CPU (used for manual, automatic or both requests)",
+                "  {ae2crafting get <index> amount} -> the amount of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> item} -> the display name of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> progress} -> the crafting job progress, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> time} -> the amount of time elapsed from the start of the craft (in nanoseconds), or 0 if the CPU is idle");
+        multiLang(provider, "gtceu.placeholder_info.count",
+                "Returns how many of the provided arguments are equal to the first (compared as strings, so \"0\" != \"0.0\")",
+                "Usage:",
+                "  {count <arg1> [arg2] [arg3] [arg4] ...} -> the amount of arguments that are equal to the first");
+        multiLang(provider, "gtceu.placeholder_info.data",
+                "Stores or retrieves some data from a data item (data stick/orb/module) in one of the slots.",
+                "If you leave the <index> argument empty, it will be replaced with the value p (p is an integer from 0 to (capacity - 1) that is stored in the data item nbt).",
+                "Usage:",
+                "  {data get <slot> <index>} -> the data stored in the item in the specified slot",
+                "  {data set <slot> <index> <value>} -> sets the data stored in the item in the specified slot, returns an empty string",
+                "  {data getp <slot>} -> p",
+                "  {data setp <slot> <value>} -> sets p, returns an empty string",
+                "  {data inc <slot>} -> increments p by 1, if p becomes more than or equal to capacity, sets p to 0",
+                "  {data dec <slot>} -> decrements p by 1, if p becomes less than 0, sets p to (capacity - 1)");
+        multiLang(provider, "gtceu.placeholder_info.combine",
+                "Combines all of it's arguments into a single string (by escaping all spaces between the arguments)",
+                "Example: {combine abc def ghi jkl mno} -> \"abc\\ def\\ ghi\\ jkl\\ mno\"",
+                "Usage:",
+                "  {combine [arg1] [arg2] [arg3] ...} -> a string that will be treated as a single argument in further placeholders");
+        multiLang(provider, "gtceu.placeholder_info.nbt",
+                "Returns the nbt data of the item in the specified slot",
+                "Usage:",
+                "  {nbt <slot> [key1] [key2] [key3] ...} -> item_nbt[key1][key2][key3][...]");
+        multiLang(provider, "gtceu.placeholder_info.toChars",
+                "Returns the characters of the provided string with spaces between them",
+                "Example: {toChars example} -> 'e x a m p l e'",
+                "Usage:",
+                "  {toChars <arg>} -> characters");
+        multiLang(provider, "gtceu.placeholder_info.toAscii",
+                "Returns the ASCII code of the provided character",
+                "Usage:",
+                "  {toAscii <character>} -> ASCII code of the character");
+        multiLang(provider, "gtceu.placeholder_info.fromAscii",
+                "Returns the character represented by the provided ASCII code",
+                "Usage:",
+                "  {fromAscii <char_code>} -> a character");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.placeholder_reference",
+                "All placeholders:",
+                "(hover for more info)");
+        multiLang(provider, "gtceu.placeholder_info.subList",
+                "Returns arguments from with indexes from l (inclusive) to r (exclusive) (starting from 0)",
+                "Usage:",
+                "  {subList <left> <right> [arg0] [arg1] ...} -> all arguments with indexes from l to r separated by spaces");
+        multiLang(provider, "gtceu.placeholder_info.cmp",
+                "Returns a 1 or 0 based on the expression in it's arguments",
+                "Usage:",
+                "  {cmp <a> <operator> <b>} -> 1 or 0, operator is one of >, <, >=, <=, ==, !=");
+        multiLang(provider, "gtceu.placeholder_info.bf",
+                "Usage:",
+                "  {bf <data_item_slot_index> <code>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.cmd",
+                "Executes Minecraft commands and returns their output.",
+                "Requires a data item bound to a player, bind any data item to yourself by right-clicking with it.",
+                "Usage:",
+                "  {cmd <slot_index> <command>} -> command output");
+        multiLang(provider, "gtceu.placeholder_info.tm",
+                "Returns the ™ symbol",
+                "Usage:",
+                "  {tm} -> the ™ symbol");
+        multiLang(provider, "gtceu.placeholder_info.formatInt",
+                "Returns a string representation of the provided integer",
+                "Example: {formatInt 1236457} -> 1.24M",
+                "Usage:",
+                "  {formatInt <arg>} -> string representation of the int");
+        multiLang(provider, "gtceu.placeholder_info.click",
+                "Returns whether the targeted advanced monitor was clicked before the current tick",
+                "Usage:",
+                "  {click} -> \"1\" if the targeted advanced monitor was clicked, \"0\" otherwise",
+                "  {click x} -> the x position of the last click (between 0 and 1)",
+                "  {click y} -> the y position of the last click (between 0 and 1)");
+        multiLang(provider, "gtceu.placeholder_info.ender",
+                "Interacts with ender link covers",
+                "Can interact with private channels if provided with a data item bound to a player",
+                "Usage:",
+                "  {ender item <channel> [player_data_item_slot]} -> item count",
+                "  {ender itemPull <channel> [player_data_item_slot]} -> pull 1 item from the ender link's buffer",
+                "  {ender itemPush <channel> [player_data_item_slot]} -> push 1 item to the ender link's buffer",
+                "  {ender itemId <channel> [player_data_item_slot]} -> the id of the item in the ender link's buffer (ex. \"26 minecraft:dirt\")",
+                "  {ender fluid <channel> [player_data_item_slot]} -> fluid count",
+                "  {ender redstone <channel> [player_data_item_slot] -> redstone signal level",
+                "  {ender redstone <channel> <player_data_item_slot> <signal> -> sets the redstone signal outputed to the ender redstone link, returns empty string",
+                "The player_data_item_slot argument may be left empty (not 0, empty string)");
+        multiLang(provider, "gtceu.placeholder_info.eval",
+                "Returns the result of evaluating the provided string which may placeholders",
+                "Usage:",
+                "  {eval abcdefg} -> abcdefg",
+                "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
+                "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
+                "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.module",
+                "Renders the module in the specified slot onto the central monitor (does not work in a cover)",
+                "Usage:",
+                "  {module <slot> <x> <y>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.setImage",
+                "Sets the image URL in an image module in the specified slot",
+                "Usage:",
+                "  {setImage <slot> <url>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.rect",
+                "Draws a rectangle at the specified position with the specified coordinates and size",
+                "Usage:",
+                "  {rect <x> <y> <width> <height> <colorARGB>} -> empty string",
+                "  {rect 0.5 0.25 2 1 0xFFFFFFFF} -> draws a white rectangle at (0.5, 0.25) with the size (2, 1)");
+        multiLang(provider, "gtceu.placeholder_info.quad",
+                "Draws a quad (must specify parameters for all 4 vertices)",
+                "Usage:",
+                "  {quad <x1> <y1> <x2> <y2> <x3> <y3> <x4> <y4> <color1> <color2> <color3> <color4>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.item",
+                "Returns the amount and id of the item in a specified slot",
+                "Usage:",
+                "  {item <slot>} -> \"31 minecraft:diamond\" (for example)");
+        multiLang(provider, "gtceu.placeholder_info.bufferText",
+                "Returns the text from a buffer accessible by ComputerCraft",
+                "Usage:",
+                "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
+        provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_item_link_cover.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
+        provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
+        provider.add("gtceu.ender_redstone_link_cover.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
+        provider.add("gtceu.gui.central_monitor.text_scale", "Text scale");
+        provider.add("gtceu.gui.central_monitor.group", "Group: %s");
+        provider.add("gtceu.gui.central_monitor.group_default_name", "Group #%d");
+        provider.add("gtceu.gui.central_monitor.none", "none");
+        provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
+        provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
+        provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");
+        provider.add("gtceu.computer_monitor_cover.error.not_enough_args", "Expected at least %d args, got %d!");
+        provider.add("gtceu.computer_monitor_cover.error.no_cover", "No cover!");
+        provider.add("gtceu.computer_monitor_cover.error.exception", "Unexpected exception occurred: %s");
+        provider.add("gtceu.computer_monitor_cover.error.not_in_range",
+                "Expected %s to be between %d and %d (inclusive), got %d");
+        provider.add("gtceu.computer_monitor_cover.error.invalid_args", "Invalid arguments!");
+        provider.add("gtceu.computer_monitor_cover.error.missing_item", "Missing %s in slot %d!");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid_num",
+                "Invalid number at index %d when processing symbol number %d");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid", "Invalid character at %d");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.main_textbox_tooltip",
+                "Input string to display on line %d here.",
+                "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
+                "Placeholders can also be inside other placeholders.");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.slot_tooltip",
+                "A slot for items that some placeholders can reference",
+                "Slot number: %d");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
+                "Input placeholder to be used in place of %s '{}' here.",
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
+        provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
+        provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
+        provider.add("gtceu.computer_monitor_cover.error.not_supported",
+                "This feature is not supported by this block/cover!");
+        provider.add("gtceu.central_monitor.gui.create_group", "Create group");
+        provider.add("gtceu.central_monitor.gui.remove_from_group", "Remove from group");
+        provider.add("gtceu.central_monitor.gui.set_target", "Set target");
+        provider.add("gtceu.central_monitor.gui.currently_editing", "Currently editing: %s");
+        multiLang(provider, "gtceu.central_monitor.info_tooltip",
+                "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
+                "Select them by left-clicking, then click 'Create group'.",
+                "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
+                "To delete a group, select all of it's components and click 'Remove from group'.",
+                "You can quickly select all components of a group by clicking on it's name. Click again to unselect.",
+                "Some modules may display things depending on the block they target, to set a target for a group select any component of that group and right-click on the target component.",
+                "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
+                "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
+                "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
+        provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
     }
 
     /**

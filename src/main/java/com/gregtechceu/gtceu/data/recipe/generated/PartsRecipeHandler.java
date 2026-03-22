@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
-import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -392,7 +392,7 @@ public final class PartsRecipeHandler {
         if (!material.hasFlag(NO_SMASHING)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material.getName()),
                     ChemicalHelper.get(ring, material),
-                    "h ", " X",
+                    "h ", "fX",
                     'X', new MaterialEntry(rod, material));
         } else {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_ring")
@@ -628,6 +628,7 @@ public final class PartsRecipeHandler {
     }
 
     private static int getVoltageMultiplier(@NotNull Material material) {
+        if (material.hasProperty(PropertyKey.POLYMER)) return 4;
         return material.getBlastTemperature() > 2800 ? VA[LV] : VA[ULV];
     }
 }

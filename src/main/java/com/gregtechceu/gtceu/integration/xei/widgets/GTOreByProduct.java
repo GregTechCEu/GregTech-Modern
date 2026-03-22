@@ -176,12 +176,12 @@ public class GTOreByProduct {
         } else {
             addToOutputs(byproducts[0], TagPrefix.dust, 1);
         }
-        addChance(1400, 850);
+        addChance(1400, 0);
 
         // macerate crushed -> impure
         addToOutputs(material, TagPrefix.dustImpure, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
-        addChance(1400, 850);
+        addChance(1400, 0);
 
         // centrifuge impure -> dust
         addToOutputs(material, TagPrefix.dust, 1);
@@ -205,12 +205,12 @@ public class GTOreByProduct {
         // macerate centrifuged -> dust
         addToOutputs(material, TagPrefix.dust, 1);
         addToOutputs(byproducts[2], TagPrefix.dust, 1);
-        addChance(1400, 850);
+        addChance(1400, 0);
 
         // macerate crushed purified -> purified
         addToOutputs(material, TagPrefix.dustPure, 1);
         addToOutputs(byproducts[1], TagPrefix.dust, 1);
-        addChance(1400, 850);
+        addChance(1400, 0);
 
         // centrifuge purified -> dust
         addToOutputs(material, TagPrefix.dust, 1);
@@ -231,7 +231,7 @@ public class GTOreByProduct {
         if (hasChemBath) {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
-            addChance(7000, 580);
+            addChance(7000, 0);
             fluidInputs.add(FluidTagList.of(washedIn.first().getFluidTag(), washedIn.secondInt(), null));
         } else {
             addEmptyOutputs(2);
@@ -249,9 +249,9 @@ public class GTOreByProduct {
 
             addToOutputs(material, TagPrefix.dust, 1);
             addToOutputs(separatedInto.get(0), TagPrefix.dust, 1);
-            addChance(1000, 250);
+            addChance(1000, 0);
             addToOutputs(separatedStack2);
-            addChance(prefix == TagPrefix.dust ? 500 : 2000, prefix == TagPrefix.dust ? 150 : 600);
+            addChance(prefix == TagPrefix.dust ? 500 : 2000, 0);
         } else {
             addEmptyOutputs(3);
         }
@@ -263,23 +263,23 @@ public class GTOreByProduct {
             ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material);
 
             addToOutputs(material, TagPrefix.gemExquisite, 1);
-            addGemChance(300, 100, 500, 150, highOutput);
+            addGemChance(300, 0, 500, 0, highOutput);
             addToOutputs(material, TagPrefix.gemFlawless, 1);
-            addGemChance(1000, 150, 1500, 200, highOutput);
+            addGemChance(1000, 0, 1500, 0, highOutput);
             addToOutputs(material, TagPrefix.gem, 1);
-            addGemChance(3500, 500, 5000, 1000, highOutput);
+            addGemChance(3500, 0, 5000, 0, highOutput);
             addToOutputs(material, TagPrefix.dustPure, 1);
-            addGemChance(5000, 750, 2500, 500, highOutput);
+            addGemChance(5000, 0, 2500, 0, highOutput);
 
             if (!flawedStack.isEmpty()) {
                 addToOutputs(flawedStack);
-                addGemChance(2500, 300, 2000, 500, highOutput);
+                addGemChance(2500, 0, 2000, 0, highOutput);
             } else {
                 addEmptyOutputs(1);
             }
             if (!chippedStack.isEmpty()) {
                 addToOutputs(chippedStack);
-                addGemChance(3500, 400, 3000, 350, highOutput);
+                addGemChance(3500, 0, 3000, 0, highOutput);
             } else {
                 addEmptyOutputs(1);
             }
@@ -292,9 +292,13 @@ public class GTOreByProduct {
         if (chances.containsKey(slotIndex)) {
             Content entry = chances.get(slotIndex);
             float chance = 100 * (float) entry.chance / entry.maxChance;
-            float boost = entry.tierChanceBoost / 100.0f;
-            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
-            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
+            if (entry.tierChanceBoost != 0) {
+                float boost = entry.tierChanceBoost / 100.0f;
+                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
+                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
+            } else {
+                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
+            }
         }
     }
 

@@ -14,8 +14,8 @@ Bedrock Fluid Veins are invisable veins that exist under the bedrock, to find Fl
 GTCEuServerEvents.fluidVeins(event => {
 
     event.add('gtceu:custom_bedrock_fluid_vein', vein => {
-        vein.addSpawnDimension('minecraft:overworld')
-        vein.fluid(() => Fluid.of('gtceu:custom_fluid').fluid)
+        vein.dimensions('minecraft:overworld') // (1)
+        vein.fluid(() => Fluid.of('gtceu:custom_fluid').fluid) 
         vein.weight(600)
         vein.minimumYield(120)
         vein.maximumYield(720)
@@ -23,5 +23,8 @@ GTCEuServerEvents.fluidVeins(event => {
         vein.depletionChance(1)
         vein.depletedYield(50)
     });
+});
 
 ```
+
+1. Dimension where fluid vein will spawn.

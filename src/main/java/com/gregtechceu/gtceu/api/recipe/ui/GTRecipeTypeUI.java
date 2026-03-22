@@ -152,7 +152,7 @@ public class GTRecipeTypeUI {
     public record RecipeHolder(DoubleSupplier progressSupplier,
                                Table<IO, RecipeCapability<?>, Object> storages,
                                CompoundTag data,
-                               List<RecipeCondition> conditions,
+                               List<RecipeCondition<?>> conditions,
                                boolean isSteam,
                                boolean isHighPressure) {}
 
@@ -164,7 +164,7 @@ public class GTRecipeTypeUI {
     public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
                                         Table<IO, RecipeCapability<?>, Object> storages,
                                         CompoundTag data,
-                                        List<RecipeCondition> conditions,
+                                        List<RecipeCondition<?>> conditions,
                                         boolean isSteam,
                                         boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
@@ -177,7 +177,7 @@ public class GTRecipeTypeUI {
     public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
                                         Table<IO, RecipeCapability<?>, Object> storages,
                                         CompoundTag data,
-                                        List<RecipeCondition> conditions) {
+                                        List<RecipeCondition<?>> conditions) {
         return createUITemplate(progressSupplier, storages, data, conditions, false, false);
     }
 
@@ -404,7 +404,7 @@ public class GTRecipeTypeUI {
      * @return the height used to determine size of background texture in JEI
      */
     public int getPropertyHeightShift() {
-        int maxPropertyCount = maxTooltips + recipeType.getDataInfos().size();
+        int maxPropertyCount = maxTooltips + recipeType.getDataInfos().size() + recipeType.getMinRecipeConditions();
         return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
     }
 

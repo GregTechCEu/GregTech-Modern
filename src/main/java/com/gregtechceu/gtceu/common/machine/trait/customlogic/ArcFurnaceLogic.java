@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,6 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var recipeHandlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         for (var handler : recipeHandlers) {
-            if (!handler.shouldSearchContent()) continue;
             for (var content : handler.getContents()) {
                 if (!(content instanceof ItemStack stack)) continue;
                 if (stack.isEmpty()) continue;

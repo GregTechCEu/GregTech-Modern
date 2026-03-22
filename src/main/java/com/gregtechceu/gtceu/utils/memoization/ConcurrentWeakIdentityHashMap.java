@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils.memoization;
 
-import org.jetbrains.annotations.NotNullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
@@ -11,7 +12,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@NotNullByDefault
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ConcurrentWeakIdentityHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> {
 
     private final ConcurrentMap<Key<K>, V> map;

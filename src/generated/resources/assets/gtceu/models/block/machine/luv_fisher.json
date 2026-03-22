@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:luv_fisher",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/top_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/luv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_screen",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_qtank_emissive",
+          "side": "gtceu:block/casings/voltage/luv/side",
+          "top": "gtceu:block/casings/voltage/luv/top"
+        }
+      }
+    }
+  }
+}

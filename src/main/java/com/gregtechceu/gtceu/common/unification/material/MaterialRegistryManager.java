@@ -110,6 +110,11 @@ public final class MaterialRegistryManager implements IMaterialRegistryManager {
     }
 
     @Override
+    public Material getMaterial(ResourceLocation resourceLocation) {
+        return getRegistry(resourceLocation.getNamespace()).get(resourceLocation.getPath());
+    }
+
+    @Override
     public ResourceLocation getKey(Material material) {
         return material.getResourceLocation();
     }

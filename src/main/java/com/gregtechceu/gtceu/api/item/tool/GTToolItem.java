@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -33,6 +35,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -49,9 +52,10 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     @Getter
     private IGTToolDefinition toolStats;
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
-                         Properties properties) {
-        super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
+    public GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
+                      Properties properties) {
+        super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0),
+                material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() : properties);
         this.toolType = toolType;
         this.material = material;
         this.electricTier = toolType.electricTier;
@@ -60,11 +64,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
             ToolItemRenderer.create(this, toolType);
         }
         definition$init();
-    }
-
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                    IGTToolDefinition definition, Properties properties) {
-        return new GTToolItem(toolType, tier, material, definition, properties);
     }
 
     @Override
@@ -78,8 +77,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return definition$canPerformAction(stack, action);
     }
 
     @Override
@@ -110,6 +109,11 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         return definition$mineBlock(stack, level, state, pos, miningEntity);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        return definition$use(level, player, usedHand);
     }
 
     @Override
@@ -162,6 +166,21 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        return definition$getAllEnchantments(stack);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getEnchantmentLevel(stack, enchantment);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return definition$isFoil(stack);
+    }
+
+    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return definition$getDefaultAttributeModifiers(slot, stack);
     }
@@ -190,10 +209,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         return definition$shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
 
-    public boolean isDamaged(ItemStack stack) {
-        return definition$isDamaged(stack);
-    }
-
     public int getDamage(ItemStack stack) {
         return definition$getDamage(stack);
     }
@@ -202,17 +217,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         return definition$getMaxDamage(stack);
     }
 
-    public void setDamage(ItemStack stack, int damage) {
-        definition$setDamage(stack, damage);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        return definition$use(level, player, usedHand);
-    }
-
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
+        return definition$isCorrectToolForDrops(stack, state);
     }
 }

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class RecipeModifierList implements RecipeModifier {
 
+    @Getter
     private final RecipeModifier[] modifiers;
 
     public RecipeModifierList(RecipeModifier... modifiers) {
@@ -35,7 +38,10 @@ public final class RecipeModifierList implements RecipeModifier {
         for (RecipeModifier modifier : modifiers) {
             var func = modifier.getModifier(machine, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
-            if (runningRecipe == null) return ModifierFunction.NULL;
+            if (runningRecipe == null) {
+                RecipeLogic.putFailureReason(machine, recipe, func.getFailReason());
+                return ModifierFunction.NULL;
+            }
             result = func.compose(result);
         }
         return result;

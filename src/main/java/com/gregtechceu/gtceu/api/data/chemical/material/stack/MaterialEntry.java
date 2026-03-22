@@ -30,16 +30,20 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
     }
 
+    public boolean isIgnored() {
+        return tagPrefix().isIgnored(material());
+    }
+
     @Override
     public String toString() {
         if (tagPrefix.isEmpty()) {
             return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);
-        if (tags.length == 0) {
+        if (tags.isEmpty()) {
             return tagPrefix.name + "/" + material.getName();
         }
-        return tags[0].location().toString();
+        return tags.get(0).location().toString();
     }
 
     public static @Nullable MaterialEntry of(Object o) {

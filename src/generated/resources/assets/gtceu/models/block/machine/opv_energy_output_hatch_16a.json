@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:opv_energy_output_hatch_16a",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/energy_output_hatch_16a",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/opv/bottom",
+          "side": "gtceu:block/casings/voltage/opv/side",
+          "top": "gtceu:block/casings/voltage/opv/top"
+        }
+      }
+    },
+    "is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/energy_output_hatch_16a",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/opv/bottom",
+          "side": "gtceu:block/casings/voltage/opv/side",
+          "top": "gtceu:block/casings/voltage/opv/top"
+        }
+      }
+    }
+  }
+}
