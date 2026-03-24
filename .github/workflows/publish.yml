@@ -95,7 +95,7 @@ jobs:
           MC_VERSION: ${{ inputs.version == '1.21' && '1.21.1' || '1.20.1' }}
           LOADER: ${{ inputs.version == '1.21' && 'neoforge' || 'forge' }}
           JAVA: ${{ inputs.version == '1.21' && '21' || '17' }}
-          VERSION_TYPE: ${{ inputs.version == '1.21' && 'beta' || 'beta' }}
+          VERSION_TYPE: ${{ inputs.version == '1.21' && 'alpha' || 'beta' }}
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           modrinth-id: 7tG215v7
