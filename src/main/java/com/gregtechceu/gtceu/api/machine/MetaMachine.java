@@ -201,7 +201,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void modifyDrops(List<ItemStack> drops) {
         for (ItemStack drop : drops) {
-            if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == getBlockState().getBlock()) {
+            if (drop.getItem() instanceof MetaMachineItem item && getBlockState().is(item.getBlock())) {
                 getSyncDataHolder().saveItemStackTag(drop.getOrCreateTag(), false);
                 // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                 break;
