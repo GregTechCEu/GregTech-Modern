@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.addon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockPreviewHighlightRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
 
@@ -60,6 +61,11 @@ public interface IGTAddon {
      * Call init on your custom Cover class(es) here
      */
     default void registerCovers() {}
+
+    /**
+     * Register extra multiblock structure preview highlight rules here.
+     */
+    default void registerMultiblockPreviewHighlighters(MultiblockPreviewHighlightRegistry registry) {}
 
     /**
      * Call init on your custom Recipe Capabilities here

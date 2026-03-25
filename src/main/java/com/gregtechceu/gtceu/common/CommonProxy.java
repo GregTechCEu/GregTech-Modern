@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockPreviewHighlightRegistry;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
@@ -160,6 +161,9 @@ public class CommonProxy {
         ChanceLogic.init();
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
+        AddonFinder.getAddons()
+                .forEach(addon -> addon
+                        .registerMultiblockPreviewHighlighters(MultiblockPreviewHighlightRegistry.INSTANCE));
 
         GTRegistration.REGISTRATE.registerRegistrate();
 

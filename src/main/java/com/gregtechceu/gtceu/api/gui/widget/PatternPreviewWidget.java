@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockPreviewHighlightRegistry;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -60,9 +60,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
-import static com.gregtechceu.gtceu.common.data.machines.GCYMMachines.PARALLEL_HATCH;
 
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
@@ -295,51 +292,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                         List<ItemStack> candidates = new ArrayList<ItemStack>();
                         predicate.common.forEach(y -> candidates.addAll(y.getCandidates()));
                         predicate.limited.forEach(y -> candidates.addAll(y.getCandidates()));
-                        int cnt = 0;
-                        for (var candidate : candidates) {
-                            if (cnt > 1) break;
-                            if (candidate.equals(ITEM_IMPORT_BUS[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(FLUID_IMPORT_HATCH[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(STEAM_IMPORT_BUS.asStack(), false)) {
-                                cnt++;
-                                color = 0x00ff00ff;// 绿色
-                                continue;
-                            }
-                            if (candidate.equals(ITEM_EXPORT_BUS[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(FLUID_EXPORT_HATCH[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(STEAM_EXPORT_BUS.asStack(), false)) {
-                                cnt++;
-                                color = 0xff8000ff;// 橙色
-                                continue;
-                            }
-                            if (candidate.equals(ENERGY_INPUT_HATCH[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(ENERGY_OUTPUT_HATCH[GTValues.LV].asStack(), false) ||
-                                    candidate.equals(LASER_INPUT_HATCH_256[GTValues.IV].asStack(), false) ||
-                                    candidate.equals(LASER_OUTPUT_HATCH_256[GTValues.IV].asStack(), false) ||
-                                    candidate.equals(STEAM_HATCH.asStack())) {
-                                cnt++;
-                                color = 0xffff00ff;// 黄色
-                                continue;
-                            }
-                            if (candidate.equals(MAINTENANCE_HATCH.asStack(), false)) {
-                                cnt++;
-                                color = 0x00ffffff;// 青色
-                                continue;
-                            }
-                            if (candidate.equals(MUFFLER_HATCH[GTValues.LV].asStack(), false)) {
-                                cnt++;
-                                color = 0x800080ff;// 紫色
-                                continue;
-                            }
-                            if (candidate.equals(PARALLEL_HATCH[GTValues.IV].asStack(), false)) {
-                                cnt++;
-                                color = 0xf0ffffff;// 蔚蓝色
-                            }
-                        }
-
-                        if (cnt > 1) {
-                            color = 0x3b2525ff;
-                        }
+                        color = MultiblockPreviewHighlightRegistry.resolveColor(candidates);
                         colorCaches.put(pos, color);
                     }
                 } else {
