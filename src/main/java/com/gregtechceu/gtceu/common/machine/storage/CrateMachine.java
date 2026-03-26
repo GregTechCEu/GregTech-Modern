@@ -61,8 +61,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
     }
 
     @Override
-    public void modifyDrops(List<ItemStack> drops) {
-        if (isTaped) super.modifyDrops(drops);
+    public boolean shouldSaveToItemStack(boolean pickBlock) {
+        return isTaped;
     }
 
     @Override

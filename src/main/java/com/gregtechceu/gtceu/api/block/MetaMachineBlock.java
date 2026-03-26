@@ -172,7 +172,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
 
         var machine = MetaMachine.getMachine(level, pos);
-        if (machine != null) machine.getSyncDataHolder().saveItemStackTag(itemStack.getOrCreateTag(), true);
+        if (machine != null) machine.saveToItemStack(itemStack, true);
 
         return itemStack;
     }

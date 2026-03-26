@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -95,14 +96,13 @@ public class SyncDataHolder {
         }
     }
 
-    public void saveItemStackTag(CompoundTag tag, boolean pickedStack) {
-        var compound = new CompoundTag();
+    public void saveItemStackTag(ItemStack stack, boolean pickedStack) {
+        var compound = stack.getOrCreateTagElement("saved");
         for (var field : syncData.getManagedFields()) {
             if ((pickedStack && field.saveToPickedStack) || field.saveToDroppedStack) {
                 compound.put(field.nbtSaveKey, serializeField(holder, field, false, false));
             }
         }
-        tag.put("saved", compound);
     }
 
     @SuppressWarnings("unchecked")

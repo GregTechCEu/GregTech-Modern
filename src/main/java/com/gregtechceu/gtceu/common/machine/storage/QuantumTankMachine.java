@@ -96,6 +96,11 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         super.onLoad();
     }
 
+    @Override
+    public boolean shouldSaveToItemStack(boolean pickBlock) {
+        return !stored.isEmpty();
+    }
+
     protected void onFluidChanged() {
         if (!isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("storedAmount");

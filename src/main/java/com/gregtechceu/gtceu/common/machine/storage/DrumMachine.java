@@ -74,6 +74,11 @@ public class DrumMachine extends MetaMachine {
         this.exportFluidSubs = cache.addChangedListener(this::onFluidChanged);
     }
 
+    @Override
+    public boolean shouldSaveToItemStack(boolean pickBlock) {
+        return !stored.isEmpty();
+    }
+
     private void onFluidChanged() {
         if (!isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("stored");

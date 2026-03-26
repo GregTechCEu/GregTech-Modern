@@ -109,6 +109,11 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         }
     }
 
+    @Override
+    public boolean shouldSaveToItemStack(boolean pickBlock) {
+        return !stored.isEmpty();
+    }
+
     //////////////////////////////////////
     // ****** Capability ********//
     //////////////////////////////////////
