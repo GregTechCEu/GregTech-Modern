@@ -317,7 +317,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Recipe logic for EU production/consumption
-                RecipeLogic recipeLogic = machine.getTraitHolder().getTrait(RecipeLogic.TYPE);
+                RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.TYPE);
                 if (recipeLogic != null) {
                     GTRecipe recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {

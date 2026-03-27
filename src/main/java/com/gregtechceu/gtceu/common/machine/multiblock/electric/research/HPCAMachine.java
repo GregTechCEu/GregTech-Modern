@@ -110,7 +110,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
 
-            componentTraits.addAll(part.self().getTraitHolder().getTraits(HPCAComponentTrait.TYPE));
+            componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
 
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
@@ -218,7 +218,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.self().getTraitHolder().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.self().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
         }
     }
 
@@ -735,7 +735,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
                         MetaMachine be = MetaMachine.getMachine(world, tempPos);
                         if (be == null) continue;
-                        var trait = be.getTraitHolder().getTrait(HPCAComponentTrait.TYPE);
+                        var trait = be.getTrait(HPCAComponentTrait.TYPE);
                         if (trait != null) {
                             components.add(trait);
                         }

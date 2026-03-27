@@ -67,7 +67,7 @@ public class DuctNetHandler implements IHazardParticleContainer {
                     if (handler == null && path.getTargetPipe().isConnected(path.getTargetFacing())) {
                         if (net.getLevel().getBlockEntity(path.getTargetPipePos()
                                 .relative(path.getTargetFacing())) instanceof MetaMachine machine) {
-                            var cleanerTrait = machine.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE);
+                            var cleanerTrait = machine.getTrait(EnvironmentalHazardCleanerTrait.TYPE);
                             if (cleanerTrait != null) {
                                 cleanerTrait.cleanHazard(condition, differenceAmount);
                                 break;

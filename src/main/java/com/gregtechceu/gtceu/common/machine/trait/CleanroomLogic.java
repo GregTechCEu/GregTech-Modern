@@ -113,7 +113,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     }
 
     protected boolean consumeEnergy() {
-        var cleanroomTrait = getMachine().getTraitHolder().getTrait(CleanroomProviderTrait.TYPE);
+        var cleanroomTrait = getMachine().getTrait(CleanroomProviderTrait.TYPE);
         if (cleanroomTrait == null) return false;
         // clamp to max for VA indexing
         var tier = Mth.clamp(getMachine().getTier(), GTValues.ULV, GTValues.MAX);

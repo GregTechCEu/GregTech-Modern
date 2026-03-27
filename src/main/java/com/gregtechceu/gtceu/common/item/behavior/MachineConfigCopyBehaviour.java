@@ -185,7 +185,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
-        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
                 outputTrait.getItemOutputDirection() != null) {
             tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
@@ -220,7 +220,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
-        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
                 outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
