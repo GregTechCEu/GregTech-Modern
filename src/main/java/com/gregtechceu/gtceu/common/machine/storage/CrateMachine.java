@@ -23,12 +23,9 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import lombok.Getter;
-
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

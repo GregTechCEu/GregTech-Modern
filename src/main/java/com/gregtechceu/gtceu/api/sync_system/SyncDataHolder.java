@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
