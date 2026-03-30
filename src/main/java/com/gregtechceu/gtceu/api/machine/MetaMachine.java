@@ -189,7 +189,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             ownerUUID = sPlayer.getUUID();
         }
 
-        loadFromItemStack(stack);
+        loadFromItem(stack);
     }
 
     public void onMachineDestroyed() {
@@ -201,19 +201,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public void modifyDrops(List<ItemStack> drops) {
         for (ItemStack drop : drops) {
             if (drop.getItem() instanceof MetaMachineItem item && getBlockState().is(item.getBlock())) {
-                saveToItemStack(drop, false);
+                saveToItem(drop, false);
                 // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                 break;
             }
         }
     }
 
-    public void saveToItemStack(ItemStack stack, boolean pickBlock) {
+    public void saveToItem(ItemStack stack, boolean pickBlock) {
         if (shouldSaveToItemStack(pickBlock)) getSyncDataHolder().saveItemStackTag(stack, pickBlock);
     }
 
-    public void loadFromItemStack(ItemStack stack) {
-        var elem = stack.getTagElement("saved");
+    public void loadFromItem(ItemStack stack) {
+        var elem = stack.getTag();
         if (elem != null) load(elem);
     }
 

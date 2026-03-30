@@ -97,7 +97,7 @@ public class SyncDataHolder {
     }
 
     public void saveItemStackTag(ItemStack stack, boolean pickedStack) {
-        var compound = stack.getOrCreateTagElement("saved");
+        var compound = stack.getOrCreateTag();
         for (var field : syncData.getManagedFields()) {
             if ((pickedStack && field.saveToPickedStack) || field.saveToDroppedStack) {
                 compound.put(field.nbtSaveKey, serializeField(holder, field, false, false));
