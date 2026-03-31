@@ -421,7 +421,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         });
         updateWidget.run();
         mainWidget.child(Flow.column()
-                        .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
+                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .childIf(this.isConfigurable, () -> Flow.column()
                         .coverChildren()
@@ -462,5 +462,4 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                 .syncHandler(syncHandler)))
                 .child(maintenanceStatusWidget));
     }
-
 }

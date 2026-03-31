@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -280,7 +279,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 * slotHeight)
                         .margin(0, 10)
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
-                                syncManager))
-                        );
+                                syncManager)));
     }
 }

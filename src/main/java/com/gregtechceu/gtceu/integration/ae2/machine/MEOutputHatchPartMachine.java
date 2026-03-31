@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
@@ -20,7 +19,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEKeyStorageSyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.mui.ScrollPreservingGrid;
@@ -102,15 +100,14 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-
         BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
         syncManager.syncValue("is_online", isOnlineValue);
 
         var flow = Flow.col().coverChildren();
 
         flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
-                        Component.translatable("gtceu.gui.me_network.online") :
-                        Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
 
         var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);
@@ -135,7 +132,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 .size(167, 80));
 
         mainWidget.child(flow);
-
     }
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {

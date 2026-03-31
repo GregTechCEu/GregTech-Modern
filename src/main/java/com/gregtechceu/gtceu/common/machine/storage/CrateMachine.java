@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -93,8 +92,8 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
         var col = Flow.col()
                 .margin(5, 5, 0, 5)
                 .coverChildren();
-            col.child(IKey.lang(getBlockState().getBlock().getName()).asWidget().alignX(0f).margin(0, 0, 3, 3))
-                    .child(slots.height(rows * 18));
+        col.child(IKey.lang(getBlockState().getBlock().getName()).asWidget().alignX(0f).margin(0, 0, 3, 3))
+                .child(slots.height(rows * 18));
         mainWidget.child(col);
     }
 

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -558,8 +557,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
                         .child(Flow.row()
                                 .margin(4, 0, 41, 0)
                                 .coverChildren()
-                                .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput
-                                )))
+                                .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput)))
                         .child(Flow.column()
                                 .margin(68, 0, 23, 0)
                                 .coverChildren()

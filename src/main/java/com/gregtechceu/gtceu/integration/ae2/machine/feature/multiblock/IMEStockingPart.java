@@ -103,11 +103,11 @@ public interface IMEStockingPart extends IAutoPullPart {
         return MachineUIPanelBuilder.defaultPanelBuilder(this.self())
                 .rightConfigurators(f -> {
                     f.child(new ToggleButton()
-                                    .value(new BoolValue.Dynamic(this::isAutoPull, this::setAutoPull))
-                                    .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
-                                    .tooltipAutoUpdate(true)
-                                    .tooltipBuilder(r -> r
-                                            .addLine(IKey.lang("gtceu.gui.me_network.auto_pull_toggle"))))
+                            .value(new BoolValue.Dynamic(this::isAutoPull, this::setAutoPull))
+                            .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
+                            .tooltipAutoUpdate(true)
+                            .tooltipBuilder(r -> r
+                                    .addLine(IKey.lang("gtceu.gui.me_network.auto_pull_toggle"))))
                             .child(new ButtonWidget<>()
                                     .size(18)
                                     .onMousePressed((x, y, b) -> {

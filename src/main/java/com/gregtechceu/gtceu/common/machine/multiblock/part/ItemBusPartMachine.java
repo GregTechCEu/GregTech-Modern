@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -301,7 +300,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
         mainWidget.child(new Grid()
                 .coverChildren()
-                        .margin(7, 5)
+                .margin(7, 5)
                 .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
                                 .slotGroup(group)

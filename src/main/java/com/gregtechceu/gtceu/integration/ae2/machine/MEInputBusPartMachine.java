@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -133,13 +132,12 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         var flow = Flow.col().coverChildren();
 
         flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
-                                Component.translatable("gtceu.gui.me_network.online") :
-                                Component.translatable("gtceu.gui.me_network.offline"))
-                        .asWidget().marginTop(2).marginBottom(4));
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
         flow.child(new AEConfigWidget(aeItemHandler, CONFIG_SIZE, false)
-                        .syncManager(syncManager)
-                        .size(8 * 18, 2 * (18 * 2 + 2))
-        );
+                .syncManager(syncManager)
+                .size(8 * 18, 2 * (18 * 2 + 2)));
 
         mainWidget.child(flow);
     }

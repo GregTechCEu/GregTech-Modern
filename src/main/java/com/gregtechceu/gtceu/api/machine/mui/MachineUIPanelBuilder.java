@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -107,6 +107,7 @@ public class MachineUIPanelBuilder {
     }
 
     public static MachineUIPanelBuilder defaultSteamMachineBuilder(MetaMachine machine) {
-        return new MachineUIPanelBuilder(machine).drawGTLogo(true).addDefaultConfigurators(false).addTraitConfigurators(false);
+        return new MachineUIPanelBuilder(machine).drawGTLogo(true).addDefaultConfigurators(false)
+                .addTraitConfigurators(false);
     }
 }

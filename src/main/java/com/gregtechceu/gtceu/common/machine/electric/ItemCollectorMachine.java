@@ -313,9 +313,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-
         mainWidget.child(Flow.column()
-                        .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 150)
+                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 150)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .child(Flow.row()
                         .coverChildren()

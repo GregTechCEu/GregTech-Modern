@@ -279,7 +279,8 @@ public class GTMultiblockTextUtil {
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
-                                                     PanelSyncManager syncManager, Supplier<Component> runningPerfectly) {
+                                                     PanelSyncManager syncManager,
+                                                     Supplier<Component> runningPerfectly) {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 runningPerfectly,

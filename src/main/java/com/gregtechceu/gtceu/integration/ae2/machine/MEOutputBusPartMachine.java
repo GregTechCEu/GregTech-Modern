@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicLinkedSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
@@ -106,8 +105,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         var flow = Flow.col().coverChildren();
 
         flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
-                        Component.translatable("gtceu.gui.me_network.online") :
-                        Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
 
         var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);

@@ -138,22 +138,22 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         var flow = Flow.row().width(MachineUIPanel.DEFAULT_CONTENT_WIDTH).height(90);
 
         flow.child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
-                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
-                        .direction(ProgressWidget.Direction.UP)
-                        .value(energyPercentage)
-                        .marginLeft(5)
-                        .size(18, 60)
-                        .addTooltipLine(IKey.dynamic(() -> Component.literal(
-                                "%s/%s EU".formatted(
-                                        GTStringUtils.formatInt(energyContainer.getEnergyStored()),
-                                        GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
+                .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
+                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
+                .direction(ProgressWidget.Direction.UP)
+                .value(energyPercentage)
+                .marginLeft(5)
+                .size(18, 60)
+                .addTooltipLine(IKey.dynamic(() -> Component.literal(
+                        "%s/%s EU".formatted(
+                                GTStringUtils.formatInt(energyContainer.getEnergyStored()),
+                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(
-                                chargerInventory, "batteries",
-                                inventorySize, 'B',
-                                slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
-                                syncManager,
-                                matrix)
+                        chargerInventory, "batteries",
+                        inventorySize, 'B',
+                        slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
+                        syncManager,
+                        matrix)
                         .center());
 
         mainWidget.child(flow);

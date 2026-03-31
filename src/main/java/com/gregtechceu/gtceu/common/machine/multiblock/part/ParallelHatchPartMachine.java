@@ -136,5 +136,4 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .marginRight(4)
                         .verticalCenter()));
     }
-
 }

@@ -50,8 +50,7 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.exportItems,
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
-                                    -1)
-                            );
+                                    -1));
         });
         return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
     };
@@ -82,8 +81,8 @@ public class GTSingleblockMachinePanels {
             parent.height(18 + 9 + 18 * Math.max(2, slotHeight));
 
             parent.child(Flow.row()
-                            .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
-                            .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
+                    .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
+                    .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
                             .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
                                     simpleTieredMachine.exportItems,
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
@@ -133,8 +132,7 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
                                     0)
-                            .align(Alignment.CENTER))
-                    );
+                            .align(Alignment.CENTER)));
 
             /*
              * parent.childIf(hasXEI, () ->

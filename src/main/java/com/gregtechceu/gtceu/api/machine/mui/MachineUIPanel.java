@@ -29,7 +29,8 @@ public class MachineUIPanel extends ModularPanel {
                           boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture) {
         super(machine.getDefinition().getId().getPath());
 
-        UITexture themeBackground = (UITexture)ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelTheme().getTheme().getBackground();
+        UITexture themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelTheme()
+                .getTheme().getBackground();
         if (themeBackground == null) themeBackground = GTGuiTextures.BACKGROUND;
         leftConfiguratorPanel = Flow.col()
                 .coverChildren()

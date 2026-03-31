@@ -396,8 +396,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         var flow = Flow.col().coverChildren();
 
         flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
-                        Component.translatable("gtceu.gui.me_network.online") :
-                        Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
 
         flow.child(new Grid()
@@ -414,7 +414,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         .background(GTGuiTextures.SLOT, GTGuiTextures.PATTERN_OVERLAY)));
 
         mainWidget.child(flow);
-
     }
 
     public boolean canRefund() {

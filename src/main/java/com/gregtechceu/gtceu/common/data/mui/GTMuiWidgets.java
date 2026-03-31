@@ -173,16 +173,19 @@ public class GTMuiWidgets {
     }
 
     public static CycleButtonWidget createVoidingButton(IVoidable voidable) {
-        var value = new EnumSyncValue<>(IVoidable.VoidingMode.class, voidable::getVoidingMode, voidable::setVoidingMode);
+        var value = new EnumSyncValue<>(IVoidable.VoidingMode.class, voidable::getVoidingMode,
+                voidable::setVoidingMode);
 
         return new CycleButtonWidget()
                 .overlay(GTGuiTextures.BUTTON_VOID_MULTIBLOCK)
                 .value(value)
-                .tooltipBuilder(r -> r.addLine(IKey.dynamic(() -> Component.translatable(value.getValue().getTooltip()))));
+                .tooltipBuilder(
+                        r -> r.addLine(IKey.dynamic(() -> Component.translatable(value.getValue().getTooltip()))));
     }
 
     public static ToggleButton createDistinctnessButton(IDistinctPart distinct) {
-        return createToggleButton(distinct::isDistinct, distinct::setDistinct, GTGuiTextures.BUTTON_DISTINCT[0], GTGuiTextures.BUTTON_DISTINCT[1],
+        return createToggleButton(distinct::isDistinct, distinct::setDistinct, GTGuiTextures.BUTTON_DISTINCT[0],
+                GTGuiTextures.BUTTON_DISTINCT[1],
                 "gtceu.multiblock.universal.distinct");
     }
 

@@ -48,7 +48,8 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).addTraitConfigurators(false).addDefaultConfigurators(false);
+        return MachineUIPanelBuilder.defaultPanelBuilder(this).addTraitConfigurators(false)
+                .addDefaultConfigurators(false);
     }
 
     @Override
@@ -68,22 +69,19 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 new ModularSlot(importItems.storage, 0)
                         .slotGroup(new SlotGroup("import_items", 1))))
                 .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
-                        GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
-                )
+                        GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                 .child(new ProgressWidget()
                         .value(progressPercent)
                         .size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18)
-                        .margin(4, 0)
-                )
+                        .margin(4, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
                         .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
-                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
-                        )
+                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY))
 
                 .child(createTankWidget()
                         .overlay(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
@@ -91,8 +89,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         .syncHandler(new FluidSlotSyncHandler(
                                 exportFluids.getStorages()[0])
                                 .canFillSlot(false))
-                                .marginLeft(20)
-                        );
+                        .marginLeft(20));
 
         mainWidget.child(row);
     }

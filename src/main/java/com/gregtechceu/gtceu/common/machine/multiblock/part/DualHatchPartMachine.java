@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
@@ -163,7 +162,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-
         String slotGroupName = "inv_slot_group";
         SlotGroup slotGroup = new SlotGroup(slotGroupName, getInventorySize());
         mainWidget.child(SlotGroupWidget.builder()
@@ -183,7 +181,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                             .canDrainSlot(true);
                     syncManager.syncValue(slotGroupName + "_fluid", i, syncHandler);
                     return new FluidSlot().syncHandler(slotGroupName + "_fluid", i);
-                }).build().margin(7, 10)
-                );
+                }).build().margin(7, 10));
     }
 }

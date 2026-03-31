@@ -179,7 +179,6 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
-
         LongSyncValue energyStoredSyncValue = new LongSyncValue(this::getEnergyUsage);
         syncManager.syncValue("dataBankEnergyStored", energyStoredSyncValue);
 
