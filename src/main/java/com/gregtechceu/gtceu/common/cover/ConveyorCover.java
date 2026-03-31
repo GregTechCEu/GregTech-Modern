@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -485,15 +484,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
     protected boolean createManualIOModeRow() {
         return true;
-    }
-
-    @NotNull
-    protected String getUITitle() {
-        return "cover.conveyor.title";
-    }
-
-    protected void buildAdditionalUI(WidgetGroup group) {
-        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
     protected void configureFilter() {
