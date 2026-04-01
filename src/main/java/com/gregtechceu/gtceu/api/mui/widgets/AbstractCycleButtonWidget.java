@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,9 +27,11 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
 
     private static final RichTooltip[] EMPTY_TOOLTIP = new RichTooltip[0];
 
+    @Getter
     private int stateCount = 1;
     private boolean explicitStateCount = false;
     private boolean hasCount = false;
+    @Getter
     private IIntValue<?> intValue;
     private int lastValue = -1;
     protected IDrawable[] background = null;

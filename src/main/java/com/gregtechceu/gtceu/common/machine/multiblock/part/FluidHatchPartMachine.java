@@ -349,7 +349,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                                 .name("lockedFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
                                 .alwaysShowFull(true)
-                                .displayAmount(true)
+                                
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
@@ -364,7 +364,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
                                         .canFillSlot(io.support(IO.IN)))
-                                .displayAmount(true)));
+                                ));
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {

@@ -31,6 +31,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private Boolean shadow = null;
     @Getter
     private float scale = 1f;
+    @Getter
     private int maxWidth = -1;
 
     private Component lastText = null;

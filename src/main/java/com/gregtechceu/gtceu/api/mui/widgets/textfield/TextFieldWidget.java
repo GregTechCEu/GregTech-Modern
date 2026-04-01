@@ -34,10 +34,13 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     @Getter
     private IStringValue<?> stringValue;
     private Function<String, String> validator = val -> val;
+    @Getter
     private boolean numbers = false;
     @Getter
     private String mathFailMessage = null;
+    @Getter
     private double defaultNumber = 0;
+    @Getter
     private boolean tooltipOverride = false;
     @Getter
     private boolean autoUpdateOnChange = false;

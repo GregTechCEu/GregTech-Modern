@@ -45,7 +45,6 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         return phantom ? new PhantomItemSlot() : new ItemSlot();
     }
 
-    private static final TextRenderer textRenderer = new TextRenderer();
     private ItemSlotSyncHandler syncHandler;
     private RichTooltip tooltip;
     @Setter

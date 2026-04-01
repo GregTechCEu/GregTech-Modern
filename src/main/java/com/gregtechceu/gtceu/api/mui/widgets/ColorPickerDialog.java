@@ -14,20 +14,28 @@ import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import lombok.Getter;
 
 public class ColorPickerDialog extends Dialog<Integer> {
 
     private static final IDrawable handleBackground = new Rectangle().color(Color.WHITE.main);
 
+    @Getter
     private int color;
+    @Getter
     private int red;
+    @Getter
     private int green;
+    @Getter
     private int blue;
+    @Getter
     private double hue;
+    @Getter
     private double saturation;
     private double value;
 
     private int alpha;
+    @Getter
     private final boolean controlAlpha;
 
     private final Rectangle preview = new Rectangle();
@@ -183,6 +191,14 @@ public class ColorPickerDialog extends Dialog<Integer> {
             return "#" + raw;
         }
         return raw;
+    }
+
+    public double getHSVValue() {
+        return value;
+    }
+
+    public int getColorAlpha() {
+        return alpha;
     }
 
     private void updateRed(double v) {

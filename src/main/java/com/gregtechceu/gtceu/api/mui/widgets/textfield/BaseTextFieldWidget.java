@@ -67,14 +67,20 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     @Getter
     protected List<String> lastText;
     protected int scrollOffset = 0;
+    @Getter
     protected float scale = 1f;
+    @Getter
     protected boolean focusOnGuiOpen;
     private int cursorTimer;
     protected long lastClickTime = 0;
 
+    @Getter
     protected Integer textColor;
+    @Getter
     protected Integer markedColor;
+    @Getter
     protected Component hintText = null;
+    @Getter
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {

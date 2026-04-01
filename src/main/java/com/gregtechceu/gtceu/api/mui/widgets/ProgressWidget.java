@@ -13,19 +13,23 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import lombok.Getter;
 import net.minecraft.util.Mth;
 
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
 public class ProgressWidget extends Widget<ProgressWidget> {
 
     private final UITexture[] fullTexture = new UITexture[4];
     private UITexture emptyTexture;
+    @Getter
     private Direction direction = Direction.RIGHT;
     private int imageSize = -1;
 
+    @Getter
     private IDoubleValue<?> doubleValue;
 
     private IDrawable label;
@@ -54,6 +58,11 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         super.setSyncOrValue(syncOrValue);
         this.doubleValue = syncOrValue.castNullable(IDoubleValue.class);
+    }
+
+    @Override
+    public @Nullable IDoubleValue<?> getValue() {
+        return doubleValue;
     }
 
     @Override

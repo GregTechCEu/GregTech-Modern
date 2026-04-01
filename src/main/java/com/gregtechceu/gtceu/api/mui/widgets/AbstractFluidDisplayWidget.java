@@ -26,8 +26,10 @@ public abstract class AbstractFluidDisplayWidget<W extends AbstractFluidDisplayW
     public static final String UNIT_BUCKET = "B";
     public static final String UNIT_LITER = "L";
 
+    @Getter
     private final Box contentPadding = new Box().all(1);
     private String unit = UNIT_BUCKET;
+    @Getter
     private SIPrefix baseUnitPrefix = SIPrefix.Milli;
     @Getter
     private boolean flipLighterThanAir = true;

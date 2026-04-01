@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,11 +26,15 @@ import java.util.function.IntFunction;
 public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayoutWidget, IParentWidget<IWidget, Grid> {
 
     private final List<List<IWidget>> matrix = new ArrayList<>();
+    @Getter
     private final Box minElementMargin = new Box();
+    @Getter
     private int minRowHeight = 5, minColWidth = 5;
+    @Getter
     private Alignment alignment = Alignment.Center;
     private boolean dirty = false;
-    private boolean collapseDisabledChild = false;
+    @Getter
+    private boolean collapseDisabledChildren = false;
 
     public Grid() {
         super(null, null);
@@ -109,7 +114,7 @@ public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayout
 
     @Override
     public boolean shouldIgnoreChildSize(IWidget child) {
-        return child == null || (this.collapseDisabledChild && !child.isEnabled());
+        return child == null || (this.collapseDisabledChildren && !child.isEnabled());
     }
 
     @Override
@@ -298,8 +303,8 @@ public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayout
     /**
      * Configures this widget to collapse row/column if all the child widgets in that axis are disabled.
      */
-    public Grid collapseDisabledChild() {
-        this.collapseDisabledChild = true;
+    public Grid collapseDisabledChildren() {
+        this.collapseDisabledChildren = true;
         return getThis();
     }
 

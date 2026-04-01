@@ -43,22 +43,27 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
     /**
      * How the children should be laid out on the main axis.
      */
+    @Getter
     private Alignment.MainAxis mainAxisAlignment = Alignment.MainAxis.START;
     /**
      * How the children should be laid out on the cross axis.
      */
+    @Getter
     private Alignment.CrossAxis crossAxisAlignment = Alignment.CrossAxis.CENTER;
     /**
      * Additional space between each child on main axis.
      * Does not work with {@link Alignment.MainAxis#SPACE_BETWEEN} and {@link Alignment.MainAxis#SPACE_AROUND}.
      */
     @Setter
+    @Getter
     private int childPadding = 0;
+    @Getter
     private int crossAxisChildPadding = 0;
     /**
      * Whether disabled child widgets should be collapsed for display.
      */
-    private boolean collapseDisabledChild = false;
+    @Getter
+    private boolean collapseDisabledChildren = false;
     /**
      * Whether the children list should be laid out in reverse order
      */
@@ -267,12 +272,12 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
 
     @Override
     public boolean shouldIgnoreChildSize(IWidget child) {
-        return this.collapseDisabledChild && !child.isEnabled();
+        return this.collapseDisabledChildren && !child.isEnabled();
     }
 
     @Override
     public void onChildChangeEnabled(IWidget child, boolean enabled) {
-        if (this.collapseDisabledChild) {
+        if (this.collapseDisabledChildren) {
             ILayoutWidget.super.onChildChangeEnabled(child, enabled);
         }
     }
@@ -334,8 +339,8 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
     /**
      * Sets if disabled children should be collapsed.
      */
-    public Flow collapseDisabledChild() {
-        this.collapseDisabledChild = true;
+    public Flow collapseDisabledChildren() {
+        this.collapseDisabledChildren = true;
         return this;
     }
 
@@ -347,8 +352,8 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
      * @param collapse true if disabled children should be collapsed.
      * @return this
      */
-    public Flow collapseDisabledChild(boolean collapse) {
-        this.collapseDisabledChild = collapse;
+    public Flow collapseDisabledChildren(boolean collapse) {
+        this.collapseDisabledChildren = collapse;
         return this;
     }
 

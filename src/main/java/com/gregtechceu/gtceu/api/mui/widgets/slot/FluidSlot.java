@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSl
 import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.utils.IMultiFluidTankHandler;
 
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -51,12 +52,20 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
     }
 
     private FluidSlotSyncHandler syncHandler;
+    @Getter
     private boolean alwaysShowFull = true;
-    private boolean displayAmount = true;
 
     public FluidSlot() {
         tooltip().autoUpdate(true);
         tooltipBuilder(this::addTooltip);
+    }
+
+    @Override
+    public @NotNull FluidSlotSyncHandler getSyncHandler() {
+        if (this.syncHandler == null) {
+            throw new IllegalStateException("Widget is not initialised or not synced!");
+        }
+        return syncHandler;
     }
 
     protected void addTooltip(RichTooltip tooltip) {
@@ -227,11 +236,6 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
 
     public IFluidTank getFluidTank() {
         return this.syncHandler == null ? EMPTY : this.syncHandler.fluidTank();
-    }
-
-    public FluidSlot displayAmount(boolean displayAmount) {
-        this.displayAmount = displayAmount;
-        return this;
     }
 
     /**

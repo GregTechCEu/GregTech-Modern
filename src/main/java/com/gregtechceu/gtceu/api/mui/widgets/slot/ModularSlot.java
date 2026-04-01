@@ -36,7 +36,9 @@ public class ModularSlot extends SlotItemHandler {
     @Getter
     @Setter(onMethod_ = { @ApiStatus.Internal })
     private boolean enabled = true;
+    @Getter
     private boolean canTake = true, canPut = true, canDragInto = true;
+    @Getter
     private Predicate<ItemStack> filter = stack -> true;
     private IOnSlotChanged changeListener = IOnSlotChanged.DEFAULT;
     @Getter

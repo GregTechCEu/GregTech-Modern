@@ -229,7 +229,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i))
                                                 .addTooltipLine("This slot is empty"))
                                         .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
-                                        .key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
+                                        .key('D', new ItemDisplayWidget().syncHandler("display_item"))
                                         .build()
                                         .margin(5, 5, 20, 5).name("crafting"))))
 
@@ -678,7 +678,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                 .height(16)
                                 .widthRel(1f))
                         .child(new ListWidget<>()
-                                .collapseDisabledChild()
+                                .collapseDisabledChildren()
                                 .expanded()
                                 .widthRel(1f)
                                 .children(items.size(), i -> new TextWidget<>(IKey.str(items.get(i)))
