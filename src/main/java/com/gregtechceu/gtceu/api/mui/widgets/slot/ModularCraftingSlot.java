@@ -225,15 +225,13 @@ public class ModularCraftingSlot extends ModularSlot {
 
         Optional<CraftingRecipe> possibleRecipe = player.getServer().getRecipeManager()
                 .getRecipeFor(RecipeType.CRAFTING, getCraftSlots(), level);
-        if (possibleRecipe.isEmpty()) {
-            return;
-        }
-        CraftingRecipe recipe = possibleRecipe.get();
-
-        if (setRecipeUsed(getItemHandler(), player, recipe)) {
-            result = recipe.assemble(getCraftSlots(), level.registryAccess());
-            if (!result.isItemEnabled(level.enabledFeatures())) {
-                return;
+        if (possibleRecipe.isPresent()) {
+            CraftingRecipe recipe = possibleRecipe.get();
+            if (setRecipeUsed(getItemHandler(), player, recipe)) {
+                result = recipe.assemble(getCraftSlots(), level.registryAccess());
+                if (!result.isItemEnabled(level.enabledFeatures())) {
+                    result = ItemStack.EMPTY;
+                }
             }
         }
 
