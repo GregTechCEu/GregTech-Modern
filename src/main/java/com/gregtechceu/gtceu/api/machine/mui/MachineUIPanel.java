@@ -60,9 +60,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
         Flow panelContents = Flow.col().coverChildren();
         panelContents.margin(4);
-        mainContents = new ParentWidget<>()
-                .coverChildren()
-                .size(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
+        mainContents = new ParentWidget<>().coverChildren(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
 
         panelContents.child(mainContents);
 
