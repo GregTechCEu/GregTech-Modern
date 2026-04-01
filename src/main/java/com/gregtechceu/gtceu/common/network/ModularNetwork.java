@@ -17,9 +17,8 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Experimental
 public abstract class ModularNetwork {
 
-    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things badly,
-    // since
-    // there is no validation.
+    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things up badly,
+    // since there is no validation.
     public static final Client CLIENT = new Client();
     public static final Server SERVER = new Server();
 
@@ -52,12 +51,7 @@ public abstract class ModularNetwork {
 
         @Override
         void closeContainer(Player player) {
-            // mimics EntityPlayerSP.closeScreenAndDropStack() but without closing the screen
-            ItemStack carried = player.containerMenu.getCarried();
-            if (!carried.isEmpty()) {
-                player.drop(carried, false);
-                player.containerMenu.setCarried(ItemStack.EMPTY);
-            }
+            // mimics LocalPlayer.clientSideCloseContainer() but without closing the screen
             player.containerMenu = player.inventoryMenu;
         }
 
