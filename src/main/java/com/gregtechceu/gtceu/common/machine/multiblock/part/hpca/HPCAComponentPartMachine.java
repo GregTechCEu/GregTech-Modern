@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

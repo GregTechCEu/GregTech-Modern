@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
+import brachy.modularui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 

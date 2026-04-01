@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
-import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
+import brachy.modularui.overlay.OverlayStack;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;

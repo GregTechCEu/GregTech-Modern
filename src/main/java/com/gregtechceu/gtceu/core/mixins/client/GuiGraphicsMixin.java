@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
-import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
+import brachy.modularui.drawable.text.FontRenderHelper;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 

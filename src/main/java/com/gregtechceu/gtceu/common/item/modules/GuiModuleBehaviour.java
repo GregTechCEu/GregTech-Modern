@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorGuiRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;

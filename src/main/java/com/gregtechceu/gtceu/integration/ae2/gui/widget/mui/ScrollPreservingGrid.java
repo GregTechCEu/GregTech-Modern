@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import brachy.modularui.widget.scroll.ScrollData;
+import brachy.modularui.widgets.layout.Grid;
 
 /**
  * Grid subclass that preserves scroll position across rebuilds.

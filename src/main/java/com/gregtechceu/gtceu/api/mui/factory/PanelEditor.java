@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
+import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 
 @FunctionalInterface
 public interface PanelEditor {

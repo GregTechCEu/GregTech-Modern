@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.value.sync.*;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;

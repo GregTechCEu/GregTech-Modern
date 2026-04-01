@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 

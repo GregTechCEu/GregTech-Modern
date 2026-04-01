@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 
 import net.minecraft.resources.ResourceLocation;
 

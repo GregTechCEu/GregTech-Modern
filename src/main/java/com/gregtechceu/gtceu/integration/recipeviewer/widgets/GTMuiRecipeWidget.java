@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import brachy.modularui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 public class GTMuiRecipeWidget extends ParentWidget<GTMuiRecipeWidget> {

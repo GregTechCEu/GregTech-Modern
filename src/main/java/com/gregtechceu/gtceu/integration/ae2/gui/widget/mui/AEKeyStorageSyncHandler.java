@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
+import brachy.modularui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import net.minecraft.network.FriendlyByteBuf;

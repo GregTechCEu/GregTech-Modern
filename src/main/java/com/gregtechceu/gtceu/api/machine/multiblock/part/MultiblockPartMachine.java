@@ -9,13 +9,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

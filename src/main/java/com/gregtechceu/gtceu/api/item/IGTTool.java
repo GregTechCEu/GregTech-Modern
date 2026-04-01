@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
+import brachy.modularui.screen.ModularScreen;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -19,12 +21,13 @@ import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -877,6 +880,11 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             player.level().playSound(null, player.position().x, player.position().y, player.position().z,
                     getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
+    }
+
+    @Override
+    default ModularScreen createScreen(PlayerInventoryGuiData<?> data, ModularPanel<?> mainPanel) {
+        return new GTGuiScreen(mainPanel);
     }
 
     @Override

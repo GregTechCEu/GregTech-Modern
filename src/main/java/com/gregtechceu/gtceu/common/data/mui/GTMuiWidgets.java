@@ -10,30 +10,30 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.*;
-import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.MouseData;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.*;
+import brachy.modularui.drawable.text.TextRenderer;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWithScrollableCallback;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -57,7 +57,7 @@ public class GTMuiWidgets {
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
         if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
-            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().getTheme()
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().theme()
                     .getBackground();
         }
         if (background == null) {
@@ -238,9 +238,9 @@ public class GTMuiWidgets {
                                 })));
 
         return new Dialog<>("circuit_panel")
-                .setDisablePanelsBelow(false)
-                .setDraggable(true)
-                .setCloseOnOutOfBoundsClick(true)
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
                 .height(105)
                 .child(Flow.col()
                         .padding(2)
@@ -486,18 +486,18 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
-                .child(new TextFieldWidget()
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(minValue, maxValue)
-                        .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta * getIncrementValue(MouseData.create(-1), 1);
+                .child(new TextFieldWithScrollableCallback()
+                        .onScrolled((mouseX, mouseY, delta) -> {
+                            int inc = delta.intValue() * getIncrementValue(MouseData.create(-1), 1);
                             int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
                                     maxValue.getAsInt());
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(minValue, maxValue)
                         .value(formattedValue)
                         .background(background))
                 .child(new ButtonWidget<>()
@@ -533,13 +533,9 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
-                .child(new TextFieldWidget()
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbersLong(minValue, maxValue)
-                        .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            long inc = (long) delta * getIncrementValue(MouseData.create(-1), 1);
+                .child(new TextFieldWithScrollableCallback()
+                        .onScrolled((mouseX, mouseY, delta) -> {
+                            long inc = delta.longValue() * getIncrementValue(MouseData.create(-1), 1);
                             long min = minValue.getAsLong();
                             long max = maxValue.getAsLong();
                             long value = syncValue.getLongValue() + inc;
@@ -547,6 +543,10 @@ public class GTMuiWidgets {
                                     true, true);
                             return true;
                         })
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbersLong(minValue, maxValue)
                         .value(formattedValue)
                         .background(background))
                 .child(new ButtonWidget<>()
@@ -582,18 +582,18 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                .child(new TextFieldWidget()
-                        .left(18).right(36)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(0, maxMB.getAsInt())
-                        .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta * (getIncrementValue(MouseData.create(-1), 1) *
+                .child(new TextFieldWithScrollableCallback()
+                        .onScrolled((mouseX, mouseY, delta) -> {
+                            int inc = delta.intValue() * (getIncrementValue(MouseData.create(-1), 1) *
                                     bucketModeSyncValue.getValue().multiplier);
                             int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
                             intSyncValue.setIntValue(val, true, true);
                             return true;
                         })
+                        .left(18).right(36)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(0, maxMB.getAsInt())
                         .value(formattedValue)
                         .background(GTGuiTextures.DISPLAY))
                 .child(new ButtonWidget<>()

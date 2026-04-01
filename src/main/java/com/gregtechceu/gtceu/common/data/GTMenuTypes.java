@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
+import brachy.modularui.screen.ModularContainerMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;

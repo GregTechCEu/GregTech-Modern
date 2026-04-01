@@ -3,21 +3,21 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
@@ -111,8 +111,8 @@ public class GTRecipeTypeUILayout {
                     slotGroupHeightPx += 18 * grid.length;
 
                     IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().getTheme().getBackground() :
-                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().getTheme().getBackground());
+                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().theme().getBackground() :
+                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().theme().getBackground());
 
                     SlotGroupWidget.Builder slotWidgetBuilder = SlotGroupWidget.builder()
                             .matrix(grid);

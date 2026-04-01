@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
-import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.AbstractUIFactory;
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.SidedPosGuiData;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

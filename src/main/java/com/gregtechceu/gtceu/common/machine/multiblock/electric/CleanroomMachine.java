@@ -17,28 +17,28 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.Icon;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.GenericSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -53,6 +53,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
+import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -90,7 +91,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters.COMPONENT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -549,8 +549,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         IntSyncValue cleanAmount = new IntSyncValue(() -> this.cleanAmount);
         syncManager.syncValue("cleanAmount", cleanAmount);
 
-        GenericSyncValue<Component> distComponent = new GenericSyncValue.Builder<>(Component.class)
-                .adapter(COMPONENT)
+        GenericSyncValue<Component> distComponent = GenericSyncValue.builder(Component.class)
+                .adapter(GTByteBufAdapters.COMPONENT)
                 .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
                         fDist + bDist + 1))
                 .build();

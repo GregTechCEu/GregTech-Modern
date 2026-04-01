@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
-import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import brachy.modularui.api.value.ISyncOrValue;
+import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.value.sync.GenericListSyncHandler;
+import brachy.modularui.value.sync.StringSyncValue;
+import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Accessors(chain = true, fluent = true)
-public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextEditorWidget<W> {
+public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
 
     @Setter
     @Getter
@@ -51,7 +51,7 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
     public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
         this.language = language;
         GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
-                this::getTextAsComponents, this::formattedText, ByteBufAdapters.COMPONENT);
+                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT::deserialize, GTByteBufAdapters.COMPONENT::serialize, GTByteBufAdapters.COMPONENT::areEqual, Component::copy);
         setSyncOrValue(formattedTextSync);
     }
 
@@ -61,9 +61,8 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
                 syncOrValue.isTypeOrEmpty(StringSyncValue.class);
     }
 
-    @Override
     public List<Component> getTextAsComponents() {
-        if (language() == null) return super.getTextAsComponents();
+        if (language() == null) return handler.getTextAsComponents();
         if (getSyncHandler().getSyncManager().isClient()) {
             if (formattedText != null && notEditedForSomeTime()) return formattedText;
             else return language().formatCode(this.handler.getTextAsString(), langContext);

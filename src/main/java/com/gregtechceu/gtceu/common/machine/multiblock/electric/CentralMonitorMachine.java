@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;

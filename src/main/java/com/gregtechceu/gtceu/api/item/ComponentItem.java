@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 
+import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;

@@ -3,18 +3,18 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.ColorType;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.ColorType;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -93,9 +93,9 @@ public class SmartItemFilter implements ItemFilter {
         syncManager.syncValue("mode", mode);
 
         return new Dialog<>("smart_item_filter")
-                .setDisablePanelsBelow(false)
-                .setDraggable(true)
-                .setCloseOnOutOfBoundsClick(true)
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
                 .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
                         .value(mode)

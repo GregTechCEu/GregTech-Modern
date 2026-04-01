@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;

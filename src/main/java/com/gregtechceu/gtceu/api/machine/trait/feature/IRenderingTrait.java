@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait.feature;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

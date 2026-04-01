@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
-import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import brachy.modularui.api.value.IStringValue;
+import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.StringValue;
+import brachy.modularui.widgets.textfield.BaseTextFieldWidget;
 
 import org.jetbrains.annotations.NotNull;
 

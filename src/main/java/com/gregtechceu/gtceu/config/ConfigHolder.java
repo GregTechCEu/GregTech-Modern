@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import brachy.modularui.screen.RichTooltip;
 
 import net.minecraft.commands.Commands;
 

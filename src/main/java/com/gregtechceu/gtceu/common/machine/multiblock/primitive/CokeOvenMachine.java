@@ -3,19 +3,19 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.api.ITheme;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.slot.*;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -62,7 +62,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(importItems.storage, 0)
                                 .slotGroup(new SlotGroup("import_items", 1))))
-                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                        .background(uiTheme.getItemSlotTheme().theme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(52, 0, 30, 0))
 
@@ -70,7 +70,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
-                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                        .background(uiTheme.getItemSlotTheme().theme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(103, 0, 30, 0))
                 .child(new ProgressWidget()
@@ -86,7 +86,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                                 exportFluids.getStorages()[0])
                                 .canFillSlot(false))
                         .margin(134, 0, 13, 0))
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) uiTheme.getPanelTheme().getTheme()
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) uiTheme.getPanelTheme().theme()
                         .getBackground()))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }

@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 
 import net.minecraftforge.items.IItemHandler;
 

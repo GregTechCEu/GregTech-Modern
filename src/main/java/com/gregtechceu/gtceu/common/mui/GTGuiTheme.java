@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.utils.serialization.json.JsonBuilder;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.theme.ReloadThemeEvent;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeKey;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import brachy.modularui.api.ITheme;
+import brachy.modularui.api.IThemeApi;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.theme.ReloadThemeEvent;
+import brachy.modularui.theme.WidgetTheme;
+import brachy.modularui.theme.WidgetThemeKey;
+import brachy.modularui.utils.Color;
+import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

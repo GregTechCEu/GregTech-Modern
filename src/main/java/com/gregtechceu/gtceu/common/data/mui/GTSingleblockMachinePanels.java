@@ -6,17 +6,17 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTSingleblockMachinePanels {
@@ -51,7 +51,7 @@ public class GTSingleblockMachinePanels {
         boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(workableMachine.getRecipeType());
 
         var theme = machine.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;
@@ -141,7 +141,7 @@ public class GTSingleblockMachinePanels {
         boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(workableMachine.getRecipeType());
 
         var theme = machine.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;
@@ -227,7 +227,7 @@ public class GTSingleblockMachinePanels {
         panel.size(176, 76 + 21 + 18 + 9 + 18 * slotHeight);
 
         var theme = machine.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;
@@ -307,7 +307,7 @@ public class GTSingleblockMachinePanels {
         boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(steamMachine.getRecipeType());
 
         var theme = machine.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;

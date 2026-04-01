@@ -14,6 +14,9 @@ dependencies {
     jarJar(implementation(libs.evalEx.get()))
     additionalRuntimeClasspath(libs.evalEx.get())
 
+    // MUI
+    jarJar(implementation(forge.mui.get()))
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
@@ -124,4 +127,6 @@ dependencies {
     modExtraLocalRuntime(forge.flywheel.forge)
 
     modLocalRuntime(forge.curios)
+
+
 }

@@ -13,23 +13,23 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
@@ -336,7 +336,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                         .bottom(7));
 
         var theme = this.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;

@@ -2,47 +2,32 @@ package com.gregtechceu.gtceu.client.renderer.monitor;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
-import com.gregtechceu.gtceu.api.mui.InWorldMUIRenderEvent;
-import com.gregtechceu.gtceu.api.mui.animation.AnimatorManager;
-import com.gregtechceu.gtceu.api.mui.base.MCHelper;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.client.CharTypedEvent;
-import com.gregtechceu.gtceu.client.EarlyKeyPressEvent;
-import com.gregtechceu.gtceu.client.mui.screen.*;
+import brachy.modularui.api.MCHelper;
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.core.IGameRenderer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
-import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.lwjgl.glfw.GLFW;
 
@@ -71,13 +56,14 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (targetMachine != null &&
                 (targetMachine.getDefinition().getUI() != null || targetMachine instanceof IMuiMachine)) {
             GuiManager.openFromClient(MachineUIFactory.INSTANCE,
-                    new PosGuiData(MCHelper.getPlayer(), target.getSecond()), true);
+                    new PosGuiData(MCHelper.getPlayer(), target.getSecond()));
         } else {
             screen = null;
             vanillaScreen = null;
         }
     }
 
+    /*
     @SubscribeEvent
     public void openClientInWorldUI(InWorldMUIOpenEvent event) {
         if (this.targetPos != null && event.getGuiData() instanceof PosGuiData posGuiData) {
@@ -88,7 +74,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 this.screen.onResize(this.width, this.height);
                 ModularPanel<?> mainPanel = this.screen.getMainPanel();
                 for (IWidget child : mainPanel.getChildren()) {
-                    if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
+                    if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.nameContains("player_inventory")) {
                         slotGroupWidget.disabled();
                         mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
                         mainPanel.scheduleResize();
@@ -97,6 +83,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             }
         }
     }
+
 
     @SubscribeEvent
     public void keyPressedEvent(EarlyKeyPressEvent event) {
@@ -123,6 +110,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
     }
 
+
     @SubscribeEvent
     public void onInWorldGuiRender(InWorldMUIRenderEvent event) {
         renderGuiToBuffer(event.getGraphics(), event.getPartialTick());
@@ -133,7 +121,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (screen == null || MCHelper.getPlayer() == null) return;
         screen.getContext().setGraphics(guiGraphics);
         screen.onFrameUpdate();
-        AnimatorManager.INSTANCE.onDraw(null);
         if (width * height == 0) return;
         if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
             renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
@@ -201,6 +188,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         BufferUploader.draw(bufferbuilder.end());
         shaderInstance.clear();
     }
+     */
 
     @Override
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
@@ -234,6 +222,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             this.mouseX = (int) (mouseX * 256);
             this.mouseY = (int) (mouseY * 256);
         }
-        renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
+        //renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
     }
+
 }

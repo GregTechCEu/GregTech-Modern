@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 

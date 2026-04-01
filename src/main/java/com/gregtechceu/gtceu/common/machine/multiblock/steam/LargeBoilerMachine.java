@@ -9,31 +9,31 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.Icon;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.MouseData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWithScrollableCallback;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -318,17 +318,17 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                .child(new TextFieldWidget()
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(25, 100)
-                        .onMouseScrolled((mouseX, mouseY, delta) -> {
-                            int inc = (int) delta;
+                .child(new TextFieldWithScrollableCallback()
+                        .onScrolled((mouseX, mouseY, delta) -> {
+                            int inc = delta.intValue();
                             int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
                             syncValue.setIntValue(val, true, true);
                             return true;
                         })
+                        .left(18).right(18)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.darker(1))
+                        .setNumbers(25, 100)
                         .value(formattedValue))
                 .child(new ButtonWidget<>()
                         .right(0).width(18)

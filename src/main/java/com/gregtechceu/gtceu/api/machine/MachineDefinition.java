@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import brachy.modularui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;

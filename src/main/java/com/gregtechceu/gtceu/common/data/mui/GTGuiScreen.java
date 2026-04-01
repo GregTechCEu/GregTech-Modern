@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
 import org.jetbrains.annotations.NotNull;

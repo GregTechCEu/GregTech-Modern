@@ -10,23 +10,23 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -300,7 +300,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
         int topOffset = slots == 1 ? 10 : slots == 9 ? 16 : 20;
 
         var theme = this.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;

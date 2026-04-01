@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

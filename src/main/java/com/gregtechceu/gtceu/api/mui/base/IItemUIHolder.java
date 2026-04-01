@@ -1,9 +1,14 @@
 package com.gregtechceu.gtceu.api.mui.base;
 
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.factory.PlayerInventoryUIFactory;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryUIFactory;
 
+import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -35,5 +40,10 @@ public interface IItemUIHolder extends IUIHolder<PlayerInventoryGuiData<?>>, IIn
         if (context.getLevel().isClientSide)
             PlayerInventoryUIFactory.INSTANCE.openFromHandClient(context.getHand());
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    default ModularScreen createScreen(PlayerInventoryGuiData<?> data, ModularPanel<?> mainPanel) {
+        return new GTGuiScreen(mainPanel);
     }
 }

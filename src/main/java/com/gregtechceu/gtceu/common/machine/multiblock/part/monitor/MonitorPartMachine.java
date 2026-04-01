@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 

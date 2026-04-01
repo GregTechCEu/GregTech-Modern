@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T> {
+public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T, SimpleDialog<T, W>> {
 
     public SimpleDialog(String name, Consumer<T> valueConsumer, W widget, Function<W, T> valueGetter, IKey title) {
-        super(name, valueConsumer);
+        super(name);
         child(new TextWidget<>(title).leftRel(0.5f).marginTop(4));
         child(widget.center());
         child(new ButtonWidget<>()

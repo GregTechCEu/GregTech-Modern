@@ -5,19 +5,19 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -156,7 +156,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
                 .leftRel(0.5f));
 
         var theme = this.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.mui.screen.ContainerScreenWrapper;
-import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
+import brachy.modularui.screen.ContainerScreenWrapper;
+import brachy.modularui.screen.ModularContainerMenu;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
 
 import net.minecraft.client.Minecraft;

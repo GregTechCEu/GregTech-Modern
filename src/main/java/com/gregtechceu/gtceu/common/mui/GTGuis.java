@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.screen.ModularPanel;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

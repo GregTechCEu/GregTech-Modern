@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.sync_system.ClassSyncData;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;

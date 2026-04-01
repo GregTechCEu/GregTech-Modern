@@ -6,25 +6,25 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.FluidDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.FluidDrawable;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import brachy.modularui.screen.RichTooltip;
+import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -309,10 +309,10 @@ public class GTMultiblockTextUtil {
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
                 GenericSyncValue.class,
-                () -> new GenericSyncValue.Builder<>(GTRecipe.class)
+                () -> GenericSyncValue.builder(GTRecipe.class)
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
                         .setter((newRecipe) -> {})
-                        .adapter(ByteBufAdapters.GTRECIPE)
+                        .adapter(GTByteBufAdapters.GTRECIPE)
                         .copy((toCopy) -> {
                             if (toCopy == null) return null;
                             return toCopy.copy();

@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
-import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.AbstractUIFactory;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
 
 import net.minecraft.core.BlockPos;

@@ -17,27 +17,27 @@ import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.GenericSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
+import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -261,7 +261,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
         GenericSyncValue<Component> text = GenericSyncValue.builder(Component.class)
-                .adapter(ByteBufAdapters.COMPONENT)
+                .adapter(GTByteBufAdapters.COMPONENT)
                 .getter(() -> {
                     List<Component> list = new ArrayList<>();
                     hpcaHandler.addErrors(list);

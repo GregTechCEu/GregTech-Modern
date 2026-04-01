@@ -2,15 +2,15 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.value.sync.InteractionSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.nbt.CompoundTag;

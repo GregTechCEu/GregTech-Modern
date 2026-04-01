@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import brachy.modularui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
