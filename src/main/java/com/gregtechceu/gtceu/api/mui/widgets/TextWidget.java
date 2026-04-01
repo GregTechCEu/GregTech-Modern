@@ -27,7 +27,6 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private Alignment alignment = Alignment.CenterLeft;
     @Getter
     private IntSupplier color = null;
-    @Getter
     private Boolean shadow = null;
     @Getter
     private float scale = 1f;
@@ -183,6 +182,6 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     }
 
     public Boolean isShadow() {
-        return this.getShadow();
+        return this.shadow;
     }
 }

@@ -822,10 +822,9 @@ public class ModularPanel<W extends ModularPanel<W>> extends ParentWidget<W> imp
         return child(SlotGroupWidget.playerInventory(bottom, true));
     }
 
-    @Override
     public W invisible() {
         this.invisible = true;
-        return super.invisible();
+        return getThis();
     }
 
     public W fullScreenInvisible() {

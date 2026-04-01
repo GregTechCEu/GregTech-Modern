@@ -62,7 +62,6 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget {
     /**
      * Whether disabled child widgets should be collapsed for display.
      */
-    @Getter
     private boolean collapseDisabledChildren = false;
     /**
      * Whether the children list should be laid out in reverse order

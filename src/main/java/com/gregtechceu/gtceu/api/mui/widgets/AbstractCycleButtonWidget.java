@@ -172,8 +172,7 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         return theme.getButtonTheme();
     }
 
-    @Override
-    public IDrawable getCurrentBackground(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
+    public IDrawable getCurrentBackground(WidgetThemeEntry<?> widgetTheme) {
         // make sure texture is up-to-date
         int state = getState();
         if (isHovering() && this.hoverBackground != null && this.hoverBackground[state] != null &&
@@ -181,18 +180,18 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
             return this.hoverBackground[state];
         }
         return this.background != null && this.background[state] != null ? this.background[state] :
-                super.getCurrentBackground(theme, widgetTheme);
+                super.getCurrentBackground(widgetTheme);
     }
 
     @Override
-    public IDrawable getCurrentOverlay(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
+    public IDrawable getCurrentOverlay(WidgetThemeEntry<?> widgetTheme) {
         int state = getState();
         if (isHovering() && this.hoverOverlay != null && this.hoverOverlay[state] != null &&
                 this.hoverOverlay[state] != IDrawable.NONE) {
             return this.hoverOverlay[state];
         }
         return this.overlay != null && this.overlay[state] != null ? this.overlay[state] :
-                super.getCurrentOverlay(theme, widgetTheme);
+                super.getCurrentOverlay(widgetTheme);
     }
 
     @Override
