@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
 
+import java.util.Objects;
+
 /**
  * This class is a <a href="https://en.wikipedia.org/wiki/9-slice_scaling">9-slice texture</a>. It can be created using
  * {@link UITexture.Builder#adaptable(int, int, int, int)}.
@@ -32,6 +34,11 @@ public class AdaptableUITexture extends UITexture {
         this.br = br;
         this.bb = bb;
         this.tiled = tiled;
+    }
+
+    @Override
+    public AdaptableUITexture register(String name) {
+        return (AdaptableUITexture) super.register(name);
     }
 
     @Override
@@ -146,11 +153,10 @@ public class AdaptableUITexture extends UITexture {
 
         if ((this.bl > 0 || this.br > 0) && this.bt <= 0 && this.bb <= 0) {
             // left border
-            GuiDraw.drawTiledTexture(pose, x, y, this.bl, height, this.u0, this.v0, uInnerStart, this.v1, this.bl, th,
-                    0);
+            GuiDraw.drawTiledTexture(pose, x, y, this.bl, height, this.u0, this.v0, uInnerStart, this.v1, this.bl, th, 0);
+
             // right border
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, height, uInnerEnd, this.v0, this.u1, this.v1,
-                    this.br, th, 0);
+            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, height, uInnerEnd, this.v0, this.u1, this.v1, this.br, th, 0);
             // center
             GuiDraw.drawTiledTexture(pose, x + this.bl, y, width - this.bl - this.br, height, uInnerStart, this.v0,
                     uInnerEnd, this.v1, tw - this.bl - this.br, th, 0);
@@ -200,9 +206,8 @@ public class AdaptableUITexture extends UITexture {
     }
 
     @Override
-    public boolean saveToJson(JsonObject json) {
+    protected void saveTextureToJson(JsonObject json) {
         super.saveToJson(json);
-        if (json.entrySet().size() == 1) return true;
         json.addProperty("imageWidth", this.imageWidth);
         json.addProperty("imageHeight", this.imageHeight);
         json.addProperty("bl", this.bl);
@@ -210,17 +215,30 @@ public class AdaptableUITexture extends UITexture {
         json.addProperty("bt", this.bt);
         json.addProperty("bb", this.bb);
         json.addProperty("tiled", this.tiled);
-        return true;
     }
 
     @Override
     protected AdaptableUITexture copy() {
-        return new AdaptableUITexture(location, u0, v0, u1, v1, colorType, nonOpaque, imageWidth, imageHeight, bl, bt,
-                br, bb, tiled);
+        return new AdaptableUITexture(location, u0, v0, u1, v1, colorType, nonOpaque, imageWidth, imageHeight, bl, bt, br, bb, tiled);
     }
 
     @Override
     public AdaptableUITexture withColorOverride(int color) {
         return (AdaptableUITexture) super.withColorOverride(color);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o != null && getClass() == o.getClass() && isEqual((AdaptableUITexture) o);
+    }
+
+    protected boolean isEqual(AdaptableUITexture texture) {
+        return super.isEqual(texture) && imageWidth == texture.imageWidth && imageHeight == texture.imageHeight &&
+                bl == texture.bl && bt == texture.bt && br == texture.br && bb == texture.bb && tiled == texture.tiled;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), imageWidth, imageHeight, bl, bt, br, bb, tiled);
     }
 }
