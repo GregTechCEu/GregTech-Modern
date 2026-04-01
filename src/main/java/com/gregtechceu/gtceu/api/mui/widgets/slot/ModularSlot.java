@@ -2,13 +2,16 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 
+import com.gregtechceu.gtceu.core.mixins.client.CombinedInvWrapperAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -273,5 +276,27 @@ public class ModularSlot extends SlotItemHandler {
     public static boolean isPlayerSlot(SlotItemHandler slot) {
         return slot.getItemHandler() instanceof PlayerInvWrapper ||
                 slot.getItemHandler() instanceof PlayerMainInvWrapper;
+    }
+
+    public static Player getPlayerSlotPlayer(Slot slot) {
+        return slot.container instanceof Inventory inv ? inv.player : null;
+    }
+
+    public static Player getPlayerSlotPlayer(SlotItemHandler slot) {
+        if (slot.getItemHandler() instanceof PlayerInvWrapper inv) {
+            for (IItemHandlerModifiable ih : ((CombinedInvWrapperAccessor) inv).getItemHandler()) {
+                if (ih instanceof PlayerMainInvWrapper mainInv) {
+                    return mainInv.getInventoryPlayer().player;
+                }
+            }
+            return null;
+        }
+        if (slot.getItemHandler() instanceof PlayerMainInvWrapper wrapper) {
+            return wrapper.getInventoryPlayer().player;
+        }
+        if (slot.getItemHandler() instanceof PlayerArmorInvWrapper wrapper) {
+            return wrapper.getInventoryPlayer().player;
+        }
+        return null;
     }
 }

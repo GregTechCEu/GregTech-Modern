@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PlayerSlotGroup;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerMenuAccessor;
@@ -384,6 +385,16 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             broadcastChanges();
             return;
         } else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0 && mouseButton < 9) {
+            // minecraft does not check if the hotbar slot can actually take and put items
+            Slot hotbarSlot = findPlayerSlot(player, mouseButton); // mouseButton is the slot index here
+            if (hotbarSlot != null) {
+                Slot fromSlot = getSlot(slotId);
+                ItemStack fromItem = fromSlot.getItem();
+                ItemStack hotbarStack = hotbarSlot.getItem();
+                if (!fromItem.isEmpty() && !hotbarSlot.mayPlace(fromItem)) return;
+                if (!hotbarStack.isEmpty() && !hotbarSlot.mayPickup(player)) return;
+            }
+
             ModularSlot phantom = getModularSlot(slotId);
             ItemStack hotbarStack = inventory.getItem(mouseButton);
             if (phantom.isPhantom()) {
@@ -426,6 +437,33 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    protected Slot findPlayerSlot(Player player, int index) {
+        if (player == this.player || Objects.equals(player.getEncodeId(), this.player.getEncodeId())) {
+            // if we want a slot of the player who opened the ui, we can just use the slot group
+            SlotGroup slotGroup = this.syncManager.getSlotGroup(PlayerSlotGroup.NAME);
+            if (slotGroup == null) return findExternalPlayerSlot(player, index);
+            for (Slot slot : slotGroup.getSlots()) {
+                if (slot.getSlotIndex() == index) {
+                    return slot;
+                }
+            }
+        }
+        return findExternalPlayerSlot(player, index);
+    }
+
+    protected Slot findExternalPlayerSlot(Player player, int index) {
+        // go through all slots and find a slot with a matching player and index
+        for (Slot slot : this.slots) {
+            Player slotPlayer = ModularSlot.getPlayerSlotPlayer(slot);
+            if (slotPlayer != null &&
+                    (player == slotPlayer || Objects.equals(player.getEncodeId(), this.player.getEncodeId())) &&
+                    slot.getSlotIndex() == index) {
+                return slot;
+            }
+        }
+        return null;
     }
 
     protected ItemStack transferItem(ModularSlot fromSlot, ItemStack fromStack) {
