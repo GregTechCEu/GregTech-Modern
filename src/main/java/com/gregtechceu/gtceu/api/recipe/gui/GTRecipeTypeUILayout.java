@@ -13,8 +13,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -65,7 +64,7 @@ public class GTRecipeTypeUILayout {
         if (recipeType != null) {
             var backedSlotsPanel = new ParentWidget<>();
             backedSlotsPanel.coverChildren();
-            var backedSlotsRow = new Row();
+            var backedSlotsRow = Flow.row();
             backedSlotsRow.coverChildrenHeight();
 
             int rowWidthPx = 0;
@@ -87,7 +86,7 @@ public class GTRecipeTypeUILayout {
                 var caps = (in ? recipeType.maxInputs : recipeType.maxOutputs);
                 int slotGroupHeightPx = 0;
 
-                Column ioColumn = new Column();
+                Flow ioColumn = Flow.col();
                 // ioColumn.coverChildrenWidth();
                 int slotGroupWidthPx = 0;
 
@@ -162,7 +161,7 @@ public class GTRecipeTypeUILayout {
 
                     widgetGroups.add(slotWidgetBuilder.build()
                             .name(recipeCap.name + "_" + io.name())
-                            .alignX(io == IO.IN ? Alignment.TopLeft : Alignment.TopRight));
+                            .leftRel(io == IO.IN ? 0f : 1));
                 }
 
                 ioColumn.size(slotGroupWidthPx, slotGroupHeightPx);
@@ -179,7 +178,7 @@ public class GTRecipeTypeUILayout {
             for (var ioColumn : colWidgetGroups.entrySet()) {
                 var col = ioColumn.getValue();
                 var io = ioColumn.getKey();
-                backedSlotsRow.child(col.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
+                backedSlotsRow.child(col.posRel(io == IO.IN ? 0f : 1f, 0.5f));
             }
 
             // same padding as (1) + half a slot on each side

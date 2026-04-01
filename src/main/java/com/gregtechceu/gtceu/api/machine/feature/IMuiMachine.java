@@ -18,7 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface IMuiMachine extends IUIHolder<PosGuiData>, IMachineFeature {
 
     @Override
-    default ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    default ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panelBuilder = getPanelBuilder(data, syncManager, settings);
         panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
         return panelBuilder.build(syncManager, settings);

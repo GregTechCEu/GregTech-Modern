@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +20,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
     private final RichText text = new RichText();
     private Consumer<RichText> builder;
     private boolean dirty = false;
+    @Getter
     private boolean autoUpdate = false;
 
     public void markDirty() {

@@ -28,7 +28,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
     private final IPanelBuilder panelBuilder;
     private final boolean subPanel;
     private String panelName;
-    private ModularPanel openedPanel;
+    private ModularPanel<?> openedPanel;
     private PanelSyncManager syncManager;
     private boolean open = false;
 
@@ -42,7 +42,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
         this.subPanel = subPanel;
     }
 
-    public ModularPanel createUI(PanelSyncManager syncManager) {
+    public ModularPanel<?> createUI(PanelSyncManager syncManager) {
         return this.panelBuilder.buildUI(syncManager, this);
     }
 
@@ -191,6 +191,6 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
          * @return the created panel
          */
         @NotNull
-        ModularPanel buildUI(@NotNull PanelSyncManager syncManager, @NotNull IPanelHandler syncHandler);
+        ModularPanel<?> buildUI(@NotNull PanelSyncManager syncManager, @NotNull IPanelHandler syncHandler);
     }
 }

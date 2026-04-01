@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PlayerSlotGroup;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,10 +41,6 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         return null;
     }
 
-    private static final int DROP_TO_WORLD = -999;
-    private static final int LEFT_MOUSE = 0;
-    private static final int RIGHT_MOUSE = 1;
-
     @Getter
     private Player player;
     private ModularSyncManager syncManager;
@@ -57,22 +55,18 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     @OnlyIn(Dist.CLIENT)
     private ModularScreen optionalScreen;
 
-    public int inWorldID = -1;
-
     public ModularContainerMenu(int containerId) {
         super(GTMenuTypes.MODULAR_CONTAINER.get(), containerId);
     }
 
-    public <T extends GuiData> ModularContainerMenu(int containerId,
-                                                    Inventory playerInv, @Nullable FriendlyByteBuf data) {
+    public <T extends GuiData> ModularContainerMenu(int containerId, Inventory playerInv, @Nullable FriendlyByteBuf data) {
         this(containerId);
         // TODO: Better integration with menu types for custom containers and screens.
         throw new IllegalArgumentException("Do not open the modular container the forge way. Use an UIFactory!");
     }
 
     @ApiStatus.Internal
-    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName,
-                          GuiData guiData) {
+    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName, GuiData guiData) {
         this.player = player;
         this.syncManager = msm;
         this.syncManager.construct(this, mainPanelName);
@@ -121,7 +115,6 @@ public class ModularContainerMenu extends AbstractContainerMenu {
      * This happens when a temporary client screen takes over (like JEI,NEI,etc.). This is only called when the
      * container actually closes.
      */
-
     public void closed() {}
 
     public void disposed() {}
@@ -173,8 +166,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         if (slot.getSlotGroupName() != null) {
             SlotGroup slotGroup = getSyncManager().getSlotGroup(panelName, slot.getSlotGroupName());
             if (slotGroup == null) {
-                GTCEu.LOGGER.throwing(
-                        new IllegalArgumentException("SlotGroup '" + slot.getSlotGroupName() + "' is not registered!"));
+                GTCEu.LOGGER.throwing(new IllegalArgumentException("SlotGroup '" + slot.getSlotGroupName() + "' is not registered!"));
                 return;
             }
             slot.slotGroup(slotGroup);
@@ -193,8 +185,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     @Contract("_, null, null -> fail")
     @NotNull
     @ApiStatus.Internal
-    public SlotGroup validateSlotGroup(String panelName, @Nullable String slotGroupName,
-                                       @Nullable SlotGroup slotGroup) {
+    public SlotGroup validateSlotGroup(String panelName, @Nullable String slotGroupName, @Nullable SlotGroup slotGroup) {
         if (slotGroup != null) {
             if (getSyncManager().getSlotGroup(panelName, slotGroup.getName()) == null) {
                 throw new IllegalArgumentException("Slot group is not registered in the GUI.");
@@ -257,14 +248,14 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         ItemStack returnable = ItemStack.EMPTY;
         Inventory inventory = player.getInventory();
 
-        if (clickTypeIn == ClickType.QUICK_CRAFT || acc().getQuickcraftType() != -1) {
+        if (clickTypeIn == ClickType.QUICK_CRAFT) {
             superClicked(slotId, mouseButton, clickTypeIn, player);
             return;
         }
 
         if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) &&
-                (mouseButton == LEFT_MOUSE || mouseButton == RIGHT_MOUSE)) {
-            if (slotId == DROP_TO_WORLD) {
+                (mouseButton == InputConstants.MOUSE_BUTTON_LEFT || mouseButton == InputConstants.MOUSE_BUTTON_RIGHT)) {
+            if (slotId == SLOT_CLICKED_OUTSIDE) {
                 superClicked(slotId, mouseButton, clickTypeIn, player);
                 return;
             }
@@ -293,11 +284,11 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                 if (slotStack.isEmpty()) {
                     // no dif
                     if (!heldStack.isEmpty() && clickedSlot.mayPlace(heldStack)) {
-                        int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
+                        int stackCount = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? heldStack.getCount() : 1;
 
-                        int lim = clickedSlot.getMaxStackSize(heldStack);
-                        if (stackCount > lim) {
-                            stackCount = lim;
+                        int limit = clickedSlot.getMaxStackSize(heldStack);
+                        if (stackCount > limit) {
+                            stackCount = limit;
                         }
 
                         clickedSlot.setByPlayer(heldStack.split(stackCount));
@@ -306,13 +297,13 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     if (heldStack.isEmpty() && !slotStack.isEmpty()) {
                         // checking max stack size here, probably for oversized slots
                         int s = Math.min(slotStack.getCount(), slotStack.getMaxStackSize());
-                        int toRemove = mouseButton == LEFT_MOUSE ? s : (s + 1) / 2;
+                        int toRemove = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? s : (s + 1) / 2;
                         this.setCarried(slotStack.split(toRemove));
                         clickedSlot.setByPlayer(slotStack);
                         clickedSlot.onTake(player, this.getCarried());
                     } else if (clickedSlot.mayPlace(heldStack)) {
                         if (ItemStack.isSameItemSameTags(slotStack, heldStack)) {
-                            int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
+                            int stackCount = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? heldStack.getCount() : 1;
 
                             int lim = clickedSlot.getMaxStackSize(heldStack);
                             if (stackCount > lim - slotStack.getCount()) {
@@ -329,19 +320,19 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                         }
                     } else if (heldStack.getMaxStackSize() > 1 &&
                             ItemStack.isSameItemSameTags(slotStack, heldStack) && !slotStack.isEmpty()) {
-                                int stackCount = slotStack.getCount();
+                        int stackCount = slotStack.getCount();
 
-                                if (stackCount + heldStack.getCount() <= heldStack.getMaxStackSize()) {
-                                    heldStack.grow(stackCount);
-                                    slotStack = clickedSlot.remove(stackCount);
+                        if (stackCount + heldStack.getCount() <= heldStack.getMaxStackSize()) {
+                            heldStack.grow(stackCount);
+                            slotStack = clickedSlot.remove(stackCount);
 
-                                    if (slotStack.isEmpty()) {
-                                        clickedSlot.setByPlayer(ItemStack.EMPTY);
-                                    }
-
-                                    clickedSlot.onTake(player, this.getCarried());
-                                }
+                            if (slotStack.isEmpty()) {
+                                clickedSlot.setByPlayer(ItemStack.EMPTY);
                             }
+
+                            clickedSlot.onTake(player, this.getCarried());
+                        }
+                    }
                 }
                 clickedSlot.setChanged();
             }
@@ -350,45 +341,56 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             Slot slot = slots.get(slotId);
             ItemStack carried = this.getCarried();
 
-            if (!carried.isEmpty() && (!slot.hasItem() || !slot.mayPickup(player))) {
-                int i = mouseButton == 0 ? 0 : slots.size() - 1;
-                int j = mouseButton == 0 ? 1 : -1;
+            if (carried.isEmpty() || (slot.hasItem() && slot.mayPickup(player))) {
+                return;
+            }
+            int start = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? 0 : slots.size() - 1;
+            int step = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? 1 : -1;
 
-                for (int k = 0; k < 2; ++k) {
-                    for (int l = i; l >= 0 && l < slots.size() &&
-                            carried.getCount() < carried.getMaxStackSize(); l += j) {
-                        Slot slot1 = slots.get(l);
-                        if (slot1 instanceof ModularSlot modularSlot && modularSlot.isPhantom()) continue;
+            for (int i = 0; i < 2; ++i) {
+                for (int s = start; s >= 0 && s < slots.size() && carried.getCount() < carried.getMaxStackSize(); s += step) {
+                    Slot current = slots.get(s);
+                    if (current instanceof ModularSlot modularSlot && modularSlot.isPhantom()) continue;
 
-                        if (slot1.hasItem() && canItemQuickReplace(slot1, carried, true) && slot1.mayPickup(player) &&
-                                canTakeItemForPickAll(carried, slot1)) {
-                            ItemStack slotItem = slot1.getItem();
-
-                            if (k != 0 || slotItem.getCount() != slotItem.getMaxStackSize()) {
-                                int toRemove = Math.min(carried.getMaxStackSize() - carried.getCount(),
-                                        slotItem.getCount());
-                                ItemStack removed = slot1.remove(toRemove);
-                                carried.grow(toRemove);
-
-                                if (removed.isEmpty()) {
-                                    slot1.setByPlayer(ItemStack.EMPTY);
-                                }
-
-                                slot1.onTake(player, removed);
-                            }
-                        }
+                    if (!current.hasItem() || !canItemQuickReplace(current, carried, true) ||
+                            !current.mayPickup(player) || !canTakeItemForPickAll(carried, current)) {
+                        continue;
                     }
+                    ItemStack slotItem = current.getItem();
+
+                    if (i == 0 && slotItem.getCount() == slotItem.getMaxStackSize()) {
+                        continue;
+                    }
+                    int toRemove = Math.min(carried.getMaxStackSize() - carried.getCount(),
+                            slotItem.getCount());
+                    ItemStack removed = current.remove(toRemove);
+                    carried.grow(toRemove);
+
+                    if (removed.isEmpty()) {
+                        current.setByPlayer(ItemStack.EMPTY);
+                    }
+
+                    current.onTake(player, removed);
                 }
             }
 
             broadcastChanges();
-            return;
         } else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0 && mouseButton < 9) {
-            ModularSlot phantom = getModularSlot(slotId);
+            // minecraft does not check if the hotbar slot can actually take and put items
+            Slot hotbarSlot = findPlayerSlot(player, mouseButton); // mouseButton is the slot index here
+            if (hotbarSlot != null) {
+                Slot fromSlot = getSlot(slotId);
+                ItemStack fromItem = fromSlot.getItem();
+                ItemStack hotbarStack = hotbarSlot.getItem();
+                if (!fromItem.isEmpty() && !hotbarSlot.mayPlace(fromItem)) return;
+                if (!hotbarStack.isEmpty() && !hotbarSlot.mayPickup(player)) return;
+            }
+
+            ModularSlot slot = getModularSlot(slotId);
             ItemStack hotbarStack = inventory.getItem(mouseButton);
-            if (phantom.isPhantom()) {
+            if (slot.isPhantom()) {
                 // insert stack from hotbar slot into phantom slot
-                phantom.setByPlayer(hotbarStack.isEmpty() ? ItemStack.EMPTY : hotbarStack.copy());
+                slot.setByPlayer(hotbarStack.copy());
                 broadcastChanges();
             }
         } else {
@@ -396,9 +398,35 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         }
     }
 
-    protected final void superClicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn,
-                                      @NotNull Player player) {
+    protected final void superClicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn, @NotNull Player player) {
         super.clicked(slotId, mouseButton, clickTypeIn, player);
+    }
+
+    protected Slot findPlayerSlot(Player player, int index) {
+        if (player == this.player || Objects.equals(player.getEncodeId(), this.player.getEncodeId())) {
+            // if we want a slot of the player who opened the ui, we can just use the slot group
+            SlotGroup slotGroup = this.syncManager.getSlotGroup(PlayerSlotGroup.NAME);
+            if (slotGroup == null) return findExternalPlayerSlot(player, index);
+            for (Slot slot : slotGroup.getSlots()) {
+                if (slot.getSlotIndex() == index) {
+                    return slot;
+                }
+            }
+        }
+        return findExternalPlayerSlot(player, index);
+    }
+
+    protected Slot findExternalPlayerSlot(Player player, int index) {
+        // go through all slots and find a slot with a matching player and index
+        for (Slot slot : this.slots) {
+            Player slotPlayer = ModularSlot.getPlayerSlotPlayer(slot);
+            if (slotPlayer != null &&
+                    (player == slotPlayer || Objects.equals(player.getEncodeId(), this.player.getEncodeId())) &&
+                    slot.getSlotIndex() == index) {
+                return slot;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -415,14 +443,14 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     stack.setCount(stack.getMaxStackSize());
                 }
                 ItemStack remainder = transferItem(slot, stack.copy());
-                if (ItemStack.isSameItemSameTags(remainder, stack)) return ItemStack.EMPTY;
+                if (ItemStack.matches(remainder, stack)) return ItemStack.EMPTY;
                 if (base == 0 && remainder.isEmpty()) stack = ItemStack.EMPTY;
                 else stack.setCount(base + remainder.getCount());
                 slot.set(stack);
                 slot.onQuickCraft(remainder, copy);
                 slot.onTake(playerIn, remainder);
                 slot.onCraftShiftClick(playerIn, remainder);
-                return ItemStack.EMPTY;
+                return copy; // return a non-empty stack if insertion was successful, this causes this function to be called again, important for crafting
             }
         }
         return ItemStack.EMPTY;

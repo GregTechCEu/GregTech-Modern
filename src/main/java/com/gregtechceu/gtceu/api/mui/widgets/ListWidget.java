@@ -37,10 +37,14 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     @Getter
     private ScrollData scrollData;
+    @Getter
     private IIcon childSeparator;
     private final IntList separatorPositions = new IntArrayList();
-    private boolean collapseDisabledChild = true;
+    @Getter
+    private boolean collapseDisabledChildren = true;
+    @Getter
     private boolean wrapTight = false;
+    @Getter
     private Alignment.CrossAxis crossAxisAlignment = Alignment.CrossAxis.CENTER;
     private Unit mainAxisMaxSize;
     /**
@@ -149,12 +153,12 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     @Override
     public boolean shouldIgnoreChildSize(IWidget child) {
-        return this.collapseDisabledChild && !child.isEnabled();
+        return this.collapseDisabledChildren && !child.isEnabled();
     }
 
     @Override
     public void onChildChangeEnabled(IWidget child, boolean enabled) {
-        if (this.collapseDisabledChild) {
+        if (this.collapseDisabledChildren) {
             ILayoutWidget.super.onChildChangeEnabled(child, enabled);
             checkScrollbarActive(true);
         }
@@ -297,23 +301,21 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     /**
      * Sets if disabled children should be collapsed.
      */
-    public W collapseDisabledChild() {
-        this.collapseDisabledChild = true;
+    public W collapseDisabledChildren() {
+        this.collapseDisabledChildren = true;
         return getThis();
     }
 
     /**
      * Sets if disabled children should be collapsed. This means that if a child changes enabled state, this widget gets
-     * notified and
-     * re-layouts its children. Children which are disabled will not be considered during layout, so that the list will
-     * not appear to have
-     * empty spots. This is enabled by default on lists.
+     * notified and re-layouts its children. Children which are disabled will not be considered during layout, so that the list will
+     * not appear to have empty spots. This is enabled by default on lists.
      *
      * @param doCollapse true if disabled children should be collapsed.
      * @return this
      */
-    public W collapseDisabledChild(boolean doCollapse) {
-        this.collapseDisabledChild = doCollapse;
+    public W collapseDisabledChildren(boolean doCollapse) {
+        this.collapseDisabledChildren = doCollapse;
         return getThis();
     }
 

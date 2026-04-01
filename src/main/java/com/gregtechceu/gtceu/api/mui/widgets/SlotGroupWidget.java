@@ -68,7 +68,9 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
         return slotGroupWidget;
     }
 
+    @Getter
     private String slotGroupName;
+    @Getter
     private SlotGroup slotGroup;
     private boolean sortButtonsAdded = false;
     private Consumer<SortButtons> sortButtonsEditor;

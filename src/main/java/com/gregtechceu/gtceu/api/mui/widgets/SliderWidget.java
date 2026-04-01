@@ -28,16 +28,22 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(chain = true)
 public class SliderWidget extends Widget<SliderWidget> implements Interactable {
 
+    @Getter
     private IDoubleValue<?> doubleValue;
     private IDrawable stopperDrawable = new Rectangle().color(Color.withAlpha(Color.WHITE.main, 0.4f));
     private IDrawable handleDrawable = GTGuiTextures.BUTTON;
+    @Getter
     private GuiAxis axis = GuiAxis.X;
+    @Getter
     private DoubleList stopper;
+    @Getter
     private int stopperWidth = 2, stopperHeight = 4;
     private final Unit sliderWidth = new Unit(), sliderHeight = new Unit();
+    @Getter
     private final Area sliderArea = new Area();
     @Getter
     private double min, max;
+    @Getter
     private double each = 0;
     @Getter
     private boolean dragging = false;

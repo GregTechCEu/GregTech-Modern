@@ -34,7 +34,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         super(Item::getWidgetValue);
         heightRel(1f);
         // this is not desired here in favor of animations
-        collapseDisabledChild(false);
+        collapseDisabledChildren(false);
     }
 
     @Override

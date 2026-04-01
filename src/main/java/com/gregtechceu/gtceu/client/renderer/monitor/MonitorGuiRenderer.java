@@ -86,7 +86,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 this.vanillaScreen = event.getVanillaScreen();
                 this.vanillaScreen.init(MCHelper.getMc(), this.width, this.height);
                 this.screen.onResize(this.width, this.height);
-                ModularPanel mainPanel = this.screen.getMainPanel();
+                ModularPanel<?> mainPanel = this.screen.getMainPanel();
                 for (IWidget child : mainPanel.getChildren()) {
                     if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
                         slotGroupWidget.disabled();

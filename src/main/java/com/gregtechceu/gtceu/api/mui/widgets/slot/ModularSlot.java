@@ -2,13 +2,16 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 
+import com.gregtechceu.gtceu.core.mixins.client.CombinedInvWrapperAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -34,10 +37,10 @@ public class ModularSlot extends SlotItemHandler {
             slot -> Objects.requireNonNull(slot.getSlotGroup()).getShiftClickPriority());
 
     @Getter
-    @Setter(onMethod_ = { @ApiStatus.Internal })
+    @Setter(onMethod_ = {@ApiStatus.Internal})
     private boolean enabled = true;
-    private boolean canTake = true, canPut = true, canDragInto = true;
-    private Predicate<ItemStack> filter = stack -> true;
+    @Getter private boolean canTake = true, canPut = true, canDragInto = true;
+    @Getter private Predicate<ItemStack> filter = stack -> true;
     private IOnSlotChanged changeListener = IOnSlotChanged.DEFAULT;
     @Getter
     private boolean ignoreMaxStackSize = false;
@@ -62,11 +65,6 @@ public class ModularSlot extends SlotItemHandler {
             throw new IllegalArgumentException("Tried to create a slot with invalid index " + index +
                     ". Valid index range is [0," + itemHandler.getSlots() + ")");
         }
-    }
-
-    public ModularSlot(IItemHandler itemHandler, int index, boolean phantom) {
-        super(itemHandler, index, Integer.MIN_VALUE, Integer.MIN_VALUE);
-        this.phantom = phantom;
     }
 
     @ApiStatus.Internal
@@ -105,9 +103,16 @@ public class ModularSlot extends SlotItemHandler {
     }
 
     @Override
-    public void setChanged() {}
+    public void setChanged() {
+        if (this.syncHandler != null) {
+            this.syncHandler.checkUpdate();
+        }
+    }
 
     public void onSlotChangedReal(ItemStack itemStack, boolean onlyChangedAmount, boolean client, boolean init) {
+        if (this.slotGroup != null) {
+            this.slotGroup.slotChanged(this);
+        }
         this.changeListener.onChange(itemStack, onlyChangedAmount, client, init);
         if (!init && isInitialized()) {
             getSyncHandler().getSyncManager().getContainer().onSlotChanged(this, itemStack, onlyChangedAmount);
@@ -115,13 +120,6 @@ public class ModularSlot extends SlotItemHandler {
     }
 
     public void onCraftShiftClick(Player playerIn, ItemStack itemStack) {}
-
-    @Override
-    public void set(@NotNull ItemStack stack) {
-        if (ItemStack.matches(stack, getItem())) return;
-        super.set(stack);
-        if (this.syncHandler != null) this.syncHandler.checkUpdate();
-    }
 
     @Override
     public @Nullable Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
@@ -142,6 +140,11 @@ public class ModularSlot extends SlotItemHandler {
 
     protected Player getPlayer() {
         return getSyncHandler().getSyncManager().getPlayer();
+    }
+
+    @Override
+    public boolean isSameInventory(@NotNull Slot other) {
+        return other instanceof SlotItemHandler slotItemHandler && slotItemHandler.getItemHandler() == this.getItemHandler();
     }
 
     /**
@@ -189,14 +192,11 @@ public class ModularSlot extends SlotItemHandler {
     }
 
     /**
-     * Sets if this slots accepts items which are dragged across the screen. This is useful to disable when the filter
-     * depends on the items
-     * in the other slots. When dragging, the item in the slot is not real and its only updated once the dragging is
-     * completed.
-     * This method is by default called from
-     * {@link com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu#canDragTo(Slot)}
-     * ModularContainer.canDragIntoSlot(Slot)} which can be
-     * overridden for other custom behavior.
+     * Sets if this slots accepts items which are dragged across the screen.
+     * This is useful to disable when the filter depends on the items in the other slots.
+     * When dragging, the item in the slot is not real and its only updated once the dragging is completed.
+     * This method is by default called from {@link ModularContainerMenu#canDragTo(Slot)},
+     * which can be overridden for other custom behavior.
      *
      * @param canDragInto if items can be dragged into this slot
      * @return this
@@ -271,5 +271,27 @@ public class ModularSlot extends SlotItemHandler {
     public static boolean isPlayerSlot(SlotItemHandler slot) {
         return slot.getItemHandler() instanceof PlayerInvWrapper ||
                 slot.getItemHandler() instanceof PlayerMainInvWrapper;
+    }
+
+    public static Player getPlayerSlotPlayer(Slot slot) {
+        return slot.container instanceof Inventory inv ? inv.player : null;
+    }
+
+    public static Player getPlayerSlotPlayer(SlotItemHandler slot) {
+        if (slot.getItemHandler() instanceof PlayerInvWrapper inv) {
+            for (IItemHandlerModifiable ih : ((CombinedInvWrapperAccessor) inv).getItemHandler()) {
+                if (ih instanceof PlayerMainInvWrapper mainInv) {
+                    return mainInv.getInventoryPlayer().player;
+                }
+            }
+            return null;
+        }
+        if (slot.getItemHandler() instanceof PlayerMainInvWrapper wrapper) {
+            return wrapper.getInventoryPlayer().player;
+        }
+        if (slot.getItemHandler() instanceof PlayerArmorInvWrapper wrapper) {
+            return wrapper.getInventoryPlayer().player;
+        }
+        return null;
     }
 }

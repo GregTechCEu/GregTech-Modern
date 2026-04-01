@@ -42,6 +42,10 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
         if (this.syncHandler != null) this.syncHandler.attachDynamicWidgetListener(this::updateChild);
     }
 
+    public @NotNull IDynamicSyncNotifiable getDynamicSyncHandler() {
+        return syncHandler;
+    }
+
     @Override
     public @NotNull List<IWidget> getChildren() {
         if (this.child == null) {

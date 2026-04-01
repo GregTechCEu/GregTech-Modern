@@ -37,16 +37,16 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
     public IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                             PanelSyncManager syncManager) {
         return syncManager.syncedPanel("image_module_" + group.getName(), true,
-                (psm, handler) -> new ModularPanel("image_module_editor")
+                (psm, handler) -> new ModularPanel<>("image_module_editor")
                         .size(200, 50)
                         .child(Flow.column()
                                 .marginTop(5)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .widthRel(1)
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.url")))
                                 .child(new TextFieldWidget()
                                         .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s)))
-                                        .align(Alignment.CENTER)
+                                        .center()
                                         .widthRel(.8f))));
     }
 

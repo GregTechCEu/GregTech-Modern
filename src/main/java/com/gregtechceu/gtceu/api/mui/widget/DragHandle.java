@@ -28,8 +28,8 @@ public class DragHandle extends Widget<DragHandle> implements IDraggable, IViewp
             }
             parent = parent.getParent();
         }
-        if (((ModularPanel) parent).isDraggable()) {
-            this.parentDraggable = new DraggablePanelWrapper((ModularPanel) parent);
+        if (((ModularPanel<?>) parent).isDraggable()) {
+            this.parentDraggable = new DraggablePanelWrapper((ModularPanel<?>) parent);
         }
     }
 

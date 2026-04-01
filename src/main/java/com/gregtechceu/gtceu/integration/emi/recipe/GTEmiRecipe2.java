@@ -74,7 +74,7 @@ public abstract class GTEmiRecipe2<T extends Recipe<?>, W extends IWidget> imple
 
         this.screen = GTMemoizer.memoize(() -> {
             W widget = widgetSupplier.get();
-            ModularPanel panel = ModularPanel.defaultPanel(recipe.getId().toString(), widget.getArea().w(),
+            ModularPanel<?> panel = ModularPanel.defaultPanel(recipe.getId().toString(), widget.getArea().w(),
                     widget.getArea().h());
             panel.child(widget);
             return new ModularScreen(recipe.getId().getNamespace(), panel);

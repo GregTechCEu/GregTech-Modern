@@ -85,7 +85,7 @@ public class GuiManager {
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(false);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);
-        ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
+        ModularPanel<?> panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
 
         // create the menu
@@ -94,8 +94,7 @@ public class GuiManager {
             player.closeContainer();
         }
         int windowId = player.containerCounter;
-        ModularContainerMenu menu = settings.hasCustomContainer() ? settings.createContainer(windowId) :
-                factory.createContainer(windowId);
+        ModularContainerMenu menu = settings.hasCustomContainer() ? settings.createContainer(windowId) : factory.createContainer(windowId);
         menu.construct(player, msm, settings, panel.getName(), guiData);
 
         // sync to client
@@ -104,15 +103,8 @@ public class GuiManager {
         int nid = ModularNetwork.SERVER.activate(msm);
         GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, nid, factory, buffer, inWorldUI));
         // open the menu // this mimics forge behaviour
-        if (!inWorldUI) {
-            player.initMenu(menu);
-            player.containerMenu = menu;
-        } else {
-            List<ModularContainerMenu> tmp = openedInWorldContainers.computeIfAbsent(player, p -> new ArrayList<>());
-            menu.inWorldID = tmp.size();
-            tmp.add(menu);
-            menu.setSynchronizer(new InWorldContainerSynchronizer(player));
-        }
+        player.initMenu(menu);
+        player.containerMenu = menu;
         msm.onOpen();
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
@@ -129,30 +121,23 @@ public class GuiManager {
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(true);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);
-        ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
+        ModularPanel<?> panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
         ModularScreen screen = factory.createScreen(guiData, panel);
         screen.getContext().setSettings(settings);
-        ModularContainerMenu container = settings.hasCustomContainer() ? settings.createContainer(windowId) :
-                factory.createContainer(windowId);
+        ModularContainerMenu container = settings.hasCustomContainer() ? settings.createContainer(windowId) : factory.createContainer(windowId);
+
         container.construct(player, msm, settings, panel.getName(), guiData);
-        IMuiScreen wrapper = settings.hasCustomGui() ? settings.createGui(container, screen) :
-                factory.createScreenWrapper(container, screen);
+        IMuiScreen wrapper = settings.hasCustomGui() ? settings.createGui(container, screen) : factory.createScreenWrapper(container, screen);
+
         if (!(wrapper.getWrappedScreen() instanceof AbstractContainerScreen<?> guiContainer)) {
             throw new IllegalStateException("The wrapping screen must be a GuiContainer for synced GUIs!");
         }
         if (guiContainer.getMenu() != container)
             throw new IllegalStateException("Custom Containers are not yet allowed!");
         ModularNetwork.CLIENT.activate(networkId, msm);
-        if (inWorldUI) {
-            container.inWorldID = clientInWorldContainers.size();
-            clientInWorldContainers.add(container);
-            MinecraftForge.EVENT_BUS
-                    .post(new InWorldMUIOpenEvent(guiData, wrapper.getWrappedScreen(), screen, container));
-        } else {
-            MCHelper.setScreen(wrapper.getWrappedScreen());
-            player.containerMenu = guiContainer.getMenu();
-        }
+        MCHelper.setScreen(wrapper.getWrappedScreen());
+        player.containerMenu = guiContainer.getMenu();
         msm.onOpen();
     }
 
@@ -173,9 +158,7 @@ public class GuiManager {
 
     @OnlyIn(Dist.CLIENT)
     static void openScreen(ModularScreen screen, UISettings settings) {
-        if (screen.getScreenWrapper() != null &&
-                MCHelper.getCurrentScreen() == screen.getScreenWrapper().getWrappedScreen()) {
-            // already open
+        if (screen.getScreenWrapper() != null && MCHelper.getCurrentScreen() == screen.getScreenWrapper().getWrappedScreen()) {            // already open
             return;
         }
         screen.getContext().setSettings(settings);

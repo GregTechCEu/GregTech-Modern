@@ -67,14 +67,20 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     @Getter
     protected List<String> lastText;
     protected int scrollOffset = 0;
+    @Getter
     protected float scale = 1f;
+    @Getter
     protected boolean focusOnGuiOpen;
     private int cursorTimer;
     protected long lastClickTime = 0;
 
+    @Getter
     protected Integer textColor;
+    @Getter
     protected Integer markedColor;
+    @Getter
     protected Component hintText = null;
+    @Getter
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {
@@ -130,16 +136,6 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             drawText(context, widgetTheme);
         } else {
             context.getStencil().push(1, 1, getArea().w() - 2, getArea().h() - 2);
-        }
-    }
-
-    @Override
-    public void postDraw(ModularGuiContext context, boolean transformed) {
-        if (!transformed) {
-            context.getStencil().pop();
-            WidgetThemeEntry<WidgetTheme> scrollbarTheme = context.getTheme().getScrollbarTheme();
-            getScrollArea().drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
-                    scrollbarTheme.getTheme().getBackground());
         }
     }
 

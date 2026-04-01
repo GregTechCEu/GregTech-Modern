@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.ToIntFunction;
 
 public class ColorType {
@@ -32,5 +33,17 @@ public class ColorType {
 
     public int getColor(WidgetTheme theme) {
         return colorGetter.applyAsInt(theme);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ColorType colorType = (ColorType) o;
+        return Objects.equals(name, colorType.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 }

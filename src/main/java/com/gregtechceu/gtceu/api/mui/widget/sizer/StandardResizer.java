@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GuiError;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
+import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.TreeUtil;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.IExpander;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
@@ -200,40 +202,52 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         boolean hasIndependentChildX = false;
         boolean hasIndependentChildY = false;
         for (IWidget child : children) {
-            StandardResizer resizeable = child.resizer();
-            if (resizeable.isDecoration()) continue;
+            StandardResizer resizer = child.resizer();
+            if (resizer.isDecoration()) continue;
             Box margin = child.getArea().getMargin();
             Area area = child.getArea();
-            if (coverWidth) {
-                if (!resizeable.dependsOnParentX()) {
-                    hasIndependentChildX = true;
-                    if (resizeable.isWidthCalculated() && resizeable.isXCalculated()) {
-                        w = Math.max(w, area.requestedWidth() + padding.horizontal());
-                        x0 = Math.min(x0, area.rx - padding.left() - margin.left());
-                        x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
-                    } else {
-                        return true;
-                    }
+            if (coverWidth && !resizer.widthDependsOnParent()) {
+                hasIndependentChildX = true;
+                if (!resizer.isWidthCalculated()) return true;
+                w = Math.max(w, area.requestedWidth() + padding.horizontal());
+                if (!resizer.xDependsOnParent()) {
+                    if (!resizer.isXCalculated()) return true;
+                    x0 = Math.min(x0, area.rx - padding.left() - margin.left());
+                    x1 = Math.max(x1, area.rx + area.width + padding.right() + margin.right());
                 }
             }
-            if (coverHeight) {
-                if (!resizeable.dependsOnParentY()) {
-                    hasIndependentChildY = true;
-                    if (resizeable.isHeightCalculated() && resizeable.isYCalculated()) {
-                        h = Math.max(h, area.requestedHeight() + padding.vertical());
-                        y0 = Math.min(y0, area.ry - padding.top() - margin.top());
-                        y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
-                    } else {
-                        return true;
-                    }
+
+            if (coverHeight && !resizer.heightDependsOnParent()) {
+                hasIndependentChildY = true;
+                if (!resizer.isHeightCalculated()) return true;
+                h = Math.max(h, area.requestedHeight() + padding.vertical());
+                if (!resizer.yDependsOnParent()) {
+                    if (!resizer.isYCalculated()) return true;
+                    y0 = Math.min(y0, area.ry - padding.top() - margin.top());
+                    y1 = Math.max(y1, area.ry + area.height + padding.bottom() + margin.bottom());
                 }
             }
         }
-        if ((coverWidth && !hasIndependentChildX) || (coverHeight && !hasIndependentChildY)) {
-            GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
-                    "Can't cover children when all children depend on their parent!");
-            return false;
+
+        if (coverWidth && !hasIndependentChildX) {
+            if (this.x.getCoverChildrenMinSize() > 0) {
+                // if all children sizes depend on their parent, just use the min size as default
+                w = this.x.getCoverChildrenMinSize();
+            } else {
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children width when all children depend on their parent and min size is 0!");
+                return false;
+            }
         }
+        if (coverHeight && !hasIndependentChildY) {
+            if (this.y.getCoverChildrenMinSize() > 0) {
+                // if all children sizes depend on their parent, just use the min size as default
+                h = this.y.getCoverChildrenMinSize();
+            } else {
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children height when all children depend on their parent and min size is 0!");
+                return false;
+            }
+        }
+
         if (x1 == Integer.MIN_VALUE) x1 = 0;
         if (y1 == Integer.MIN_VALUE) y1 = 0;
         if (x0 == Integer.MAX_VALUE) x0 = 0;
@@ -245,11 +259,23 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         // now calculate new x, y, width and height based on the children area
         ResizeNode relativeTo = getParent();
         if (coverWidth) {
+            int minSize = this.x.getCoverChildrenMinSize();
+            int diff = minSize - x1 + x0;
+            if (diff > 0) {
+                x0 -= diff / 2;
+                x1 += diff / 2;
+            }
             // apply the size to this widget
             // the return value is the amount of pixels we need to move the children
             moveChildrenX = this.x.postApply(this, relativeTo, x0, x1);
         }
         if (coverHeight) {
+            int minSize = this.y.getCoverChildrenMinSize();
+            int diff = minSize - y1 + y0;
+            if (diff > 0) {
+                y0 -= diff / 2;
+                y1 += diff / 2;
+            }
             moveChildrenY = this.y.postApply(this, relativeTo, y0, y1);
         }
         // since the edges might have been moved closer to the widgets, the widgets should move back into it's original
@@ -280,50 +306,62 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         boolean coverByDefaultSizeY = coverHeight && layout.canCoverByDefaultSize(GuiAxis.Y);
         for (IWidget child : children) {
             if (layout.shouldIgnoreChildSize(child)) continue;
-            StandardResizer resizeable = child.resizer();
-            if (resizeable.isDecoration()) continue;
+            StandardResizer resizer = child.resizer();
+            if (resizer.isDecoration()) continue;
             Area area = child.getArea();
             Box margin = area.getMargin();
             if (coverWidth) {
-                if (!child.resizer().dependsOnParentX()) {
+                if (!resizer.widthDependsOnParent()) {
                     hasIndependentChildX = true;
-                    if (resizeable.isWidthCalculated() && resizeable.isXCalculated()) {
-                        int s = area.requestedWidth() + padding.horizontal();
-                        w = Math.max(w, s);
-                        withDefaultW = Math.max(withDefaultW, s);
-                        x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
-                    } else {
-                        return;
+                    if (!resizer.isWidthCalculated()) return;
+                    int s = area.requestedWidth() + padding.horizontal();
+                    w = Math.max(w, s);
+                    withDefaultW = Math.max(withDefaultW, s);
+                    if (!resizer.xDependsOnParent()) {
+                        if (!resizer.isXCalculated()) return;
+                        x1 = Math.max(x1, area.rx + area.width + padding.right() + margin.right());
                     }
                 } else if (coverByDefaultSizeX) {
-                    withDefaultW = Math.max(withDefaultW,
-                            child.getDefaultWidth() + margin.horizontal() + padding.horizontal());
+                    withDefaultW = Math.max(withDefaultW, child.getDefaultWidth() + margin.horizontal() + padding.horizontal());
                 }
             }
 
             if (coverHeight) {
-                if (!child.resizer().dependsOnParentY()) {
+                if (!resizer.heightDependsOnParent()) {
                     hasIndependentChildY = true;
-                    if (resizeable.isHeightCalculated() && resizeable.isYCalculated()) {
-                        int s = area.requestedHeight() + padding.vertical();
-                        h = Math.max(h, s);
-                        withDefaultH = Math.max(withDefaultH, s);
-                        y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
-                    } else {
-                        return;
+                    if (!resizer.isHeightCalculated()) return;
+                    int s = area.requestedHeight() + padding.vertical();
+                    h = Math.max(h, s);
+                    withDefaultH = Math.max(withDefaultH, s);
+                    if (!resizer.yDependsOnParent()) {
+                        if (!resizer.isYCalculated()) return;
+                        y1 = Math.max(y1, area.ry + area.height + padding.bottom() + margin.bottom());
                     }
                 } else if (coverByDefaultSizeY) {
-                    withDefaultH = Math.max(withDefaultH,
-                            child.getDefaultHeight() + margin.vertical() + padding.vertical());
+                    withDefaultH = Math.max(withDefaultH, child.getDefaultHeight() + margin.vertical() + padding.vertical());
                 }
             }
         }
-        if ((coverWidth && !hasIndependentChildX && !coverByDefaultSizeX) ||
-                (coverHeight && !hasIndependentChildY && !coverByDefaultSizeY)) {
-            GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
-                    "Can't cover children when all children depend on their parent!");
-            return;
+
+        if (coverWidth && !hasIndependentChildX && !coverByDefaultSizeX) {
+            if (this.x.getCoverChildrenMinSize() > 0) {
+                // if all children sizes depend on their parent, just use the min size as default
+                w = this.x.getCoverChildrenMinSize();
+            } else {
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children width when all children depend on their parent and min size is 0!");
+                return;
+            }
         }
+        if (coverHeight && !hasIndependentChildY && !coverByDefaultSizeY) {
+            if (this.y.getCoverChildrenMinSize() > 0) {
+                // if all children sizes depend on their parent, just use the min size as default
+                h = this.y.getCoverChildrenMinSize();
+            } else {
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children height when all children depend on their parent and min size is 0!");
+                return;
+            }
+        }
+
         if (w == 0) w = withDefaultW; // only use default sizes, if no size is defined
         if (h == 0) h = withDefaultH;
         if (x1 == Integer.MIN_VALUE) x1 = 0;
@@ -332,8 +370,14 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
         if (h > y1) y1 = h;
 
         ResizeNode relativeTo = getParent();
-        if (coverWidth) this.x.postApply(this, relativeTo, 0, x1);
-        if (coverHeight) this.y.postApply(this, relativeTo, 0, y1);
+        if (coverWidth) {
+            int minSize = this.x.getCoverChildrenMinSize();
+            this.x.postApply(this, relativeTo, 0, Math.max(x1, minSize));
+        }
+        if (coverHeight) {
+            int minSize = this.y.getCoverChildrenMinSize();
+            this.y.postApply(this, relativeTo, 0, Math.max(y1, minSize));
+        }
     }
 
     protected void coverChildrenForEmpty() {
@@ -379,8 +423,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
             Area mainArea = widget.getScreen().getMainPanel().getArea();
             // in vanilla uis the position is relative to the gui area and size is 16 x 16
             // since our slots are 18 x 18 we need to offset by 1
-            slot.gtceu$setX(widget.getArea().x - mainArea.x + 1);
-            slot.gtceu$setY(widget.getArea().y - mainArea.y + 1);
+            slot.setX(widget.getArea().x - mainArea.x + 1);
+            slot.setY(widget.getArea().y - mainArea.y + 1);
         }
     }
 
@@ -445,13 +489,23 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     }
 
     @Override
-    public boolean dependsOnParentX() {
-        return this.x.dependsOnParent();
+    public boolean widthDependsOnParent() {
+        return this.x.sizeDependsOnParent();
     }
 
     @Override
-    public boolean dependsOnParentY() {
-        return this.y.dependsOnParent();
+    public boolean heightDependsOnParent() {
+        return this.y.sizeDependsOnParent();
+    }
+
+    @Override
+    public boolean xDependsOnParent() {
+        return this.x.posDependsOnParent();
+    }
+
+    @Override
+    public boolean yDependsOnParent() {
+        return this.y.posDependsOnParent();
     }
 
     @Override
@@ -465,7 +519,12 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     }
 
     public StandardResizer expanded() {
-        this.expanded = true;
+        return expanded(true);
+    }
+
+    @Override
+    public StandardResizer expanded(boolean expanded) {
+        this.expanded = expanded;
         scheduleResize();
         return this;
     }
@@ -509,25 +568,17 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     }
 
     @Override
-    public StandardResizer coverChildren() {
-        this.x.setCoverChildren(true, getWidget());
-        this.y.setCoverChildren(true, getWidget());
+    public StandardResizer coverChildrenWidth(int minWidth) {
+        this.x.setCoverChildren(minWidth, getWidget());
         return this;
     }
 
     @Override
-    public StandardResizer coverChildrenWidth() {
-        this.x.setCoverChildren(true, getWidget());
+    public StandardResizer coverChildrenHeight(int minHeight) {
+        this.y.setCoverChildren(minHeight, getWidget());
         return this;
     }
 
-    @Override
-    public StandardResizer coverChildrenHeight() {
-        this.y.setCoverChildren(true, getWidget());
-        return this;
-    }
-
-    @Override
     public StandardResizer decoration(boolean decoration) {
         this.decoration = decoration;
         return this;

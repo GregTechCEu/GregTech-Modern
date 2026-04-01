@@ -16,39 +16,39 @@ public class GTGuis {
 
     public static final int DEFAULT_WIDTH = 176, DEFAULT_HEIGHT = 166;
 
-    public static ModularPanel createPanel(String name, int width, int height) {
+    public static ModularPanel<?> createPanel(String name, int width, int height) {
         return ModularPanel.defaultPanel(name, width, height);
     }
 
-    public static ModularPanel createPanel(MetaMachine machine, int width, int height) {
+    public static ModularPanel<?> createPanel(MetaMachine machine, int width, int height) {
         return createPanel(machine.getDefinition().getId().getPath(), width, height);
     }
 
-    public static ModularPanel createPanel(CoverBehavior cover, int width, int height) {
+    public static ModularPanel<?> createPanel(CoverBehavior cover, int width, int height) {
         return createPanel(cover.coverDefinition.getId().getPath(), width, height);
     }
 
-    public static ModularPanel createPanel(ItemStack stack, int width, int height) {
+    public static ModularPanel<?> createPanel(ItemStack stack, int width, int height) {
         return createPanel(stack.getDescriptionId(), width, height);
     }
 
-    public static ModularPanel createPanel(String name) {
+    public static ModularPanel<?> createPanel(String name) {
         return ModularPanel.defaultPanel(name, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public static ModularPanel defaultPanel(MetaMachine machine) {
+    public static ModularPanel<?> defaultPanel(MetaMachine machine) {
         return createPanel(machine.getDefinition().getId().getPath());
     }
 
-    public static ModularPanel defaultPanel(CoverBehavior cover) {
+    public static ModularPanel<?> defaultPanel(CoverBehavior cover) {
         return createPanel(cover.coverDefinition.getId().getPath());
     }
 
-    public static ModularPanel defaultPanel(ItemStack stack) {
+    public static ModularPanel<?> defaultPanel(ItemStack stack) {
         return createPanel(stack, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public static ModularPanel defaultPanel(Item item) {
+    public static ModularPanel<?> defaultPanel(Item item) {
         return createPanel(item.getDescriptionId());
     }
 
@@ -75,15 +75,13 @@ public class GTGuis {
                 .deleteCachedPanel(deleteCachedPanel);
     }
 
-    public static class PopupPanel extends ModularPanel {
+    public static class PopupPanel extends ModularPanel<PopupPanel> {
 
-        private boolean disableBelow;
-        private boolean closeOnOutsideClick;
         private boolean deleteCachedPanel;
 
         private PopupPanel(@NotNull String name) {
             super(name);
-            align(Alignment.Center);
+            center();
             background(GTGuiTextures.BACKGROUND);
             child(ButtonWidget.panelCloseButton().top(5).right(5)
                     .onMousePressed((mouseX, mouseY, button) -> {
@@ -103,16 +101,6 @@ public class GTGuis {
             }
         }
 
-        public PopupPanel disablePanelsBelow(boolean disableBelow) {
-            this.disableBelow = disableBelow;
-            return this;
-        }
-
-        public PopupPanel closeOnOutOfBoundsClick(boolean closeOnOutsideClick) {
-            this.closeOnOutsideClick = closeOnOutsideClick;
-            return this;
-        }
-
         public PopupPanel deleteCachedPanel(boolean deleteCachedPanel) {
             this.deleteCachedPanel = deleteCachedPanel;
             return this;
@@ -128,16 +116,6 @@ public class GTGuis {
         public PopupPanel size(int val) {
             super.size(val);
             return this;
-        }
-
-        @Override
-        public boolean disablePanelsBelow() {
-            return disableBelow;
-        }
-
-        @Override
-        public boolean closeOnOutOfBoundsClick() {
-            return closeOnOutsideClick;
         }
     }
 }

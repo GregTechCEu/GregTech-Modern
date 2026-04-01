@@ -32,7 +32,7 @@ public abstract class ResizeNode implements IResizeable, ITreeNode<ResizeNode> {
     @ApiStatus.Internal
     public void replacementOf(ResizeNode node) {
         if (this == node) return;
-        // GTCEu.LOGGER.info("Replacing resizer node {} with node {}", node, this);
+        // ModularUI.LOGGER.info("Replacing resizer node {} with node {}", node, this);
         // remove this node from the tree by removing itself from the parents and removing the children
         if (this.defaultParent != null) this.defaultParent.children.remove(this);
         if (this.parentOverride != null) this.parentOverride.children.remove(this);
@@ -103,7 +103,7 @@ public abstract class ResizeNode implements IResizeable, ITreeNode<ResizeNode> {
 
     @ApiStatus.Internal
     public void setDefaultParent(ResizeNode resizeNode) {
-        // GTCEu.LOGGER.info("Set default parent of {} to {}. Current: default: {}, override: {}", this, resizeNode,
+        // ModularUI.LOGGER.info("Set default parent of {} to {}. Current: default: {}, override: {}", this, resizeNode,
         // this.defaultParent, this.parentOverride);
         if (resizeNode == this) throw new IllegalArgumentException("Tried to set itself as default parent in " + this);
         if (removeFromParent(this.defaultParent, null, resizeNode)) return;
@@ -114,7 +114,7 @@ public abstract class ResizeNode implements IResizeable, ITreeNode<ResizeNode> {
     }
 
     protected void setParentOverride(ResizeNode resizeNode) {
-        // GTCEu.LOGGER.info("Set override parent of {} to {}. Current: default: {}, override: {}", this, resizeNode,
+        // ModularUI.LOGGER.info("Set override parent of {} to {}. Current: default: {}, override: {}", this, resizeNode,
         // this.defaultParent, this.parentOverride);
         if (resizeNode == this) throw new IllegalArgumentException("Tried to set itself as parent override in " + this);
         if (removeFromParent(this.parentOverride, this.defaultParent, resizeNode)) return;
@@ -165,12 +165,28 @@ public abstract class ResizeNode implements IResizeable, ITreeNode<ResizeNode> {
         return this.requiresResize;
     }
 
-    public boolean dependsOnParentX() {
+    public boolean widthDependsOnParent() {
         return false;
     }
 
-    public boolean dependsOnParentY() {
+    public boolean heightDependsOnParent() {
         return false;
+    }
+
+    public boolean xDependsOnParent() {
+        return false;
+    }
+
+    public boolean yDependsOnParent() {
+        return false;
+    }
+
+    public boolean dependsOnParentX() {
+        return widthDependsOnParent() || xDependsOnParent();
+    }
+
+    public boolean dependsOnParentY() {
+        return heightDependsOnParent() || yDependsOnParent();
     }
 
     public boolean dependsOnParent() {

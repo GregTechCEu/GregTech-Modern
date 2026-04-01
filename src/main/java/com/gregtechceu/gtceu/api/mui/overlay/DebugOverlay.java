@@ -39,8 +39,8 @@ public class DebugOverlay extends CustomModularScreen {
     }
 
     @Override
-    public @NotNull ModularPanel buildUI(ModularGuiContext context) {
-        return new ModularPanel("debug")
+    public @NotNull ModularPanel<?> buildUI(ModularGuiContext context) {
+        return new ModularPanel<>("debug")
                 .fullScreenInvisible()
                 .child(new ContextMenuButton<>("menu_debug_options")
                         .horizontalCenter()
@@ -151,7 +151,7 @@ public class DebugOverlay extends CustomModularScreen {
     }
 
     private boolean logWidgetTrees(int b) {
-        for (ModularPanel panel : parent.getScreen().getPanelManager().getOpenPanels()) {
+        for (ModularPanel<?> panel : parent.getScreen().getPanelManager().getOpenPanels()) {
             WidgetTree.print(panel);
         }
         return true;

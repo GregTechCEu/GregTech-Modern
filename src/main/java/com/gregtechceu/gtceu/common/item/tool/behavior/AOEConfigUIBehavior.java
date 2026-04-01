@@ -81,7 +81,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
     }
 
     @Override
-    public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack held = data.getUsedItemStack();
         CompoundTag tag = getBehaviorsTag(held);
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(held);
@@ -97,7 +97,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
         minusLayers.setOnMousePressed(data1 -> AoESymmetrical.decreaseLayer(tag, defaultDefinition));
         InteractionSyncHandler plusLayers = new InteractionSyncHandler();
         plusLayers.setOnMousePressed(data1 -> AoESymmetrical.increaseLayer(tag, defaultDefinition));
-        return new ModularPanel("aoe_config")
+        return new ModularPanel<>("aoe_config")
                 .coverChildren()
                 .child(Flow.row()
                         .coverChildren()

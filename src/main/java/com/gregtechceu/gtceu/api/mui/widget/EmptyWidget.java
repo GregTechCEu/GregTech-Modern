@@ -64,7 +64,7 @@ public class EmptyWidget implements IWidget {
     public void onUpdate() {}
 
     @Override
-    public @NotNull ModularPanel getPanel() {
+    public @NotNull ModularPanel<?> getPanel() {
         return this.parent.getPanel();
     }
 

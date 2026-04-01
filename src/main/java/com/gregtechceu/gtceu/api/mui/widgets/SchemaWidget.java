@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.mui.schemarenderer.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+@Getter
 public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     private final BaseSchemaRenderer schemaRenderer;

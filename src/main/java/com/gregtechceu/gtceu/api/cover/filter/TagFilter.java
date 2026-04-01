@@ -56,7 +56,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     protected abstract ItemStack getFilterItem();
 
     @Override
-    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString);
         RichTooltip infoTooltip = new RichTooltip().addMultiLine("cover.tag_filter.info");
 

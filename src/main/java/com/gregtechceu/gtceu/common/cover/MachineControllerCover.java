@@ -196,7 +196,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
                 this::getControllerMode, this::setControllerMode);
 
@@ -243,14 +243,14 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .background(GTGuiTextures.FLUID_SLOT)
                                         .widthRel(0.9f)
                                         .height(16)
-                                        .alignX(0.5f)
+                                        .leftRel(0.5f)
                                         .bounds(0, 15)
                                         .stopper(1.0)
                                         .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
                                                 v -> redstoneSignalOutput = (int) v))))
                         // Separating line
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
-                                .height(1).widthRel(0.9f).alignX(0.5f)).margin(0, 2))
+                                .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
 
                         .child(coverUIRow().child(IKey.lang("cover.machine_controller.control").asWidget()
                                 .height(16)))
@@ -269,7 +269,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, IKey title) {
         return Flow.column().width(18).height(28)
-                .child(title.asWidget().height(10).alignX(0.5f))
+                .child(title.asWidget().height(10).leftRel(0.5f))
                 .child(modeButton(syncValue, mode).bottom(0));
     }
 

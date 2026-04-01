@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.SecondaryPanel;
@@ -85,7 +85,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     }
 
     @OnlyIn(Dist.CLIENT)
-    private ModularPanel buildAmountEditor(ModularPanel parent, net.minecraft.world.entity.player.Player player) {
+    private ModularPanel<?> buildAmountEditor(ModularPanel<?> parent, net.minecraft.world.entity.player.Player player) {
         amountField = new TextFieldWidget() {
 
             @Override
@@ -101,13 +101,13 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
         amountField.expanded().heightRel(1f)
                 .value(new StringValue.Dynamic(() -> pendingAmount, val -> pendingAmount = val));
 
-        return new ModularPanel("ae_amount_editor")
+        return new ModularPanel<>("ae_amount_editor")
                 .size(120, 36)
-                .alignX(0.5f).alignY(0.35f)
+                .posRel(0.5f,0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("Amount").asWidget().pos(4, 4))
-                .child(new Row()
+                .child(Flow.row()
                         .left(4).right(4).bottom(4).height(18)
                         .child(amountField)
                         .child(new ButtonWidget<>()

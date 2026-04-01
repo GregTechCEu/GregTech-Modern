@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -64,11 +64,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                         .asWidget().top(50).size(200, 200));
     }
 
-    public static @NotNull ModularPanel buildAspectRatioUI() {
-        return new ModularPanel("aspect_ratio")
+    public static @NotNull ModularPanel<?> buildAspectRatioUI() {
+        return new ModularPanel<>("aspect_ratio")
                 .coverChildren()
                 .padding(10)
-                .child(new Row()
+                .child(Flow.row()
                         .childPadding(10)
                         .coverChildren()
                         .child(new Rectangle().color(Color.BLUE_ACCENT.main)

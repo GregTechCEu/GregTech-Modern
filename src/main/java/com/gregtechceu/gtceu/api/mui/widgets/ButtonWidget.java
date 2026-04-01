@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class ButtonWidget<W extends ButtonWidget<W>> extends SingleChildWidget<W> implements Interactable {
@@ -28,7 +29,9 @@ public class ButtonWidget<W extends ButtonWidget<W>> extends SingleChildWidget<W
                 });
     }
 
+    @Getter
     private boolean playClickSound = true;
+    @Getter
     private Runnable clickSound;
     private IGuiAction.MousePressed mousePressed;
     private IGuiAction.MouseReleased mouseReleased;
@@ -64,6 +67,14 @@ public class ButtonWidget<W extends ButtonWidget<W>> extends SingleChildWidget<W
                 Interactable.playButtonClickSound();
             }
         }
+    }
+
+    @Override
+    public @NotNull InteractionSyncHandler getSyncHandler() {
+        if (this.syncHandler == null) {
+            throw new IllegalStateException("Widget is not initialised or not synced!");
+        }
+        return syncHandler;
     }
 
     @Override

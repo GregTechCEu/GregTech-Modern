@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.List;
 
 @ApiStatus.Experimental
-public class MenuPanel extends ModularPanel {
+public class MenuPanel extends ModularPanel<MenuPanel> {
 
     public MenuPanel(String name, IWidget menu) {
         super(name);

@@ -118,7 +118,7 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         for (int i = 0; i < 9; i++) {
             syncManager.syncValue("filter_slot_" + i,
                     new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));

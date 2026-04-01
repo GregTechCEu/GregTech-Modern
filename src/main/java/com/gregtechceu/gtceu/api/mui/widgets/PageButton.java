@@ -10,13 +10,16 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class PageButton extends Widget<PageButton> implements Interactable {
 
+    @Getter
     private final int index;
     private final PagedWidget.Controller controller;
     private IDrawable inactiveTexture = null;
+    @Getter
     private boolean invert = false;
 
     public PageButton(int index, PagedWidget.Controller controller) {

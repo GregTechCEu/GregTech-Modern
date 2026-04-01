@@ -50,14 +50,14 @@ import java.util.function.Supplier;
  * or {@link PanelSyncManager#syncedPanel(String, boolean, PanelSyncHandler.IPanelBuilder)} if the panel should be
  * synced.
  */
-public class ModularPanel extends ParentWidget<ModularPanel> implements IViewport, IDragResizeable {
+public class ModularPanel<W extends ModularPanel<W>> extends ParentWidget<W> implements IViewport, IDragResizeable {
 
-    public static ModularPanel defaultPanel(@NotNull String name) {
+    public static ModularPanel<?> defaultPanel(@NotNull String name) {
         return defaultPanel(name, 176, 166);
     }
 
-    public static ModularPanel defaultPanel(@NotNull String name, int width, int height) {
-        return new ModularPanel(name).size(width, height);
+    public static ModularPanel<?> defaultPanel(@NotNull String name, int width, int height) {
+        return new ModularPanel<>(name).size(width, height);
     }
 
     private static final int tapTime = 200;
@@ -86,11 +86,18 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private boolean invisible = false;
     private Animator animator;
 
-    private boolean resizeable = false;
     private String themeOverride;
     private ITheme theme;
 
     private Runnable onCloseAction;
+    private boolean resizeable = false;
+    /**
+     * True if this panel can be dragged. Never works on the main panel.
+     */
+    @Getter
+    private boolean draggable = true;
+    private boolean disablePanelsBelow = false;
+    private boolean closeOnOutOfBoundsClick = false;
 
     public ModularPanel(@NotNull String name) {
         this.name = Objects.requireNonNull(name, "A panels name must not be null and should be unique!");
@@ -98,8 +105,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     @Override
-    public @NotNull ModularPanel getPanel() {
-        return this;
+    public @NotNull W getPanel() {
+        return getThis();
     }
 
     @Override
@@ -109,6 +116,9 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @Override
     public void onInit() {
+        if (isMainPanel()) {
+            draggable = false;
+        }
         getScreen().registerFrameUpdateListener(this, this::findHoveredWidgets, false);
     }
 
@@ -155,7 +165,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         if (!isOpening() && !isClosing()) {
             if (isMainPanel()) {
                 // if this is the main panel, start closing animation for all panels
-                for (ModularPanel panel : getScreen().getPanelManager().getOpenPanels()) {
+                for (ModularPanel<?> panel : getScreen().getPanelManager().getOpenPanels()) {
                     if (!panel.isMainPanel()) {
                         panel.closeIfOpen();
                     }
@@ -642,37 +652,30 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     @SuppressWarnings("unchecked")
-    private <T, W extends IWidget & IFocusedWidget & Interactable> T interactFocused(Function<W, T> function,
+    private <T, F extends IWidget & IFocusedWidget & Interactable> T interactFocused(Function<F, T> function,
                                                                                      T defaultValue) {
         LocatedWidget focused = this.getContext().getFocusedWidget();
         T result = defaultValue;
         if (focused.getElement() instanceof Interactable interactable && focused.getElement().isValid()) {
             focused.applyMatrix(getContext());
-            result = function.apply((W) interactable);
+            result = function.apply((F) interactable);
             focused.unapplyMatrix(getContext());
         }
         return result;
     }
 
     /**
-     * @return if this panel can be dragged. Never works on the main panel.
-     */
-    public boolean isDraggable() {
-        return getScreen().getMainPanel() != this;
-    }
-
-    /**
      * @return if panels below this can still be interacted with.
      */
     public boolean disablePanelsBelow() {
-        return false;
+        return disablePanelsBelow;
     }
 
     /**
      * @return if this panel should be closed if outside of this panel is clicked.
      */
     public boolean closeOnOutOfBoundsClick() {
-        return false;
+        return closeOnOutOfBoundsClick;
     }
 
     @Override
@@ -732,7 +735,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     public boolean isAnyHovered() {
         if (this.hovering.isEmpty()) return false;
-        if (this.hovering.size() == 1 && this.hovering.get(0).getElement() instanceof ModularPanel panel) {
+        if (this.hovering.size() == 1 && this.hovering.get(0).getElement() instanceof ModularPanel<?> panel) {
             return panel.canHover();
         }
         return true;
@@ -811,43 +814,57 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return this.theme;
     }
 
-    public ModularPanel bindPlayerInventory() {
+    public W bindPlayerInventory() {
         return child(SlotGroupWidget.playerInventory(true));
     }
 
-    public ModularPanel bindPlayerInventory(int bottom) {
+    public W bindPlayerInventory(int bottom) {
         return child(SlotGroupWidget.playerInventory(bottom, true));
     }
 
-    @Override
-    public ModularPanel invisible() {
+    public W invisible() {
         this.invisible = true;
-        return super.invisible();
+        return getThis();
     }
 
-    public ModularPanel fullScreenInvisible() {
+    public W fullScreenInvisible() {
         return invisible().full();
     }
 
-    public ModularPanel resizeableOnDrag(boolean resizeable) {
+    public W resizeableOnDrag(boolean resizeable) {
         this.resizeable = resizeable;
-        return this;
+        return getThis();
     }
 
-    public ModularPanel onCloseAction(Runnable onCloseAction) {
+    public W draggable(boolean draggable) {
+        this.draggable = draggable;
+        return getThis();
+    }
+
+    public W disablePanelsBelow(boolean disablePanelsBelow) {
+        this.disablePanelsBelow = disablePanelsBelow;
+        return getThis();
+    }
+
+    public W closeOnOutOfBoundsClick(boolean closeOnOutOfBoundsClick) {
+        this.closeOnOutOfBoundsClick = closeOnOutOfBoundsClick;
+        return getThis();
+    }
+
+    public W onCloseAction(Runnable onCloseAction) {
         this.onCloseAction = onCloseAction;
-        return this;
+        return getThis();
     }
 
-    public ModularPanel themeOverride(String id) {
+    public W themeOverride(String id) {
         this.themeOverride = id;
         this.theme = null;
-        return this;
+        return getThis();
     }
 
     @Deprecated
     @Override
-    public ModularPanel name(String name) {
+    public W name(String name) {
         throw new IllegalStateException("Name for ModularPanels are final!");
     }
 

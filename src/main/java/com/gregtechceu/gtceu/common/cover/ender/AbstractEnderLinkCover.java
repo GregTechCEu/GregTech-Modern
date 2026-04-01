@@ -269,7 +269,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
                     channelManager.openPanel();
                     return true;
-                }).align(Alignment.CenterRight).tooltip(new RichTooltip()
+                }).posRel(Alignment.CenterRight).tooltip(new RichTooltip()
                         .addLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.list_button"))))));
 
         column.child(coverUIRow().child(new TextFieldWidget()
@@ -309,7 +309,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         return true;
                     }
                     return false;
-                }).align(Alignment.CenterRight));
+                }).posRel(Alignment.CenterRight));
     }
 
     public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
@@ -322,7 +322,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
 
-    protected ModularPanel createChannelManagerPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    protected ModularPanel<?> createChannelManagerPanel(GuiData data, PanelSyncManager syncManager,
+                                                        UISettings settings) {
         var panel = new Dialog<>("channel_manager")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)

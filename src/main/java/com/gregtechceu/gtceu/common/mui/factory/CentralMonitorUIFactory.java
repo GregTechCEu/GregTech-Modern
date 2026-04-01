@@ -51,9 +51,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
     public static final CentralMonitorUIFactory INSTANCE = new CentralMonitorUIFactory();
 
     @Override
-    public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                        MetaMachine metaMachine) {
-        if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
+    public ModularPanel<?> buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                           MetaMachine metaMachine) {
+        if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel<>("main");
         GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
                 machine::setMonitorGroups, MONITOR_GROUPS);
         syncManager.syncValue("monitor_groups_sync", groupSync);
@@ -110,9 +110,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .padding(2)
                         .child(new Flow(GuiAxis.X)
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.monitor_groups"))
-                                        .alignX(0))
+                                        .leftRel(0))
                                 .child(new ButtonWidget<>()
-                                        .alignX(1)
+                                        .leftRel(1)
                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
                                         .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
                                         .syncHandler(new InteractionSyncHandler()
@@ -132,11 +132,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(SlotGroupWidget.playerInventory(false)));
     }
 
-    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
-                                                GenericListSyncHandler<MonitorGroup> groupSync,
-                                                CentralMonitorMachine machine, MonitorGroup group,
-                                                List<MonitorGroup> groups,
-                                                IPanelHandler helpPanel) {
+    private ModularPanel<?> createGroupEditorPanel(PanelSyncManager syncManager,
+                                                   GenericListSyncHandler<MonitorGroup> groupSync,
+                                                   CentralMonitorMachine machine, MonitorGroup group,
+                                                   List<MonitorGroup> groups,
+                                                   IPanelHandler helpPanel) {
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
@@ -212,7 +212,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine);
         BoolValue moduleChanged = new BoolValue(false);
-        return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
+        return new ModularPanel<>("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
                 .excludeAreaInRecipeViewer()
@@ -253,9 +253,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                 moduleEditor.openPanel();
                                             return true;
                                         })))
-                        .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
+                        .child(new Grid().matrix(matrix).leftRel(0.5f).size(matrixWidth, matrixHeight)))
                 .child(new ButtonWidget<>()
-                        .align(Alignment.TopRight)
+                        .posRel(Alignment.TopRight)
                         .background(GTGuiTextures.HELP)
                         .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
                         .onMousePressed((mouseX, mouseY, button) -> {
@@ -264,8 +264,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         }));
     }
 
-    private ModularPanel createHelpPanel() {
-        return new ModularPanel("help_panel")
+    private ModularPanel<?> createHelpPanel() {
+        return new ModularPanel<>("help_panel")
                 .excludeAreaInRecipeViewer()
                 .width(500)
                 .height(300)

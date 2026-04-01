@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
@@ -222,7 +221,7 @@ public class GTMuiWidgets {
                                 circuitGetter.get().isEmpty() ? 1 : circuitGetter.get().getCount())));
     }
 
-    public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
+    public static ModularPanel<?> createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
         syncManager.syncValue("circuit_slot", circuitSyncValue);
         Grid buttonGrid = new Grid()
                 .coverChildren()
@@ -240,24 +239,25 @@ public class GTMuiWidgets {
                 .setDraggable(true)
                 .setCloseOnOutOfBoundsClick(true)
                 .height(105)
-                .child(new Column()
+                .child(Flow.col()
                         .padding(2)
                         .fullHeight()
                         .coverChildren()
                         .childPadding(7)
                         .top(3)
-                        .alignX(Alignment.Center)
+                        .leftRel(0.5f)
                         .child(IKey.lang("item.gtceu.circuit.integrated.gui").asWidget())
                         .child(buttonGrid));
     }
 
-    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
-                                                      Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+    public static ModularPanel<?> createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
+                                                         Supplier<ItemStack> circuitGetter,
+                                                         PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel parentPanel,
+    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel<?> parentPanel,
                                                          PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
                 i -> machine.getCircuitInventory().setStackInSlot(0, i),
@@ -689,7 +689,7 @@ public class GTMuiWidgets {
             }
 
             if (this.lang != null)
-                row.child(this.lang.asWidget().align(Alignment.CenterRight).height(18));
+                row.child(this.lang.asWidget().posRel(Alignment.CenterRight).height(18));
 
             return row;
         }

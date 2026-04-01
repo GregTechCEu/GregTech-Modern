@@ -4,22 +4,22 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental
 public abstract class ModularNetwork {
 
-    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things badly,
-    // since
-    // there is no validation.
+    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things up
+    // badly,
+    // since there is no validation.
     public static final Client CLIENT = new Client();
     public static final Server SERVER = new Server();
 
@@ -52,22 +52,21 @@ public abstract class ModularNetwork {
 
         @Override
         void closeContainer(Player player) {
-            // mimics EntityPlayerSP.closeScreenAndDropStack() but without closing the screen
-            player.getInventory().setPickedItem(ItemStack.EMPTY);
+            // mimics LocalPlayer.clientSideCloseContainer() but without closing the screen
             player.containerMenu = player.inventoryMenu;
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void closeContainer(int networkId, boolean dispose, Player player) {
             closeContainer(networkId, dispose, player, true);
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void closeAll() {
             closeAll(Minecraft.getInstance().player);
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void reopenSyncerOf(Screen guiScreen) {
             if (guiScreen instanceof IMuiScreen ms && !ms.getScreen().isClientOnly()) {
                 ModularSyncManager msm = ms.getScreen().getSyncManager();

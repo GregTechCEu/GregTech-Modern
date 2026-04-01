@@ -185,17 +185,17 @@ public class WidgetTree extends TreeUtil {
         return InternalWidgetTree.findChildAt(parent, type, path, 0, false);
     }
 
-    public static boolean hasSyncedValues(ModularPanel panel) {
+    public static boolean hasSyncedValues(ModularPanel<?> panel) {
         return !foreachChild(panel, widget -> !(widget instanceof ISynced<?> synced) || !synced.isSynced(), true);
     }
 
     @ApiStatus.Internal
-    public static void collectSyncValues(PanelSyncManager syncManager, ModularPanel panel) {
+    public static void collectSyncValues(PanelSyncManager syncManager, ModularPanel<?> panel) {
         collectSyncValues(syncManager, panel, true);
     }
 
     @ApiStatus.Internal
-    public static void collectSyncValues(PanelSyncManager syncManager, ModularPanel panel, boolean includePanel) {
+    public static void collectSyncValues(PanelSyncManager syncManager, ModularPanel<?> panel, boolean includePanel) {
         collectSyncValues(syncManager, panel.getName(), panel, includePanel);
     }
 

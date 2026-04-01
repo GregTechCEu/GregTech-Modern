@@ -86,7 +86,7 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
                 this::getFilterMode, this::setFilterMode);
 

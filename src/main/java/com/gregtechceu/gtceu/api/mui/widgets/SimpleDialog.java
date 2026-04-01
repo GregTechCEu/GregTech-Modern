@@ -12,12 +12,12 @@ public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T> {
 
     public SimpleDialog(String name, Consumer<T> valueConsumer, W widget, Function<W, T> valueGetter, IKey title) {
         super(name, valueConsumer);
-        child(new TextWidget<>(title).align(Alignment.TopCenter).marginTop(4));
-        child(widget.align(Alignment.CENTER));
+        child(new TextWidget<>(title).leftRel(0.5f).marginTop(4));
+        child(widget.center());
         child(new ButtonWidget<>()
                 .background(GTGuiTextures.CLOSE)
                 .hoverBackground(GTGuiTextures.CLOSE)
-                .align(Alignment.TopRight)
+                .posRel(Alignment.TopRight)
                 .onMousePressed((mouseX, mouseY, button) -> {
                     closeIfOpen();
                     return true;
@@ -25,7 +25,7 @@ public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T> {
         child(new ButtonWidget<>()
                 .background(GTGuiTextures.RIGHTLOAD)
                 .hoverBackground(GTGuiTextures.RIGHTLOAD)
-                .align(Alignment.BottomCenter)
+                .posRel(Alignment.TopCenter)
                 .onMousePressed((mouseX, mouseY, button) -> {
                     closeWith(valueGetter.apply(widget));
                     return true;

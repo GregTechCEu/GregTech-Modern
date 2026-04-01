@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -253,10 +254,10 @@ public abstract class ScrollData {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public abstract void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme, IDrawable texture);
+    public abstract void drawScrollbar(ModularGuiContext context, ScrollArea area, WidgetTheme widgetTheme, IDrawable texture);
 
     @OnlyIn(Dist.CLIENT)
-    protected void drawScrollBar(GuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme,
+    protected void drawScrollBar(ModularGuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme,
                                  IDrawable texture) {
         IDrawable drawable;
         if (this.scrollbar != null) {
@@ -269,6 +270,9 @@ public abstract class ScrollData {
         if (drawable == null) drawable = Scrollbar.DEFAULT;
         drawable.draw(context, x, y, w, h, widgetTheme);
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public abstract void drawScrollShadow(ScrollArea area, ModularGuiContext context);
 
     public boolean onMouseClicked(ScrollArea area, int mainAxisPos, int crossAxisPos, int button) {
         if (isAxisStart() ? crossAxisPos <= getThickness() :

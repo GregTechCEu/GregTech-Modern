@@ -45,7 +45,6 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         return phantom ? new PhantomItemSlot() : new ItemSlot();
     }
 
-    private static final TextRenderer textRenderer = new TextRenderer();
     private ItemSlotSyncHandler syncHandler;
     private RichTooltip tooltip;
     @Setter
@@ -221,45 +220,42 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void drawSlot(ModularGuiContext context, ModularSlot slotIn) {
+    private void drawSlot(ModularGuiContext context, ModularSlot slot) {
         // TODO: NEA animations
         Screen guiScreen = getScreen().getScreenWrapper().getWrappedScreen();
         if (!(guiScreen instanceof AbstractContainerScreen<?>))
             throw new IllegalStateException("The gui must be an instance of GuiContainer if it contains slots!");
         AbstractContainerScreenAccessor acc = (AbstractContainerScreenAccessor) guiScreen;
-        ItemStack slotStack = slotIn.getItem();
+        ItemStack slotStack = slot.getItem();
         boolean isDragPreview = false;
-        boolean doDrawItem = slotIn == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
+        boolean doDrawItem = slot == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
                 !acc.getIsSplittingStack();
         ItemStack carried = guiScreen.getMinecraft().player.containerMenu.getCarried();
         int amount = -1;
         String format = null;
 
         if (!getSyncHandler().isPhantom()) {
-            if (slotIn == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() && acc.getIsSplittingStack() &&
-                    !slotStack.isEmpty()) {
+            if (slot == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() && acc.getIsSplittingStack() && !slotStack.isEmpty()) {
                 slotStack = slotStack.copy();
                 slotStack.setCount(slotStack.getCount() / 2);
-            } else if (acc.getIsQuickCrafting() && acc.getQuickCraftSlots().contains(slotIn) && !carried.isEmpty()) {
+            } else if (acc.getIsQuickCrafting() && acc.getQuickCraftSlots().contains(slot) && !carried.isEmpty()) {
                 if (acc.getQuickCraftSlots().size() == 1) {
                     return;
                 }
 
-                if (AbstractContainerMenu.canItemQuickReplace(slotIn, carried, true) &&
-                        getScreen().getContainer().canDragTo(slotIn)) {
+                if (AbstractContainerMenu.canItemQuickReplace(slot, carried, true) && getScreen().getContainer().canDragTo(slot)) {
                     slotStack = carried.copy();
                     isDragPreview = true;
-                    AbstractContainerMenu.getQuickCraftPlaceCount(acc.getQuickCraftSlots(), acc.getQuickCraftingType(),
-                            slotStack);
-                    int k = Math.min(slotStack.getMaxStackSize(), slotIn.getMaxStackSize(slotStack));
 
-                    if (slotStack.getCount() > k) {
-                        amount = k;
+                    int maxSize = Math.min(slotStack.getMaxStackSize(), slot.getMaxStackSize(slotStack));
+                    amount = slot.getItem().getCount();
+                    amount += AbstractContainerMenu.getQuickCraftPlaceCount(acc.getQuickCraftSlots(), acc.getQuickCraftingType(), slotStack);
+                    if (amount > maxSize) {
+                        amount = maxSize;
                         format = ChatFormatting.YELLOW.toString();
-                        slotStack.setCount(k);
                     }
                 } else {
-                    acc.getQuickCraftSlots().remove(slotIn);
+                    acc.getQuickCraftSlots().remove(slot);
                     acc.invokeRecalculateQuickCraftRemaining();
                 }
             }
@@ -309,6 +305,6 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
     @Override
     public UnaryOperator<ItemStack> renderMappingFunction() {
-        return this.itemHook;
+        return this.itemHook != null ? this.itemHook : UnaryOperator.identity();
     }
 }

@@ -25,7 +25,7 @@ public interface IUIHolder<T extends GuiData> {
      * @return a modular screen instance with the given panel
      */
     @OnlyIn(Dist.CLIENT)
-    default ModularScreen createScreen(T data, ModularPanel mainPanel) {
+    default ModularScreen createScreen(T data, ModularPanel<?> mainPanel) {
         GTCEu.LOGGER
                 .warn("IGuiHolder.createScreen() should be overridden to pass your own mod id to the ModularScreen." +
                         " In future versions this method must be overridden or else it will crash!");
@@ -43,5 +43,5 @@ public interface IUIHolder<T extends GuiData> {
      * @param syncManager sync handler where widget sync handlers should be registered
      * @param settings    settings which apply to the whole ui and not just this panel
      */
-    ModularPanel buildUI(T data, PanelSyncManager syncManager, UISettings settings);
+    ModularPanel<?> buildUI(T data, PanelSyncManager syncManager, UISettings settings);
 }

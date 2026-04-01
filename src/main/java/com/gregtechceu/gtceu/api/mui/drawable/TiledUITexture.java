@@ -8,6 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import java.util.Objects;
+
 public class TiledUITexture extends UITexture {
 
     private final int imageWidth, imageHeight;
@@ -20,6 +22,11 @@ public class TiledUITexture extends UITexture {
         super(location, u0, v0, u1, v1, colorType, nonOpaque);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
+    }
+
+    @Override
+    public TiledUITexture register(String name) {
+        return (TiledUITexture) super.register(name);
     }
 
     @Override
@@ -51,5 +58,19 @@ public class TiledUITexture extends UITexture {
     @Override
     public TiledUITexture withColorOverride(int color) {
         return (TiledUITexture) super.withColorOverride(color);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o != null && getClass() == o.getClass() && isEqual((TiledUITexture) o);
+    }
+
+    protected boolean isEqual(TiledUITexture texture) {
+        return super.isEqual(texture) && imageWidth == texture.imageWidth && imageHeight == texture.imageHeight;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), imageWidth, imageHeight);
     }
 }

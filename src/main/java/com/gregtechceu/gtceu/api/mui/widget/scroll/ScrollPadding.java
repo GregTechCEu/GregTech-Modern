@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widget.scroll;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
+import lombok.Getter;
 
 import java.util.Objects;
 
@@ -11,10 +12,8 @@ public class ScrollPadding extends Box {
     public static final ScrollPadding SHARED = new ScrollPadding();
     public static final ScrollPadding ZERO = new ScrollPadding();
 
-    protected int scrollPaddingLeft;
-    protected int scrollPaddingTop;
-    protected int scrollPaddingRight;
-    protected int scrollPaddingBottom;
+    @Getter
+    protected int scrollPaddingLeft, scrollPaddingTop, scrollPaddingRight, scrollPaddingBottom;
 
     public ScrollPadding scrollPaddingAll(int all) {
         return this.scrollPaddingAll(all, all);
@@ -75,41 +74,56 @@ public class ScrollPadding extends Box {
                 box.scrollPaddingBottom);
     }
 
-    public int getLeft() {
+    @Override
+    public int left() {
         return this.left + this.scrollPaddingLeft;
     }
 
-    public int getRight() {
+    @Override
+    public int right() {
         return this.right + this.scrollPaddingRight;
     }
 
-    public int getTop() {
+    @Override
+    public int top() {
         return this.top + this.scrollPaddingTop;
     }
 
-    public int getBottom() {
+    @Override
+    public int bottom() {
         return this.bottom + this.scrollPaddingBottom;
     }
 
+    @Override
     public int vertical() {
         return super.vertical() + this.scrollPaddingTop + this.scrollPaddingBottom;
     }
 
+    @Override
     public int horizontal() {
         return super.horizontal() + this.scrollPaddingLeft + this.scrollPaddingRight;
     }
 
+    public int verticalScrollPadding() {
+        return this.scrollPaddingTop + this.scrollPaddingBottom;
+    }
+
+    public int horizontalScrollPadding() {
+        return this.scrollPaddingLeft + this.scrollPaddingRight;
+    }
+
+    @Override
     public int getStart(GuiAxis axis) {
         return axis.isHorizontal() ? this.left + this.scrollPaddingLeft : this.top + this.scrollPaddingTop;
     }
 
+    @Override
     public int getEnd(GuiAxis axis) {
         return axis.isHorizontal() ? this.right + this.scrollPaddingRight : this.bottom + this.scrollPaddingBottom;
     }
 
     public int getTotalScrollPadding(GuiAxis axis) {
-        return axis.isHorizontal() ? this.scrollPaddingLeft + this.scrollPaddingRight :
-                this.scrollPaddingTop + this.scrollPaddingBottom;
+        return axis.isHorizontal() ? horizontalScrollPadding() : verticalScrollPadding();
     }
 
     @Override

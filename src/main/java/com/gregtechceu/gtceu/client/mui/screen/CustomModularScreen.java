@@ -31,5 +31,5 @@ public abstract class CustomModularScreen extends ModularScreen {
      */
     @NotNull
     @ApiStatus.OverrideOnly
-    public abstract ModularPanel buildUI(ModularGuiContext context);
+    public abstract ModularPanel<?> buildUI(ModularGuiContext context);
 }

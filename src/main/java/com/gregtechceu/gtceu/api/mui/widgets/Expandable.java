@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -22,15 +23,23 @@ import java.util.function.BiConsumer;
 
 public class Expandable extends Widget<Expandable> implements Interactable, IViewport {
 
+    @Getter
     private IWidget normalView = new EmptyWidget();
+    @Getter
     private IWidget expandedView = new EmptyWidget();
+
     private final List<IWidget> children = Arrays.asList(normalView, expandedView);
     private List<IWidget> currentChildren = children;
+    @Getter
     private boolean expanded = false;
     private Area areaSnapshot;
+    @Getter
     private Animator animator;
+    @Getter
     private BiConsumer<Rectangle, Boolean> stencilTransform;
+    @Getter
     private int animationDuration = 300;
+    @Getter
     private IInterpolation interpolation = Interpolation.SINE_OUT;
 
     public Expandable() {
@@ -100,7 +109,7 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     }
 
     public void toggle() {
-        expanded(!expanded);
+        setExpanded(!expanded);
     }
 
     @Override
@@ -123,8 +132,8 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
         }
     }
 
-    public Expandable expanded(boolean expanded) {
-        if (this.expanded == expanded) return this;
+    public void setExpanded(boolean expanded) {
+        if (this.expanded == expanded) return;
         this.expanded = expanded;
         if (expanded) {
             this.normalView.setEnabled(false);
@@ -138,7 +147,6 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
             this.areaSnapshot = getArea().copyOrImmutable();
             scheduleResize();
         }
-        return this;
     }
 
     public Expandable collapsedView(IWidget normalView) {

@@ -122,7 +122,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param owner     owner of this screen (usually a mod id)
      * @param mainPanel main panel of this screen
      */
-    public ModularScreen(@NotNull String owner, @NotNull ModularPanel mainPanel) {
+    public ModularScreen(@NotNull String owner, @NotNull ModularPanel<?> mainPanel) {
         this(owner, context -> mainPanel);
     }
 
@@ -132,15 +132,17 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param owner            owner of this screen (usually a mod id)
      * @param mainPanelCreator function which creates the main panel of this screen
      */
-    public ModularScreen(@NotNull String owner, @NotNull Function<ModularGuiContext, ModularPanel> mainPanelCreator) {
+    public ModularScreen(@NotNull String owner,
+                         @NotNull Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator) {
         this(owner, Objects.requireNonNull(mainPanelCreator, "The main panel function must not be null!"), false);
     }
 
-    private ModularScreen(@NotNull String owner, @Nullable Function<ModularGuiContext, ModularPanel> mainPanelCreator,
+    private ModularScreen(@NotNull String owner,
+                          @Nullable Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator,
                           boolean ignored) {
         Objects.requireNonNull(owner, "The owner must not be null!");
         this.owner = owner;
-        ModularPanel mainPanel = mainPanelCreator != null ? mainPanelCreator.apply(this.context) :
+        ModularPanel<?> mainPanel = mainPanelCreator != null ? mainPanelCreator.apply(this.context) :
                 buildUI(this.context);
         Objects.requireNonNull(mainPanel, "The main panel must not be null!");
         this.name = mainPanel.getName();
@@ -157,7 +159,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     /**
      * Intended for use in {@link CustomModularScreen}
      */
-    ModularPanel buildUI(ModularGuiContext context) {
+    ModularPanel<?> buildUI(ModularGuiContext context) {
         throw new UnsupportedOperationException();
     }
 
@@ -275,7 +277,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param panel panel to check
      * @return true if the panel is open
      */
-    public boolean isPanelOpen(ModularPanel panel) {
+    public boolean isPanelOpen(ModularPanel<?> panel) {
         return this.panelManager.hasOpenPanel(panel);
     }
 
@@ -284,7 +286,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      */
     @MustBeInvokedByOverriders
     public void onUpdate() {
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             WidgetTree.onUpdate(panel);
         }
     }
@@ -318,7 +320,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
-        for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getReverseOpenPanels()) {
             this.context.updateZ(0);
             if (panel.disablePanelsBelow()) {
                 GuiDraw.drawRect(graphics, 0, 0, this.context.getScreenArea().w(), this.context.getScreenArea().h(),
@@ -346,7 +348,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
-        for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getReverseOpenPanels()) {
             this.context.updateZ(100);
             if (panel.isEnabled()) {
                 WidgetTree.drawTreeForeground(panel, this.context);
@@ -390,7 +392,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
             action.press(mouseX, mouseY, button);
         }
         // check if any context menu is open and close them if they or their children are not hovered
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel instanceof MenuPanel menuPanel) {
                 menuPanel.closeAllMenus(false, true);
             }
@@ -400,7 +402,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
             return true;
         }
         // finally click hovered widgets
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onMousePressed(mouseX, mouseY, button)) {
                 return true;
             }
@@ -430,7 +432,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         if (this.context.onMouseReleased(mouseX, mouseY, button)) {
             return true;
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onMouseReleased(mouseX, mouseY, button)) {
                 return true;
             }
@@ -457,7 +459,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         for (IGuiAction.KeyPressed action : getGuiActionListeners(IGuiAction.KeyPressed.class)) {
             action.press(keyCode, scanCode, modifiers);
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onKeyPressed(keyCode, scanCode, modifiers)) {
                 return true;
             }
@@ -484,7 +486,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         for (IGuiAction.KeyReleased action : getGuiActionListeners(IGuiAction.KeyReleased.class)) {
             action.release(keyCode, scanCode, modifiers);
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onKeyReleased(keyCode, scanCode, modifiers)) {
                 return true;
             }
@@ -510,7 +512,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         for (IGuiAction.CharTyped action : getGuiActionListeners(IGuiAction.CharTyped.class)) {
             action.type(codePoint, modifiers);
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onCharTyped(codePoint, modifiers)) {
                 return true;
             }
@@ -537,7 +539,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         for (IGuiAction.MouseScroll action : getGuiActionListeners(IGuiAction.MouseScroll.class)) {
             action.scroll(mouseX, mouseY, delta);
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onMouseScrolled(mouseX, mouseY, delta)) {
                 return true;
             }
@@ -567,7 +569,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         for (IGuiAction.MouseDrag action : getGuiActionListeners(IGuiAction.MouseDrag.class)) {
             action.drag(mouseX, mouseY, button, dragX, dragY);
         }
-        for (ModularPanel panel : this.panelManager.getOpenPanels()) {
+        for (ModularPanel<?> panel : this.panelManager.getOpenPanels()) {
             if (panel.onMouseDrag(mouseX, mouseY, button, dragX, dragY)) {
                 return true;
             }
@@ -622,7 +624,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         return getContainer().getSyncManager();
     }
 
-    public ModularPanel getMainPanel() {
+    public ModularPanel<?> getMainPanel() {
         return this.panelManager.getMainPanel();
     }
 
@@ -631,8 +633,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     }
 
     public boolean isClientOnly() {
-        return isOverlay() || !this.screenWrapper.isGuiContainer() || getContainer().isClientOnly();
-    }
+        return isOverlay() || !this.screenWrapper.isContainerScreen() || getContainer().isClientOnly();
+        }
 
     public ModularContainerMenu getContainer() {
         if (isOverlay()) {

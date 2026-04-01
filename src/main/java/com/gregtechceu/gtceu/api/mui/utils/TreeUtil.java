@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.ITreeNode;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.ResizeNode;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Streams;
@@ -303,7 +302,7 @@ public class TreeUtil {
      * @param test   test which the widget has to pass
      * @return the first matching widget
      */
-    public static <T extends ITreeNode<T>> T findFirst(T parent, @NotNull Predicate<T> test) {
+    public static <T extends ITreeNode<T>> @Nullable T findFirst(T parent, @NotNull Predicate<T> test) {
         return foreachChildWithResult(parent, w -> {
             if (test.test(w)) {
                 return w;
@@ -321,8 +320,8 @@ public class TreeUtil {
      * @return the first matching widget
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ITreeNode<T>, R extends ITreeNode<T>> R findFirst(T parent, Class<R> type,
-                                                                               @Nullable Predicate<R> test) {
+    public static <T extends ITreeNode<T>, R extends ITreeNode<T>> @Nullable R findFirst(T parent, Class<R> type,
+                                                                                         @Nullable Predicate<R> test) {
         return foreachChildWithResult(parent, t -> {
             if (type.isAssignableFrom(t.getClass())) {
                 if (test == null || test.test((R) t)) {
@@ -333,32 +332,31 @@ public class TreeUtil {
         }, true);
     }
 
-    public static <T extends ITreeNode<T>> T findParent(T parent, Predicate<T> filter) {
-        if (parent == null) return null;
-        while (!(parent instanceof ModularPanel)) {
+    public static <T extends ITreeNode<T>> @Nullable T findParent(T parent, Predicate<T> filter) {
+        while (parent != null) {
             if (filter.test(parent)) {
                 return parent;
             }
             parent = parent.getParent();
         }
-        return filter.test(parent) ? parent : null;
+        return null;
     }
 
-    public static <T extends ITreeNode<T>, R extends ITreeNode<T>> R findParent(T parent, Class<R> type) {
+    public static <T extends ITreeNode<T>, R extends ITreeNode<T>> @Nullable R findParent(T parent, Class<R> type) {
         return findParent(parent, type, null);
     }
 
     @SuppressWarnings("unchecked")
+    @Nullable
     public static <T extends ITreeNode<T>, R extends ITreeNode<T>> R findParent(T parent, Class<R> type,
                                                                                 @Nullable Predicate<R> test) {
-        if (parent == null) return null;
-        while (!(parent instanceof ModularPanel)) {
+        while (parent != null) {
             if (type.isAssignableFrom(parent.getClass()) && (test == null || test.test((R) parent))) {
                 return (R) parent;
             }
             parent = parent.getParent();
         }
-        return type.isAssignableFrom(parent.getClass()) && (test == null || test.test((R) parent)) ? (R) parent : null;
+        return null;
     }
 
     /**
