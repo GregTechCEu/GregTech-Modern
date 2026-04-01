@@ -74,7 +74,7 @@ public interface IMuiScreen {
      * @return if this wrapper is a {@link AbstractContainerScreen}
      */
     @ApiStatus.NonExtendable
-    default boolean isGuiContainer() {
+    default boolean isContainerScreen() {
         return getWrappedScreen() instanceof AbstractContainerScreen<?>;
     }
 

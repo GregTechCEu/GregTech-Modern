@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Slot.class)
 public interface SlotAccessor {
 
-    @Accessor("x")
+    @Accessor
     @Mutable
-    void gtceu$setX(int x);
+    void setX(int x);
 
-    @Accessor("x")
+    @Accessor
     @Mutable
-    void gtceu$setY(int y);
+    void setY(int y);
 }

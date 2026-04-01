@@ -423,8 +423,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
             Area mainArea = widget.getScreen().getMainPanel().getArea();
             // in vanilla uis the position is relative to the gui area and size is 16 x 16
             // since our slots are 18 x 18 we need to offset by 1
-            slot.gtceu$setX(widget.getArea().x - mainArea.x + 1);
-            slot.gtceu$setY(widget.getArea().y - mainArea.y + 1);
+            slot.setX(widget.getArea().x - mainArea.x + 1);
+            slot.setY(widget.getArea().y - mainArea.y + 1);
         }
     }
 

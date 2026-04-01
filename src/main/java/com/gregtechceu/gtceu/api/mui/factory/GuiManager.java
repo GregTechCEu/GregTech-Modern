@@ -94,8 +94,7 @@ public class GuiManager {
             player.closeContainer();
         }
         int windowId = player.containerCounter;
-        ModularContainerMenu menu = settings.hasCustomContainer() ? settings.createContainer(windowId) :
-                factory.createContainer(windowId);
+        ModularContainerMenu menu = settings.hasCustomContainer() ? settings.createContainer(windowId) : factory.createContainer(windowId);
         menu.construct(player, msm, settings, panel.getName(), guiData);
 
         // sync to client
@@ -133,11 +132,11 @@ public class GuiManager {
         WidgetTree.collectSyncValues(syncManager, panel);
         ModularScreen screen = factory.createScreen(guiData, panel);
         screen.getContext().setSettings(settings);
-        ModularContainerMenu container = settings.hasCustomContainer() ? settings.createContainer(windowId) :
-                factory.createContainer(windowId);
+        ModularContainerMenu container = settings.hasCustomContainer() ? settings.createContainer(windowId) : factory.createContainer(windowId);
+
         container.construct(player, msm, settings, panel.getName(), guiData);
-        IMuiScreen wrapper = settings.hasCustomGui() ? settings.createGui(container, screen) :
-                factory.createScreenWrapper(container, screen);
+        IMuiScreen wrapper = settings.hasCustomGui() ? settings.createGui(container, screen) : factory.createScreenWrapper(container, screen);
+
         if (!(wrapper.getWrappedScreen() instanceof AbstractContainerScreen<?> guiContainer)) {
             throw new IllegalStateException("The wrapping screen must be a GuiContainer for synced GUIs!");
         }
@@ -173,9 +172,7 @@ public class GuiManager {
 
     @OnlyIn(Dist.CLIENT)
     static void openScreen(ModularScreen screen, UISettings settings) {
-        if (screen.getScreenWrapper() != null &&
-                MCHelper.getCurrentScreen() == screen.getScreenWrapper().getWrappedScreen()) {
-            // already open
+        if (screen.getScreenWrapper() != null && MCHelper.getCurrentScreen() == screen.getScreenWrapper().getWrappedScreen()) {            // already open
             return;
         }
         screen.getContext().setSettings(settings);
