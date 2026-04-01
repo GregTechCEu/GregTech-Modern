@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.SecondaryPanel;
@@ -107,7 +107,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("Amount").asWidget().pos(4, 4))
-                .child(new Row()
+                .child(Flow.row()
                         .left(4).right(4).bottom(4).height(18)
                         .child(amountField)
                         .child(new ButtonWidget<>()

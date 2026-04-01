@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -57,7 +57,7 @@ public class TestItem extends Item implements ICurioItem, IUIHolder<PlayerInvent
                     new ModularSlot(inv, index));
         }
         ModularPanel<?> panel = ModularPanel.defaultPanel("knapping_gui").resizeableOnDrag(true);
-        panel.child(new Column().margin(7)
+        panel.child(Flow.col().margin(7)
                 .child(new ParentWidget<>().widthRel(1f).expanded()
                         .child(SlotGroupWidget.builder()
                                 .row("I I")

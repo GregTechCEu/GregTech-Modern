@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -129,7 +128,7 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                                         .marginRight(30)
                                         .verticalCenter())))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

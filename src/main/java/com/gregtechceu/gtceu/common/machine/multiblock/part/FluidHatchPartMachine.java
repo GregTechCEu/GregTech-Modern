@@ -21,9 +21,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -315,7 +313,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
                         .top(topOffset)
                         .horizontalCenter())
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .rightRel(1.0f)
                         .reverseLayout(true)
@@ -335,7 +333,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
         BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
         syncManager.syncValue("locked", locked);
-        return new Column()
+        return Flow.col()
                 .widthRel(.6f)
                 .height(60)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
@@ -344,7 +342,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                         .horizontalCenter())
                 .child(new TextWidget<>(IKey.dynamic(this::getFluidAmountText))
                         .horizontalCenter())
-                .child(new Row()
+                .child(Flow.row()
                         .childPadding(2)
                         .coverChildren()
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()

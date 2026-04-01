@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -280,7 +279,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                                       UITexture backgroundTexture) {
         IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
                 (sm, sh) -> GTGuis.createPopupPanel("stocking_settings_panel", 140, 70)
-                        .child(new Column()
+                        .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.me_network.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()

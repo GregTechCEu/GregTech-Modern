@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,7 +16,8 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Experimental
 public abstract class ModularNetwork {
 
-    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things up badly,
+    // You have to make sure you are choosing the logical side you are currently on otherwise you can mess things up
+    // badly,
     // since there is no validation.
     public static final Client CLIENT = new Client();
     public static final Server SERVER = new Server();

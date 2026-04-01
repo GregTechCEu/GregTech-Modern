@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
@@ -342,7 +342,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             backgroundTexture = GTGuiTextures.BACKGROUND;
         }
 
-        panel.child(new Column()
+        panel.child(Flow.col()
                 .coverChildren()
                 .rightRel(1.0f)
                 .reverseLayout(true)

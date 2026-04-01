@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
@@ -311,7 +311,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         IPanelHandler renamingPanelHandler = syncManager.syncedPanel("renaming", true,
                 ((syncManager1, syncHandler) -> GTGuis.createPopupPanel("renaming_panel", 110, 40)
-                        .child(new Column()
+                        .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
                                 .child(new TextFieldWidget()
@@ -352,7 +352,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         syncManager.registerServerSyncedAction("refundButtonPressed", packet -> refundAll());
 
-        panel.child(new Column()
+        panel.child(Flow.col()
                 .coverChildren()
                 .leftRel(1.0f)
                 .reverseLayout(true)

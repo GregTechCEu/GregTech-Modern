@@ -13,8 +13,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -65,7 +64,7 @@ public class GTRecipeTypeUILayout {
         if (recipeType != null) {
             var backedSlotsPanel = new ParentWidget<>();
             backedSlotsPanel.coverChildren();
-            var backedSlotsRow = new Row();
+            var backedSlotsRow = Flow.row();
             backedSlotsRow.coverChildrenHeight();
 
             int rowWidthPx = 0;
@@ -87,7 +86,7 @@ public class GTRecipeTypeUILayout {
                 var caps = (in ? recipeType.maxInputs : recipeType.maxOutputs);
                 int slotGroupHeightPx = 0;
 
-                Column ioColumn = new Column();
+                Flow ioColumn = Flow.col();
                 // ioColumn.coverChildrenWidth();
                 int slotGroupWidthPx = 0;
 

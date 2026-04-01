@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
@@ -340,7 +339,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                                 .child(GTMuiMachineUtil
                                         .createSquareSlotGroupFromInventory(output, "main_inv", syncManager)
                                         .horizontalCenter())))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

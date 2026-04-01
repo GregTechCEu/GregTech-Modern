@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -246,7 +245,7 @@ public class MinerMachine extends WorkableTieredMachine
                                 })).color(Color.WHITE.main)))
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
                                 syncManager)))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

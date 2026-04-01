@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -199,7 +199,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                         }).build()
                         .center()
                         .marginBottom(89))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

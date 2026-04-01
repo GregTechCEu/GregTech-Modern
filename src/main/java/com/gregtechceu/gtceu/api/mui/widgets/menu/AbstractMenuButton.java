@@ -50,7 +50,7 @@ public abstract class AbstractMenuButton<W extends AbstractMenuButton<W>> extend
      */
     private Menu<?> menu;
     /**
-     * @return true if the menu is currently open (soft or hard)
+     * true if the menu is currently open (soft or hard)
      */
     @Getter
     private boolean open;
@@ -64,13 +64,6 @@ public abstract class AbstractMenuButton<W extends AbstractMenuButton<W>> extend
     public AbstractMenuButton(String panelName) {
         this.panelName = Objects.requireNonNull(panelName);
         name(panelName);
-    }
-
-    /**
-     * @return true if the menu is currently soft open (opened by hovering)
-     */
-    public boolean isSoftOpen() {
-        return softOpen;
     }
 
     public void toggleMenu(boolean soft) {

@@ -132,11 +132,13 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param owner            owner of this screen (usually a mod id)
      * @param mainPanelCreator function which creates the main panel of this screen
      */
-    public ModularScreen(@NotNull String owner, @NotNull Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator) {
+    public ModularScreen(@NotNull String owner,
+                         @NotNull Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator) {
         this(owner, Objects.requireNonNull(mainPanelCreator, "The main panel function must not be null!"), false);
     }
 
-    private ModularScreen(@NotNull String owner, @Nullable Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator,
+    private ModularScreen(@NotNull String owner,
+                          @Nullable Function<ModularGuiContext, ModularPanel<?>> mainPanelCreator,
                           boolean ignored) {
         Objects.requireNonNull(owner, "The owner must not be null!");
         this.owner = owner;

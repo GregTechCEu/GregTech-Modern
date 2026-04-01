@@ -22,8 +22,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -357,13 +356,13 @@ public class FisherMachine extends TieredEnergyMachine
                 () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
 
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
-                .child(new Row()
+                .child(Flow.row()
                         .coverChildrenHeight()
                         .width(fullWidth + 16 - inputShift)
                         .left(7 + inputShift)
                         .childPadding(padding)
                         .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                        .child(new Column()
+                        .child(Flow.col()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
@@ -372,7 +371,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .alignY(Alignment.Center)
                                 .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
                                 .value(progressPercent))
-                        .child(new Column()
+                        .child(Flow.col()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(outputItemGrid.length == 0),
@@ -384,7 +383,7 @@ public class FisherMachine extends TieredEnergyMachine
                         .top(30 - topMargin))
 
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

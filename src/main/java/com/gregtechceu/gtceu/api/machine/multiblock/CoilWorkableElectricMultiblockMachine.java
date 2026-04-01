@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
@@ -76,13 +75,13 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                         .heightRel(.45f)
                         .margin(4, 0)
                         .left(3).top(3)
-                        .child(new Row()
+                        .child(Flow.row()
                                 .child(widget1)
                                 .child(panelUtil.getMainTextPanel(syncManager, 208, 90))
                                 .child(widget2))
 
                 )
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

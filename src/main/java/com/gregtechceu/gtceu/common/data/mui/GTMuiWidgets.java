@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
@@ -243,7 +242,7 @@ public class GTMuiWidgets {
                 .setDraggable(true)
                 .setCloseOnOutOfBoundsClick(true)
                 .height(105)
-                .child(new Column()
+                .child(Flow.col()
                         .padding(2)
                         .fullHeight()
                         .coverChildren()
@@ -255,7 +254,8 @@ public class GTMuiWidgets {
     }
 
     public static ModularPanel<?> createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
-                                                         Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+                                                         Supplier<ItemStack> circuitGetter,
+                                                         PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }

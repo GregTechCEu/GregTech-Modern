@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -357,14 +357,14 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         panel
                 .size(176, 104 + 18 * slotHeight)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 190))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
                                 syncManager))
                         .alignX(Alignment.CENTER)
                         .top(10))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .leftRel(1.0f)
                         .reverseLayout(true)

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -76,7 +75,7 @@ public class GTMuiMachineUtil {
     }
 
     public static Flow createColumn(boolean reverse, Widget<?>... children) {
-        var column = new Column();
+        var column = Flow.col();
         column.reverseLayout(reverse);
         for (Widget<?> child : children) {
             column.child(child);

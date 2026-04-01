@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.TreeUtil;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.IExpander;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
 
@@ -479,6 +480,13 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
     @Override
     public StandardResizer relativeToScreen() {
         this.relativeToScreen = true;
+        if (getParent() != null) {
+            // if this is currently part of a tree, try to find the root and attach ourselves to it
+            ScreenResizeNode root = TreeUtil.findParent(this, ScreenResizeNode.class);
+            if (root != null) {
+                setParentOverride(root);
+            }
+        }
         return this;
     }
 

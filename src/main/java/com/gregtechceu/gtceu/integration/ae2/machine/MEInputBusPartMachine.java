@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -172,7 +171,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     protected Flow createButtonColumn(ModularPanel<?> panel, PanelSyncManager syncManager,
                                       UITexture backgroundTexture) {
-        return new Column()
+        return Flow.col()
                 .coverChildren()
                 .rightRel(1.0f)
                 .reverseLayout(true)

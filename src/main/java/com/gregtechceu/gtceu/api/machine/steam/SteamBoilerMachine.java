@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -331,7 +331,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         DoubleSyncValue tempPercentage = syncManager.getOrCreateSyncHandler("tempPercentage", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(this::getTemperaturePercent));
 
-        panel.child(new Row()
+        panel.child(Flow.row()
                 .top(12)
                 .left(50)
                 .coverChildren()

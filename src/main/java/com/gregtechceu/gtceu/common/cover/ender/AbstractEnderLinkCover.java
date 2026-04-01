@@ -322,7 +322,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
 
-    protected ModularPanel<?> createChannelManagerPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    protected ModularPanel<?> createChannelManagerPanel(GuiData data, PanelSyncManager syncManager,
+                                                        UISettings settings) {
         var panel = new Dialog<>("channel_manager")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)

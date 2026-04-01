@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -135,7 +134,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 }));
 
         return super.buildUI(data, syncManager, settings)
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .right(18).top(7)
                         .childPadding(4)

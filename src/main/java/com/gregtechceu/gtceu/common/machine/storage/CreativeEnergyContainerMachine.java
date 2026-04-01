@@ -23,9 +23,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -209,7 +207,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 .coverChildrenHeight()
                 .width(166)
                 .background(GTGuiTextures.BACKGROUND)
-                .child(new Column()
+                .child(Flow.col()
                         .widthRel(1)
                         .name("main")
                         .padding(7)
@@ -223,7 +221,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .child(createSourceSelector(sourceSync))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
-                        .child(new Row()
+                        .child(Flow.row()
                                 .coverChildrenHeight()
                                 .name("Power")
                                 .coverChildrenHeight()
