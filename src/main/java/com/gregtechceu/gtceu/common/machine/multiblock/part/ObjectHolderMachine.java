@@ -114,7 +114,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
 
         return Flow.row()
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .align(Alignment.CENTER)
+                .center()
                 .coverChildren()
                 .child(new ItemSlot()
                         .slot(new ModularSlot(heldItems, 1).slotGroup(orbGroup))

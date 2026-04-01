@@ -70,8 +70,7 @@ public class TestItem extends Item implements ICurioItem, IUIHolder<PlayerInvent
                                         // do not allow putting items which can hold other items into the item
                                         // some mods don't do this on their backpacks, so it won't catch those cases
                                         .filter(stack -> !stack.getCapability(ITEM_HANDLER).isPresent())))
-                                .build()
-                                .align(Alignment.TopLeft)))
+                                .build()))
                 .child(SlotGroupWidget.playerInventory(false)));
 
         return panel;

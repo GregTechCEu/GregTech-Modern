@@ -361,7 +361,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .coverChildren()
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
                                 syncManager))
-                        .alignX(Alignment.CENTER)
+                        .leftRel(0.5f)
                         .top(10))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(Flow.col()

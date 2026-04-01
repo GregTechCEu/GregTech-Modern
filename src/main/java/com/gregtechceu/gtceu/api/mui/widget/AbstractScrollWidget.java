@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +31,9 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     private final ScrollArea scroll = new ScrollArea();
     private boolean scrollXActive, scrollYActive;
     private IGuiAction.MouseScroll customMouseScroll;
+
+    @Getter
+    private boolean showScrollShadows = true;
 
     public AbstractScrollWidget(@Nullable HorizontalScrollData x, @Nullable VerticalScrollData y) {
         super();
@@ -150,8 +154,8 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
         if (!transformed) {
             context.getStencil().pop();
             WidgetThemeEntry<WidgetTheme> scrollbarTheme = getPanel().getTheme().getScrollbarTheme();
-            this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
-                    scrollbarTheme.getTheme().getBackground());
+            this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()), scrollbarTheme.getTheme().getBackground());
+            if (this.showScrollShadows) this.scroll.drawScrollShadow(context);
         }
     }
 
@@ -161,5 +165,10 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     public int getScrollY() {
         return this.scroll.getScrollY() != null ? this.scroll.getScrollY().getScroll() : 0;
+    }
+
+    public W showScrollShadows(boolean showScrollShadows) {
+        this.showScrollShadows = showScrollShadows;
+        return getThis();
     }
 }

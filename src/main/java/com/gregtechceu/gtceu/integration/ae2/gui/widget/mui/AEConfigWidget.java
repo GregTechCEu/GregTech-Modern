@@ -103,7 +103,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
 
         return new ModularPanel<>("ae_amount_editor")
                 .size(120, 36)
-                .alignX(0.5f).alignY(0.35f)
+                .posRel(0.5f,0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("Amount").asWidget().pos(4, 4))

@@ -136,7 +136,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 .syncHandler(dynamicHandler)
                 .size(167, 108)
                 .top(34)
-                .alignX(0.5f));
+                .leftRel(0.5f));
 
         panel.child(SlotGroupWidget.playerInventory(true).bottom(7));
 

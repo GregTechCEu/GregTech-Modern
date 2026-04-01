@@ -202,7 +202,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .height(70 - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft);
+                .leftRel(0);
         parentWidget.size(170, 70)
                 .background(GTGuiTextures.MUI_DISPLAY);
 

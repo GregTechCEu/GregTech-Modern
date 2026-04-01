@@ -84,7 +84,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
     private Flow createParallelRow(IntSyncValue parallels) {
         return Flow.row()
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .align(Alignment.CENTER)
+                .center()
                 .coverChildren()
                 .child(new ButtonWidget<>()
                         .overlay(new DynamicDrawable(() -> {

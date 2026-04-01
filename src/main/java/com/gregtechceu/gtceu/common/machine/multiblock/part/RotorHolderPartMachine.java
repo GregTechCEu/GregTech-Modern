@@ -276,7 +276,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
                         .height(20 + 18 * 4)
                         .child(Flow.row()
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .coverChildren()
                                 .child(slot)))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));

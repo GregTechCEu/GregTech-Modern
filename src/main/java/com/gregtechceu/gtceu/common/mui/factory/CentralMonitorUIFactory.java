@@ -110,9 +110,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .padding(2)
                         .child(new Flow(GuiAxis.X)
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.monitor_groups"))
-                                        .alignX(0))
+                                        .leftRel(0))
                                 .child(new ButtonWidget<>()
-                                        .alignX(1)
+                                        .leftRel(1)
                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
                                         .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
                                         .syncHandler(new InteractionSyncHandler()
@@ -253,9 +253,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                 moduleEditor.openPanel();
                                             return true;
                                         })))
-                        .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
+                        .child(new Grid().matrix(matrix).leftRel(0.5f).size(matrixWidth, matrixHeight)))
                 .child(new ButtonWidget<>()
-                        .align(Alignment.TopRight)
+                        .posRel(Alignment.TopRight)
                         .background(GTGuiTextures.HELP)
                         .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
                         .onMousePressed((mouseX, mouseY, button) -> {

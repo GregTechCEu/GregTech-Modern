@@ -319,7 +319,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         panel.child(new Grid()
                 .coverChildren()
                 .top(10 + smallHatchOffset)
-                .alignX(0.5f)
+                .leftRel(0.5f)
                 .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
                                 .slotGroup(group)
@@ -331,7 +331,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                                 .accessibility(inventory.handlerIO.support(IO.IN), true))))
 
                 .child(SlotGroupWidget.playerInventory(true)
-                        // .alignX(Alignment.CENTER)
+                        // .leftRel(0.5f)
                         .left(7)
                         .bottom(7));
 

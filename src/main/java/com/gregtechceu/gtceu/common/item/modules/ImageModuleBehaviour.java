@@ -41,12 +41,12 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
                         .size(200, 50)
                         .child(Flow.column()
                                 .marginTop(5)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .widthRel(1)
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.url")))
                                 .child(new TextFieldWidget()
                                         .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s)))
-                                        .align(Alignment.CENTER)
+                                        .center()
                                         .widthRel(.8f))));
     }
 

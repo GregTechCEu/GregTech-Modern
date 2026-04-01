@@ -81,7 +81,7 @@ public class GTRecipeViewerUILayout {
 
                     widgetGroups.add(slotWidgetBuilder.build()
                             .name(recipeCap.name + "_" + io.name())
-                            .alignX(io == IO.IN ? Alignment.TopLeft : Alignment.TopRight));
+                            .leftRel(io == IO.IN ? 0 : 1));
                 }
 
                 ioColumn.size(slotGroupWidthPx, slotGroupHeightPx);
@@ -98,7 +98,7 @@ public class GTRecipeViewerUILayout {
             for (var ioColumn : colWidgetGroups.entrySet()) {
                 var col = ioColumn.getValue();
                 var io = ioColumn.getKey();
-                slotsRow.child(col.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
+                slotsRow.child(col.posRel(io == IO.IN ? 0f : 1f, 0.5f));
             }
 
             // same padding as (1) + half a slot on each side

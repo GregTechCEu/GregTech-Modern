@@ -368,7 +368,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
                                         .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY)))
                         .child(new ProgressWidget()
-                                .alignY(Alignment.Center)
+                                .posRel(Alignment.CenterLeft)
                                 .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
                                 .value(progressPercent))
                         .child(Flow.col()
@@ -378,8 +378,8 @@ public class FisherMachine extends TieredEnergyMachine
                                         () -> GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                                                 "output_item_inv", cache.getSize(), 'i',
                                                 syncManager, outputItemGrid)
-                                                .alignX(Alignment.CenterRight))
-                                .align(Alignment.CenterRight))
+                                                .leftRel(1))
+                                .posRel(Alignment.CenterRight))
                         .top(30 - topMargin))
 
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))

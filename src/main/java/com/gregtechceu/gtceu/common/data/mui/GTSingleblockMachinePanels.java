@@ -67,7 +67,7 @@ public class GTSingleblockMachinePanels {
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         simpleTieredMachine.recipeLogic::getProgressPercent,
                                         -1)
-                                .alignX(Alignment.CENTER))
+                                .leftRel(0.5f))
                         .coverChildrenHeight()
                         // .left(7)
                         .bottom(76 + 7 + 18 + 9))
@@ -157,7 +157,7 @@ public class GTSingleblockMachinePanels {
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         simpleTieredMachine.recipeLogic::getProgressPercent,
                                         simpleTieredMachine.getTier())
-                                .alignX(Alignment.CENTER))
+                                .leftRel(0.5f))
                         .coverChildrenHeight()
                         // .left(7)
                         .bottom(76 + 7 + 18 + 9))
@@ -245,7 +245,7 @@ public class GTSingleblockMachinePanels {
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         simpleTieredMachine.recipeLogic::getProgressPercent,
                                         0)
-                                .alignX(Alignment.CENTER))
+                                .leftRel(0.5f))
                         .coverChildrenHeight()
                         // .left(7)
                         .bottom(76 + 7 + 18 + 9))
@@ -321,7 +321,7 @@ public class GTSingleblockMachinePanels {
                                         null, null,
                                         steamMachine.recipeLogic::getProgressPercent,
                                         steamMachine.getTier())
-                                .alignX(Alignment.CENTER))
+                                .leftRel(0.5f))
                         .coverChildrenHeight()
                         // .left(7)
                         .bottom(76 + 7 + 18 + 9))

@@ -150,7 +150,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 .height(height - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft);
+                .leftRel(0);
         parentWidget.size(width, height)
                 .background(GTGuiTextures.MUI_DISPLAY);
 

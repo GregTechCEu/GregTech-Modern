@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -207,7 +208,7 @@ public class ScrollArea extends Area {
      * This method is responsible for drawing a scroll bar
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScrollbar(GuiContext context, WidgetTheme widgetTheme, IDrawable texture) {
+    public void drawScrollbar(ModularGuiContext context, WidgetTheme widgetTheme, IDrawable texture) {
         boolean isXActive = false; // micro optimisation
         if (this.scrollX != null && this.scrollX.isScrollBarActive(this, false)) {
             isXActive = true;
@@ -215,6 +216,18 @@ public class ScrollArea extends Area {
         }
         if (this.scrollY != null && this.scrollY.isScrollBarActive(this, isXActive)) {
             this.scrollY.drawScrollbar(context, this, widgetTheme, texture);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawScrollShadow(ModularGuiContext context) {
+        boolean isXActive = false; // micro optimisation
+        if (this.scrollX != null && this.scrollX.isScrollBarActive(this, false)) {
+            isXActive = true;
+            this.scrollX.drawScrollShadow(this, context);
+        }
+        if (this.scrollY != null && this.scrollY.isScrollBarActive(this, isXActive)) {
+            this.scrollY.drawScrollShadow(this, context);
         }
     }
 }

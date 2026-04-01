@@ -152,7 +152,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 .syncManager(syncManager)
                 .size(8 * 18, 2 * (18 * 2 + 2))
                 .top(26)
-                .alignX(0.5f));
+                .leftRel(0.5f));
 
         var theme = this.getDefinition().getThemeId();
         var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()

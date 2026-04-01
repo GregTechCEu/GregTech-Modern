@@ -121,7 +121,7 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                         .height(20 + 18 * size)
                         .child(Flow.row()
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .coverChildren()
                                 .child(slotWidget
                                         .marginLeft(30)

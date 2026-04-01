@@ -550,7 +550,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
                                 .child(new ParentWidget<>()
                                         .background(GTGuiTextures.DISPLAY)
                                         .size(90, 63)
-                                        .align(Alignment.CENTER)
+                                        .center()
                                         .child(IKey.lang("gtceu.gui.fluid_amount").asWidget()
                                                 .color(0xffffff)
                                                 .margin(8, 0, 8, 0))

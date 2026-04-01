@@ -190,7 +190,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
                         .height(20 + 18 * size)
                         .child(Flow.row()
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .coverChildren()
                                 .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager)
                                         .marginLeft(30)
@@ -202,7 +202,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
                         .height(76)
                         .child(Flow.row()
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .align(Alignment.CENTER).coverChildren().child(
+                                .center().coverChildren().child(
                                         SlotGroupWidget.playerInventory(false))));
     }
 }

@@ -248,7 +248,7 @@ public class GTMuiWidgets {
                         .coverChildren()
                         .childPadding(7)
                         .top(3)
-                        .alignX(Alignment.Center)
+                        .leftRel(0.5f)
                         .child(IKey.lang("item.gtceu.circuit.integrated.gui").asWidget())
                         .child(buttonGrid));
     }
@@ -692,7 +692,7 @@ public class GTMuiWidgets {
             }
 
             if (this.lang != null)
-                row.child(this.lang.asWidget().align(Alignment.CenterRight).height(18));
+                row.child(this.lang.asWidget().posRel(Alignment.CenterRight).height(18));
 
             return row;
         }

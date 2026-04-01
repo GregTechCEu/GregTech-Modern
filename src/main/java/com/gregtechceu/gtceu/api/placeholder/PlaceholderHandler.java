@@ -368,7 +368,7 @@ public class PlaceholderHandler {
                                         .map(w -> w
                                                 .child(new TextWidget<>(w.getWidgetValue())
                                                         .sizeRel(1)
-                                                        .align(Alignment.CENTER))
+                                                        .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
                                                                 .getSingleOrMultiLang(

@@ -107,7 +107,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                         .height(20 + 18 * size)
                         .child(Flow.row()
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .align(Alignment.CENTER)
+                                .center()
                                 .coverChildren()
                                 .child(grid
                                         .marginLeft(30)

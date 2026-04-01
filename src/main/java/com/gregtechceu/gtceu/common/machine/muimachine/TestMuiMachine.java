@@ -178,7 +178,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         PagedWidget.Controller tabController = new PagedWidget.Controller();
         panel.resizer()                        // returns object which is responsible for sizing
                 .size(176, 220)       // set a static size for the main panel
-                .align(Alignment.Center);    // center the panel in the screen
+                .center();    // center the panel in the screen
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class, () ->
                 new DoubleSyncValue(() -> (this.progress / (double) this.duration)));
@@ -252,7 +252,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                         .name("buttons, slots and more tests")
                                                         .height(137)
                                                         .coverChildrenWidth()
-                                                        .alignY(Alignment.Center)
+                                                        .posRel(Alignment.CenterLeft)
                                                         // .padding(7)
                                                         .child(Flow.col()
                                                                 .name("buttons and slots test")
@@ -389,7 +389,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                 .coverChildren()
                                                 // .height(120)
                                                 .padding(7)
-                                                .alignX(0.5f)
+                                                .leftRel(0.5f)
                                                 .mainAxisAlignment(Alignment.MainAxis.START)
                                                 .childPadding(2)
                                                 // .child(SlotGroupWidget.playerInventory().left(0))
@@ -645,7 +645,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         AtomicReference<String> value = new AtomicReference<>("");
         dialog.setDraggable(true);
         dialog.child(new TextFieldWidget()
-                .resizer(flex -> flex.size(100, 20).align(Alignment.Center))
+                .resizer(flex -> flex.size(100, 20).center())
                 .value(new StringValue.Dynamic(value::get, value::set)))
                 .child(new ButtonWidget<>()
                         .resizer(flex -> flex.size(8, 8).top(5).right(5))

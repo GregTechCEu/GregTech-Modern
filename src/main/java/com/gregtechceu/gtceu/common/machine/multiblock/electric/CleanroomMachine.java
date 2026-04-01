@@ -511,7 +511,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .height(height - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft)
+                .leftRel(0)
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
