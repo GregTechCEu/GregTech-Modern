@@ -217,6 +217,7 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
+    @SubscribeEvent
     public void preInit(FMLConstructModEvent event) {}
 
     private static void initMaterials() {
