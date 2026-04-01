@@ -135,7 +135,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .height(70 - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft);
+                .posRel(Alignment.CenterLeft);
 
         listWidget.child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
                 .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))

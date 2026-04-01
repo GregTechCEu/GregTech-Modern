@@ -106,7 +106,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft);
+                .posRel(Alignment.CenterLeft);
         parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GTGuiTextures.MUI_DISPLAY);
 
         listWidget.children(getWidgetsForDisplay(syncManager));

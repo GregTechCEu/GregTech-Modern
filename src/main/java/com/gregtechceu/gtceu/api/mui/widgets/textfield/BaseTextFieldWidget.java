@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.theme.TextFieldTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Point;

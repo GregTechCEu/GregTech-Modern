@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -92,7 +93,8 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
         var col = Flow.col()
                 .margin(5, 5, 0, 5)
                 .coverChildren();
-        col.child(IKey.lang(getBlockState().getBlock().getName()).asWidget().alignX(0f).margin(0, 0, 3, 3))
+        col.child(
+                IKey.lang(getBlockState().getBlock().getName()).asWidget().posRel(Alignment.TopLeft).margin(0, 0, 3, 3))
                 .child(slots.height(rows * 18));
         mainWidget.child(col);
     }

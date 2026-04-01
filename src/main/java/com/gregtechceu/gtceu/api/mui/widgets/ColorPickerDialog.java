@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import lombok.Getter;
 
 public class ColorPickerDialog extends Dialog<Integer> {

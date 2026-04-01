@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.RecipeHolder;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -15,9 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
-
-import lombok.Setter;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +25,11 @@ import java.util.function.Consumer;
 /**
  * An output slot for crafting recipes for modular UIs. For input slots use regular {@link ModularSlot ModularSlots}.
  * The implementation is mostly copied from {@link net.minecraft.world.inventory.ResultSlot ResultSlot}.
- * To use this, you must call {@link #inputInventory(IItemHandlerModifiable, int)} or {@link #inputInventory(IItemHandlerModifiable)}.
+ * To use this, you must call {@link #inputInventory(IItemHandlerModifiable, int)} or
+ * {@link #inputInventory(IItemHandlerModifiable)}.
  * If the grid has any other size than 3x3, you also need to call {@link #gridSize(int, int)}.
- * It is required that all input slots use the same {@link IItemHandlerModifiable}. Additionally, all input slots and this output slot, MUST
+ * It is required that all input slots use the same {@link IItemHandlerModifiable}. Additionally, all input slots and
+ * this output slot, MUST
  * be in the same slot group.
  */
 @SuppressWarnings("unused")
@@ -64,7 +64,8 @@ public class ModularCraftingSlot extends ModularSlot {
     }
 
     /**
-     * Mandatory setter for the input inventory. The input inventory must contain the slot indices consecutively from left to right,
+     * Mandatory setter for the input inventory. The input inventory must contain the slot indices consecutively from
+     * left to right,
      * top to bottom. For a 3x3 grid it would look like this:
      * <p>
      * 0 1 2 <br>
@@ -81,7 +82,8 @@ public class ModularCraftingSlot extends ModularSlot {
     }
 
     /**
-     * Mandatory setter for the input inventory. The input inventory must contain the slot indices consecutively from left to right,
+     * Mandatory setter for the input inventory. The input inventory must contain the slot indices consecutively from
+     * left to right,
      * top to bottom. For a 3x3 grid with starting index 0 it would look like this:
      * <p>
      * 0 1 2 <br>
@@ -104,10 +106,12 @@ public class ModularCraftingSlot extends ModularSlot {
     public CraftingContainerWrapper getCraftSlots() {
         if (this.craftSlots == null) {
             if (this.inputInventory == null) {
-                throw new IllegalStateException("The crafting inventory of the crafting slot has not been initialised. " +
-                        "Call inputInventory() with appropriate arguments and optionally gridSize().");
+                throw new IllegalStateException(
+                        "The crafting inventory of the crafting slot has not been initialised. " +
+                                "Call inputInventory() with appropriate arguments and optionally gridSize().");
             }
-            this.craftSlots = new CraftingContainerWrapper(this, this.cols, this.rows, this.inputInventory, this.inputStartIndex);
+            this.craftSlots = new CraftingContainerWrapper(this, this.cols, this.rows, this.inputInventory,
+                    this.inputStartIndex);
         }
         return this.craftSlots;
     }

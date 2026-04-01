@@ -11,8 +11,9 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
-import lombok.Getter;
 import net.minecraft.network.chat.Component;
+
+import lombok.Getter;
 
 @Getter
 public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {

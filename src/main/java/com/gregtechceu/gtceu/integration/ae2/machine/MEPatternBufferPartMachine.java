@@ -299,7 +299,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                     .height(18 * 3)
                                     .minElementMargin(0, 0)
                                     .minColWidth(18).minRowHeight(18)
-                                    .alignX(0.5f)
+                                    .leftRel(0.5f)
                                     .mapTo(3, 9, index -> new ItemSlot()
                                             .slot(SyncHandlers.itemSlot(shareInventory, index)
                                                     .slotGroup(sharedItemSlotGroup)
@@ -313,7 +313,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 "shared_fluid_slots", 9, 'F',
                                 GTMuiMachineUtil.createSquareMatrix(9, 'F'))
                                 .top(26)
-                                .alignX(0.5f)));
+                                .leftRel(0.5f)));
 
         BooleanSyncValue canRefundValue = SyncHandlers.bool(this::canRefund, b -> {});
         syncManager.syncValue("can_refund", canRefundValue);
@@ -404,7 +404,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .height(18 * (MAX_PATTERN_COUNT / 9))
                 .minElementMargin(0, 0)
                 .minColWidth(18).minRowHeight(18)
-                .alignX(0.5f)
+                .leftRel(0.5f)
                 .mapTo(9, MAX_PATTERN_COUNT, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(patternInventory, index)
                                 .slotGroup(patternSlotGroup)

@@ -116,7 +116,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         int[] savedScroll = { 0 };
         var dynamicHandler = new DynamicLinkedSyncHandler<>(storageSyncHandler)
                 .widgetProvider((sm, value) -> {
-                    var col = Flow.col().alignX(0.5f).coverChildrenHeight();
+                    var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
                     var list = value.getValue();
                     if (list.isEmpty()) return col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list_empty")));
                     col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list")).margin(0, 2));

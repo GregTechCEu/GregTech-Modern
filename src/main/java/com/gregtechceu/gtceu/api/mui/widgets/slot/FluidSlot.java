@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.integration.recipeviewer.handlers.GhostIngredientSl
 import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.utils.IMultiFluidTankHandler;
 
-import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,6 +31,7 @@ import net.minecraftforge.fml.ModList;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

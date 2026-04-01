@@ -180,7 +180,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                             .orElse(Component.empty());
                                 })).color(Color.WHITE.main)))
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
-                                syncManager).alignX(0.875f).alignY(0.5f)));
+                                syncManager).posRel(0.875f, 0.5f)));
     }
 
     private void addDisplayText(List<Component> textList) {

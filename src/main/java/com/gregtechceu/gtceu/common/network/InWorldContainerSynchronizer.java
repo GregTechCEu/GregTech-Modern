@@ -54,7 +54,7 @@ public class InWorldContainerSynchronizer implements ContainerSynchronizer {
     }
 
     private int getInWorldId(AbstractContainerMenu container) {
-        if (container instanceof ModularContainerMenu modularContainer) return modularContainer.inWorldID;
+        if (container instanceof ModularContainerMenu modularContainer) return modularContainer.containerId;
         return -1;
     }
 }

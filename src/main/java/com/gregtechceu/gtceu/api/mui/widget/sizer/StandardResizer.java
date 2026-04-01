@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GuiError;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
-import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.TreeUtil;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.IExpander;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
@@ -234,7 +232,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                 // if all children sizes depend on their parent, just use the min size as default
                 w = this.x.getCoverChildrenMinSize();
             } else {
-                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children width when all children depend on their parent and min size is 0!");
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
+                        "Can't cover children width when all children depend on their parent and min size is 0!");
                 return false;
             }
         }
@@ -243,7 +242,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                 // if all children sizes depend on their parent, just use the min size as default
                 h = this.y.getCoverChildrenMinSize();
             } else {
-                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children height when all children depend on their parent and min size is 0!");
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
+                        "Can't cover children height when all children depend on their parent and min size is 0!");
                 return false;
             }
         }
@@ -322,7 +322,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                         x1 = Math.max(x1, area.rx + area.width + padding.right() + margin.right());
                     }
                 } else if (coverByDefaultSizeX) {
-                    withDefaultW = Math.max(withDefaultW, child.getDefaultWidth() + margin.horizontal() + padding.horizontal());
+                    withDefaultW = Math.max(withDefaultW,
+                            child.getDefaultWidth() + margin.horizontal() + padding.horizontal());
                 }
             }
 
@@ -338,7 +339,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                         y1 = Math.max(y1, area.ry + area.height + padding.bottom() + margin.bottom());
                     }
                 } else if (coverByDefaultSizeY) {
-                    withDefaultH = Math.max(withDefaultH, child.getDefaultHeight() + margin.vertical() + padding.vertical());
+                    withDefaultH = Math.max(withDefaultH,
+                            child.getDefaultHeight() + margin.vertical() + padding.vertical());
                 }
             }
         }
@@ -348,7 +350,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                 // if all children sizes depend on their parent, just use the min size as default
                 w = this.x.getCoverChildrenMinSize();
             } else {
-                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children width when all children depend on their parent and min size is 0!");
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
+                        "Can't cover children width when all children depend on their parent and min size is 0!");
                 return;
             }
         }
@@ -357,7 +360,8 @@ public class StandardResizer extends WidgetResizeNode implements IPositioned<Sta
                 // if all children sizes depend on their parent, just use the min size as default
                 h = this.y.getCoverChildrenMinSize();
             } else {
-                GuiError.throwNew(getWidget(), GuiError.Type.SIZING, "Can't cover children height when all children depend on their parent and min size is 0!");
+                GuiError.throwNew(getWidget(), GuiError.Type.SIZING,
+                        "Can't cover children height when all children depend on their parent and min size is 0!");
                 return;
             }
         }

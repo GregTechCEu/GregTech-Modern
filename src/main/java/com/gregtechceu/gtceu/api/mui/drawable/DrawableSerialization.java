@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.utils.ObjectList;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -34,7 +33,9 @@ public class DrawableSerialization implements JsonSerializer<IDrawable>, JsonDes
         UITexture current = TEXTURES.put(name, texture);
         REVERSE_TEXTURES.put(texture, name);
         if (current != null && GTCEu.isDev()) {
-            GTCEu.LOGGER.warn("[DEBUG] Replacing texture with name '{}' and location '{}' with texture with location '{}'", name, current.location, texture.location);
+            GTCEu.LOGGER.warn(
+                    "[DEBUG] Replacing texture with name '{}' and location '{}' with texture with location '{}'", name,
+                    current.location, texture.location);
         }
     }
 
@@ -68,9 +69,12 @@ public class DrawableSerialization implements JsonSerializer<IDrawable>, JsonDes
             number++;
             name = baseName + "_" + number;
             if (number == 20) {
-                GTCEu.LOGGER.warn("Trying to register a UITexture with location '{}' for at least 20 times. This is likely a bug and should be fixed.", texture.location);
+                GTCEu.LOGGER.warn(
+                        "Trying to register a UITexture with location '{}' for at least 20 times. This is likely a bug and should be fixed.",
+                        texture.location);
             } else if (number == 10000) {
-                throw new IllegalStateException("Trying to register a UITexture with location '" + texture.location + "' 10000 times.");
+                throw new IllegalStateException(
+                        "Trying to register a UITexture with location '" + texture.location + "' 10000 times.");
             }
         }
         registerTexture(name, texture);
@@ -80,6 +84,7 @@ public class DrawableSerialization implements JsonSerializer<IDrawable>, JsonDes
     public static UITexture getTexture(String s) {
         return TEXTURES.get(s);
     }
+
     @Nullable
     public static String getTextureId(UITexture texture) {
         return REVERSE_TEXTURES.get(texture);
@@ -119,7 +124,8 @@ public class DrawableSerialization implements JsonSerializer<IDrawable>, JsonDes
     }
 
     @Override
-    public IDrawable deserialize(JsonElement element, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public IDrawable deserialize(JsonElement element, Type typeOfT,
+                                 JsonDeserializationContext context) throws JsonParseException {
         if (element.isJsonNull()) {
             return IDrawable.EMPTY;
         }

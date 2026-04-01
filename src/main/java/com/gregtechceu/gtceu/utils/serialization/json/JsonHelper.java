@@ -28,6 +28,7 @@ public class JsonHelper {
 
     public static final JsonDeserializationContext DESERIALIZER = GSON::fromJson;
     public static final JsonSerializationContext SERIALIZER = new JsonSerializationContext() {
+
         @Override
         public JsonElement serialize(Object o) {
             return GSON.toJsonTree(o);

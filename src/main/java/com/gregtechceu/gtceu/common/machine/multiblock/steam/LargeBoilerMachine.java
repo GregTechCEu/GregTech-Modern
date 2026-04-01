@@ -235,7 +235,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 .height(height - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .alignX(Alignment.CenterLeft)
+                .posRel(Alignment.CenterLeft)
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)

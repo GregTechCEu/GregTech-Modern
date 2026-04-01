@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTMenuTypes;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import org.jetbrains.annotations.*;
 
@@ -59,14 +59,16 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         super(GTMenuTypes.MODULAR_CONTAINER.get(), containerId);
     }
 
-    public <T extends GuiData> ModularContainerMenu(int containerId, Inventory playerInv, @Nullable FriendlyByteBuf data) {
+    public <T extends GuiData> ModularContainerMenu(int containerId, Inventory playerInv,
+                                                    @Nullable FriendlyByteBuf data) {
         this(containerId);
         // TODO: Better integration with menu types for custom containers and screens.
         throw new IllegalArgumentException("Do not open the modular container the forge way. Use an UIFactory!");
     }
 
     @ApiStatus.Internal
-    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName, GuiData guiData) {
+    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName,
+                          GuiData guiData) {
         this.player = player;
         this.syncManager = msm;
         this.syncManager.construct(this, mainPanelName);
@@ -166,7 +168,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         if (slot.getSlotGroupName() != null) {
             SlotGroup slotGroup = getSyncManager().getSlotGroup(panelName, slot.getSlotGroupName());
             if (slotGroup == null) {
-                GTCEu.LOGGER.throwing(new IllegalArgumentException("SlotGroup '" + slot.getSlotGroupName() + "' is not registered!"));
+                GTCEu.LOGGER.throwing(
+                        new IllegalArgumentException("SlotGroup '" + slot.getSlotGroupName() + "' is not registered!"));
                 return;
             }
             slot.slotGroup(slotGroup);
@@ -185,7 +188,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     @Contract("_, null, null -> fail")
     @NotNull
     @ApiStatus.Internal
-    public SlotGroup validateSlotGroup(String panelName, @Nullable String slotGroupName, @Nullable SlotGroup slotGroup) {
+    public SlotGroup validateSlotGroup(String panelName, @Nullable String slotGroupName,
+                                       @Nullable SlotGroup slotGroup) {
         if (slotGroup != null) {
             if (getSyncManager().getSlotGroup(panelName, slotGroup.getName()) == null) {
                 throw new IllegalArgumentException("Slot group is not registered in the GUI.");
@@ -320,19 +324,19 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                         }
                     } else if (heldStack.getMaxStackSize() > 1 &&
                             ItemStack.isSameItemSameTags(slotStack, heldStack) && !slotStack.isEmpty()) {
-                        int stackCount = slotStack.getCount();
+                                int stackCount = slotStack.getCount();
 
-                        if (stackCount + heldStack.getCount() <= heldStack.getMaxStackSize()) {
-                            heldStack.grow(stackCount);
-                            slotStack = clickedSlot.remove(stackCount);
+                                if (stackCount + heldStack.getCount() <= heldStack.getMaxStackSize()) {
+                                    heldStack.grow(stackCount);
+                                    slotStack = clickedSlot.remove(stackCount);
 
-                            if (slotStack.isEmpty()) {
-                                clickedSlot.setByPlayer(ItemStack.EMPTY);
+                                    if (slotStack.isEmpty()) {
+                                        clickedSlot.setByPlayer(ItemStack.EMPTY);
+                                    }
+
+                                    clickedSlot.onTake(player, this.getCarried());
+                                }
                             }
-
-                            clickedSlot.onTake(player, this.getCarried());
-                        }
-                    }
                 }
                 clickedSlot.setChanged();
             }
@@ -348,7 +352,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             int step = mouseButton == InputConstants.MOUSE_BUTTON_LEFT ? 1 : -1;
 
             for (int i = 0; i < 2; ++i) {
-                for (int s = start; s >= 0 && s < slots.size() && carried.getCount() < carried.getMaxStackSize(); s += step) {
+                for (int s = start; s >= 0 && s < slots.size() &&
+                        carried.getCount() < carried.getMaxStackSize(); s += step) {
                     Slot current = slots.get(s);
                     if (current instanceof ModularSlot modularSlot && modularSlot.isPhantom()) continue;
 
@@ -398,7 +403,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         }
     }
 
-    protected final void superClicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn, @NotNull Player player) {
+    protected final void superClicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn,
+                                      @NotNull Player player) {
         super.clicked(slotId, mouseButton, clickTypeIn, player);
     }
 
@@ -450,7 +456,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                 slot.onQuickCraft(remainder, copy);
                 slot.onTake(playerIn, remainder);
                 slot.onCraftShiftClick(playerIn, remainder);
-                return copy; // return a non-empty stack if insertion was successful, this causes this function to be called again, important for crafting
+                return copy; // return a non-empty stack if insertion was successful, this causes this function to be
+                             // called again, important for crafting
             }
         }
         return ItemStack.EMPTY;

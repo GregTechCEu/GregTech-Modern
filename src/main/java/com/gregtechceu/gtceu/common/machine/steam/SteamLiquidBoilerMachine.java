@@ -109,8 +109,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])
                                 .canFillSlot(true).canDrainSlot(true))
-                        .size(14, 54)
-                        .displayAmount(false)));
+                        .size(14, 54)));
     }
 
     @Override

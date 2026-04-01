@@ -52,11 +52,10 @@ Additionally, there is
 
 - `pos(int x, int y)` combines `left(int x)` and `top(int y)`
 - `posRel(float x, float y)` combines `leftRel(float x)` and `topRel(float y)`
-- `alignX(float x)` is short for `leftRelAnchor(x, x)`
-- `alignY(float y)` is short for `topRelAnchor(y, y)`
-- `align(Alignment a)` combines `alignX(float x)` and `alignY(float y)`
-- `center()` is short for `align(Alignment.Center)`
-
+- `posRel(Alignment a)` calls `posRel(float x, float y)` using a specific alignment enum value
+- `horizontalCenter()` is short for `leftRel(0.5f)`
+- `verticalCenter()` is short for `topRel(0.5f)`
+- `center()` is short for `posRel(Alignment.Center)`
 ## Anchor
 
 The anchor is the point of the widget at which the widget will be positioned with the relative value. The following
@@ -130,7 +129,7 @@ There are two common ways to center things:
 
 1) Center a widget within its parent (positioning)
 
-- `widget.center()` or `widget.align(Alignment.Center)`
+- `widget.center()` or `widget.posRel(Alignment.Center)`
 - `widget.horizontalCenter()` or `widget.verticalCenter()`
 
 2) Center children inside a Row/Column (layout)

@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GuiError;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -271,7 +269,7 @@ public class DimensionSizer {
                 } else if (this.end != null) {
                     p = calcPoint(this.end, padding, s, parentSize, parentCalculated) - s;
                 } else {
-                    p = area.getRelativePoint(this.axis) + p0/* + area.getMargin().getStart(this.axis)*/;
+                    p = area.getRelativePoint(this.axis) + p0/* + area.getMargin().getStart(this.axis) */;
                     if (!this.cancelAutoMovement) {
                         moveAmount = -p0;
                     }
@@ -382,7 +380,9 @@ public class DimensionSizer {
 
     public void detectConflictingConfiguration() {
         if (this.expanded && this.coverChildrenMinSize >= 0) {
-            GTCEu.LOGGER.warn("Resizer '{}' has expanded() and coverChildren() on {} axis. This conflicts and may cause layout issues.", this.resizer, this.axis);
+            GTCEu.LOGGER.warn(
+                    "Resizer '{}' has expanded() and coverChildren() on {} axis. This conflicts and may cause layout issues.",
+                    this.resizer, this.axis);
         }
         // TODO detect when this depends and all siblings depend on parent and parent depends on all children
     }

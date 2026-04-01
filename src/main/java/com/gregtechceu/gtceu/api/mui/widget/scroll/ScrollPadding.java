@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widget.scroll;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
+
 import lombok.Getter;
 
 import java.util.Objects;

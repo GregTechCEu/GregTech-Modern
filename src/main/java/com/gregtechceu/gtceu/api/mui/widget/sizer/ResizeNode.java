@@ -114,7 +114,8 @@ public abstract class ResizeNode implements IResizeable, ITreeNode<ResizeNode> {
     }
 
     protected void setParentOverride(ResizeNode resizeNode) {
-        // ModularUI.LOGGER.info("Set override parent of {} to {}. Current: default: {}, override: {}", this, resizeNode,
+        // ModularUI.LOGGER.info("Set override parent of {} to {}. Current: default: {}, override: {}", this,
+        // resizeNode,
         // this.defaultParent, this.parentOverride);
         if (resizeNode == this) throw new IllegalArgumentException("Tried to set itself as parent override in " + this);
         if (removeFromParent(this.parentOverride, this.defaultParent, resizeNode)) return;

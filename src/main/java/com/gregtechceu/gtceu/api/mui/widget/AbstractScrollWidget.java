@@ -154,7 +154,8 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
         if (!transformed) {
             context.getStencil().pop();
             WidgetThemeEntry<WidgetTheme> scrollbarTheme = getPanel().getTheme().getScrollbarTheme();
-            this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()), scrollbarTheme.getTheme().getBackground());
+            this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
+                    scrollbarTheme.getTheme().getBackground());
             if (this.showScrollShadows) this.scroll.drawScrollShadow(context);
         }
     }

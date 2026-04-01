@@ -9,10 +9,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -117,33 +115,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
                         .marginLeft(30)
                         .marginRight(30)
                         .verticalCenter()));
-    }
-
-    private Widget<?> internalUI(PanelSyncManager syncManager) {
-        SlotGroup objectGroup = new SlotGroup("object_slot", 1);
-        SlotGroup orbGroup = new SlotGroup("orb_slot", 1);
-
-        return Flow.row()
-                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .align(Alignment.CENTER)
-                .coverChildren()
-                .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 1).slotGroup(orbGroup))
-                        .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY)
-                        .marginLeft(30)
-                        .marginRight(30)
-                        .verticalCenter())
-
-                .child(GTGuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE.asWidget()
-                        .size(84, 60)
-                        .pos(75, 0))
-
-                .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 0).slotGroup(objectGroup))
-                        .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY)
-                        .marginLeft(30)
-                        .marginRight(30)
-                        .verticalCenter());
     }
 
     @Override

@@ -634,7 +634,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
     public boolean isClientOnly() {
         return isOverlay() || !this.screenWrapper.isContainerScreen() || getContainer().isClientOnly();
-        }
+    }
 
     public ModularContainerMenu getContainer() {
         if (isOverlay()) {

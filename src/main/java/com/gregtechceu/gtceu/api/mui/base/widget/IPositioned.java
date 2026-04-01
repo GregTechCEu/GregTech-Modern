@@ -6,15 +6,12 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.*;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
-import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
-
 /**
  * Helper interface for position and size builder methods for widgets.
  *
  * @param <W> widget type
  */
-@SuppressWarnings({"unused", "UnusedReturnValue"})
+@SuppressWarnings({ "unused", "UnusedReturnValue" })
 public interface IPositioned<W extends IPositioned<W>> {
 
     /**
@@ -61,8 +58,10 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Calculate the width by covering all children of this widget. For this calculation the widget children are used NOT the resizer
-     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this widgets size
+     * Calculate the width by covering all children of this widget. For this calculation the widget children are used
+     * NOT the resizer
+     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this
+     * widgets size
      * is calculated. If all children depend on this widgets size, the min size is used.
      *
      * @param minWidth minimum width this widget can have, negative values disables cover children
@@ -74,8 +73,10 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Calculate the height by covering all children of this widget. For this calculation the widget children are used NOT the resizer
-     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this widgets size
+     * Calculate the height by covering all children of this widget. For this calculation the widget children are used
+     * NOT the resizer
+     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this
+     * widgets size
      * is calculated. If all children depend on this widgets size, the min size is used.
      *
      * @param minHeight minimum height this widget can have, negative values disables cover children
@@ -96,8 +97,10 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Calculate the width and height by covering all children of this widget. For this calculation the widget children are used NOT the resizer
-     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this widgets size
+     * Calculate the width and height by covering all children of this widget. For this calculation the widget children
+     * are used NOT the resizer
+     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this
+     * widgets size
      * is calculated. If all children depend on this widgets size, the min size is used.
      *
      * @param minSize minimum width and height this widget can have, negative values disables cover children
@@ -108,8 +111,10 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Calculate the width and height by covering all children of this widget. For this calculation the widget children are used NOT the resizer
-     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this widgets size
+     * Calculate the width and height by covering all children of this widget. For this calculation the widget children
+     * are used NOT the resizer
+     * children. If a child position/size depends on this widget, its position/size is ignored and calculated after this
+     * widgets size
      * is calculated. If all children depend on this widgets size, the min size is used.
      *
      * @param minWidth  minimum width this widget can have, negative values disables cover children
@@ -148,7 +153,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets if this resizer is decoration. Decoration will be ignored during coverChildren and margin/padding calculations.
+     * Sets if this resizer is decoration. Decoration will be ignored during coverChildren and margin/padding
+     * calculations.
      *
      * @param decoration true if this resizer is decoration
      * @return this
@@ -166,7 +172,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets whether this widget should expand inside a {@link com.gregtechceu.gtceu.api.mui.widgets.layout.Flow Flow} widget. Expanded means it takes
+     * Sets whether this widget should expand inside a {@link com.gregtechceu.gtceu.api.mui.widgets.layout.Flow Flow}
+     * widget. Expanded means it takes
      * as much space as possible on the main axis without overlapping with other children in the flow.
      *
      * @return this
@@ -189,8 +196,10 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the resizer this widget should be relative to. That means all left, top, right, bottom, width and height properties will be
-     * calculated based of the new resizer. By default, this is the widgets parent. Every resize node tree configuration is allowed as long
+     * Sets the resizer this widget should be relative to. That means all left, top, right, bottom, width and height
+     * properties will be
+     * calculated based of the new resizer. By default, this is the widgets parent. Every resize node tree configuration
+     * is allowed as long
      * as there are no circular dependencies.
      *
      * @param resizeNode resizer parent override
@@ -238,7 +247,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0).
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0).
      * 0.0 means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
      *
      * @param val relative left edge to parent left edge distance
@@ -250,9 +260,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an offset.
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative left edge to parent left edge distance
      * @param offset additional distance offset in pixel
@@ -264,14 +277,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an anchor.
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative left edge to parent left edge distance
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W leftRelAnchor(float val, float anchor) {
@@ -280,17 +297,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative left edge to parent left edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W leftRel(float val, int offset, float anchor) {
@@ -299,18 +321,24 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val     left edge to parent left edge distance
      * @param offset  additional distance offset in pixel
-     * @param anchor  determines the relative position which is used to calculate the actual position with the relative value
-     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does nothing in pixel
+     * @param anchor  determines the relative position which is used to calculate the actual position with the relative
+     *                value
+     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does
+     *                nothing in pixel
      * @return this
      */
     default W left(float val, int offset, float anchor, Unit.Measure measure) {
@@ -331,9 +359,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an offset.
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative left edge to parent left edge distance function which is called on every resize
      * @param offset additional distance offset in pixel
@@ -345,14 +376,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an anchor.
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative left edge to parent left edge distance function which is called on every resize
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W leftRelAnchor(DoubleSupplier val, float anchor) {
@@ -361,17 +396,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets left edge to the resizers widget left edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the parent right edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the right edge touches the
+     * parent right edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative left edge to parent left edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W leftRel(DoubleSupplier val, int offset, float anchor) {
@@ -391,7 +431,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0).
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0).
      * 0.0 means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
      *
      * @param val relative right edge to parent right edge distance
@@ -403,9 +444,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an offset.
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative right edge to parent right edge distance
      * @param offset additional distance offset in pixel
@@ -417,14 +461,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an anchor.
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative right edge to parent right edge distance
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W rightRelAnchor(float val, float anchor) {
@@ -433,17 +481,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative right edge to parent right edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W rightRel(float val, int offset, float anchor) {
@@ -452,18 +505,24 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val     right edge to parent right edge distance
      * @param offset  additional distance offset in pixel
-     * @param anchor  determines the relative position which is used to calculate the actual position with the relative value
-     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does nothing in pixel
+     * @param anchor  determines the relative position which is used to calculate the actual position with the relative
+     *                value
+     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does
+     *                nothing in pixel
      * @return this
      */
     default W right(float val, int offset, float anchor, Unit.Measure measure) {
@@ -484,9 +543,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an offset.
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative right edge to parent right edge distance function which is called on every resize
      * @param offset additional distance offset in pixel
@@ -498,14 +560,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an anchor.
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative right edge to parent right edge distance function which is called on every resize
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W rightRelAnchor(DoubleSupplier val, float anchor) {
@@ -514,17 +580,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets right edge to the resizers widget right edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches the parent left edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the right edge touches the parent right edge. 1.0 means the left edge touches
+     * the parent left edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative right edge to parent right edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W rightRel(DoubleSupplier val, int offset, float anchor) {
@@ -544,7 +615,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0).
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0).
      * 0.0 means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
      *
      * @param val relative top edge to parent top edge distance
@@ -556,9 +628,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an offset.
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative top edge to parent top edge distance
      * @param offset additional distance offset in pixel
@@ -570,14 +645,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an anchor.
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative top edge to parent top edge distance
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W topRelAnchor(float val, float anchor) {
@@ -586,17 +665,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative top edge to parent top edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W topRel(float val, int offset, float anchor) {
@@ -605,18 +689,24 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val     top edge to parent top edge distance
      * @param offset  additional distance offset in pixel
-     * @param anchor  determines the relative position which is used to calculate the actual position with the relative value
-     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does nothing in pixel
+     * @param anchor  determines the relative position which is used to calculate the actual position with the relative
+     *                value
+     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does
+     *                nothing in pixel
      * @return this
      */
     default W top(float val, int offset, float anchor, Unit.Measure measure) {
@@ -637,9 +727,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an offset.
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative top edge to parent top edge distance function which is called on every resize
      * @param offset additional distance offset in pixel
@@ -651,14 +744,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an anchor.
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative top edge to parent top edge distance function which is called on every resize
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W topRelAnchor(DoubleSupplier val, float anchor) {
@@ -667,17 +764,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets top edge to the resizers widget top edge (usually between 0.0 and
+     * 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the parent bottom edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the top edge touches the parent top edge. 1.0 means the bottom edge touches the
+     * parent bottom edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative top edge to parent top edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W topRel(DoubleSupplier val, int offset, float anchor) {
@@ -697,7 +799,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0).
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0).
      * 0.0 means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
      *
      * @param val relative bottom edge to parent bottom edge distance
@@ -709,9 +812,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an offset.
+     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches
+     * the parent top edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative bottom edge to parent bottom edge distance
      * @param offset additional distance offset in pixel
@@ -723,14 +829,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an anchor.
+     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches
+     * the parent top edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative bottom edge to parent bottom edge distance
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W bottomRelAnchor(float val, float anchor) {
@@ -739,17 +849,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches
+     * the parent top edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative bottom edge to parent bottom edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W bottomRel(float val, int offset, float anchor) {
@@ -758,18 +873,24 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches
+     * the parent top edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val     bottom edge to parent bottom edge distance
      * @param offset  additional distance offset in pixel
-     * @param anchor  determines the relative position which is used to calculate the actual position with the relative value
-     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does nothing in pixel
+     * @param anchor  determines the relative position which is used to calculate the actual position with the relative
+     *                value
+     * @param measure determines if the <code>val</code> param should be a relative value or in pixel, the anchor does
+     *                nothing in pixel
      * @return this
      */
     default W bottom(float val, int offset, float anchor, Unit.Measure measure) {
@@ -778,7 +899,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the distance from this widgets bottom edge to the resizers widget bottom edge in pixel or as a relative value.
+     * Sets the distance from this widgets bottom edge to the resizers widget bottom edge in pixel or as a relative
+     * value.
      *
      * @param val     bottom edge to parent bottom edge distance function which is called on every resize
      * @param measure determines if the <code>val</code> param should be a relative value or in pixel
@@ -790,9 +912,12 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an offset.
-     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the top edge touches the parent top edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an offset.
+     * 0.0 for the relative value means the left edge touches the parent left edge. 1.0 means the top edge touches the
+     * parent top edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative bottom edge to parent bottom edge distance function which is called on every resize
      * @param offset additional distance offset in pixel
@@ -804,14 +929,18 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an anchor.
-     * 0.0 for the relative value means the bottom edge touches the parent left bottom. 1.0 means the top edge touches the parent top edge.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an anchor.
+     * 0.0 for the relative value means the bottom edge touches the parent left bottom. 1.0 means the top edge touches
+     * the parent top edge.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative bottom edge to parent bottom edge distance function which is called on every resize
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W bottomRelAnchor(DoubleSupplier val, float anchor) {
@@ -820,17 +949,22 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0 and 1.0) with an offset
+     * Sets the relative distance from this widgets bottom edge to the resizers widget bottom edge (usually between 0.0
+     * and 1.0) with an offset
      * and an anchor.
-     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches the parent top edge.
-     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be negative.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget. By default,
+     * 0.0 for the relative value means the bottom edge touches the parent bottom edge. 1.0 means the top edge touches
+     * the parent top edge.
+     * The offset is in pixel and is added after the position with the relative value is calculated. The offset can be
+     * negative.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget. By default,
      * the anchor is equal to the relative value. The formular for calculating the position is
      * <code>parentSize * relativeValue - selfSize * anchor</code>.
      *
      * @param val    relative bottom edge to parent bottom edge distance
      * @param offset additional distance offset in pixel
-     * @param anchor determines the relative position which is used to calculate the actual position with the relative value
+     * @param anchor determines the relative position which is used to calculate the actual position with the relative
+     *               value
      * @return this
      */
     default W bottomRel(DoubleSupplier val, int offset, float anchor) {
@@ -862,7 +996,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the relative width of this widget with an offset. 1.0 is the same size as the resizer parent.
-     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be negative.
+     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative width
      * @param offset additional size offset in pixel
@@ -887,7 +1022,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the width of this widget in pixel or as a relative value with an offset.
-     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be negative.
+     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative width function which is called on every resize
      * @param offset additional size offset in pixel
@@ -946,7 +1082,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the relative height of this widget with an offset. 1.0 is the same size as the resizer parent.
-     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be negative.
+     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative height
      * @param offset additional size offset in pixel
@@ -959,7 +1096,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the width of this widget in pixel or as a relative value with an offset.
-     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be negative.
+     * The offset is in pixel and is added after the size with the relative value is calculated. The offset can be
+     * negative.
      *
      * @param val    relative width function which is called on every resize
      * @param offset additional size offset in pixel
@@ -1007,7 +1145,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative position with an {@link Alignment}. Combines {@link #leftRel(float)} and {@link #topRel(float)}.
+     * Sets the relative position with an {@link Alignment}. Combines {@link #leftRel(float)} and
+     * {@link #topRel(float)}.
      *
      * @param alignment relative position
      * @return this
@@ -1030,7 +1169,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative width and height of this widget. Combines {@link #widthRel(float)} and {@link #heightRel(float)}.
+     * Sets the relative width and height of this widget. Combines {@link #widthRel(float)} and
+     * {@link #heightRel(float)}.
      *
      * @param w relative width
      * @param h relative height
@@ -1052,7 +1192,8 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     /**
-     * Sets the relative width and height of this widget. Combines {@link #widthRel(float)} and {@link #heightRel(float)}.
+     * Sets the relative width and height of this widget. Combines {@link #widthRel(float)} and
+     * {@link #heightRel(float)}.
      *
      * @param val relative width and height
      * @return this
@@ -1090,7 +1231,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the anchor on the left side of the widget.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget.
      *
      * @param val anchor on the left side
      * @return this
@@ -1102,7 +1244,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the anchor on the right side of the widget.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget.
      *
      * @param val anchor on the right side
      * @return this
@@ -1114,7 +1257,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the anchor on the top side of the widget.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget.
      *
      * @param val anchor on the top side
      * @return this
@@ -1126,7 +1270,8 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     /**
      * Sets the anchor on the bottom side of the widget.
-     * The anchor determines what relative position inside this widget is used to calculate the relative position of the widget.
+     * The anchor determines what relative position inside this widget is used to calculate the relative position of the
+     * widget.
      *
      * @param val anchor on the bottom side
      * @return this

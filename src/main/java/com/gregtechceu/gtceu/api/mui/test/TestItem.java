@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.mui.test;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.mui.factory.inventory.InventoryTypes;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;

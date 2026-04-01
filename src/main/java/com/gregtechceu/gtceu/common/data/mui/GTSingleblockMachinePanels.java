@@ -25,7 +25,7 @@ public class GTSingleblockMachinePanels {
         if (!(machine instanceof SimpleTieredMachine simpleTieredMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
-            return new ModularPanel(machine.getDefinition().getName());
+            return new ModularPanel<>(machine.getDefinition().getName());
         }
 
         var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
@@ -42,16 +42,14 @@ public class GTSingleblockMachinePanels {
 
         var theme = machine.getDefinition().getThemeId();
 
-        panelBuilder.mainContents((parent) -> {
-            Flow.row()
-                    .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
-                    .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
-                            .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
-                                    simpleTieredMachine.exportItems,
-                                    simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
-                                    simpleTieredMachine.recipeLogic::getProgressPercent,
-                                    -1));
-        });
+        panelBuilder.mainContents((parent) -> Flow.row()
+                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
+                .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
+                        .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
+                                simpleTieredMachine.exportItems,
+                                simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
+                                simpleTieredMachine.recipeLogic::getProgressPercent,
+                                -1)));
         return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
     };
 
@@ -60,7 +58,7 @@ public class GTSingleblockMachinePanels {
         if (!(machine instanceof SimpleTieredMachine simpleTieredMachine)) {
             GTCEu.LOGGER.error("{} is not a SimpleTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
-            return new ModularPanel(machine.getDefinition().getName());
+            return new ModularPanel<>(machine.getDefinition().getName());
         }
 
         var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
@@ -88,7 +86,7 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
                                     simpleTieredMachine.getTier())
-                            .align(Alignment.CENTER))
+                            .posRel(Alignment.Center))
             // .left(7)
             );
 
@@ -106,7 +104,7 @@ public class GTSingleblockMachinePanels {
         if (!(machine instanceof SimpleTieredMachine simpleTieredMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
-            return new ModularPanel(machine.getDefinition().getName());
+            return new ModularPanel<>(machine.getDefinition().getName());
         }
 
         var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
@@ -132,7 +130,7 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
                                     0)
-                            .align(Alignment.CENTER)));
+                            .posRel(Alignment.Center)));
 
             /*
              * parent.childIf(hasXEI, () ->
@@ -149,7 +147,7 @@ public class GTSingleblockMachinePanels {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             GTCEu.LOGGER.error("{} is not a SimpleSteamMachine, can not add slots to its content",
                     machine.getDefinition().getName());
-            return new ModularPanel(machine.getDefinition().getName());
+            return new ModularPanel<>(machine.getDefinition().getName());
         }
 
         var panelBuilder = MachineUIPanelBuilder.defaultSteamMachineBuilder(machine);
@@ -179,7 +177,7 @@ public class GTSingleblockMachinePanels {
                                     null, null,
                                     steamMachine.recipeLogic::getProgressPercent,
                                     steamMachine.getTier())
-                            .align(Alignment.CENTER)));
+                            .posRel(Alignment.Center)));
         });
 
         return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();

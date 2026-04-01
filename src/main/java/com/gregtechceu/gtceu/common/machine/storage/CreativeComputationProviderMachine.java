@@ -114,7 +114,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                         .padding(10)
                         .childPadding(5)
                         .child(Flow.row()
-                                .alignX(0)
+                                .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.max_usage")))
@@ -124,7 +124,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
-                                .alignX(0)
+                                .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",

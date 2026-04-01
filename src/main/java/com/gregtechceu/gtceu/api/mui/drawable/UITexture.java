@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.drawable;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
@@ -12,7 +11,6 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -205,7 +203,8 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         if (name != null) {
             UITexture drawable = DrawableSerialization.getTexture(name);
             if (drawable != null) return drawable;
-            GTCEu.LOGGER.error("Tried to parse UITexture from json, but no texture with name '{}' is registered!", name);
+            GTCEu.LOGGER.error("Tried to parse UITexture from json, but no texture with name '{}' is registered!",
+                    name);
             return GTGuiTextures.HELP;
         }
         Builder builder = builder();
@@ -596,8 +595,10 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
     }
 
     protected boolean isEqual(UITexture texture) {
-        return Objects.equals(location, texture.location) && Float.compare(u0, texture.u0) == 0 && Float.compare(v0, texture.v0) == 0 &&
-                Float.compare(u1, texture.u1) == 0 && Float.compare(v1, texture.v1) == 0 && nonOpaque == texture.nonOpaque &&
+        return Objects.equals(location, texture.location) && Float.compare(u0, texture.u0) == 0 &&
+                Float.compare(v0, texture.v0) == 0 &&
+                Float.compare(u1, texture.u1) == 0 && Float.compare(v1, texture.v1) == 0 &&
+                nonOpaque == texture.nonOpaque &&
                 colorOverride == texture.colorOverride && Objects.equals(colorType, texture.colorType);
     }
 

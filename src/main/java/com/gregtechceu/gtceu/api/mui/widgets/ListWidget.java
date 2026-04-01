@@ -308,7 +308,8 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     /**
      * Sets if disabled children should be collapsed. This means that if a child changes enabled state, this widget gets
-     * notified and re-layouts its children. Children which are disabled will not be considered during layout, so that the list will
+     * notified and re-layouts its children. Children which are disabled will not be considered during layout, so that
+     * the list will
      * not appear to have empty spots. This is enabled by default on lists.
      *
      * @param doCollapse true if disabled children should be collapsed.

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 

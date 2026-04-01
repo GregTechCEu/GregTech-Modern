@@ -29,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -115,7 +114,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         int[] savedScroll = { 0 };
         var dynamicHandler = new DynamicLinkedSyncHandler<>(storageSyncHandler)
                 .widgetProvider((sm, value) -> {
-                    var col = Flow.col().alignX(0.5f).coverChildrenHeight();
+                    var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
                     var list = value.getValue();
                     if (list.isEmpty()) return col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list_empty")));
                     col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list")).margin(0, 2));
@@ -141,7 +140,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return Collections.emptyList();
         }
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -13,9 +12,9 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import lombok.Getter;
 import net.minecraft.util.Mth;
 
+import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

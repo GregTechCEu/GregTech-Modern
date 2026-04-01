@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;

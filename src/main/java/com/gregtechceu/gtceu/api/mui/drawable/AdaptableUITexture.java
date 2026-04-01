@@ -153,10 +153,12 @@ public class AdaptableUITexture extends UITexture {
 
         if ((this.bl > 0 || this.br > 0) && this.bt <= 0 && this.bb <= 0) {
             // left border
-            GuiDraw.drawTiledTexture(pose, x, y, this.bl, height, this.u0, this.v0, uInnerStart, this.v1, this.bl, th, 0);
+            GuiDraw.drawTiledTexture(pose, x, y, this.bl, height, this.u0, this.v0, uInnerStart, this.v1, this.bl, th,
+                    0);
 
             // right border
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, height, uInnerEnd, this.v0, this.u1, this.v1, this.br, th, 0);
+            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, height, uInnerEnd, this.v0, this.u1, this.v1,
+                    this.br, th, 0);
             // center
             GuiDraw.drawTiledTexture(pose, x + this.bl, y, width - this.bl - this.br, height, uInnerStart, this.v0,
                     uInnerEnd, this.v1, tw - this.bl - this.br, th, 0);
@@ -219,7 +221,8 @@ public class AdaptableUITexture extends UITexture {
 
     @Override
     protected AdaptableUITexture copy() {
-        return new AdaptableUITexture(location, u0, v0, u1, v1, colorType, nonOpaque, imageWidth, imageHeight, bl, bt, br, bb, tiled);
+        return new AdaptableUITexture(location, u0, v0, u1, v1, colorType, nonOpaque, imageWidth, imageHeight, bl, bt,
+                br, bb, tiled);
     }
 
     @Override

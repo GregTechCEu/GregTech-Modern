@@ -431,7 +431,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                         .child(Flow.row()
                                 .coverChildren()
                                 .childPadding(5)
-                                .alignX(0)
+                                .leftRel(0)
                                 .child(new TextWidget<>(
                                         IKey.lang("gtceu.maintenance.configurable_duration.modify")))
                                 .child(new TextFieldWidget()
@@ -445,9 +445,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                                 "gtceu.maintenance.configurable_duration.changed_description"))))
                         .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_time",
                                 () -> new Object[] { this.getTimeMultiplier() }))
-                                .alignX(0)))
+                                .leftRel(0)))
                 .child(Flow.row()
-                        .alignX(.5f)
+                        .leftRel(0.5f)
                         .coverChildren()
                         .padding(5)
                         .child(new ItemSlot()

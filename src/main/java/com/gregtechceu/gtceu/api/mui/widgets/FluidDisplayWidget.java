@@ -15,9 +15,12 @@ import java.util.function.BiConsumer;
 
 public class FluidDisplayWidget extends AbstractFluidDisplayWidget<FluidDisplayWidget> {
 
-    @Getter private IValue<FluidStack> value;
-    @Getter private int capacity = 0;
-    @Getter private boolean displayAmount = true;
+    @Getter
+    private IValue<FluidStack> value;
+    @Getter
+    private int capacity = 0;
+    @Getter
+    private boolean displayAmount = true;
 
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {

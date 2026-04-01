@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -108,13 +107,15 @@ public class VerticalScrollData extends ScrollData {
             float prog = GTMath.clamp(s / maxOpacityScroll, 0, 1);
             int startColor = Color.withAlpha(startColorFull, prog * 0.8f);
             int size = Math.min((int) (prog * maxShadowSize), maxShadowSizeLimit);
-            GuiDraw.drawVerticalGradientRect(context.getGraphics(), x, sp.getScrollPaddingTop(), w, size, startColor, endColor);
+            GuiDraw.drawVerticalGradientRect(context.getGraphics(), x, sp.getScrollPaddingTop(), w, size, startColor,
+                    endColor);
         }
         if (s < max) {
             float prog = GTMath.clamp((max - s) / maxOpacityScroll, 0, 1);
             int startColor = Color.withAlpha(startColorFull, prog * 0.8f);
             int size = Math.min((int) (prog * maxShadowSize), maxShadowSizeLimit);
-            GuiDraw.drawVerticalGradientRect(context.getGraphics(), x, area.h() - size - sp.getScrollPaddingBottom(), w, size, endColor, startColor);
+            GuiDraw.drawVerticalGradientRect(context.getGraphics(), x, area.h() - size - sp.getScrollPaddingBottom(), w,
+                    size, endColor, startColor);
         }
     }
 }

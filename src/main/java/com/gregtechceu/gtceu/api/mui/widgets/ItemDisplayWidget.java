@@ -12,9 +12,9 @@ import com.gregtechceu.gtceu.integration.recipeviewer.entry.EntryList;
 import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
 
-import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDisplayWidget extends Widget<ItemDisplayWidget> implements IngredientProvider<ItemStack> {

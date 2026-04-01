@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import cpw.mods.fml.relauncher.Side;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental

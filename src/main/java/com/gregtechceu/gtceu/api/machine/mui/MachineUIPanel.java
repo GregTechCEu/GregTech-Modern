@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import lombok.Getter;
 
-public class MachineUIPanel extends ModularPanel {
+public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
     public static final int DEFAULT_CONTENT_WIDTH = 169;
     public static final int DEFAULT_CONTENT_HEIGHT = 77;

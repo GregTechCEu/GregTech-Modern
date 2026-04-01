@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-
 import com.gregtechceu.gtceu.core.mixins.client.CombinedInvWrapperAccessor;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,10 +37,12 @@ public class ModularSlot extends SlotItemHandler {
             slot -> Objects.requireNonNull(slot.getSlotGroup()).getShiftClickPriority());
 
     @Getter
-    @Setter(onMethod_ = {@ApiStatus.Internal})
+    @Setter(onMethod_ = { @ApiStatus.Internal })
     private boolean enabled = true;
-    @Getter private boolean canTake = true, canPut = true, canDragInto = true;
-    @Getter private Predicate<ItemStack> filter = stack -> true;
+    @Getter
+    private boolean canTake = true, canPut = true, canDragInto = true;
+    @Getter
+    private Predicate<ItemStack> filter = stack -> true;
     private IOnSlotChanged changeListener = IOnSlotChanged.DEFAULT;
     @Getter
     private boolean ignoreMaxStackSize = false;
@@ -144,7 +146,8 @@ public class ModularSlot extends SlotItemHandler {
 
     @Override
     public boolean isSameInventory(@NotNull Slot other) {
-        return other instanceof SlotItemHandler slotItemHandler && slotItemHandler.getItemHandler() == this.getItemHandler();
+        return other instanceof SlotItemHandler slotItemHandler &&
+                slotItemHandler.getItemHandler() == this.getItemHandler();
     }
 
     /**

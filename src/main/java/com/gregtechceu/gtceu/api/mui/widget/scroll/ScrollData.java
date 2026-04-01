@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Scrollbar;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -254,7 +253,8 @@ public abstract class ScrollData {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public abstract void drawScrollbar(ModularGuiContext context, ScrollArea area, WidgetTheme widgetTheme, IDrawable texture);
+    public abstract void drawScrollbar(ModularGuiContext context, ScrollArea area, WidgetTheme widgetTheme,
+                                       IDrawable texture);
 
     @OnlyIn(Dist.CLIENT)
     protected void drawScrollBar(ModularGuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme,

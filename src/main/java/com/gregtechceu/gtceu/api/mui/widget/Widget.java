@@ -75,7 +75,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     private boolean disableHoverThemeBackground = false;
     @Getter
     @Nullable
-    private IDrawable shadow = null;    /**
+    private IDrawable shadow = null;
+    /**
      * The current set background. This is not an accurate representation of what is actually being displayed currently.
      * Usually background is handled by the theme, which is when this is null.
      * Backgrounds are drawn in {@link IWidget#drawBackground(ModularGuiContext, WidgetThemeEntry)}.
@@ -213,6 +214,7 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
             bg.drawAtZero(context, getArea(), theme);
         }
     }
+
     /**
      * Called between {@link IWidget#drawBackground(ModularGuiContext, WidgetThemeEntry)} and
      * {@link IWidget#drawOverlay(ModularGuiContext, WidgetThemeEntry)}.
@@ -392,7 +394,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     }
 
     /**
-     * Sets a shadow. Shadows are drawn before the background and don't actually have to be shadows. This doesn't effect theme backgrounds
+     * Sets a shadow. Shadows are drawn before the background and don't actually have to be shadows. This doesn't effect
+     * theme backgrounds
      * and doesn't change when hovered.
      *
      * @param shadow background to use.
@@ -406,10 +409,12 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     /**
      * Sets a background. The theme background will be drawn before this override.
      * <p>
-     * NOTE: This will NOT disable the theme background. Disable it separately with {@link #disableThemeBackground(boolean)}.
+     * NOTE: This will NOT disable the theme background. Disable it separately with
+     * {@link #disableThemeBackground(boolean)}.
      * </p>
      * This method is meant for unique textures. For generic backgrounds please use themes. Also consider using
-     * {@link #overlay(IDrawable...)} instead. Using {@link IDrawable#EMPTY} will make the background invisible while still overriding
+     * {@link #overlay(IDrawable...)} instead. Using {@link IDrawable#EMPTY} will make the background invisible while
+     * still overriding
      * the widget theme. Background are drawn before the widget and overlays are drawn.
      *
      * @param background background to use.
@@ -421,7 +426,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     }
 
     /**
-     * Sets a background and disables the theme background. See {@link #backgroundOverlay(IDrawable...)} for more information.
+     * Sets a background and disables the theme background. See {@link #backgroundOverlay(IDrawable...)} for more
+     * information.
      *
      * @param background background
      * @return this
@@ -429,6 +435,7 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     public W background(IDrawable... background) {
         return backgroundOverlay(background).disableThemeBackground(true);
     }
+
     /**
      * Sets an overlay. Does not interfere with themes. Overlays are drawn after the widget and backgrounds.
      *
@@ -465,7 +472,8 @@ public class Widget<W extends Widget<W>> extends AbstractWidget implements IPosi
     }
 
     /**
-     * Sets a background and disables the theme background. See {@link #backgroundOverlay(IDrawable...)} for more information.
+     * Sets a background and disables the theme background. See {@link #backgroundOverlay(IDrawable...)} for more
+     * information.
      *
      * @param background background
      * @return this
