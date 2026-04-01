@@ -70,13 +70,13 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
         if (button == 0 || button == 1) {
-            expanded(!this.expanded);
+            setExpanded(!this.expanded);
             return Result.SUCCESS;
         }
         return Result.ACCEPT;
     }
 
-    public void expanded(boolean expanded) {
+    public void setExpanded(boolean expanded) {
         if (expanded == this.expanded) return;
         this.expanded = expanded;
         for (IWidget widget : getChildren()) {

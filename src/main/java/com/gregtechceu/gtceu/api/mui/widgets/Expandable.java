@@ -109,7 +109,7 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     }
 
     public void toggle() {
-        expanded(!expanded);
+        setExpanded(!expanded);
     }
 
     @Override
@@ -132,8 +132,8 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
         }
     }
 
-    public Expandable expanded(boolean expanded) {
-        if (this.expanded == expanded) return this;
+    public void setExpanded(boolean expanded) {
+        if (this.expanded == expanded) return;
         this.expanded = expanded;
         if (expanded) {
             this.normalView.setEnabled(false);
@@ -147,7 +147,6 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
             this.areaSnapshot = getArea().copyOrImmutable();
             scheduleResize();
         }
-        return this;
     }
 
     public Expandable collapsedView(IWidget normalView) {

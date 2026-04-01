@@ -74,19 +74,23 @@ public class ScrollPadding extends Box {
                 box.scrollPaddingBottom);
     }
 
-    public int getLeft() {
+    @Override
+    public int left() {
         return this.left + this.scrollPaddingLeft;
     }
 
-    public int getRight() {
+    @Override
+    public int right() {
         return this.right + this.scrollPaddingRight;
     }
 
-    public int getTop() {
+    @Override
+    public int top() {
         return this.top + this.scrollPaddingTop;
     }
 
-    public int getBottom() {
+    @Override
+    public int bottom() {
         return this.bottom + this.scrollPaddingBottom;
     }
 
