@@ -83,7 +83,7 @@ public abstract class ModularNetworkSide {
         ModularSyncManager msm = syncHandler.getSyncManager().getModularSyncManager();
         if (!inverseActiveScreens.containsKey(msm)) return;
         int id = inverseActiveScreens.getInt(msm);
-        sendPacket(new SyncHandlerPacket(msm.getMenu().inWorldID, id, panel, syncHandler.getKey(), false, buffer),
+        sendPacket(new SyncHandlerPacket(id, id, panel, syncHandler.getKey(), false, buffer),
                 player);
     }
 
@@ -92,7 +92,7 @@ public abstract class ModularNetworkSide {
                                  Player player) {
         if (!inverseActiveScreens.containsKey(msm)) return;
         int id = inverseActiveScreens.getInt(msm);
-        sendPacket(new SyncHandlerPacket(msm.getMenu().inWorldID, id, panel, key, true, buffer), player);
+        sendPacket(new SyncHandlerPacket(id, id, panel, key, true, buffer), player);
     }
 
     @ApiStatus.Internal
