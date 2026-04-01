@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-public class Dialog<T> extends ModularPanel {
+public class Dialog<T> extends ModularPanel<Dialog<T>> {
 
     private final Consumer<T> resultConsumer;
     @Getter

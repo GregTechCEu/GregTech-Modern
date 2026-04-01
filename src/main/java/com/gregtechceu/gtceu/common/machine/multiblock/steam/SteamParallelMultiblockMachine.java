@@ -193,7 +193,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
      */
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 164);
 
         var parentWidget = new ParentWidget<>();

@@ -305,7 +305,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
 
         int width = Math.max(176, 18 * rowSize + 14);

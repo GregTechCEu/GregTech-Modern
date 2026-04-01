@@ -225,7 +225,7 @@ public class GTMuiWidgets {
                                 circuitGetter.get().isEmpty() ? 1 : circuitGetter.get().getCount())));
     }
 
-    public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
+    public static ModularPanel<?> createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
         syncManager.syncValue("circuit_slot", circuitSyncValue);
         Grid buttonGrid = new Grid()
                 .coverChildren()
@@ -254,13 +254,13 @@ public class GTMuiWidgets {
                         .child(buttonGrid));
     }
 
-    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
-                                                      Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+    public static ModularPanel<?> createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
+                                                         Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel parentPanel,
+    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel<?> parentPanel,
                                                          PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
                 i -> machine.getCircuitInventory().setStackInSlot(0, i),

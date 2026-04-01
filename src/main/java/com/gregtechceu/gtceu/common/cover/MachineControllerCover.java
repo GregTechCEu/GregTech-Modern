@@ -196,7 +196,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
                 this::getControllerMode, this::setControllerMode);
 

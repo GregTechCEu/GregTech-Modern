@@ -172,7 +172,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return GTGuis.createPanel(this, 176, 166);
     }
 }

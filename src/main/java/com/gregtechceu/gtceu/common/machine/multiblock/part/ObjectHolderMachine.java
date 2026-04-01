@@ -96,9 +96,9 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
-                                         @NotNull UISettings settings) {
-        return new ModularPanel(this.getDefinition().getName())
+    public @NotNull ModularPanel<?> buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                            @NotNull UISettings settings) {
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 166)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()

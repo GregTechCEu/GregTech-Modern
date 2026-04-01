@@ -24,7 +24,7 @@ public abstract class AbstractWidget implements IWidget {
     // gui context
     private boolean valid = false;
     private IWidget parent = null;
-    private ModularPanel panel = null;
+    private ModularPanel<?> panel = null;
     private ModularGuiContext context = null;
 
     @Nullable
@@ -291,7 +291,7 @@ public abstract class AbstractWidget implements IWidget {
      * @throws IllegalStateException if {@link #isValid()} returns false
      */
     @Override
-    public @NotNull ModularPanel getPanel() {
+    public @NotNull ModularPanel<?> getPanel() {
         if (!isValid()) {
             throw new IllegalStateException(this + " is not in a valid state!");
         }

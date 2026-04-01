@@ -101,7 +101,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     ///////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 229);
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176));
 

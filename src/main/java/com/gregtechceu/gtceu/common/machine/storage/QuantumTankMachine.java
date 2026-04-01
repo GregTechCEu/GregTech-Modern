@@ -215,11 +215,11 @@ public class QuantumTankMachine extends TieredMachine implements IDropSaveMachin
     //////////////////////////////////////
     // TODO: Needs AOI widget
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         LongSyncValue bucketSyncer = new LongSyncValue(this::getStoredAmount, (ignored) -> {});
         syncManager.syncValue("bucket_amount", bucketSyncer);
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .child(
                         // Top half of the screen
                         new ParentWidget<>()

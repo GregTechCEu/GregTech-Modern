@@ -71,7 +71,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL :
                 GTGuiTextures.PROGRESS_BAR_SOLAR_BRONZE;
 

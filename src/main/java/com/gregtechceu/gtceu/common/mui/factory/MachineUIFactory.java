@@ -84,7 +84,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
+    public ModularScreen createScreen(PosGuiData data, ModularPanel<?> mainPanel) {
         return new GTGuiScreen(MOD_ID, mainPanel, getThemeId(data));
     }
 

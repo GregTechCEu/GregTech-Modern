@@ -108,8 +108,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new ModularPanel(this.getDefinition().getName())
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel<>(this.getDefinition().getName())
                 .height(100)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(Flow.column()

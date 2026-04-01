@@ -281,7 +281,7 @@ public class ModularGuiContext extends GuiContext {
             LocatedElement<IDraggable> draggable;
             if (widget instanceof IDraggable iDraggable) {
                 draggable = new LocatedElement<>(iDraggable, hovered.getTransformationMatrix());
-            } else if (widget instanceof ModularPanel panel) {
+            } else if (widget instanceof ModularPanel<?> panel) {
                 if (panel.isDraggable()) {
                     if (!panel.resizer().hasFixedSize()) {
                         throw new IllegalStateException(
@@ -454,7 +454,7 @@ public class ModularGuiContext extends GuiContext {
         public Iterator<IWidget> iterator() {
             return new AbstractIterator<>() {
 
-                private final Iterator<ModularPanel> panelIt = ModularGuiContext.this.getScreen()
+                private final Iterator<ModularPanel<?>> panelIt = ModularGuiContext.this.getScreen()
                         .getPanelManager().getOpenPanels().iterator();
                 private Iterator<LocatedWidget> widgetIt;
 

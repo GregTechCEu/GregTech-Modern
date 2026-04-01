@@ -23,7 +23,7 @@ public class GTSingleblockMachinePanels {
 
     public static PanelFactory GENERAL_MACHINE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                                   MetaMachine machine) -> {
-        ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
+        ModularPanel<?> panel = new ModularPanel<>(machine.getDefinition().getName());
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
@@ -113,7 +113,7 @@ public class GTSingleblockMachinePanels {
 
     public static PanelFactory MACERATOR = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                             MetaMachine machine) -> {
-        ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
+        ModularPanel<?> panel = new ModularPanel<>(machine.getDefinition().getName());
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
@@ -201,7 +201,7 @@ public class GTSingleblockMachinePanels {
 
     public static PanelFactory ARC_FURNACE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                               MetaMachine machine) -> {
-        ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
+        ModularPanel<?> panel = new ModularPanel<>(machine.getDefinition().getName());
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
@@ -289,7 +289,7 @@ public class GTSingleblockMachinePanels {
 
     public static PanelFactory STEAM_MACHINE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                                 MetaMachine machine) -> {
-        ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
+        ModularPanel<?> panel = new ModularPanel<>(machine.getDefinition().getName());
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             GTCEu.LOGGER.error("{} is not a SimpleSteamMachine, can not add slots to its content",
                     machine.getDefinition().getName());

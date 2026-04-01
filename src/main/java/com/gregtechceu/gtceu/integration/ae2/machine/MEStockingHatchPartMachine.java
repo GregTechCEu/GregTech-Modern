@@ -259,7 +259,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ///////////////////////////////
 
     @Override
-    protected Flow createButtonColumn(ModularPanel panel, PanelSyncManager syncManager,
+    protected Flow createButtonColumn(ModularPanel<?> panel, PanelSyncManager syncManager,
                                       UITexture backgroundTexture) {
         IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
                 (sm, sh) -> GTGuis.createPopupPanel("stocking_settings_panel", 140, 70)

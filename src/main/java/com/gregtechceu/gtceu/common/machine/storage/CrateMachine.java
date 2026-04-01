@@ -71,7 +71,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         syncManager.registerSlotGroup("item_inv", inventorySize);
 
         int rows = inventorySize / rowLength;

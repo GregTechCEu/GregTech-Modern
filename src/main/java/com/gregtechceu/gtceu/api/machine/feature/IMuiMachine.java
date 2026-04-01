@@ -16,7 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface IMuiMachine extends IUIHolder<PosGuiData>, IMachineFeature {
 
     @Override
-    ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings);
+    ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings);
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;

@@ -452,8 +452,8 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public @Nullable ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
-                                          UISettings settings) {
+    public @Nullable ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
+                                             UISettings settings) {
         for (IItemComponent component : getComponents()) {
             if (component instanceof IItemUIHolder uiHolder) {
                 return uiHolder.buildUI(data, syncManager, settings);

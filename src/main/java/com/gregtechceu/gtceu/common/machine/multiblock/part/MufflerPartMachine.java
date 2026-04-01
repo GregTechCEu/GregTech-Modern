@@ -178,11 +178,11 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
-                                         @NotNull UISettings settings) {
+    public @NotNull ModularPanel<?> buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                            @NotNull UISettings settings) {
         int size = (int) Math.sqrt(inventory.getSlots());
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(Math.max(176, 20 + (18 * size)), 100 + (18 * size))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()

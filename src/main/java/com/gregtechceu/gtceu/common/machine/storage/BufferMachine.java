@@ -86,8 +86,8 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
 
     // TODO MUI: Needs EIO widget
     @Override
-    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
-                                         @NotNull UISettings settings) {
+    public @NotNull ModularPanel<?> buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                            @NotNull UISettings settings) {
         for (int i = 0; i < tank.getTanks(); i++) {
             syncManager.syncValue("fluids", i, SyncHandlers.fluidSlot(tank.getStorages()[i]));
         }
@@ -114,7 +114,7 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                         .syncHandler("fluids", i))
                 .build();
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()

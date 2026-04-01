@@ -114,7 +114,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // settings.customContainer(() -> new CraftingModularContainer(3, 3, this.craftingInventory));
         // settings.customGui(() -> TestGuiContainer::new);
 
@@ -168,10 +168,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         // disable spotless on the menu layout code so it won't insert random line breaks
         // spotless:off
         Rectangle colorPickerBackground = new Rectangle().color(Color.RED.main);
-        ModularPanel panel = new ModularPanel("test_tile");
+        ModularPanel<?> panel = new ModularPanel<>("test_tile");
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
-                (mainPanel, player) -> new ColorPickerDialog(colorPickerBackground::color, colorPickerBackground.getColor(), true)
+                (mainPanel, player) -> new ColorPickerDialog("color_picker", colorPickerBackground.getColor(), true)
                          .setDraggable(true)
                          .relative(panel)
                          .top(0)
@@ -574,8 +574,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return page;
     }
 
-    public ModularPanel openSecondWindow(PanelSyncManager syncManager, IPanelHandler syncHandler) {
-        ModularPanel panel = new Dialog<>("second_window", null)
+    public ModularPanel<?> openSecondWindow(PanelSyncManager syncManager, IPanelHandler syncHandler) {
+        ModularPanel<?> panel = new Dialog<>("second_window", null)
                 .setDisablePanelsBelow(false)
                 .setCloseOnOutOfBoundsClick(false)
                 .setDraggable(true)
@@ -629,9 +629,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
-    public ModularPanel openThirdWindow(PanelSyncManager syncManager, IPanelHandler syncHandler,
-                                        AtomicInteger integer) {
-        ModularPanel panel = new Dialog<>("third_window", null)
+    public ModularPanel<?> openThirdWindow(PanelSyncManager syncManager, IPanelHandler syncHandler,
+                                           AtomicInteger integer) {
+        ModularPanel<?> panel = new Dialog<>("third_window", null)
                 .setDisablePanelsBelow(false)
                 .setCloseOnOutOfBoundsClick(false)
                 .setDraggable(true)
@@ -668,7 +668,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         }
     }
 
-    public @NotNull ModularPanel buildSearchTest(ModularGuiContext context) {
+    public @NotNull ModularPanel<?> buildSearchTest(ModularGuiContext context) {
         List<String> items = Arrays.asList("Chicken", "Jockey", "Flint", "Steel", "Steve", "Diamond", "Ingot", "Iron",
                 "Armor", "Greg");
         StringValue searchValue = new StringValue("");

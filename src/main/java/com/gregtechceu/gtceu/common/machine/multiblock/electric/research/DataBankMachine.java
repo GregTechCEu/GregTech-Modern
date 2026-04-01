@@ -196,7 +196,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 164);
 
         var panelUtil = new GTMultiblockPanelUtil(this);

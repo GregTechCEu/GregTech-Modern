@@ -81,7 +81,7 @@ public abstract class GTRecipeJEICategory<T extends Recipe<?>, W extends IWidget
                         W widget = wrapperFunction.apply(recipe);
                         ResourceLocation recipeId = recipeIdGetter.apply(recipe);
 
-                        ModularPanel panel = ModularPanel.defaultPanel(recipeId.toString(),
+                        ModularPanel<?> panel = ModularPanel.defaultPanel(recipeId.toString(),
                                 widget.getArea().width, widget.getArea().height);
                         panel.child(widget);
                         return new ModularScreen(recipeId.getNamespace(), panel);

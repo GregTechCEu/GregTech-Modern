@@ -90,7 +90,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         assert getBuffer() != null;
         return getBuffer().buildUI(data, syncManager, settings);
     }

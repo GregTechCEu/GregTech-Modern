@@ -880,7 +880,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     }
 
     @Override
-    default ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+    default ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         for (var behavior : getToolStats().getBehaviors()) {
             if (!(behavior instanceof IToolUIBehavior uiBehavior) ||
                     !uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {

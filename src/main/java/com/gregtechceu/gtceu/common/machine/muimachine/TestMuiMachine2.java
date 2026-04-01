@@ -38,7 +38,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private int val = 0;
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IntSyncValue valSync = new IntSyncValue(() -> this.val, (v) -> {});
         syncManager.syncValue("valSync", valSync);
 
@@ -63,8 +63,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                         .asWidget().top(50).size(200, 200));
     }
 
-    public static @NotNull ModularPanel buildAspectRatioUI() {
-        return new ModularPanel("aspect_ratio")
+    public static @NotNull ModularPanel<?> buildAspectRatioUI() {
+        return new ModularPanel<>("aspect_ratio")
                 .coverChildren()
                 .padding(10)
                 .child(new Row()

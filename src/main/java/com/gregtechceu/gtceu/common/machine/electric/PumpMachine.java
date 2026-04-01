@@ -535,11 +535,11 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
     // ********** Gui ***********//
     //////////////////////////////////////
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IntSyncValue bucketSyncer = new IntSyncValue(() -> cache.getFluidInTank(0).getAmount(), (ignored) -> {});
         syncManager.syncValue("bucket_amount", bucketSyncer);
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .child(
                         // Top half of the screen
                         new ParentWidget<>()

@@ -154,7 +154,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var theme = getDefinition().getThemeId();
         var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
                 .getBackground();
@@ -162,7 +162,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
             backgroundTexture = GTGuiTextures.BACKGROUND;
         }
 
-        return new ModularPanel(getDefinition().getName())
+        return new ModularPanel<>(getDefinition().getName())
                 .width(200)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 200))
                 .bindPlayerInventory()

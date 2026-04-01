@@ -277,7 +277,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 168);
 
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176));

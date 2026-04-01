@@ -133,7 +133,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // TODO
         return super.buildUI(data, syncManager, settings)
                 .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));

@@ -397,7 +397,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      */
 
     @Override
-    public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
+    public ModularPanel<?> buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
         InteractionSyncHandler syncHandler = new InteractionSyncHandler();
         // syncManager.syncValue("button_idk", syncHandler);
         Flow maintenanceStatusWidget = Flow.column()
@@ -424,7 +424,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             updateWidget.run();
         });
         updateWidget.run();
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 200)
                 .bindPlayerInventory()
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))

@@ -174,7 +174,7 @@ public interface IThemeApi {
      * @param defaultTheme default theme if no theme was found
      * @return the registered theme for the given screen or the given default theme or {@link #getDefaultTheme()}
      */
-    default ITheme getThemeForScreen(ModularPanel panel, @Nullable String defaultTheme) {
+    default ITheme getThemeForScreen(ModularPanel<?> panel, @Nullable String defaultTheme) {
         ModularScreen screen = panel.getScreen();
         return getThemeForScreen(screen.getOwner(), screen.getName(), panel.getName(), defaultTheme,
                 screen.getThemeOverride());

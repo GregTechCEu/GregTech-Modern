@@ -295,7 +295,7 @@ public class PlaceholderHandler {
         syncManager.syncValue("run_code_sync_handler", runCodeOnce);
         // because the args are nullable, intellij complains about everything, even though childIf is used
         // noinspection DataFlowIssue
-        return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel(name)
+        return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel<>(name)
                 .size(400, 250)
                 .resizeableOnDrag(true)
                 .excludeAreaInRecipeViewer()
@@ -380,8 +380,8 @@ public class PlaceholderHandler {
                                         .toList()))));
     }
 
-    public static ModularPanel createHelpPanel() {
-        return new ModularPanel("placeholder_language_help")
+    public static ModularPanel<?> createHelpPanel() {
+        return new ModularPanel<>("placeholder_language_help")
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)

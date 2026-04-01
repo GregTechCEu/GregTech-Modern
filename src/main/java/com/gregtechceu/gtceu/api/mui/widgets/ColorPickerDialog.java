@@ -41,12 +41,8 @@ public class ColorPickerDialog extends Dialog<Integer> {
     private final Rectangle sliderBackgroundS = new Rectangle();
     private final Rectangle sliderBackgroundV = new Rectangle();
 
-    public ColorPickerDialog(Consumer<Integer> resultConsumer, int startColor, boolean controlAlpha) {
-        this("color_picker", resultConsumer, startColor, controlAlpha);
-    }
-
-    public ColorPickerDialog(String name, Consumer<Integer> resultConsumer, int startColor, boolean controlAlpha) {
-        super(name, resultConsumer);
+    public ColorPickerDialog(String name, int startColor, boolean controlAlpha) {
+        super(name);
 
         this.controlAlpha = controlAlpha;
         this.alpha = Color.getAlpha(startColor);

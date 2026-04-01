@@ -17,13 +17,13 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface PanelFactory extends IUIHolder<PosGuiData> {
 
     @Override
-    default ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    default ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var machine = MachineUIFactory.getMachine(data);
         return buildUIFunction(data, syncManager, settings, machine);
     };
 
-    ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                 MetaMachine machine);
+    ModularPanel<?> buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                    MetaMachine machine);
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;

@@ -85,7 +85,7 @@ public class GuiManager {
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(false);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);
-        ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
+        ModularPanel<?> panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
 
         // create the menu
@@ -129,7 +129,7 @@ public class GuiManager {
         settings.defaultCanInteractWith(factory, guiData);
         ModularSyncManager msm = new ModularSyncManager(true);
         PanelSyncManager syncManager = new PanelSyncManager(msm, true);
-        ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
+        ModularPanel<?> panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
         ModularScreen screen = factory.createScreen(guiData, panel);
         screen.getContext().setSettings(settings);

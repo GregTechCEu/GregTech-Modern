@@ -127,13 +127,13 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
 
         DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(this::getEnergyPercentage));
 
-        return new ModularPanel(getDefinition().getName())
+        return new ModularPanel<>(getDefinition().getName())
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
                         .height(90)

@@ -351,8 +351,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
 
     // TODO: Needs EIO type side selection widget when that's done
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel panel = new ModularPanel(this.getDefinition().getName());
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel<?> panel = new ModularPanel<>(this.getDefinition().getName());
         var slotHeight = (int) Math.sqrt(inventorySize);
         panel
                 .size(176, 104 + 18 * slotHeight)

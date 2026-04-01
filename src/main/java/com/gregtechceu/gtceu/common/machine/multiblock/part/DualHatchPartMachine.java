@@ -169,13 +169,13 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     ///////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int panelWidth = Math.max(176 + 18 + 3, 18 * rowSize + 18 + 14);
         int panelHeight = 74 + Math.max(30, 9 + rowSize * 18) + 14;
         String slotGroupName = "inv_slot_group";
         SlotGroup slotGroup = new SlotGroup(slotGroupName, getInventorySize());
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(panelWidth, panelHeight)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), panelWidth))
                 .bindPlayerInventory()

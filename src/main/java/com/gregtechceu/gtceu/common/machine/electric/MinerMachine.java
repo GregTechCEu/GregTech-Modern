@@ -221,8 +221,8 @@ public class MinerMachine extends WorkableTieredMachine
 
     // TODO(Onion): fix the gui stuff for this
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new ModularPanel(getDefinition().getName())
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel<>(getDefinition().getName())
                 .width(220)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 220))
                 .bindPlayerInventory()

@@ -57,7 +57,7 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
             return null;
         }
 

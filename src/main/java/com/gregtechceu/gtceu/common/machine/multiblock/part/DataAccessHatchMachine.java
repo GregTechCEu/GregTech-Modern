@@ -91,15 +91,15 @@ public class DataAccessHatchMachine extends TieredPartMachine
 
     // TODO MUI: Might need EIO widget? Not sure
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager,
-                                UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager,
+                                   UISettings settings) {
         int size = (int) Math.sqrt(getInventorySize());
 
         var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
                 i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
                 GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()

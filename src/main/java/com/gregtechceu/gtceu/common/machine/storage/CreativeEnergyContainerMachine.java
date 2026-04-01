@@ -193,7 +193,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // syncing
         LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v);
         IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = a < 1 ? 1 : a);
@@ -205,7 +205,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("voltage popup", false,
                 (manager, handler) -> createAmpSelector(voltage, tier));
 
-        return new ModularPanel("main panel")
+        return new ModularPanel<>("main panel")
                 .coverChildrenHeight()
                 .width(166)
                 .background(GTGuiTextures.BACKGROUND)
@@ -351,7 +351,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .child(IKey.lang("gtceu.creative.energy.sink").asWidget()));
     }
 
-    private ModularPanel createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
+    private ModularPanel<?> createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
         return new Dialog<>("amp_selector")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)

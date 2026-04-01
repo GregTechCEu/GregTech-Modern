@@ -100,7 +100,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     // TODO add EIO widget
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix;
         if (inventorySize == 8) matrix = new String[] { "BBBB", "BBBB" };
         else matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
@@ -108,7 +108,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         DoubleSyncValue energyPercentage = syncManager.getOrCreateSyncHandler("energyPercentage", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(this::getEnergyPercentage));
 
-        return new ModularPanel("battery_buffer")
+        return new ModularPanel<>("battery_buffer")
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
                         .height(90)

@@ -85,7 +85,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     }
 
     @OnlyIn(Dist.CLIENT)
-    private ModularPanel buildAmountEditor(ModularPanel parent, net.minecraft.world.entity.player.Player player) {
+    private ModularPanel<?> buildAmountEditor(ModularPanel<?> parent, net.minecraft.world.entity.player.Player player) {
         amountField = new TextFieldWidget() {
 
             @Override
@@ -101,7 +101,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
         amountField.expanded().heightRel(1f)
                 .value(new StringValue.Dynamic(() -> pendingAmount, val -> pendingAmount = val));
 
-        return new ModularPanel("ae_amount_editor")
+        return new ModularPanel<>("ae_amount_editor")
                 .size(120, 36)
                 .alignX(0.5f).alignY(0.35f)
                 .background(GTGuiTextures.BACKGROUND)

@@ -70,10 +70,10 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
     }
 
     @Override
-    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
-                                         @NotNull UISettings settings) {
+    public @NotNull ModularPanel<?> buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                            @NotNull UISettings settings) {
         IntSyncValue parallels = new IntSyncValue(this::getCurrentParallel, this::setCurrentParallel);
-        ModularPanel panel = new ModularPanel(this.getDefinition().getName());
+        ModularPanel<?> panel = new ModularPanel<>(this.getDefinition().getName());
         panel
                 .size(180, 60)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 240))

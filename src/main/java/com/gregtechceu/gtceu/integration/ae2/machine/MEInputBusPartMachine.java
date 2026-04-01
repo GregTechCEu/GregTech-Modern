@@ -134,7 +134,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     ///////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 192);
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176));
 
@@ -170,7 +170,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         return panel;
     }
 
-    protected Flow createButtonColumn(ModularPanel panel, PanelSyncManager syncManager,
+    protected Flow createButtonColumn(ModularPanel<?> panel, PanelSyncManager syncManager,
                                       UITexture backgroundTexture) {
         return new Column()
                 .coverChildren()

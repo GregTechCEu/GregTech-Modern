@@ -47,7 +47,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
         super(info);
     }
 
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
@@ -56,7 +56,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                     return recipeLogic.getProgressPercent();
                 }));
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(

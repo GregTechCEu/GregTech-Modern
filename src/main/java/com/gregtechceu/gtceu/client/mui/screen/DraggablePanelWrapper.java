@@ -12,14 +12,14 @@ import lombok.Getter;
 
 public class DraggablePanelWrapper implements IDraggable {
 
-    private final ModularPanel panel;
+    private final ModularPanel<?> panel;
     @Getter
     private final Area movingArea;
     private int relativeClickX, relativeClickY;
     @Getter
     private boolean moving;
 
-    public DraggablePanelWrapper(ModularPanel panel) {
+    public DraggablePanelWrapper(ModularPanel<?> panel) {
         this.panel = panel;
         this.movingArea = panel.getArea().createCopy();
     }

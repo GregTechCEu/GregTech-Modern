@@ -55,7 +55,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176 + 32, 164 + 36);
 
         var panelUtil = new GTMultiblockPanelUtil(this);

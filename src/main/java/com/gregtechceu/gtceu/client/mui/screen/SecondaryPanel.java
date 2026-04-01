@@ -16,15 +16,15 @@ import java.util.Objects;
 public class SecondaryPanel implements IPanelHandler {
 
     @Getter
-    private final ModularPanel parent;
+    private final ModularPanel<?> parent;
     private final IPanelBuilder provider;
     private final boolean subPanel;
     private ModularScreen screen;
-    private ModularPanel panel;
+    private ModularPanel<?> panel;
     private boolean open = false;
     private boolean queueDelete = false;
 
-    public SecondaryPanel(ModularPanel parent, IPanelBuilder provider, boolean subPanel) {
+    public SecondaryPanel(ModularPanel<?> parent, IPanelBuilder provider, boolean subPanel) {
         this.parent = parent;
         this.provider = provider;
         this.subPanel = subPanel;
@@ -95,12 +95,12 @@ public class SecondaryPanel implements IPanelHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private ModularPanel buildPanel() {
+    private ModularPanel<?> buildPanel() {
         return Objects.requireNonNull(this.provider.build(this.screen.getMainPanel(), MCHelper.getPlayer()));
     }
 
     public interface IPanelBuilder {
 
-        ModularPanel build(ModularPanel parentPanel, Player player);
+        ModularPanel<?> build(ModularPanel<?> parentPanel, Player player);
     }
 }

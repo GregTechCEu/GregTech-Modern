@@ -21,7 +21,7 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
     /**
      * @return Filter panel when opened by itself (including the player inventory)
      */
-    ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
+    ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
 
     CompoundTag saveFilter();
 

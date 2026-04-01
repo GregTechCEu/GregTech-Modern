@@ -293,7 +293,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int width = 176;
         int height = Math.max(168, (int) (18 * Math.sqrt(slots)) + 78 + 19);
         var panel = GTGuis.createPanel(this, width, height);

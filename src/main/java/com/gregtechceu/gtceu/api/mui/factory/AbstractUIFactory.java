@@ -45,13 +45,13 @@ public abstract class AbstractUIFactory<T extends GuiData> implements UIFactory<
     public abstract IUIHolder<T> getGuiHolder(T data);
 
     @Override
-    public ModularPanel createPanel(T guiData, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> createPanel(T guiData, PanelSyncManager syncManager, UISettings settings) {
         IUIHolder<T> guiHolder = Objects.requireNonNull(getGuiHolder(guiData), "Gui holder must not be null!");
         return guiHolder.buildUI(guiData, syncManager, settings);
     }
 
     @Override
-    public ModularScreen createScreen(T guiData, ModularPanel mainPanel) {
+    public ModularScreen createScreen(T guiData, ModularPanel<?> mainPanel) {
         IUIHolder<T> guiHolder = Objects.requireNonNull(getGuiHolder(guiData), "Gui holder must not be null!");
         return guiHolder.createScreen(guiData, mainPanel);
     }

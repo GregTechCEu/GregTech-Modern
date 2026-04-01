@@ -9,5 +9,5 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 public interface PanelEditor {
 
     void editUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                MetaMachine machine, ModularPanel panel);
+                MetaMachine machine, ModularPanel<?> panel);
 }

@@ -292,8 +292,8 @@ public class FisherMachine extends TieredEnergyMachine
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel panel = new ModularPanel(getDefinition().getName());
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel<?> panel = new ModularPanel<>(getDefinition().getName());
 
         var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int) Math.sqrt(cache.getSize()), true, 'i');
 

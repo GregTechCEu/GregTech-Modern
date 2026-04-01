@@ -110,7 +110,7 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     @Override
-    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
         Grid filterGrid = new Grid()

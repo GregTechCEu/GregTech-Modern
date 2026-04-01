@@ -82,7 +82,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
 

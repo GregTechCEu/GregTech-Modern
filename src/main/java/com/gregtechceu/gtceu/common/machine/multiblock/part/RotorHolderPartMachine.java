@@ -248,8 +248,8 @@ public class RotorHolderPartMachine extends TieredPartMachine {
 
     // TODO MUI: Might need EIO widget? Not sure
     @Override
-    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
-                                         @NotNull UISettings settings) {
+    public @NotNull ModularPanel<?> buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                            @NotNull UISettings settings) {
         SlotGroup rotorSlotGroup = new SlotGroup("rotor", 1);
 
         var slot = new ItemSlot()
@@ -268,7 +268,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
 
         syncManager.syncValue("rotor_speed", rotorSync);
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 100 + (18 * 4))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(new ParentWidget<>()

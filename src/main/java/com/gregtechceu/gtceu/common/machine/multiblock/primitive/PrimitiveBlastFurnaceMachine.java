@@ -154,7 +154,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
@@ -163,7 +163,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     return recipeLogic.getProgressPercent();
                 }));
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
                 .child(createImportItemSlot(syncManager, theme).margin(52, 16))

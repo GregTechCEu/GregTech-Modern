@@ -321,8 +321,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel panel = GTGuis.createPanel(this, 176, 166);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel<?> panel = GTGuis.createPanel(this, 176, 166);
         panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176));
 
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL :

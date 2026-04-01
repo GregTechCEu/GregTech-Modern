@@ -218,7 +218,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panel = GTGuis.createPanel(this, 176, 176);
 
         panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))

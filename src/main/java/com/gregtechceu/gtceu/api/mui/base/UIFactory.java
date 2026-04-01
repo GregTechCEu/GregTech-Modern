@@ -38,7 +38,7 @@ public interface UIFactory<D extends GuiData> {
      * @return new main panel
      */
     @ApiStatus.OverrideOnly
-    ModularPanel createPanel(D guiData, PanelSyncManager syncManager, UISettings settings);
+    ModularPanel<?> createPanel(D guiData, PanelSyncManager syncManager, UISettings settings);
 
     /**
      * Creates the screen for the GUI. Is only called on client side.
@@ -49,13 +49,13 @@ public interface UIFactory<D extends GuiData> {
      */
     @OnlyIn(Dist.CLIENT)
     @ApiStatus.OverrideOnly
-    ModularScreen createScreen(D guiData, ModularPanel mainPanel);
+    ModularScreen createScreen(D guiData, ModularPanel<?> mainPanel);
 
     /**
      * Creates the screen wrapper for the GUI. Is only called on client side.
      *
      * @param container container for the gui
-     * @param screen    the screen which was created in {@link #createScreen(GuiData, ModularPanel)}
+     * @param screen    the screen which was created in {@link #createScreen(GuiData, ModularPanel<?>)}
      * @return new screen wrapper
      * @throws IllegalStateException if the wrapping screen is not a
      *                               {@link AbstractContainerMenu AbstractContainerMenu}
