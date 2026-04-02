@@ -1,4 +1,4 @@
-package brachy.modularui;
+package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import net.minecraft.client.gui.navigation.ScreenRectangle;

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
-import brachy.modularui.GTGuiScreen;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

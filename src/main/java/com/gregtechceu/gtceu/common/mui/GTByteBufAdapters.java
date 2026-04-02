@@ -15,7 +15,6 @@ import brachy.modularui.utils.serialization.network.IByteBufMemberSerializer;
 import brachy.modularui.utils.serialization.network.IByteBufSerializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -31,7 +30,7 @@ public class GTByteBufAdapters {
     public static final IByteBufAdapter<GTRecipe> GTRECIPE = new IByteBufAdapter<>() {
 
         @Override
-        public GTRecipe deserialize(FriendlyByteBuf buffer) {
+        public @Nullable GTRecipe deserialize(FriendlyByteBuf buffer) {
             if (!buffer.readBoolean()) {
                 return null;
             }
@@ -40,7 +39,7 @@ public class GTByteBufAdapters {
         }
 
         @Override
-        public void serialize(FriendlyByteBuf buffer, GTRecipe u) {
+        public void serialize(FriendlyByteBuf buffer, @Nullable GTRecipe u) {
             if (u == null) {
                 buffer.writeBoolean(false);
                 return;
@@ -51,13 +50,13 @@ public class GTByteBufAdapters {
         }
 
         @Override
-        public boolean areEqual(@NotNull GTRecipe t1, @NotNull GTRecipe t2) {
+        public boolean areEqual(GTRecipe t1, GTRecipe t2) {
             return EqualityTest.wrapNullSafe(GTRecipe::equals).areEqual(t1, t2);
         }
     };
 
-    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull IByteBufDeserializer<T> deserializer,
-                                                     @NotNull IByteBufSerializer<T> serializer,
+    public static <T> IByteBufAdapter<T> makeAdapter(IByteBufDeserializer<T> deserializer,
+                                                     IByteBufSerializer<T> serializer,
                                                      @Nullable EqualityTest<T> tester) {
         return new IByteBufAdapter<>() {
 
@@ -72,13 +71,13 @@ public class GTByteBufAdapters {
             }
 
             @Override
-            public boolean areEqual(@NotNull T t1, @NotNull T t2) {
+            public boolean areEqual(T t1, T t2) {
                 return tester != null ? tester.areEqual(t1, t2) : Objects.equals(t1, t2);
             }
         };
     }
 
-    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec) {
+    public static <T> IByteBufAdapter<T> makeAdapter(Codec<T> codec) {
         return new IByteBufAdapter<>() {
 
             @Override
@@ -92,7 +91,7 @@ public class GTByteBufAdapters {
             }
 
             @Override
-            public boolean areEqual(@NotNull T a, @NotNull T b) {
+            public boolean areEqual(T a, T b) {
                 String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
                 String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
                 return Objects.equals(encoded1, encoded2);
@@ -100,8 +99,8 @@ public class GTByteBufAdapters {
         };
     }
 
-    public static <T> IByteBufAdapter<T> makeMemberAdapter(@NotNull IByteBufDeserializer<T> deserializer,
-                                                           @NotNull IByteBufMemberSerializer<T> memberSerializer,
+    public static <T> IByteBufAdapter<T> makeMemberAdapter(IByteBufDeserializer<T> deserializer,
+                                                           IByteBufMemberSerializer<T> memberSerializer,
                                                            @Nullable EqualityTest<T> comparator) {
         return makeAdapter(deserializer, memberSerializer.asBasic(), comparator);
     }

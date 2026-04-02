@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import brachy.modularui.IItemUIHolder;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

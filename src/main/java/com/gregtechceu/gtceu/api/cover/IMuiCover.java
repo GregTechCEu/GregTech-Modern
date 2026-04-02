@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import brachy.modularui.GTGuiScreen;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
