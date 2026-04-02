@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.IDrawable;
 import org.jetbrains.annotations.Nullable;
 
 public interface IMonitorComponent {

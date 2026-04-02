@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
@@ -11,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import brachy.modularui.api.drawable.IDrawable;
 import org.joml.Vector2d;
 
 public class MonitorPartMachine extends MonitorComponentPartMachine {

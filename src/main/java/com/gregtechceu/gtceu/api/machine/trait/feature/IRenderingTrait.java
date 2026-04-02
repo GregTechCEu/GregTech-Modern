@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait.feature;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
+import brachy.modularui.drawable.UITexture;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;

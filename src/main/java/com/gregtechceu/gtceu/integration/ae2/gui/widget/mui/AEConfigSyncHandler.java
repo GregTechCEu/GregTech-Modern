@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
@@ -9,6 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
+import brachy.modularui.value.sync.SyncHandler;
 
 public class AEConfigSyncHandler extends SyncHandler {
 

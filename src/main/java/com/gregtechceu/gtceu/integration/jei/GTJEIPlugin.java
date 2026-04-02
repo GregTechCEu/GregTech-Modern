@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.integration.jei;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.mui.screen.ContainerScreenWrapper;
-import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
-import com.gregtechceu.gtceu.client.mui.screen.ScreenWrapper;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -14,8 +11,6 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jei.circuit.GTProgrammedCircuitCategory;
-import com.gregtechceu.gtceu.integration.jei.handler.JeiContainerHandler;
-import com.gregtechceu.gtceu.integration.jei.handler.JeiScreenHandler;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
@@ -147,20 +142,5 @@ public class GTJEIPlugin implements IModPlugin {
             potionFluids.add(potionFluid);
         }
         registration.addExtraIngredients(ForgeTypes.FLUID_STACK, potionFluids);
-    }
-
-    @Override
-    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-
-        JeiScreenHandler.register(ScreenWrapper.class, registration);
-        JeiScreenHandler.register(ContainerScreenWrapper.class, registration);
-    }
-
-    @Override
-    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-
-        JeiContainerHandler.register(ModularContainerMenu.class, registration);
     }
 }

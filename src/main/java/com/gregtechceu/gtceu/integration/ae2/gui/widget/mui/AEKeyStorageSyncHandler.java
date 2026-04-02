@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import brachy.modularui.value.sync.ValueSyncHandler;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 

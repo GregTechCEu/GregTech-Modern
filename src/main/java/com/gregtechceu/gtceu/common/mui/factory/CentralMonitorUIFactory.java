@@ -6,29 +6,11 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.value.IValue;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
+import com.gregtechceu.gtceu.common.mui.widgets.SimpleDialog;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -37,6 +19,25 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.GuiAxis;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.value.IValue;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
-import static com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters.MONITOR_GROUPS;
+import static com.gregtechceu.gtceu.common.mui.GTByteBufAdapters.MONITOR_GROUPS;
 
 public class CentralMonitorUIFactory implements PanelFactory {
 
@@ -55,7 +56,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                            MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel<>("main");
         GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
-                machine::setMonitorGroups, MONITOR_GROUPS);
+                machine::setMonitorGroups, MONITOR_GROUPS::deserialize, MONITOR_GROUPS::serialize,
+                MONITOR_GROUPS::areEqual, null);
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(machine.getMonitorGroups());
         IPanelHandler helpPanel = syncManager.syncedPanel(
@@ -100,7 +102,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .widthRel(1));
         listHandler.notifyUpdate(buf -> {});
         return new Dialog<>("main")
-                .setDraggable(true)
+                .draggable(true)
                 .padding(5)
                 .excludeAreaInRecipeViewer()
                 .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR, 176))
@@ -160,11 +162,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             groupSync.setValue(groups);
                                         },
                                         new TextFieldWidget().setNumbers(1, component.getDataItems().getSlots()),
-                                        w -> {
-                                            w.validateText();
-                                            return Integer.parseInt(w.getText());
-                                        },
-                                        IKey.lang("gtceu.central_monitor.gui.data_slot")).setDraggable(true)
+                                        w -> Integer.parseInt(w.getText()),
+                                        IKey.lang("gtceu.central_monitor.gui.data_slot")).draggable(true)
                                         .size(160, 80));
                 IntSupplier colorSupplier = () -> {
                     if (component == null) return 0;
@@ -277,8 +276,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .marginTop(10)
                                 .height(40)
                                 .widthRel(1)
-                                .child(new IDrawable.MultiDrawableWidget(new BorderDrawable(0xFFFF0000, 1),
-                                        GTGuiTextures.MONITOR)
+                                .child(IDrawable.of(new BorderDrawable(0xFFFF0000, 1),
+                                        GTGuiTextures.MONITOR).asWidget()
                                         .heightRel(1)
                                         .width(40)
                                         .padding(11)
@@ -320,8 +319,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(Flow.row()
                                 .height(40)
                                 .widthRel(1)
-                                .child(new IDrawable.MultiDrawableWidget(new BorderDrawable(0xFFFF00FF, 1),
-                                        GTGuiTextures.MONITOR)
+                                .child(IDrawable.of(new BorderDrawable(0xFFFF00FF, 1),
+                                        GTGuiTextures.MONITOR).asWidget()
                                         .heightRel(1)
                                         .width(40)
                                         .padding(11)
@@ -335,8 +334,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(Flow.row()
                                 .height(40)
                                 .widthRel(1)
-                                .child(new IDrawable.MultiDrawableWidget(new BorderDrawable(0xFF0000FF, 1),
-                                        GTGuiTextures.DATA_HATCH, IKey.str("7").color(0xFFFFFFFF))
+                                .child(IDrawable.of(new BorderDrawable(0xFF0000FF, 1),
+                                        GTGuiTextures.DATA_HATCH, IKey.str("7").color(0xFFFFFFFF)).asWidget()
                                         .heightRel(1)
                                         .width(40)
                                         .padding(11)

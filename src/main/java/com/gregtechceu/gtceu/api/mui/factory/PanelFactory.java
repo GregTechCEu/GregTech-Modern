@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 
 @FunctionalInterface
 public interface PanelFactory extends IUIHolder<PosGuiData> {
@@ -20,7 +23,12 @@ public interface PanelFactory extends IUIHolder<PosGuiData> {
     default ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var machine = MachineUIFactory.getMachine(data);
         return buildUIFunction(data, syncManager, settings, machine);
-    };
+    }
+
+    @Override
+    default ModularScreen createScreen(PosGuiData data, ModularPanel<?> mainPanel) {
+        return new GTGuiScreen(mainPanel);
+    }
 
     ModularPanel<?> buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                     MetaMachine machine);
