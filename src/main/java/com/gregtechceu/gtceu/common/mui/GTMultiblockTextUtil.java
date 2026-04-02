@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data.mui;
+package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -6,23 +6,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.FluidDrawable;
-import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
-import brachy.modularui.value.sync.*;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.DynamicSyncedWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import brachy.modularui.screen.RichTooltip;
-import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -32,6 +20,18 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.FluidDrawable;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 
 import java.util.Optional;
 import java.util.function.Supplier;

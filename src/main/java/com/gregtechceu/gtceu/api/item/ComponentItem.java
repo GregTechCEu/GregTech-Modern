@@ -5,12 +5,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
-import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -42,6 +38,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

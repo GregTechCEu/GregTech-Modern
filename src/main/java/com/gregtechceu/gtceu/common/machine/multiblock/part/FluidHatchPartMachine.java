@@ -10,26 +10,11 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.theme.ThemeAPI;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.ToggleButton;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
@@ -54,6 +39,21 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -349,7 +349,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                                 .name("lockedFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
                                 .alwaysShowFull(true)
-                                
+
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
@@ -363,8 +363,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(io.support(IO.IN)))
-                                ));
+                                        .canFillSlot(io.support(IO.IN)))));
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {

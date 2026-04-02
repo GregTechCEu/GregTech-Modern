@@ -143,5 +143,4 @@ public class GTJEIPlugin implements IModPlugin {
         }
         registration.addExtraIngredients(ForgeTypes.FLUID_STACK, potionFluids);
     }
-
 }

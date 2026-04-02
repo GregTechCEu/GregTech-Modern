@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
-import brachy.modularui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -31,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;

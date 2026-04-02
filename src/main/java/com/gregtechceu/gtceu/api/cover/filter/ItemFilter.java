@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import brachy.modularui.factory.GuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;

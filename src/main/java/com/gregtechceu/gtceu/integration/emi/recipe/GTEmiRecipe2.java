@@ -1,5 +1,15 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+
 import brachy.modularui.api.widget.ITooltip;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.text.RichText;
@@ -15,16 +25,6 @@ import brachy.modularui.widget.WidgetTree;
 import brachy.modularui.widget.sizer.Area;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
-import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
-
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;

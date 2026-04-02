@@ -7,7 +7,16 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
@@ -18,15 +27,6 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

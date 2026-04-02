@@ -5,18 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.DoubleSyncValue;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -34,6 +23,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
@@ -107,8 +107,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
                         .child(new FluidSlot()
                                 .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])
                                         .canFillSlot(true).canDrainSlot(true))
-                                .size(14, 54)
-                                ));
+                                .size(14, 54)));
     }
 
     /*

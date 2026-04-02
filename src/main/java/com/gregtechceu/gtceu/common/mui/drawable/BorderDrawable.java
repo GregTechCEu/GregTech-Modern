@@ -1,9 +1,8 @@
-package com.gregtechceu.gtceu.api.mui.drawable;
+package com.gregtechceu.gtceu.common.mui.drawable;
 
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.theme.WidgetTheme;
 import brachy.modularui.screen.viewport.GuiContext;
-
+import brachy.modularui.theme.WidgetTheme;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

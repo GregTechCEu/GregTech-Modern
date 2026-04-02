@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data.mui;
+package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -10,12 +10,28 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextFieldWithScrollableCallback;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
+import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraftforge.items.IItemHandler;
+
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
@@ -30,23 +46,6 @@ import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWithScrollableCallback;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.cover.data.BucketMode;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTMath;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.items.IItemHandler;
-
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 

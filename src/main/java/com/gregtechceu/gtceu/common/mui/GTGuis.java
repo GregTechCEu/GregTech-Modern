@@ -2,15 +2,12 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.screen.ModularPanel;
 
+import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
+import brachy.modularui.screen.ModularPanel;
 
 public class GTGuis {
 
@@ -57,65 +54,9 @@ public class GTGuis {
                 .size(width, height);
     }
 
-    public static PopupPanel createPopupPanel(String name, int width, int height, boolean deleteCachedPanel) {
-        return createPopupPanel(name, width, height)
-                .deleteCachedPanel(deleteCachedPanel);
-    }
-
     public static PopupPanel defaultPopupPanel(String name) {
-        return new PopupPanel(name)
+        return PopupPanel.defaultPopupPanel(name)
                 .size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public static PopupPanel defaultPopupPanel(String name, boolean disableBelow,
-                                               boolean closeOnOutsideClick, boolean deleteCachedPanel) {
-        return defaultPopupPanel(name)
-                .disablePanelsBelow(disableBelow)
-                .closeOnOutOfBoundsClick(closeOnOutsideClick)
-                .deleteCachedPanel(deleteCachedPanel);
-    }
-
-    public static class PopupPanel extends ModularPanel<PopupPanel> {
-
-        private boolean deleteCachedPanel;
-
-        private PopupPanel(@NotNull String name) {
-            super(name);
-            center();
-            background(GTGuiTextures.BACKGROUND);
-            child(ButtonWidget.panelCloseButton().top(5).right(5)
-                    .onMousePressed((mouseX, mouseY, button) -> {
-                        if (button == 0 || button == 1) {
-                            this.closeIfOpen();
-                            return true;
-                        }
-                        return false;
-                    }));
-        }
-
-        @Override
-        public void onClose() {
-            super.onClose();
-            if (deleteCachedPanel && isSynced() && getSyncHandler() instanceof IPanelHandler handler) {
-                handler.deleteCachedPanel();
-            }
-        }
-
-        public PopupPanel deleteCachedPanel(boolean deleteCachedPanel) {
-            this.deleteCachedPanel = deleteCachedPanel;
-            return this;
-        }
-
-        @Override
-        public PopupPanel size(int w, int h) {
-            super.size(w, h);
-            return this;
-        }
-
-        @Override
-        public PopupPanel size(int val) {
-            super.size(val);
-            return this;
-        }
-    }
 }

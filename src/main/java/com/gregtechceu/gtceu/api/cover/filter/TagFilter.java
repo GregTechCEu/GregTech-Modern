@@ -1,22 +1,22 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import brachy.modularui.factory.GuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.StringSyncValue;
-import brachy.modularui.widgets.Dialog;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 
 import java.util.function.Consumer;

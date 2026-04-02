@@ -8,7 +8,19 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
@@ -18,18 +30,6 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

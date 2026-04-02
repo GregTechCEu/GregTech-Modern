@@ -3,10 +3,13 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
+
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.theme.ThemeAPI;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
@@ -18,10 +21,6 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
-
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;

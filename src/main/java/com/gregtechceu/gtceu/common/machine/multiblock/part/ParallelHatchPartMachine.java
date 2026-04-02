@@ -6,9 +6,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.utils.GTMath;
+
+import net.minecraft.util.Mth;
+
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.sync.IntSyncValue;
@@ -16,14 +24,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.utils.GTMath;
-
-import net.minecraft.util.Mth;
-
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

@@ -9,13 +9,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -24,6 +20,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;

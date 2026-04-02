@@ -9,20 +9,9 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.theme.ThemeAPI;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -40,6 +29,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -186,7 +186,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                             .orElse(Component.empty());
                                 })).color(Color.WHITE.main)))
                         .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
-                                syncManager).posRel(0.875f,0.5f)));
+                                syncManager).posRel(0.875f, 0.5f)));
     }
 
     private void addDisplayText(List<Component> textList) {

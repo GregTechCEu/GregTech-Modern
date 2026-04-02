@@ -8,12 +8,6 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -23,6 +17,12 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

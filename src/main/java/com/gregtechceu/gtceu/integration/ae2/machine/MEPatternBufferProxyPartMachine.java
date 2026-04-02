@@ -7,12 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -24,6 +20,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

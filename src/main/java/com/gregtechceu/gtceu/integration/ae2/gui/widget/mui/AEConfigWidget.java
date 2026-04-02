@@ -1,20 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
 
-import brachy.modularui.integration.emi.EmiStackConverter;
-import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.api.widget.Interactable;
-import brachy.modularui.theme.WidgetThemeEntry;
-import brachy.modularui.value.StringValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.SecondaryPanel;
-import brachy.modularui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -30,6 +16,20 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.Interactable;
+import brachy.modularui.integration.emi.EmiStackConverter;
+import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.SecondaryPanel;
+import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.theme.WidgetThemeEntry;
+import brachy.modularui.value.StringValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.emi.emi.api.stack.EmiStack;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +103,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
 
         return new ModularPanel<>("ae_amount_editor")
                 .size(120, 36)
-                .posRel(0.5f,0.35f)
+                .posRel(0.5f, 0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("Amount").asWidget().pos(4, 4))

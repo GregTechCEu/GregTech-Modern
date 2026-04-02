@@ -7,12 +7,25 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.GTUtil;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.sync.BooleanSyncValue;
@@ -25,18 +38,6 @@ import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

@@ -1,9 +1,10 @@
-package com.gregtechceu.gtceu.common.data.mui;
+package com.gregtechceu.gtceu.api.mui;
+
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
-
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.GTCEu.MOD_ID;
@@ -25,5 +26,10 @@ public class GTGuiScreen extends ModularScreen {
     public GTGuiScreen(String owner, ModularPanel<?> mainPanel, String themeId) {
         super(owner, mainPanel);
         useTheme(themeId);
+    }
+
+    @Override
+    public @NotNull ScreenRectangle getRectangle() {
+        return super.getRectangle();
     }
 }

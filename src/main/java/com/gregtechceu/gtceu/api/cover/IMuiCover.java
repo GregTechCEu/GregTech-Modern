@@ -1,21 +1,21 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
+
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 

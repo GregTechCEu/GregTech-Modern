@@ -1,9 +1,5 @@
-package com.gregtechceu.gtceu.api.mui.widgets.textfield;
+package com.gregtechceu.gtceu.common.mui.widgets.textfield;
 
-import brachy.modularui.api.value.ISyncOrValue;
-import brachy.modularui.screen.viewport.ModularGuiContext;
-import brachy.modularui.value.sync.GenericListSyncHandler;
-import brachy.modularui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -13,6 +9,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
+import brachy.modularui.api.value.ISyncOrValue;
+import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.value.sync.GenericListSyncHandler;
+import brachy.modularui.value.sync.StringSyncValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +51,8 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
         this.language = language;
         GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
-                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT::deserialize, GTByteBufAdapters.COMPONENT::serialize, GTByteBufAdapters.COMPONENT::areEqual, Component::copy);
+                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT::deserialize,
+                GTByteBufAdapters.COMPONENT::serialize, GTByteBufAdapters.COMPONENT::areEqual, Component::copy);
         setSyncOrValue(formattedTextSync);
     }
 

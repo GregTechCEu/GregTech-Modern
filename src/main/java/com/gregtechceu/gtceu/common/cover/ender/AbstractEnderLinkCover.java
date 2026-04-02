@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover.ender;
 
-import brachy.modularui.utils.serialization.network.IByteBufAdapter;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -13,28 +12,10 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Rectangle;
-import brachy.modularui.factory.GuiData;
-import brachy.modularui.factory.SidedPosGuiData;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
-import brachy.modularui.utils.MouseData;
-import brachy.modularui.value.sync.*;
-import brachy.modularui.widget.EmptyWidget;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.*;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.Direction;
@@ -42,6 +23,25 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.utils.serialization.network.IByteBufAdapter;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -303,7 +303,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((x, y, button) -> {
                     MouseData mouseData = MouseData.create(button);
                     if (mouseData.mouseButton() == 1) {
-                        syncManager.callSyncedAction("deleteEntry", buffer -> buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8));
+                        syncManager.callSyncedAction("deleteEntry",
+                                buffer -> buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8));
                         return true;
                     }
                     return false;

@@ -6,17 +6,9 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.factory.SidedPosGuiData;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ToggleButton;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
@@ -28,6 +20,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.util.List;

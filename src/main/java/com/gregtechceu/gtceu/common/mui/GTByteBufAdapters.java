@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.utils.serialization.network.IByteBufAdapter;
-import brachy.modularui.utils.serialization.network.IByteBufDeserializer;
-import brachy.modularui.utils.serialization.network.IByteBufMemberSerializer;
-import brachy.modularui.utils.serialization.network.IByteBufSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.utils.EqualityTest;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import brachy.modularui.utils.serialization.network.IByteBufAdapter;
+import brachy.modularui.utils.serialization.network.IByteBufDeserializer;
+import brachy.modularui.utils.serialization.network.IByteBufMemberSerializer;
+import brachy.modularui.utils.serialization.network.IByteBufSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

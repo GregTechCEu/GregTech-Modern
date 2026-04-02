@@ -2,15 +2,11 @@ package com.gregtechceu.gtceu.client.renderer.monitor;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import brachy.modularui.api.MCHelper;
-import brachy.modularui.factory.GuiManager;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.screen.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
-import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
@@ -24,6 +20,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 
+import brachy.modularui.api.MCHelper;
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.*;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.vertex.*;
@@ -64,130 +64,130 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     }
 
     /*
-    @SubscribeEvent
-    public void openClientInWorldUI(InWorldMUIOpenEvent event) {
-        if (this.targetPos != null && event.getGuiData() instanceof PosGuiData posGuiData) {
-            if (posGuiData.getBlockPos().asLong() == targetPos.asLong() && posGuiData.getLevel() == targetLevel) {
-                this.screen = event.getScreen();
-                this.vanillaScreen = event.getVanillaScreen();
-                this.vanillaScreen.init(MCHelper.getMc(), this.width, this.height);
-                this.screen.onResize(this.width, this.height);
-                ModularPanel<?> mainPanel = this.screen.getMainPanel();
-                for (IWidget child : mainPanel.getChildren()) {
-                    if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.nameContains("player_inventory")) {
-                        slotGroupWidget.disabled();
-                        mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
-                        mainPanel.scheduleResize();
-                    }
-                }
-            }
-        }
-    }
-
-
-    @SubscribeEvent
-    public void keyPressedEvent(EarlyKeyPressEvent event) {
-        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
-            return;
-        screen.getContext().updateLatestKey(event.getKey(), event.getScanCode(), event.getModifiers());
-        boolean early = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
-                event.getAction() == InputConstants.PRESS,
-                ClientScreenHandler.InputPhase.EARLY, event.getKey(), event.getScanCode(), event.getModifiers());
-        if (early) event.setCanceled(true);
-        else {
-            boolean late = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
-                    event.getAction() == InputConstants.PRESS,
-                    ClientScreenHandler.InputPhase.LATE, event.getKey(), event.getScanCode(), event.getModifiers());
-            if (late) event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void charTyped(CharTypedEvent event) {
-        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
-            return;
-        screen.getContext().updateLatestTypedChar(event.getCodepoint(), event.getModifiers());
-        if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
-    }
-
-
-    @SubscribeEvent
-    public void onInWorldGuiRender(InWorldMUIRenderEvent event) {
-        renderGuiToBuffer(event.getGraphics(), event.getPartialTick());
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void renderGuiToBuffer(GuiGraphics guiGraphics, float partialTick) {
-        if (screen == null || MCHelper.getPlayer() == null) return;
-        screen.getContext().setGraphics(guiGraphics);
-        screen.onFrameUpdate();
-        if (width * height == 0) return;
-        if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
-            renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
-        renderTarget.enableStencil();
-        renderTarget.clear(Minecraft.ON_OSX);
-
-        renderTarget.bindWrite(true);
-
-        RenderSystem.clear(256, Minecraft.ON_OSX);
-        Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, RESOLUTION_COEF * width, RESOLUTION_COEF * height, 0.0F,
-                1000.0F,
-                ForgeHooksClient.getGuiFarPlane());
-        RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.pushPose();
-        posestack.setIdentity();
-        posestack.translate(0.0D, 0.0D, 1000F - ForgeHooksClient.getGuiFarPlane());
-        posestack.scale(RESOLUTION_COEF, RESOLUTION_COEF, RESOLUTION_COEF);
-        RenderSystem.applyModelViewMatrix();
-
-        ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
-        ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
-
-        posestack.popPose();
-        RenderSystem.applyModelViewMatrix();
-
-        renderTarget.unbindWrite();
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
-    }
-
-    public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
-                          float partialTick, int mouseX, int mouseY) {
-        poseStack.scale(1 / 256f, 1 / 256f, 1 / 256e3f);
-        boolean resized = false;
-        if (maxWidth * 256 != width) {
-            width = maxWidth * 256;
-            resized = true;
-        }
-        if (maxHeight * 256 != height) {
-            height = maxHeight * 256;
-            resized = true;
-        }
-        if (resized) screen.onResize(width, height);
-        screen.getContext().updateState(mouseX, mouseY, partialTick);
-        screen.onFrameUpdate();
-        AnimatorManager.INSTANCE.onDraw(null);
-        if (width * height == 0) return;
-        RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
-        ShaderInstance shaderInstance = MCHelper.getMc().gameRenderer.blitShader;
-        shaderInstance.setSampler("DiffuseSampler", renderTarget.getColorTextureId());
-        Matrix4f pose = poseStack.last().pose();
-        double fov = ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$getFov(partialTick);
-        if (shaderInstance.PROJECTION_MATRIX != null)
-            shaderInstance.PROJECTION_MATRIX.set(MCHelper.getMc().gameRenderer.getProjectionMatrix(fov));
-
-        if (shaderInstance.MODEL_VIEW_MATRIX != null) shaderInstance.MODEL_VIEW_MATRIX.set(pose);
-        shaderInstance.apply();
-        Tesselator tesselator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(0.0D, height, 0.0D).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
-        bufferbuilder.vertex(width, height, 0.0D).uv(1, 0.0F).color(255, 255, 255, 255).endVertex();
-        bufferbuilder.vertex(width, 0.0D, 0.0D).uv(1, 1).color(255, 255, 255, 255).endVertex();
-        bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, 1).color(255, 255, 255, 255).endVertex();
-        BufferUploader.draw(bufferbuilder.end());
-        shaderInstance.clear();
-    }
+     * @SubscribeEvent
+     * public void openClientInWorldUI(InWorldMUIOpenEvent event) {
+     * if (this.targetPos != null && event.getGuiData() instanceof PosGuiData posGuiData) {
+     * if (posGuiData.getBlockPos().asLong() == targetPos.asLong() && posGuiData.getLevel() == targetLevel) {
+     * this.screen = event.getScreen();
+     * this.vanillaScreen = event.getVanillaScreen();
+     * this.vanillaScreen.init(MCHelper.getMc(), this.width, this.height);
+     * this.screen.onResize(this.width, this.height);
+     * ModularPanel<?> mainPanel = this.screen.getMainPanel();
+     * for (IWidget child : mainPanel.getChildren()) {
+     * if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.nameContains("player_inventory")) {
+     * slotGroupWidget.disabled();
+     * mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
+     * mainPanel.scheduleResize();
+     * }
+     * }
+     * }
+     * }
+     * }
+     * 
+     * 
+     * @SubscribeEvent
+     * public void keyPressedEvent(EarlyKeyPressEvent event) {
+     * if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
+     * return;
+     * screen.getContext().updateLatestKey(event.getKey(), event.getScanCode(), event.getModifiers());
+     * boolean early = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
+     * event.getAction() == InputConstants.PRESS,
+     * ClientScreenHandler.InputPhase.EARLY, event.getKey(), event.getScanCode(), event.getModifiers());
+     * if (early) event.setCanceled(true);
+     * else {
+     * boolean late = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
+     * event.getAction() == InputConstants.PRESS,
+     * ClientScreenHandler.InputPhase.LATE, event.getKey(), event.getScanCode(), event.getModifiers());
+     * if (late) event.setCanceled(true);
+     * }
+     * }
+     * 
+     * @SubscribeEvent
+     * public void charTyped(CharTypedEvent event) {
+     * if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
+     * return;
+     * screen.getContext().updateLatestTypedChar(event.getCodepoint(), event.getModifiers());
+     * if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
+     * }
+     * 
+     * 
+     * @SubscribeEvent
+     * public void onInWorldGuiRender(InWorldMUIRenderEvent event) {
+     * renderGuiToBuffer(event.getGraphics(), event.getPartialTick());
+     * }
+     * 
+     * @SuppressWarnings("UnstableApiUsage")
+     * public void renderGuiToBuffer(GuiGraphics guiGraphics, float partialTick) {
+     * if (screen == null || MCHelper.getPlayer() == null) return;
+     * screen.getContext().setGraphics(guiGraphics);
+     * screen.onFrameUpdate();
+     * if (width * height == 0) return;
+     * if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
+     * renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
+     * renderTarget.enableStencil();
+     * renderTarget.clear(Minecraft.ON_OSX);
+     * 
+     * renderTarget.bindWrite(true);
+     * 
+     * RenderSystem.clear(256, Minecraft.ON_OSX);
+     * Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, RESOLUTION_COEF * width, RESOLUTION_COEF * height, 0.0F,
+     * 1000.0F,
+     * ForgeHooksClient.getGuiFarPlane());
+     * RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
+     * PoseStack posestack = RenderSystem.getModelViewStack();
+     * posestack.pushPose();
+     * posestack.setIdentity();
+     * posestack.translate(0.0D, 0.0D, 1000F - ForgeHooksClient.getGuiFarPlane());
+     * posestack.scale(RESOLUTION_COEF, RESOLUTION_COEF, RESOLUTION_COEF);
+     * RenderSystem.applyModelViewMatrix();
+     * 
+     * ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
+     * ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
+     * 
+     * posestack.popPose();
+     * RenderSystem.applyModelViewMatrix();
+     * 
+     * renderTarget.unbindWrite();
+     * Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
+     * }
+     * 
+     * public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
+     * float partialTick, int mouseX, int mouseY) {
+     * poseStack.scale(1 / 256f, 1 / 256f, 1 / 256e3f);
+     * boolean resized = false;
+     * if (maxWidth * 256 != width) {
+     * width = maxWidth * 256;
+     * resized = true;
+     * }
+     * if (maxHeight * 256 != height) {
+     * height = maxHeight * 256;
+     * resized = true;
+     * }
+     * if (resized) screen.onResize(width, height);
+     * screen.getContext().updateState(mouseX, mouseY, partialTick);
+     * screen.onFrameUpdate();
+     * AnimatorManager.INSTANCE.onDraw(null);
+     * if (width * height == 0) return;
+     * RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
+     * ShaderInstance shaderInstance = MCHelper.getMc().gameRenderer.blitShader;
+     * shaderInstance.setSampler("DiffuseSampler", renderTarget.getColorTextureId());
+     * Matrix4f pose = poseStack.last().pose();
+     * double fov = ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$getFov(partialTick);
+     * if (shaderInstance.PROJECTION_MATRIX != null)
+     * shaderInstance.PROJECTION_MATRIX.set(MCHelper.getMc().gameRenderer.getProjectionMatrix(fov));
+     * 
+     * if (shaderInstance.MODEL_VIEW_MATRIX != null) shaderInstance.MODEL_VIEW_MATRIX.set(pose);
+     * shaderInstance.apply();
+     * Tesselator tesselator = RenderSystem.renderThreadTesselator();
+     * BufferBuilder bufferbuilder = tesselator.getBuilder();
+     * bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+     * bufferbuilder.vertex(0.0D, height, 0.0D).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
+     * bufferbuilder.vertex(width, height, 0.0D).uv(1, 0.0F).color(255, 255, 255, 255).endVertex();
+     * bufferbuilder.vertex(width, 0.0D, 0.0D).uv(1, 1).color(255, 255, 255, 255).endVertex();
+     * bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, 1).color(255, 255, 255, 255).endVertex();
+     * BufferUploader.draw(bufferbuilder.end());
+     * shaderInstance.clear();
+     * }
      */
 
     @Override
@@ -222,7 +222,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             this.mouseX = (int) (mouseX * 256);
             this.mouseY = (int) (mouseY * 256);
         }
-        //renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
+        // renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY *
+        // 256));
     }
-
 }

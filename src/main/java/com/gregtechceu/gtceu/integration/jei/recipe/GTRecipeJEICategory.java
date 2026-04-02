@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.jei.recipe;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -14,6 +12,8 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class GTRecipeJEICategory<T extends Recipe<?>, W extends IWidget> extends ModularUIRecipeCategory<T, W> {
+public abstract class GTRecipeJEICategory<T extends Recipe<?>, W extends IWidget>
+                                         extends ModularUIRecipeCategory<T, W> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
             .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
@@ -95,5 +96,4 @@ public abstract class GTRecipeJEICategory<T extends Recipe<?>, W extends IWidget
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
         return TYPES.apply(category);
     }
-
 }

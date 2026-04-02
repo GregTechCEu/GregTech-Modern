@@ -1,6 +1,20 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.GTUtil;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+
 import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.PhantomItemSlotSyncHandler;
@@ -11,20 +25,6 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.PhantomItemSlot;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
-
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

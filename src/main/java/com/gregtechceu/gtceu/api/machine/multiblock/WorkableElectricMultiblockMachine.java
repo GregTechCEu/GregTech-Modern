@@ -11,24 +11,24 @@ import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
-import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockPanelUtil;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.util.ArrayList;

@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 
 import java.util.ArrayList;

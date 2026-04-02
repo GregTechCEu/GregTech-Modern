@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.common.data.mui;
+package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.utils.Alignment;
@@ -12,7 +13,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.ListWidget;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMultiblockPanelUtil {
 

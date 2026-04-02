@@ -2,15 +2,6 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.value.sync.InteractionSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +10,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.InteractionSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;

@@ -5,9 +5,17 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -15,14 +23,6 @@ import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

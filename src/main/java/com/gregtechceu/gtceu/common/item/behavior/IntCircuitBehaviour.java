@@ -1,13 +1,9 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,6 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

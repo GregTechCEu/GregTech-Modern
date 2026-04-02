@@ -1,14 +1,10 @@
-package com.gregtechceu.gtceu.common.mui.factory;
+package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import brachy.modularui.api.IUIHolder;
-import brachy.modularui.factory.AbstractUIFactory;
-import brachy.modularui.factory.GuiManager;
-import brachy.modularui.factory.SidedPosGuiData;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +13,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.AbstractUIFactory;
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.SidedPosGuiData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

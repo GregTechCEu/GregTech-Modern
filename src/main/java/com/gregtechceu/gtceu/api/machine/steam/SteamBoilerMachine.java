@@ -8,25 +8,13 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.DoubleSyncValue;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
@@ -57,6 +45,18 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -339,14 +339,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(waterTank.getStorages()[0]))
                         .size(14, 54)
-                        .alwaysShowFull(true)
-                        )
+                        .alwaysShowFull(true))
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(steamTank.getStorages()[0])
                                 .canFillSlot(false).canDrainSlot(true))
                         .alwaysShowFull(true)
-                        .size(14, 54)
-                        )
+                        .size(14, 54))
                 .child(new ProgressWidget()
                         .texture(progressTexture,
                                 GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 54)

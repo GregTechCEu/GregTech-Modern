@@ -1,14 +1,14 @@
-package com.gregtechceu.gtceu.api.mui.widgets.textfield;
+package com.gregtechceu.gtceu.common.mui.widgets.textfield;
 
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.function.TriFunction;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true)
 public class TextFieldWithScrollableCallback extends TextFieldWidget {
+
     @Setter
     private @Nullable TriFunction<Double, Double, Double, Boolean> onScrolled;
 

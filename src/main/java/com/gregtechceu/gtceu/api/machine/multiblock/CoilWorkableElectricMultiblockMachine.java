@@ -2,24 +2,24 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.drawable.*;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockPanelUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.*;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.util.function.Supplier;

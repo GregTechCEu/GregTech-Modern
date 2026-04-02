@@ -6,6 +6,19 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
+import com.gregtechceu.gtceu.common.mui.widgets.SimpleDialog;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
@@ -14,6 +27,8 @@ import brachy.modularui.api.value.IValue;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
@@ -23,21 +38,6 @@ import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
-import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.mui.widgets.SimpleDialog;
-import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-
 import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
@@ -56,7 +56,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                            MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel<>("main");
         GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
-                machine::setMonitorGroups, MONITOR_GROUPS::deserialize, MONITOR_GROUPS::serialize, MONITOR_GROUPS::areEqual, null);
+                machine::setMonitorGroups, MONITOR_GROUPS::deserialize, MONITOR_GROUPS::serialize,
+                MONITOR_GROUPS::areEqual, null);
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(machine.getMonitorGroups());
         IPanelHandler helpPanel = syncManager.syncedPanel(

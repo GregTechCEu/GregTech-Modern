@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.Direction;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

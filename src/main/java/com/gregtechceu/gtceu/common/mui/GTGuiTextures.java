@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+
+import net.minecraft.resources.ResourceLocation;
+
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.drawable.ColorType;
 import brachy.modularui.drawable.TabTexture;
 import brachy.modularui.drawable.UITexture;
-
-import net.minecraft.resources.ResourceLocation;
-
 import org.jetbrains.annotations.NotNull;
 
 public class GTGuiTextures {

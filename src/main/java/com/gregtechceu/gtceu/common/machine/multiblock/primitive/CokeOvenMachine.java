@@ -3,20 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import brachy.modularui.api.ITheme;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.theme.ThemeAPI;
-import brachy.modularui.value.sync.DoubleSyncValue;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.ItemSlotSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
-import brachy.modularui.widgets.slot.*;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -35,9 +22,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidUtil;
 
+import brachy.modularui.api.ITheme;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.slot.*;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets.createTankWidget;
+import static com.gregtechceu.gtceu.common.mui.GTMuiWidgets.createTankWidget;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

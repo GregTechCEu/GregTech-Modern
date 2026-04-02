@@ -1,15 +1,9 @@
-package com.gregtechceu.gtceu.common.mui.factory;
+package com.gregtechceu.gtceu.api.mui.factory;
 
-import brachy.modularui.factory.GuiManager;
-import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import brachy.modularui.api.IUIHolder;
-import brachy.modularui.factory.AbstractUIFactory;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.ModularScreen;
-import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +12,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.AbstractUIFactory;
+import brachy.modularui.factory.GuiManager;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

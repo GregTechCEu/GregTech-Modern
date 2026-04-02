@@ -1,14 +1,7 @@
-package com.gregtechceu.gtceu.api.mui.base;
+package com.gregtechceu.gtceu.api.mui;
 
-import brachy.modularui.api.IUIHolder;
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.factory.PlayerInventoryUIFactory;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.ModularScreen;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 
-import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -17,6 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.factory.PlayerInventoryUIFactory;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
 
 public interface IItemUIHolder extends IUIHolder<PlayerInventoryGuiData<?>>, IInteractionItem {
 

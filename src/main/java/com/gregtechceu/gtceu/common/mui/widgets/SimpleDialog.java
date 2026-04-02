@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.api.mui.widgets;
+package com.gregtechceu.gtceu.common.mui.widgets;
+
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.utils.Alignment;
@@ -6,7 +8,6 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.TextWidget;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

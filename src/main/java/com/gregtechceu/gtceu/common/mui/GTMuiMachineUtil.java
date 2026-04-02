@@ -1,6 +1,9 @@
-package com.gregtechceu.gtceu.common.data.mui;
+package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+
+import net.minecraftforge.items.IItemHandler;
+
 import brachy.modularui.value.sync.ItemSlotSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
@@ -11,8 +14,6 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
-
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.function.UnaryOperator;
 
