@@ -11,34 +11,35 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.DrawableStack;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.DrawableStack;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -278,7 +279,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IPanelHandler renamingPanelHandler = syncManager.syncedPanel("renaming", true,
-                ((syncManager1, syncHandler) -> GTGuis.createPopupPanel("renaming_panel", 110, 40)
+                ((syncManager1, syncHandler) -> PopupPanel.createPopupPanel("renaming_panel", 110, 40)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
@@ -291,7 +292,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 (syncManager1, panelHandler) -> {
                     SlotGroup sharedItemSlotGroup = new SlotGroup("shared_item_slots", 3, false);
 
-                    return GTGuis.createPopupPanel("shared_items_panel", 80, 86)
+                    return PopupPanel.createPopupPanel("shared_items_panel", 80, 86)
                             .child(IKey.lang("gui.gtceu.share_inventory.title").asWidget().margin(4))
                             .child(new Grid()
                                     .name("shared_item_grid")
@@ -307,7 +308,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 });
 
         IPanelHandler sharedFluidsPanelHandler = syncManager.syncedPanel("shared_fluids", true,
-                (syncManager1, panelHandler) -> GTGuis.createPopupPanel("shared_fluids_panel", 85, 86)
+                (syncManager1, panelHandler) -> PopupPanel.createPopupPanel("shared_fluids_panel", 85, 86)
                         .child(IKey.lang("gui.gtceu.share_tank.title").asWidget().margin(4))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(syncManager1, shareTank,
                                 "shared_fluid_slots", 9, 'F',

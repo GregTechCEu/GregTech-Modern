@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.mui.factory;
+package brachy.modularui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;

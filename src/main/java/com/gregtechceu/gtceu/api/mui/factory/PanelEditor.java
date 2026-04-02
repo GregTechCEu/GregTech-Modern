@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.mui.factory;
+package brachy.modularui.factory;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 

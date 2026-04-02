@@ -1,37 +1,37 @@
 package com.gregtechceu.gtceu.common.machine.muimachine;
 
+import brachy.modularui.client.schemarenderer.BlockHighlight;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.*;
-import com.gregtechceu.gtceu.api.mui.drawable.text.AnimatedText;
-import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.schema.ArraySchema;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.IntValue;
-import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.client.mui.schemarenderer.BlockHighlight;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.*;
+import brachy.modularui.drawable.text.AnimatedText;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.schema.ArraySchema;
+import brachy.modularui.theme.WidgetThemeEntry;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.Interpolation;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.IntValue;
+import brachy.modularui.value.StringValue;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.*;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
@@ -171,7 +171,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
                 (mainPanel, player) -> new ColorPickerDialog("color_picker", colorPickerBackground.getColor(), true)
-                         .setDraggable(true)
+                         .draggable(true)
                          .relative(mainWidget.getPanel())
                          .top(0)
                          .rightRel(1f),
@@ -572,10 +572,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     }
 
     public ModularPanel<?> openSecondWindow(PanelSyncManager syncManager, IPanelHandler syncHandler) {
-        ModularPanel<?> panel = new Dialog<>("second_window", null)
-                .setDisablePanelsBelow(false)
-                .setCloseOnOutOfBoundsClick(false)
-                .setDraggable(true)
+        ModularPanel<?> panel = new Dialog<>("second_window")
+                .disablePanelsBelow(false)
+                .closeOnOutOfBoundsClick(false)
+                .draggable(true)
                 .size(100, 100)
                 .resizeableOnDrag(true);
         SlotGroup slotGroup = new SlotGroup("small_inv", 2);
@@ -628,10 +628,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     public ModularPanel<?> openThirdWindow(PanelSyncManager syncManager, IPanelHandler syncHandler,
                                            AtomicInteger integer) {
-        ModularPanel<?> panel = new Dialog<>("third_window", null)
-                .setDisablePanelsBelow(false)
-                .setCloseOnOutOfBoundsClick(false)
-                .setDraggable(true)
+        ModularPanel<?> panel = new Dialog<>("third_window")
+                .disablePanelsBelow(false)
+                .closeOnOutOfBoundsClick(false)
+                .draggable(true)
                 .size(50, 50);
         panel.child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("3rd Panel: " + integer.get())
@@ -640,9 +640,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
-    public void buildDialog(Dialog<String> dialog) {
+    public void buildDialog(Dialog<String, ?> dialog) {
         AtomicReference<String> value = new AtomicReference<>("");
-        dialog.setDraggable(true);
+        dialog.draggable(true);
         dialog.child(new TextFieldWidget()
                 .resizer(flex -> flex.size(100, 20).center())
                 .value(new StringValue.Dynamic(value::get, value::set)))

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+import brachy.modularui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
@@ -42,7 +42,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
     @Override
     default ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        ModularPanel<?> panel = GTGuis.createPanel(this.self(), 176, 192 + 18);
+        ModularPanel<?> panel = ModularPanel.defaultPanel(this.self().coverDefinition.getId().getPath(), 176, 192 + 18);
 
         panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 

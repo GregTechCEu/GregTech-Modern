@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.trait.feature;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.screen.ModularPanel;
 
 public interface IAttachConfiguratorsTrait {
 

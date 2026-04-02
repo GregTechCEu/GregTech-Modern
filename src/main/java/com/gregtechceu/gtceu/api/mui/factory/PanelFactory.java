@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.api.mui.factory;
+package brachy.modularui.factory;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+import brachy.modularui.GTGuiScreen;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;

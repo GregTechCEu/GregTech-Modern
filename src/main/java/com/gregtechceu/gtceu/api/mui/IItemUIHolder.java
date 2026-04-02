@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.mui;
+package brachy.modularui;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 

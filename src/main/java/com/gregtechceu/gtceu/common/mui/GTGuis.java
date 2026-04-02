@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -47,16 +46,6 @@ public class GTGuis {
 
     public static ModularPanel<?> defaultPanel(Item item) {
         return createPanel(item.getDescriptionId());
-    }
-
-    public static PopupPanel createPopupPanel(String name, int width, int height) {
-        return defaultPopupPanel(name)
-                .size(width, height);
-    }
-
-    public static PopupPanel defaultPopupPanel(String name) {
-        return PopupPanel.defaultPopupPanel(name)
-                .size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
 }

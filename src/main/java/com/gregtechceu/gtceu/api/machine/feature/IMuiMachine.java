@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import brachy.modularui.GTGuiScreen;
+import brachy.modularui.factory.MachineUIFactory;
 
+import brachy.modularui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

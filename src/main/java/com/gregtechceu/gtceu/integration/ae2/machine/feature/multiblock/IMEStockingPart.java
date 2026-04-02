@@ -2,22 +2,23 @@ package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
 import net.minecraft.server.TickTask;
@@ -85,7 +86,7 @@ public interface IMEStockingPart extends IAutoPullPart {
     @Override
     default MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
-                (sm, sh) -> GTGuis.createPopupPanel("stocking_settings_panel", 140, 70)
+                (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.me_network.min_stack_size").asWidget())

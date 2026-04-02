@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         super(machine.getDefinition().getId().getPath());
 
         UITexture themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelTheme()
-                .getTheme().getBackground();
+                .theme().getBackground();
         if (themeBackground == null) themeBackground = GTGuiTextures.BACKGROUND;
         leftConfiguratorPanel = Flow.col()
                 .coverChildren()

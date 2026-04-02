@@ -10,29 +10,29 @@ import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.MouseData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
-import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -339,11 +339,11 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .child(IKey.lang("gtceu.creative.energy.sink").asWidget()));
     }
 
-    private ModularPanel createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
+    private ModularPanel<?> createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
         return new Dialog<>("amp_selector")
-                .setDisablePanelsBelow(false)
-                .setDraggable(true)
-                .setCloseOnOutOfBoundsClick(true)
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
                 .width(72)
                 .height(104)
                 .child(Flow.column()

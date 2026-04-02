@@ -10,23 +10,23 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import brachy.modularui.api.ITheme;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -197,7 +197,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
-                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
+                            .background(theme.getItemSlotTheme().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
@@ -220,7 +220,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("export", i)
-                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
+                            .background(theme.getItemSlotTheme().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })

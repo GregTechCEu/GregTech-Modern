@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import brachy.modularui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
 
 import brachy.modularui.drawable.UITexture;
