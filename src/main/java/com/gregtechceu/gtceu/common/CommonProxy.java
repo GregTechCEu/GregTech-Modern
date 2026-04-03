@@ -69,7 +69,6 @@ import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -81,9 +80,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
 
-import brachy.modularui.factory.UIFactories;
-import brachy.modularui.factory.inventory.InventoryTypes;
-import brachy.modularui.screen.ModularContainerMenu;
 import com.google.common.collect.Multimaps;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -103,10 +99,6 @@ public class CommonProxy {
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
-
-        /* MUI Initialization */
-        UIFactories.init();
-        InventoryTypes.init();
 
         GTGuiTextures.init();
         GTGuiTheme.registerThemes();
@@ -311,13 +303,6 @@ public class CommonProxy {
                 CCTweakedPlugin.init();
             }
         });
-    }
-
-    @SubscribeEvent
-    public static void onTick(TickEvent.PlayerTickEvent event) {
-        if (event.player.containerMenu instanceof ModularContainerMenu containerMenu) {
-            containerMenu.onUpdate();
-        }
     }
 
     @SubscribeEvent

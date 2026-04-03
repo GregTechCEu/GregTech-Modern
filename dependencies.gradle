@@ -14,7 +14,7 @@ dependencies {
     compileOnly(libs.evalEx.get())
 
     // MUI
-    jarJar(implementation(forge.mui.get()))
+    jarJar(modImplementation(forge.mui.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
