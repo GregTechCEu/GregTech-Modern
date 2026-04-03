@@ -300,6 +300,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
         mainWidget.child(new Grid()
                 .coverChildren()
+                .center()
                 .margin(7, 5)
                 .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)

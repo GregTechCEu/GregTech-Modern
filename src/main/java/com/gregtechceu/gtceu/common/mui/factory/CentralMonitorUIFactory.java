@@ -147,7 +147,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
             matrix.add(curRow);
             for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
                 IMonitorComponent component = machine.getComponent(row, col);
-                IDrawable texture = component == null ? GTGuiTextures.CROSS : component.getIcon();
+                IDrawable texture = component == null ? GuiTextures.CROSS : component.getIcon();
                 int finalCol = col;
                 int finalRow = row;
                 IPanelHandler slotDialogHandler = component == null || component.getDataItems() == null ?

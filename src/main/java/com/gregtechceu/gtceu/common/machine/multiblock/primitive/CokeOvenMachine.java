@@ -92,7 +92,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                                 .canFillSlot(false))
                         .marginLeft(20));
 
-        mainWidget.child(row);
+        mainWidget.child(row.center());
     }
 
     @Override

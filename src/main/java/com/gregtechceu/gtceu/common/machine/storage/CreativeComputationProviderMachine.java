@@ -110,7 +110,6 @@ public class CreativeComputationProviderMachine extends MetaMachine
                             UISettings settings) {
         mainWidget
                 .child(Flow.column()
-                        .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 70)
                         .padding(10)
                         .childPadding(5)
                         .child(Flow.row()

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -316,7 +317,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
                                     if (sourceSync.getValue()) {
-                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
+                                        return GuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
                                     }
                                     return IDrawable.EMPTY;
                                 }))
@@ -331,7 +332,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
                                     if (!sourceSync.getValue()) {
-                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
+                                        return GuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
                                     }
                                     return IDrawable.EMPTY;
                                 }))

@@ -139,7 +139,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
                 .syncManager(syncManager)
                 .size(8 * 18, 2 * (18 * 2 + 2)));
 
-        mainWidget.child(flow);
+        mainWidget.child(flow.center());
     }
 
     protected void registerConfigActions(PanelSyncManager syncManager) {

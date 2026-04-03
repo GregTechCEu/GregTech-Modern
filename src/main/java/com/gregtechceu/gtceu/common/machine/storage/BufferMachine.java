@@ -103,7 +103,7 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                         .syncHandler("fluids", i))
                 .build();
 
-        mainWidget.child(slotWidget.margin(0, 10));
+        mainWidget.child(slotWidget.center().margin(0, 10));
     }
 
     ////////////////////////////////

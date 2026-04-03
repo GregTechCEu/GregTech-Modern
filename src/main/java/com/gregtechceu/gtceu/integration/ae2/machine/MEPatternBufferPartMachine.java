@@ -413,7 +413,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 .changeListener((i, o, c, init) -> onPatternChange(index)))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.PATTERN_OVERLAY)));
 
-        mainWidget.child(flow);
+        mainWidget.child(flow.center());
     }
 
     public boolean canRefund() {

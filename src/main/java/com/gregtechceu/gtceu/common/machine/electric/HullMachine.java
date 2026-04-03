@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -121,6 +122,6 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
 
     @Override
     public IDrawable getIcon() {
-        return GTGuiTextures.CROSS;
+        return GuiTextures.CROSS;
     }
 }

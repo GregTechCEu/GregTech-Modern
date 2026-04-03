@@ -92,7 +92,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                 i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
                 GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 
-        mainWidget.child(Flow.row().coverChildren().child(grid.margin(30, 10)));
+        mainWidget.child(grid.center());
     }
 
     @Override

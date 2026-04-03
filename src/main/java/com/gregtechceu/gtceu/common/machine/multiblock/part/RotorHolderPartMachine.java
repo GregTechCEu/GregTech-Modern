@@ -247,7 +247,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
                             UISettings settings) {
         var slot = new ItemSlot()
                 .slot(new ModularSlot(inventory, 0).slotGroup(new SlotGroup("rotor", 1)))
-                .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY).margin(10, 20);
+                .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY).center();
 
         var rotorSync = new IntSyncValue(this::getRotorSpeed);
         rotorSync.setChangeListener(() -> {

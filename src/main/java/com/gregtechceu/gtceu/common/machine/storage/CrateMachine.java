@@ -94,7 +94,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
                 .margin(5, 5, 0, 5)
                 .coverChildren();
         col.child(
-                IKey.lang(getBlockState().getBlock().getName()).asWidget().posRel(Alignment.TopLeft).margin(0, 0, 3, 3))
+                IKey.lang(getBlockState().getBlock().getName()).asWidget().leftRel(0).margin(0, 0, 3, 3))
                 .child(slots.height(rows * 18));
         mainWidget.child(col);
     }

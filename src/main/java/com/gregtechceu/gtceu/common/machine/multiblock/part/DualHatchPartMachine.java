@@ -181,6 +181,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                             .canDrainSlot(true);
                     syncManager.syncValue(slotGroupName + "_fluid", i, syncHandler);
                     return new FluidSlot().syncHandler(slotGroupName + "_fluid", i);
-                }).build().margin(7, 10));
+                }).build().margin(7, 10).center());
     }
 }

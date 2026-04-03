@@ -308,13 +308,12 @@ public class FisherMachine extends TieredEnergyMachine
                             UISettings settings) {
         var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int) Math.sqrt(cache.getSize()), true, 'i');
 
-        int slotHeight = outputItemGrid.length;
-
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
 
         mainWidget.child(Flow.row()
                 .coverChildren()
+                        .center()
                 .margin(0, 15)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))

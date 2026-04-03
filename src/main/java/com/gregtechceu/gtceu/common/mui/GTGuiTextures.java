@@ -613,9 +613,6 @@ public class GTGuiTextures {
             .build();
     // 16, 48, 16, 16, true);
 
-    public static final UITexture CHECK_BOX = fullImage("textures/gui/icon/mui2/toggle_config.png");
-    public static final UITexture CROSS = fullImage("textures/gui/icon/mui2/cross.png");
-
     public static final TabTexture TAB_TOP = TabTexture.of(
             fullImage("textures/gui/tab/tabs_top.png", ColorType.DEFAULT), GuiAxis.Y,
             false,

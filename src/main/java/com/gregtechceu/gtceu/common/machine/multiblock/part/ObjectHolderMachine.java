@@ -97,6 +97,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         SlotGroup orbGroup = new SlotGroup("orb_slot", 1);
 
         mainWidget.child(Flow.row()
+                        .center()
                 .coverChildren()
                 .child(new ItemSlot()
                         .slot(new ModularSlot(heldItems, 1).slotGroup(orbGroup))
