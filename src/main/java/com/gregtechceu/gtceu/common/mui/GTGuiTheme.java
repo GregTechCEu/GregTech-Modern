@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber
 public class GTGuiTheme {
 
     private static final List<GTGuiTheme> THEMES = new ArrayList<>();

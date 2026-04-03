@@ -261,8 +261,6 @@ public class CommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
-        if (GTCEu.isClientThread())
-            event.addListener(new ThemeManager());
     }
 
     @SubscribeEvent
