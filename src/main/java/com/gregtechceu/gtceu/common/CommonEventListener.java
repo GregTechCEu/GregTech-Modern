@@ -108,7 +108,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
-import brachy.modularui.theme.ThemeManager;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
@@ -261,8 +260,6 @@ public class CommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
-        if (GTCEu.isClientThread())
-            event.addListener(new ThemeManager());
     }
 
     @SubscribeEvent

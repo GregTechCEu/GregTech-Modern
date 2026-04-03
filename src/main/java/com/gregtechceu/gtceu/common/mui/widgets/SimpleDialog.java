@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.mui.widgets;
 
-import brachy.modularui.drawable.GuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
 import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ButtonWidget;

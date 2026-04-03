@@ -32,11 +32,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.theme.ThemeManager;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -75,12 +72,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(Commands.literal("reload_themes")
-                                .executes(ctx -> {
-                                    ThemeManager.reload();
-                                    ctx.getSource().sendSuccess(() -> Component.literal("GTCEu MUI Themes reloaded").withStyle(IKey.GREEN), true);
-                                    return Command.SINGLE_SUCCESS;
-                                }))
                         .then(literal("ui_editor")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                                 .executes(context -> {

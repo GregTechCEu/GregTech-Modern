@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;

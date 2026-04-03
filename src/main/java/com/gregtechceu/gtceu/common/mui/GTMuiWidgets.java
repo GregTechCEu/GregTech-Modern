@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -47,6 +46,7 @@ import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
@@ -471,9 +471,10 @@ public class GTMuiWidgets {
                 syncValue::setStringValue);
 
         var textField = new TextFieldWidget() {
+
             @Override
             public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-                int inc = (int)delta * getIncrementValue(MouseData.create(-1), 1);
+                int inc = (int) delta * getIncrementValue(MouseData.create(-1), 1);
                 int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
                         maxValue.getAsInt());
                 syncValue.setIntValue(val, true, true);
@@ -521,9 +522,10 @@ public class GTMuiWidgets {
                 syncValue::setStringValue);
 
         var textField = new TextFieldWidget() {
+
             @Override
             public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-                long inc = (long)delta * getIncrementValue(MouseData.create(-1), 1);
+                long inc = (long) delta * getIncrementValue(MouseData.create(-1), 1);
                 long min = minValue.getAsLong();
                 long max = maxValue.getAsLong();
                 long value = syncValue.getLongValue() + inc;
@@ -571,9 +573,10 @@ public class GTMuiWidgets {
                         true));
 
         var textField = new TextFieldWidget() {
+
             @Override
             public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-                int inc = (int)delta * (getIncrementValue(MouseData.create(-1), 1) *
+                int inc = (int) delta * (getIncrementValue(MouseData.create(-1), 1) *
                         bucketModeSyncValue.getValue().multiplier);
                 int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
                 intSyncValue.setIntValue(val, true, true);

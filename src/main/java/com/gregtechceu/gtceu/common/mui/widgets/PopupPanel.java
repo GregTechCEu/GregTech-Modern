@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.common.mui.widgets;
 
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import org.jetbrains.annotations.NotNull;
 
 public class PopupPanel extends ModularPanel<PopupPanel> {
