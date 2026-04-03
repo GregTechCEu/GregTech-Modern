@@ -98,7 +98,7 @@ public class GTGuiTheme {
 
     private void register() {
         buildJson();
-        IThemeApi.get().registerTheme(themeId, jsonBuilder);
+        if (!IThemeApi.get().hasTheme(themeId)) IThemeApi.get().registerTheme(themeId, jsonBuilder);
     }
 
     private void buildJson() {
