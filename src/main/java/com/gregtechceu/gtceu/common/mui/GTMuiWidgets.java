@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextFieldWithScrollableCallback;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
@@ -470,6 +470,22 @@ public class GTMuiWidgets {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 
+        var textField = new TextFieldWidget() {
+            @Override
+            public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+                int inc = (int)delta * getIncrementValue(MouseData.create(-1), 1);
+                int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
+                        maxValue.getAsInt());
+                syncValue.setIntValue(val, true, true);
+                return true;
+            }
+        }.left(18).right(18)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbers(minValue, maxValue)
+                .value(formattedValue)
+                .background(background);
+
         return Flow.row()
                 .coverChildrenHeight()
                 .widthRel(1.0f)
@@ -482,20 +498,7 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
-                .child(new TextFieldWithScrollableCallback()
-                        .onScrolled((mouseX, mouseY, delta) -> {
-                            int inc = delta.intValue() * getIncrementValue(MouseData.create(-1), 1);
-                            int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
-                                    maxValue.getAsInt());
-                            syncValue.setIntValue(val, true, true);
-                            return true;
-                        })
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(minValue, maxValue)
-                        .value(formattedValue)
-                        .background(background))
+                .child(textField)
                 .child(new ButtonWidget<>()
                         .width(18).right(0)
                         .onMousePressed((x, y, button) -> {
@@ -517,6 +520,24 @@ public class GTMuiWidgets {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 
+        var textField = new TextFieldWidget() {
+            @Override
+            public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+                long inc = (long)delta * getIncrementValue(MouseData.create(-1), 1);
+                long min = minValue.getAsLong();
+                long max = maxValue.getAsLong();
+                long value = syncValue.getLongValue() + inc;
+                syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()),
+                        true, true);
+                return true;
+            }
+        }.left(18).right(18)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbersLong(minValue, maxValue)
+                .value(formattedValue)
+                .background(background);
+
         return Flow.row()
                 .coverChildrenHeight()
                 .widthRel(1.0f)
@@ -529,22 +550,7 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step))))
-                .child(new TextFieldWithScrollableCallback()
-                        .onScrolled((mouseX, mouseY, delta) -> {
-                            long inc = delta.longValue() * getIncrementValue(MouseData.create(-1), 1);
-                            long min = minValue.getAsLong();
-                            long max = maxValue.getAsLong();
-                            long value = syncValue.getLongValue() + inc;
-                            syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()),
-                                    true, true);
-                            return true;
-                        })
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbersLong(minValue, maxValue)
-                        .value(formattedValue)
-                        .background(background))
+                .child(textField)
                 .child(new ButtonWidget<>()
                         .width(18).right(0)
                         .onMousePressed((x, y, button) -> {
@@ -553,8 +559,7 @@ public class GTMuiWidgets {
                             long max = maxValue.getAsLong();
                             syncValue.setLongValue(value < min ? min : Math.min(value, max), true, true);
                             return true;
-                        })
-                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
+                        }).onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
     }
 
     public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue,
@@ -564,6 +569,22 @@ public class GTMuiWidgets {
                 () -> String.valueOf(intSyncValue.getValue()),
                 (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
                         true));
+
+        var textField = new TextFieldWidget() {
+            @Override
+            public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+                int inc = (int)delta * (getIncrementValue(MouseData.create(-1), 1) *
+                        bucketModeSyncValue.getValue().multiplier);
+                int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
+                intSyncValue.setIntValue(val, true, true);
+                return true;
+            }
+        }.left(18).right(36)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbers(0, maxMB.getAsInt())
+                .value(formattedValue)
+                .background(GTGuiTextures.DISPLAY);
 
         return Flow.row()
                 .coverChildrenHeight()
@@ -578,20 +599,7 @@ public class GTMuiWidgets {
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                .child(new TextFieldWithScrollableCallback()
-                        .onScrolled((mouseX, mouseY, delta) -> {
-                            int inc = delta.intValue() * (getIncrementValue(MouseData.create(-1), 1) *
-                                    bucketModeSyncValue.getValue().multiplier);
-                            int val = Mth.clamp(intSyncValue.getIntValue() + inc, 0, maxMB.getAsInt());
-                            intSyncValue.setIntValue(val, true, true);
-                            return true;
-                        })
-                        .left(18).right(36)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(0, maxMB.getAsInt())
-                        .value(formattedValue)
-                        .background(GTGuiTextures.DISPLAY))
+                .child(textField)
                 .child(new ButtonWidget<>()
                         .right(18)
                         .width(18)

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -34,7 +35,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextFieldWithScrollableCallback;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -289,6 +289,21 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
                 syncValue::setStringValue);
 
+        var textField = new TextFieldWidget() {
+            @Override
+            public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+                int inc = (int)delta;
+                int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
+                syncValue.setIntValue(val, true, true);
+                return true;
+            }
+        }
+        .left(18).right(18)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbers(25, 100)
+                .value(formattedValue);
+
         return Flow.row()
                 .coverChildrenHeight()
                 .marginBottom(2)
@@ -302,18 +317,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                             return true;
                         })
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                .child(new TextFieldWithScrollableCallback()
-                        .onScrolled((mouseX, mouseY, delta) -> {
-                            int inc = delta.intValue();
-                            int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
-                            syncValue.setIntValue(val, true, true);
-                            return true;
-                        })
-                        .left(18).right(18)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.darker(1))
-                        .setNumbers(25, 100)
-                        .value(formattedValue))
+                .child(textField)
                 .child(new ButtonWidget<>()
                         .right(0).width(18)
                         .onMousePressed((x, y, button) -> {
