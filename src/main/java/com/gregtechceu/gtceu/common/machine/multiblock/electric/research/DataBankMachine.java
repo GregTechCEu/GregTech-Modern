@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
@@ -232,7 +233,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .leftRel(0);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
 
         LongSyncValue energyStoredSyncValue = new LongSyncValue(this::getEnergyUsage);
         syncManager.syncValue("dataBankEnergyStored", energyStoredSyncValue);

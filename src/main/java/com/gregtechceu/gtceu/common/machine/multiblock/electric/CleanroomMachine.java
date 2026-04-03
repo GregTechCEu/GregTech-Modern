@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -515,7 +516,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
         // Machine generic sync handlers
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));

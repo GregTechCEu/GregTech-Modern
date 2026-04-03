@@ -681,12 +681,12 @@ public class GTMuiWidgets {
                     if (this.background != null && this.background.length > 0)
                         button.background(this.background);
                     else
-                        button.background(GTGuiTextures.MC_BUTTON);
+                        button.background(GuiTextures.MC_BUTTON);
 
                     if (this.selectedBackground != null)
                         button.selectedBackground(this.selectedBackground);
                     else
-                        button.selectedBackground(GTGuiTextures.MC_BUTTON_DISABLED);
+                        button.selectedBackground(GuiTextures.MC_BUTTON_DISABLED);
 
                     if (this.overlay != null)
                         button.overlay(this.overlay[enumVal.ordinal()]);

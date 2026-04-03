@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
@@ -301,7 +302,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
         // Machine generic sync handlers
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));

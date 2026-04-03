@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
@@ -152,7 +153,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .leftRel(0);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
 
         listWidget.child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),

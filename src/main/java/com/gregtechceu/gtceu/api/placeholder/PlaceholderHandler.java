@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
@@ -333,19 +334,19 @@ public class PlaceholderHandler {
                                                 .marginLeft(4))
                                         .childIf(pause != null, () -> new ToggleButton()
                                                 .value(pause)
-                                                .background(false, GTGuiTextures.PAUSE)
-                                                .background(true, GTGuiTextures.PLAY)
+                                                .background(false, GuiTextures.PAUSE)
+                                                .background(true, GuiTextures.PLAY)
                                                 .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
                                                 .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
                                                 .margin(4))
                                         .childIf(updateText != null, () -> new ButtonWidget<>()
-                                                .background(GTGuiTextures.RIGHTLOAD)
-                                                .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
+                                                .background(GuiTextures.RIGHTLOAD)
+                                                .hoverBackground(GuiTextures.RIGHTLOAD, new BorderDrawable())
                                                 .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
                                                 .syncHandler("run_code_sync_handler"))
                                         .child(new ButtonWidget<>()
-                                                .background(GTGuiTextures.HELP)
-                                                .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                                .background(GuiTextures.HELP)
+                                                .hoverBackground(GuiTextures.HELP, new BorderDrawable())
                                                 .margin(4)
                                                 .onMousePressed((mouseX, mouseY, button) -> {
                                                     helpPanel.openPanel();

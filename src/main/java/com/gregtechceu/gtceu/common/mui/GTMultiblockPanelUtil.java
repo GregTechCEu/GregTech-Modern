@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -31,7 +32,7 @@ public class GTMultiblockPanelUtil {
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .leftRel(0);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
 
         listWidget.children(controller.getWidgetsForDisplay(syncManager));
         parentWidget.child(listWidget.left(3).top(3));

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -204,7 +205,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .leftRel(0);
         parentWidget.size(170, 70)
-                .background(GTGuiTextures.MUI_DISPLAY);
+                .background(GuiTextures.DISPLAY);
 
         listWidget.child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
                 .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))
