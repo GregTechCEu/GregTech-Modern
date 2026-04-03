@@ -274,7 +274,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                             tooltip.showUpTimer(10);
                                                                             tooltip.addLine(IKey.str("Test Line g"));
                                                                             tooltip.addLine(IKey.str("An image inside of a tooltip:"));
-                                                                            tooltip.addLine(GTGuiTextures.MUI_LOGO
+                                                                            tooltip.addLine(GuiTextures.MUI_LOGO
                                                                                     .asIcon().size(50)
                                                                                     .alignment(Alignment.TopCenter));
                                                                             tooltip.addLine(IKey.str("And here a circle:"));
@@ -687,7 +687,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .color(Color.WHITE.main)
                                         .widthRel(1f)
                                         .height(16)
-                                        .background(GTGuiTextures.MC_BUTTON)
+                                        .background(GuiTextures.MC_BUTTON)
                                         .setEnabledIf(w -> items.get(i).toLowerCase()
                                                 .contains(searchValue.getStringValue())))));
     }

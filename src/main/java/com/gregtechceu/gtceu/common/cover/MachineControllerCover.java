@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -290,7 +291,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                 detail = IKey.lang("cover.machine_controller.machine_not_controllable");
             }
 
-            return GTGuiTextures.MC_BUTTON.asWidget().size(18)
+            return GuiTextures.MC_BUTTON.asWidget().size(18)
                     .overlay(GTGuiTextures.BUTTON_CROSS)
                     .tooltip(t -> t.addLine(IKey.lang(mode.localeName)).addLine(detail));
         }
