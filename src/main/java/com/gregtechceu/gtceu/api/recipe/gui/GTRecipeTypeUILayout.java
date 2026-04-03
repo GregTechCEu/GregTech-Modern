@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.screen.ModularPanel;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -198,7 +198,7 @@ public class GTRecipeTypeUILayout {
                     .direction(progressDirection));
             return backedSlotsPanel;
         }
-        return GTGuis.createPanel("empty");
+        return ModularPanel.defaultPanel("empty");
     }
 
     public String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier, int maxMachineSlots) {
