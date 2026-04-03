@@ -32,6 +32,7 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -246,7 +247,7 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addSteamUsageLine(SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
+    public static TextWidget<?> addSteamUsageLine(@Nullable SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
         IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (steamRH == null) return 0;
@@ -322,10 +323,7 @@ public class GTMultiblockTextUtil {
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
                         .setter((newRecipe) -> {})
                         .adapter(GTByteBufAdapters.GTRECIPE)
-                        .copy((toCopy) -> {
-                            if (toCopy == null) return null;
-                            return toCopy.copy();
-                        })
+                        .copy(GTRecipe::copy)
                         .build());
 
         DynamicLinkedSyncHandler<GenericSyncValue<GTRecipe>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(

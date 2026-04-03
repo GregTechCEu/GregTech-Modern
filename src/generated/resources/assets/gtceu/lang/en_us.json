@@ -2544,7 +2544,6 @@
   "gtceu.gui.toggle_view.enabled": "Toggle View (Items)",
   "gtceu.gui.waiting_list": "Sending Queue:",
   "gtceu.gui.waiting_list_empty": "Sending Queue: §2Empty",
-
   "gtceu.hazard_trigger.any": "Any contact",
   "gtceu.hazard_trigger.description": "Caused by:",
   "gtceu.hazard_trigger.inhalation": "Inhalation",

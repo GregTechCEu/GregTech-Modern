@@ -3,7 +3,7 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:ev_charger_4x",
   "variants": {
-    "battery_buffer_state=finished": {
+    "charger_state=finished": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {
@@ -15,7 +15,7 @@
         }
       }
     },
-    "battery_buffer_state=idle": {
+    "charger_state=idle": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {
@@ -26,7 +26,7 @@
         }
       }
     },
-    "battery_buffer_state=running": {
+    "charger_state=running": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {

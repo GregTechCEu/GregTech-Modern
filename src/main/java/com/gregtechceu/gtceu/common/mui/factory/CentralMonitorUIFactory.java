@@ -57,8 +57,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                            MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel<>("main");
         GenericListSyncHandler<MonitorGroup> groupSync = new GenericListSyncHandler<>(machine::getMonitorGroups,
-                machine::setMonitorGroups, MONITOR_GROUPS::deserialize, MONITOR_GROUPS::serialize,
-                MONITOR_GROUPS::areEqual, null);
+                machine::setMonitorGroups, MONITOR_GROUPS, MONITOR_GROUPS,
+                MONITOR_GROUPS, null);
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(machine.getMonitorGroups());
         IPanelHandler helpPanel = syncManager.syncedPanel(
