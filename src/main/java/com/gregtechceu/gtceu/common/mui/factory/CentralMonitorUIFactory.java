@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import brachy.modularui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.common.mui.widgets.SimpleDialog;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;

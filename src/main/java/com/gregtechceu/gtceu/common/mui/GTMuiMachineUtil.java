@@ -74,13 +74,4 @@ public class GTMuiMachineUtil {
                         .syncHandler(syncHandlerName, i))
                 .build();
     }
-
-    public static Flow createColumn(boolean reverse, Widget<?>... children) {
-        var column = Flow.col();
-        column.reverseLayout(reverse);
-        for (Widget<?> child : children) {
-            column.child(child);
-        }
-        return column;
-    }
 }

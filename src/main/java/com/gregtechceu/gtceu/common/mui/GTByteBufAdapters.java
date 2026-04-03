@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.utils.serialization.network.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -9,10 +10,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import brachy.modularui.utils.serialization.network.IByteBufAdapter;
-import brachy.modularui.utils.serialization.network.IByteBufDeserializer;
-import brachy.modularui.utils.serialization.network.IByteBufMemberSerializer;
-import brachy.modularui.utils.serialization.network.IByteBufSerializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +20,8 @@ public class GTByteBufAdapters {
 
     // spotless:off
     public static final IByteBufAdapter<MonitorGroup> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC);
-    public static final IByteBufAdapter<Component> COMPONENT = makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent, (a, b) -> Objects.equals(a.toString(), b.toString()));
+    public static final IByteBufAdapter<Component> COMPONENT = ByteBufAdapters.makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent,
+            (a, b) -> Objects.equals(a.toString(), b.toString()));
 
     // spotless:on
 
@@ -55,28 +53,6 @@ public class GTByteBufAdapters {
         }
     };
 
-    public static <T> IByteBufAdapter<T> makeAdapter(IByteBufDeserializer<T> deserializer,
-                                                     IByteBufSerializer<T> serializer,
-                                                     @Nullable EqualityTest<T> tester) {
-        return new IByteBufAdapter<>() {
-
-            @Override
-            public T deserialize(FriendlyByteBuf buffer) {
-                return deserializer.deserialize(buffer);
-            }
-
-            @Override
-            public void serialize(FriendlyByteBuf buffer, T u) {
-                serializer.serialize(buffer, u);
-            }
-
-            @Override
-            public boolean areEqual(T t1, T t2) {
-                return tester != null ? tester.areEqual(t1, t2) : Objects.equals(t1, t2);
-            }
-        };
-    }
-
     public static <T> IByteBufAdapter<T> makeAdapter(Codec<T> codec) {
         return new IByteBufAdapter<>() {
 
@@ -97,11 +73,5 @@ public class GTByteBufAdapters {
                 return Objects.equals(encoded1, encoded2);
             }
         };
-    }
-
-    public static <T> IByteBufAdapter<T> makeMemberAdapter(IByteBufDeserializer<T> deserializer,
-                                                           IByteBufMemberSerializer<T> memberSerializer,
-                                                           @Nullable EqualityTest<T> comparator) {
-        return makeAdapter(deserializer, memberSerializer.asBasic(), comparator);
     }
 }

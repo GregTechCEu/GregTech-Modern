@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import brachy.modularui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
 
 import brachy.modularui.drawable.UITexture;
@@ -17,7 +16,6 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 
 public class GTSingleblockMachinePanels {
