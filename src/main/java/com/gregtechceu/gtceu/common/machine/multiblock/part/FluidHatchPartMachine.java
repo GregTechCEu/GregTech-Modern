@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -318,8 +319,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                                 .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                                .background(GTGuiTextures.MC_BUTTON)
-                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
+                                .background(GuiTextures.MC_BUTTON)
+                                .selectedBackground(GuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()

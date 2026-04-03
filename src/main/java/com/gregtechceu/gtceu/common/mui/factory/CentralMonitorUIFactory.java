@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -76,15 +77,15 @@ public class CentralMonitorUIFactory implements PanelFactory {
                             .paddingLeft(5)
                             .widthRelOffset(1, -38))
                     .child(new ButtonWidget<>()
-                            .background(GTGuiTextures.EDIT)
-                            .hoverBackground(GTGuiTextures.EDIT, new BorderDrawable())
+                            .background(GuiTextures.EDIT)
+                            .hoverBackground(GuiTextures.EDIT, new BorderDrawable())
                             .onMousePressed((mouseX, mouseY, button) -> {
                                 panelHandler.openPanel();
                                 return true;
                             }))
                     .child(new ButtonWidget<>()
-                            .background(GTGuiTextures.CLOSE)
-                            .hoverBackground(GTGuiTextures.CLOSE, new BorderDrawable())
+                            .background(GuiTextures.CLOSE)
+                            .hoverBackground(GuiTextures.CLOSE, new BorderDrawable())
                             .onMousePressed((mouseX, mouseY, button) -> {
                                 groups.remove(item.getWidgetValue());
                                 groupSync.setValue(groups);
@@ -115,8 +116,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .leftRel(0))
                                 .child(new ButtonWidget<>()
                                         .leftRel(1)
-                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
-                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
+                                        .background(GuiTextures.MC_BUTTON, GuiTextures.ADD)
+                                        .hoverBackground(GuiTextures.MC_BUTTON_HOVERED, GuiTextures.ADD)
                                         .syncHandler(new InteractionSyncHandler()
                                                 .setOnMousePressed(mouseData -> {
                                                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
@@ -235,14 +236,14 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new ButtonWidget<>()
                                         .background(
                                                 new DynamicDrawable(() -> moduleChanged.getValue() ?
-                                                        GTGuiTextures.MC_BUTTON_DISABLED :
-                                                        GTGuiTextures.MC_BUTTON),
-                                                GTGuiTextures.EDIT)
+                                                        GuiTextures.MC_BUTTON_DISABLED :
+                                                        GuiTextures.MC_BUTTON),
+                                                GuiTextures.EDIT)
                                         .hoverBackground(
                                                 new DynamicDrawable(() -> moduleChanged.getValue() ?
-                                                        GTGuiTextures.MC_BUTTON_DISABLED :
-                                                        GTGuiTextures.MC_BUTTON_HOVERED),
-                                                GTGuiTextures.EDIT)
+                                                        GuiTextures.MC_BUTTON_DISABLED :
+                                                        GuiTextures.MC_BUTTON_HOVERED),
+                                                GuiTextures.EDIT)
                                         .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
                                         .addTooltipLine(IKey.lang(() -> moduleChanged.getValue() ?
                                                 "gtceu.gui.central_monitor.module_editor_disabled" :
@@ -255,8 +256,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(new Grid().matrix(matrix).leftRel(0.5f).size(matrixWidth, matrixHeight)))
                 .child(new ButtonWidget<>()
                         .posRel(Alignment.TopRight)
-                        .background(GTGuiTextures.HELP)
-                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                        .background(GuiTextures.HELP)
+                        .hoverBackground(GuiTextures.HELP, new BorderDrawable())
                         .onMousePressed((mouseX, mouseY, button) -> {
                             helpPanel.openPanel();
                             return true;

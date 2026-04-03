@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui.widgets;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import brachy.modularui.api.drawable.IKey;
@@ -19,16 +20,16 @@ public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T, SimpleDialog
         child(new TextWidget<>(title).leftRel(0.5f).marginTop(4));
         child(widget.center());
         child(new ButtonWidget<>()
-                .background(GTGuiTextures.CLOSE)
-                .hoverBackground(GTGuiTextures.CLOSE)
+                .background(GuiTextures.CLOSE)
+                .hoverBackground(GuiTextures.CLOSE)
                 .posRel(Alignment.TopRight)
                 .onMousePressed((mouseX, mouseY, button) -> {
                     closeIfOpen();
                     return true;
                 }));
         child(new ButtonWidget<>()
-                .background(GTGuiTextures.RIGHTLOAD)
-                .hoverBackground(GTGuiTextures.RIGHTLOAD)
+                .background(GuiTextures.RIGHTLOAD)
+                .hoverBackground(GuiTextures.RIGHTLOAD)
                 .posRel(Alignment.TopCenter)
                 .onMousePressed((mouseX, mouseY, button) -> {
                     closeWith(valueGetter.apply(widget));
