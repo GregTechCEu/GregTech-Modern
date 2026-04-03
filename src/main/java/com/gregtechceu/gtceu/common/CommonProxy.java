@@ -63,6 +63,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
@@ -101,7 +102,6 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
 
         GTGuiTextures.init();
-        GTGuiTheme.registerThemes();
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;

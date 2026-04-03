@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -15,6 +16,7 @@ import brachy.modularui.theme.WidgetTheme;
 import brachy.modularui.theme.WidgetThemeKey;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.serialization.json.JsonBuilder;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER)
 public class GTGuiTheme {
 
     private static final List<GTGuiTheme> THEMES = new ArrayList<>();
@@ -98,21 +101,16 @@ public class GTGuiTheme {
 
     private void register() {
         buildJson();
-        if (!IThemeApi.get().hasTheme(themeId)) IThemeApi.get().registerTheme(themeId, jsonBuilder);
+        IThemeApi.get().registerTheme(themeId, jsonBuilder);
     }
 
     private void buildJson() {
         elementBuilder.forEach(c -> c.accept(jsonBuilder));
     }
 
-    public static void registerThemes() {
-        MinecraftForge.EVENT_BUS.register(GTGuiTheme.class);
-        THEMES.forEach(GTGuiTheme::register);
-    }
-
     @SubscribeEvent
     public static void onReloadThemes(ReloadThemeEvent.Pre event) {
-        THEMES.forEach(GTGuiTheme::buildJson);
+        THEMES.forEach(GTGuiTheme::register);
     }
 
     public static Builder templateBuilder(String themeId) {
