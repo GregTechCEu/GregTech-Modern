@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -310,7 +311,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .left(9));
 
         IPanelHandler renamingPanelHandler = syncManager.syncedPanel("renaming", true,
-                ((syncManager1, syncHandler) -> GTGuis.createPopupPanel("renaming_panel", 110, 40)
+                ((syncManager1, syncHandler) -> PopupPanel.createPopupPanel("renaming_panel", 110, 40)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
@@ -323,7 +324,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 (syncManager1, panelHandler) -> {
                     SlotGroup sharedItemSlotGroup = new SlotGroup("shared_item_slots", 3, false);
 
-                    return GTGuis.createPopupPanel("shared_items_panel", 80, 86)
+                    return PopupPanel.createPopupPanel("shared_items_panel", 80, 86)
                             .child(IKey.lang("gui.gtceu.share_inventory.title").asWidget().margin(4))
                             .child(new Grid()
                                     .name("shared_item_grid")
@@ -339,7 +340,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 });
 
         IPanelHandler sharedFluidsPanelHandler = syncManager.syncedPanel("shared_fluids", true,
-                (syncManager1, panelHandler) -> GTGuis.createPopupPanel("shared_fluids_panel", 85, 86)
+                (syncManager1, panelHandler) -> PopupPanel.createPopupPanel("shared_fluids_panel", 85, 86)
                         .child(IKey.lang("gui.gtceu.share_tank.title").asWidget().margin(4))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(syncManager1, shareTank,
                                 "shared_fluid_slots", 9, 'F',

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -278,7 +279,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     protected Flow createButtonColumn(ModularPanel<?> panel, PanelSyncManager syncManager,
                                       UITexture backgroundTexture) {
         IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
-                (sm, sh) -> GTGuis.createPopupPanel("stocking_settings_panel", 140, 70)
+                (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(IKey.lang("gtceu.gui.me_network.min_stack_size").asWidget())

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -203,7 +202,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
-        return GTGuis.createPanel(this, 176, 245)
+        return ModularPanel.defaultPanel(coverDefinition.getId().getPath(), 176, 245)
                 .child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().top(7).margin(7, 0)
                         .childPadding(2)
