@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

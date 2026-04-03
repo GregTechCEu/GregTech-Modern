@@ -3,13 +3,6 @@ package com.gregtechceu.gtceu.common.machine.steam;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.DoubleSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -17,6 +10,14 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
 
 import java.util.Objects;
 

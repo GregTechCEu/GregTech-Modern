@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -11,28 +10,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.Icon;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
-import brachy.modularui.utils.MouseData;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.StringSyncValue;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -47,6 +30,23 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -290,15 +290,16 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 syncValue::setStringValue);
 
         var textField = new TextFieldWidget() {
+
             @Override
             public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-                int inc = (int)delta;
+                int inc = (int) delta;
                 int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
                 syncValue.setIntValue(val, true, true);
                 return true;
             }
         }
-        .left(18).right(18)
+                .left(18).right(18)
                 .setTextAlignment(Alignment.Center)
                 .setTextColor(Color.WHITE.darker(1))
                 .setNumbers(25, 100)

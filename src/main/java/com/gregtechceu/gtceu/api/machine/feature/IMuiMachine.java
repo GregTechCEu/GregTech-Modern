@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import brachy.modularui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,6 +16,7 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 
 public interface IMuiMachine extends IUIHolder<PosGuiData>, IMachineFeature {
 

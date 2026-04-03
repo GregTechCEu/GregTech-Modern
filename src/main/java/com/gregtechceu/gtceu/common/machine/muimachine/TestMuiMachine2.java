@@ -1,28 +1,28 @@
 package com.gregtechceu.gtceu.common.machine.muimachine;
 
-import brachy.modularui.utils.math.DAM;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.drawable.graph.GraphDrawable;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
+import brachy.modularui.utils.math.DAM;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-
 import org.jetbrains.annotations.NotNull;
 
 public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {

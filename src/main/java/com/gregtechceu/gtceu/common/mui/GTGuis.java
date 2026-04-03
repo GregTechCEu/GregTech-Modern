@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,5 +47,4 @@ public class GTGuis {
     public static ModularPanel<?> defaultPanel(Item item) {
         return createPanel(item.getDescriptionId());
     }
-
 }

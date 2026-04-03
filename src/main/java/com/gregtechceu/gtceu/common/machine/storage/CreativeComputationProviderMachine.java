@@ -8,20 +8,20 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.UISettings;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

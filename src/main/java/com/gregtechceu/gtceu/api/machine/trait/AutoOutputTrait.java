@@ -8,16 +8,12 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
-import brachy.modularui.drawable.UITexture;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.ModularPanel;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -36,6 +32,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;

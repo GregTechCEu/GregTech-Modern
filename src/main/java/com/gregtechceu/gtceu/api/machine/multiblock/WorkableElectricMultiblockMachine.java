@@ -12,22 +12,22 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ListWidget;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import lombok.Getter;
 
 import java.util.ArrayList;

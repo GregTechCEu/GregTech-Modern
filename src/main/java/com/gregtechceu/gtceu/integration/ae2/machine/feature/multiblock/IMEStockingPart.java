@@ -2,22 +2,8 @@ package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.ToggleButton;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
@@ -25,6 +11,19 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.stacks.GenericStack;
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.Nullable;
 
 public interface IMEStockingPart extends IAutoPullPart {

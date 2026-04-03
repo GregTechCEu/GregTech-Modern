@@ -2,18 +2,18 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.drawable.*;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.*;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;

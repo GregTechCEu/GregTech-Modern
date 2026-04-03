@@ -8,18 +8,9 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import brachy.modularui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -34,6 +25,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

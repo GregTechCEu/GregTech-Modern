@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -18,14 +17,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.GenericSyncValue;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.LongSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -33,7 +24,6 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
@@ -44,6 +34,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -65,6 +56,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.GenericSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;

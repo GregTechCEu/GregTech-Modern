@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
 import lombok.Getter;
 
 public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
