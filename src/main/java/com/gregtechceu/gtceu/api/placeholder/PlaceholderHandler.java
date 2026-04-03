@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
-import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
-import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
+import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -34,6 +32,7 @@ import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.api.value.IBoolValue;
 import brachy.modularui.api.value.IIntValue;
 import brachy.modularui.api.value.IStringValue;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.value.StringValue;

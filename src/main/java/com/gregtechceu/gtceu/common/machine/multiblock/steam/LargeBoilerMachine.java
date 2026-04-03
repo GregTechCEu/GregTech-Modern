@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -17,9 +16,9 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -50,6 +49,7 @@ import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -306,15 +306,16 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 syncValue::setStringValue);
 
         var textField = new TextFieldWidget() {
+
             @Override
             public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-                int inc = (int)delta;
+                int inc = (int) delta;
                 int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
                 syncValue.setIntValue(val, true, true);
                 return true;
             }
         }
-        .left(18).right(18)
+                .left(18).right(18)
                 .setTextAlignment(Alignment.Center)
                 .setTextColor(Color.WHITE.darker(1))
                 .setNumbers(25, 100)

@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.*;

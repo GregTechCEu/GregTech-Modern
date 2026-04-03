@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+
+import brachy.modularui.factory.GuiManager;
 
 public class GTUIFactories {
 

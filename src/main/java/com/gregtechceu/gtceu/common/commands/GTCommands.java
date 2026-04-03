@@ -32,11 +32,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.theme.ThemeManager;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
