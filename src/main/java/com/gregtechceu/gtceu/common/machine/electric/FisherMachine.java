@@ -313,7 +313,7 @@ public class FisherMachine extends TieredEnergyMachine
 
         mainWidget.child(Flow.row()
                 .coverChildren()
-                        .center()
+                .center()
                 .margin(0, 15)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))

@@ -176,6 +176,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         mainWidget
-                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager).margin(10).center());
+                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager).margin(10)
+                        .center());
     }
 }

@@ -247,7 +247,8 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
     }
 
-    public static TextWidget<?> addSteamUsageLine(@Nullable SteamEnergyRecipeHandler steamRH, PanelSyncManager syncManager) {
+    public static TextWidget<?> addSteamUsageLine(@Nullable SteamEnergyRecipeHandler steamRH,
+                                                  PanelSyncManager syncManager) {
         IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
                     if (steamRH == null) return 0;

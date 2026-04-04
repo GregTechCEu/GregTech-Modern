@@ -28,7 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;

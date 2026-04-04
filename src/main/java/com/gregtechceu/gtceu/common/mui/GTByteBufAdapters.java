@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.utils.EqualityTest;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -9,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
