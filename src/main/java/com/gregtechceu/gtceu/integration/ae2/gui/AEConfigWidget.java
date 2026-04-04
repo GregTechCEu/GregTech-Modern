@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
+package com.gregtechceu.gtceu.integration.ae2.gui;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;

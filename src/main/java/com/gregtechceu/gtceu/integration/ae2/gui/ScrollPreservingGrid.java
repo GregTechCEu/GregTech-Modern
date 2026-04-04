@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget.mui;
+package com.gregtechceu.gtceu.integration.ae2.gui;
 
 import brachy.modularui.widget.scroll.ScrollData;
 import brachy.modularui.widgets.layout.Grid;

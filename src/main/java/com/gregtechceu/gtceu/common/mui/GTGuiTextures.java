@@ -11,6 +11,7 @@ import brachy.modularui.drawable.TabTexture;
 import brachy.modularui.drawable.UITexture;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class GTGuiTextures {
 
     /** Keys used for GT assets registered for use in Themes */
