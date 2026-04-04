@@ -70,7 +70,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         var player = context.getPlayer();
 
-        if (player == null || player instanceof LocalPlayer) return InteractionResult.PASS;
+        if (!(player instanceof ServerPlayer)) return InteractionResult.PASS;
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 !MachineOwner.canOpenOwnerMachine(context.getPlayer(), machineBlockEntity.getMetaMachine()))
             return InteractionResult.FAIL;
