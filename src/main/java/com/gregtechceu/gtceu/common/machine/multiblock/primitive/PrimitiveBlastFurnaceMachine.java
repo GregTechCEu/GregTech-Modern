@@ -9,25 +9,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -43,6 +29,20 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import brachy.modularui.api.ITheme;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -154,7 +154,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
@@ -163,7 +163,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     return recipeLogic.getProgressPercent();
                 }));
 
-        return new ModularPanel(this.getDefinition().getName())
+        return new ModularPanel<>(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
                 .child(createImportItemSlot(syncManager, theme).margin(52, 16))
@@ -173,7 +173,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(77, 35))
                 .child(createExportItemSlot(syncManager, theme).margin(104, 0, 34, 0))
 
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) theme.getPanelTheme().getTheme()
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) theme.getPanelTheme().theme()
                         .getBackground()))
                 .child(SlotGroupWidget
                         .playerInventory(false).left(7)
@@ -194,7 +194,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
-                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
+                            .background(theme.getItemSlotTheme().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
@@ -217,7 +217,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("export", i)
-                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
+                            .background(theme.getItemSlotTheme().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })

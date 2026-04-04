@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
@@ -36,7 +34,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTes
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -75,12 +72,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(Commands.literal("reload_themes")
-                                .executes(ctx -> {
-                                    ThemeManager.reload();
-                                    ctx.getSource().sendSuccess(() -> Component.literal("GTCEu MUI Themes reloaded").withStyle(IKey.GREEN), true);
-                                    return Command.SINGLE_SUCCESS;
-                                }))
                         .then(literal("ui_editor")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                                 .executes(context -> {

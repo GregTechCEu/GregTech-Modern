@@ -10,31 +10,14 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -56,6 +39,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -293,7 +292,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int width = 176;
         int height = Math.max(168, (int) (18 * Math.sqrt(slots)) + 78 + 19);
         var panel = GTGuis.createPanel(this, width, height);
@@ -302,7 +301,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
         int topOffset = slots == 1 ? 10 : slots == 9 ? 16 : 20;
 
         var theme = this.getDefinition().getThemeId();
-        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().theme()
                 .getBackground();
         if (backgroundTexture == null) {
             backgroundTexture = GTGuiTextures.BACKGROUND;
@@ -315,7 +314,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
                         .top(topOffset)
                         .horizontalCenter())
-                .child(new Column()
+                .child(Flow.col()
                         .coverChildren()
                         .rightRel(1.0f)
                         .reverseLayout(true)
@@ -335,7 +334,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
         BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
         syncManager.syncValue("locked", locked);
-        return new Column()
+        return Flow.col()
                 .widthRel(.6f)
                 .height(60)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
@@ -344,29 +343,28 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                         .horizontalCenter())
                 .child(new TextWidget<>(IKey.dynamic(this::getFluidAmountText))
                         .horizontalCenter())
-                .child(new Row()
+                .child(Flow.row()
                         .childPadding(2)
                         .coverChildren()
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()
                                 .name("lockedFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
                                 .alwaysShowFull(true)
-                                .displayAmount(true)
+
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
                                 .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                                .background(GTGuiTextures.MC_BUTTON)
-                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
+                                .background(GuiTextures.MC_BUTTON)
+                                .selectedBackground(GuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(io.support(IO.IN)))
-                                .displayAmount(true)));
+                                        .canFillSlot(io.support(IO.IN)))));
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {

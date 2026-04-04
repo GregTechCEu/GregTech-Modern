@@ -7,26 +7,11 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widgets.SliderWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -38,6 +23,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.SliderWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -196,13 +196,13 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     //////////////////////////////////////
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
                 this::getControllerMode, this::setControllerMode);
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
-        return GTGuis.createPanel(this, 176, 245)
+        return ModularPanel.defaultPanel(coverDefinition.getId().getPath(), 176, 245)
                 .child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().top(7).margin(7, 0)
                         .childPadding(2)
@@ -243,14 +243,14 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .background(GTGuiTextures.FLUID_SLOT)
                                         .widthRel(0.9f)
                                         .height(16)
-                                        .alignX(0.5f)
+                                        .leftRel(0.5f)
                                         .bounds(0, 15)
                                         .stopper(1.0)
                                         .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
                                                 v -> redstoneSignalOutput = (int) v))))
                         // Separating line
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
-                                .height(1).widthRel(0.9f).alignX(0.5f)).margin(0, 2))
+                                .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
 
                         .child(coverUIRow().child(IKey.lang("cover.machine_controller.control").asWidget()
                                 .height(16)))
@@ -269,7 +269,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, IKey title) {
         return Flow.column().width(18).height(28)
-                .child(title.asWidget().height(10).alignX(0.5f))
+                .child(title.asWidget().height(10).leftRel(0.5f))
                 .child(modeButton(syncValue, mode).bottom(0));
     }
 
@@ -290,7 +290,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                 detail = IKey.lang("cover.machine_controller.machine_not_controllable");
             }
 
-            return GTGuiTextures.MC_BUTTON.asWidget().size(18)
+            return GuiTextures.MC_BUTTON.asWidget().size(18)
                     .overlay(GTGuiTextures.BUTTON_CROSS)
                     .tooltip(t -> t.addLine(IKey.lang(mode.localeName)).addLine(detail));
         }

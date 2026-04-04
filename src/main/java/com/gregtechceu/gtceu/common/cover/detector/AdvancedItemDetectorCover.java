@@ -6,18 +6,10 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -28,6 +20,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.util.List;
@@ -129,13 +129,13 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                         .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                         .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                        .tooltip(false, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled"))
-                        .tooltip(true, t -> t.addMultiLine("cover.advanced_item_detector.invert.disabled")))
+                        .tooltip(false, t -> t.add("cover.advanced_item_detector.invert.disabled"))
+                        .tooltip(true, t -> t.add("cover.advanced_item_detector.invert.disabled")))
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                        .tooltip(false, t -> t.addMultiLine("cover.advanced_detector.latch.disabled"))
-                        .tooltip(true, t -> t.addMultiLine("cover.advanced_detector.latch.enabled")));
+                        .tooltip(false, t -> t.add("cover.advanced_detector.latch.disabled"))
+                        .tooltip(true, t -> t.add("cover.advanced_detector.latch.enabled")));
 
         GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
 

@@ -12,36 +12,36 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
-import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.MouseData;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.utils.serialization.network.IByteBufAdapter;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -238,7 +238,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("color", colorSyncer);
 
-        var currentEntry = new GenericSyncValue.Builder<>(VirtualEntry.class)
+        var currentEntry = GenericSyncValue.builder(VirtualEntry.class)
                 .getter(this::getEntry)
                 .adapter(new VirtualEntryAdapter()).build();
         syncManager.syncValue("currentEntry", currentEntry);
@@ -269,7 +269,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
                     channelManager.openPanel();
                     return true;
-                }).align(Alignment.CenterRight).tooltip(new RichTooltip()
+                }).posRel(Alignment.CenterRight).tooltip(new RichTooltip()
                         .addLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.list_button"))))));
 
         column.child(coverUIRow().child(new TextFieldWidget()
@@ -303,13 +303,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((x, y, button) -> {
                     MouseData mouseData = MouseData.create(button);
                     if (mouseData.mouseButton() == 1) {
-                        syncManager.callSyncedAction("deleteEntry", buffer -> {
-                            buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8);
-                        });
+                        syncManager.callSyncedAction("deleteEntry",
+                                buffer -> buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8));
                         return true;
                     }
                     return false;
-                }).align(Alignment.CenterRight));
+                }).posRel(Alignment.CenterRight));
     }
 
     public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
@@ -322,11 +321,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
 
-    protected ModularPanel createChannelManagerPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    protected ModularPanel<?> createChannelManagerPanel(GuiData data, PanelSyncManager syncManager,
+                                                        UISettings settings) {
         var panel = new Dialog<>("channel_manager")
-                .setDisablePanelsBelow(false)
-                .setDraggable(true)
-                .setCloseOnOutOfBoundsClick(true)
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()

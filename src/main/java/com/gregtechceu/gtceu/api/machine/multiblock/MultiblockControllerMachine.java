@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
@@ -31,6 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,6 +126,12 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
             part.addedToController(this);
         }
+        updatePartPositions();
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureFormed();
+        }
     }
 
     /**
@@ -147,6 +156,11 @@ public class MultiblockControllerMachine extends MetaMachine {
         parallelHatch = null;
         parts.clear();
         updatePartPositions();
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureInvalid();
+        }
     }
 
     /**
@@ -409,5 +423,16 @@ public class MultiblockControllerMachine extends MetaMachine {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Can be overridden to just add widgets to the black box in the middle instead of overriding the whole UI.
+     * Don't forget to invoke {@code super.getWidgetsForDisplay} to add the default lines (progress, voltage, etc.).
+     *
+     * @param syncManager the sync manager
+     * @return list of widgets to be displayed inside the black box in the middle of a standard multiblock UI
+     */
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        return new ArrayList<>();
     }
 }

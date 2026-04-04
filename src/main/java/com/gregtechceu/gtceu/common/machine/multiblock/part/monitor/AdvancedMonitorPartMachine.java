@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2d;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -36,6 +36,10 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine {
     @SaveField
     private boolean resetClickedNextTick = false;
 
+    @Getter
+    @Setter
+    private boolean clickedThisFrame = false;
+
     @Nullable
     private TickableSubscription clickResetSubscription;
 
@@ -48,14 +52,10 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine {
                                    BlockHitResult hit) {
         if (hit.getDirection() != getFrontFacing()) return super.onUse(state, world, pos, player, hand, hit);
         clicked = true;
-        clickPosX = hit.getLocation()
-                .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
-        clickPosY = hit.getLocation()
-                .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
-        clickPosX -= Math.floor(clickPosX);
-        if (clickPosX < 0) clickPosX++;
-        clickPosY -= Math.floor(clickPosY);
-        if (clickPosY < 0) clickPosY++;
+        clickedThisFrame = true;
+        Vector2d clickPos = getMousePos(hit);
+        clickPosX = clickPos.x();
+        clickPosY = clickPos.y();
         return InteractionResult.SUCCESS;
     }
 

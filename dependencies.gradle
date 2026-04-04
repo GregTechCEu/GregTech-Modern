@@ -11,8 +11,10 @@ dependencies {
     jarJar(modApi(forge.configuration.get()))
 
     // Math Parser
-    jarJar(implementation(libs.evalEx.get()))
-    additionalRuntimeClasspath(libs.evalEx.get())
+    compileOnly(libs.evalEx.get())
+
+    // MUI
+    jarJar(modImplementation(forge.mui.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
@@ -124,4 +126,6 @@ dependencies {
     modExtraLocalRuntime(forge.flywheel.forge)
 
     modLocalRuntime(forge.curios)
+
+
 }

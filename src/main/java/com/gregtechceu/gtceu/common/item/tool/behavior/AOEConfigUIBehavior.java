@@ -2,16 +2,6 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,6 +9,16 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.InteractionSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
@@ -81,7 +81,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
     }
 
     @Override
-    public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack held = data.getUsedItemStack();
         CompoundTag tag = getBehaviorsTag(held);
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(held);
@@ -97,7 +97,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
         minusLayers.setOnMousePressed(data1 -> AoESymmetrical.decreaseLayer(tag, defaultDefinition));
         InteractionSyncHandler plusLayers = new InteractionSyncHandler();
         plusLayers.setOnMousePressed(data1 -> AoESymmetrical.increaseLayer(tag, defaultDefinition));
-        return new ModularPanel("aoe_config")
+        return new ModularPanel<>("aoe_config")
                 .coverChildren()
                 .child(Flow.row()
                         .coverChildren()
@@ -118,57 +118,57 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusCols))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getColumn(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusCols)))
                                 .child(Flow.row()
                                         .coverChildren()
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusRows))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getRow(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusRows)))
                                 .child(Flow.row()
                                         .coverChildren()
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusLayers))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getLayer(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .background(GuiTextures.MC_BUTTON,
+                                                        GuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+                                                        GuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusLayers)))));
     }
 }

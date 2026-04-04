@@ -4,38 +4,9 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.*;
-import com.gregtechceu.gtceu.api.mui.drawable.text.AnimatedText;
-import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.schema.ArraySchema;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
-import com.gregtechceu.gtceu.api.mui.value.IntValue;
-import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.*;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
-import com.gregtechceu.gtceu.client.mui.schemarenderer.BlockHighlight;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.SimpleDialog;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -51,6 +22,34 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.client.schemarenderer.BlockHighlight;
+import brachy.modularui.drawable.*;
+import brachy.modularui.drawable.text.AnimatedText;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.schema.ArraySchema;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.theme.WidgetThemeEntry;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.Interpolation;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.IntValue;
+import brachy.modularui.value.StringValue;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.value.sync.ItemSlotSyncHandler;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.*;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -114,7 +113,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // settings.customContainer(() -> new CraftingModularContainer(3, 3, this.craftingInventory));
         // settings.customGui(() -> TestGuiContainer::new);
 
@@ -158,7 +157,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                 numberListSyncHandler)
                 .widgetProvider((syncManager1, value1) -> {
                     List<Integer> vals = value1.getValue();
-                    return new Column()
+                    return Flow.col()
                             .widthRel(1f)
                             .coverChildrenHeight()
                             .children(vals.size(), i -> IKey.str(String.valueOf(vals.get(i))).asWidget().padding(2))
@@ -168,11 +167,11 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         // disable spotless on the menu layout code so it won't insert random line breaks
         // spotless:off
         Rectangle colorPickerBackground = new Rectangle().color(Color.RED.main);
-        ModularPanel panel = new ModularPanel("test_tile");
+        ModularPanel<?> panel = new ModularPanel<>("test_tile");
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
-                (mainPanel, player) -> new ColorPickerDialog(colorPickerBackground::color, colorPickerBackground.getColor(), true)
-                         .setDraggable(true)
+                (mainPanel, player) -> new ColorPickerDialog("color_picker", colorPickerBackground.getColor(), true)
+                         .draggable(true)
                          .relative(panel)
                          .top(0)
                          .rightRel(1f),
@@ -180,14 +179,14 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         PagedWidget.Controller tabController = new PagedWidget.Controller();
         panel.resizer()                        // returns object which is responsible for sizing
                 .size(176, 220)       // set a static size for the main panel
-                .align(Alignment.Center);    // center the panel in the screen
+                .center();    // center the panel in the screen
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class, () ->
                 new DoubleSyncValue(() -> (this.progress / (double) this.duration)));
 
         var babyFop = new Fox(EntityType.FOX, data.getLevel());
         babyFop.setAge(-1);
-        panel.child(new Row()
+        panel.child(Flow.row()
                 .name("Tab row")
                 .coverChildren()
                 .topRel(0f, 4, 1f)
@@ -231,7 +230,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i))
                                                 .addTooltipLine("This slot is empty"))
                                         .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
-                                        .key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
+                                        .key('D', new ItemDisplayWidget().syncHandler("display_item"))
                                         .build()
                                         .margin(5, 5, 20, 5).name("crafting"))))
 
@@ -250,13 +249,13 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                 .name("page 1 parent")
                                                 .sizeRel(1f, 1f)
                                                 .padding(7, 0)
-                                                .child(new Row()
+                                                .child(Flow.row()
                                                         .name("buttons, slots and more tests")
                                                         .height(137)
                                                         .coverChildrenWidth()
-                                                        .alignY(Alignment.Center)
+                                                        .posRel(Alignment.CenterLeft)
                                                         // .padding(7)
-                                                        .child(new Column()
+                                                        .child(Flow.col()
                                                                 .name("buttons and slots test")
                                                                 .coverChildren()
                                                                 .marginRight(8)
@@ -275,7 +274,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                             tooltip.showUpTimer(10);
                                                                             tooltip.addLine(IKey.str("Test Line g"));
                                                                             tooltip.addLine(IKey.str("An image inside of a tooltip:"));
-                                                                            tooltip.addLine(GTGuiTextures.MUI_LOGO
+                                                                            tooltip.addLine(GuiTextures.MUI_LOGO
                                                                                     .asIcon().size(50)
                                                                                     .alignment(Alignment.TopCenter));
                                                                             tooltip.addLine(IKey.str("And here a circle:"));
@@ -320,7 +319,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .widthRel(1f).height(16))
                                                         // .child(IKey.EMPTY.asWidget().name("Empty IKey"))
                                                         )
-                                                        .child(new Column()
+                                                        .child(Flow.col()
                                                                 .name("button and slots test 2")
                                                                 .coverChildren()
                                                                 // .widthRel(0.5f)
@@ -333,7 +332,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_MIXER, 20)
                                                                         .direction(
                                                                                 ProgressWidget.Direction.CIRCULAR_CW))
-                                                                .child(new Row().coverChildrenWidth().height(22)
+                                                                .child(Flow.row().coverChildrenWidth().height(22)
                                                                         .child(new ToggleButton()
                                                                                 .value(new BoolValue.Dynamic(
                                                                                         () -> cycleStateValue.getIntValue() == 0,
@@ -375,7 +374,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .syncHandler(SyncHandlers
                                                                                 .fluidSlot(this.fluidTankPhantom)
                                                                                 .phantom(true)))
-                                                                .child(new Column()
+                                                                .child(Flow.col()
                                                                         .name("button and slots test 3")
                                                                         .coverChildren()
                                                                         .child(new TextFieldWidget()
@@ -386,12 +385,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                 .setNumbers(0, 9999999)
                                                                                 .hintText(Component
                                                                                         .literal("integer")))))))
-                                        .addPage(new Column()
+                                        .addPage(Flow.col()
                                                 .name("Slots test page")
                                                 .coverChildren()
                                                 // .height(120)
                                                 .padding(7)
-                                                .alignX(0.5f)
+                                                .leftRel(0.5f)
                                                 .mainAxisAlignment(Alignment.MainAxis.START)
                                                 .childPadding(2)
                                                 // .child(SlotGroupWidget.playerInventory().left(0))
@@ -428,7 +427,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                         .isPresent())))
                                                         .build().name("mixer inv")
                                                         .disableSortButtons())
-                                                .child(new Row()
+                                                .child(Flow.row()
                                                         .coverChildrenHeight()
                                                         .child(new CycleButtonWidget()
                                                                 .size(20, 20)
@@ -476,7 +475,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                          * .left(32)
                                                          * .size(1, 40))
                                                          */
-                                                        .child(new Row()
+                                                        .child(Flow.row()
                                                                 .name("test config 1")
                                                                 .widthRel(1f).coverChildrenHeight()
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
@@ -487,7 +486,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .size(14, 14)
                                                                         .margin(8, 4))
                                                                 .child(IKey.str("Boolean config").asWidget().height(14)))
-                                                        .child(new Row()
+                                                        .child(Flow.row()
                                                                 .name("test config 2")
                                                                 .widthRel(1f).height(14)
                                                                 .childPadding(2)
@@ -507,7 +506,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .left(5).height(14)
                                                                 .tooltip(tooltip -> tooltip.showUpTimer(10)
                                                                         .addLine(IKey.str("Config title tooltip"))))
-                                                        .child(new Row()
+                                                        .child(Flow.row()
                                                                 .name("test config 3")
                                                                 .widthRel(1f).height(14)
                                                                 .childPadding(2)
@@ -519,7 +518,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .addPage(new ParentWidget<>()
                                                 .name("page 4 storage")
                                                 .sizeRel(1f)
-                                                .child(new Column()
+                                                .child(Flow.col()
                                                         .name("page 4 col, dynamic widgets")
                                                         .padding(7)
                                                         .child(new ItemSlot()
@@ -574,11 +573,11 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return page;
     }
 
-    public ModularPanel openSecondWindow(PanelSyncManager syncManager, IPanelHandler syncHandler) {
-        ModularPanel panel = new Dialog<>("second_window", null)
-                .setDisablePanelsBelow(false)
-                .setCloseOnOutOfBoundsClick(false)
-                .setDraggable(true)
+    public ModularPanel<?> openSecondWindow(PanelSyncManager syncManager, IPanelHandler syncHandler) {
+        ModularPanel<?> panel = new Dialog<>("second_window")
+                .disablePanelsBelow(false)
+                .closeOnOutOfBoundsClick(false)
+                .draggable(true)
                 .size(100, 100)
                 .resizeableOnDrag(true);
         SlotGroup slotGroup = new SlotGroup("small_inv", 2);
@@ -629,12 +628,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
-    public ModularPanel openThirdWindow(PanelSyncManager syncManager, IPanelHandler syncHandler,
-                                        AtomicInteger integer) {
-        ModularPanel panel = new Dialog<>("third_window", null)
-                .setDisablePanelsBelow(false)
-                .setCloseOnOutOfBoundsClick(false)
-                .setDraggable(true)
+    public ModularPanel<?> openThirdWindow(PanelSyncManager syncManager, IPanelHandler syncHandler,
+                                           AtomicInteger integer) {
+        ModularPanel<?> panel = new Dialog<>("third_window")
+                .disablePanelsBelow(false)
+                .closeOnOutOfBoundsClick(false)
+                .draggable(true)
                 .size(50, 50);
         panel.child(ButtonWidget.panelCloseButton())
                 .child(IKey.str("3rd Panel: " + integer.get())
@@ -643,11 +642,11 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
-    public void buildDialog(Dialog<String> dialog) {
+    public void buildDialog(SimpleDialog<String, TextFieldWidget> dialog) {
         AtomicReference<String> value = new AtomicReference<>("");
-        dialog.setDraggable(true);
+        dialog.draggable(true);
         dialog.child(new TextFieldWidget()
-                .resizer(flex -> flex.size(100, 20).align(Alignment.Center))
+                .resizer(flex -> flex.size(100, 20).center())
                 .value(new StringValue.Dynamic(value::get, value::set)))
                 .child(new ButtonWidget<>()
                         .resizer(flex -> flex.size(8, 8).top(5).right(5))
@@ -668,7 +667,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         }
     }
 
-    public @NotNull ModularPanel buildSearchTest(ModularGuiContext context) {
+    public @NotNull ModularPanel<?> buildSearchTest(ModularGuiContext context) {
         List<String> items = Arrays.asList("Chicken", "Jockey", "Flint", "Steel", "Steve", "Diamond", "Ingot", "Iron",
                 "Armor", "Greg");
         StringValue searchValue = new StringValue("");
@@ -680,7 +679,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                 .height(16)
                                 .widthRel(1f))
                         .child(new ListWidget<>()
-                                .collapseDisabledChild()
+                                .collapseDisabledChildren()
                                 .expanded()
                                 .widthRel(1f)
                                 .children(items.size(), i -> new TextWidget<>(IKey.str(items.get(i)))
@@ -688,7 +687,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .color(Color.WHITE.main)
                                         .widthRel(1f)
                                         .height(16)
-                                        .background(GTGuiTextures.MC_BUTTON)
+                                        .background(GuiTextures.MC_BUTTON)
                                         .setEnabledIf(w -> items.get(i).toLowerCase()
                                                 .contains(searchValue.getStringValue())))));
     }

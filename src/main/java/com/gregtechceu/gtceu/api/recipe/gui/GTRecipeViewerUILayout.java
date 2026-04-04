@@ -3,15 +3,13 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class GTRecipeViewerUILayout {
         if (layout.getRecipeType() != null) {
             var parentWidget = new ParentWidget<>();
             parentWidget.coverChildren();
-            var slotsRow = new Row();
+            var slotsRow = Flow.row();
             slotsRow.coverChildrenHeight();
 
             int rowWidthPx = 0;
@@ -50,7 +48,7 @@ public class GTRecipeViewerUILayout {
                 var caps = (in ? layout.getRecipeType().maxInputs : layout.getRecipeType().maxOutputs);
                 int slotGroupHeightPx = 0;
 
-                Column ioColumn = new Column();
+                Flow ioColumn = Flow.col();
                 // ioColumn.coverChildrenWidth();
                 int slotGroupWidthPx = 0;
 
@@ -82,7 +80,7 @@ public class GTRecipeViewerUILayout {
 
                     widgetGroups.add(slotWidgetBuilder.build()
                             .name(recipeCap.name + "_" + io.name())
-                            .alignX(io == IO.IN ? Alignment.TopLeft : Alignment.TopRight));
+                            .leftRel(io == IO.IN ? 0 : 1));
                 }
 
                 ioColumn.size(slotGroupWidthPx, slotGroupHeightPx);
@@ -99,7 +97,7 @@ public class GTRecipeViewerUILayout {
             for (var ioColumn : colWidgetGroups.entrySet()) {
                 var col = ioColumn.getValue();
                 var io = ioColumn.getKey();
-                slotsRow.child(col.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
+                slotsRow.child(col.posRel(io == IO.IN ? 0f : 1f, 0.5f));
             }
 
             // same padding as (1) + half a slot on each side

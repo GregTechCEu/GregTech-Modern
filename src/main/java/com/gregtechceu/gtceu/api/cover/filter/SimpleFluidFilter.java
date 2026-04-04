@@ -1,21 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +12,18 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -118,7 +118,7 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public ModularPanel getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         for (int i = 0; i < 9; i++) {
             syncManager.syncValue("filter_slot_" + i,
                     new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));
@@ -140,9 +140,9 @@ public class SimpleFluidFilter implements FluidFilter {
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
 
         return new Dialog<>("simple_fluid_filter")
-                .setDisablePanelsBelow(false)
-                .setDraggable(true)
-                .setCloseOnOutOfBoundsClick(true)
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.row()
                         .top(10)

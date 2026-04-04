@@ -1,20 +1,5 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
-import com.gregtechceu.gtceu.api.mui.base.widget.ITooltip;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.text.RichText;
-import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
-import com.gregtechceu.gtceu.integration.emi.EmiStackConverter;
-import com.gregtechceu.gtceu.integration.recipeviewer.RecipeSlotRole;
-import com.gregtechceu.gtceu.integration.recipeviewer.RecipeViewerScreenWrapper;
-import com.gregtechceu.gtceu.integration.recipeviewer.handlers.IngredientProvider;
-import com.gregtechceu.gtceu.integration.recipeviewer.handlers.fluid.EmptyFluidTank;
-import com.gregtechceu.gtceu.integration.recipeviewer.util.RecipeScreenRenderingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
@@ -25,6 +10,21 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
+import brachy.modularui.api.widget.ITooltip;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.text.RichText;
+import brachy.modularui.integration.emi.EmiStackConverter;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerScreenWrapper;
+import brachy.modularui.integration.recipeviewer.handlers.IngredientProvider;
+import brachy.modularui.integration.recipeviewer.handlers.fluid.EmptyFluidTank;
+import brachy.modularui.integration.recipeviewer.util.RecipeScreenRenderingUtil;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.widget.WidgetTree;
+import brachy.modularui.widget.sizer.Area;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -74,7 +74,7 @@ public abstract class GTEmiRecipe2<T extends Recipe<?>, W extends IWidget> imple
 
         this.screen = GTMemoizer.memoize(() -> {
             W widget = widgetSupplier.get();
-            ModularPanel panel = ModularPanel.defaultPanel(recipe.getId().toString(), widget.getArea().w(),
+            ModularPanel<?> panel = ModularPanel.defaultPanel(recipe.getId().toString(), widget.getArea().w(),
                     widget.getArea().h());
             panel.child(widget);
             return new ModularScreen(recipe.getId().getNamespace(), panel);

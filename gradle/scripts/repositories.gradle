@@ -11,6 +11,11 @@ repositories {
         }
     }
 
+    maven {
+        name 'GTCEu Maven'
+        url 'https://maven.gtceu.com'
+    }
+
     maven { // JEI
         name = "Jared's Maven"
         url = "https://maven.blamejared.com/"

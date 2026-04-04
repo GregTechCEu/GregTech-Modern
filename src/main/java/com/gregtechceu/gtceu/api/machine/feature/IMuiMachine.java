@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
-import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,13 +9,25 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+
 public interface IMuiMachine extends IUIHolder<PosGuiData>, IMachineFeature {
 
     @Override
-    ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings);
+    ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings);
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;
+    }
+
+    @Override
+    default ModularScreen createScreen(PosGuiData data, ModularPanel<?> mainPanel) {
+        return new GTGuiScreen(mainPanel);
     }
 
     default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

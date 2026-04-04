@@ -3,26 +3,24 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuis;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
@@ -65,7 +63,7 @@ public class GTRecipeTypeUILayout {
         if (recipeType != null) {
             var backedSlotsPanel = new ParentWidget<>();
             backedSlotsPanel.coverChildren();
-            var backedSlotsRow = new Row();
+            var backedSlotsRow = Flow.row();
             backedSlotsRow.coverChildrenHeight();
 
             int rowWidthPx = 0;
@@ -87,7 +85,7 @@ public class GTRecipeTypeUILayout {
                 var caps = (in ? recipeType.maxInputs : recipeType.maxOutputs);
                 int slotGroupHeightPx = 0;
 
-                Column ioColumn = new Column();
+                Flow ioColumn = Flow.col();
                 // ioColumn.coverChildrenWidth();
                 int slotGroupWidthPx = 0;
 
@@ -112,8 +110,8 @@ public class GTRecipeTypeUILayout {
                     slotGroupHeightPx += 18 * grid.length;
 
                     IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().getTheme().getBackground() :
-                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().getTheme().getBackground());
+                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().theme().getBackground() :
+                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().theme().getBackground());
 
                     SlotGroupWidget.Builder slotWidgetBuilder = SlotGroupWidget.builder()
                             .matrix(grid);
@@ -162,7 +160,7 @@ public class GTRecipeTypeUILayout {
 
                     widgetGroups.add(slotWidgetBuilder.build()
                             .name(recipeCap.name + "_" + io.name())
-                            .alignX(io == IO.IN ? Alignment.TopLeft : Alignment.TopRight));
+                            .leftRel(io == IO.IN ? 0f : 1));
                 }
 
                 ioColumn.size(slotGroupWidthPx, slotGroupHeightPx);
@@ -179,7 +177,7 @@ public class GTRecipeTypeUILayout {
             for (var ioColumn : colWidgetGroups.entrySet()) {
                 var col = ioColumn.getValue();
                 var io = ioColumn.getKey();
-                backedSlotsRow.child(col.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
+                backedSlotsRow.child(col.posRel(io == IO.IN ? 0f : 1f, 0.5f));
             }
 
             // same padding as (1) + half a slot on each side
@@ -200,7 +198,7 @@ public class GTRecipeTypeUILayout {
                     .direction(progressDirection));
             return backedSlotsPanel;
         }
-        return GTGuis.createPanel("empty");
+        return ModularPanel.defaultPanel("empty");
     }
 
     public String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier, int maxMachineSlots) {

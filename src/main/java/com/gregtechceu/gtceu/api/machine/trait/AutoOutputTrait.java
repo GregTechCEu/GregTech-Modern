@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -12,10 +11,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
@@ -300,8 +299,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     @Override
-    public @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                        Set<GTToolType> toolTypes, Direction side) {
+    public @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
+                                                  Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!machine.hasFrontFacing() || side != machine.getFrontFacing()) {
@@ -310,14 +309,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                     var canSwitchFluidOutputToSide = supportsAutoOutputFluids() &&
                             fluidOutputDirectionValidator.test(side) && side != getFluidOutputDirection();
                     if (canSwitchItemOutputToSide || canSwitchFluidOutputToSide)
-                        return GuiTextures.TOOL_IO_FACING_ROTATION;
+                        return GTGuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
         }
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getItemOutputDirection() || side == getFluidOutputDirection()) {
-                if (player.isShiftKeyDown()) return GuiTextures.TOOL_ALLOW_INPUT;
-                return GuiTextures.TOOL_AUTO_OUTPUT;
+                if (player.isShiftKeyDown()) return GTGuiTextures.TOOL_ALLOW_INPUT;
+                return GTGuiTextures.TOOL_AUTO_OUTPUT;
             }
         }
         return null;

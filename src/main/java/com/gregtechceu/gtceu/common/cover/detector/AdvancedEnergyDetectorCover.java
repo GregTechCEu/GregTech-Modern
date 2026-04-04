@@ -5,18 +5,9 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -24,6 +15,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.math.BigInteger;
@@ -144,17 +144,17 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                                .tooltip(false, t -> t.addMultiLine("cover.advanced_energy_detector.invert.disabled"))
-                                .tooltip(true, t -> t.addMultiLine("cover.advanced_energy_detector.invert.enabled")))
+                                .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))
+                                .tooltip(true, t -> t.add("cover.advanced_energy_detector.invert.enabled")))
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
                                 .selectedBackground(ThemeAPI.INSTANCE.getTheme(settings.getTheme())
-                                        .getToggleButtonTheme().getTheme().getBackground())
+                                        .getToggleButtonTheme().theme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
                                 .tooltip(false,
-                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.disabled"))
+                                        t -> t.add("cover.advanced_energy_detector.use_percent.disabled"))
                                 .tooltip(true,
-                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled"))));
+                                        t -> t.add("cover.advanced_energy_detector.use_percent.enabled"))));
     }
 
     private void updateEUValues(boolean wasPercent) {
