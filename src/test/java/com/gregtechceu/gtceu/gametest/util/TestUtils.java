@@ -24,7 +24,9 @@ import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -33,6 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
@@ -329,16 +332,41 @@ public class TestUtils {
         ServerPlayer player = new ServerPlayer(server, helper.getLevel(),
                 new GameProfile(UUID.randomUUID(), "test-mock-player")) {
 
-            public boolean isSpectator() {
-                return false;
-            }
-
-            public boolean isCreative() {
-                return false;
+            @Override
+            public void tick() {
+                super.tick();
+                this.doTick();
             }
         };
+        player.setGameMode(GameType.SURVIVAL);
+
         player.connection = new FakeServerGamePacketListenerImpl(server, player);
         return player;
+    }
+
+    /**
+     * This function bypasses the requirement to register the entity to the world to tick it.<br>
+     * Basically a duplicate of {@link net.minecraft.server.level.ServerLevel#tick ServerLevel:329-353}.
+     * Do note that this method does <b>not</b> check whether the entity should be removed via despawn, or otherwise.
+     */
+    public static void tickEntity(GameTestHelper helper, Entity entity) {
+        if (entity.isRemoved()) return;
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        ProfilerFiller profiler = level.getProfiler();
+
+        // don't tick the entity if it's in a vehicle to follow Vanilla ticking rules
+        Entity vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            if (!vehicle.isRemoved() && vehicle.hasPassenger(entity)) return;
+            entity.stopRiding();
+        }
+
+        profiler.push("tick");
+        // don't tick part entities, like vanilla
+        if (!entity.isRemoved() && !(entity instanceof net.minecraftforge.entity.PartEntity)) {
+            level.guardEntityTick(level::tickNonPassenger, entity);
+        }
+        profiler.pop();
     }
 
     public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
