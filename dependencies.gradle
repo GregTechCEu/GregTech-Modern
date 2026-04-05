@@ -74,6 +74,7 @@ dependencies {
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.ae2)
+    modLocalRuntime(forge.guideme)
     modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 

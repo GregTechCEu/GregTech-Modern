@@ -7,7 +7,7 @@ mixinExtras = "0.5.0-rc.3"
 jei = "15.20.0.115"
 rei = "12.1.785"
 emi = "1.1.13+1.20.1"
-ae2 = "15.0.18"
+ae2 = "15.4.10"
 kubejs = "2001.6.5-build.16"
 rhino = "2001.2.3-build.10"
 architectury = "9.2.14"
@@ -51,6 +51,7 @@ ftblibrary-cm = "5567591"
 ftbteams-cm = "5267190"
 ftbquests-cm = "6167056"
 ftbchunks-cm = "5956390"
+guideme = "6679102"
 
 
 [libraries]
@@ -110,6 +111,8 @@ spark               = { module = "curse.maven:spark-361579", version.ref = "spar
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
 gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
+guideme             = { module = "curse.maven:guideme-1173950", version.ref = "guideme" }
+
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
