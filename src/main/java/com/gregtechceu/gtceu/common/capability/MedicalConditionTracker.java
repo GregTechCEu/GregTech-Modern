@@ -88,50 +88,73 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         progressCondition(materialHazard.condition, strength);
     }
 
+    /**
+     * Progress a condition {@code condition} by {@code progression} counts.<br>
+     * This is invoked with negative values on antidote/cure consumption.
+     *
+     * @param condition   MedicalCondition to heal
+     * @param progression amount of progression to decrease
+     */
     public void progressCondition(@NotNull MedicalCondition condition, float progression) {
-        if (player.isCreative()) return;
+        // if progression is negative, remove zeroed conditions as well
+        if (progression < 0.0f && -progression >= medicalConditions.getFloat(condition)) {
+            removeMedicalCondition(condition);
+        } else {
+            if (player.isCreative()) return;
 
-        medicalConditions.addTo(condition, progression);
+            medicalConditions.addTo(condition, progression);
+        }
         updateActiveSymptoms();
+    }
+
+    public void removeMedicalCondition(MedicalCondition condition) {
+        flaggedForRemoval.add(condition);
+        permanentConditions.remove(condition);
     }
 
     @VisibleForTesting
     void updateActiveSymptoms() {
         for (MedicalCondition condition : medicalConditions.keySet()) {
+            if (flaggedForRemoval.contains(condition)) {
+                continue;
+            }
             if (medicalConditions.getFloat(condition) >= condition.maxProgression * 2) {
                 // If condition has been applied for 2x the maximum time, make it permanent.
                 permanentConditions.add(condition);
             }
 
-            for (ConfiguredSymptom symptom : condition.symptoms) {
-                int lastStage = activeSymptoms.getInt(symptom);
-                int stage = calculateStage(condition, symptom);
-                if (stage <= 0) {
-                    continue;
-                }
-                Symptom baseSymptom = symptom.getSymptom();
-                baseSymptom.tick(this, condition, symptom, stage);
+            for (ConfiguredSymptom configured : condition.symptoms) {
+                int stage = Math.max(calculateStage(condition, configured), 0);
+                Symptom symptom = configured.getSymptom();
+                symptom.tick(this, condition, configured, stage);
 
-                Optional<ConfiguredSymptom> maybeExistingSymptom = activeSymptoms.keySet()
+                Optional<ConfiguredSymptom> maybeExisting = activeSymptoms.keySet()
                         .stream()
-                        .filter(s -> s.getSymptom() == baseSymptom)
+                        .filter(s -> s.getSymptom() == symptom)
                         .findFirst();
-                if (maybeExistingSymptom.isEmpty()) {
-                    activeSymptoms.put(symptom, stage);
-                    baseSymptom.applyProgression(this, condition, symptom, stage);
+                if (maybeExisting.isEmpty() || maybeExisting.get() == configured) {
+                    if (stage == 0) {
+                        activeSymptoms.removeInt(configured);
+                    } else {
+                        activeSymptoms.put(configured, stage);
+                    }
+
+                    symptom.applyProgression(this, condition, configured, stage);
                     continue;
                 }
-                ConfiguredSymptom existingSymptom = maybeExistingSymptom.get();
-                int existingStage = activeSymptoms.getInt(existingSymptom);
-                if (existingSymptom == symptom && stage > lastStage) {
-                    activeSymptoms.put(symptom, stage);
-                    baseSymptom.applyProgression(this, condition, symptom, stage);
+                if (stage == 0) {
+                    // if stage == 0, the last check can't ever be true. In that case, just skip it.
                     continue;
                 }
-                if (symptom.getRelativeHarshness() * stage > existingSymptom.getRelativeHarshness() * existingStage) {
-                    activeSymptoms.removeInt(existingSymptom);
-                    activeSymptoms.put(symptom, stage);
-                    baseSymptom.applyProgression(this, condition, symptom, stage);
+
+                ConfiguredSymptom existing = maybeExisting.get();
+                int existingStage = activeSymptoms.getInt(existing);
+                if (configured.getRelativeHarshness() * stage > existing.getRelativeHarshness() * existingStage) {
+                    activeSymptoms.removeInt(existing);
+                    activeSymptoms.put(configured, stage);
+
+                    symptom.applyProgression(this, condition, configured, stage);
+                    continue;
                 }
             }
         }
@@ -157,11 +180,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         flaggedForRemoval.clear();
     }
 
-    public void removeMedicalCondition(MedicalCondition condition) {
-        flaggedForRemoval.add(condition);
-        permanentConditions.remove(condition);
-    }
-
     private int calculateStage(MedicalCondition condition, ConfiguredSymptom symptom) {
         float minThreshold = symptom.getMinThreshold();
         float maxThreshold = symptom.getMaxThreshold();
@@ -185,21 +203,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         if (medicalConditions.getFloat(condition) <= 0) {
             removeMedicalCondition(condition);
         }
-    }
-
-    /**
-     * called on antidote/cure consumption
-     *
-     * @param condition   MedicalCondition to heal
-     * @param progression amount of progression to decrease
-     */
-    public void heal(MedicalCondition condition, int progression) {
-        if (progression >= medicalConditions.getFloat(condition)) {
-            medicalConditions.removeFloat(condition);
-            permanentConditions.remove(condition);
-            return;
-        }
-        medicalConditions.addTo(condition, -progression);
     }
 
     public void setMobEffect(MobEffect effect, int amplifier) {

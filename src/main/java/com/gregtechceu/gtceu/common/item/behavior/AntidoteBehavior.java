@@ -60,7 +60,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
                     tracker.removeMedicalCondition(condition);
                     continue;
                 }
-                tracker.heal(condition, (int) timeToRemove);
+                tracker.progressCondition(condition, (int) timeToRemove);
             }
         }
         return itemstack;

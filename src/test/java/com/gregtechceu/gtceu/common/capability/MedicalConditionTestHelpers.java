@@ -6,12 +6,9 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.experimental.ExtensionMethod;
-
-import java.util.UUID;
 
 @ExtensionMethod(TestUtils.class)
 public class MedicalConditionTestHelpers {
@@ -56,9 +53,5 @@ public class MedicalConditionTestHelpers {
         helper.assertTrue(Mth.equal(counts, expectedCounts),
                 "Player " + player + " should have " + expectedCounts + " 'counts' of medical condition " +
                         condition.id + ", has " + counts);
-    }
-
-    public static double getAndAssertAttributeModifier(Player player, Attribute attribute, UUID modifierId) {
-        return player.getAttributes().getModifierValue(attribute, modifierId);
     }
 }
