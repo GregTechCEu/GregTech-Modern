@@ -26,29 +26,27 @@ public class GTSingleblockMachinePanels {
             return new ModularPanel<>(machine.getDefinition().getName());
         }
 
-        var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
-        var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
-        var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
-        var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
+        return MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine).mainContents((parent) -> {
+            var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
+            var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
+            var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
+            var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
 
-        int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
-                outputItemGrid.length + outputFluidGrid.length);
+            int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
+                    outputItemGrid.length + outputFluidGrid.length);
+            boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
 
-        var panelBuilder = MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine);
+            var theme = machine.getDefinition().getThemeId();
 
-        boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
-
-        var theme = machine.getDefinition().getThemeId();
-
-        panelBuilder.mainContents((parent) -> Flow.row()
-                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
-                .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
-                        .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
-                                simpleTieredMachine.exportItems,
-                                simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
-                                simpleTieredMachine.recipeLogic::getProgressPercent,
-                                -1)));
-        return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
+            parent.child(Flow.row()
+                    .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
+                    .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
+                            .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
+                                    simpleTieredMachine.exportItems,
+                                    simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
+                                    simpleTieredMachine.recipeLogic::getProgressPercent,
+                                    -1)));
+        }).build(syncManager, settings).excludeAreaInRecipeViewer();
     };
 
     public static PanelFactory MACERATOR = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
@@ -59,22 +57,18 @@ public class GTSingleblockMachinePanels {
             return new ModularPanel<>(machine.getDefinition().getName());
         }
 
-        var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
-        var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
-        var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
-        var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
+        return MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine).mainContents((parent) -> {
 
-        int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
-                outputItemGrid.length + outputFluidGrid.length);
+            var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
+            var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
+            var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
+            var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
 
-        var panelBuilder = MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine);
+            int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
+                    outputItemGrid.length + outputFluidGrid.length);
+            boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
 
-        boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
-
-        var theme = machine.getDefinition().getThemeId();
-
-        panelBuilder.mainContents((parent) -> {
-            parent.height(18 + 9 + 18 * Math.max(2, slotHeight));
+            var theme = machine.getDefinition().getThemeId();
 
             parent.child(Flow.row()
                     .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
@@ -84,17 +78,8 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
                                     simpleTieredMachine.getTier())
-                            .posRel(Alignment.Center))
-            // .left(7)
-            );
-
-            /*
-             * parent.childIf(hasXEI, () ->
-             * GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
-             * .left(190));
-             */
-        });
-        return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
+                            .posRel(Alignment.Center)));
+        }).build(syncManager, settings).excludeAreaInRecipeViewer();
     };
 
     public static PanelFactory ARC_FURNACE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
@@ -105,21 +90,19 @@ public class GTSingleblockMachinePanels {
             return new ModularPanel<>(machine.getDefinition().getName());
         }
 
-        var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
-        var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
-        var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
-        var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
+        return MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine).mainContents((parent) -> {
+            var inputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importItems.getSize(), 3, false, 'i');
+            var inputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.importFluids.getSize(), 3, false, 'f');
+            var outputItemGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportItems.getSize(), 3, true, 'i');
+            var outputFluidGrid = GTMuiWidgets.createGrid(simpleTieredMachine.exportFluids.getSize(), 3, true, 'f');
 
-        int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
-                outputItemGrid.length + outputFluidGrid.length);
+            int slotHeight = Math.max(inputItemGrid.length + inputFluidGrid.length,
+                    outputItemGrid.length + outputFluidGrid.length);
 
-        var panelBuilder = MachineUIPanelBuilder.defaultSimpleSingleblockPanelBuilder(machine);
-        var theme = machine.getDefinition().getThemeId();
+            var theme = machine.getDefinition().getThemeId();
 
-        boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
+            boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(simpleTieredMachine.getRecipeType());
 
-        panelBuilder.mainContents((parent) -> {
-            parent.height(18 + 9 + 18 * Math.max(2, slotHeight));
             parent.child(Flow.row()
                     .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
                     .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(simpleTieredMachine.getRecipeType())
@@ -129,15 +112,7 @@ public class GTSingleblockMachinePanels {
                                     simpleTieredMachine.recipeLogic::getProgressPercent,
                                     0)
                             .posRel(Alignment.Center)));
-
-            /*
-             * parent.childIf(hasXEI, () ->
-             * GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
-             * .left(190));
-             */
-
-        });
-        return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
+        }).build(syncManager, settings).excludeAreaInRecipeViewer();
     };
 
     public static PanelFactory STEAM_MACHINE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
@@ -148,20 +123,17 @@ public class GTSingleblockMachinePanels {
             return new ModularPanel<>(machine.getDefinition().getName());
         }
 
-        var panelBuilder = MachineUIPanelBuilder.defaultSteamMachineBuilder(machine);
+        return MachineUIPanelBuilder.defaultSteamMachineBuilder(machine).mainContents(parent -> {
+            var inputItemGrid = GTMuiWidgets.createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
+            var outputItemGrid = GTMuiWidgets.createGrid(steamMachine.exportItems.getSize(), 3, true, 'i');
 
-        var inputItemGrid = GTMuiWidgets.createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
-        var outputItemGrid = GTMuiWidgets.createGrid(steamMachine.exportItems.getSize(), 3, true, 'i');
+            int slotHeight = Math.max(inputItemGrid.length,
+                    outputItemGrid.length);
 
-        int slotHeight = Math.max(inputItemGrid.length,
-                outputItemGrid.length);
+            boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(steamMachine.getRecipeType());
 
-        boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(steamMachine.getRecipeType());
+            var theme = machine.getDefinition().getThemeId();
 
-        var theme = machine.getDefinition().getThemeId();
-
-        panelBuilder.mainContents(parent -> {
-            parent.height(18 + 9 + 18 * Math.max(2, slotHeight));
             parent.child(Flow.row()
                     .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 + 9 + 18 * Math.max(2, slotHeight))
                     .childIf(hasXEI, () -> GTRecipeTypeUIs.recipeTypeUIs.get(steamMachine.getRecipeType())
@@ -171,8 +143,6 @@ public class GTSingleblockMachinePanels {
                                     steamMachine.recipeLogic::getProgressPercent,
                                     steamMachine.getTier())
                             .posRel(Alignment.Center)));
-        });
-
-        return panelBuilder.build(syncManager, settings).excludeAreaInRecipeViewer();
+        }).build(syncManager, settings).excludeAreaInRecipeViewer();
     };
 }
