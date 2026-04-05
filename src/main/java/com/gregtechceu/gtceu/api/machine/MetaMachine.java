@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -48,7 +46,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
@@ -57,7 +54,6 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -101,7 +97,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
+                         IPaintable, IMachineFeature, ICopyable {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -678,7 +674,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void animateTick(RandomSource random) {}
 
-    @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                          BlockState sourceState, BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
@@ -734,7 +729,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return 0;
     }
 
-    public boolean canConnectRedstone(@NotNull Direction side) {
+    public boolean canConnectRedstone(Direction side) {
         // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover == null) return false;
@@ -757,31 +752,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-    @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        return GuiTextures.INFO_ICON;
-    }
-
-    @Override
-    public final List<Component> getFancyTooltip() {
-        var tooltips = new ArrayList<Component>();
-        onAddFancyInformationTooltip(tooltips);
-        return tooltips;
-    }
-
-    @Override
-    public boolean showFancyTooltip() {
-        return !getFancyTooltip().isEmpty();
-    }
-
-    public void onAddFancyInformationTooltip(List<Component> tooltips) {
-        getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
-        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
-                getDefinition().getId().getPath());
-        if (Language.getInstance().has(mainKey)) {
-            tooltips.add(0, Component.translatable(mainKey));
-        }
-    }
 
     @Override
     public int getDefaultPaintingColor() {
@@ -895,7 +865,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         var result = getCapability(this, cap, side);
         return result.isPresent() ? result : super.getCapability(cap, side);
     }
@@ -912,8 +882,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return list;
     }
 
-    public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
-                                                             @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, Capability<T> cap,
+                                                    @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {

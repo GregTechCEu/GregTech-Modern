@@ -120,13 +120,13 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
             if (blockEntity instanceof IRecipeLogicMachine rlm) {
                 var logic = rlm.getRecipeLogic();
 
-                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
+                if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
                             Component.translatable("gtceu.recipe_logic.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :
                             Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
                     tooltip.add(status);
-                    logic.getFancyTooltip().forEach(tooltip::add);
+                    logic.getWaitingReasons().forEach(tooltip::add);
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -179,10 +178,6 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         return coverDefinition.getCoverRenderer();
     }
 
-    public @Nullable IFancyConfigurator getConfigurator() {
-        return null;
-    }
-
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
@@ -210,7 +205,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         return null;
     }
 
-    public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
+    public Supplier<@Nullable IDynamicCoverRenderer> getDynamicRenderer() {
         return () -> null;
     }
 
