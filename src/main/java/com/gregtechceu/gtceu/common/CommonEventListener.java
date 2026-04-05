@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -109,6 +109,7 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.regex.Matcher;

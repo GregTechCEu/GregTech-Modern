@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
