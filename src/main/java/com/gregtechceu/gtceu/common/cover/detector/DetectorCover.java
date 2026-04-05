@@ -7,16 +7,14 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -72,8 +70,8 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     }
 
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
-        InteractionResult superResult = super.onScrewdriverClick(playerIn, hand, hitResult);
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
+        InteractionResult superResult = super.onScrewdriverClick(context);
         if (superResult != InteractionResult.PASS) {
             return superResult;
         }
@@ -83,7 +81,7 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
             String translationKey = isInverted() ? "cover.detector_base.message_inverted_state" :
                     "cover.detector_base.message_normal_state";
-            playerIn.sendSystemMessage(Component.translatable(translationKey));
+            context.getPlayer().sendSystemMessage(Component.translatable(translationKey));
         }
 
         return InteractionResult.SUCCESS;

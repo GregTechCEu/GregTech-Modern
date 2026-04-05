@@ -6,19 +6,16 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,13 +29,13 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     @Setter
     private boolean workingEnabled = true;
 
-    public ShutterCover(@NotNull CoverDefinition definition, @NotNull ICoverable coverableView,
-                        @NotNull Direction attachedSide) {
+    public ShutterCover(CoverDefinition definition, ICoverable coverableView,
+                        Direction attachedSide) {
         super(definition, coverableView, attachedSide);
     }
 
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         return InteractionResult.FAIL;
     }
 
@@ -48,10 +45,10 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     }
 
     @Override
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         this.workingEnabled = !this.workingEnabled;
-        if (!playerIn.level().isClientSide) {
-            playerIn.sendSystemMessage(Component.translatable(isWorkingEnabled() ?
+        if (!coverHolder.isRemote()) {
+            context.getPlayer().sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.shutter.message.enabled" : "cover.shutter.message.disabled"));
         }
         return InteractionResult.SUCCESS;
