@@ -77,7 +77,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
 
     public final IRecipeLogicMachine machine;
-    public List<GTRecipe> lastFailedMatches;
+    public @Nullable List<GTRecipe> lastFailedMatches;
 
     @Getter
     @SaveField
@@ -364,10 +364,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         recipeDirty = false;
     }
 
-    protected void handleSearchingRecipes(@NotNull Iterator<GTRecipe> matches) {
+    protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
         while (matches.hasNext()) {
             GTRecipe match = matches.next();
-            if (match == null) continue;
 
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
