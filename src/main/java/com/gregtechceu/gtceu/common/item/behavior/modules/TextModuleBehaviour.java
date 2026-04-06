@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.behavior.modules;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.FloatInputWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
@@ -9,11 +10,11 @@ import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.item.datacomponents.TextLineList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -28,14 +29,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import org.apache.commons.lang3.mutable.MutableFloat;
 import org.jetbrains.annotations.Nullable;
 
-import org.apache.commons.lang3.mutable.MutableFloat;
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
@@ -62,9 +61,9 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public IMonitorRenderer getRenderer(ItemStack stack) {
         TextLineList lines = stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY);
-        return new MonitorTextRenderer(lines.lines(), Math.max(lines.scale(), 0.0001f));
+        return new MonitorTextRenderer(MultiLineComponent.of(lines.lines()), Math.max(lines.scale(), 0.0001f));
     }
 
     @Override
@@ -128,19 +127,17 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public void setPlaceholderText(ItemStack stack, String text) {
-        List<Component> lines = new ArrayList<>();
-        for (String line : text.split("\n")) {
-            lines.add(Component.literal(line));
-        }
-        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY,
-                textLineList -> textLineList.withLines(lines));
+        List<String> lines = Arrays.asList(text.split("\n"));
+
+        stack.update(GTDataComponents.FORMAT_STRING_LIST, FormatStringList.EMPTY,
+                formatStringList -> formatStringList.withLines(lines));
     }
 
     public String getPlaceholderText(ItemStack stack) {
         StringBuilder formatStringLines = new StringBuilder();
-        List<Component> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, FormatStringList.EMPTY).lines();
-        for (Component line : lines) {
-            formatStringLines.append(line.getString()).append('\n');
+        List<String> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, FormatStringList.EMPTY).lines();
+        for (String line : lines) {
+            formatStringLines.append(line).append('\n');
         }
         return formatStringLines.toString();
     }
