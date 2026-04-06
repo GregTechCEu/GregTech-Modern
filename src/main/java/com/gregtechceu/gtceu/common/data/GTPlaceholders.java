@@ -101,6 +101,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
                     return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
                 }
@@ -135,6 +136,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
+                if (ctx.pos() == null) throw new NoTargetException();
                 IItemHandler itemHandler = GTCapabilityHelper.getItemHandler(ctx.level(), ctx.pos(), ctx.side());
                 if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, itemHandler));
                 if (args.size() == 1) return MultiLineComponent
@@ -159,6 +161,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
+                if (ctx.pos() == null) throw new NoTargetException();
                 IFluidHandler fluidHandler = GTCapabilityHelper.getFluidHandler(ctx.level(), ctx.pos(), ctx.side());
                 if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, fluidHandler));
                 if (args.size() == 1)
@@ -318,6 +321,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -330,6 +334,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -342,6 +347,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (maintenance == null) throw new NotSupportedException();
@@ -354,6 +360,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -366,6 +373,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 if (ctx.level().getBlockEntity(ctx.pos()) instanceof CableBlockEntity cable) {
                     return MultiLineComponent.literal(cable.getAverageVoltage());
                 }
@@ -378,6 +386,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
+                if (ctx.pos() == null) throw new NoTargetException();
                 if (ctx.level().getBlockEntity(ctx.pos()) instanceof CableBlockEntity cable) {
                     return MultiLineComponent.literal(cable.getAverageAmperage());
                 }
@@ -738,6 +747,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
+                if (ctx.pos() == null) throw new NoTargetException();
                 if (!(MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof AdvancedMonitorPartMachine monitor))
                     throw new NotSupportedException();
                 monitor.resetClicked();
@@ -972,7 +982,8 @@ public class GTPlaceholders {
         PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
 
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
+            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+                if (ctx.pos() == null) throw new NoTargetException();
                 BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
                 if (blockEntity == null) return MultiLineComponent.empty();
                 Tag tag = blockEntity.saveWithFullMetadata();
