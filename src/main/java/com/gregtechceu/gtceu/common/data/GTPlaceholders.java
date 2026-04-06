@@ -419,7 +419,8 @@ public class GTPlaceholders {
                     if (slot == 0) {
                         if (ctx.monitorGroup() == null) throw new NotSupportedException();
                         if (ctx.monitorGroup().getTargetRaw() == null) throw new NoTargetException();
-                        IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(ctx.level(), ctx.monitorGroup().getTargetRaw(), null);
+                        IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(ctx.level(),
+                                ctx.monitorGroup().getTargetRaw(), null);
                         if (component != null && component.getDataItems() != null) {
                             stack = component.getDataItems().getStackInSlot(ctx.monitorGroup().getDataSlot());
                         } else throw new NotSupportedException();
@@ -1003,8 +1004,10 @@ public class GTPlaceholders {
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("setTargetSlot") {
+
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.monitorGroup() == null) throw new NotSupportedException();
                 PlaceholderUtils.checkArgs(args, 1);
                 int slot = PlaceholderUtils.toInt(args.get(0));
@@ -1020,8 +1023,10 @@ public class GTPlaceholders {
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("targetSlot") {
+
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.monitorGroup() == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(ctx.monitorGroup().getDataSlot() + 1);
             }

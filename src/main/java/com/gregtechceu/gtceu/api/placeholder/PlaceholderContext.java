@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import lombok.*;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -20,6 +20,7 @@ import java.util.UUID;
 @Setter
 @ToString
 public final class PlaceholderContext {
+
     private Level level;
     private BlockPos pos;
     private Direction side;
