@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.FloatInputWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
@@ -36,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
@@ -147,9 +148,9 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public String getPlaceholderText(ItemStack stack) {
         StringBuilder formatStringLines = new StringBuilder();
-        List<Component> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, FormatStringList.EMPTY).lines();
-        for (Component line : lines) {
-            formatStringLines.append(line.getString()).append('\n');
+        List<String> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, FormatStringList.EMPTY).lines();
+        for (String line : lines) {
+            formatStringLines.append(line).append('\n');
         }
         return formatStringLines.toString();
     }
