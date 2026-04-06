@@ -3727,6 +3727,7 @@
   "gtceu.plasma_generator": "Plasma Generator",
   "gtceu.polarizer": "Polarizer",
   "gtceu.primitive_blast_furnace": "Primitive Blast Furnace",
+  "gtceu.provider.computer_monitor_cover.error.no_target": "No target selected for the monitor group",
   "gtceu.pyrolyse_oven": "Pyrolyse Oven",
   "gtceu.recipe.byproduct_tier": "Byproducts from %s§r+",
   "gtceu.recipe.category.arc_furnace_recycling": "Arc Scrapping",
