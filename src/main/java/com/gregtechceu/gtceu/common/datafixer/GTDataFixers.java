@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.datafixer;
+package com.gregtechceu.gtceu.common.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;

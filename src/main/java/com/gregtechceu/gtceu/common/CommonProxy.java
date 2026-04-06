@@ -225,6 +225,7 @@ public class CommonProxy {
         SyncedKeyMappings.init();
         MachineOwner.init();
         ChestGenHooks.init();
+        GTDataFixers.init();
     }
 
     @ApiStatus.Internal
