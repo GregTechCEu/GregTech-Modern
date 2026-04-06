@@ -112,19 +112,20 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
         if (!isEnabled()) {
             return null;
         }
-        var fluid = XaerosRenderer.fluidElements.get(dimension, new ChunkPos(x, z));
+        ProspectorMode.FluidInfo fluid = XaerosRenderer.fluidElements.get(dimension, new ChunkPos(x, z));
         if (fluid == null) {
             return null;
         }
-        return FluidRenderLayer.getTooltip(fluid).stream().reduce(Component.empty(), (c1, c2) -> {
-            if (c1.getString().isEmpty()) {
-                return c2;
-            }
-            if (c2.getString().isEmpty()) {
-                return c1;
-            }
-            return ((MutableComponent) c1).append("\n").append(c2);
-        });
+        return FluidRenderLayer.getTooltip(FluidRenderLayer.getName(fluid), fluid).stream()
+                .reduce(Component.empty(), (c1, c2) -> {
+                    if (c1.getString().isEmpty()) {
+                        return c2;
+                    }
+                    if (c2.getString().isEmpty()) {
+                        return c1;
+                    }
+                    return ((MutableComponent) c1).append("\n").append(c2);
+                });
     }
 
     @Override

@@ -31,7 +31,7 @@ public class FTBChunksRenderer extends GenericMapRenderer {
     @Override
     public boolean addMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
-        fluidElements.put(dim, pos, new FluidVeinIcon(pos, fluid));
+        fluidElements.put(dim, pos, new FluidVeinIcon(pos, name, fluid));
         return true;
     }
 

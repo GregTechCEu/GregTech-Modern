@@ -129,9 +129,6 @@ public class IntegrationLang {
         provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
 
         provider.add("gtceu.journeymap.options.layers", "Prospection layers");
-        provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
-        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
 
         provider.add("gtceu.button.ore_veins", "Show Ore Veins");
         provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");

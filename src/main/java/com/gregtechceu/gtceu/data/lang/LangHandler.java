@@ -1303,11 +1303,6 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         // gui
-        provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
-        provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
-        provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
-        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
 
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
