@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 
 import net.minecraft.commands.Commands;
+import net.minecraft.resources.ResourceLocation;
 
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
+import dev.toma.configuration.config.UpdateRestrictions;
 import dev.toma.configuration.config.format.ConfigFormats;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -54,114 +57,149 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether to generate Flawed and Chipped Gems for materials and recipes involving them.",
                 "Useful for mods like TerraFirmaCraft.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean generateLowQualityGems = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to remove Block/Ingot compression and decompression in the Crafting Table.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean disableManualCompression = true; // default true
         @Configurable
         @Configurable.Comment({
                 "Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean harderRods = true; // default true
         @Configurable
         @Configurable.Comment({
                 "Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean harderBrickRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to nerf Wood crafting to 2 Planks from 1 Log, and 2 Sticks from 2 Planks.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean nerfWoodCrafting = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to make Wood related recipes harder.", "Excludes sticks and planks.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardWoodRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Recipes for Buckets, Cauldrons, Hoppers, and Iron Bars" +
                 " require Iron Plates, Rods, and more.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardIronRecipes = true; // default true
         @Configurable
         @Configurable.Comment({ "Whether to make Redstone related recipes harder.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardRedstoneRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to make Vanilla Tools and Armor recipes harder.",
                 "Excludes Flint and Steel, and Buckets.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardToolArmorRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to make miscellaneous recipes harder.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardMiscRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to make Glass related recipes harder. Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardGlassRecipes = true; // default true
         @Configurable
         @Configurable.Comment({ "Whether to nerf the Paper crafting recipe.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean nerfPaperCrafting = true; // default true
         @Configurable
         @Configurable.Comment({ "Recipes for items like Iron Doors, Trapdoors, Anvil" +
                 " require Iron Plates, Rods, and more.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardAdvancedIronRecipes = true; // default true
         @Configurable
         @Configurable.Comment({ "Whether to make coloring blocks like Concrete or Glass harder.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardDyeRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to remove charcoal smelting recipes from the vanilla furnace.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean harderCharcoalRecipe = true; // default true
         @Configurable
         @Configurable.Comment({ "Whether to make the Flint and Steel recipe require steel parts.", "Default: true." })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean flintAndSteelRequireSteel = true; // default true
         @Configurable
         @Configurable.Comment({ "Whether to remove Vanilla Block Recipes from the Crafting Table.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean removeVanillaBlockRecipes = false; // default false
         @Configurable
         @Configurable.Comment({ "Whether to remove Vanilla TNT Recipe from the Crafting Table.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean removeVanillaTNTRecipe = true; // default true
         @Configurable
         @Configurable.Comment({ "How many Multiblock Casings to make per craft. Either 1, 2, or 3.", "Default: 2" })
         @Configurable.Range(min = 1, max = 3)
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public int casingsPerCraft = 2;
         @Configurable
         @Configurable.Comment({
                 "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean harderCircuitRecipes = false;
         @Configurable
         @Configurable.Comment({ "Whether to nerf machine controller recipes.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean hardMultiRecipes = false; // default false
         @Configurable
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean enchantedTools = false;
 
         @Configurable
         @Configurable.Comment({ "Whether to enable macerator decomposition recycling", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean enableMaceratorRecycling = true;
         @Configurable
         @Configurable.Comment({ "Percentage yield of macerator decomposition recycling outputs, 1.0 means 100%",
                 "Default: 1.0f" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
         public float maceratorRecyclingYield = 1.0f;
         @Configurable
         @Configurable.Comment({ "Whether to enable arc furnace decomposition recycling", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean enableArcRecycling = true;
         @Configurable
         @Configurable.Comment({ "Percentage yield of arc furnace decomposition recycling outputs, 1.0 means 100%",
                 "Default: 1.0f" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
         public float arcRecyclingYield = 1.0f;
         @Configurable
         @Configurable.Comment({ "Whether to enable extractor decomposition recycling", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean enableExtractorRecycling = true;
         @Configurable
         @Configurable.Comment({ "Percentage yield of extractor decomposition recycling outputs, 1.0 means 100%",
                 "Default: 1.0f" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
         public float extractorRecyclingYield = 1.0f;
     }
 
     public static class CompatibilityConfigs {
+
+        @Configurable
+        @Configurable.Comment({ "Whether to run datafixers on world load.",
+                "Do note that mods like ModernFix will interfere with this.",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+        public boolean doDatafixers = true;
 
         @Configurable
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
@@ -203,6 +241,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Whether Create compatibility will be available.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean createCompat = true;
 
         public static class EnergyCompatConfig {
@@ -214,18 +253,19 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Enable GTEU to FE (and vice versa) Converters.", "Default: false" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public boolean enableFEConverters = false;
 
             @Configurable
             @Configurable.Comment({ "Forge Energy to GTEU ratio for converting FE to EU.", "Only affects converters.",
                     "Default: 4 FE == 1 EU" })
-            @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
+            @Configurable.Range(min = 1, max = 16)
             public int feToEuRatio = 4;
 
             @Configurable
             @Configurable.Comment({ "GTEU to Forge Energy ratio for converting EU to FE.",
                     "Affects native conversion and Converters.", "Default: 4 FE == 1 EU" })
-            @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
+            @Configurable.Range(min = 1, max = 16)
             public int euToFeRatio = 4;
         }
 
@@ -240,6 +280,7 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "The energy consumption of ME Hatch/Bus.", "Default: 4.0AE/t" })
             @Configurable.DecimalRange(min = 0.0, max = Integer.MAX_VALUE)
+            @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
             public double meHatchEnergyUsage = 4.0;
         }
 
@@ -247,18 +288,19 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({
-                    "Toggle specific map mod integration on/off (need to restart for this to take effect)" })
+                    "Toggle specific map mod integration on/off" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public Toggle toggle = new Toggle();
 
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that picking up a surface rock will search for veins in.",
                     "-1 to disable.", "Default: 24" })
-            @Configurable.Range(min = -1)
+            @Configurable.Range(min = 1)
             public int surfaceRockProspectRange = 24;
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that clicking an ore block will search for veins in.",
                     "-1 to disable", "Default: 24" })
-            @Configurable.Range(min = -1)
+            @Configurable.Range(min = 1)
             public int oreBlockProspectRange = 24;
 
             @Configurable
@@ -301,14 +343,17 @@ public class ConfigHolder {
 
                 @Configurable
                 @Configurable.Comment({ "FTB Chunks integration enabled" })
+                @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
                 public boolean ftbChunksIntegration = false;
 
                 @Configurable
                 @Configurable.Comment({ "Journey Map integration enabled" })
+                @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
                 public boolean journeyMapIntegration = true;
 
                 @Configurable
                 @Configurable.Comment({ "Xaerox's map integration enabled" })
+                @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
                 public boolean xaerosMapIntegration = true;
             }
 
@@ -375,10 +420,12 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.",
                 "Default: true", "WARNING: Currently unimplemented." })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean increaseDungeonLoot = true;
         @Configurable
         @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean addLoot = true;
 
         @Configurable
@@ -403,9 +450,11 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "Prevents regular vanilla ores from being generated outside GregTech ore veins",
                     "Default: true" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
             public boolean removeVanillaOreGen = true;
             @Configurable
             @Configurable.Comment({ "Prevents vanilla's large ore veins from being generated", "Default: true" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
             public boolean removeVanillaLargeOreVeins = true;
             @Configurable
             @Configurable.Comment({ "Distance between bedrock ore veins in chunks, if enabled.", "Default: 16" })
@@ -421,15 +470,17 @@ public class ConfigHolder {
                     "Sets the maximum number of chunks that may be cached for ore vein generation.",
                     "Higher values may improve world generation performance, but at the cost of more RAM usage.",
                     "If you substantially increase the ore vein grid size, random vein offset, or have very large (custom) veins, you may need to increase this value as well.",
-                    "Default: 512 (requires restarting the server / re-opening the world)"
+                    "Default: 512"
             })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public int oreGenerationChunkCacheSize = 512;
             @Configurable
             @Configurable.Comment({
                     "Sets the maximum number of chunks for which ore indicators may be cached.",
                     "If you register any custom veins with very large indicator ranges (or modify existing ones that way), you may need to increase this value.",
-                    "Default: 2048 (requires restarting the server / re-opening the world)"
+                    "Default: 2048"
             })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public int oreIndicatorChunkCacheSize = 2048;
         }
     }
@@ -440,28 +491,34 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean requireGTToolsForBlocks = true;
         @Configurable
         @Configurable.Comment({
                 "Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava",
                 "Default: false" })
+        @Configurable.Synchronized
         public boolean shouldWeatherOrTerrainExplosion = false;
         @Configurable
         @Configurable.Comment({ "Energy use multiplier for electric items.", "Default: 100" })
+        @Configurable.Synchronized
         public int energyUsageMultiplier = 100;
 
         @Configurable
         @Configurable.Comment({ "Energy use multiplier for prospectors.", "Default: 100" })
+        @Configurable.Synchronized
         public int prospectorEnergyUseMultiplier = 100;
         @Configurable
         @Configurable.Comment({ "Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.",
                 "Default: true" })
+        @Configurable.Synchronized
         public boolean doesExplosionDamagesTerrain = true;
         @Configurable
         @Configurable.Comment({
                 "Enables Safe Active Transformers, removing their ability to explode if unformed while transmitting/receiving power.",
                 "Default: false" })
+        @Configurable.Synchronized
         public boolean harmlessActiveTransformers = false;
         @Configurable
         @Configurable.Comment({ "Whether to play machine sounds while machines are active.", "Default: true" })
@@ -471,9 +528,11 @@ public class ConfigHolder {
         public int batchDuration = 100;
         @Configurable
         @Configurable.Comment({ "Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean steelSteamMultiblocks = false;
         @Configurable
         @Configurable.Comment({ "Whether to enable the cleanroom, required for various recipes.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean enableCleanroom = true;
         @Configurable
         @Configurable.Comment({ "Whether multiblocks should ignore all cleanroom requirements.",
@@ -490,9 +549,11 @@ public class ConfigHolder {
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
         @Configurable
         @Configurable.Comment({ "Whether to enable Assembly Line research for recipes.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enableResearch = true;
         @Configurable
         @Configurable.Comment({ "Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enableMaintenance = true;
         @Configurable
         @Configurable.Comment({
@@ -505,27 +566,32 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether to enable World Accelerators, which accelerate ticks for surrounding Tile Entities, Crops, etc.",
                 "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enableWorldAccelerators = true;
 
         @Configurable
-        @Configurable.Comment({ "List of TileEntities that the World Accelerator should not accelerate.",
+        @Configurable.Comment({ "List of Block entities that the World Accelerator should not accelerate.",
                 "GregTech TileEntities are always blocked.",
-                "Entries must be in a fully qualified format. For example: appeng.tile.networking.TileController",
+                "Entries must be in a fully qualified format. For example: ae2:controller",
                 "Default: none" })
-        public String[] worldAcceleratorBlacklist = new String[0];
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public ResourceLocation[] worldAcceleratorBlacklist = new ResourceLocation[0];
 
         @Configurable
         @Configurable.Comment({
                 "Whether to use GT6-style pipe and cable connections, meaning they will not auto-connect " +
                         "unless placed directly onto another pipe or cable.",
                 "Default: true" })
+        @Configurable.Synchronized
         public boolean gt6StylePipesCables = true;
         @Configurable
         @Configurable.Comment({ "Whether the machine's circuit slot need to be inserted a real circuit." })
+        @Configurable.Synchronized
         public boolean ghostCircuit = true;
         @Configurable
         @Configurable.Comment({ "Whether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean doBedrockOres = false;
         @Configurable
         @Configurable.Comment({ "What Kind of material should the bedrock ore miner output?", "Default: \"raw\"" })
@@ -538,24 +604,30 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         // todo: implement or purge
         public boolean enableTieredCasings = false;
         @Configurable
         @Configurable.Comment({ "Minimum distance between Long Distance Item Pipe Endpoints", "Default: 50" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public int ldItemPipeMinDistance = 50;
         @Configurable
         @Configurable.Comment({ "Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public int ldFluidPipeMinDistance = 50;
 
         @Configurable
         @Configurable.Comment({ "Whether ONLY owners can open a machine gui", "Default: false" })
+        @Configurable.Synchronized
         public boolean onlyOwnerGUI = false;
         @Configurable
         @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
+        @Configurable.Synchronized
         public boolean onlyOwnerBreak = false;
         @Configurable
         @Configurable.Comment({ "Minimum op level to bypass the ownership checks", "Default: 2" })
         @Configurable.Range(min = Commands.LEVEL_ALL, max = Commands.LEVEL_OWNERS)
+        @Configurable.Synchronized
         public int ownerOPBypass = Commands.LEVEL_GAMEMASTERS;
 
         /**
@@ -568,6 +640,7 @@ public class ConfigHolder {
                 "This is intended for modpack developers only, and is not playable without custom tweaks or addons.",
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean highTierContent = false;
 
         @Configurable
@@ -584,6 +657,7 @@ public class ConfigHolder {
                 "Default maximum parallel of steam multiblocks",
                 "Default: 8"
         })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public int steamMultiParallelAmount = 8;
 
         @Configurable
@@ -592,9 +666,11 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
         @Configurable.Comment("Large Steam Boiler Options")
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public LargeBoilers largeBoilers = new LargeBoilers();
 
         public static class SmallBoilers {
@@ -680,41 +756,50 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment("NightVision Goggles Voltage Tier. Default: 1 (LV)")
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierNightVision = 1;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierNightVision = GTValues.LV;
         @Configurable
         @Configurable.Comment("NanoSuit Voltage Tier. Default: 3 (HV)")
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierNanoSuit = 3;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierNanoSuit = GTValues.HV;
         @Configurable
         @Configurable.Comment({ "Advanced NanoSuit Chestplate Voltage Tier.", "Default: 3 (HV)" })
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierAdvNanoSuit = 3;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierAdvNanoSuit = GTValues.HV;
         @Configurable
         @Configurable.Comment({ "QuarkTech Suit Voltage Tier.", "Default: 5 (IV)" })
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierQuarkTech = 5;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierQuarkTech = GTValues.IV;
         @Configurable
         @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierAdvQuarkTech = 6;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierAdvQuarkTech = GTValues.LuV;
         @Configurable
         @Configurable.Comment({ "Electric Impeller Jetpack Voltage Tier.", "Default: 2 (MV)" })
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierImpeller = 2;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierImpeller = GTValues.MV;
         @Configurable
         @Configurable.Comment({ "Advanced Electric Jetpack Voltage Tier.", "Default: 3 (HV)" })
         @Configurable.Range(min = 0, max = 14)
-        public int voltageTierAdvImpeller = 3;
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public int voltageTierAdvImpeller = GTValues.HV;
 
         public static class NanoSaber {
 
             @Configurable
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The additional damage added when the NanoSaber is powered.", "Default: 20.0" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public double nanoSaberDamageBoost = 20;
             @Configurable
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The base damage of the NanoSaber.", "Default: 5.0" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public double nanoSaberBaseDamage = 5;
             @Configurable
             @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?",
@@ -723,6 +808,7 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Range(min = 1, max = 512)
             @Configurable.Comment({ "The EU/t consumption of the NanoSaber.", "Default: 64" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
             public int energyConsumption = 64;
         }
     }
@@ -731,14 +817,17 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
+        @Configurable.Synchronized
         public boolean hazardsEnabled = true;
         @Configurable
         @Configurable.Comment({ "Whether hazards are applied to all valid items, or just GT's.",
                 "true = all, false = GT only.", "Default: true" })
+        @Configurable.Synchronized
         public boolean universalHazards = true;
         @Configurable
         @Configurable.Comment({ "Whether environmental hazards like pollution or radiation are active",
                 "Default: false" })
+        @Configurable.Synchronized
         public boolean environmentalHazards = false;
         @Configurable
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
@@ -746,6 +835,7 @@ public class ConfigHolder {
         public float environmentalHazardDecayRate = 0.001f;
         @Configurable
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        @Configurable.Synchronized
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };
     }
@@ -787,6 +877,7 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
                 "Disable if you have issues with rendering multiblocks.", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean useVBO = true;
         @Configurable
         @Configurable.Comment({ "Duration of the multiblock in-world preview (s)", "Default: 10" })
