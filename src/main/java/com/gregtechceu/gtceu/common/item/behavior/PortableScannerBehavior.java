@@ -419,7 +419,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 var environmentHazardZone = environmental.getZoneByContainedPos(pos);
                 if (environmentHazardZone != null) {
                     list.add(Component.translatable("behavior.portable_scanner.environmental_hazard",
-                            Component.translatable("gtceu.medical_condition." + environmentHazardZone.condition().name),
+                            environmentHazardZone.condition().getTranslatableName(),
                             Component.literal(FormattingUtil.formatNumbers(environmentHazardZone.strength()))));
                 } else {
                     list.add(Component.translatable("behavior.portable_scanner.environmental_hazard.nothing"));
@@ -429,7 +429,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 var localHazardZone = local.getZoneByContainedPos(pos);
                 if (localHazardZone != null) {
                     list.add(Component.translatable("behavior.portable_scanner.local_hazard",
-                            Component.translatable("gtceu.medical_condition." + localHazardZone.condition().name),
+                            localHazardZone.condition().getTranslatableName(),
                             Component.literal(FormattingUtil.formatNumbers(localHazardZone.strength()))));
                 } else {
                     list.add(Component.translatable("behavior.portable_scanner.local_hazard.nothing"));

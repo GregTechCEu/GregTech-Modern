@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
@@ -18,8 +16,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastPro
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -65,7 +65,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -84,13 +83,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -112,7 +110,6 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -137,25 +134,7 @@ public class CommonEventListener {
     public static void registerEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player entity) {
             final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
-            event.addCapability(GTCEu.id("medical_condition_tracker"), new ICapabilitySerializable<CompoundTag>() {
-
-                @Override
-                public CompoundTag serializeNBT() {
-                    return tracker.serializeNBT();
-                }
-
-                @Override
-                public void deserializeNBT(CompoundTag arg) {
-                    tracker.deserializeNBT(arg);
-                }
-
-                @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
-                                                                  @Nullable Direction arg) {
-                    return GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER.orEmpty(capability,
-                            LazyOptional.of(() -> tracker));
-                }
-            });
+            event.addCapability(GTCEu.id("medical_condition_tracker"), tracker);
         }
     }
 
@@ -171,13 +150,18 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void tickPlayerInventoryHazards(TickEvent.PlayerTickEvent event) {
+    public static void tickPlayerHazards(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.CLIENT || event.phase != TickEvent.Phase.END) {
             return;
         }
 
         Player player = event.player;
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        // update the tracker every second, including clearing everything when the config changes.
+        if (player.tickCount % 20 != 0) {
+            return;
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (tracker == null) {
             return;
         }
@@ -192,22 +176,23 @@ public class CommonEventListener {
         if (inventory == null) {
             return;
         }
+
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            Material material = HazardProperty.getValidHazardMaterial(stack);
-            if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
+            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
+            if (entry.material().isNull()) {
                 continue;
             }
-            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(material);
+            tracker.progressRelatedCondition(entry, stack.getCount());
         }
     }
 
@@ -227,6 +212,31 @@ public class CommonEventListener {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemUseFinished(LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) {
+            return;
+        }
+
+        ItemStack usedItem = event.getItem();
+        if (!usedItem.isEdible()) {
+            return;
+        }
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null) {
+            return;
+        }
+
+        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
+        if (entry.material().isNull()) {
+            return;
+        }
+        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+        if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
+            tracker.progressRelatedCondition(entry, 1);
         }
     }
 
@@ -432,7 +442,7 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             if (tracker == null) {
                 return;
             }
@@ -502,6 +512,77 @@ public class CommonEventListener {
         if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
             armor.getArmorLogic().onEquip(player);
         }
+    }
+
+    @SubscribeEvent
+    public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
+                continue;
+            }
+            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
+                continue;
+            }
+            // undo flight mining speed debuff
+            if (!player.onGround()) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+            // and also underwater debuff
+            if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null || !ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            return;
+        }
+        if (player.getAttributes().hasModifier(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID)) {
+            float miningFatigueModifier = (float) player.getAttributes()
+                    .getModifierValue(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_UUID);
+            // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
+            event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
+        }
+    }
+
+    @SubscribeEvent
+    public static void addAlloyBlastProperties(PostMaterialEvent event) {
+        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
+                addAlloyBlastProperty(material);
+            }
+        }
+        // Alloy Blast Overriding
+        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
+                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
+
+        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
+                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
+    }
+
+    public static void addAlloyBlastProperty(@NotNull Material material) {
+        final List<MaterialStack> components = material.getMaterialComponents();
+        // ignore materials which are not alloys
+        if (components.size() < 2) return;
+
+        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
+        if (blastProperty == null) return;
+
+        if (!material.hasProperty(PropertyKey.FLUID)) return;
+
+        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
+        if (components.stream().filter(CommonEventListener::isMaterialStackFluidOnly).limit(3).count() > 2) {
+            return;
+        }
+
+        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
+        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN,
+                new FluidBuilder().state(FluidState.LIQUID));
+    }
+
+    private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {
+        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     @SubscribeEvent
@@ -662,56 +743,5 @@ public class CommonEventListener {
                 }
             });
         }
-    }
-
-    @SubscribeEvent
-    public static void breakSpeed(PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (stack.getItem() instanceof ArmorComponentItem componentItem) {
-                if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
-                    if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void addAlloyBlastProperties(PostMaterialEvent event) {
-        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
-                addAlloyBlastProperty(material);
-            }
-        }
-        // Alloy Blast Overriding
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
-
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
-    }
-
-    public static void addAlloyBlastProperty(@NotNull Material material) {
-        final List<MaterialStack> components = material.getMaterialComponents();
-        // ignore materials which are not alloys
-        if (components.size() < 2) return;
-
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
-        if (!material.hasProperty(PropertyKey.FLUID)) return;
-
-        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
-        if (components.stream().filter(CommonEventListener::isMaterialStackFluidOnly).limit(3).count() > 2) {
-            return;
-        }
-
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
-        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN,
-                new FluidBuilder().state(FluidState.LIQUID));
-    }
-
-    private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {
-        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 }

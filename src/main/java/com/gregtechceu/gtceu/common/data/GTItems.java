@@ -2337,8 +2337,8 @@ public class GTItems {
             .tag(Tags.Items.ARMORS_HELMETS)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.inhalation"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.inhalation"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
@@ -2349,8 +2349,8 @@ public class GTItems {
             .tag(Tags.Items.ARMORS_CHESTPLATES)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.skin_contact"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.skin_contact"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE

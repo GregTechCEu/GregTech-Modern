@@ -45,7 +45,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
         currentRecipeMedicalCondition = condition;
 
-        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.name + "_autogen")
+        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.id.withSuffix("_autogen"))
                 .duration(200).EUt(VHA[LV]);
         condition.recipeModifier.accept(builder);
         return this.recipeLogic.checkMatchedRecipeAvailable(builder.buildRawRecipe());
