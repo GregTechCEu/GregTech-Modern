@@ -276,10 +276,10 @@ public class BlockHighlightRenderer {
 
         buffer.addVertex(pose.pose(), from.x(), from.y(), from.z())
                 .setColor(rColour, gColour, bColour, 1f)
-                .setNormal(pose.normal(), normal.x(), normal.y(), normal.z());
+                .setNormal(pose, normal.x(), normal.y(), normal.z());
         buffer.addVertex(pose.pose(), to.x(), to.y(), to.z())
                 .setColor(rColour, gColour, bColour, 1f)
-                .setNormal(pose.normal(), normal.x(), normal.y(), normal.z());
+                .setNormal(pose, normal.x(), normal.y(), normal.z());
     }
 
     private static void drawResourceTexture(PoseStack poseStack, MultiBufferSource bufferSource,

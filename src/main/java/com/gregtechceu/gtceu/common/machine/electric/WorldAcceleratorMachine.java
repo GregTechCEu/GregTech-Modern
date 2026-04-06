@@ -25,40 +25,37 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class WorldAcceleratorMachine extends TieredEnergyMachine implements IControllable {
 
-    private static final Map<String, Class<?>> blacklistedClasses = new Object2ObjectOpenHashMap<>();
-    private static final Object2BooleanFunction<Class<? extends BlockEntity>> blacklistCache = new Object2BooleanOpenHashMap<>();
+    private static final Set<BlockEntityType<?>> blacklistedTypes = new ObjectOpenHashSet<>();
     private static boolean gatheredClasses = false;
 
-    // Hard-coded blacklist for blockentities
-    private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
-
-    public static final BooleanProperty RANDOM_TICK_PROPERTY = GTMachineModelProperties.IS_RANDOM_TICK_MODE;
+    // Hardcoded blacklist for block entity types
+    private static final List<ResourceLocation> blockEntityTypeBlackList = new ArrayList<>();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -84,7 +81,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @DescSynced
     @RequireRerender
     private boolean active = false;
-    private TickableSubscription tickSubs;
+    private @Nullable TickableSubscription tickSubs;
 
     public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, GTMachineUtils.defaultTankSizeFunction, args);
@@ -94,13 +91,13 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     @Override
-    protected @NotNull NotifiableEnergyContainer createEnergyContainer(Object @NotNull... args) {
+    protected NotifiableEnergyContainer createEnergyContainer(Object @NotNull... args) {
         long tierVoltage = GTValues.V[getTier()];
         return new NotifiableEnergyContainer(this, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
+    public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -166,15 +163,18 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         return false;
     }
 
-    private <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
+    private <T extends BlockEntity> void tickBlockEntity(T blockEntity) {
         BlockPos pos = blockEntity.getBlockPos();
-        // noinspection unchecked
-        BlockEntityTicker<T> blockEntityTicker = this.getLevel().getBlockState(pos).getTicker(this.getLevel(),
-                (BlockEntityType<T>) blockEntity.getType());
-        if (blockEntityTicker == null) return;
+        Level level = blockEntity.getLevel();
+        if (level == null) return;
+
+        @SuppressWarnings("unchecked")
+        BlockEntityTicker<T> ticker = level.getBlockState(pos)
+                .getTicker(level, (BlockEntityType<T>) blockEntity.getType());
+        if (ticker == null) return;
+
         for (int i = 0; i < speed - 1; i++) {
-            blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),
-                    blockEntity);
+            ticker.tick(level, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity);
         }
     }
 
@@ -182,21 +182,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (blockEntity instanceof PipeBlockEntity || blockEntity instanceof IMachineBlockEntity) return false;
 
         generateWorldAcceleratorBlacklist();
-        final Class<? extends BlockEntity> blockEntityClass = blockEntity.getClass();
-        if (blacklistCache.containsKey(blockEntityClass)) {
-            return blacklistCache.getBoolean(blockEntityClass);
-        }
-
-        for (Class<?> clazz : blacklistedClasses.values()) {
-            if (clazz.isAssignableFrom(blockEntityClass)) {
-                // Is a subclass, so it cannot be accelerated
-                blacklistCache.put(blockEntityClass, false);
-                return false;
-            }
-        }
-
-        blacklistCache.put(blockEntityClass, true);
-        return true;
+        return blacklistedTypes.contains(blockEntity.getType());
     }
 
     @Override
@@ -223,8 +209,8 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    ItemStack held, Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
@@ -250,9 +236,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     @Override
-    protected @NotNull ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand,
-                                                                ItemStack held, Direction gridSide,
-                                                                BlockHitResult hitResult) {
+    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand,
+                                                       ItemStack held, Direction gridSide,
+                                                       BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_RANDOM_TICK_MODE, isRandomTickMode));
@@ -264,24 +250,25 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     private static void generateWorldAcceleratorBlacklist() {
-        if (!gatheredClasses) {
-            for (String name : ConfigHolder.INSTANCE.machines.worldAcceleratorBlacklist) {
-                if (!blacklistedClasses.containsKey(name)) {
-                    try {
-                        blacklistedClasses.put(name, Class.forName(name));
-                    } catch (ClassNotFoundException ignored) {
-                        GTCEu.LOGGER.warn("Could not find class {} for World Accelerator Blacklist!", name);
-                    }
-                }
-            }
-
-            for (String className : blockEntityClassNamesBlackList) {
-                try {
-                    blacklistedClasses.put(className, Class.forName(className));
-                } catch (ClassNotFoundException ignored) {}
-            }
-
-            gatheredClasses = true;
+        if (gatheredClasses) {
+            return;
         }
+        for (ResourceLocation id : blockEntityTypeBlackList) {
+            BlockEntityType<?> type = BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id);
+            if (type == null) continue;
+            blacklistedTypes.add(type);
+        }
+
+        for (ResourceLocation id : ConfigHolder.INSTANCE.machines.worldAcceleratorBlacklist) {
+            BlockEntityType<?> type = BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id);
+            if (blacklistedTypes.contains(type)) continue;
+            if (type == null) {
+                GTCEu.LOGGER.warn("Could not find block entity type {} for World Accelerator Blacklist!", id);
+                continue;
+            }
+            blacklistedTypes.add(type);
+        }
+
+        gatheredClasses = true;
     }
 }
