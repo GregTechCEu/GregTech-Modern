@@ -64,7 +64,7 @@ public class ProspectingTexture<T> extends AbstractTexture {
         this.darkMode = darkMode;
         this.chunkRadius = chunkRadius;
         this.mode = mode;
-        //noinspection unchecked
+        // noinspection unchecked
         this.data = (T[][][]) Array.newInstance(mode.getItemClass(), (chunkRadius * 2 - 1) * mode.cellSize,
                 (chunkRadius * 2 - 1) * mode.cellSize, 0);
         this.imageWidth = (chunkRadius * 2 - 1) * 16;

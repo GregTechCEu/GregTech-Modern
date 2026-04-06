@@ -35,6 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.List;
@@ -79,10 +80,9 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
         WidgetGroup group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height)
                 .setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(this.itemList = new DraggableScrollableWidgetGroup(4, 28,
-                        group.getSize().width - 8, group.getSize().height - 32)
+                group.getSize().width - 8, group.getSize().height - 32)
                 .setYScrollBarWidth(2)
-                .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
-        );
+                .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
         group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
         addWidget(group);
         addNewItem("[all]", "all resources", IGuiTexture.EMPTY, -1);
@@ -105,8 +105,7 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
                 buffer.readVarInt(), buffer.readVarInt(),
                 buffer.readVarInt(), buffer.readVarInt(),
                 gui.entityPlayer.getVisualRotationYInDegrees(),
-                mode, chunkRadius, darkMode
-        );
+                mode, chunkRadius, darkMode);
     }
 
     public void setDarkMode(boolean darkMode) {
@@ -220,8 +219,7 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
             GTClientCache.instance.addFluid(
                     gui.entityPlayer.level().dimension(),
                     packet.chunkX, packet.chunkZ,
-                    (ProspectorMode.FluidInfo) packet.data[0][0][0]
-            );
+                    (ProspectorMode.FluidInfo) packet.data[0][0][0]);
         }
     }
 
