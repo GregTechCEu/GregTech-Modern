@@ -68,7 +68,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
-    public List<GTRecipe> lastFailedMatches;
+    public @Nullable List<GTRecipe> lastFailedMatches;
 
     @Getter
     @Persisted
@@ -354,10 +354,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         recipeDirty = false;
     }
 
-    protected void handleSearchingRecipes(@NotNull Iterator<GTRecipe> matches) {
+    protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
         while (matches.hasNext()) {
             GTRecipe match = matches.next();
-            if (match == null) continue;
 
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
