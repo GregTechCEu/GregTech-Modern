@@ -982,7 +982,8 @@ public class GTPlaceholders {
         PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
 
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.pos() == null) throw new NoTargetException();
                 BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
                 if (blockEntity == null) return MultiLineComponent.empty();
