@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -86,7 +86,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var mode = getMode(entityPlayer.getItemInHand(InteractionHand.MAIN_HAND));
+        var mode = getMode(holder.getHeld());
         var map = new ProspectingMapWidget(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
         return new ModularUI(332, 200, holder, entityPlayer)
                 .background(GuiTextures.BACKGROUND)

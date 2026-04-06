@@ -49,7 +49,7 @@ public final class AddonFinder {
         for (IModInfo modInfo : allMods) {
             ModFileScanData scanData = modInfo.getOwningFile().getFile().getScanResult();
             scanData.getAnnotatedBy(GTAddon.class, ElementType.TYPE)
-                    .filter(data -> data.annotationData().get("value").equals(modInfo.getModId()))
+                    .filter(data -> Objects.equals(data.annotationData().get("value"), modInfo.getModId()))
                     .map(ModFileScanData.AnnotationData::memberName)
                     .forEach(className -> addonClassNames.put(modInfo.getModId(), className));
         }

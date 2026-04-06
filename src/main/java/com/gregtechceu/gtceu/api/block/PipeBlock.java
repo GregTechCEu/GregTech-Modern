@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -12,17 +13,15 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,27 +60,39 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
-        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends AppearanceBlock
-                               implements EntityBlock, IBlockRendererProvider, SimpleWaterloggedBlock {
+        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
+                               implements EntityBlock, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
+
+    protected final Map<Direction, VoxelShape> shapes = new IdentityHashMap<>();
 
     public PipeBlock(Properties properties, PipeType pipeType) {
         super(properties);
         this.pipeType = pipeType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
+
+        float min = (16 - pipeType.getThickness() * 16) / 2f;
+        float max = min + pipeType.getThickness() * 16;
+        shapes.put(null, Block.box(min, min, min, max, max, max));
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            var coords = GTMath.getCoordinates(dir, min, max);
+            Vector3f minCoord = coords.getFirst();
+            Vector3f maxCoord = coords.getSecond();
+            shapes.put(dir, Block.box(minCoord.x, minCoord.y, minCoord.z, maxCoord.x, maxCoord.y, maxCoord.z));
+        }
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(BlockStateProperties.WATERLOGGED));
+        super.createBlockStateDefinition(builder);
+        builder.add(BlockStateProperties.WATERLOGGED);
     }
 
     @Override
@@ -124,11 +135,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
      */
     public abstract NodeDataType getFallbackType();
 
-    @Nullable
-    @Override
-    public abstract PipeBlockRenderer getRenderer(BlockState state);
-
-    protected abstract PipeModel getPipeModel();
+    public abstract PipeModel createPipeModel(GTBlockstateProvider provider);
 
     public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
                                        IPipeNode<PipeType, NodeDataType> pipeTile) {
@@ -385,43 +392,57 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
-        var pipeNode = getPipeTile(pLevel, pPos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var pipeNode = getPipeTile(level, pos);
         var connections = 0;
-        if (pipeNode != null) {
-            if (!pipeNode.getFrameMaterial().isNull()) {
-                return Shapes.block();
-            }
-            connections = pipeNode.getVisualConnections();
-            VoxelShape shape = getPipeModel().getShapes(connections);
-            shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
+        if (pipeNode == null) {
+            return getShapes(connections);
+        }
+        if (!pipeNode.getFrameMaterial().isNull()) {
+            return Shapes.block();
+        }
+        connections = pipeNode.getVisualConnections();
+        VoxelShape shape = getShapes(connections);
+        shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
 
-            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
-                var coverable = pipeNode.getCoverContainer();
-                var held = player.getMainHandItem();
-                Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
-                PipeBlockEntity<?, ?> pipeBlockEntity = null;
-                BlockEntity tile = pLevel.getBlockEntity(pPos);
-                if (tile instanceof PipeBlockEntity<?, ?> pipeTile) {
-                    types = Set.of(pipeTile.getPipeTuneTool());
-                    pipeBlockEntity = pipeTile;
-                }
-
-                // slightly cleaner this way, I hope?
-                boolean hasCover = CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
-                        coverDef -> ICoverable.canPlaceCover(coverDef, coverable));
-                boolean holdingSamePipe = held.getItem() instanceof BlockItem blockItem &&
-                        blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
-                        pipeBlock.pipeType.type().equals(pipeType.type());
-                boolean hasTool = types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is));
-                boolean hasAbility = pipeBlockEntity != null && pipeBlockEntity.hasCorrectAction(held);
-                if (hasCover || holdingSamePipe || hasTool || hasAbility) {
-                    return Shapes.block();
-                }
-            }
+        if (!(context instanceof EntityCollisionContext entityCtx) ||
+                !(entityCtx.getEntity() instanceof Player player)) {
             return shape;
         }
-        return getPipeModel().getShapes(connections);
+        ICoverable coverable = pipeNode.getCoverContainer();
+        ItemStack held = player.getMainHandItem();
+        Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
+        PipeBlockEntity<?, ?> pipeBlockEntity = null;
+        if (pipeNode instanceof PipeBlockEntity<?, ?> pipe) {
+            types = Set.of(pipe.getPipeTuneTool());
+            pipeBlockEntity = pipe;
+        }
+
+        // spotless:off
+        // check all cases where the pipe tune grid should render
+        // slightly cleaner this way (than the massive if statement that was here before, that is)
+        if (player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) {
+            // crouched with empty hand and block has a cover
+            return Shapes.block();
+        } else if (pipeBlockEntity != null && pipeBlockEntity.hasCorrectAction(held)) {
+            // has a tool that can configure this pipe's connections
+            return Shapes.block();
+        } else if (CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
+                coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
+            // has a placeable cover
+            return Shapes.block();
+        } else if (held.getItem() instanceof BlockItem blockItem &&
+                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
+                pipeBlock.pipeType.type().equals(pipeType.type())) {
+            // holding the same kind of pipe
+            return Shapes.block();
+        } else if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is))) {
+            // has a correctly tagged tool without the proper tool action
+            // basically a fallback for the 2nd check in this chain
+            return Shapes.block();
+        }
+        // spotless:on
+        return shape;
     }
 
     @Nullable
@@ -441,15 +462,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         @Nullable BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var pipe = getPipeTile(level, pos);
         if (pipe != null) {
             var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState,
                     sourcePos);
             if (appearance != null) return appearance;
         }
-        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        return super.getAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
     @Override
@@ -467,5 +488,16 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             }
         }
         return drops;
+    }
+
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WRENCH;
+    }
+
+    public VoxelShape getShapes(int connections) {
+        return this.shapes.entrySet().stream()
+                .filter(entry -> entry.getKey() == null || PipeBlockEntity.isConnected(connections, entry.getKey()))
+                .map(Map.Entry::getValue)
+                .reduce(Shapes.empty(), Shapes::or);
     }
 }

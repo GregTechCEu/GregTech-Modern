@@ -10,12 +10,12 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -146,7 +146,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
         while (minMultiplier != maxMultiplier) {
             GTRecipe copy = modifyOutputs(recipe, ContentModifier.multiplier(multiplier));
-            boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE);
+            boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE, getVoidingMode());
             int[] bin = ParallelLogic.adjustMultiplier(filled, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
@@ -161,7 +161,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 recipe.outputChanceLogics,
                 recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
                 recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.recipeCategory);
+                recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {
@@ -213,7 +213,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 if (!result.isSuccess()) return result;
             }
 
-            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE)) {
+            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, machine.getVoidingMode())) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
                         .append(": ")
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
@@ -256,7 +256,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
             }
 
-            if (applyFluidOutputs(recipe, FluidAction.EXECUTE)) {
+            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {
                 workingRecipe = null;
                 return ActionResult.SUCCESS;
             }
@@ -266,7 +266,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
         }
 
-        private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action) {
+        private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action, VoidingMode voidMode) {
             var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP)
                     .stream()
                     .map(Content::getContent)
@@ -292,7 +292,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 int filled = (handler instanceof NotifiableFluidTank nft) ?
                         nft.fillInternal(fluid, action) :
                         handler.fill(fluid, action);
-                if (filled != fluid.getAmount()) valid = false;
+                if (filled != fluid.getAmount() && !voidMode.canVoid(FluidRecipeCapability.CAP)) valid = false;
                 if (action.simulate() && !valid) break;
             }
             return valid;

@@ -2,15 +2,13 @@ package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
-    public static final MapCodec<EUToStartCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
-                    .apply(instance, EUToStartCondition::new));
-    public static final EUToStartCondition INSTANCE = new EUToStartCondition();
+    // spotless:off
+    public static final MapCodec<EUToStartCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart)
+    ).apply(instance, EUToStartCondition::new));
+    // spotless:on
 
     private long euToStart;
 
@@ -54,28 +52,7 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public EUToStartCondition createTemplate() {
         return new EUToStartCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("euToStart", euToStart);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        euToStart = buf.readLong();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeLong(euToStart);
     }
 }

@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -305,6 +305,15 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         }
     }
 
+    /// //////////////////////////////////
+    // ****** RECIPE LOGIC *******//
+    /// //////////////////////////////////
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return GTValues.V[this.tier];
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -328,6 +337,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     private IFancyConfigurator createAutoOutputFluidConfigurator() {
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON,
+                "gtceu.gui.fluid_auto_output",
                 this::isAutoOutputFluids,
                 (cd, nextState) -> this.setAutoOutputFluids(nextState));
     }
@@ -335,14 +345,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     private IFancyConfigurator createAutoOutputItemConfigurator() {
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON,
+                "gtceu.gui.item_auto_output",
                 this::isAutoOutputItems,
                 (cd, nextState) -> this.setAutoOutputItems(nextState));
     }
 
     private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture,
+                                                            String tooltipBaseLangKey,
                                                             BooleanSupplier stateSupplier,
                                                             BiConsumer<ClickData, Boolean> onToggle) {
-        return new IFancyConfiguratorButton.Toggle(
+        var toggle = new IFancyConfiguratorButton.Toggle(
                 new GuiTextureGroup(
                         GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                         modesButtonTexture.getSubTexture(0, 1 / 3f, 1, 1 / 3f)),
@@ -351,6 +363,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                         modesButtonTexture.getSubTexture(0, 2 / 3f, 1, 1 / 3f)),
                 stateSupplier,
                 onToggle);
+
+        toggle.setTooltipsSupplier(enabled -> {
+            var key = tooltipBaseLangKey + '.' + (enabled ? "enabled" : "disabled");
+            return List.of(Component.translatable(key));
+        });
+
+        return toggle;
     }
 
     @SuppressWarnings("UnstableApiUsage")

@@ -1,20 +1,23 @@
 [versions]
 minecraft = "1.21.1"
-neoForge = "21.1.147"
+neoForge = "21.1.215"
 loader = "4"
 parchment = "2024.11.17" # https://parchmentmc.org/docs/getting-started
 shadow = "8.3.5"
-spotless = "7.0.4"
-modDevGradle = "2.0.86"
+spotless = "8.1.0"
+modDevGradle = "2.0.119"
 lombok = "8.14"
 jetbrains-annotations = "26.0.1"
-renderNurse = "0.0.12"
+renderNurse = "0.0.14"
+mixin = "0.8.7"
 
 [libraries]
 minecraft               = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 neoForge                = { module = "net.neoforged:neoforge", version.ref = "neoForge" }
+testframework           = { module = "net.neoforged:testframework", version.ref = "neoForge" }
 jetbrains-annotations   = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 renderNurse             = { module = "net.neoforged:render-nurse", version.ref = "renderNurse" }
+mixin                   = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 
 [plugins]
 modDevGradle            = { id = "net.neoforged.moddev", version.ref = "modDevGradle" }

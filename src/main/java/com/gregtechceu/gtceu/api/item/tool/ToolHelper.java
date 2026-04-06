@@ -4,30 +4,31 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTEnchantmentProviders;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.enchantment.GTEnchantmentProviders;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTItemAbilities;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 
@@ -105,7 +106,7 @@ public class ToolHelper {
 
     /**
      * Registers the tool against a crafting symbol, this is used in
-     * {@link com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper}
+     * {@link VanillaRecipeHelper}
      */
     public static void registerToolSymbol(char symbol, GTToolType tool) {
         symbols.put(symbol, tool);
@@ -189,6 +190,9 @@ public class ToolHelper {
                     }
                     if (user != null) {
                         user.breakItem(stack);
+                        user.onEquippedItemBroken(stack.getItem(),
+                                LivingEntity.getSlotForHand(
+                                        user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
                     }
                     stack.shrink(1);
                 }
@@ -462,20 +466,28 @@ public class ToolHelper {
         return removed;
     }
 
+    /**
+     * Calculates the harvestable blocks, used for tool AoE harvesting
+     *
+     * @param player the player clicking the item
+     * @param stack  the item that was used
+     *
+     * @return listOfBlockPositions or empty list if none
+     */
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsComponent(stack)) return List.of();
+        if (!hasBehaviorsComponent(stack)) return Collections.emptyList();
 
         var aoeDefinition = getAoEDefinition(stack);
         if (aoeDefinition.isZero()) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        UseOnContext context = new UseOnContext(player, player.getUsedItemHand(), hitResult);
+        UseOnContext context = new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
 
-    public static BlockHitResult getPlayerDefaultRaytrace(@NotNull Player player) {
+    public static BlockHitResult getPlayerDefaultRaytrace(Player player) {
         return entityPickBlock(player, player.blockInteractionRange(), 1.0f, false);
     }
 
@@ -498,8 +510,7 @@ public class ToolHelper {
      * @param level  the level in which the click happened
      * @param pos    the position that was clicked
      */
-    public static void onActionDone(@Nullable Player player, @NotNull ItemStack stack,
-                                    @NotNull Level level, @NotNull Vec3 pos) {
+    public static void onActionDone(@Nullable Player player, ItemStack stack, Level level, Vec3 pos) {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
@@ -508,15 +519,24 @@ public class ToolHelper {
         }
     }
 
-    @NotNull
     public static Set<GTToolType> getToolTypes(final ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {
             return gtTool.getToolClasses(tool);
         }
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) types.add(toolType);
-            if (toolType.defaultAbilities.stream().anyMatch(tool::canPerformAction)) types.add(toolType);
+            if (toolType.matchTags.stream().anyMatch(tool::is)) types.add(toolType);
+        }
+        return types;
+    }
+
+    public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
+        Set<GTToolType> types = new HashSet<>();
+        if (tool.getItem() instanceof IGTTool gtTool) {
+            return gtTool.getToolClasses(tool);
+        }
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            if (toolType.craftingTags.stream().anyMatch(tool::is)) types.add(toolType);
         }
         GTItemAbilities.DEFAULT_TYPE_ASSOCIATIONS.forEach((action, type) -> {
             if (tool.canPerformAction(action)) {
@@ -531,7 +551,7 @@ public class ToolHelper {
      */
     public static boolean isTool(ItemStack tool, GTToolType... toolClasses) {
         for (GTToolType toolType : toolClasses) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) return true;
+            if (toolType.matchTags.stream().anyMatch(tool::is)) return true;
         }
 
         if (tool.getItem() instanceof IGTTool igtTool) {

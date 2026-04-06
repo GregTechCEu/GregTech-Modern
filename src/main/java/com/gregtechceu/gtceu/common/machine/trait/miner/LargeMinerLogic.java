@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.trait.miner;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -29,6 +29,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LargeMinerLogic extends MinerLogic {
 
@@ -149,7 +150,7 @@ public class LargeMinerLogic extends MinerLogic {
         fortunePick.enchant(fortuneHolder, getDropCountMultiplier());
         LootParams params = builder.withParameter(LootContextParams.TOOL, fortunePick)
                 .create(LootContextParamSets.BLOCK);
-        LootContext context = new LootContext.Builder(params).create(null);
+        LootContext context = new LootContext.Builder(params).create(Optional.empty());
 
         for (ItemStack outputStack : outputs) {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {

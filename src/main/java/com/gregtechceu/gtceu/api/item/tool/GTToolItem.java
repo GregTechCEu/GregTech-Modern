@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 
@@ -40,9 +41,9 @@ public class GTToolItem extends TieredItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
-                         Properties properties) {
-        super(tier, properties);
+    public GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
+                      Properties properties) {
+        super(tier, material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() : properties);
         this.toolType = toolType;
         this.material = material;
         this.electricTier = toolType.electricTier;

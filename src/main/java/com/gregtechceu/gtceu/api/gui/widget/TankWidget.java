@@ -623,7 +623,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                                                         FluidStack fluidStack, Position pos, Size size) {
             T ingredient = helper.create(fluidStack.getFluidHolder(), fluidStack.getAmount(),
                     fluidStack.getComponentsPatch());
-            return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient)
+            return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient, false)
                     .map(typedIngredient -> new ClickableIngredient<>(typedIngredient, pos.x, pos.y, size.width,
                             size.height))
                     .orElse(null);

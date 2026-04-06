@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -137,10 +137,10 @@ public class SimpleItemFilter implements ItemFilter {
         int totalCount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
-                totalCount += candidate.getCount();
-            } else if (ItemStack.isSameItemSameComponents(candidate, itemStack)) {
-                totalCount += candidate.getCount();
+            if (ignoreNbt) {
+                if (ItemStack.isSameItem(candidate, itemStack)) totalCount += candidate.getCount();
+            } else {
+                if (ItemStack.isSameItemSameComponents(candidate, itemStack)) totalCount += candidate.getCount();
             }
         }
 

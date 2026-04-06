@@ -16,7 +16,6 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaFunction;
 import dev.latvian.mods.kubejs.recipe.special.KubeJSCraftingRecipe;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TinyMap;
@@ -52,10 +51,10 @@ public interface GTShapedRecipeSchema {
 
         // Adapted from KJS's ShapedRecipeSchema#ShapedKubeRecipe
         @Override
-        public void afterLoaded() {
-            super.afterLoaded();
-            var pattern = new ArrayList<>(getValue(PATTERN));
-            var key = getValue(KEY);
+        public void validate(RecipeValidationContext cx) {
+            // super.afterLoaded(stack);
+            var pattern = new ArrayList<>(cx.recipe().getValue(PATTERN));
+            var key = cx.recipe().getValue(KEY);
 
             if (pattern.isEmpty()) {
                 throw new KubeRuntimeException("Pattern is empty!");
@@ -90,7 +89,7 @@ public interface GTShapedRecipeSchema {
                 for (char c : pattern.get(i).toCharArray()) { // Inject tool symbol mappings
                     if (tools.contains(c) && !addedTools.contains(c)) {
                         var tool = ToolHelper.getToolFromSymbol(c);
-                        keyEntries.add(new TinyMap.Entry<>(c, Ingredient.of(tool.itemTags.getFirst())));
+                        keyEntries.add(new TinyMap.Entry<>(c, Ingredient.of(tool.craftingTags.get(0))));
                         addedTools.add(c);
                     }
                 }
@@ -120,9 +119,10 @@ public interface GTShapedRecipeSchema {
     // spotless:off
     KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("shaped"), ShapedKubeRecipe.class, ShapedKubeRecipe::new);
 
-    RecipeKey<ItemStack> RESULT = ItemStackComponent.STRICT_ITEM_STACK.outputKey("result");
-    RecipeKey<List<String>> PATTERN = StringGridComponent.STRING_GRID.otherKey("pattern");
-    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT.asPatternKey().inputKey("key");
+    RecipeKey<ItemStack> RESULT = ItemStackComponent.ITEM_STACK.outputKey("result");
+    RecipeKey<List<String>> PATTERN = ListRecipeComponent.create(StringComponent.STRING.instance(), false, false)
+            .otherKey("pattern");
+    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT.instance().asPatternKey().inputKey("key");
     RecipeKey<Boolean> MIRROR = BooleanComponent.BOOLEAN.otherKey(KubeJSCraftingRecipe.MIRROR_KEY).optional(true).exclude()
             .functionNames(List.of("kjsMirror"));
     RecipeKey<Boolean> SHRINK = BooleanComponent.BOOLEAN.otherKey("kubejs:shrink").optional(true).exclude()
@@ -137,6 +137,6 @@ public interface GTShapedRecipeSchema {
             .constructor(RESULT, PATTERN, KEY)
             .uniqueId(RESULT)
             .typeOverride(KubeJS.id("shaped"))
-            .function("noMirror", new RecipeSchemaFunction.SetFunction<>(MIRROR, false))
-            .function("noShrink", new RecipeSchemaFunction.SetFunction<>(SHRINK, false));
+            .setOpFunction("noMirror", MIRROR, false)
+            .setOpFunction("noShrink", SHRINK, false);
 }

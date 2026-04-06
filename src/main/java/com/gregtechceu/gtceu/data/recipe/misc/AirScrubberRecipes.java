@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.AIR_SCRUBBER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.AIR_SCRUBBER_RECIPES;
 
 public class AirScrubberRecipes {
 

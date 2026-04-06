@@ -40,4 +40,8 @@ public class GTCapability {
             .createSided(GTCEu.id("hazard_particle_container"), IHazardParticleContainer.class);
     public static final BlockCapability<IMonitorComponent, Direction> CAPABILITY_MONITOR_COMPONENT = BlockCapability
             .createSided(GTCEu.id("monitor_component"), IMonitorComponent.class);
+    public static final BlockCapability<ITurbineMachine, Direction> CAPABILITY_TURBINE_MACHINE = BlockCapability
+            .createSided(GTCEu.id("turbine_machine"), ITurbineMachine.class);
+    public static final BlockCapability<ICentralMonitor, Direction> CAPABILITY_CENTRAL_MONITOR = BlockCapability
+            .createSided(GTCEu.id("central_monitor"), ICentralMonitor.class);
 }

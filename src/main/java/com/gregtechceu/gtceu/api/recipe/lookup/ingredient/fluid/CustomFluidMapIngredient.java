@@ -48,13 +48,7 @@ public class CustomFluidMapIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    for (FluidStack stack : other.ingredient.getStacks()) {
-                        if (!this.ingredient.test(stack)) return false;
-                    }
-                    for (FluidStack stack : this.ingredient.getStacks()) {
-                        if (!other.ingredient.test(stack)) return false;
-                    }
-                    return true;
+                    return ingredient.equals(other.ingredient);
                 } else {
                     return this.ingredient.test(other.stack);
                 }
@@ -67,7 +61,7 @@ public class CustomFluidMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        return stack.getFluidHolder().hashCode() * 31;
+        return FluidStack.hashFluidAndComponents(stack);
     }
 
     @Override

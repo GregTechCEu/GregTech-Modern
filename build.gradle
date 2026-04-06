@@ -4,6 +4,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'jacoco'
     alias libs.plugins.modDevGradle
     //alias libs.plugins.shadow
     alias libs.plugins.spotless
@@ -32,7 +33,7 @@ sourceSets {
     }
 
     test {
-        compileClasspath += main.output
+        compileClasspath += main.output + main.compileClasspath
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 
@@ -52,6 +53,8 @@ configurations {
     clientRuntimeOnly.canBeResolved = false
     extraRuntimeOnly.canBeResolved = false
     clientExtraRuntimeOnly.canBeResolved = false
+    testImplementation.canBeResolved = false
+    testRuntimeOnly.canBeResolved = false
 
     runtimeClasspath.extendsFrom localRuntime
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
@@ -70,6 +73,7 @@ apply from: "$rootDir/dependencies.gradle"
 apply from: "$rootDir/gradle/scripts/resources.gradle"
 apply from: "$rootDir/gradle/scripts/publishing.gradle"
 apply from: "$rootDir/gradle/scripts/spotless.gradle"
+apply from: "$rootDir/gradle/scripts/docs.gradle"
 
 
 tasks.withType(JavaCompile).configureEach {
@@ -80,4 +84,35 @@ tasks.withType(JavaCompile).configureEach {
 
 lombok {
     version = "1.18.38"
+}
+
+jacoco {
+    applyTo runGameTestServer
+}
+
+jacocoTestReport {
+    doFirst {
+        try {
+            runGameTestServer.exec()
+        } catch (RuntimeException ignored) {}
+    }
+    doLast {
+        println "Coverage report location:"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('index.html')).get()}"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml')).get()}"
+    }
+    executionData runGameTestServer
+    sourceSets sourceSets.test
+    reports {
+        csv.required = false
+        xml.required = true
+        html.outputLocation = layout.buildDirectory.dir('coverage')
+        xml.outputLocation = layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml'))
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: '**/client/**')
+            fileTree(dir: it, exclude: '**/mixins/**')
+        }))
+    }
 }

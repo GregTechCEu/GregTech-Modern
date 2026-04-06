@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
@@ -194,6 +194,14 @@ public class RecipeHandlerList {
             }
         }
         return copy;
+    }
+
+    public List<IRecipeHandler<?>> getHandlersFlat() {
+        List<IRecipeHandler<?>> handlerList = new ArrayList<>();
+        for (var handlerEntry : getHandlerMap().entrySet()) {
+            handlerList.addAll(handlerEntry.getValue());
+        }
+        return handlerList;
     }
 
     private record Subscription(List<ISubscription> subs) implements ISubscription {

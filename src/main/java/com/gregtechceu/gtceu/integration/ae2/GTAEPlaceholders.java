@@ -12,8 +12,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -69,8 +69,10 @@ public class GTAEPlaceholders {
     private static long countItems(String id, IGrid grid) {
         Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(id));
         if (item == Items.AIR) return 0;
+
         GenericStack stack = GenericStack.fromItemStack(new ItemStack(item, 1));
         if (stack == null) return 0;
+
         return grid.getStorageService().getInventory().getAvailableStacks().get(stack.what());
     }
 
@@ -98,8 +100,10 @@ public class GTAEPlaceholders {
         }
         Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(id));
         if (fluid == Fluids.EMPTY) return 0;
+
         GenericStack stack = GenericStack.fromFluidStack(new FluidStack(fluid, 1));
         if (stack == null) return 0;
+
         return grid.getStorageService().getInventory().getAvailableStacks().get(stack.what());
     }
 
@@ -119,9 +123,8 @@ public class GTAEPlaceholders {
                 IGrid grid = getGrid(ctx);
                 if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, grid));
                 if (args.size() == 1)
-                    return MultiLineComponent
-                            .literal(countItems(GTStringUtils.componentsToString(args.getFirst()), grid));
-                if (GTStringUtils.equals(args.getFirst(), "filter")) {
+                    return MultiLineComponent.literal(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
+                if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
                     try {
                         PlaceholderUtils.checkRange("slot index", 1, 8, slot);
@@ -143,8 +146,7 @@ public class GTAEPlaceholders {
                 IGrid grid = getGrid(ctx);
                 if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, grid));
                 if (args.size() == 1) {
-                    return MultiLineComponent
-                            .literal(countFluids(GTStringUtils.componentsToString(args.getFirst()), grid));
+                    return MultiLineComponent.literal(countFluids(GTStringUtils.componentsToString(args.get(0)), grid));
                 }
                 throw new WrongNumberOfArgsException(1, args.size());
             }
@@ -186,15 +188,15 @@ public class GTAEPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 IGrid grid = getGrid(ctx);
                 PlaceholderUtils.checkArgs(args, 1);
-                if (GTStringUtils.equals(args.getFirst(), "power")) {
+                if (GTStringUtils.equals(args.get(0), "power")) {
                     return MultiLineComponent.literal(grid.getSpatialService().requiredPower());
-                } else if (GTStringUtils.equals(args.getFirst(), "efficiency")) {
+                } else if (GTStringUtils.equals(args.get(0), "efficiency")) {
                     return MultiLineComponent.literal(grid.getSpatialService().currentEfficiency());
-                } else if (GTStringUtils.equals(args.getFirst(), "sizeX")) {
+                } else if (GTStringUtils.equals(args.get(0), "sizeX")) {
                     return MultiLineComponent.literal(getSpatialSize(grid).x);
-                } else if (GTStringUtils.equals(args.getFirst(), "sizeY")) {
+                } else if (GTStringUtils.equals(args.get(0), "sizeY")) {
                     return MultiLineComponent.literal(getSpatialSize(grid).y);
-                } else if (GTStringUtils.equals(args.getFirst(), "sizeZ")) {
+                } else if (GTStringUtils.equals(args.get(0), "sizeZ")) {
                     return MultiLineComponent.literal(getSpatialSize(grid).z);
                 } else throw new InvalidArgsException();
             }
@@ -207,7 +209,7 @@ public class GTAEPlaceholders {
                 IGrid grid = getGrid(ctx);
                 PlaceholderUtils.checkArgs(args, 1, true);
                 ICraftingService crafting = grid.getCraftingService();
-                if (GTStringUtils.equals(args.getFirst(), "get")) {
+                if (GTStringUtils.equals(args.get(0), "get")) {
                     if (GTStringUtils.equals(args.get(1), "amount"))
                         return MultiLineComponent.literal(crafting.getCpus().size());
                     int index = PlaceholderUtils.toInt(args.get(1));

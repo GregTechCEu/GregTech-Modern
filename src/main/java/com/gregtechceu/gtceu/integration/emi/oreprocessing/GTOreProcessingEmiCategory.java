@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.integration.emi.GTEMIPlugin;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -18,8 +18,8 @@ import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
 
@@ -43,7 +43,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 MACERATOR_RECIPES, ORE_WASHER_RECIPES, THERMAL_CENTRIFUGE_RECIPES, CENTRIFUGE_RECIPES,
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
-        for (MachineDefinition machine : GTRegistries.MACHINES) {
+        for (MachineDefinition machine : GTEMIPlugin.SORTED_MACHINES) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 for (GTRecipeType validType : validTypes) {
                     if (type == validType && !registeredMachines.contains(machine)) {

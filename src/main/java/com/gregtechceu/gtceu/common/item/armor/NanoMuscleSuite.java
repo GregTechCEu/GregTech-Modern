@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -49,7 +49,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public void onArmorTick(Level level, Player player, ItemStack stack) {
+    public void onArmorTick(Level world, Player player, ItemStack stack) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         if (item == null) {
             return;
@@ -60,21 +60,22 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
         if (type == ArmorItem.Type.HELMET) {
             boolean nightVision = data.nightVision();
-            if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+            if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    if (world.isClientSide())
+                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                 } else {
-                    player.displayClientMessage(Component
+                    if (world.isClientSide()) player.displayClientMessage(Component
                             .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
             if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
-                float tickRate = level.tickRateManager().tickrate();
+                float tickRate = world.tickRateManager().tickrate();
                 if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET * tickRate) {
                     nightVisionTimer = Mth.floor(ArmorUtils.NIGHTVISION_DURATION * tickRate);
                     player.addEffect(

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.core.particles.ParticleOptions;
@@ -51,7 +51,12 @@ public interface IJetpack {
         return 0.0D;
     }
 
-    default @Nullable ParticleOptions getParticle() {
+    default boolean removeMiningSpeedPenalty() {
+        return true;
+    }
+
+    @Nullable
+    default ParticleOptions getParticle() {
         return ParticleTypes.LARGE_SMOKE;
     }
 

@@ -19,12 +19,13 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, CentralMonitorRender> {
 
     // spotless:off
     public static final Codec<CentralMonitorRender> CODEC = Codec.unit(CentralMonitorRender::new);
-    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<>(CODEC);
+    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<CentralMonitorMachine, CentralMonitorRender>(MapCodec.unit(CentralMonitorRender::new));
     // spotless:on
     private static final float SCREEN_OFFSET_Z = 0.01f;
 
@@ -54,7 +55,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                         continue;
                     }
                     poseStack.pushPose();
-                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group)
+                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0))
                             .render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                     poseStack.popPose();
                 }

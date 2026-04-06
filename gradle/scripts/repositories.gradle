@@ -1,6 +1,14 @@
 repositories {
     mavenLocal()
     mavenCentral()
+    // force gradle to download FastUtil & LWJGL from the central maven so we can get source artifacts
+    exclusiveContent { // Force
+        forRepository { mavenCentral() }
+        filter {
+            includeGroup("it.unimi.dsi")
+            includeGroup("org.lwjgl")
+        }
+    }
 
     maven { // JEI
         name = "Jared's Maven"
@@ -14,12 +22,13 @@ repositories {
 
     maven { // LDLib, Shimmer
         name = "FirstDarkDev Maven"
-        url = "https://maven.firstdarkdev.xyz/snapshots/"
+        url = "https://maven.firstdark.dev/snapshots"
     }
 
-
     exclusiveContent { // Create, Ponder, Flywheel
-        forRepository { maven { url = "https://maven.createmod.net" } }
+        forRepository {
+            maven { url = "https://maven.createmod.net" }
+        }
         filter {
             includeGroup("net.createmod.ponder")
             includeGroup("com.simibubi.create")
@@ -27,7 +36,7 @@ repositories {
         }
     }
     exclusiveContent { // Configuration
-        forRepository { maven { url = "https://api.repsy.io/mvn/toma/public" } }
+        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public" } }
         filter { includeGroup("dev.toma.configuration")}
     }
     exclusiveContent { // KubeJS and Rhino
@@ -40,10 +49,6 @@ repositories {
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases/" } }
         filter { includeGroup("dev.ftb.mods") }
-    }
-    exclusiveContent { // TOP
-        forRepository { maven { url = "https://maven.k-4u.nl/" } }
-        filter { includeGroup('mcjty.theoneprobe') }
     }
     exclusiveContent { // JourneyMap API
         forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }

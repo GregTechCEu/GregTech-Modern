@@ -50,17 +50,12 @@ public class SPacketImageResponse implements CustomPacketPayload {
     }
 
     public void execute(IPayloadContext context) {
-        if (imagePart == null) {
+        if (this.imagePart == null) {
             return;
         }
         try {
-            ClientImageCache.receiveImagePart(url, imagePart, index, totalSize);
+            ClientImageCache.receiveImagePart(this.url, this.imagePart, this.index, this.totalSize);
         } catch (IOException ignored) {}
-    }
-
-    @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
     }
 
     public static void sendImage(String url, byte[] imageBytes, IPayloadContext context) throws IOException {
@@ -82,5 +77,10 @@ public class SPacketImageResponse implements CustomPacketPayload {
                 arrayIndex += MAX_BYTES_PER_PACKET;
             }
         }
+    }
+
+    @Override
+    public @NotNull Type<SPacketImageResponse> type() {
+        return TYPE;
     }
 }

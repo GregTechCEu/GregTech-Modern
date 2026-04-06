@@ -7,12 +7,22 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.LogicalSidedProvider;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import org.jetbrains.annotations.NotNull;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import lombok.AccessLevel;
@@ -50,14 +60,19 @@ public class SCPacketMonitorGroupNBTChange implements CustomPacketPayload {
     public void execute(IPayloadContext context) {
         Level level = context.player().level();
 
-        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        MetaMachine machine = MetaMachine.getMachine(level, this.pos);
         if (machine instanceof CentralMonitorMachine centralMonitor) {
-            centralMonitor.getMonitorGroups().get(monitorGroupId).getItemStackHandler().setStackInSlot(0, stack);
+            IItemHandlerModifiable itemHandler = centralMonitor.getMonitorGroups()
+                    .get(this.monitorGroupId)
+                    .getItemStackHandler();
+            if (ItemStack.isSameItem(itemHandler.getStackInSlot(0), this.stack)) {
+                itemHandler.setStackInSlot(0, this.stack);
+            }
         }
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<SCPacketMonitorGroupNBTChange> type() {
         return TYPE;
     }
 }

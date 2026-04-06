@@ -53,4 +53,9 @@ public interface IHPCAComponentHatch {
      * The icon for this component in the HPCA's UI. Should be a 13x13 px sprite.
      */
     ResourceTexture getComponentIcon();
+
+    /**
+     * Sets the component to be active for the sake of model overlays.
+     */
+    void setActive(boolean active);
 }

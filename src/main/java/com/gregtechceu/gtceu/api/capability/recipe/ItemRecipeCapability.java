@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -13,18 +14,14 @@ import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
-import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
-import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
-import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
-import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
@@ -39,7 +36,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,6 +48,7 @@ import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -75,21 +72,20 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @Override
     public SizedIngredient copyWithModifier(SizedIngredient content, ContentModifier modifier) {
-        if (content.getContainedCustom() instanceof IntProviderIngredient intProviderIngredient) {
-            var newIntProvider = new FlooredInt(
-                    new AddedFloat(
-                            new MultipliedFloat(
-                                    new CastedFloat(intProviderIngredient.getCountProvider()),
-                                    ConstantFloat.of((float) modifier.multiplier())),
-                            ConstantFloat.of((float) modifier.addition())));
-            var newIngredient = IntProviderIngredient.of(intProviderIngredient.getInner(), newIntProvider);
-            return new SizedIngredient(newIngredient, 1);
+        if (content.getContainedCustom() instanceof IntProviderIngredient provider) {
+            return new SizedIngredient(IntProviderIngredient.of(provider.getInner(),
+                    ModifiedIntProvider.of(provider.getCountProvider(), modifier)).toVanilla(), content.count());
         }
         return content.copyWithCount(modifier.apply(content.count()));
     }
 
+    public IntProviderIngredient copyWithModifier(IntProviderIngredient content, ContentModifier modifier) {
+        return IntProviderIngredient.of(content.getInner(),
+                ModifiedIntProvider.of(content.getCountProvider(), modifier));
+    }
+
     @Override
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
             if (item instanceof SizedIngredient ingredient) {
@@ -101,7 +97,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                             break;
                         }
                     } else if (obj instanceof ItemStack stack) {
-                        if (ingredient.test(stack)) {
+                        if (ingredient.ingredient().test(stack)) {
                             isEqual = true;
                             break;
                         }
@@ -127,7 +123,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                             break;
                         }
                     } else if (obj instanceof ItemStack stack1) {
-                        if (ItemStack.isSameItem(stack, stack1)) {
+                        if (ItemStack.isSameItemSameComponents(stack, stack1)) {
                             isEqual = true;
                             break;
                         }
@@ -218,13 +214,14 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         if (inputs == null || inputs.isEmpty()) return limit;
 
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        List<Object2IntMap<ItemStack>> inventoryGroups = getInputContents(holder);
+        List<Object2LongMap<ItemStack>> inventoryGroups = getInputContents(holder);
         if (inventoryGroups.isEmpty()) return 0;
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
         // notConsumable ingredients are not counted towards the max ratio
-        var nonConsumables = new Object2IntOpenHashMap<SizedIngredient>();
-        var consumables = new Object2IntOpenHashMap<SizedIngredient>();
+
+        var nonConsumables = new Object2LongOpenHashMap<SizedIngredient>();
+        var consumables = new Object2LongOpenHashMap<SizedIngredient>();
         for (Content content : inputs) {
             SizedIngredient ing = of(content.content);
             if (ing.getContainedCustom() instanceof IntCircuitIngredient) continue;
@@ -234,8 +231,22 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 count = provider.getCountProvider().getMaxValue();
             else count = ing.count();
 
-            if (content.chance == 0) nonConsumables.addTo(ing, count);
-            else consumables.addTo(ing, count);
+            if (content.chance == 0) {
+                nonConsumables.addTo(ing, count);
+            } else {
+                boolean has = false;
+                for (var recipeIng : consumables.object2LongEntrySet()) {
+                    var stack = ing.getItems()[0];
+                    if (recipeIng.getKey().test(stack)) {
+                        recipeIng.setValue(recipeIng.getLongValue() + stack.getCount());
+                        has = true;
+                        break;
+                    }
+                }
+                if (!has) {
+                    consumables.addTo(ing, count);
+                }
+            }
         }
 
         // is this even possible
@@ -246,13 +257,13 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         for (var group : inventoryGroups) {
             // Check for enough NC in inventory group
             boolean satisfied = true;
-            for (var ncEntry : Object2IntMaps.fastIterable(nonConsumables)) {
+            for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
                 SizedIngredient ingredient = ncEntry.getKey();
-                int needed = ncEntry.getIntValue();
-                for (var stackEntry : Object2IntMaps.fastIterable(group)) {
-                    if (ingredient.test(stackEntry.getKey())) {
-                        int count = stackEntry.getIntValue();
-                        int lesser = Math.min(needed, count);
+                long needed = ncEntry.getLongValue();
+                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
+                    if (ingredient.ingredient().test(stackEntry.getKey())) {
+                        long count = stackEntry.getLongValue();
+                        long lesser = Math.min(needed, count);
                         count -= lesser;
                         needed -= lesser;
                         stackEntry.setValue(count);
@@ -271,21 +282,22 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
             int invMultiplier = Integer.MAX_VALUE;
             // Loop over all consumables
-            for (var cEntry : Object2IntMaps.fastIterable(consumables)) {
+
+            for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
                 SizedIngredient ingredient = cEntry.getKey();
-                final int needed = cEntry.getIntValue();
-                final int maxNeeded = needed * limit;
-                int available = 0;
+                final long needed = cEntry.getLongValue();
+                final long maxNeeded = needed * limit;
+                long available = 0;
                 // Search stacks in our inventory group, summing them up
-                for (var stackEntry : Object2IntMaps.fastIterable(group)) {
-                    if (ingredient.test(stackEntry.getKey())) {
-                        available += stackEntry.getIntValue();
+                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
+                    if (ingredient.ingredient().test(stackEntry.getKey())) {
+                        available += stackEntry.getLongValue();
                         // We can stop if we already have enough for max parallel
                         if (available >= maxNeeded) break;
                     }
                 }
                 // ratio will equal 0 if available < needed
-                int ratio = Math.min(limit, available / needed);
+                int ratio = GTMath.saturatedCast(Math.min(limit, available / needed));
                 invMultiplier = Math.min(invMultiplier, ratio);
                 // Not enough of this ingredient in this group -> skip inventory
                 if (ratio == 0) break;
@@ -298,7 +310,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         return maxMultiplier;
     }
 
-    private static List<Object2IntMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
+    private static List<Object2LongMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
@@ -313,11 +325,11 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
-        List<Object2IntMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
+        List<Object2LongMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-            Object2IntOpenCustomHashMap<ItemStack> distinctInv = new Object2IntOpenCustomHashMap<>(strat);
+            Object2LongOpenCustomHashMap<ItemStack> distinctInv = new Object2LongOpenCustomHashMap<>(strat);
 
             for (IRecipeHandler<?> handler : handlers) {
                 for (var content : handler.getContents()) {
@@ -334,7 +346,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
 
-            Object2IntOpenCustomHashMap<ItemStack> inventory = new Object2IntOpenCustomHashMap<>(strat);
+            Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
             for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
                 for (var handler : handlers) {
@@ -530,7 +542,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         ItemStackList stackList = new ItemStackList();
         boolean isIntProvider = inner.getCustomIngredient() instanceof IntProviderIngredient;
 
-        UnaryOperator<ItemStack> setCount = stack -> isIntProvider ? stack.copyWithCount(1) : stack;
+        UnaryOperator<ItemStack> setCount = (stack) -> isIntProvider ? stack.copyWithCount(1) : stack;
         Arrays.stream(inner.getItems())
                 .map(setCount)
                 .forEach(stackList::add);

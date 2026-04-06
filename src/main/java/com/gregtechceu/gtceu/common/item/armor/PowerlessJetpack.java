@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GradientUtil;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
@@ -72,11 +72,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         String messageKey = null;
         if (toggleTimer == 0) {
-            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
                 messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
                 data.enabled(jetpackEnabled);
-            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+            } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
                 messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
                 data.hover(hoverMode);
@@ -95,8 +95,14 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
-        data.burnTimer((short) burnTimer);
-        stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
+
+        if (!world.isClientSide) {
+            if (currentFuel.ingredient().hasNoFluids())
+                findNewRecipe(stack);
+
+            data.burnTimer((short) burnTimer);
+            stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
+        }
     }
 
     @Override
@@ -156,8 +162,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public boolean canUseEnergy(ItemStack stack, int amount) {
-        if (currentFuel.ingredient().hasNoFluids()) return false;
         if (burnTimer > 0) return true;
+        if (currentFuel.ingredient().hasNoFluids()) return false;
         var ret = FluidUtil.getFluidHandler(stack)
                 .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE))
                 .map(drained -> drained.getAmount() >= currentFuel.amount())

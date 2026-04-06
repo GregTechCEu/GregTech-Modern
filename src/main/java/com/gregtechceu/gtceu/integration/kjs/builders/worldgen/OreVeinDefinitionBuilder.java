@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.worldgen.*;
-import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -30,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
-public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
+public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
 
     private final InferredProperties inferredProperties = new InferredProperties();
 
@@ -42,7 +43,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     private int weight;
     private IWorldGenLayer layer = WorldGenLayers.STONE;
     @Setter
-    private Set<ResourceKey<Level>> dimensionFilter;
+    private Set<ResourceKey<Level>> dimensionFilter = Set.of();
     @Setter
     private HeightRangePlacement heightRange;
     @Setter
@@ -60,7 +61,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     private List<IndicatorGenerator> indicatorGenerators;
 
     public OreVeinDefinitionBuilder(ResourceLocation id) {
-        super(id);
+        super(GTResourceLocation.implicitAsGtceu(id));
     }
 
     @Tolerate
@@ -212,8 +213,8 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     // It's simpler than doing the exact same thing via a ton of nested calls.
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public OreVeinDefinition createObject() {
-        return new OreVeinDefinition(clusterSize, density, weight, layer,
+    public GTOreDefinition createObject() {
+        return new GTOreDefinition(clusterSize, density, weight, layer,
                 Set.copyOf(dimensionFilter), heightRange, discardChanceOnAirExposure,
                 biomes, biomeWeightModifier, veinGenerator, indicatorGenerators,
                 RegistryAccessContainer.current.access().lookupOrThrow(Registries.BIOME));

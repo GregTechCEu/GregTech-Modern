@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -47,6 +47,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
     private final EnumMap<Direction, List<Predicate<ItemStack>>> nextFilters = new EnumMap<>(Direction.class);
     private BlockPos sourcePipe;
     private Direction facingToHandler;
+    private boolean isRestricted = false;
 
     protected ItemNetWalker(ItemPipeNet world, BlockPos sourcePipe, int distance, List<ItemRoutePath> inventories,
                             ItemPipeProperties properties) {
@@ -86,6 +87,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
         }
         nextFilters.clear();
         ItemPipeProperties pipeProperties = pipeTile.getNodeData();
+        if (pipeTile.getPipeType().isRestrictive()) this.isRestricted = true;
         if (minProperties == null) {
             minProperties = pipeProperties;
         } else {
@@ -107,7 +109,8 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
             if (moreFilters != null && !moreFilters.isEmpty()) {
                 filters.addAll(moreFilters);
             }
-            inventories.add(new ItemRoutePath(pipeTile, faceToNeighbour, getWalkedBlocks(), minProperties, filters));
+            inventories.add(new ItemRoutePath(pipeTile, faceToNeighbour, getWalkedBlocks(), minProperties, isRestricted,
+                    filters));
         }
     }
 

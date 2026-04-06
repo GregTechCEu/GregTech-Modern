@@ -103,12 +103,20 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             if (!feToEu || maxReceive <= 0) return 0;
-            int received = Math.min(this.getMaxEnergyStored() - this.getEnergyStored(), maxReceive);
+            int received = (int) (Math.min(this.getMaxLongEnergyStored() - this.getLongEnergyStored(), maxReceive));
             received -= received % FeCompat.ratio(true); // avoid rounding issues
             if (!simulate) {
                 addEnergy(FeCompat.toEu(received, FeCompat.ratio(true)));
             }
             return received;
+        }
+
+        public long getMaxLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyCapacity(), FeCompat.ratio(feToEu));
+        }
+
+        public long getLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyStored(), FeCompat.ratio(feToEu));
         }
 
         @Override

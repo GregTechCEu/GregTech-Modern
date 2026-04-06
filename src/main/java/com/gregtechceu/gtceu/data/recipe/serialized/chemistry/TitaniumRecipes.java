@@ -3,9 +3,10 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class TitaniumRecipes {
 
@@ -69,7 +70,7 @@ public class TitaniumRecipes {
 
         // NaCl(H2O) + CO2 + NH3 -> NH4Cl + NaHCO3
         CHEMICAL_RECIPES.recipeBuilder("sodium_bicarbonate_from_salt")
-                .inputItems(dust, Salt, 4)
+                .inputItems(dust, Salt, 2)
                 .inputFluids(CarbonDioxide.getFluid(1000))
                 .inputFluids(Ammonia.getFluid(1000))
                 .inputFluids(Water.getFluid(1000))
@@ -136,8 +137,8 @@ public class TitaniumRecipes {
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("bauxite_slag_separation")
                 .inputItems(dust, BauxiteSlag)
                 .outputItems(dust, Salt)
-                .chancedOutput(dust, Neodymium, 2000, 250)
-                .chancedOutput(dust, Chromium, 1000, 250)
+                .chancedOutput(dust, Neodymium, 2000, 0)
+                .chancedOutput(dust, Chromium, 1000, 0)
                 .duration(50).EUt(VA[MV]).save(provider);
 
         // Bauxite Sludge -> Calcite (looped) + Decalcified Bauxite Sludge
@@ -152,11 +153,11 @@ public class TitaniumRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("bauxite_sludge_centrifuge")
                 .inputFluids(DecalcifiedBauxiteSludge.getFluid(250))
                 .outputItems(dust, Rutile, 2)
-                .chancedOutput(dust, Gallium, 5000, 550)
-                .chancedOutput(dust, Gallium, 3000, 800)
-                .chancedOutput(dust, Gallium, 1000, 1000)
-                .chancedOutput(dust, SiliconDioxide, 9000, 250)
-                .chancedOutput(dust, Iron, 8000, 250)
+                .chancedOutput(dust, Gallium, 5000, 0)
+                .chancedOutput(dust, Gallium, 3000, 0)
+                .chancedOutput(dust, Gallium, 1000, 0)
+                .chancedOutput(dust, SiliconDioxide, 9000, 0)
+                .chancedOutput(dust, Iron, 8000, 0)
                 .outputFluids(Water.getFluid(250))
                 .duration(100).EUt(VA[MV]).save(provider);
     }

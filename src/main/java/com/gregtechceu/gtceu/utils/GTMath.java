@@ -1,9 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -18,13 +25,33 @@ public class GTMath {
         return Math.max(min, Math.min(max, value));
     }
 
+    public static int lerpInt(double delta, int start, int end) {
+        return start + Mth.floor(delta * (end - start));
+    }
+
     public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
-        int count = saturatedCast(amount);
-        int fullStacks = count / 64;
-        int rem = count % 64;
+        int fullStacks = (int) (amount / Integer.MAX_VALUE);
+        int rem = (int) (amount % Integer.MAX_VALUE);
         List<ItemStack> stacks = new ObjectArrayList<>(fullStacks + 1);
-        if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(64)));
+        if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(Integer.MAX_VALUE)));
         if (rem > 0) stacks.add(stack.copyWithCount(rem));
+        return stacks;
+    }
+
+    public static List<FluidStack> splitFluidStacks(FluidStack stack, long amount) {
+        int fullStacks = (int) (amount / Integer.MAX_VALUE);
+        int rem = (int) (amount % Integer.MAX_VALUE);
+        List<FluidStack> stacks = new ObjectArrayList<>(fullStacks + 1);
+        if (fullStacks > 0) {
+            var copy = stack.copy();
+            copy.setAmount(Integer.MAX_VALUE);
+            stacks.addAll(Collections.nCopies(fullStacks, copy));
+        }
+        if (rem > 0) {
+            var copy = stack.copy();
+            copy.setAmount(rem);
+            stacks.add(copy);
+        }
         return stacks;
     }
 
@@ -65,5 +92,66 @@ public class GTMath {
             return q + 1;
         }
         return q;
+    }
+
+    public static float min(float @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.min(values[0], values[1]);
+        float min = Float.MAX_VALUE;
+        for (float i : values) {
+            if (i < min) {
+                min = i;
+            }
+        }
+        return min;
+    }
+
+    public static float max(float @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.max(values[0], values[1]);
+        float max = Float.MIN_VALUE;
+        for (float i : values) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    public static Pair<Vector3f, Vector3f> getCoordinates(@Nullable Direction dir, float min, float max) {
+        float x1 = min, y1 = min, z1 = min, x2 = max, y2 = max, z2 = max;
+        if (dir != null) {
+            switch (dir) {
+                case DOWN -> {
+                    y1 = 0;
+                    y2 = min;
+                }
+                case UP -> {
+                    y1 = max;
+                    y2 = 16;
+                }
+                case NORTH -> {
+                    z1 = 0;
+                    z2 = min;
+                }
+                case SOUTH -> {
+                    z1 = max;
+                    z2 = 16;
+                }
+                case WEST -> {
+                    x1 = 0;
+                    x2 = min;
+                }
+                case EAST -> {
+                    x1 = max;
+                    x2 = 16;
+                }
+            }
+        }
+        return Pair.of(new Vector3f(x1, y1, z1), new Vector3f(x2, y2, z2));
     }
 }

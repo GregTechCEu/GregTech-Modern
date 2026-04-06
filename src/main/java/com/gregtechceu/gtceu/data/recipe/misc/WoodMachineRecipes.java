@@ -2,17 +2,19 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterWoodsEventJS;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -25,15 +27,16 @@ import net.neoforged.neoforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.BIO_CHAFF;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.BIO_CHAFF;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class WoodMachineRecipes {
 
@@ -44,6 +47,7 @@ public class WoodMachineRecipes {
     }
 
     private static List<WoodTypeEntry> DEFAULT_ENTRIES;
+    private static List<WoodTypeEntry> CUSTOM_ENTRIES;
 
     private static List<WoodTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
@@ -306,7 +310,21 @@ public class WoodMachineRecipes {
                             .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                             .build());
         }
-        return DEFAULT_ENTRIES;
+        if (CUSTOM_ENTRIES == null) {
+            if (GTCEu.Mods.isKubeJSLoaded()) {
+                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
+                var evt = new RegisterWoodsEventJS();
+                GTCEuStartupEvents.REGISTER_WOODS.post(evt);
+                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
+            } else {
+                CUSTOM_ENTRIES = List.of();
+            }
+        }
+
+        List<WoodTypeEntry> entries = new ArrayList<WoodTypeEntry>();
+        entries.addAll(DEFAULT_ENTRIES);
+        entries.addAll(CUSTOM_ENTRIES);
+        return entries;
     }
 
     public static void registerMaterialInfo() {

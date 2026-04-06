@@ -1,21 +1,20 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -34,14 +32,13 @@ import org.jetbrains.annotations.NotNull;
 public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     // spotless:off
-    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-            .and(ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimensionCondition::getDimension)
-            ).apply(instance, DimensionCondition::new));
+    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimensionCondition::getDimension)
+    ).apply(instance, DimensionCondition::new));
     // spotless:on
 
     @Getter
-    private ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION,
-            ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Level> dimension;
 
     public DimensionCondition(ResourceKey<Level> dimension) {
         this.dimension = dimension;
@@ -64,13 +61,13 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatableEscape("recipe.condition.dimension.tooltip", dimension.location());
+        return Component.translatableEscape("recipe.condition.dimension.tooltip", getDimensionName(this.dimension));
     }
 
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOptional(this.dimension.location())
                 .orElse(new DimensionMarker(DimensionMarker.MAX_TIER,
-                        () -> Blocks.BARRIER, this.dimension.location().toString()));
+                        () -> Blocks.BARRIER, getDimensionName(this.dimension)));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);
         SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
@@ -95,24 +92,12 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
         return new DimensionCondition();
     }
 
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("dimension", dimension.toString());
-        return config;
+    public static Component getDimensionName(ResourceKey<Level> dimension) {
+        return getDimensionName(dimension.location());
     }
 
-    @Override
-    public DimensionCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        dimension = buf.readResourceKey(Registries.DIMENSION);
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeResourceKey(dimension);
+    public static Component getDimensionName(ResourceLocation dimension) {
+        return Component.translatableWithFallback(dimension.toLanguageKey(Level.TRANSLATION_PREFIX),
+                dimension.toString());
     }
 }

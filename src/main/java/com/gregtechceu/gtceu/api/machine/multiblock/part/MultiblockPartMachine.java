@@ -12,11 +12,14 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
@@ -36,6 +39,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
+    @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
@@ -155,5 +159,19 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
         }
+    }
+
+    @Override
+    public boolean replacePartModelWhenFormed() {
+        var renderState = getRenderState();
+        return renderState.hasProperty(GTMachineModelProperties.IS_FORMED) &&
+                renderState.getValue(GTMachineModelProperties.IS_FORMED);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
+        if (!replacePartModelWhenFormed()) return null;
+        return IMultiPart.super.getFormedAppearance(sourceState, sourcePos, side);
     }
 }

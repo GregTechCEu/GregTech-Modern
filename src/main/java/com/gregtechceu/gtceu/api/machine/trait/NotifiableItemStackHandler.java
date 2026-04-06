@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -117,7 +117,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
 
             ItemStack[] items;
             int amount;
-            if (io == IO.OUT && ingredient.getContainedCustom() instanceof IntProviderIngredient provider) {
+            if (ingredient.getContainedCustom() instanceof IntProviderIngredient provider) {
                 provider.setItemStacks(null);
                 provider.setSampledCount(-1);
 
@@ -133,22 +133,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                     }
                     output = items[0];
                 }
-
-                int outputStorageLimit = 0;
-                for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                    ItemStack stack = storage.getStackInSlot(slot);
-                    if (stack.isEmpty() || ItemStack.isSameItemSameComponents(stack, output)) {
-                        outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
-                    }
-                }
-                if (provider.getCountProvider().getMinValue() > outputStorageLimit) {
-                    it.remove();
-                    continue;
-                } else if (simulate) {
-                    amount = provider.getCountProvider().getMaxValue();
-                } else {
-                    amount = Math.min(output.getCount(), outputStorageLimit);
-                }
+                amount = output.getCount();
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -164,7 +149,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
-                    if (ingredient.test(current)) {
+                    if (ingredient.ingredient().test(current)) {
                         var extracted = getActioned(storage, slot, recipe.ingredientActions);
                         if (extracted == null) extracted = storage.extractItem(slot, Math.min(count, amount), simulate);
                         if (!extracted.isEmpty()) {

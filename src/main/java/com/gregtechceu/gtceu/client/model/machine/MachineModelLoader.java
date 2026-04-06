@@ -60,7 +60,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
 
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
-    private static final UnbakedModel MISSING_MARKER = new BasicUnbakedModel();
+    public static final UnbakedModel MISSING_MARKER = new BasicUnbakedModel();
 
     private MachineModelLoader() {}
 

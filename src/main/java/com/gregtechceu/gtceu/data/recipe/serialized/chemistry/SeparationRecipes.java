@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -8,11 +8,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.PLANT_BALL;
-import static com.gregtechceu.gtceu.data.item.GTItems.STICKY_RESIN;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.PLANT_BALL;
+import static com.gregtechceu.gtceu.common.data.GTItems.STICKY_RESIN;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class SeparationRecipes {
 
@@ -48,7 +48,7 @@ public class SeparationRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
                 .inputItems(ore, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 7500, 0)
-                .outputFluids(Oil.getFluid(2000))
+                .outputFluids(HeavyOil.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation")
@@ -423,14 +423,6 @@ public class SeparationRecipes {
                 .outputItems(dust, Rutile)
                 .outputFluids(Oxygen.getFluid(9000))
                 .duration(270).EUt(VA[LV] * 2L).save(provider);
-
-        ELECTROLYZER_RECIPES.recipeBuilder("zeolite_electrolysis")
-                .inputItems(dust, Zeolite, 41)
-                .outputItems(dust, Sodium)
-                .outputItems(dust, Calcium, 4)
-                .outputItems(dust, Silicon, 27)
-                .outputItems(dust, Aluminium, 9)
-                .duration(656).EUt(VA[MV]).save(provider);
 
         ELECTROLYZER_RECIPES.recipeBuilder("bentonite_electrolysis")
                 .inputItems(dust, Bentonite, 30)

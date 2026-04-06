@@ -93,7 +93,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public abstract boolean canAttach();
 
     @Override
-    public void onAttached(@NotNull ItemStack itemStack, @NotNull ServerPlayer player) {
+    public void onAttached(@NotNull ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
     }
 

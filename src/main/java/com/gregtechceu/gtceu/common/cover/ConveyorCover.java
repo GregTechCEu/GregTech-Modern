@@ -34,7 +34,9 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -414,6 +416,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         public int totalCount;
     }
 
+    public boolean shouldRespectDistributionMode() {
+        return ((io == IO.IN) ?
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()
+                        .relative(attachedSide)) instanceof ItemPipeBlockEntity));
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -424,6 +433,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
+
+        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
+                DistributionMode.values(), distributionMode, this::setDistributionMode);
+
+        distributionSelector.setVisible(shouldRespectDistributionMode());
+        group.addWidget(distributionSelector);
 
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {
@@ -502,10 +517,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return stack;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+            if (!filterHandler.test(stack)) {
                 return stack;
             }
             return super.insertItem(slot, stack, simulate);
@@ -514,17 +534,40 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return ItemStack.EMPTY;
-            }
-            if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true);
-                if (result.isEmpty() || !filterHandler.test(result)) {
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false);
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
             }
-            return super.extractItem(slot, amount, simulate);
+            ItemStack result = super.extractItem(slot, amount, true);
+            if (result.isEmpty() || !filterHandler.test(result)) {
+                return ItemStack.EMPTY;
+            }
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferRate", getTransferRate());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("distributionMode", getDistributionMode().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferRate(tag.getInt("transferRate"));
+        setIo(IO.values()[tag.getInt("io")]);
+        setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        filterHandler.setFilterItem(ItemStack.parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter"))
+                .orElse(ItemStack.EMPTY));
+        super.pasteConfig(player, tag);
     }
 }

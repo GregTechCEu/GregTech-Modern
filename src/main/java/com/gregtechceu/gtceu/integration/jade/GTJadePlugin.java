@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jade;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
 import net.minecraft.world.item.Item;
@@ -43,7 +43,10 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new TransformerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new PrimitivePumpBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new DataBankBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new EnergyConverterModeProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new BatteryStorageInfoProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new LDPEndpointProvider(), BlockEntity.class);
         if (GTCEu.Mods.isAE2Loaded()) {
             registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
             registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
@@ -73,7 +76,10 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
         registration.registerBlockComponent(new TransformerBlockProvider(), Block.class);
         registration.registerBlockComponent(new PrimitivePumpBlockProvider(), Block.class);
+        registration.registerBlockComponent(new DataBankBlockProvider(), Block.class);
+        registration.registerBlockComponent(new LDPEndpointProvider(), Block.class);
         registration.registerBlockComponent(new EnergyConverterModeProvider(), Block.class);
+        registration.registerBlockComponent(new BatteryStorageInfoProvider(), Block.class);
         if (GTCEu.Mods.isAE2Loaded()) {
             registration.registerBlockComponent(new MEPatternBufferProvider(), Block.class);
             registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);

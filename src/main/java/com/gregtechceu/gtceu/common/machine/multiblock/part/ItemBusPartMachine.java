@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -15,9 +18,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -72,12 +75,17 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Persisted
     @DescSynced
     private boolean isDistinct = false;
+    @Persisted
+    @DescSynced
+    @Getter
+    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        filterHandler = FilterHandlers.item(this);
     }
 
     //////////////////////////////////////
@@ -93,12 +101,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return sizeRoot * sizeRoot;
     }
 
+    protected boolean matchesFilter(ItemStack stack) {
+        if (filterHandler.isFilterPresent())
+            return filterHandler.getFilter().test(stack);
+        return true;
+    }
+
     protected NotifiableItemStackHandler createInventory(Object... args) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io);
+        return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(this::matchesFilter);
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+        if (args.length > 0 && args[0] instanceof IO io && io.support(IO.IN)) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -213,7 +227,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected void updateInventorySubscription(Direction newFacing) {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
+        if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
                 GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -229,6 +243,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                     getInventory().exportToNearby(getFrontFacing());
                 } else if (io == IO.IN) {
                     getInventory().importFromNearby(getFrontFacing());
+                } else if (io == IO.BOTH) {
+                    getInventory().importFromNearby(getFrontFacing());
+                    getInventory().exportToNearby(getFrontFacing().getOpposite());
                 }
             }
             updateInventorySubscription();
@@ -256,9 +273,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public boolean swapIO() {
         BlockPos blockPos = getHolder().pos();
         MachineDefinition newDefinition = null;
-        if (io == IO.IN) {
+        if (io.support(IO.IN)) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
-        } else if (io == IO.OUT) {
+        } else if (io.support(IO.OUT)) {
             newDefinition = GTMachines.ITEM_IMPORT_BUS[this.getTier()];
         }
         if (newDefinition == null) return false;
@@ -285,9 +302,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io == IO.OUT) {
+        if (this.io.support(IO.OUT)) {
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
-        } else if (this.io == IO.IN) {
+        } else if (this.io.support(IO.IN)) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
             if (hasCircuitSlot && isCircuitSlotEnabled()) {
                 configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
@@ -306,18 +323,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
+        group.addWidget(filterHandler.createFilterSlotUI(-115 + (18 * rowSize) / 2, 35 + 11 * rowSize));
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
                         new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
                                 .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+                                .setIngredientIO(this.io.support(IO.IN) ? IngredientIO.INPUT : IngredientIO.OUTPUT));
             }
         }
 
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
-
         return group;
     }
 }

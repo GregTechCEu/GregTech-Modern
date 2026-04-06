@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorImageRenderer;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
@@ -19,25 +20,38 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class ImageModuleBehaviour implements IMonitorModuleItem {
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        return new MonitorImageRenderer(stack.getOrCreateTag().getString("url"));
+    public IMonitorRenderer getRenderer(ItemStack stack) {
+        return new MonitorImageRenderer(stack.getOrDefault(GTDataComponents.IMAGE_MODULE_URL, null));
     }
 
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         TextFieldWidget textField = new TextFieldWidget(0, 0, 100, 10, null, null);
-        textField.setCurrentString(stack.getOrCreateTag().getString("url"));
+        textField.setCurrentString(stack.getOrDefault(GTDataComponents.IMAGE_MODULE_URL, null));
 
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
 
-            stack.getOrCreateTag().putString("url", textField.getCurrentString());
+            stack.set(GTDataComponents.IMAGE_MODULE_URL, textField.getCurrentString());
             PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         builder.addWidget(textField);
         builder.addWidget(saveButton);
         return builder;
+    }
+
+    @Override
+    public String getType() {
+        return "image";
+    }
+
+    public String getUrl(ItemStack stack) {
+        return stack.get(GTDataComponents.IMAGE_MODULE_URL);
+    }
+
+    public void setUrl(ItemStack stack, String url) {
+        stack.set(GTDataComponents.IMAGE_MODULE_URL, url);
     }
 }

@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.FERTILIZER;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.DISTILLATION_RECIPES;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.DISTILLERY_RECIPES;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.FERTILIZER;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DISTILLATION_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DISTILLERY_RECIPES;
 
 public class DistillationRecipes {
 
@@ -19,8 +19,8 @@ public class DistillationRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_dilute_hcl")
                 .inputFluids(DilutedHydrochloricAcid.getFluid(2000))
-                .outputFluids(Water.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(1000))
+                .outputFluids(Water.getFluid(1000))
                 .duration(600).EUt(64).save(provider);
 
         DISTILLATION_RECIPES.recipeBuilder("distill_dilute_sulfuric")

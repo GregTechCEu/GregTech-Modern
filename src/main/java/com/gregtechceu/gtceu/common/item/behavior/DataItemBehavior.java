@@ -1,34 +1,24 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.BindingData;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.core.mixins.EntityAccessor;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
-
-public class DataItemBehavior implements IInteractionItem, IAddInformation {
+public class DataItemBehavior implements IInteractionItem {
 
     public static final DataItemBehavior INSTANCE = new DataItemBehavior();
 
@@ -47,20 +37,17 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        ResearchManager.ResearchItem researchData = stack.get(GTDataComponents.RESEARCH_ITEM);
-        if (researchData == null) {
-            BlockPos pos = stack.get(GTDataComponents.DATA_COPY_POS);
-            if (pos != null) {
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.proxy_bind",
-                        makePosPart(pos.getX()), makePosPart(pos.getY()), makePosPart(pos.getZ())));
-            }
-        }
-    }
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
+        if (player.isShiftKeyDown()) {
+            ItemStack stack = player.getItemInHand(usedHand);
+            int permissionLevel = 0;
+            while (player.hasPermissions(permissionLevel)) permissionLevel++;
 
-    private static Component makePosPart(int coordinate) {
-        return Component.literal(Integer.toString(coordinate)).withStyle(ChatFormatting.LIGHT_PURPLE);
+            stack.set(GTDataComponents.BINDING_DATA, new BindingData(permissionLevel, player.getUUID()));
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        }
+        return IInteractionItem.super.use(item, level, player, usedHand);
     }
 
     @Override
@@ -71,10 +58,9 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation {
         Player player = context.getPlayer();
 
         ICoverable coverable = GTCapabilityHelper.getCoverable(level, pos, face);
-        if (coverable != null &&
-                coverable.getCoverAtSide(face) instanceof IDataStickInteractable interactable) {
+        if (coverable != null && coverable.getCoverAtSide(face) instanceof IDataStickInteractable interactable) {
             if (context.isSecondaryUseActive()) {
-                if (itemStack.get(GTDataComponents.RESEARCH_ITEM) == null) {
+                if (!itemStack.has(GTDataComponents.RESEARCH_ITEM)) {
                     return interactable.onDataStickShiftUse(player, itemStack);
                 }
             } else {

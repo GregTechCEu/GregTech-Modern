@@ -4,12 +4,16 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -24,6 +28,7 @@ import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
+    @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();
     @Getter
     private final String name;
@@ -40,13 +45,29 @@ public class MonitorGroup {
     @Getter
     private int dataSlot = 0;
 
+    public static boolean isModule(ItemStack stack) {
+        if (stack.getItem() instanceof IComponentItem componentItem) {
+            for (IItemComponent itemComponent : componentItem.getComponents()) {
+                if (itemComponent instanceof IMonitorModuleItem) return true;
+            }
+        }
+        return false;
+    }
+
+    public static CustomItemStackHandler createModuleHandler() {
+        CustomItemStackHandler customItemStackHandler = new CustomItemStackHandler(1);
+        customItemStackHandler.setFilter(MonitorGroup::isModule);
+        return customItemStackHandler;
+    }
+
     public MonitorGroup(String name) {
-        this(name, new CustomItemStackHandler(1), new CustomItemStackHandler(8));
+        this(name, createModuleHandler(), new CustomItemStackHandler(8));
     }
 
     public MonitorGroup(String name, CustomItemStackHandler handler, CustomItemStackHandler placeholderSlotsHandler) {
         this.name = name;
         this.itemStackHandler = handler;
+        this.itemStackHandler.setFilter(MonitorGroup::isModule);
         this.placeholderSlotsHandler = placeholderSlotsHandler;
     }
 
@@ -83,10 +104,6 @@ public class MonitorGroup {
         return monitorPositions.isEmpty();
     }
 
-    public Set<BlockPos> getRelativePositions() {
-        return monitorPositions;
-    }
-
     public @Nullable CoverBehavior getTargetCover(Level level) {
         if (getTarget(level) != null && targetCoverSide != null) {
             ICoverable coverable = GTCapabilityHelper.getCoverable(level, getTarget(level), targetCoverSide);
@@ -105,20 +122,28 @@ public class MonitorGroup {
         IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
         if (component != null && component.getDataItems() != null) {
             ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
-            CompoundTag tag = stack.getTag();
-            if (tag == null) {
+            GlobalPosWithRot pos = stack.get(GTDataComponents.MONITOR_TARGET);
+            if (pos == null) {
                 return null;
             }
-            int x = tag.getInt("targetX");
-            int y = tag.getInt("targetY");
-            int z = tag.getInt("targetZ");
-            Direction face = Direction.byName(tag.getString("face"));
-            if (face == null) {
-                return null;
-            }
+            Direction face = pos.side();
             setTargetCoverSide(face);
-            return new BlockPos(x, y, z);
+            return pos.pos();
         }
         return target;
+    }
+
+    public Level getTargetLevel(Level level) {
+        if (target == null) return level;
+
+        IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
+        if (component != null && component.getDataItems() != null) {
+            ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
+            GlobalPosWithRot pos = stack.get(GTDataComponents.MONITOR_TARGET);
+            if (pos == null) return level;
+            if (level.getServer() == null) return level;
+            return level.getServer().getLevel(pos.dimension());
+        }
+        return level;
     }
 }

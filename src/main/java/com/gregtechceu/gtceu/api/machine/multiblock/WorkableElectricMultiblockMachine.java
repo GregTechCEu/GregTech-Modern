@@ -12,11 +12,12 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -81,6 +82,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         this.tier = 0;
     }
 
+    @Override
+    public void setBatchEnabled(boolean batch) {
+        this.batchEnabled = batch;
+    }
+
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
@@ -88,17 +94,23 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void addDisplayText(@NotNull List<Component> textList) {
         int numParallels;
+        int subtickParallels;
         int batchParallels;
+        int totalRuns;
         boolean exact = false;
         if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
             numParallels = recipeLogic.getLastRecipe().parallels;
+            subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
             batchParallels = recipeLogic.getLastRecipe().batchParallels;
+            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
             exact = true;
         } else {
             numParallels = getParallelHatch()
                     .map(IParallelHatch::getCurrentParallel)
                     .orElse(0);
+            subtickParallels = 0;
             batchParallels = 0;
+            totalRuns = 0;
         }
 
         MultiblockDisplayText.builder(textList, isFormed())
@@ -106,11 +118,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
+                .addTotalRunsLine(totalRuns)
                 .addParallelsLine(numParallels, exact)
+                .addSubtickParallelsLine(subtickParallels)
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
-                .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
-                        recipeLogic.getProgressPercent())
+                .addProgressLine(recipeLogic)
+                .addRecipeFailReasonLine(recipeLogic)
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
@@ -141,13 +155,14 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IVoidable.attachConfigurators(configuratorPanel, this);
         if (getDefinition().getRecipeModifier() instanceof RecipeModifierList list && Arrays.stream(list.getModifiers())
                 .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                     this::isBatchEnabled,
-                    (cd, p) -> batchEnabled = p)
+                    (cd, p) -> setBatchEnabled(p))
                     .setTooltipsSupplier(
                             p -> List.of(
                                     Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
@@ -241,7 +256,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -256,6 +271,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 return highestVoltage;
             }
         }
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**

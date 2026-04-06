@@ -26,12 +26,61 @@ Once you're happy, commit these changes and make a pull request for us to review
 If you come back to work on the docs, you can use a codespace again. You might need to `pull` to bring your codespace up to date, which you can do by pressing this button in the `Source Control` tab.
 
 ![image](https://github.com/user-attachments/assets/7d1246d2-f091-4452-bdb3-edf221902503)
-## Installing Required Dependencies
 
-To install the required dependencies, please run `pip install -r requirements.txt`
+## Running in Gradle
+
+To run mkdocs locally, run the mkdocsServe task in gradle.  
+
+Either in the gradle sidebar, click documentation/mkdocsServe, or run .`/gradlew mkdocsServe`.  
+
+Click on the link it gives you at the bottom to open the local copy, and pages will automatically update with content as you save your files.
+
+You can also run documentation/mkdocsBuild. This will build the documentation in `docs/site`, which you can either host yourself or just open in a browser.
+
+## Installing Required Dependencies & Run Locally
+
+If you want to manually install and go through the steps to run locally, you can follow the steps below.
+
+Please run all commands from this section inside the `docs` folder!
+
+**First, setup a venv for python:**
+
+```bash
+python -m venv .venv
+```
+or:
+```bash
+python3 -m venv .venv
+```
+
+**Now activate the venv:**
+
+Windows:
+```cmd
+.venv\Scripts\activate
+```
+Linux / MacOS:
+```bash
+source .venv/bin/activate
+```
+
+**Install the required dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**Run locally**:
+```bash
+mkdocs serve
+```
 
 ## MkDocs Plugins
 
 The following plugins for MkDocs are being used:
 - https://squidfunk.github.io/mkdocs-material/
 - https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin
+
+## Deployment
+The hosted documentation is found on the `gh-pages` branch of the repository. [Mike](https://github.com/jimporter/mike) is used to deploy both the 1.20.1 and 1.21.1 documentation on the same site through Github Actions.
+
+When working on the docs locally, the plain `mkdocs` commands should be used to view the changes made to the version of the docs you are currently working on, like the previously mentioned `mkdocs serve`.

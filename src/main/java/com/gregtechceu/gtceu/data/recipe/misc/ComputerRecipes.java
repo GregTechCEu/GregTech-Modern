@@ -1,21 +1,21 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.machine.GTMultiMachines;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
-import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
-import static com.gregtechceu.gtceu.data.machine.GTResearchMachines.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTResearchMachines.*;
 
 public class ComputerRecipes {
 
@@ -89,6 +89,14 @@ public class ComputerRecipes {
                 .inputFluids(Glowstone, L)
                 .outputItems(MONITOR, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
                 .duration(1000).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("advanced_monitor_casing")
+                .inputItems(MONITOR)
+                .inputItems(CustomTags.HV_CIRCUITS)
+                .inputItems(plate, StainlessSteel, 4)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(ADVANCED_MONITOR, 1)
+                .duration(1000).EUt(VA[HV])
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")

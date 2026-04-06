@@ -97,4 +97,8 @@ public class FluidDataComponentMapIngredient extends FluidStackMapIngredient {
     public boolean isSpecialIngredient() {
         return true;
     }
+
+    protected int hash() {
+        return componentIngredient.hashCode();
+    }
 }

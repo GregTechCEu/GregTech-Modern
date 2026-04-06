@@ -97,7 +97,8 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
             if (stack.isPresent() && !stack.get().isEmpty() && count > 0) {
                 iTooltip.add(helper.smallItem(stack.get()));
                 Component text = Component.literal(" ")
-                        .append(Component.literal(String.valueOf(count)).withStyle(ChatFormatting.DARK_PURPLE))
+                        .append(Component.literal(FormattingUtil.formatNumbers(count))
+                                .withStyle(ChatFormatting.DARK_PURPLE))
                         .append(Component.literal("× ").withStyle(ChatFormatting.WHITE))
                         .append(stack.get().getHoverName().copy().withStyle(ChatFormatting.GOLD));
                 iTooltip.append(text);

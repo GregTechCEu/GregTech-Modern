@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
@@ -23,6 +23,8 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
@@ -45,12 +47,28 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
+        List<GTRecipeCategory> subCategories = new ArrayList<>();
+        // run main categories first
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
-            if (category == type.getCategory()) type.buildRepresentativeRecipes();
+            if (category == type.getCategory()) {
+                type.buildRepresentativeRecipes();
+            } else {
+                subCategories.add(category);
+                continue;
+            }
             var identifier = CATEGORIES.apply(category);
             type.getRecipesInCategory(category).stream()
+                    .map(r -> new GTRecipeDisplay(r, identifier))
+                    .forEach(registry::add);
+        }
+        // run subcategories
+        for (GTRecipeCategory subCategory : subCategories) {
+            if (!subCategory.shouldRegisterDisplays()) continue;
+            var type = subCategory.getRecipeType();
+            var identifier = CATEGORIES.apply(subCategory);
+            type.getRecipesInCategory(subCategory).stream()
                     .map(r -> new GTRecipeDisplay(r, identifier))
                     .forEach(registry::add);
         }

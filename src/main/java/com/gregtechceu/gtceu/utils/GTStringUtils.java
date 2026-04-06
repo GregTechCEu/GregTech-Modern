@@ -195,11 +195,15 @@ public class GTStringUtils {
     public static String replace(String s, String regex, List<String> replacements) {
         List<String> out = new ArrayList<>();
         out.add(s);
-        replacements.forEach(replacement -> out.set(0, out.getFirst().replaceFirst(regex, replacement)));
-        return out.getFirst();
+        replacements.forEach(replacement -> out.set(0, out.get(0).replaceFirst(regex, replacement)));
+        return out.get(0);
     }
 
     public static Component toComponent(ListTag arr) {
+        return toComponent(List.of(arr.toArray(new String[0])));
+    }
+
+    public static Component toComponent(List<String> arr) {
         MutableComponent component = Component.literal("[");
         if (arr.size() <= 5) {
             for (int i = 0; i < arr.size(); i++) {

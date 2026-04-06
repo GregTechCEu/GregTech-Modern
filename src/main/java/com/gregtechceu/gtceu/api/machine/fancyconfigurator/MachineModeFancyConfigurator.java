@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -44,7 +44,7 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {
             int finalI = i;
             group.addWidget(new ButtonWidget(2, 2 + i * 20, 136, 20, IGuiTexture.EMPTY,
-                    cd -> machine.setActiveRecipeType(finalI)));
+                    cd -> setActiveRecipeTypeAndUpdateTickSubs(finalI)));
             group.addWidget(new ImageWidget(2, 2 + i * 20, 136, 20,
                     () -> new GuiTextureGroup(
                             ResourceBorderTexture.BUTTON_COMMON.copy()
@@ -59,8 +59,16 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
     @Override
     public List<Component> getTabTooltips() {
         List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.literal("Change active Machine Mode"));
+        tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip"));
         return tooltip;
+    }
+
+    private void setActiveRecipeTypeAndUpdateTickSubs(int activeRecipeType) {
+        boolean needUpdateTickSubs = !machine.keepSubscribing() && activeRecipeType != machine.getActiveRecipeType();
+        machine.setActiveRecipeType(activeRecipeType);
+        if (needUpdateTickSubs) {
+            machine.getRecipeLogic().updateTickSubscription();
+        }
     }
 
     public class MachineModeConfigurator extends WidgetGroup {

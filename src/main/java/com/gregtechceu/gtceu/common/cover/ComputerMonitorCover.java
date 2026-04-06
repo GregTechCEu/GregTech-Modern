@@ -15,9 +15,9 @@ import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.ComputerMonitorConfig;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -57,8 +57,10 @@ public class ComputerMonitorCover extends CoverBehavior
     private @Nullable TickableSubscription subscription;
     private final CoverTextRenderer renderer;
     @Persisted
+    @Getter
     private final List<String> formatStringArgs = new ArrayList<>(8);
     @Persisted
+    @Getter
     private final List<String> formatStringLines = new ArrayList<>(8);
     @Persisted
     @DescSynced
@@ -78,11 +80,21 @@ public class ComputerMonitorCover extends CoverBehavior
     @Persisted
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @Persisted
+    @Getter
+    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    @Persisted
+    @Getter
+    private final UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText);
-        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(Component.empty());
+        placeholderUUID = UUID.randomUUID();
+        for (int i = 0; i < 100; i++) {
+            createDisplayTargetBuffer.add(Component.empty());
+            computerCraftTextBuffer.add(Component.empty());
+        }
     }
 
     public List<MutableComponent> getRenderedText() {
@@ -92,11 +104,16 @@ public class ComputerMonitorCover extends CoverBehavior
         return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
                 new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemHandler,
-                        this, new MultiLineComponent(text)));
+                        this, new MultiLineComponent(text), placeholderUUID));
     }
 
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {
         createDisplayTargetBuffer.set(line, component);
+    }
+
+    @Override
+    public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
+        computerCraftTextBuffer.set(line, component);
     }
 
     @Override

@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record MaterialStackWrapper(Supplier<Material> material, long amount) {
+public record MaterialStackWrapper(@Nullable Supplier<@NotNull Material> material, long amount) {
 
     public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> GTMaterials.NULL, 0);
 
@@ -33,7 +36,8 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
         }
 
         final String copyFinal = copy;
-        cached = new MaterialStackWrapper(() -> GTMaterials.get(copyFinal), count);
+        Supplier<Material> mat = () -> GTMaterials.get(copyFinal);
+        cached = new MaterialStackWrapper(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();
     }
@@ -44,7 +48,7 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
     }
 
     public boolean isEmpty() {
-        return this.amount < 1 || this.material.get().isNull();
+        return this.amount < 1 || this.material == null;
     }
 
     public MaterialStack toMatStack() {

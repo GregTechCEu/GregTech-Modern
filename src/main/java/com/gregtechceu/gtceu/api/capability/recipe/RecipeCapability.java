@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -134,7 +135,7 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
     }
 
@@ -233,6 +234,12 @@ public abstract class RecipeCapability<T> {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
     }
 
+    private static DataResult<Holder.Reference<RecipeCapability<?>>> safeReference(Holder<RecipeCapability<?>> value) {
+        return value.getDelegate() instanceof Holder.Reference<RecipeCapability<?>> reference ?
+                DataResult.success(reference) : DataResult.error(
+                        () -> "Unregistered holder in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + value);
+    }
+
     /**
      * Should this RecipeCapability bypass distinct checks?
      * E.g. should this bus be added to all recipe checks on a multi, even distinct ones like ME Pattern buffers.
@@ -240,11 +247,5 @@ public abstract class RecipeCapability<T> {
      */
     public boolean shouldBypassDistinct() {
         return true;
-    }
-
-    private static DataResult<Holder.Reference<RecipeCapability<?>>> safeReference(Holder<RecipeCapability<?>> value) {
-        return value.getDelegate() instanceof Holder.Reference<RecipeCapability<?>> reference ?
-                DataResult.success(reference) : DataResult.error(
-                        () -> "Unregistered holder in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + value);
     }
 }

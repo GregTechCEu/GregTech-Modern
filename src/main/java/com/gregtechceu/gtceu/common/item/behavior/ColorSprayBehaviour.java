@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriPredicate;
 
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
@@ -203,8 +204,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
-            var collected = AE2CallWrapper.collect(first, limit);
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
+            Set<? extends IColorableBlockEntity> collected;
+            if (first instanceof CableBusBlockEntity) {
+                collected = AE2CallWrapper.collect(first, limit);
+            } else {
+                collected = Set.of((IColorableBlockEntity) first);
+            }
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
@@ -287,7 +293,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         BlockState state = level.getBlockState(pos);
         for (Property property : state.getProperties()) {
             if (property.getValueClass() == DyeColor.class) {
-                state.setValue(property, color);
+                level.setBlockAndUpdate(pos, state.setValue(property, color));
                 return true;
             }
         }
@@ -473,8 +479,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     limit, limit * 6);
         }
 
-        static boolean isAE2Cable(BlockEntity be) {
-            return be instanceof CableBusBlockEntity;
+        static boolean isColorable(BlockEntity be) {
+            return be instanceof IColorableBlockEntity;
         }
 
         static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {

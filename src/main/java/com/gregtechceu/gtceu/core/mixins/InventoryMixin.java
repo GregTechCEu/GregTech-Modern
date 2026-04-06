@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Inventory.class)
+// Priority increased to override Industrial Upgrade, see gtm#3763
+@Mixin(value = Inventory.class, priority = 1200)
 public abstract class InventoryMixin {
 
     @Shadow

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 

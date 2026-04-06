@@ -9,9 +9,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import io.netty.buffer.ByteBuf;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -19,7 +16,7 @@ import java.io.IOException;
 public class CPacketImageRequest implements CustomPacketPayload {
 
     public static final ResourceLocation ID = GTCEu.id("image_request");
-    public static final CustomPacketPayload.Type<CPacketImageRequest> TYPE = new CustomPacketPayload.Type<>(ID);
+    public static final Type<CPacketImageRequest> TYPE = new Type<>(ID);
     public static final StreamCodec<ByteBuf, CPacketImageRequest> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, CPacketImageRequest::getUrl,
             CPacketImageRequest::new);
@@ -40,7 +37,7 @@ public class CPacketImageRequest implements CustomPacketPayload {
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<CPacketImageRequest> type() {
         return TYPE;
     }
 }

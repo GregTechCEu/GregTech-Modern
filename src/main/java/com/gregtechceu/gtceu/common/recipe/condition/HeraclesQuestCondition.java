@@ -2,16 +2,14 @@ package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,18 +22,17 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestCondition> {
 
-    public static final MapCodec<HeraclesQuestCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.STRING.fieldOf("questId").forGetter(val -> val.questId))
-                    .apply(instance, HeraclesQuestCondition::new));
-
-    public final static HeraclesQuestCondition INSTANCE = new HeraclesQuestCondition();
+    // spotless:off
+    public static final MapCodec<HeraclesQuestCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.STRING.fieldOf("questId").forGetter(val -> val.questId)
+    ).apply(instance, HeraclesQuestCondition::new));
+    // spotless:on
 
     private String questId;
 
     public HeraclesQuestCondition(String questId) {
         this.questId = questId;
-    };
+    }
 
     public HeraclesQuestCondition(boolean isReverse, String questId) {
         super(isReverse);
@@ -76,25 +73,5 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
     @Override
     public HeraclesQuestCondition createTemplate() {
         return new HeraclesQuestCondition();
-    }
-
-    @Override
-    public @NotNull JsonObject serialize() {
-        var obj = super.serialize();
-        obj.addProperty("questId", questId);
-        return obj;
-    }
-
-    @Override
-    public HeraclesQuestCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        questId = buf.readUtf();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeUtf(questId);
     }
 }

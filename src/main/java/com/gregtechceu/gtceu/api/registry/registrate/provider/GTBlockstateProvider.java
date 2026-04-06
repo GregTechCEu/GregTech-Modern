@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.RotationState;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
+import com.gregtechceu.gtceu.common.data.GTBlockStateProperties;
 
 import net.minecraft.core.Direction;
 import net.minecraft.data.CachedOutput;
@@ -74,14 +74,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     public MultiVariantGenerator multiVariantGenerator(Block block, Variant baseVariant) {
         var multiVariant = MultiVariantGenerator.multiVariant(block, baseVariant);
-        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiVariant));
-        return multiVariant;
+        return addVanillaGenerator(block, multiVariant);
     }
 
     public MultiPartGenerator multiPartGenerator(Block block) {
         var multiPart = MultiPartGenerator.multiPart(block);
-        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiPart));
-        return multiPart;
+        return addVanillaGenerator(block, multiPart);
+    }
+
+    public <T extends BlockStateGenerator> T addVanillaGenerator(Block block, T generator) {
+        registeredBlocks.put(block, new BlockStateGeneratorWrapper(generator));
+        return generator;
     }
 
     public static @Nullable PropertyDispatch createFacingDispatch(MachineDefinition definition) {

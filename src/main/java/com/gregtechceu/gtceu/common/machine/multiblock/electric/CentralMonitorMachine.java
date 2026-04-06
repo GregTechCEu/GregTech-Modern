@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -19,15 +20,15 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.*;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.pattern.*;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -65,20 +66,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
-                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife {
+                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife, ICentralMonitor {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
-    public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
-            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
-            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
-                    .setMaxGlobalLimited(4))
-            .or(Predicates.machines(GTMachines.HULL))
-            .or(Predicates.machines(GTMachines.MONITOR))
-            .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
 
     @Persisted
     @DescSynced
@@ -94,8 +85,26 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private @Nullable MultiblockState patternFindingState;
 
+    private static TraceabilityPredicate MULTI_PREDICATE = null;
+
     public CentralMonitorMachine(IMachineBlockEntity holder) {
         super(holder);
+    }
+
+    public static TraceabilityPredicate getMultiPredicate() {
+        if (MULTI_PREDICATE == null) {
+            MULTI_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
+                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
+                    .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
+                            .setMaxGlobalLimited(4))
+                    .or(Predicates.machines(GTMachines.HULL))
+                    .or(Predicates.machines(GTMachines.MONITOR))
+                    .or(Predicates.machines(GTMachines.ADVANCED_MONITOR))
+                    .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
+        }
+        return MULTI_PREDICATE;
     }
 
     @Override
@@ -169,7 +178,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (level.isOutsideBuildHeight(pos)) return false;
 
         MultiblockState state = getPatternFindingState();
-        if (!state.update(pos, BLOCK_PREDICATE)) {
+        if (!state.update(pos, getMultiPredicate())) {
             return false;
         }
         state.io = IO.BOTH;
@@ -255,7 +264,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
         return FactoryBlockPattern.start()
                 .aisle(aisle)
-                .where('B', BLOCK_PREDICATE)
+                .where('B', getMultiPredicate())
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
     }
@@ -400,8 +409,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             text.setType(TextTexture.TextType.LEFT);
             label.setButtonTexture(text);
             label.setOnPressCallback(click -> {
-                group.getRelativePositions().forEach(pos -> {
+                group.getMonitorPositions().forEach(pos -> {
                     BlockPos rel = toRelative(pos);
+                    if (imageButtons.size() - 1 < rel.getY()) return;
+                    if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) return;
                     imageButtons.get(rel.getY()).get(rel.getX()).accept(null);
                 });
                 if (group.getTargetRaw() != null) {
@@ -497,6 +508,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             while (it.hasNext()) {
                 IMonitorComponent c = it.next();
                 BlockPos rel = toRelative(c.getPos());
+                if (imageButtons.size() - 1 < rel.getY()) continue;
+                if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) continue;
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
             if (!selectedTargets.isEmpty()) {
@@ -579,7 +592,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTargets.isEmpty()) {
-                        if (selectedTargets.getFirst() == component) {
+                        if (selectedTargets.getFirst().getPos() == component.getPos()) {
                             selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
@@ -590,7 +603,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             dataSlotInput.setVisible(false);
                             return;
                         } else {
-                            rightClickCallbacks.get(selectedTargets.getFirst().getPos()).run();
+                            try {
+                                rightClickCallbacks.get(selectedTargets.getFirst(0).getPos()).run();
+                            } catch (StackOverflowError e) {
+                                GTCEu.LOGGER.error(
+                                        "Stack overflow when right-clicking monitor component {} at {} (selectedTarget={}, at {})",
+                                        component, component.getPos(), selectedTargets.get(0),
+                                        selectedTargets.get(0).getPos());
+                            }
                         }
                     }
                     selectedTargets.add(component);

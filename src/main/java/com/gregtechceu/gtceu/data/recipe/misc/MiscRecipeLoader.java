@@ -1,17 +1,18 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,10 +22,10 @@ import net.neoforged.neoforge.common.Tags;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class MiscRecipeLoader {
 
@@ -86,109 +87,97 @@ public class MiscRecipeLoader {
         ROCK_BREAKER_RECIPES.recipeBuilder("cobblestone")
                 .notConsumable(Blocks.COBBLESTONE.asItem())
                 .outputItems(Blocks.COBBLESTONE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VA[ULV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("stone")
                 .notConsumable(Blocks.STONE.asItem())
                 .outputItems(Blocks.STONE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VA[ULV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("andesite")
                 .notConsumable(Blocks.ANDESITE.asItem())
                 .outputItems(Blocks.ANDESITE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("granite")
                 .notConsumable(Blocks.GRANITE.asItem())
                 .outputItems(Blocks.GRANITE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("diorite")
                 .notConsumable(Blocks.DIORITE.asItem())
                 .outputItems(Blocks.DIORITE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("obsidian")
                 .notConsumable(dust, Redstone)
                 .outputItems(Blocks.OBSIDIAN.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
                 .notConsumable(Blocks.BASALT.asItem())
                 .outputItems(Blocks.BASALT.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("blackstone")
                 .notConsumable(Blocks.BLACKSTONE.asItem())
                 .outputItems(Blocks.BLACKSTONE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("deepslate")
                 .notConsumable(Blocks.DEEPSLATE.asItem())
                 .outputItems(Blocks.DEEPSLATE.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[EV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
                 .notConsumable(rock, Marble)
                 .outputItems(rock, Marble)
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
                 .notConsumable(rock, Basalt)
                 .outputItems(rock, Basalt)
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("red_granite")
                 .notConsumable(rock, RedGranite)
                 .outputItems(rock, RedGranite)
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[EV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         // Jetpacks
@@ -410,6 +399,7 @@ public class MiscRecipeLoader {
                 .inputItems(dust, Glass, 2)
                 .notConsumable(SHAPE_MOLD_PLATE)
                 .outputItems(plate, Glass)
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
@@ -632,5 +622,11 @@ public class MiscRecipeLoader {
                 .inputItems(Blocks.CHISELED_BOOKSHELF.asItem())
                 .outputItems(dust, Wood, 6)
                 .duration(100).EUt(2).save(provider);
+
+        // Lazurite and Sodalite to dye
+        VanillaRecipeHelper.addShapelessRecipe(provider, "lazurite_to_dye", new ItemStack(Items.BLUE_DYE),
+                new MaterialEntry(gem, Lazurite));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "sodalite_to_dye", new ItemStack(Items.BLUE_DYE),
+                new MaterialEntry(gem, Sodalite));
     }
 }

@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -40,12 +40,11 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
             long totalEU = stack.getTotalEU();
             int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
             if (totalSteam > 0) {
-                SizedFluidIngredient steam = io == IO.IN ?
-                        SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                SizedFluidIngredient steam = io == IO.IN ? SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
                         SizedFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
                 List<SizedFluidIngredient> list = new ArrayList<>();
                 list.add(steam);
-                var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
+                List<SizedFluidIngredient> leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
                 if (leftSteam == null || leftSteam.isEmpty()) {
                     it.remove();
                 } else {

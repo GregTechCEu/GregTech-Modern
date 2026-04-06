@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -32,7 +31,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import java.util.stream.IntStream;
 
-public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IUIMachine {
+public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MufflerPartMachine.class,
             MultiblockPartMachine.MANAGED_FIELD_HOLDER);

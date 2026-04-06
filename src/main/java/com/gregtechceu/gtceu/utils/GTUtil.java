@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -46,6 +48,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -53,12 +56,15 @@ import org.lwjgl.glfw.GLFW;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
         var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
@@ -341,6 +347,40 @@ public class GTUtil {
         return false;
     }
 
+    public static String formatLongNumber(long number, long threshold) {
+        return (number > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
+    }
+
+    public static String formatLongNumber(long number) {
+        return formatLongNumber(number, 10000);
+    }
+
+    public static String getStringRemainTime(long time, long threshold) {
+        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        time /= 60;
+        if (time > 0) {
+            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            time /= 60;
+            if (time > 0) {
+                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                time /= 60;
+                if (time > 0) {
+                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    time /= 24;
+                    if (time > 0) {
+                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                                " " + s;
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    public static String getStringRemainTime(long time) {
+        return getStringRemainTime(time, 10000);
+    }
+
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() &&
                 fluidStack.getAmount() / divisor != 0;
@@ -363,10 +403,10 @@ public class GTUtil {
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
             return FluidType.BUCKET_VOLUME;
-        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidType.BUCKET_VOLUME * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
@@ -382,19 +422,31 @@ public class GTUtil {
     /**
      * Determines dye color nearest to specified RGB color
      */
-    public static @Nullable DyeColor determineDyeColor(int rgbColor) {
+    public static DyeColor determineDyeColor(int rgbColor) {
+        return closestColor(rgbColor, DyeColor.values(), DyeColor::getTextColor);
+    }
+
+    /**
+     * Determines map color nearest to specified RGB color
+     */
+    public static MapColor determineMapColor(int rgbColor) {
+        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
+                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+    }
+
+    private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
         double min = Double.MAX_VALUE;
-        DyeColor minColor = null;
-        for (DyeColor dyeColor : DyeColor.values()) {
-            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
+        T minColor = null;
+        for (T color : colors) {
+            float[] c2 = GradientUtil.getRGB(extractRgbColor.apply(color));
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            if (min > distance) {
-                minColor = dyeColor;
+            if (Double.compare(min, distance) > 0) {
+                minColor = color;
                 min = distance;
             }
         }

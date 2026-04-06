@@ -1,62 +1,66 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class FuelRecipes {
 
     public static void init(RecipeOutput provider) {
-        STEAM_BOILER_RECIPES.recipeBuilder("lava")
+        // furnace fuel-based recipes are handled in SteamBoilerLogic for dynamic burn time (and data map) support.
+
+        // override the default fluid recipes for lava and creosote
+        STEAM_BOILER_RECIPES.recipeBuilder("minecraft_lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
-                .duration(100 * 12)
+                .duration(900) // 60s -> 45s Might still be too good with drip stone farming.
                 .save(provider);
 
-        STEAM_BOILER_RECIPES.recipeBuilder("creosote")
+        STEAM_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(250 * 12)
+                .duration(350) // 150s -> 17.5s
                 .save(provider);
 
-        // semi-fluid fuels, like creosote
-        LARGE_BOILER_RECIPES.recipeBuilder("creosote")
-                .inputFluids(Creosote.getFluid(160))
-                .duration(10)
+        // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
+                .inputFluids(Creosote.getFluid(250))
+                .duration(35)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("biomass")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_biomass")
                 .inputFluids(Biomass.getFluid(40))
-                .duration(10)
+                .duration(85)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil")
                 .inputFluids(Oil.getFluid(200))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("heavy_oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_heavy_oil")
                 .inputFluids(HeavyOil.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("sulfuric_heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_sulfuric_heavy_fuel")
                 .inputFluids(SulfuricHeavyFuel.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_heavy_fuel")
                 .inputFluids(HeavyFuel.getFluid(16))
-                .duration(30)
+                .duration(90)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("fish_oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_fish_oil")
                 .inputFluids(FishOil.getFluid(160))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         // diesel generator fuels
