@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -16,17 +17,18 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,39 +43,46 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-public class ProspectingMapWidget extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<Object> {
+public class ProspectingMapWidget<T> extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<T> {
 
     private final int chunkRadius;
-    private final ProspectorMode mode;
+    private final ProspectorMode<T> mode;
     private final int scanTick;
     @Getter
     private boolean darkMode = false;
     private final DraggableScrollableWidgetGroup itemList;
+
     @OnlyIn(Dist.CLIENT)
-    private ProspectingTexture texture;
+    private ProspectingTexture<T> texture;
+
     private int playerChunkX;
     private int playerChunkZ;
     // runtime
     private int chunkIndex = 0;
-    private final Queue<PacketProspecting> packetQueue = new LinkedBlockingQueue<>();
-    private final Set<Object> items = new CopyOnWriteArraySet<>();
+
+    private final Queue<PacketProspecting<T>> packetQueue = new LinkedBlockingQueue<>();
+    private final Set<T> items = new CopyOnWriteArraySet<>();
     private final Map<String, SelectableWidgetGroup> selectedMap = new ConcurrentHashMap<>();
 
     public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius,
-                                @NotNull ProspectorMode mode, int scanTick) {
+                                @NotNull ProspectorMode<T> mode, int scanTick) {
         super(xPosition, yPosition, width, height);
         this.chunkRadius = chunkRadius;
         this.mode = mode;
         this.scanTick = scanTick;
+
         int imageWidth = (chunkRadius * 2 - 1) * 16;
         int imageHeight = (chunkRadius * 2 - 1) * 16;
         addWidget(new ImageWidget(0, (height - imageHeight) / 2 - 4, imageWidth + 8, imageHeight + 8,
                 GuiTextures.BACKGROUND_INVERSE));
-        var group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height)
+
+        WidgetGroup group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height)
                 .setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(itemList = new DraggableScrollableWidgetGroup(4, 28, group.getSize().width - 8,
-                group.getSize().height - 32)
-                .setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
+        group.addWidget(this.itemList = new DraggableScrollableWidgetGroup(4, 28,
+                        group.getSize().width - 8, group.getSize().height - 32)
+                .setYScrollBarWidth(2)
+                .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
+        );
         group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
         addWidget(group);
         addNewItem("[all]", "all resources", IGuiTexture.EMPTY, -1);
@@ -82,8 +91,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
-        buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
-        buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
+        buffer.writeVarInt(this.playerChunkX = gui.entityPlayer.chunkPosition().x);
+        buffer.writeVarInt(this.playerChunkZ = gui.entityPlayer.chunkPosition().z);
         buffer.writeVarInt(gui.entityPlayer.getBlockX());
         buffer.writeVarInt(gui.entityPlayer.getBlockZ());
     }
@@ -92,31 +101,31 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @OnlyIn(Dist.CLIENT)
     public void readInitialData(FriendlyByteBuf buffer) {
         super.readInitialData(buffer);
-        texture = new ProspectingTexture(
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                gui.entityPlayer.getVisualRotationYInDegrees(), mode, chunkRadius, darkMode);
+        this.texture = new ProspectingTexture<>(
+                buffer.readVarInt(), buffer.readVarInt(),
+                buffer.readVarInt(), buffer.readVarInt(),
+                gui.entityPlayer.getVisualRotationYInDegrees(),
+                mode, chunkRadius, darkMode
+        );
     }
 
-    public void setDarkMode(boolean mode) {
-        if (darkMode != mode) {
-            darkMode = mode;
-            if (isRemote()) {
-                texture.setDarkMode(darkMode);
-            }
+    public void setDarkMode(boolean darkMode) {
+        if (this.darkMode == darkMode) {
+            return;
+        }
+        this.darkMode = darkMode;
+        if (isRemote()) {
+            this.texture.setDarkMode(this.darkMode);
         }
     }
 
-    private void addOresToList(Object[][][] data) {
-        var newItems = new HashSet<>();
+    private void addOresToList(T[][][] data) {
+        HashSet<T> newItems = new HashSet<>();
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
-                for (var item : data[x][z]) {
+                for (T item : data[x][z]) {
                     newItems.add(item);
-                    addNewItem(mode.getUniqueID(item), mode.getDescriptionId(item), mode.getItemIcon(item),
-                            mode.getItemColor(item));
+                    addNewItem(mode.getUniqueId(item), mode.getDescription(item), mode.getItemIcon(item));
                 }
             }
         }
@@ -137,6 +146,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
                 }
             });
             selectableWidgetGroup.setSelectedTexture(ColorPattern.WHITE.borderTexture(-1));
+
             itemList.addWidget(selectableWidgetGroup);
             selectedMap.put(uniqueID, selectableWidgetGroup);
         }
@@ -144,32 +154,37 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
 
     @Override
     public void detectAndSendChanges() {
-        var player = gui.entityPlayer;
-        var world = player.level();
-        if (gui.getTickCount() % scanTick == 0 && chunkIndex < (chunkRadius * 2 - 1) * (chunkRadius * 2 - 1)) {
+        Player player = gui.entityPlayer;
+        Level level = player.level();
 
-            int row = chunkIndex / (chunkRadius * 2 - 1);
-            int column = chunkIndex % (chunkRadius * 2 - 1);
+        int chunkDiameter = this.chunkRadius * 2 - 1;
 
-            int ox = column - chunkRadius + 1;
-            int oz = row - chunkRadius + 1;
+        if (gui.getTickCount() % this.scanTick == 0 && this.chunkIndex < chunkDiameter * chunkDiameter) {
+            int row = this.chunkIndex / chunkDiameter;
+            int column = this.chunkIndex % chunkDiameter;
 
-            var chunk = world.getChunk(playerChunkX + ox, playerChunkZ + oz);
+            int ox = column - this.chunkRadius + 1;
+            int oz = row - this.chunkRadius + 1;
+
+            LevelChunk chunk = level.getChunk(this.playerChunkX + ox, this.playerChunkZ + oz);
             if (mode == ProspectorMode.ORE) {
-                ServerCache.instance.prospectAllInChunk(world.dimension(), chunk.getPos(), (ServerPlayer) player);
+                ServerCache.instance.prospectAllInChunk(level.dimension(), chunk.getPos(), (ServerPlayer) player);
             }
-            PacketProspecting packet = new PacketProspecting(playerChunkX + ox, playerChunkZ + oz, this.mode);
+            PacketProspecting<T> packet = new PacketProspecting<>(this.playerChunkX + ox, this.playerChunkZ + oz, mode);
             mode.scan(packet.data, chunk);
             writeUpdateInfo(-1, packet::writePacketData);
-            chunkIndex++;
+
+            this.chunkIndex++;
         }
-        var held = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (held.getItem() instanceof IComponentItem componentItem) {
-            for (var component : componentItem.getComponents()) {
-                if (component instanceof ProspectorScannerBehavior prospector) {
-                    if (!player.isCreative() && !prospector.drainEnergy(held, false)) {
-                        player.closeContainer();
-                    }
+
+        ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (!(held.getItem() instanceof IComponentItem componentItem)) {
+            return;
+        }
+        for (var component : componentItem.getComponents()) {
+            if (component instanceof ProspectorScannerBehavior prospector) {
+                if (!player.isCreative() && !prospector.drainEnergy(held, false)) {
+                    player.closeContainer();
                 }
             }
         }
@@ -189,23 +204,24 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @OnlyIn(Dist.CLIENT)
     public void updateScreen() {
         super.updateScreen();
-        if (packetQueue != null) {
-            int max = 10;
-            while (max-- > 0 && !packetQueue.isEmpty()) {
-                var packet = packetQueue.poll();
-                texture.updateTexture(packet);
-                addOresToList(packet.data);
-            }
+
+        int maxToProcess = 10;
+        while (maxToProcess-- > 0 && !packetQueue.isEmpty()) {
+            PacketProspecting<T> packet = packetQueue.poll();
+            texture.updateTexture(packet);
+            addOresToList(packet.data);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void addPacketToQueue(PacketProspecting packet) {
+    private void addPacketToQueue(PacketProspecting<T> packet) {
         packetQueue.add(packet);
         if (mode == ProspectorMode.FLUID && packet.data[0][0].length > 0) {
-            GTClientCache.instance.addFluid(gui.entityPlayer.level().dimension(), packet.chunkX, packet.chunkZ,
-                    (ProspectorMode.FluidInfo) packet.data[0][0][0]);
-
+            GTClientCache.instance.addFluid(
+                    gui.entityPlayer.level().dimension(),
+                    packet.chunkX, packet.chunkZ,
+                    (ProspectorMode.FluidInfo) packet.data[0][0][0]
+            );
         }
     }
 
@@ -215,13 +231,16 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         var position = getPosition();
         var size = getSize();
+
         // draw background
-        var x = position.x + 3;
-        var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
-        texture.draw(graphics, x, y);
+        int x = position.x + 3;
+        int y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
+        this.texture.draw(graphics, x, y);
+
+        int chunkDiameter = this.chunkRadius * 2 - 1;
         int cX = (mouseX - x) / 16;
         int cZ = (mouseY - y) / 16;
-        if (cX >= 0 && cZ >= 0 && cX < chunkRadius * 2 - 1 && cZ < chunkRadius * 2 - 1) {
+        if (cX >= 0 && cZ >= 0 && cX < chunkDiameter && cZ < chunkDiameter) {
             // draw hover layer
             DrawerHelper.drawSolidRect(graphics, cX * 16 + x, cZ * 16 + y, 16, 16, 0x4B6C6C6C);
         }
@@ -231,46 +250,47 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @OnlyIn(Dist.CLIENT)
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-        // draw tooltips
         var position = getPosition();
         var size = getSize();
         var x = position.x + 3;
         var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
-        int cX = (mouseX - x) / 16;
-        int cZ = (mouseY - y) / 16;
-        if (cX >= 0 && cZ >= 0 && cX < chunkRadius * 2 - 1 && cZ < chunkRadius * 2 - 1) {
-            // draw hover layer
-            List<Component> tooltips = new ArrayList<>();
-            tooltips.add(Component.translatable(mode.unlocalizedName));
-            List<Object[]> items = new ArrayList<>();
-            for (int i = 0; i < mode.cellSize; i++) {
-                for (int j = 0; j < mode.cellSize; j++) {
-                    assert texture != null;
-                    if (texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j] != null) {
-                        items.add(texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j]);
-                    }
+
+        int chunkDiameter = this.chunkRadius * 2 - 1;
+        int chunkX = (mouseX - x) / 16;
+        int chunkZ = (mouseY - y) / 16;
+        if (chunkX < 0 || chunkZ < 0 || chunkX >= chunkDiameter || chunkZ >= chunkDiameter) {
+            return;
+        }
+
+        List<Component> tooltips = new ArrayList<>();
+        tooltips.add(Component.translatable(mode.unlocalizedName));
+        List<T[]> items = new ArrayList<>();
+
+        for (int i = 0; i < mode.cellSize; i++) {
+            for (int j = 0; j < mode.cellSize; j++) {
+                if (this.texture.data[chunkX * mode.cellSize + i][chunkZ * mode.cellSize + j] != null) {
+                    items.add(this.texture.data[chunkX * mode.cellSize + i][chunkZ * mode.cellSize + j]);
                 }
             }
-            mode.appendTooltips(items, tooltips, texture.getSelected());
-            gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
         }
+
+        // draw tooltips
+        mode.appendTooltips(items, tooltips, this.texture.getSelected());
+        gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        var clickedItem = getClickedVein(mouseX, mouseY);
+        WaypointItem clickedItem = getClickedVein(mouseX, mouseY);
         if (clickedItem == null) {
             return super.mouseClicked(mouseX, mouseY, button);
         }
         if (!WaypointManager.isActive()) return true;
-        MutableComponent veinName = Component.literal(clickedItem.name());
-        veinName.setStyle(veinName.getStyle().withColor(clickedItem.color));
-        WaypointManager.setWaypoint(new ChunkPos(clickedItem.position).toString(),
-                clickedItem.name,
-                clickedItem.color,
-                gui.entityPlayer.level().dimension(),
-                clickedItem.position.getX(), clickedItem.position.getY(), clickedItem.position.getZ());
+
+        WaypointManager.setWaypoint(clickedItem.uniqueId,
+                clickedItem.name.getString(), clickedItem.color,
+                gui.entityPlayer.level().dimension(), clickedItem.position);
         gui.entityPlayer.displayClientMessage(
                 Component.translatable("behavior.prospector.added_waypoint", veinName), false);
         playButtonClickSound();
@@ -280,15 +300,15 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     private WaypointItem getClickedVein(double mouseX, double mouseY) {
         var position = getPosition();
         var size = getSize();
-        var x = position.x + 3;
-        var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
+        int x = position.x + 3;
+        int y = position.y + (size.getHeight() - this.texture.getImageHeight()) / 2 - 1;
 
         int cX = (int) (mouseX - x) / 16;
         int cZ = (int) (mouseY - y) / 16;
         int offsetX = Math.abs((int) (mouseX - x) % 16);
         int offsetZ = Math.abs((int) (mouseY - y) % 16);
-        int xDiff = cX - (chunkRadius - 1);
-        int zDiff = cZ - (chunkRadius - 1);
+        int xDiff = cX - (this.chunkRadius - 1);
+        int zDiff = cZ - (this.chunkRadius - 1);
 
         int xPos = ((gui.entityPlayer.chunkPosition().x + xDiff) << 4) + offsetX;
         int zPos = ((gui.entityPlayer.chunkPosition().z + zDiff) << 4) + offsetZ;
@@ -310,8 +330,9 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         }
 
         // If the cursor is over an ore use its name
-        var hoveredItem = texture.data[cX * mode.cellSize + (offsetX * mode.cellSize / 16)][cZ * mode.cellSize +
-                (offsetZ * mode.cellSize / 16)];
+        T[] hoveredItem = this.texture.data
+                [cX * mode.cellSize + (offsetX * mode.cellSize / 16)]
+                [cZ * mode.cellSize + (offsetZ * mode.cellSize / 16)];
         if (hoveredItem != null && hoveredItem.length != 0) {
             var name = Component.translatable(mode.getDescriptionId(hoveredItem[0])).getString();
             var color = mode.getItemColor(hoveredItem[0]);
@@ -319,15 +340,21 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         }
 
         // If all else fails see if there's a nearby vein and use the vein's name
-        var vein = GTClientCache.instance.getNearbyVeins(gui.entityPlayer.level().dimension(), blockPos, 32);
-        if (!vein.isEmpty()) {
-            vein.sort((o1, o2) -> (int) (o1.center().distToCenterSqr(xPos, o1.center().getY(), zPos) -
-                    o2.center().distToCenterSqr(xPos, o2.center().getY(), zPos)));
-            var name = OreRenderLayer.getName(vein.get(0)).getString();
-            var materials = vein.get(0).definition().veinGenerator().getAllMaterials();
-            var mostCommonItem = materials.get(materials.size() - 1);
-            var color = mostCommonItem.getMaterialRGB();
-            return new WaypointItem(blockPos, name, color);
+        if (mode == ProspectorMode.ORE) {
+            var veins = GTClientCache.instance.getNearbyVeins(gui.entityPlayer.level().dimension(), pos, 32);
+            if (!veins.isEmpty()) {
+                veins.sort((o1, o2) -> {
+                    int o1Dist = (int) o1.center().distToCenterSqr(xPos, o1.center().getY(), zPos);
+                    int o2Dist = (int) o2.center().distToCenterSqr(xPos, o2.center().getY(), zPos);
+                    return o1Dist - o2Dist;
+                });
+                String uniqueId = OreRenderLayer.getId(veins.get(0));
+                Component name = OreRenderLayer.getName(veins.get(0));
+                List<Material> materials = veins.get(0).definition().veinGenerator().getAllMaterials();
+                Material mostCommonItem = materials.get(materials.size() - 1);
+                int color = mostCommonItem.getMaterialARGB();
+                return new WaypointItem(pos, uniqueId, name, color);
+            }
         }
 
         return new WaypointItem(blockPos, "Depleted Vein", 0x990000);
@@ -339,28 +366,28 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     }
 
     @Override
-    public void selectResult(Object item) {
+    public void selectResult(T item) {
         if (isRemote()) {
-            var uid = mode.getUniqueID(item);
-            texture.setSelected(uid);
-            var selected = selectedMap.get(uid);
+            String uniqueId = mode.getUniqueId(item);
+            this.texture.setSelected(uniqueId);
+            var selected = this.selectedMap.get(uniqueId);
             if (selected != null) {
-                itemList.setSelected(selected);
+                this.itemList.setSelected(selected);
             }
         }
     }
 
     @Override
-    public void search(String s, Consumer<Object> consumer) {
-        var added = new HashSet<String>();
-        for (var item : this.items) {
+    public void search(String searched, Consumer<T> consumer) {
+        HashSet<String> added = new HashSet<>();
+        for (T item : this.items) {
             if (Thread.currentThread().isInterrupted()) return;
-            var id = mode.getUniqueID(item);
+            String id = mode.getUniqueId(item);
             if (!added.contains(id)) {
                 added.add(id);
-                var localized = LocalizationUtils.format(resultDisplay(item));
-                if (item.toString().toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT)) ||
-                        localized.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
+                String localized = resultDisplay(item);
+                if (item.toString().toLowerCase(Locale.ROOT).contains(searched.toLowerCase(Locale.ROOT)) ||
+                        localized.toLowerCase(Locale.ROOT).contains(searched.toLowerCase(Locale.ROOT))) {
                     consumer.accept(item);
                 }
             }

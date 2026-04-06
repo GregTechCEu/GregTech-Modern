@@ -91,8 +91,8 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var mode = getMode(entityPlayer.getItemInHand(InteractionHand.MAIN_HAND));
-        var map = new ProspectingMapWidget(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
+        ProspectorMode<?> mode = this.getMode(entityPlayer.getItemInHand(InteractionHand.MAIN_HAND));
+        ProspectingMapWidget<?> map = new ProspectingMapWidget<>(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
         return new ModularUI(332, 200, holder, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(map)

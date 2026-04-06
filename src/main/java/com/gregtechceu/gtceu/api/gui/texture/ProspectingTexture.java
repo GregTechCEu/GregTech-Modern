@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.FastColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,6 +26,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.io.IOException;
@@ -34,48 +36,47 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class ProspectingTexture extends AbstractTexture {
+public class ProspectingTexture<T> extends AbstractTexture {
 
-    public static final String SELECTED_ALL = "[all]";
     private static final ResourceTexture ARROW = GuiTextures.UP.copy().setColor(ColorPattern.RED.color);
 
     @Getter
-    private String selected = SELECTED_ALL;
+    private @Nullable String selected = null;
     private boolean darkMode;
     @Getter
     private final int imageWidth;
     @Getter
     private final int imageHeight;
-    public final Object[][][] data;
+    public final T[][][] data;
     private final int playerXGui;
     private final int playerYGui;
     private final float direction;
     private final int playerChunkX;
     private final int playerChunkZ;
-    private final ProspectorMode mode;
-    private final int radius;
+    private final ProspectorMode<T> mode;
+    private final int chunkRadius;
 
-    public ProspectingTexture(int playerChunkX, int playerChunkZ, int posX, int posZ, float direction,
-                              ProspectorMode mode, int radius, boolean darkMode) {
+    public ProspectingTexture(int playerChunkX, int playerChunkZ, int playerBlockX, int playerBlockZ, float direction,
+                              ProspectorMode<T> mode, int chunkRadius, boolean darkMode) {
         this.darkMode = darkMode;
-        this.radius = radius;
+        this.chunkRadius = chunkRadius;
         this.mode = mode;
-        this.data = (Object[][][]) Array.newInstance(mode.getItemClass(), (radius * 2 - 1) * mode.cellSize,
-                (radius * 2 - 1) * mode.cellSize, 0);
-        this.imageWidth = (radius * 2 - 1) * 16;
-        this.imageHeight = (radius * 2 - 1) * 16;
+        //noinspection unchecked
+        this.data = (T[][][]) Array.newInstance(mode.getItemClass(), (chunkRadius * 2 - 1) * mode.cellSize,
+                (chunkRadius * 2 - 1) * mode.cellSize, 0);
+        this.imageWidth = (chunkRadius * 2 - 1) * 16;
+        this.imageHeight = (chunkRadius * 2 - 1) * 16;
         this.playerChunkX = playerChunkX;
         this.playerChunkZ = playerChunkZ;
         this.direction = (direction + 180) % 360;
-        this.playerXGui = posX - (playerChunkX - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
-        playerYGui = posZ - (playerChunkZ - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
+        this.playerXGui = playerBlockX - (playerChunkX - this.chunkRadius + 1) * 16 + (playerBlockX > 0 ? 1 : 0);
+        this.playerYGui = playerBlockZ - (playerChunkZ - this.chunkRadius + 1) * 16 + (playerBlockX > 0 ? 1 : 0);
     }
 
-    public void updateTexture(PacketProspecting packet) {
+    public void updateTexture(PacketProspecting<T> packet) {
         int ox;
         if ((packet.chunkX > 0 && playerChunkX > 0) || (packet.chunkX < 0 && playerChunkX < 0)) {
             ox = Math.abs(Math.abs(packet.chunkX) - Math.abs(playerChunkX));
@@ -96,8 +97,8 @@ public class ProspectingTexture extends AbstractTexture {
             oy = -oy;
         }
 
-        int currentColumn = (this.radius - 1) + ox;
-        int currentRow = (this.radius - 1) + oy;
+        int currentColumn = (this.chunkRadius - 1) + ox;
+        int currentRow = (this.chunkRadius - 1) + oy;
         if (currentRow < 0) {
             return;
         }
@@ -110,35 +111,29 @@ public class ProspectingTexture extends AbstractTexture {
     }
 
     private NativeImage getImage() {
-        int wh = (this.radius * 2 - 1) * 16;
-        NativeImage image = new NativeImage(wh, wh, false);
-        for (int i = 0; i < wh; i++) {
-            for (int j = 0; j < wh; j++) {
-                Object[] items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
-                // draw bg
-                image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
+        NativeImage image = new NativeImage(this.imageWidth, this.imageHeight, false);
+
+        for (int x = 0; x < this.imageWidth; x++) {
+            for (int y = 0; y < this.imageHeight; y++) {
+                T[] items = this.data[x * mode.cellSize / 16][y * mode.cellSize / 16];
+                // draw background
+                image.setPixelRGBA(x, y, (darkMode ? 0xFF666666 : 0xFFFFFFFF));
                 // draw items
-                for (Object item : items) {
-                    if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
+                for (T item : items) {
+                    if (selected != null && !selected.equals(mode.getUniqueId(item))) continue;
                     int color = mode.getItemColor(item);
-                    image.setPixelRGBA(i, j,
-                            combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
+                    // this is actually ARGB, even though the method name says RGBA and the parameter says ABGR.
+                    image.setPixelRGBA(x, y, FastColor.ABGR32.opaque(color));
                     break;
                 }
                 // draw grid
-                if ((i) % 16 == 0 || (j) % 16 == 0) {
-                    image.setPixelRGBA(i, j, ColorUtils.averageColor(image.getPixelRGBA(i, j), 0xff000000));
+                if (x % 16 == 0 || y % 16 == 0) {
+                    image.blendPixel(x, y, 0xFF000000);
+                    image.setPixelRGBA(x, y, ColorUtils.averageColor(image.getPixelRGBA(x, y), 0xFF000000));
                 }
             }
         }
         return image;
-    }
-
-    /**
-     * The resulting color of this operation is stored as least to most significant bits.
-     */
-    public static int combine(int alpha, int blue, int green, int red) {
-        return (alpha & 0xFF) << 24 | (blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF) << 0;
     }
 
     public void load() {
@@ -146,27 +141,31 @@ public class ProspectingTexture extends AbstractTexture {
     }
 
     private void doLoad(NativeImage image) {
-        TextureUtil.prepareImage(this.getId(), 0, image.getWidth(), image.getHeight());
-        image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false, true);
+        TextureUtil.prepareImage(this.getId(), image.getWidth(), image.getHeight());
+        // the last parameter is actually autoClose, it's named wrong.
+        image.upload(0, 0, 0, true);
     }
 
     public void draw(GuiGraphics graphics, int x, int y) {
-        if (this.getId() == -1) return;
+        // getId() generates a new texture ID if it's NOT_ASSIGNED, so we shouldn't use that.
+        if (this.id == NOT_ASSIGNED) return;
+
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.getId());
-        Matrix4f matrix4f = graphics.pose().last().pose();
+
+        Matrix4f pose = graphics.pose().last().pose();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix4f, x, y + imageHeight, 0).uv(0, 1).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x + imageWidth, y, 0).uv(1, 0).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
+        bufferbuilder.vertex(pose, x, y + imageHeight, 0).uv(0, 1).color(0xFFFFFFFF).endVertex();
+        bufferbuilder.vertex(pose, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(0xFFFFFFFF).endVertex();
+        bufferbuilder.vertex(pose, x + imageWidth, y, 0).uv(1, 0).color(0xFFFFFFFF).endVertex();
+        bufferbuilder.vertex(pose, x, y, 0).uv(0, 0).color(0xFFFFFFFF).endVertex();
         tesselator.end();
 
         // draw special grid (e.g. fluid)
-        for (int cx = 0; cx < radius * 2 - 1; cx++) {
-            for (int cz = 0; cz < radius * 2 - 1; cz++) {
+        for (int cx = 0; cx < chunkRadius * 2 - 1; cx++) {
+            for (int cz = 0; cz < chunkRadius * 2 - 1; cz++) {
                 if (this.data[cx][cz] != null && this.data[cx][cz].length > 0) {
                     var items = this.data[cx][cz];
                     mode.drawSpecialGrid(graphics, items, x + cx * 16 + 1, y + cz * 16 + 1, 16, 16);

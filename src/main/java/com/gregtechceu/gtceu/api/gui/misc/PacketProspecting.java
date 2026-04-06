@@ -4,25 +4,27 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.lang.reflect.Array;
 
-public class PacketProspecting {
+public class PacketProspecting<T> {
 
     public int chunkX;
     public int chunkZ;
-    public ProspectorMode mode;
-    public Object[][][] data;
+    public ProspectorMode<T> mode;
+    public T[][][] data;
 
-    public PacketProspecting(int chunkX, int chunkZ, ProspectorMode mode) {
+    public PacketProspecting(int chunkX, int chunkZ, ProspectorMode<T> mode) {
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
         this.mode = mode;
-        this.data = (Object[][][]) Array.newInstance(mode.getItemClass(), this.mode.cellSize, this.mode.cellSize, 0);
+        //noinspection unchecked
+        this.data = (T[][][]) Array.newInstance(mode.getItemClass(), this.mode.cellSize, this.mode.cellSize, 0);
     }
 
-    public static PacketProspecting readPacketData(ProspectorMode mode, FriendlyByteBuf buffer) {
-        PacketProspecting packet = new PacketProspecting(buffer.readVarInt(), buffer.readVarInt(), mode);
+    public static <T> PacketProspecting<T> readPacketData(ProspectorMode<T> mode, FriendlyByteBuf buffer) {
+        PacketProspecting<T> packet = new PacketProspecting<>(buffer.readVarInt(), buffer.readVarInt(), mode);
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
-                packet.data[x][z] = (Object[]) Array.newInstance(mode.getItemClass(), buffer.readVarInt());
+                //noinspection unchecked
+                packet.data[x][z] = (T[]) Array.newInstance(mode.getItemClass(), buffer.readVarInt());
                 for (int i = 0; i < packet.data[x][z].length; i++) {
                     packet.data[x][z][i] = mode.deserialize(buffer);
                 }
