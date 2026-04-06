@@ -24,7 +24,7 @@ public class FluidCache {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!fluidCache.contains(dim, pos)) {
             fluidCache.put(dim, pos, fluid);
-            GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid).getString(),
+            GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid),
                     FluidRenderLayer.getId(fluid, pos), dim, pos, fluid);
         }
     }
@@ -39,7 +39,7 @@ public class FluidCache {
                 var fluid = ProspectorMode.FluidInfo.fromNbt(fluidTag);
                 fluidCache.put(dim, pos, fluid);
 
-                GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid).getString(),
+                GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid),
                         FluidRenderLayer.getId(fluid, pos), dim, pos, fluid);
             }
         }

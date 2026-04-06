@@ -304,15 +304,14 @@ public abstract class ProspectorMode<T> {
         }
     };
 
-    public record OreInfo(Material material, int weight, int left, int yield) {
+    public record BedrockOreInfo(Material material, int weight, int left, int yield) {}
 
-    }
-
-    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore",
+    public static ProspectorMode<BedrockOreInfo> BEDROCK_ORE = new ProspectorMode<>(
+            "behavior.prospector.mode.bedrock_ore",
             1) {
 
         @Override
-        public void scan(OreInfo[][][] storage, LevelChunk chunk) {
+        public void scan(BedrockOreInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x,
                         chunk.getPos().z);
@@ -320,19 +319,19 @@ public abstract class ProspectorMode<T> {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
-                                new OreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
+                                new BedrockOreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }
                 }
             }
         }
 
         @Override
-        public int getItemColor(OreInfo item) {
-            return item.material.getMaterialRGB();
+        public int getItemColor(BedrockOreInfo item) {
+            return item.material.getMaterialARGB();
         }
 
         @Override
-        public IGuiTexture getItemIcon(OreInfo item) {
+        public IGuiTexture getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
                     ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
@@ -344,17 +343,17 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(OreInfo item) {
-            return item.material.getUnlocalizedName();
+        public Component getDescription(BedrockOreInfo item) {
+            return item.material.getLocalizedName();
         }
 
         @Override
-        public String getUniqueID(OreInfo item) {
+        public String getUniqueId(BedrockOreInfo item) {
             return item.material.getName();
         }
 
         @Override
-        public void serialize(OreInfo item, FriendlyByteBuf buf) {
+        public void serialize(BedrockOreInfo item, FriendlyByteBuf buf) {
             buf.writeResourceLocation(item.material.getResourceLocation());
             buf.writeVarInt(item.weight);
             buf.writeVarInt(item.left);
@@ -362,25 +361,26 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public OreInfo deserialize(FriendlyByteBuf buf) {
+        public BedrockOreInfo deserialize(FriendlyByteBuf buf) {
             ResourceLocation materialId = buf.readResourceLocation();
-            return new OreInfo(
+            return new BedrockOreInfo(
                     GTCEuAPI.materialManager.getRegistry(materialId.getNamespace()).get(materialId.getPath()),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 
         @Override
-        public Class<OreInfo> getItemClass() {
-            return OreInfo.class;
+        public Class<BedrockOreInfo> getItemClass() {
+            return BedrockOreInfo.class;
         }
 
         @Override
-        public void appendTooltips(List<OreInfo[]> items, List<Component> tooltips, String selected) {
+        public void appendTooltips(List<BedrockOreInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
-                int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
-                for (OreInfo item : array) {
+                int totalWeight = Arrays.stream(array).mapToInt(BedrockOreInfo::weight).sum();
+                for (BedrockOreInfo item : array) {
                     float chance = (float) item.weight / totalWeight * 100;
-                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (")
+                    tooltips.add(getDescription(item).copy()
+                            .append(" (")
                             .append(Component.translatable("gtceu.gui.content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
