@@ -75,7 +75,8 @@ public final class RecipeDB {
     @VisibleForTesting
     public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list,
                                    @NotNull Predicate<GTRecipe> predicate) {
-        return (new RecipeIterator(this, list, predicate)).next();
+        var iter = new RecipeIterator(this, list, predicate);
+        return iter.hasNext() ? iter.next() : null;
     }
 
     /**
