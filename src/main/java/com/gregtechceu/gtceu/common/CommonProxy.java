@@ -50,6 +50,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -69,7 +70,9 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.placeholder.GTPlaceholders;
 import com.gregtechceu.gtceu.data.recipe.*;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -181,7 +184,14 @@ public class CommonProxy {
 
         GTSoundEntries.init();
         GTDamageTypes.init();
+
         GTPlaceholders.initPlaceholders();
+        if (GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.init();
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
 
         GTBlocks.init();
         GTFluids.init();
@@ -214,7 +224,7 @@ public class CommonProxy {
         GTParticleTypes.PARTICLE_TYPES.register(modBus);
 
         GregTechDatagen.initPost();
-        GTValueProviderTypes.init(modBus);
+        GTValueProviderTypes.register(modBus);
         GTFeatures.register(modBus);
         WorldGenLayers.registerAll();
         VeinGenerators.registerAddonGenerators();
