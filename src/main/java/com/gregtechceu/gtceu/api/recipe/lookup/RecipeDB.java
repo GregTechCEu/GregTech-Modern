@@ -353,7 +353,8 @@ public final class RecipeDB {
         @Override
         public GTRecipe next() {
             hasCached = false;
-            if (nextCached == null) throw new NoSuchElementException();
+            if (nextCached == null) throw new NoSuchElementException(
+                    "next() was called on a RecipeIterator that was empty or didn't have hasNext() called before");
             return nextCached;
         }
 
