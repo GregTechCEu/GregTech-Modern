@@ -245,7 +245,7 @@ public class GTOreVeins {
                 .biomes(BiomeTags.IS_NETHER)
                 .veinedVeinGenerator(generator -> generator
                         .oreBlock(new VeinBlockDefinition(Goethite, 3))
-                        .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
+                        .oreBlock(new VeinBlockDefinition(Limonite, 2))
                         .oreBlock(new VeinBlockDefinition(Hematite, 2))
                         .rareBlock(new VeinBlockDefinition(Gold, 1))
                         .rareBlockChance(0.075f)
@@ -527,7 +527,7 @@ public class GTOreVeins {
                 .biomes(BiomeTags.IS_OVERWORLD)
                 .veinedVeinGenerator(generator -> generator
                         .oreBlock(new VeinBlockDefinition(Goethite, 5))
-                        .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
+                        .oreBlock(new VeinBlockDefinition(Limonite, 2))
                         .oreBlock(new VeinBlockDefinition(Hematite, 2))
                         .oreBlock(new VeinBlockDefinition(Malachite, 1))
                         .veininessThreshold(0.01f)
