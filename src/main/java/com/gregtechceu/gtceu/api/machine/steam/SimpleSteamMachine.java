@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -34,7 +34,6 @@ import net.minecraft.world.entity.player.Player;
 
 import com.google.common.collect.Tables;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -43,22 +42,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaustVentMachine, IUIMachine {
+public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
     @SaveField
     public final NotifiableItemStackHandler exportItems;
+
     @Getter
-    @Setter
-    @SaveField
-    private boolean needsVenting;
+    private final ExhaustVentMachineTrait exhaustVentTrait;
 
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
 
+        this.exhaustVentTrait = new ExhaustVentMachineTrait(this);
+        exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
             // outputFacing will always be opposite the front facing on init
@@ -81,6 +81,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void onLoad() {
         super.onLoad();
+        exhaustVentTrait.setVentingDirection(Objects.requireNonNull(getOutputFacing()));
         // Simulate an EU machine via a SteamEnergyHandler
         this.addHandlerList(RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
     }
@@ -96,17 +97,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     // ****** Venting Logic ******//
     //////////////////////////////////////
 
-    @Override
-    public float getVentingDamage() {
-        return isHighPressure() ? 12F : 6F;
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    @Override
-    public @NotNull Direction getVentingDirection() {
-        return getOutputFacing();
-    }
-
     public void updateModelVentDirection() {
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
@@ -115,7 +105,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
                 upwardsDir = upwardsDir.getOpposite();
             }
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(), upwardsDir);
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), exhaustVentTrait.getVentingDirection(),
+                    upwardsDir);
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, relative));
         }
     }
@@ -126,6 +117,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
             updateModelVentDirection();
+            exhaustVentTrait.setVentingDirection(outputFacing);
         }
     }
 
@@ -145,11 +137,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         if (getUpwardsFacing() != oldFacing) {
             updateModelVentDirection();
         }
-    }
-
-    @Override
-    public void markVentingComplete() {
-        this.needsVenting = false;
     }
 
     public double getConversionRate() {
@@ -175,7 +162,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.exhaustVentTrait.checkVenting()) {
             return ModifierFunction.NULL;
         }
 
@@ -187,8 +174,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void afterWorking() {
         super.afterWorking();
-        needsVenting = true;
-        checkVenting();
+        exhaustVentTrait.setNeedsVenting(true);
+        exhaustVentTrait.checkVenting();
     }
 
     //////////////////////////////////////

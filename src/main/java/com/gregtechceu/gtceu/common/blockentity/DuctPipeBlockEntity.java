@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.common.pipelike.duct.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -55,8 +56,6 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
                     LazyOptional.of(() -> handlers.getOrDefault(side, defaultHandler)));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
     }
@@ -110,10 +109,11 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
                 return false;
             }
             BlockPos relative = getBlockPos().relative(side);
-            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) !=
-                    null ||
-                    (level.getBlockEntity(relative) instanceof IEnvironmentalHazardCleaner ||
-                            level.getBlockEntity(relative) instanceof IEnvironmentalHazardEmitter);
+            MetaMachine adjacent = MetaMachine.getMachine(level, relative);
+            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null ||
+                    (adjacent != null &&
+                            (adjacent.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
+                                    adjacent.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
         }
         return false;
     }

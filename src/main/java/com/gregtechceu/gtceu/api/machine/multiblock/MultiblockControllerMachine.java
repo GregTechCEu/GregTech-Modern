@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
@@ -19,17 +20,14 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -123,6 +121,12 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
             part.addedToController(this);
         }
+        updatePartPositions();
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureFormed();
+        }
     }
 
     /**
@@ -147,6 +151,11 @@ public class MultiblockControllerMachine extends MetaMachine {
         parallelHatch = null;
         parts.clear();
         updatePartPositions();
+
+        for (var trait : getTraitHolder().getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureInvalid();
+        }
     }
 
     /**
@@ -307,16 +316,15 @@ public class MultiblockControllerMachine extends MetaMachine {
      * Show the preview of structure.
      */
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (!isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
-            if (world.isClientSide()) {
-                MultiblockInWorldPreviewRenderer.showPreview(pos, this,
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (!isFormed() && context.getPlayer().isShiftKeyDown()) {
+            if (isRemote()) {
+                MultiblockInWorldPreviewRenderer.showPreview(getBlockPos(), this,
                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }
             return InteractionResult.SUCCESS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(context);
     }
 
     public boolean allowCircuitSlots() {

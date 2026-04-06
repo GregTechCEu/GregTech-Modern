@@ -33,7 +33,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
                                                                        ValueTransformer.TransformerContext<List<T>> parentContext) {
         return new TransformerContext<>(parentContext.holder(),
                 parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
-                parentContext.isClientSync());
+                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
     }
 
     @Override

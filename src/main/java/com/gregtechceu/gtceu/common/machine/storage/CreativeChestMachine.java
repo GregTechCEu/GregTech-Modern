@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -14,15 +15,9 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
@@ -85,10 +80,11 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var heldItem = context.getItemInHand();
+        var player = context.getPlayer();
+
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             // Clear item if empty hand + shift-rclick
             if (heldItem.isEmpty() && player.isCrouching() && !stored.isEmpty()) {
                 return updateStored(ItemStack.EMPTY);
@@ -96,13 +92,13 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
             // If held item can stack with stored item, delete held item
             if (!heldItem.isEmpty() && ItemHandlerHelper.canItemStacksStack(stored, heldItem)) {
-                player.setItemInHand(hand, ItemStack.EMPTY);
+                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
                 return InteractionResult.SUCCESS;
             } else if (!heldItem.isEmpty()) { // If held item is different than stored item, update stored item
                 return updateStored(heldItem);
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(context);
     }
 
     @Override

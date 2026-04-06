@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,11 +52,6 @@ public class GTCapabilityHelper {
     @Nullable
     public static ICoverable getCoverable(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_COVERABLE, level, pos, side);
-    }
-
-    @Nullable
-    public static IToolable getToolable(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_TOOLABLE, level, pos, side);
     }
 
     @Nullable
@@ -124,7 +119,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
+    public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
         return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
     }
 }
