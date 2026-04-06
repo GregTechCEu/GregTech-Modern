@@ -36,6 +36,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
