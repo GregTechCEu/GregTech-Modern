@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.pack.event;
+package com.gregtechceu.gtceu.api.data.pack.event;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;

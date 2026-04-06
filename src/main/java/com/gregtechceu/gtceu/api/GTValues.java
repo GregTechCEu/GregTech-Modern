@@ -134,8 +134,7 @@ public class GTValues {
             MODID_HERACLES = "heracles",
             MODID_GAMESTAGES = "gamestages",
             MODID_FTB_QUEST = "ftbquests",
-            MODID_CCTWEAKED = "computercraft",
-            MODID_CREATE = "create";
+            MODID_CCTWEAKED = "computercraft";
 
     /**
      * Spray painting compat modids

@@ -28,7 +28,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -604,7 +604,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             return;
                         } else {
                             try {
-                                rightClickCallbacks.get(selectedTargets.getFirst(0).getPos()).run();
+                                rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
                             } catch (StackOverflowError e) {
                                 GTCEu.LOGGER.error(
                                         "Stack overflow when right-clicking monitor component {} at {} (selectedTarget={}, at {})",

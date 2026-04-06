@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
+import com.gregtechceu.gtceu.api.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 
 import net.minecraft.client.resources.model.ModelManager;

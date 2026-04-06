@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.recipe.event;
+package com.gregtechceu.gtceu.api.recipe.event;
 
 import net.neoforged.bus.api.Event;
 

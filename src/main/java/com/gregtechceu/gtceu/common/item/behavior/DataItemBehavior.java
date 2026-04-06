@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -9,7 +8,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.BindingData;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.core.mixins.EntityAccessor;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -34,20 +36,6 @@ public class DataItemBehavior implements IInteractionItem {
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }
         return IInteractionItem.super.use(stack, level, player, usedHand);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
-        if (player.isShiftKeyDown()) {
-            ItemStack stack = player.getItemInHand(usedHand);
-            int permissionLevel = 0;
-            while (player.hasPermissions(permissionLevel)) permissionLevel++;
-
-            stack.set(GTDataComponents.BINDING_DATA, new BindingData(permissionLevel, player.getUUID()));
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-        }
-        return IInteractionItem.super.use(item, level, player, usedHand);
     }
 
     @Override
