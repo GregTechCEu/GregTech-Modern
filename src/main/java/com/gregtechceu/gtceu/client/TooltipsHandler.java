@@ -73,7 +73,7 @@ public class TooltipsHandler {
             }
         }
 
-        Material material = HazardProperty.getValidHazardMaterial(stack);
+        Material material = HazardProperty.getValidHazardMaterial(stack).material();
         if (material.isNull()) {
             return;
         }

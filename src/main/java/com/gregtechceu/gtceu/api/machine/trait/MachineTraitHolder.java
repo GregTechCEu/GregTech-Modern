@@ -119,7 +119,7 @@ public final class MachineTraitHolder {
                             key);
                     continue;
                 }
-                trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound("key"), context.isClientSync());
+                trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key), context.isClientSync());
             }
 
             return null;

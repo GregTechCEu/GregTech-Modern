@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -118,7 +119,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
+    public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
         return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
     }
 }

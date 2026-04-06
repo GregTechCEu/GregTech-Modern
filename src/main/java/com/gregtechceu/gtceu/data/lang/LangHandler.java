@@ -124,11 +124,30 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
-        provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
-        provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
-        provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s minutes %s seconds");
+        provider.add("command.gtceu.medical_condition.clear.everything.failed", "Target has no conditions to remove");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.multiple",
+                "Removed all conditions from %s targets");
+        provider.add("command.gtceu.medical_condition.clear.everything.success.single",
+                "Removed all conditions from %s");
+        provider.add("command.gtceu.medical_condition.clear.specific.failed",
+                "Target doesn't have the requested condition");
+        provider.add("command.gtceu.medical_condition.clear.specific.success.multiple", "Removed %s from %s targets");
+        provider.add("command.gtceu.medical_condition.clear.specific.success.single", "Removed %s from %s");
+
+        provider.add("command.gtceu.medical_condition.give.failed", "Unable to apply this condition (invalid target)");
+        provider.add("command.gtceu.medical_condition.give.success.multiple", "Applied %s to %s targets");
+        provider.add("command.gtceu.medical_condition.give.success.single", "Applied %s to %s");
+
+        provider.add("command.gtceu.medical_condition.get", "%s has");
+        provider.add("command.gtceu.medical_condition.get.empty", "%s is perfectly healthy.");
+        provider.add("command.gtceu.medical_condition.get.element", "- %s for %s minutes %s seconds");
         provider.add("command.gtceu.medical_condition.get.element.permanent",
-                "Condition %s§r: %s minutes %s seconds (permanent)");
+                "- %s for %s minutes %s seconds (permanent)");
+
+        provider.add("command.gtceu.medical_condition.get.symptoms.empty", "%s has no symptoms.");
+        provider.add("command.gtceu.medical_condition.get.symptoms", "Currently %s has these symptoms:");
+        provider.add("command.gtceu.medical_condition.get.symptoms.element", "- %s");
+
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
@@ -145,33 +164,53 @@ public class LangHandler {
         provider.add("command.gtceu.cape.use.success", "%s is now using cape %s");
         provider.add("command.gtceu.cape.use.success.none", "%s is no longer using a cape");
 
-        provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
-        provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
-        provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
-        provider.add("gtceu.medical_condition.poison", "§2Poisonous");
-        provider.add("gtceu.medical_condition.weak_poison", "§aWeakly poisonous");
-        provider.add("gtceu.medical_condition.irritant", "§6Irritant");
-        provider.add("gtceu.medical_condition.nausea", "§3Nauseating");
-        provider.add("gtceu.medical_condition.carcinogen", "§eCarcinogenic");
-        provider.add("gtceu.medical_condition.asbestosis", "§dAsbestosis");
-        provider.add("gtceu.medical_condition.arsenicosis", "§bArsenicosis");
-        provider.add("gtceu.medical_condition.silicosis", "§1Silicosis");
-        provider.add("gtceu.medical_condition.berylliosis", "§5Berylliosis");
-        provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
-        provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
-        provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
-        provider.add("gtceu.hazard_trigger.description", "Caused by:");
-        provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
-        provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
-        provider.add("gtceu.hazard_trigger.any", "Any contact");
+        provider.add("tooltip.gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
+        provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
+        provider.add("medical_condition.gtceu.poison", "§2Poisonous");
+        provider.add("medical_condition.gtceu.poison.affected", "§2Poisoning");
+        provider.add("medical_condition.gtceu.weak_poison", "§aWeakly poisonous");
+        provider.add("medical_condition.gtceu.weak_poison.affected", "§aMinor poisoning");
+        provider.add("medical_condition.gtceu.irritant", "§6Irritant");
+        provider.add("medical_condition.gtceu.irritant.affected", "§6Irritation");
+        provider.add("medical_condition.gtceu.nausea", "§3Nauseating");
+        provider.add("medical_condition.gtceu.nausea.affected", "§3Nausea");
+        provider.add("medical_condition.gtceu.carcinogen", "§eCarcinogenic");
+        provider.add("medical_condition.gtceu.carcinogen.affected", "§eCancer");
+        provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
+        provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
+        provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
+        provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
+        provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
+        provider.add("medical_condition.gtceu.none.affected", "§2Nothing?");
 
-        provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
-        provider.add("gtceu.hazard_trigger.none", "Nothing");
-        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
-        provider.add("gtceu.medical_condition.antidote.description.effect_removed",
+        provider.add("symptom.gtceu.death", "Death");
+        provider.add("symptom.gtceu.random_damage", "Occasional damage");
+        provider.add("symptom.gtceu.health_debuff", "Lowered maximum health");
+        provider.add("symptom.gtceu.air_supply_debuff", "Lowered lung capacity");
+        provider.add("symptom.gtceu.mining_fatigue", "Fatigue");
+        provider.add("symptom.gtceu.weakness", "Weakness");
+        provider.add("symptom.gtceu.slowness", "Slowness");
+        provider.add("symptom.gtceu.blindness", "Blindness");
+        provider.add("symptom.gtceu.darkness", "Darkness");
+        provider.add("symptom.gtceu.nausea", "Nausea");
+        provider.add("symptom.gtceu.wither", "Necrosis");
+        provider.add("symptom.gtceu.weak_poisoning", "Weak poisoning");
+        provider.add("symptom.gtceu.poisoning", "Poisoning");
+        provider.add("symptom.gtceu.hunger", "Increased appetite");
+
+        provider.add("tooltip.gtceu.hazard_trigger", "Caused by:");
+        provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");
+        provider.add("tooltip.gtceu.hazard_trigger.inhalation", "Inhalation");
+        provider.add("tooltip.gtceu.hazard_trigger.any", "Any contact");
+        provider.add("tooltip.gtceu.hazard_trigger.skin_contact", "Skin contact");
+        provider.add("tooltip.gtceu.hazard_trigger.none", "Nothing");
+
+        provider.add("tooltip.gtceu.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("tooltip.gtceu.antidote.description_shift", "§aCures these conditions:");
+        provider.add("tooltip.gtceu.antidote.description.effect_removed",
                 "Removes %s%% of current conditions' effects");
-        provider.add("gtceu.medical_condition.antidote.description.effect_removed.all",
+        provider.add("tooltip.gtceu.antidote.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
         provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
@@ -193,7 +232,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
-        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§1Firefighter: §fDowses Campfires");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§6Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
         provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
         provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
