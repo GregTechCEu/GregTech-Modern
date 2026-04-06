@@ -6,32 +6,37 @@ configuration = "3.1.1-neoforge"
 jei = "19.25.1.328"
 rei = "16.0.799"
 emi = "1.1.22+1.21.1"
+
 ae2 = "19.2.8"
+
 kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
-create = "6.0.8-168"
-ponder = "1.0.64"
-flywheel = "1.0.5"
+
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
+
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
 ftblibrary = "2101.1.30"
 ftbteams = "2101.1.9"
 ftbquests = "2101.1.21"
 ftbchunks = "2101.1.14"
-ccTweaked = "1.116.0"
-resourcefullib = "3.0.12"
+
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
+
+ccTweaked = "1.116.0"
+
+resourcefullib = "3.0.12"
 # TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
 # FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
 heracles = "1.1.10"
-create = "6.0.7-115"
-ponder = "1.0.61"
-flywheel = "1.0.4-27"
+
+create = "6.0.8-168"
+ponder = "1.0.64"
+flywheel = "1.0.5"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -65,16 +70,15 @@ rei-neoforge        = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", ver
 emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
 ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
+
 kubejs              = { module = "dev.latvian.mods:kubejs-neoforge", version.ref = "kubejs" }
 rhino               = { module = "dev.latvian.mods:rhino", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-neoforge", version.ref = "clothconfig" }
-create              = { module = "com.simibubi.create:create-1.21.1", version.ref = "create" }
-ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
-flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
-flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
+
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
+
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
