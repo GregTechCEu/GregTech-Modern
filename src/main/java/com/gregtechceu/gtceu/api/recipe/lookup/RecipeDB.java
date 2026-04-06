@@ -287,6 +287,7 @@ public final class RecipeDB {
 
         private @Nullable GTRecipe nextCached = null;
         private boolean hasCached = false;
+
         @VisibleForTesting
         public RecipeIterator(@NotNull RecipeDB db,
                               @NotNull List<List<AbstractMapIngredient>> ingredients,
