@@ -808,23 +808,17 @@ public class LangHandler {
         provider.add("enchantment.hard_hammer", "Hammering");
         provider.add("enchantment.gtceu.hard_hammer.description",
                 "Breaks blocks as if they were mined with a GregTech Hammer.");
-        provider.add("tile.gtceu.seal.name", "Sealed Block");
-        provider.add("tile.gtceu.foam.name", "Foam");
-        provider.add("tile.gtceu.reinforced_foam.name", "Reinforced Foam");
-        provider.add("tile.gtceu.petrified_foam.name", "Petrified Foam");
-        provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
-        provider.add("tile.gtceu.brittle_charcoal.name", "Brittle Charcoal");
-        multilineLang(provider, "tile.gtceu.brittle_charcoal.tooltip",
-                "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
-        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
-        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
-        provider.add("metaitem.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode§r");
-        provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
+        provider.add("behavior.prospector.mode.ores", "§aOre Prospection Mode");
+        provider.add("behavior.prospector.mode.fluid", "§bFluid Prospection Mode");
+        provider.add("behavior.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode");
+        provider.add("behavior.prospector.tooltip.radius", "Scans resources in a %s Chunk Radius");
+        provider.add("behavior.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("behavior.prospector.added_waypoint", "Created waypoint named %s!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
+        provider.add("behavior.prospector.display_all", "All resources");
+
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");

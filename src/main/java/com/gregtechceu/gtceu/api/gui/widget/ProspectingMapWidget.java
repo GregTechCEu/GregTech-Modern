@@ -85,7 +85,8 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
                 .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
         group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
         addWidget(group);
-        addNewItem("[all]", "all resources", IGuiTexture.EMPTY, -1);
+
+        addNewItem(null, Component.translatable("behavior.prospector.display_all"), IGuiTexture.EMPTY);
     }
 
     @Override
@@ -131,23 +132,26 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
         items.addAll(newItems);
     }
 
-    private void addNewItem(String uniqueID, String renderingName, IGuiTexture icon, int color) {
-        if (!selectedMap.containsKey(uniqueID)) {
-            var index = itemList.widgets.size();
+    private void addNewItem(String uniqueId, Component renderingName, IGuiTexture icon) {
+        if (!selectedMap.containsKey(uniqueId)) {
+            int index = itemList.widgets.size();
             var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
             var size = selectableWidgetGroup.getSize();
             selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
             selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15,
-                    new TextTexture(renderingName).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
+                    new TextTexture(renderingName.getString())
+                            .setWidth(size.width - 15)
+                            .setType(TextTexture.TextType.LEFT_HIDE)));
+
             selectableWidgetGroup.setOnSelected(s -> {
                 if (isRemote()) {
-                    texture.setSelected(uniqueID);
+                    texture.setSelected(uniqueId);
                 }
             });
             selectableWidgetGroup.setSelectedTexture(ColorPattern.WHITE.borderTexture(-1));
 
             itemList.addWidget(selectableWidgetGroup);
-            selectedMap.put(uniqueID, selectableWidgetGroup);
+            selectedMap.put(uniqueId, selectableWidgetGroup);
         }
     }
 
@@ -290,7 +294,10 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
                 clickedItem.name.getString(), clickedItem.color,
                 gui.entityPlayer.level().dimension(), clickedItem.position);
         gui.entityPlayer.displayClientMessage(
-                Component.translatable("behavior.prospector.added_waypoint", veinName), false);
+                Component.translatable("behavior.prospector.added_waypoint",
+                        clickedItem.name.copy().withStyle(style -> style.withColor(clickedItem.color))),
+                false);
+
         playButtonClickSound();
         return true;
     }
@@ -308,33 +315,35 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
         int xDiff = cX - (this.chunkRadius - 1);
         int zDiff = cZ - (this.chunkRadius - 1);
 
-        int xPos = ((gui.entityPlayer.chunkPosition().x + xDiff) << 4) + offsetX;
-        int zPos = ((gui.entityPlayer.chunkPosition().z + zDiff) << 4) + offsetZ;
+        int xPos = SectionPos.sectionToBlockCoord(gui.entityPlayer.chunkPosition().x + xDiff) + offsetX;
+        int zPos = SectionPos.sectionToBlockCoord(gui.entityPlayer.chunkPosition().z + zDiff) + offsetZ;
+        int yPos = gui.entityPlayer.level().getHeight(Heightmap.Types.WORLD_SURFACE, xPos, zPos);
 
-        var blockPos = new BlockPos(xPos, gui.entityPlayer.level().getHeight(Heightmap.Types.WORLD_SURFACE, xPos, zPos),
-                zPos);
-        if (cX < 0 || cZ < 0 || cX >= chunkRadius * 2 - 1 || cZ >= chunkRadius * 2 - 1) {
+        BlockPos pos = new BlockPos(xPos, yPos, zPos);
+        if (cX < 0 || cZ < 0 || cX >= this.chunkRadius * 2 - 1 || cZ >= this.chunkRadius * 2 - 1) {
             return null;
         }
 
         // If the ores are filtered use its name
-        if (!texture.getSelected().equals(ProspectingTexture.SELECTED_ALL)) {
-            for (var item : items) {
-                if (!texture.getSelected().equals(mode.getUniqueID(item))) continue;
-                var name = Component.translatable(mode.getDescriptionId(item)).getString();
-                var color = mode.getItemColor(item);
-                return new WaypointItem(blockPos, name, color);
+        if (this.texture.getSelected() != null) {
+            for (T item : this.items) {
+                String uniqueId = mode.getUniqueId(item);
+                if (!this.texture.getSelected().equals(uniqueId)) continue;
+
+                Component name = mode.getDescription(item);
+                int color = mode.getItemColor(item);
+                return new WaypointItem(pos, uniqueId, name, color);
             }
         }
 
         // If the cursor is over an ore use its name
-        T[] hoveredItem = this.texture.data
-                [cX * mode.cellSize + (offsetX * mode.cellSize / 16)]
-                [cZ * mode.cellSize + (offsetZ * mode.cellSize / 16)];
+        T[] hoveredItem = this.texture.data[cX * mode.cellSize + (offsetX * mode.cellSize / 16)][cZ * mode.cellSize +
+                (offsetZ * mode.cellSize / 16)];
         if (hoveredItem != null && hoveredItem.length != 0) {
-            var name = Component.translatable(mode.getDescriptionId(hoveredItem[0])).getString();
-            var color = mode.getItemColor(hoveredItem[0]);
-            return new WaypointItem(blockPos, name, color);
+            String uniqueId = mode.getUniqueId(hoveredItem[0]);
+            Component name = mode.getDescription(hoveredItem[0]);
+            int color = mode.getItemColor(hoveredItem[0]);
+            return new WaypointItem(pos, uniqueId, name, color);
         }
 
         // If all else fails see if there's a nearby vein and use the vein's name
@@ -355,12 +364,12 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
             }
         }
 
-        return new WaypointItem(blockPos, "Depleted Vein", 0x990000);
+        return new WaypointItem(pos, null, Component.translatable("gtceu.minimap.ore_vein.depleted"), 0xFF990000);
     }
 
     @Override
-    public String resultDisplay(Object value) {
-        return mode.getDescriptionId(value);
+    public String resultDisplay(T value) {
+        return mode.getDescription(value).getString();
     }
 
     @Override
@@ -392,5 +401,5 @@ public class ProspectingMapWidget<T> extends WidgetGroup implements SearchCompon
         }
     }
 
-    private record WaypointItem(BlockPos position, String name, int color) {}
+    private record WaypointItem(BlockPos position, @Nullable String uniqueId, Component name, int color) {}
 }

@@ -16,8 +16,8 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -47,26 +47,26 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
 
     @NotNull
     public ProspectorMode<?> getMode(ItemStack stack) {
-        if (stack == ItemStack.EMPTY) {
-            return modes[0];
+        if (stack.isEmpty()) {
+            return this.modes[0];
         }
-        var tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null) {
-            return modes[0];
+            return this.modes[0];
         }
-        return modes[tag.getInt("Mode") % modes.length];
+        return this.modes[tag.getInt("Mode") % this.modes.length];
     }
 
     public void setNextMode(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putInt("Mode", (tag.getInt("Mode") + 1) % modes.length);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("Mode", (tag.getInt("Mode") + 1) % this.modes.length);
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
 
-        int amount = Math.round(cost * (ConfigHolder.INSTANCE.machines.prospectorEnergyUseMultiplier / 100F));
+        int amount = Math.round(this.cost * (ConfigHolder.INSTANCE.machines.prospectorEnergyUseMultiplier / 100F));
 
         return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }
@@ -74,17 +74,17 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
-        if (player.isShiftKeyDown() && modes.length > 1) {
+        if (player.isShiftKeyDown() && this.modes.length > 1) {
             if (!level.isClientSide) {
                 setNextMode(heldItem);
-                var mode = getMode(heldItem);
+                ProspectorMode<?> mode = getMode(heldItem);
                 player.sendSystemMessage(Component.translatable(mode.unlocalizedName));
             }
-            return InteractionResultHolder.success(heldItem);
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         if (!player.isCreative() && !drainEnergy(heldItem, true)) {
             player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
-            return InteractionResultHolder.success(heldItem);
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         return IItemUIFactory.super.use(item, level, player, usedHand);
     }
@@ -102,18 +102,20 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
                                 new GuiTextureGroup(GuiTextures.BUTTON,
                                         GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
                                                 .getSubTexture(0, 0.5, 1, 0.5).scale(0.8f)),
-                                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true)
-                                        .copy().getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
+                                new GuiTextureGroup(GuiTextures.BUTTON,
+                                        GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
+                                                .getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.radius", radius));
-        tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.modes"));
-        for (ProspectorMode<?> mode : modes) {
-            tooltipComponents.add(Component.literal(" -").append(Component.translatable(mode.unlocalizedName))
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+        tooltipComponents.add(Component.translatable("behavior.prospector.tooltip.radius", this.radius));
+        tooltipComponents.add(Component.translatable("behavior.prospector.tooltip.modes"));
+        for (ProspectorMode<?> mode : this.modes) {
+            tooltipComponents.add(Component.literal(" -")
+                    .append(Component.translatable(mode.unlocalizedName))
+                    .withStyle(ChatFormatting.RED));
         }
     }
 }

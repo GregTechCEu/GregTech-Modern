@@ -125,12 +125,12 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(Either<Material, BlockState> item) {
-            return item.map(Material::getUnlocalizedName, state -> state.getBlock().getDescriptionId());
+        public Component getDescription(Either<Material, BlockState> item) {
+            return item.map(Material::getLocalizedName, state -> state.getBlock().getName());
         }
 
         @Override
-        public String getUniqueID(Either<Material, BlockState> item) {
+        public String getUniqueId(Either<Material, BlockState> item) {
             return item.map(material -> MATERIAL_PREFIX + material.getResourceLocation(),
                     state -> state.getBlockHolder().unwrapKey()
                             .map(ResourceKey::location)
@@ -178,7 +178,7 @@ public abstract class ProspectorMode<T> {
                 }
             }
             counter.forEach((item, count) -> tooltips
-                    .add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
+                    .add(getDescription(item).copy().append(" --- %s".formatted(count))));
         }
     };
 
@@ -219,7 +219,7 @@ public abstract class ProspectorMode<T> {
         }
     }
 
-    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
+    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("behavior.prospector.mode.fluid", 1) {
 
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
@@ -249,12 +249,12 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(FluidInfo item) {
-            return new FluidStack(item.fluid, item.yield).getDisplayName().getString();
+        public Component getDescription(FluidInfo item) {
+            return new FluidStack(item.fluid, item.yield).getDisplayName();
         }
 
         @Override
-        public String getUniqueID(FluidInfo item) {
+        public String getUniqueId(FluidInfo item) {
             return BuiltInRegistries.FLUID.getKey(item.fluid).toString();
         }
 
@@ -280,7 +280,7 @@ public abstract class ProspectorMode<T> {
         public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
                 for (FluidInfo item : array) {
-                    tooltips.add(Component.translatable(getDescriptionId(item))
+                    tooltips.add(getDescription(item).copy()
                             .append(" --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
@@ -403,9 +403,9 @@ public abstract class ProspectorMode<T> {
 
     public abstract IGuiTexture getItemIcon(T item);
 
-    public abstract String getDescriptionId(T item);
+    public abstract Component getDescription(T item);
 
-    public abstract String getUniqueID(T item);
+    public abstract String getUniqueId(T item);
 
     public abstract void serialize(T item, FriendlyByteBuf buf);
 
