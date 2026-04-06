@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.api.placeholder.*;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.InvalidArgsException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.MissingItemException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
@@ -60,7 +57,8 @@ public class GTCreateIntegration {
     }
 
     private static int getRedstoneLinkPower(PlaceholderContext ctx,
-                                            Couple<RedstoneLinkNetworkHandler.Frequency> freq) {
+                                            Couple<RedstoneLinkNetworkHandler.Frequency> freq) throws PlaceholderException {
+        if (ctx.pos() == null) throw new NoTargetException();
         IRedstoneLinkable linkable = new IRedstoneLinkable() {
 
             @Override

@@ -1766,6 +1766,7 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.bf_invalid_num",
                 "Invalid number at index %d when processing symbol number %d");
         provider.add("gtceu.computer_monitor_cover.error.bf_invalid", "Invalid character at %d");
+        provider.add("gtceu.provider.computer_monitor_cover.error.no_target", "No target selected for the monitor group");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.main_textbox_tooltip",
                 "Input string to display on line %d here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
