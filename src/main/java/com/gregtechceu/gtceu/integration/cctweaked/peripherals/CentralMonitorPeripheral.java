@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
-import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
-import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.world.item.ItemStack;

@@ -13,13 +13,11 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import io.netty.buffer.ByteBuf;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-@Accessors
 public class SPacketImageResponse implements CustomPacketPayload {
 
     public static final ResourceLocation ID = GTCEu.id("image_response");

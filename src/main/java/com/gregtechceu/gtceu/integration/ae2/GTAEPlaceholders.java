@@ -12,8 +12,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -224,7 +224,7 @@ public class GTAEPlaceholders {
                             else if (GTStringUtils.equals(args.get(2), "name"))
                                 return MultiLineComponent
                                         .of(cpu.getName() == null ? Component.literal("Crafting CPU " + i) :
-                                                cpu.getName().copy());
+                                                cpu.getName());
                             else if (GTStringUtils.equals(args.get(2), "selectionMode"))
                                 return MultiLineComponent.literal(cpu.getSelectionMode().name());
                             else if (job == null) return MultiLineComponent.literal(0);

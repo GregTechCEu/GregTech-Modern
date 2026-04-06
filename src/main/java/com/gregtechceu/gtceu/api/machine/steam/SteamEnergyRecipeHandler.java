@@ -40,7 +40,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
             long totalEU = stack.getTotalEU();
             int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
             if (totalSteam > 0) {
-                SizedFluidIngredient steam = io == IO.IN ? SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                SizedFluidIngredient steam = io == IO.IN ?
+                        SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
                         SizedFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
                 List<SizedFluidIngredient> list = new ArrayList<>();
                 list.add(steam);

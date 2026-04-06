@@ -200,26 +200,26 @@ public class GTStringUtils {
     }
 
     public static Component toComponent(ListTag arr) {
-        return toComponent(List.of(arr.toArray(new String[0])));
+        return toComponent(List.of(arr.toArray(String[]::new)));
     }
 
     public static Component toComponent(List<String> arr) {
         MutableComponent component = Component.literal("[");
         if (arr.size() <= 5) {
             for (int i = 0; i < arr.size(); i++) {
-                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
                 if (i != arr.size() - 1) {
                     component.append(ComponentUtils.DEFAULT_NO_STYLE_SEPARATOR);
                 }
             }
         } else {
             for (int i = 0; i < 2; i++) {
-                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
                 component.append(ComponentUtils.DEFAULT_NO_STYLE_SEPARATOR);
             }
             component.append(CommonComponents.ELLIPSIS).append(ComponentUtils.DEFAULT_NO_STYLE_SEPARATOR);
             for (int i = arr.size() - 2; i < arr.size(); i++) {
-                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
                 if (i != arr.size() - 1) {
                     component.append(ComponentUtils.DEFAULT_NO_STYLE_SEPARATOR);
                 }

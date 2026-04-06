@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.api.registry.registrate.GTBlockBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.common.data.GTBlockStateProperties;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
-import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

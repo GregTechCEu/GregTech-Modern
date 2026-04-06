@@ -22,10 +22,10 @@ import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.item.behavior.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.datacomponents.BindingData;
 import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
-import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
@@ -504,7 +504,8 @@ public class GTPlaceholders {
                 int slot = GTStringUtils.toInt(args.getFirst());
                 PlaceholderUtils.checkRange("slot index", 1, ctx.itemHandler().getSlots(), slot);
 
-                return MultiLineComponent.literal(ctx.itemHandler().getStackInSlot(slot - 1).getComponents().toString());
+                return MultiLineComponent
+                        .literal(ctx.itemHandler().getStackInSlot(slot - 1).getComponents().toString());
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("toChars") {
