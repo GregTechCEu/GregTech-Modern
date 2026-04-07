@@ -695,11 +695,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return server.getTickCount() + getOffset();
     }
 
-    @Override
-    public boolean isRemote() {
-        return IGregtechBlockEntity.super.isRemote();
-    }
-
     ////////////////////////////////
     // ***** Redstone Signals ****//
     ////////////////////////////////
