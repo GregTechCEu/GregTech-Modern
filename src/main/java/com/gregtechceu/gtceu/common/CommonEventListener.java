@@ -232,8 +232,8 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
-        if (machine != null) event.setCanceled(machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(),
-                event.getPos(), event.getFace()));
+        if (machine != null)
+            event.setCanceled(machine.onLeftClick(event.getEntity(), event.getHand(), event.getFace()));
     }
 
     @SubscribeEvent

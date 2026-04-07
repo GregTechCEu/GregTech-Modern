@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -14,12 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.api.ITheme;
@@ -125,17 +121,16 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            if (super.onUse(state, world, pos, player, hand, hit) == InteractionResult.SUCCESS) {
+            if (super.onUseWithItem(context) == InteractionResult.SUCCESS) {
                 return InteractionResult.SUCCESS;
             }
-            if (FluidUtil.interactWithFluidHandler(player, hand, exportFluids)) {
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), exportFluids)) {
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(context);
     }
 }

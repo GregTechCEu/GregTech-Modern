@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -480,7 +481,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     private void nbtFormat(List<Component> comp, CompoundTag tag) {
-        comp.add(Component.literal(tag.toString()));
+        comp.add(NbtUtils.toPrettyComponent(tag));
     }
 
     @Override

@@ -19,9 +19,11 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IKey;
@@ -205,6 +207,22 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     private void setDescription(String description) {
         if (getEntry() != null) getEntry().setDescription(description);
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putString("colorStr", colorStr);
+        tag.putInt("permission", getPermission().ordinal());
+        tag.putInt("io", getIo().ordinal());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setColorStr(tag.getString("colorStr"));
+        setPermission(Permissions.values()[tag.getInt("permission")]);
+        setIo(IO.values()[tag.getInt("io")]);
+        super.pasteConfig(player, tag);
     }
 
     private List<VirtualEntry> getVirtualEntries() {

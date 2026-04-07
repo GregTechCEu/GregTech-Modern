@@ -69,7 +69,6 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -274,8 +273,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * @param direction the direction to move
      * @return if a block is a valid wall block at pos moved in direction
      */
-    public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
-                               @NotNull Direction direction) {
+    public boolean isBlockEdge(Level world, BlockPos.MutableBlockPos pos,
+                               Direction direction) {
         var state = world.getBlockState(pos.move(direction));
         return state == getCasingState() || state == getGlassState();
     }
@@ -286,13 +285,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * @param direction the direction to move
      * @return if a block is a valid floor block at pos moved in direction
      */
-    public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
-                                @NotNull Direction direction) {
+    public boolean isBlockFloor(Level world, BlockPos.MutableBlockPos pos,
+                                Direction direction) {
         var state = world.getBlockState(pos.move(direction));
         return state == getCasingState() || state == getGlassState() || state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
-    @NotNull
     @Override
     public BlockPattern getPattern() {
         // return the default structure, even if there is no valid size found
@@ -397,17 +395,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     // protected to allow easy addition of addon "cleanrooms"
-    @NotNull
     protected BlockState getCasingState() {
         return GTBlocks.PLASTCRETE.getDefaultState();
     }
 
-    @NotNull
     protected BlockState getGlassState() {
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    @NotNull
     protected static TraceabilityPredicate doorPredicate() {
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().is(CustomTags.CLEANROOM_DOORS),
                 () -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
@@ -418,7 +413,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    @NotNull
     protected TraceabilityPredicate innerPredicate() {
         return new TraceabilityPredicate(blockWorldState -> {
             Set<CleanroomReceiverTrait> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
@@ -566,7 +560,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.dimensions.0"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
-        widgets.add(IKey.dynamic(() -> distComponent.getValue())
+        widgets.add(IKey.dynamic(distComponent::getValue)
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
@@ -584,7 +578,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         cleanroomProviderTrait.setActive(this.cleanAmount >= CLEAN_AMOUNT_THRESHOLD);
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

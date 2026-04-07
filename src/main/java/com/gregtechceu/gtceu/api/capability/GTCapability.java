@@ -14,7 +14,6 @@ public class GTCapability {
     public static final Capability<IEnergyInfoProvider> CAPABILITY_ENERGY_INFO_PROVIDER = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<ICoverable> CAPABILITY_COVERABLE = CapabilityManager.get(new CapabilityToken<>() {});
-    public static final Capability<IToolable> CAPABILITY_TOOLABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IWorkable> CAPABILITY_WORKABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -40,7 +39,6 @@ public class GTCapability {
         event.register(IEnergyContainer.class);
         event.register(IEnergyInfoProvider.class);
         event.register(ICoverable.class);
-        event.register(IToolable.class);
         event.register(IWorkable.class);
         event.register(IControllable.class);
         event.register(IElectricItem.class);

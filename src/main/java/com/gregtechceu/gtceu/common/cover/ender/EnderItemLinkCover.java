@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -24,6 +26,8 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorage> {
 
@@ -100,5 +104,26 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     public @Nullable IItemHandler getOwnItemHandler() {
         return coverHolder.getItemHandlerCap(attachedSide, false);
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
+        }
+        return list;
     }
 }

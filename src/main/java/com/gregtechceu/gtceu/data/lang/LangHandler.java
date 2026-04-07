@@ -335,6 +335,8 @@ public class LangHandler {
         provider.add("metaarmor.message.nightvision.enabled", "§bNightVision: §aOn");
         provider.add("metaarmor.message.nightvision.disabled", "§bNightVision: §cOff");
         provider.add("metaarmor.message.nightvision.error", "§cNot enough power!");
+        provider.add("metaarmor.message.step_assist.enabled", "§bStep-Assist: §aOn");
+        provider.add("metaarmor.message.step_assist.disabled", "§bStep-Assist: §cOff");
         provider.add("metaarmor.tooltip.stepassist", "Provides Step-Assist");
         provider.add("metaarmor.tooltip.speed", "Increases Running Speed");
         provider.add("metaarmor.tooltip.jump", "Increases Jump Height and Distance");

@@ -8,17 +8,16 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
 
 import brachy.modularui.drawable.UITexture;
@@ -94,13 +93,13 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
     }
 
     @Override
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             setWorkingEnabled(!isWorkingEnabled);
-            playerIn.sendSystemMessage(Component.translatable(isWorkingEnabled() ?
+            context.getPlayer().sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.voiding.message.enabled" : "cover.voiding.message.disabled"));
         }
-        return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+        return InteractionResult.sidedSuccess(isRemote());
     }
 
     // TODO: Decide grid behavior

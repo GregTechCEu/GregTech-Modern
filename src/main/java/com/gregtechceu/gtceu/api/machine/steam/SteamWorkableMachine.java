@@ -13,16 +13,15 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidType;
 
 import brachy.modularui.drawable.UITexture;
@@ -155,14 +154,15 @@ public abstract class SteamWorkableMachine extends SteamMachine
     }
 
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown()) {
+    protected InteractionResult onWrenchClick(ExtendedUseOnContext context) {
+        var gridSide = context.getGridSide();
+        var player = context.getPlayer();
+        if (!player.isShiftKeyDown()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
             setOutputFacing(gridSide);
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
-        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+        return super.onWrenchClick(context);
     }
 
     @Override

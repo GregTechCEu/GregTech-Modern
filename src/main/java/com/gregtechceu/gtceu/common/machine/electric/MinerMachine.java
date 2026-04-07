@@ -18,16 +18,14 @@ import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.factory.PosGuiData;
@@ -181,15 +179,14 @@ public class MinerMachine extends WorkableTieredMachine
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
         if (!this.isActive()) {
             int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
                 getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
-            else if (playerIn.isShiftKeyDown())
+            else if (context.getPlayer().isShiftKeyDown())
                 getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
                 getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));
@@ -197,10 +194,10 @@ public class MinerMachine extends WorkableTieredMachine
             getRecipeLogic().resetArea(true);
 
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-            playerIn.sendSystemMessage(
+            context.getPlayer().sendSystemMessage(
                     Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }

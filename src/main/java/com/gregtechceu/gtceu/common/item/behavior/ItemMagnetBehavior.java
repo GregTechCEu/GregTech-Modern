@@ -5,23 +5,20 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -44,15 +41,34 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.factory.UIFactories;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.CycleButtonWidget;
+import brachy.modularui.widgets.PagedWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.PhantomItemSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Triplet;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
-public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAddInformation, IItemUIFactory {
+public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAddInformation, IItemUIHolder {
 
     public static final String FILTER_TAG = "MagnetFilter";
     public static final String FILTER_ORDINAL_TAG = "FilterOrdinal";
@@ -67,56 +83,119 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var held = holder.getHeld();
-        var tag = held.getOrCreateTag();
-        var selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
-        var widgets = new HashSet<Triplet<Filter, Widget, Widget>>();
-        var stacks = new HashMap<Filter, ItemStack>();
-        var ui = new ModularUI(176, 157, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new EnumSelectorWidget<>(146, 5, 20, 20,
-                        Filter.values(), selected, (val) -> updateSelection(tag, val, widgets)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 75, true));
-        for (var f : Filter.values()) {
-            var stack = f.getFilter(held);
-            stack.setTag(tag.getCompound(FILTER_TAG).copy());
-            stacks.put(f, stack);
-            var description = new LabelWidget(5, 5, stack.getDescriptionId());
-            var config = ItemFilter
-                    .loadFilter(stack)
-                    .openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15);
-            var visible = f == selected;
-            description.setVisible(visible);
-            config.setVisible(visible);
-            widgets.add(new Triplet<>(f, description, config));
-            ui.widget(description);
-            ui.widget(config);
+    public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+        ItemStack held = data.getUsedItemStack();
+        CompoundTag heldTag = held.getOrCreateTag();
+
+        Filter selectedFilter = Filter.get(heldTag.getInt(FILTER_ORDINAL_TAG));
+        Map<Filter, ItemStack> stacks = new EnumMap<>(Filter.class);
+        CompoundTag startFilterTag = heldTag.getCompound(FILTER_TAG).copy();
+        for (Filter filter : Filter.values()) {
+            ItemStack stack = filter.getFilter(held);
+            stack.setTag(startFilterTag.copy());
+            stacks.put(filter, stack);
         }
-        ui.registerCloseListener(() -> {
-            var selection = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
-            tag.put(FILTER_TAG, stacks.get(selection).getOrCreateTag());
+
+        EnumSyncValue<Filter> filterSync = new EnumSyncValue<>(Filter.class,
+                () -> Filter.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
+                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()));
+
+        PagedWidget<?> pages = new PagedWidget<>()
+                .left((176 - 80) / 2)
+                .top((60 - 55) / 2 + 15)
+                .size(80, 55)
+                .initialPage(selectedFilter.ordinal())
+                .addPage(createSimpleFilterPage((SimpleItemFilter) ItemFilter.loadFilter(stacks.get(Filter.SIMPLE))))
+                .addPage(createTagFilterPage((TagItemFilter) ItemFilter.loadFilter(stacks.get(Filter.TAG))));
+        pages.onUpdateListener(widget -> {
+            int selected = filterSync.getIntValue();
+            if (selected != widget.getCurrentPageIndex()) {
+                widget.setPage(selected);
+            }
         });
-        return ui;
+
+        syncManager.addCloseListener(player -> {
+            ItemStack stack = data.getUsedItemStack();
+            CompoundTag tag = stack.getOrCreateTag();
+            Filter selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
+            tag.put(FILTER_TAG, stacks.get(selected).getOrCreateTag().copy());
+        });
+
+        return new ModularPanel<>("item_magnet")
+                .size(176, 157)
+                .background(GTGuiTextures.BACKGROUND)
+                .child(IKey.dynamic(() -> Component.translatable(filterSync.getValue().getTooltip()))
+                        .asWidget()
+                        .left(5)
+                        .top(5))
+                .child(new CycleButtonWidget()
+                        .left(146)
+                        .top(5)
+                        .size(20)
+                        .value(filterSync)
+                        .stateCount(Filter.values().length)
+                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()))
+                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()))
+                        .tooltipBuilder(r -> r.addLine(IKey.dynamic(
+                                () -> Component.translatable(filterSync.getValue().getTooltip())))))
+                .child(pages)
+                .child(SlotGroupWidget.playerInventory(false).left(7).top(75).disableSortButtons());
     }
 
-    private void updateSelection(CompoundTag tag, Filter filter, Collection<Triplet<Filter, Widget, Widget>> widgets) {
-        tag.putInt(FILTER_ORDINAL_TAG, filter.ordinal());
-        widgets.forEach(tri -> {
-            var visible = tri.getA() == filter;
-            tri.getB().setVisible(visible);
-            tri.getC().setVisible(visible);
-        });
+    private ParentWidget<?> createSimpleFilterPage(SimpleItemFilter filter) {
+        SimpleItemFilter.FilterItemStackHandler handler = new SimpleItemFilter.FilterItemStackHandler(filter);
+
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .mapTo(3, 9, i -> new PhantomItemSlot()
+                        .size(16)
+                        .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
+                                .changeListener((stack, amount, client, init) -> handler.setStackInSlot(i, stack))
+                                .ignoreMaxStackSize(true).accessibility(true, false))));
+
+        BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList);
+
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(filter::isIgnoreNbt, filter::setIgnoreNbt);
+
+        Flow filterButtons = Flow.col()
+                .coverChildren()
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).value(blacklist))
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).value(ignoreNBT));
+
+        return new ParentWidget<>()
+                .size(80, 55)
+                .child(filterGrid.left(0).top(0))
+                .child(filterButtons.left(58).top(0));
+    }
+
+    private ParentWidget<?> createTagFilterPage(TagItemFilter filter) {
+        StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString);
+        RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
+
+        return new ParentWidget<>()
+                .size(80, 55)
+                .child(Flow.row()
+                        .coverChildren()
+                        .left(0)
+                        .top(18)
+                        .child(new TextFieldWidget()
+                                .width(62)
+                                .value(filterString))
+                        .child(GTGuiTextures.INFO.asWidget()
+                                .size(16)
+                                .tooltip(infoTooltip)));
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level world, @NotNull Player player,
                                                   InteractionHand hand) {
-        if (!player.level().isClientSide && player.isShiftKeyDown()) {
-            player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                    "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
-        } else {
-            IItemUIFactory.super.use(item, world, player, hand);
+        if (!player.level().isClientSide) {
+            if (player.isShiftKeyDown()) {
+                player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
+                        "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+            } else {
+                UIFactories.playerInventory().openFromHand(player, hand);
+            }
         }
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }

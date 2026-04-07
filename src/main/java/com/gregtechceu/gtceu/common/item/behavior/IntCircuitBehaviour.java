@@ -1,15 +1,21 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -24,11 +30,7 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        return stack(configuration, 1);
-    }
-
-    public static ItemStack stack(int configuration, int count) {
-        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack(count);
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -69,5 +71,22 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         return GTMuiWidgets.createCircuitSlotPanel(data::setUsedItemStack, data::getUsedItemStack, syncManager);
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        var stack = context.getItemInHand();
+        int circuitSetting = getCircuitConfiguration(stack);
+        BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
+        if (entity instanceof MetaMachine machine && context.isSecondaryUseActive()) {
+            if (machine instanceof IHasCircuitSlot circuitMachine &&
+                    circuitMachine.getCircuitInventory().getSlots() > 0) {
+                setCircuitConfiguration(circuitMachine.getCircuitInventory().getStackInSlot(0), circuitSetting);
+            }
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                stack.shrink(1);
+            return InteractionResult.SUCCESS;
+        }
+        return IItemUIHolder.super.useOn(context);
     }
 }
