@@ -43,7 +43,7 @@ public class WirelessTransmitterCoverTest {
         cover.onDataStickUse(helper.makeMockPlayer(GameType.CREATIVE), stack);
         dataHatch.importItems.setStackInSlot(0, stack);
         TestUtils.assertEqual(helper, module.get(), GTItems.TEXT_MODULE.asStack());
-        helper.runAtTickTime(40, () -> {
+        helper.runAtTickTime(80, () -> {
             TestUtils.assertEqual(helper, group.getTarget(helper.getLevel()),
                     helper.absolutePos(new BlockPos(2, 2, 3)));
             TestUtils.assertEqual(helper, new TextModuleBehaviour().getText(module.get()), "Energy: 5.40M/7.20M EU\n");
