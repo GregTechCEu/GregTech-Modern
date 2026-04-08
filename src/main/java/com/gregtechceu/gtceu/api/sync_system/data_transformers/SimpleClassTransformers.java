@@ -21,7 +21,8 @@ public class SimpleClassTransformers {
         @Override
         public @Nullable ItemStack deserializeNBT(Tag tag, TransformerContext<ItemStack> context) {
             if (!(tag instanceof CompoundTag compoundTag) || compoundTag.isEmpty()) return ItemStack.EMPTY;
-            return ItemStack.CODEC.parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), compoundTag).getOrThrow();
+            return ItemStack.CODEC.parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), compoundTag)
+                    .getOrThrow();
         }
     }
 
@@ -36,7 +37,8 @@ public class SimpleClassTransformers {
         @Override
         public @Nullable FluidStack deserializeNBT(Tag tag, TransformerContext<FluidStack> context) {
             if (!(tag instanceof CompoundTag compoundTag) || compoundTag.isEmpty()) return FluidStack.EMPTY;
-            return FluidStack.CODEC.parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), compoundTag).getOrThrow();
+            return FluidStack.CODEC.parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), compoundTag)
+                    .getOrThrow();
         }
     }
 

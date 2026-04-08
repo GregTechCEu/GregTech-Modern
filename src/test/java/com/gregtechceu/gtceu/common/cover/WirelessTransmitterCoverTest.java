@@ -38,10 +38,10 @@ public class WirelessTransmitterCoverTest {
         MonitorGroup group = machine.getMonitorGroups().getFirst();
         group.setTarget(dataHatch.getBlockPos());
         Supplier<ItemStack> module = () -> group.getItemStackHandler().getStackInSlot(0);
-        ItemStack stack = dataHatch.getDataItems().getStackInSlot(3);
+        ItemStack stack = GTItems.TOOL_DATA_STICK.asStack();
         // noinspection DataFlowIssue
         cover.onDataStickUse(helper.makeMockPlayer(GameType.CREATIVE), stack);
-        dataHatch.importItems.setStackInSlot(3, stack);
+        dataHatch.importItems.setStackInSlot(0, stack);
         TestUtils.assertEqual(helper, module.get(), GTItems.TEXT_MODULE.asStack());
         helper.runAtTickTime(40, () -> {
             TestUtils.assertEqual(helper, group.getTarget(helper.getLevel()),

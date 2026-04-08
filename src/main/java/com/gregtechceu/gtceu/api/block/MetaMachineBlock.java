@@ -43,7 +43,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -56,7 +55,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -233,12 +231,12 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof MetaMachine machine) {
             machine.modifyDrops(drops);
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        machine.saveToItem(drop, be.getLevel().registryAccess());
-                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
-                        break;
-                    }
+            for (ItemStack drop : drops) {
+                if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
+                    machine.saveToItem(drop, be.getLevel().registryAccess());
+                    // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                    break;
+                }
             }
         }
         return drops;

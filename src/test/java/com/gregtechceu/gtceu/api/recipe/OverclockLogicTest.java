@@ -336,7 +336,6 @@ public class OverclockLogicTest {
 
             helper.succeed();
         });
-
     }
 
     // Test for charge usage of a singleblock HV chemical reactor running an MV recipe
@@ -349,13 +348,13 @@ public class OverclockLogicTest {
         long originalCharge = GTValues.V[GTValues.HV] * 64L;
         machine.importItems.setStackInSlot(0, new ItemStack(Items.BROWN_BED));
         helper.assertTrue(machine.energyContainer.getEnergyStored() == originalCharge,
-                    "Singleblock charged CR NBT changed, machine not fully charged anymore");
+                "Singleblock charged CR NBT changed, machine not fully charged anymore");
 
         // 1t to turn on, 8t to run the recipe (single overclock)
         helper.runAtTickTime(9, () -> {
 
             helper.assertTrue(TestUtils.isItemStackEqual(
-                            machine.exportItems.getStackInSlot(0),
+                    machine.exportItems.getStackInSlot(0),
                     new ItemStack(Blocks.STONE, 1)),
                     "Singleblock CR didn't run recipe in correct time");
             long chargeUsed = originalCharge - machine.energyContainer.getEnergyStored();

@@ -119,7 +119,8 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
-        if (!stored.isEmpty()) components.set(GTDataComponents.LARGE_ITEM_CONTENT, new LargeItemContent(stored, storedAmount));
+        if (!stored.isEmpty())
+            components.set(GTDataComponents.LARGE_ITEM_CONTENT, new LargeItemContent(stored, storedAmount));
     }
 
     //////////////////////////////////////
