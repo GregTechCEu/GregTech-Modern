@@ -29,8 +29,7 @@ public final class PlaceholderContext {
     private final @Nullable MonitorGroup monitorGroup;
     private final @Nullable MultiLineComponent previousText;
     private final UUID uuid;
-    @With
-    private final int index;
+    private int index;
 
     public PlaceholderContext(Level level,
                               BlockPos pos,
