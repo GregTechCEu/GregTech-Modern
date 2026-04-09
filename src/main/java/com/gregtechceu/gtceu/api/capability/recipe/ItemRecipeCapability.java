@@ -32,8 +32,8 @@ import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -439,7 +439,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
                     slot.setCanTakeItems(!isXEI);
                     slot.setCanPutItems(!isXEI && io.support(IO.IN));
-                    if(items instanceof IContentChangeAware item1) {
+                    if (items instanceof IContentChangeAware item1) {
                         slot.setChangeListener(item1.getOnContentsChanged());
                     }
                 }

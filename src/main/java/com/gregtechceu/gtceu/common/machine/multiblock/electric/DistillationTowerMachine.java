@@ -280,6 +280,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
             // Distillery recipes should output to the first non-void handler
             if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
+                if (fluids.isEmpty()) {
+                    return true;
+                }
                 var fluid = fluids.get(0).getStacks()[0];
                 var handler = getMachine().getFirstValid();
                 if (handler == null) return false;
