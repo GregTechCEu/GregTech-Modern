@@ -5749,7 +5749,7 @@
     "config.gtceu.option.allowDrumsInputFluidsFromOutputSide": "allowDrumsInputFluidsFromOutputSide",
     "config.gtceu.option.renderGrowingPlants": "renderGrowingPlants",
     "block.gtceu.oil": "Нефть",
-    "gtceu.placeholder_info.data.3": "  {data get <слот> <индекс>} -> возвращает данные, хранящиеся в предмете в указанном слоте",
+    "gtceu.placeholder_info.data.3": "{data get <слот> <индекс>} -> возвращает данные, хранящиеся в предмете в указанном слоте",
     "gtceu.placeholder_info.data.4": "  {data set <слот> <индекс> <значение>} — задаёт данные, хранящиеся в элементе указанного слота, возвращает пустую строку.",
     "gtceu.placeholder_info.data.7": "  {data inc <слот>} -> увеличивает p на 1, если p становится больше или равно вместимости, устанавливает p равным 0",
     "gtceu.placeholder_info.data.5": "  {data getp <слот>} -> p",
@@ -5985,5 +5985,13 @@
     "metaarmor.qts.boosted_jump.disabled": "QuarkTech™ броня: Прыгучесть отключена",
     "metaarmor.qts.boosted_jump.enabled": "QuarkTech™ броня: Прыгучесть включена",
     "metaarmor.qts.step_assist.disabled": "QuarkTech™ броня: Авто-подъем выкл",
-    "metaarmor.qts.step_assist.enabled": "QuarkTech™ броня: Авто-подъем вкл"
+    "metaarmor.qts.step_assist.enabled": "QuarkTech™ броня: Авто-подъем вкл",
+    "command.gtceu.medical_condition.clear.everything.failed": "У цели нет никаких заболеваний",
+    "command.gtceu.medical_condition.clear.everything.success.multiple": "Удалить все заболевания у %s целей",
+    "command.gtceu.medical_condition.clear.everything.success.single": "Удалить все заболевания у %s",
+    "command.gtceu.medical_condition.clear.specific.failed": "Цель не обладает требуемой болезнью",
+    "command.gtceu.medical_condition.clear.specific.success.multiple": "Удалено %s у %s целей",
+    "command.gtceu.medical_condition.clear.specific.success.single": "Удалено %s у %s",
+    "command.gtceu.medical_condition.get.symptoms": "Сейчас у %s есть следующие симптомы:",
+    "command.gtceu.medical_condition.get.symptoms.element": "- %s"
 }
