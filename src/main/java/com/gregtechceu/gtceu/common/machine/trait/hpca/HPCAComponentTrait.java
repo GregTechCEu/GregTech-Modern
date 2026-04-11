@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait.hpca;
+package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;

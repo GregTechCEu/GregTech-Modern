@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;

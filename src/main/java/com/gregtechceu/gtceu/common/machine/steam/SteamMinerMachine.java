@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;

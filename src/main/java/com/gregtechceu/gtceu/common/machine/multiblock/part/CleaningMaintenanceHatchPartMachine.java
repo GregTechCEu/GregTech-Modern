@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

@@ -1,8 +1,10 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 

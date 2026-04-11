@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait.hazard;
+package com.gregtechceu.gtceu.common.machine.trait.hazard;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;

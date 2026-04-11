@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.machine.trait.multiblock;
+package com.gregtechceu.gtceu.common.machine.trait.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import net.minecraft.core.BlockPos;
