@@ -98,6 +98,7 @@ public abstract class MachineTrait implements ISyncManaged {
 
     @Override
     public void markAsChanged() {
+        if (machine == null) return;
         getMachine().markAsChanged();
     }
 

@@ -48,6 +48,8 @@ public final class MachineTraitHolder {
 
         list.add(trait);
         traits.add(trait);
+
+        trait.setMachine(machine);
         return trait;
     }
 
