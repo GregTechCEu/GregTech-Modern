@@ -201,13 +201,15 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             super(GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier],
                     inventorySize * AMPS_PER_BATTERY, GTValues.V[tier], inventorySize);
             this.tier = tier;
-            this.setSideInputCondition(side -> side != getMachine().getFrontFacing() && getMachine().isWorkingEnabled());
-            this.setSideOutputCondition(side -> side == getMachine().getFrontFacing() && getMachine().isWorkingEnabled());
+            this.setSideInputCondition(
+                    side -> side != getMachine().getFrontFacing() && getMachine().isWorkingEnabled());
+            this.setSideOutputCondition(
+                    side -> side == getMachine().getFrontFacing() && getMachine().isWorkingEnabled());
         }
 
         @Override
         public BatteryBufferMachine getMachine() {
-            return (BatteryBufferMachine)super.getMachine();
+            return (BatteryBufferMachine) super.getMachine();
         }
 
         @Override

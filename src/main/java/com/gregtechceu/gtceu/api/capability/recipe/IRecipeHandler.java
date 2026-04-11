@@ -35,7 +35,8 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      *         <br>
      *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
-    @Nullable List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);
+    @Nullable
+    List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);
 
     /**
      * container size, if it has one. otherwise -1.

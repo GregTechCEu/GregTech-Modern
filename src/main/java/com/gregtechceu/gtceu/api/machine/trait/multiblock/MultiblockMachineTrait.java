@@ -13,7 +13,7 @@ public abstract class MultiblockMachineTrait extends MachineTrait {
 
     @Override
     public MultiblockControllerMachine getMachine() {
-        return (MultiblockControllerMachine)super.getMachine();
+        return (MultiblockControllerMachine) super.getMachine();
     }
 
     @Override

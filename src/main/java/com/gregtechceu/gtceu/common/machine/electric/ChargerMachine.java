@@ -198,7 +198,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
         @Override
         public ChargerMachine getMachine() {
-            return (ChargerMachine)super.getMachine();
+            return (ChargerMachine) super.getMachine();
         }
 
         @Override

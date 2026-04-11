@@ -74,15 +74,15 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int initialCapacity, int slots) {
         super(info, tier, io);
         this.slots = slots;
-        this.tank = createTank(initialCapacity, slots);
+        this.tank = attachTrait(createTank(initialCapacity, slots));
 
         if (io == IO.IN) {
             this.circuitSlotEnabled = true;
-            this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE))
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
         } else {
             this.circuitSlotEnabled = false;
-            this.circuitInventory = new NotifiableItemStackHandler(this, 0, IO.NONE).shouldSearchContent(false);
+            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(0, IO.NONE)).shouldSearchContent(false);
         }
     }
 
@@ -91,7 +91,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     //////////////////////////////////////
 
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
+        return new NotifiableFluidTank(slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {

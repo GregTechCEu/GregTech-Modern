@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -49,15 +49,16 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
                 () -> this.energyContainer.getEnergyStored() > 0));
     }
 
-
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
 
         long tierVoltage = GTValues.V[tier];
         if (isEnergyEmitter()) {
-            energyContainer = attachTrait(NotifiableEnergyContainer.emitterContainer(tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage()));
+            energyContainer = attachTrait(NotifiableEnergyContainer.emitterContainer(tierVoltage * 64L, tierVoltage,
+                    getMaxInputOutputAmperage()));
         } else {
-            energyContainer = attachTrait(NotifiableEnergyContainer.receiverContainer(tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage()));
+            energyContainer = attachTrait(NotifiableEnergyContainer.receiverContainer(tierVoltage * 64L, tierVoltage,
+                    getMaxInputOutputAmperage()));
         }
         environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0));

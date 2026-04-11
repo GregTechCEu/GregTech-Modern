@@ -90,7 +90,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                            boolean useDefaultToolHandlers) {
         super();
 
-
         this.itemHandlers = itemHandlers.stream().filter(h -> {
             if (h.getSlots() == 0) return false;
             if (h instanceof ICapabilityTrait cap) return cap.canCapOutput();
@@ -125,7 +124,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public void onMachineLoad() {
         super.onMachineLoad();
 
-        this.itemOutputDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() : Direction.UP;
+        this.itemOutputDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
+                Direction.UP;
         this.fluidOutputDirection = itemOutputDirection;
 
         if (getLevel() instanceof ServerLevel serverLevel) {

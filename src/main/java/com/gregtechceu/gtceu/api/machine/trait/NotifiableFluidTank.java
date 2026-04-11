@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -52,8 +51,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     protected Predicate<FluidStack> filter = f -> true;
 
-    public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO) {
-        super(machine);
+    public NotifiableFluidTank(int slots, int capacity, IO io, IO capabilityIO) {
+        super();
         this.handlerIO = io;
         this.storages = new CustomFluidTank[slots];
         this.capabilityIO = capabilityIO;
@@ -63,8 +62,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public NotifiableFluidTank(MetaMachine machine, List<CustomFluidTank> storages, IO io, IO capabilityIO) {
-        super(machine);
+    public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
+        super();
         this.handlerIO = io;
         this.storages = storages.toArray(CustomFluidTank[]::new);
         this.capabilityIO = capabilityIO;
@@ -76,12 +75,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io) {
-        this(machine, slots, capacity, io, io);
+    public NotifiableFluidTank(int slots, int capacity, IO io) {
+        this(slots, capacity, io, io);
     }
 
-    public NotifiableFluidTank(MetaMachine machine, List<CustomFluidTank> storages, IO io) {
-        this(machine, storages, io, io);
+    public NotifiableFluidTank(List<CustomFluidTank> storages, IO io) {
+        this(storages, io, io);
     }
 
     public void onContentsChanged() {
@@ -92,7 +91,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                   boolean simulate) {
+                                                             boolean simulate) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 

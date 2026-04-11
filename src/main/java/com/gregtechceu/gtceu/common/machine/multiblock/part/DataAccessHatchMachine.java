@@ -38,7 +38,6 @@ import net.minecraftforge.items.IItemHandler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -59,12 +58,12 @@ public class DataAccessHatchMachine extends TieredPartMachine
         super(info, tier);
         this.isCreative = isCreative;
         this.recipes = isCreative ? Collections.emptySet() : new ObjectOpenHashSet<>();
-        this.importItems = createImportItemHandler();
+        this.importItems = attachTrait(createImportItemHandler());
     }
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        if (isCreative) return new NotifiableItemStackHandler(this, 0, IO.BOTH);
-        return new NotifiableItemStackHandler(this, getInventorySize(), IO.BOTH) {
+        if (isCreative) return new NotifiableItemStackHandler(0, IO.BOTH);
+        return new NotifiableItemStackHandler(getInventorySize(), IO.BOTH) {
 
             @Override
             public void onContentsChanged() {

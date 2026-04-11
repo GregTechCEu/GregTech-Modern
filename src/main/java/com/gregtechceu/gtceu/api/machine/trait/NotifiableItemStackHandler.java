@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -60,21 +59,21 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     private boolean shouldSearchContent = true;
     private @Nullable Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO,
+    public NotifiableItemStackHandler(int slots, IO handlerIO, IO capabilityIO,
                                       IntFunction<CustomItemStackHandler> storageFactory) {
-        super(machine);
+        super();
         this.handlerIO = handlerIO;
         this.storage = storageFactory.apply(slots);
         this.capabilityIO = capabilityIO;
         this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
-        this(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
+    public NotifiableItemStackHandler(int slots, IO handlerIO, IO capabilityIO) {
+        this(slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
-        this(machine, slots, handlerIO, handlerIO);
+    public NotifiableItemStackHandler(int slots, IO handlerIO) {
+        this(slots, handlerIO, handlerIO);
     }
 
     public NotifiableItemStackHandler setFilter(Predicate<ItemStack> filter) {
@@ -89,14 +88,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                        boolean simulate) {
         return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
     }
 
     // TODO: See if implementable in outside callers and unstatic; or move to different common class if not
     // Notable caller is ItemRecipeHandler, used for MinerLogic
-    public static @Nullable List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate,
-                                                IO handlerIO, CustomItemStackHandler storage) {
+    public static @Nullable List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                          boolean simulate,
+                                                          IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -18,10 +17,6 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
     @SyncToClient
     @Getter
     protected boolean isDistinct;
-
-    public NotifiableRecipeHandlerTrait(MetaMachine machine) {
-        super(machine);
-    }
 
     public NotifiableRecipeHandlerTrait() {}
 

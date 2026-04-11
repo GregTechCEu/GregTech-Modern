@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-
 import lombok.Getter;
 
 @Getter

@@ -11,7 +11,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)

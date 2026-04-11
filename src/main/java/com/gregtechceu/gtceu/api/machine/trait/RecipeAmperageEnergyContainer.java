@@ -22,7 +22,6 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
         return new RecipeAmperageEnergyContainer(maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
     }
 
-
     @Override
     protected List<Class<?>> validMachineClasses() {
         return List.of(IRecipeLogicMachine.class);

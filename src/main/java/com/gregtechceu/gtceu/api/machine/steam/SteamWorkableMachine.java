@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -30,16 +29,11 @@ import net.minecraftforge.fluids.FluidType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine {
 
@@ -72,8 +66,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
                                 Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier,
-                                Function<SteamMachine, NotifiableFluidTank> steamTankFactory) {
-        super(info, isHighPressure, steamTankFactory);
+                                NotifiableFluidTank steamTank) {
+        super(info, isHighPressure, steamTank);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
@@ -87,7 +81,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
                                 Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
         this(info, isHighPressure, recipeLogicSupplier,
-                (m) -> new NotifiableFluidTank(m, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
+                new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
     }
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
@@ -134,7 +128,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
     /**
      * @param outputFacing the facing to set
      */
-    public void setOutputFacing(@NotNull Direction outputFacing) {
+    public void setOutputFacing(Direction outputFacing) {
         if (hasOutputFacing() && (!hasFrontFacing() || this.outputFacing != getFrontFacing())) {
             this.outputFacing = outputFacing;
         }
@@ -172,7 +166,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
         return false;
     }
 
-    @NotNull
     @Override
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
@@ -184,8 +177,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 
-            if (recipeLogic != null)
-                recipeLogic.updateSound();
+            recipeLogic.updateSound();
         }
     }
 

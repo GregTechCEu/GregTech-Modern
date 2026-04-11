@@ -44,7 +44,8 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
         }
 
         long tierVoltage = GTValues.V[getTier()];
-        this.energyContainer = attachTrait(new NotifiableEnergyContainer(tierVoltage * 16L, tierVoltage, 1L, tierVoltage, 1L));
+        this.energyContainer = attachTrait(
+                new NotifiableEnergyContainer(tierVoltage * 16L, tierVoltage, 1L, tierVoltage, 1L));
         this.energyContainer.setSideOutputCondition(s -> s == getFrontFacing());
     }
 

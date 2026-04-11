@@ -1,4 +1,4 @@
 @NotNullByDefault
-package com.gregtechceu.gtceu.common.machine.multiblock.electric;
+package com.gregtechceu.gtceu.api.machine.steam;
 
 import org.jetbrains.annotations.NotNullByDefault;

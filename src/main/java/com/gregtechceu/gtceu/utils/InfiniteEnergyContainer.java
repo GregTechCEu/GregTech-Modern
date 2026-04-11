@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 public class InfiniteEnergyContainer extends NotifiableEnergyContainer {

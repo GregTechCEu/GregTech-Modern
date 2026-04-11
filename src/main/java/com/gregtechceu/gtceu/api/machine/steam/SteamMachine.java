@@ -15,8 +15,6 @@ import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 
-import java.util.function.Function;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -31,15 +29,15 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     public final NotifiableFluidTank steamTank;
 
     public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure,
-                        Function<SteamMachine, NotifiableFluidTank> steamTankFactory) {
+                        NotifiableFluidTank steamTank) {
         super(info);
         this.isHighPressure = isHighPressure;
-        this.steamTank = steamTankFactory.apply(this);
+        this.steamTank = attachTrait(steamTank);
         this.steamTank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
     }
 
     public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        this(info, isHighPressure, (m) -> new NotifiableFluidTank(m, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
+        this(info, isHighPressure, new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
     }
 
     //////////////////////////////////////

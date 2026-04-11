@@ -16,7 +16,6 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
@@ -69,13 +68,15 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = recipeLogicSupplier.apply(this);
-        this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN, IO.BOTH);
-        this.exportItems = new NotifiableItemStackHandler(this, exportSlots, IO.OUT);
-        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, tankScalingFunction.applyAsInt(getTier()),
-                IO.IN, IO.BOTH);
-        this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
-                IO.OUT);
+        this.recipeLogic = attachTrait(recipeLogicSupplier.apply(this));
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(fluidImportSlots, tankScalingFunction.applyAsInt(getTier()),
+                        IO.IN, IO.BOTH));
+        this.exportFluids = attachTrait(
+                new NotifiableFluidTank(fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
+                        IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }
@@ -89,15 +90,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = new RecipeLogic(this);
-        this.importItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
-                IO.IN);
-        this.exportItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
-                IO.OUT);
-        this.importFluids = new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                tankScalingFunction.applyAsInt(getTier()), IO.IN);
-        this.exportFluids = new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                tankScalingFunction.applyAsInt(getTier()), IO.OUT);
+        this.recipeLogic = attachTrait(new RecipeLogic(this));
+        this.importItems = attachTrait(
+                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
+                        IO.IN));
+        this.exportItems = attachTrait(
+                new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
+                        IO.OUT));
+        this.importFluids = attachTrait(new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
+                tankScalingFunction.applyAsInt(getTier()), IO.IN));
+        this.exportFluids = attachTrait(
+                new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                        tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }

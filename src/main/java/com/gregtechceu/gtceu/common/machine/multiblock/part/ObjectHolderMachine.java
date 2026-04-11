@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -19,17 +18,11 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ObjectHolderMachine extends MultiblockPartMachine {
 
     // purposefully not exposed to automation or capabilities
@@ -45,7 +38,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
 
     public ObjectHolderMachine(BlockEntityCreationInfo info) {
         super(info);
-        heldItems = new ObjectHolderHandler(this);
+        heldItems = attachTrait(new ObjectHolderHandler());
     }
 
     public void setLocked(boolean locked) {
@@ -53,27 +46,26 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         syncDataHolder.markClientSyncFieldDirty("isLocked");
     }
 
-    public @NotNull ItemStack getHeldItem(boolean remove) {
+    public ItemStack getHeldItem(boolean remove) {
         return getHeldItem(0, remove);
     }
 
-    public void setHeldItem(@NotNull ItemStack heldItem) {
+    public void setHeldItem(ItemStack heldItem) {
         heldItems.setStackInSlot(0, heldItem);
     }
 
-    public @NotNull ItemStack getDataItem(boolean remove) {
+    public ItemStack getDataItem(boolean remove) {
         return getHeldItem(1, remove);
     }
 
-    public void setDataItem(@NotNull ItemStack dataItem) {
+    public void setDataItem(ItemStack dataItem) {
         heldItems.setStackInSlot(1, dataItem);
     }
 
-    public @NotNull NotifiableItemStackHandler getAsHandler() {
+    public NotifiableItemStackHandler getAsHandler() {
         return heldItems;
     }
 
-    @NotNull
     private ItemStack getHeldItem(int slot, boolean remove) {
         ItemStack stackInSlot = heldItems.getStackInSlot(slot);
         if (remove && stackInSlot != ItemStack.EMPTY) {
@@ -113,8 +105,8 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
 
     private class ObjectHolderHandler extends NotifiableItemStackHandler {
 
-        public ObjectHolderHandler(MetaMachine metaTileEntity) {
-            super(metaTileEntity, 2, IO.IN, IO.BOTH, size -> new CustomItemStackHandler(size) {
+        public ObjectHolderHandler() {
+            super(2, IO.IN, IO.BOTH, size -> new CustomItemStackHandler(size) {
 
                 @Override
                 public int getSlotLimit(int slot) {
@@ -130,7 +122,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         }
 
         // prevent extracting the item while running
-        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (!isLocked()) {
@@ -141,7 +132,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
 
         // only allow data items in the second slot
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             if (stack.isEmpty()) {
                 return true;
             }

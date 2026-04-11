@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,5 +36,4 @@ public class CleanroomProviderTrait extends MachineTrait {
     public MachineTraitType<CleanroomProviderTrait> getTraitType() {
         return TYPE;
     }
-
 }

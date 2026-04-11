@@ -60,7 +60,7 @@ public final class MachineTraitHolder {
      * @param trait     The trait to register
      */
     public MachineTraitHolder registerPersistentTrait(String traitName, MachineTrait trait) {
-        if (trait.machine != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
+        if (trait.getMachine() != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
         if (traitsToSave.containsKey(traitName))
             throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
         traitsToSave.put(traitName, trait);

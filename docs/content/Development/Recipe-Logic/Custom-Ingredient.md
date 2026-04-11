@@ -188,12 +188,12 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
     @Getter
     private int bonk;
 
-    public NotifiableBonkHandler(MetaMachine machine, IO io) {
-        this(machine, io, io);
+    public NotifiableBonkHandler(IO io) {
+        this(io, io);
     }
 
-    public NotifiableBonkHandler(MetaMachine machine, IO handlerIO, IO capabilityIO) {
-        super(machine);
+    public NotifiableBonkHandler(IO handlerIO, IO capabilityIO) {
+        super();
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
     }
@@ -259,8 +259,7 @@ public class BonkHatchPartMachine extends TieredIOPartMachine {
 
     public BonkHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        // On creation the NotifiableBonkHandler attaches itself to the machine
-        this.bonkHandler = new NotifiableBonkHandler(this, io);
+        this.bonkHandler = attachTrait(new NotifiableBonkHandler(io));
     }
 
     @Override

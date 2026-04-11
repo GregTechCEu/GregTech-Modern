@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -24,12 +23,12 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
 
     private @Nullable CustomItemStackHandler itemHandler;
 
-    public ExportOnlyAEItemList(MetaMachine holder, int slots) {
-        this(holder, slots, ExportOnlyAEItemSlot::new);
+    public ExportOnlyAEItemList(int slots) {
+        this(slots, ExportOnlyAEItemSlot::new);
     }
 
-    public ExportOnlyAEItemList(MetaMachine holder, int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
-        super(holder, 0, IO.IN, IO.NONE);
+    public ExportOnlyAEItemList(int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
+        super(0, IO.IN, IO.NONE);
         this.inventory = new ExportOnlyAEItemSlot[slots];
         for (int i = 0; i < slots; i++) {
             this.inventory[i] = slotFactory.get();

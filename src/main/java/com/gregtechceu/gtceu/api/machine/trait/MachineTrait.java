@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,8 +43,7 @@ public abstract class MachineTrait implements ISyncManaged {
         machine.getTraitHolder().attachTrait(this);
     }
 
-    public MachineTrait() {
-    }
+    public MachineTrait() {}
 
     public MetaMachine getMachine() {
         if (machine == null) throw new IllegalStateException("Machine trait not attached to machine.");
@@ -53,7 +52,8 @@ public abstract class MachineTrait implements ISyncManaged {
 
     /**
      * A list containing the machine classes which this trait can be attached to.
-     * If this trait is being attached to a machine class that does not conform to any of the list elements, an exception is thrown.
+     * If this trait is being attached to a machine class that does not conform to any of the list elements, an
+     * exception is thrown.
      * If this list is empty, the trait can be attached to any machine.
      */
     protected List<Class<?>> validMachineClasses() {
@@ -62,8 +62,10 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public void setMachine(MetaMachine machine) {
         if (this.machine != null) throw new IllegalStateException("Machine trait already attached to a machine.");
-        if (!validMachineClasses().isEmpty() && validMachineClasses().stream().noneMatch(cls -> cls.isAssignableFrom(machine.getClass()))) {
-            throw new IllegalArgumentException("Attempted to attach trait to invalid machine class %s".formatted(machine.getClass()));
+        if (!validMachineClasses().isEmpty() &&
+                validMachineClasses().stream().noneMatch(cls -> cls.isAssignableFrom(machine.getClass()))) {
+            throw new IllegalArgumentException(
+                    "Attempted to attach trait to invalid machine class %s".formatted(machine.getClass()));
         }
         this.machine = machine;
     }
