@@ -5993,5 +5993,18 @@
     "command.gtceu.medical_condition.clear.specific.success.multiple": "Удалено %s у %s целей",
     "command.gtceu.medical_condition.clear.specific.success.single": "Удалено %s у %s",
     "command.gtceu.medical_condition.get.symptoms": "Сейчас у %s есть следующие симптомы:",
-    "command.gtceu.medical_condition.get.symptoms.element": "- %s"
+    "command.gtceu.medical_condition.get.symptoms.element": "- %s",
+    "command.gtceu.medical_condition.get.symptoms.empty": "%s не испытывает никаких симптомов.",
+    "command.gtceu.medical_condition.give.failed": "Невозможно применить данное заболевание (недопустимая цель)",
+    "command.gtceu.medical_condition.give.success.multiple": "%s применено к %s целям",
+    "command.gtceu.medical_condition.give.success.single": "Применено %s к %s",
+    "config.gtceu.option.autoRebuildResources": "autoRebuildResources",
+    "gtceu.debug.resource_rebuild.done": "Пересборка ресурсов Gradle выполнена за %s",
+    "gtceu.debug.resource_rebuild.start": "Запуск пересборки ресурсов Gradle (./gradlew :processResources)",
+    "gtceu.placeholder_info.data.9": "  {data dec <слот>} -> уменьшает p на 1, если p становится меньше 0, устанавливает p равным (вместимость - 1)",
+    "gtceu.placeholder_info.item.0": "Возвращает количество и ID предметов, находящегося в указанном слоте",
+    "gtceu.placeholder_info.item.1": "Используется:",
+    "gtceu.placeholder_info.item.2": "  {item <slot>} -> \"31 minecraft:diamond\" (например)",
+    "gtceu.placeholder_info.module.0": "Отрисовывает модуль в указанном слоте на центральном мониторе (не работает в улучшениях)",
+    "gtceu.placeholder_info.module.1": "Используется:"
 }
