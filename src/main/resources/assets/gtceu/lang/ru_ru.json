@@ -5936,5 +5936,10 @@
     "gtceu.placeholder_info.blockNbt.3": "  {blockNbt [key1] [key2] ...} -> возвращает часть NBT данных",
     "gtceu.placeholder_info.bufferText.0": "Возвращает текст из буфера, доступного через ComputerCraft",
     "gtceu.placeholder_info.bufferText.1": "Используется:",
-    "gtceu.placeholder_info.bufferText.2": "  {bufferText <line>} -> возвращает текст из буфера на указанной строке (строка от 1 до 100)"
+    "gtceu.placeholder_info.bufferText.2": "  {bufferText <line>} -> возвращает текст из буфера на указанной строке (строка от 1 до 100)",
+    "gtceu.placeholder_info.item.0": "Возвращает количество и ID предметов, находящегося в указанном слоте",
+    "gtceu.placeholder_info.item.1": "Используется:",
+    "gtceu.placeholder_info.item.2": "  {item <slot>} -> \"31 minecraft:diamond\" (например)",
+    "gtceu.placeholder_info.module.0": "Отрисовывает модуль в указанном слоте на центральном мониторе (не работает в улучшениях)",
+    "gtceu.placeholder_info.module.1": "Используется:"
 }
