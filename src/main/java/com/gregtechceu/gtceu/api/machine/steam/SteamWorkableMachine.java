@@ -32,7 +32,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine {
@@ -65,13 +64,13 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final List<ISubscription> traitSubscriptions;
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
-                                Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier,
+                                RecipeLogic recipeLogic,
                                 NotifiableFluidTank steamTank) {
         super(info, isHighPressure, steamTank);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = recipeLogicSupplier.apply(this);
+        this.recipeLogic = attachTrait(recipeLogic);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
@@ -79,13 +78,13 @@ public abstract class SteamWorkableMachine extends SteamMachine
     }
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
-                                Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
-        this(info, isHighPressure, recipeLogicSupplier,
+                                RecipeLogic recipeLogic) {
+        this(info, isHighPressure, recipeLogic,
                 new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
     }
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        this(info, isHighPressure, RecipeLogic::new);
+        this(info, isHighPressure, new RecipeLogic());
     }
 
     //////////////////////////////////////
@@ -118,7 +117,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
         traitSubscriptions.clear();
         capabilitiesProxy.clear();
         capabilitiesFlat.clear();
-        recipeLogic.inValid();
     }
 
     public boolean hasOutputFacing() {

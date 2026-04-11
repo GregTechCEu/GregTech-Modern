@@ -73,7 +73,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected ISubscription steamTankSubs;
 
     public SteamBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        super(info, isHighPressure, RecipeLogic::new, new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
+        super(info, isHighPressure, new RecipeLogic(),
+                new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
         this.waterTank = attachTrait(createWaterTank());
         this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
     }

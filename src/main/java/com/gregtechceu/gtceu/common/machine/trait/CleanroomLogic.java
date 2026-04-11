@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
     public static final int BASE_CLEAN_AMOUNT = 2;
@@ -35,13 +37,18 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     @SaveField
     private boolean isActiveAndNeedsUpdate;
 
-    public CleanroomLogic(CleanroomMachine machine) {
-        super(machine);
+    public CleanroomLogic() {
+        super();
     }
 
     @Override
     public CleanroomMachine getMachine() {
-        return (CleanroomMachine) machine;
+        return (CleanroomMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(CleanroomMachine.class);
     }
 
     /**
@@ -59,12 +66,12 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
             if (maintenanceMachine == null || maintenanceMachine.getNumMaintenanceProblems() < 6 || zone != null) {
                 // drain the energy
                 if (!consumeEnergy()) {
-                    if (progress > 0 && machine.regressWhenWaiting()) {
+                    if (progress > 0 && getMachine().regressWhenWaiting()) {
                         this.progress = 1;
                     }
 
                     // the cleanroom does not have enough energy, so it looses cleanliness
-                    if (machine.self().getOffsetTimer() % duration == 0) {
+                    if (getMachine().getOffsetTimer() % duration == 0) {
                         adjustCleanAmount(true);
                     }
 
@@ -75,13 +82,13 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                 setStatus(Status.WORKING);
                 // increase progress
                 if (progress++ < getMaxProgress()) {
-                    if (!machine.onWorking()) {
+                    if (!getMachine().onWorking()) {
                         this.interruptRecipe();
                     }
                     return;
                 }
                 progress = 0;
-                if (!machine.beforeWorking(null)) {
+                if (!getMachine().beforeWorking(null)) {
                     return;
                 }
                 adjustCleanAmount(false);
@@ -90,11 +97,11 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                 if (progress > 0) {
                     progress--;
                 }
-                if (machine.self().getOffsetTimer() % duration == 0) {
+                if (getMachine().getOffsetTimer() % duration == 0) {
                     adjustCleanAmount(true);
                 }
                 setStatus(Status.IDLE);
-                machine.afterWorking();
+                getMachine().afterWorking();
             }
         }
     }

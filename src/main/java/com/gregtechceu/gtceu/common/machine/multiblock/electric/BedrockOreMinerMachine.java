@@ -40,7 +40,7 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     private final int tier;
 
     public BedrockOreMinerMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine) m));
+        super(info, new BedrockOreMinerLogic());
         this.tier = tier;
     }
 

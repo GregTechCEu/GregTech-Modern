@@ -19,7 +19,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
                                             IMufflableMachine, IOverclockMachine {
@@ -57,7 +56,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean previouslyMuffled = true;
 
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier,
-                                 Function<WorkableTieredMachine, RecipeLogic> recipeLogicSupplier, int importSlots,
+                                 RecipeLogic recipeLogic, int importSlots,
                                  int exportSlots,
                                  int fluidImportSlots, int fluidExportSlots, Int2IntFunction tankScalingFunction) {
         super(info, tier);
@@ -68,7 +67,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = attachTrait(recipeLogicSupplier.apply(this));
+        this.recipeLogic = attachTrait(recipeLogic);
         this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.importFluids = attachTrait(
@@ -90,7 +89,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = attachTrait(new RecipeLogic(this));
+        this.recipeLogic = attachTrait(new RecipeLogic());
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
                         IO.IN));
@@ -136,7 +135,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         traitSubscriptions.clear();
         capabilitiesProxy.clear();
         capabilitiesFlat.clear();
-        recipeLogic.inValid();
     }
 
     //////////////////////////////////////
