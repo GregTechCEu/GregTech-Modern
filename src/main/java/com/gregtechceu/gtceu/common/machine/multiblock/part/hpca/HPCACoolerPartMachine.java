@@ -22,15 +22,15 @@ public class HPCACoolerPartMachine extends HPCAComponentPartMachine {
     private final boolean advanced;
 
     public HPCACoolerPartMachine(BlockEntityCreationInfo info, boolean advanced) {
-        super(info, (machine) -> createHPCATrait(machine, advanced));
+        super(info, createHPCATrait(advanced));
         this.advanced = advanced;
     }
 
-    public static HPCAComponentTrait createHPCATrait(HPCAComponentPartMachine machine, boolean isAdvanced) {
+    public static HPCAComponentTrait createHPCATrait(boolean isAdvanced) {
         int upkeepEU = isAdvanced ? GTValues.VA[GTValues.IV] : 0;
         int coolingAmount = isAdvanced ? 2 : 1;
         int maxCoolant = isAdvanced ? 8 : 0;
-        return new HPCACoolantProviderTrait(machine, upkeepEU, upkeepEU, false, false, coolingAmount, maxCoolant,
+        return new HPCACoolantProviderTrait(upkeepEU, upkeepEU, false, false, coolingAmount, maxCoolant,
                 isAdvanced);
     }
 

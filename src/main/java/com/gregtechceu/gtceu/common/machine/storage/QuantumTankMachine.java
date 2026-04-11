@@ -79,7 +79,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         this.maxAmount = maxAmount;
         this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
-        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofFluids(cache));
     }
 
     //////////////////////////////////////

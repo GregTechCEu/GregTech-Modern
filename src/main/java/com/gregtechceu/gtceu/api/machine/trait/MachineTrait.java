@@ -33,10 +33,9 @@ public abstract class MachineTrait implements ISyncManaged {
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    @Getter
-    protected final MetaMachine machine;
+    private @Nullable MetaMachine machine;
     @Setter
-    protected Predicate<@Nullable Direction> capabilityValidator;
+    protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
 
     public MachineTrait(MetaMachine machine) {
         this.machine = machine;
@@ -44,26 +43,39 @@ public abstract class MachineTrait implements ISyncManaged {
         machine.getTraitHolder().attachTrait(this);
     }
 
+    public MachineTrait() {
+    }
+
+    public MetaMachine getMachine() {
+        if (machine == null) throw new IllegalStateException("Machine trait not attached to machine.");
+        return machine;
+    }
+
+    public void setMachine(MetaMachine machine) {
+        if (this.machine != null) throw new IllegalStateException("Machine trait already attached to a machine.");
+        this.machine = machine;
+    }
+
     public abstract MachineTraitType<?> getTraitType();
 
     public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
-        return machine.subscribeServerTick(last, runnable);
+        return getMachine().subscribeServerTick(last, runnable);
     }
 
     public void unsubscribe(TickableSubscription current) {
-        machine.unsubscribe(current);
+        getMachine().unsubscribe(current);
     }
 
     public BlockPos getBlockPos() {
-        return machine.getBlockPos();
+        return getMachine().getBlockPos();
     }
 
     public Level getLevel() {
-        return machine.getLevel();
+        return getMachine().getLevel();
     }
 
     public boolean isRemote() {
-        return machine.isRemote();
+        return getMachine().isRemote();
     }
 
     public final boolean hasCapability(@Nullable Direction side) {
@@ -72,7 +84,7 @@ public abstract class MachineTrait implements ISyncManaged {
 
     @Override
     public void markAsChanged() {
-        machine.markAsChanged();
+        getMachine().markAsChanged();
     }
 
     public MachineRenderState getRenderState() {
@@ -84,7 +96,7 @@ public abstract class MachineTrait implements ISyncManaged {
     }
 
     public void scheduleRenderUpdate() {
-        machine.scheduleRenderUpdate();
+        getMachine().scheduleRenderUpdate();
     }
 
     public void onMachineLoad() {}

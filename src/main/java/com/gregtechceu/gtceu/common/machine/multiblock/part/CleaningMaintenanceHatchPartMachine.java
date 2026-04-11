@@ -29,7 +29,7 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     public CleaningMaintenanceHatchPartMachine(BlockEntityCreationInfo info, CleanroomType cleanroomType) {
         super(info);
         this.cleanroomType = cleanroomType;
-        this.cleanroomProvider = new CleanroomProviderTrait(this, Set.of(cleanroomType));
+        this.cleanroomProvider = attachTrait(new CleanroomProviderTrait(Set.of(cleanroomType)));
         cleanroomProvider.setActive(true);
     }
 

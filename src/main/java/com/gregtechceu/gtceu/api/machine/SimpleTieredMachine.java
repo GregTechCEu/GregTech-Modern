@@ -70,7 +70,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
         super(info, tier, tankScalingFunction);
 
-        this.autoOutput = new AutoOutputTrait(this, List.of(exportItems), List.of(exportFluids));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
 
         this.chargerInventory = new CustomItemStackHandler() {
 

@@ -41,27 +41,27 @@ public class GridNodeHolder extends MachineTrait {
     }
 
     protected SerializableManagedGridNode createManagedNode() {
-        var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) machine,
+        var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) getMachine(),
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .setVisualRepresentation(machine.getDefinition().getItem())
+                .setVisualRepresentation(getMachine().getDefinition().getItem())
                 .setIdlePowerUsage(ConfigHolder.INSTANCE.compat.ae2.meHatchEnergyUsage)
                 .setInWorldNode(true)
                 .setExposedOnSides(
-                        machine.hasFrontFacing() ? EnumSet.of(machine.getFrontFacing()) :
+                        getMachine().hasFrontFacing() ? EnumSet.of(getMachine().getFrontFacing()) :
                                 EnumSet.allOf(Direction.class))
                 .setTagName("proxy");
         return node;
     }
 
     protected void createMainNode() {
-        this.mainNode.create(machine.getLevel(), machine.getBlockPos());
+        this.mainNode.create(getLevel(), getBlockPos());
     }
 
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
-        if (machine.getLevel() instanceof ServerLevel serverLevel) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::createMainNode));
         }
     }

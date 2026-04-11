@@ -58,8 +58,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IUIMachine 
         super(info, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
-                2.5f / Math.max(tier, 1));
+        this.hazardEmitter = attachTrait(new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                2.5f / Math.max(tier, 1)));
     }
 
     //////////////////////////////////////

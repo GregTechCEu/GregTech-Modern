@@ -44,8 +44,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         super(info, tier, tankScalingFunction);
 
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
-                hazardStrengthPerOperation);
+        this.hazardEmitter = attachTrait(new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                hazardStrengthPerOperation));
     }
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {

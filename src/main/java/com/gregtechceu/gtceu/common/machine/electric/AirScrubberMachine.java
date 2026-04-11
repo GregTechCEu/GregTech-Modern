@@ -30,7 +30,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     public AirScrubberMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, GTMachineUtils.largeTankSizeFunction);
-        this.cleanerTrait = new EnvironmentalHazardCleanerTrait(this, tier / 2, this::validateCleaningOperation);
+        this.cleanerTrait = attachTrait(new EnvironmentalHazardCleanerTrait(tier / 2, this::validateCleaningOperation));
     }
 
     @Override

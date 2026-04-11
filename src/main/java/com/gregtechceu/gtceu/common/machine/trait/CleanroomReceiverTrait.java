@@ -16,8 +16,7 @@ public class CleanroomReceiverTrait extends MachineTrait {
     @Setter
     protected @Nullable CleanroomProviderTrait cleanroomProvider;
 
-    public CleanroomReceiverTrait(MetaMachine machine) {
-        super(machine);
+    public CleanroomReceiverTrait() {
         cleanroomProvider = null;
     }
 

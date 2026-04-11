@@ -44,9 +44,9 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
 
     private final @Nullable BiPredicate<MedicalCondition, Float> cleaningHandler;
 
-    public EnvironmentalHazardCleanerTrait(MetaMachine machine, int cleaningRadius,
+    public EnvironmentalHazardCleanerTrait(int cleaningRadius,
                                            @Nullable BiPredicate<MedicalCondition, Float> validateCleaningOperation) {
-        super(machine);
+        super();
         this.cleaningRadius = cleaningRadius;
         this.cleaningHandler = validateCleaningOperation;
     }
@@ -76,7 +76,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
 
     public void cleanHazard() {
         if (!cleaningOperationInProgress) return;
-        if (machine.getOffsetTimer() % 20 == 0) {
+        if (getMachine().getOffsetTimer() % 20 == 0) {
             removedLastSecond = 0;
 
             for (Direction dir : GTUtil.DIRECTIONS) {

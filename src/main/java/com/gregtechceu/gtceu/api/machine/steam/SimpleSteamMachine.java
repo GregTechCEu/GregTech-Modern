@@ -57,7 +57,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
 
-        this.exhaustVentTrait = new ExhaustVentMachineTrait(this);
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {

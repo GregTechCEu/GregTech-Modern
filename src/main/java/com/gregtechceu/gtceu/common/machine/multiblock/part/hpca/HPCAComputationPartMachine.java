@@ -22,16 +22,16 @@ public class HPCAComputationPartMachine extends HPCAComponentPartMachine {
     private final boolean advanced;
 
     public HPCAComputationPartMachine(BlockEntityCreationInfo info, boolean advanced) {
-        super(info, (m) -> createHPCATrait(m, advanced));
+        super(info, createHPCATrait(advanced));
         this.advanced = advanced;
     }
 
-    public static HPCAComponentTrait createHPCATrait(HPCAComponentPartMachine machine, boolean isAdvanced) {
+    public static HPCAComponentTrait createHPCATrait(boolean isAdvanced) {
         int upkeepEUt = GTValues.VA[isAdvanced ? GTValues.IV : GTValues.EV];
         int maxEUt = GTValues.VA[isAdvanced ? GTValues.ZPM : GTValues.LuV];
         int cooling = isAdvanced ? 4 : 2;
         int cwu = isAdvanced ? 16 : 4;
-        return new HPCAComputationProviderTrait(machine, upkeepEUt, maxEUt, true, false, cwu, cooling);
+        return new HPCAComputationProviderTrait(upkeepEUt, maxEUt, true, false, cwu, cooling);
     }
 
     @Override

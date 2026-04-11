@@ -72,7 +72,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
         this.energyPerTick = energyPerTick;
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
-        this.exhaustVentTrait = new ExhaustVentMachineTrait(this);
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
     }

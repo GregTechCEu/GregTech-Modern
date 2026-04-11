@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.trait.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
@@ -22,8 +21,8 @@ public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
 
     private final Supplier<Set<BlockPos>> offsetGetter;
 
-    public MultiblockFluidRendererTrait(WorkableMultiblockMachine multiMachine, Supplier<Set<BlockPos>> offsetGetter) {
-        super(multiMachine);
+    public MultiblockFluidRendererTrait(Supplier<Set<BlockPos>> offsetGetter) {
+        super();
         this.offsetGetter = offsetGetter;
     }
 

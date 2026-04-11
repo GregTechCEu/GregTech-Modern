@@ -30,7 +30,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
         super(info, tier, io);
         this.amperage = amperage;
         this.energyContainer = createEnergyContainer();
-        new EnvironmentalExplosionTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
+        attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10, () -> energyContainer.getEnergyStored() > 0));
     }
 
     //////////////////////////////////////

@@ -64,6 +64,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
+                var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.requestCWUt(cwut, simulate, seen);
@@ -105,6 +106,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
+                var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.getMaxCWUt(seen);
@@ -148,6 +150,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
+                var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.canBridge(seen);
@@ -199,6 +202,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
                     int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
+                        var machine = getMachine();
                         if (machine instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().progress -= 1;
@@ -248,6 +252,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         if (this.handlerIO.support(IO.OUT)) {
             return this;
         }
+        var machine = getMachine();
         if (machine instanceof IOpticalComputationReceiver receiver) {
             return receiver.getComputationProvider();
         } else if (machine instanceof IOpticalComputationProvider provider) {
@@ -262,7 +267,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             }
         }
         for (Direction direction : GTUtil.DIRECTIONS) {
-            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getBlockPos().relative(direction));
+            BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(direction));
             if (blockEntity == null) continue;
 
             // noinspection DataFlowIssue can be null just fine.
@@ -279,7 +284,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     @Nullable
     private IOpticalComputationProvider getOpticalNetProvider() {
         for (Direction direction : GTUtil.DIRECTIONS) {
-            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getBlockPos().relative(direction));
+            BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(direction));
             if (blockEntity instanceof OpticalPipeBlockEntity) {
                 return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite())
                         .orElse(null);

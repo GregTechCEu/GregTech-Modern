@@ -28,9 +28,9 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     protected final HPCAComponentTrait hpcaComponentTrait;
 
     public HPCAComponentPartMachine(BlockEntityCreationInfo info,
-                                    Function<HPCAComponentPartMachine, HPCAComponentTrait> hpcaTraitSupplier) {
+                                    HPCAComponentTrait hpcaTrait) {
         super(info);
-        this.hpcaComponentTrait = hpcaTraitSupplier.apply(this);
+        this.hpcaComponentTrait = attachTrait(hpcaTrait);
     }
 
     public abstract boolean isAdvanced();

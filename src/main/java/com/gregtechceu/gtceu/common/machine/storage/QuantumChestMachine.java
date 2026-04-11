@@ -89,7 +89,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler();
         this.lockedItem = new CustomItemStackHandler();
-        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
         lockedItem.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("lockedItem"));
     }
 

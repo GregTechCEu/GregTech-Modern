@@ -144,8 +144,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Getter
     @SaveField(nbtKey = "chance_cache")
     protected final ChanceCacheMap chanceCaches = makeChanceCaches();
-    protected TickableSubscription subscription;
-    protected Object workingSound;
+    protected @Nullable TickableSubscription subscription;
+    protected @Nullable Object workingSound;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());

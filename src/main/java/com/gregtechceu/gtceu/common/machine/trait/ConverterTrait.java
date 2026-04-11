@@ -36,13 +36,13 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(@NotNull ConverterMachine machine, int amps) {
+    public ConverterTrait(ConverterMachine machine, int amps) {
         super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
                 GTValues.V[machine.getTier()], amps);
         this.amps = amps;
         this.voltage = GTValues.V[machine.getTier()];
-        setSideInputCondition(side -> !this.feToEu && side != this.getMachine().getFrontFacing());
-        setSideOutputCondition(side -> this.feToEu && side == this.getMachine().getFrontFacing());
+        setSideInputCondition(side -> !feToEu && side != getMachine().getFrontFacing());
+        setSideOutputCondition(side -> feToEu && side == getMachine().getFrontFacing());
         this.feContainer = new FEContainer(machine);
     }
 
@@ -54,7 +54,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         this.feToEu = feToEu;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
         syncDataHolder.markClientSyncFieldDirty("feToEu");
-        machine.notifyBlockUpdate();
+        getMachine().notifyBlockUpdate();
     }
 
     //////////////////////////////
@@ -69,9 +69,9 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         if (feToEu) { // output eu
             super.serverTick();
         } else { // output fe
-            var fontFacing = machine.getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getBlockPos().relative(fontFacing), fontFacing.getOpposite());
+            var fontFacing = getMachine().getFrontFacing();
+            var energyContainer = GTCapabilityHelper.getForgeEnergy(getLevel(),
+                    getBlockPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);

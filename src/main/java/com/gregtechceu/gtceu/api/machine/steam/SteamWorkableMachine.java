@@ -76,7 +76,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         super(info, isHighPressure, steamTankFactory);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.cleanroomReceiver = new CleanroomReceiverTrait(this);
+        this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);

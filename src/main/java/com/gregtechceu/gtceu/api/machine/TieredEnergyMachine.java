@@ -37,8 +37,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
                                Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
         super(info, tier);
         energyContainer = energyContainerSupplier.apply(this);
-        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
-                () -> energyContainer.getEnergyStored() > 0);
+        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0));
     }
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
@@ -52,8 +52,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             energyContainer = NotifiableEnergyContainer.receiverContainer(this,
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
         }
-        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
-                () -> energyContainer.getEnergyStored() > 0);
+        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0));
     }
 
     //////////////////////////////////////

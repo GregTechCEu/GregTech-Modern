@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HPCAEmptyPartMachine extends HPCAComponentPartMachine {
 
     public HPCAEmptyPartMachine(BlockEntityCreationInfo info) {
-        super(info, (machine) -> new HPCAComponentTrait(machine, 0, 0, false, false));
+        super(info, new HPCAComponentTrait(0, 0, false, false));
     }
 
     @Override

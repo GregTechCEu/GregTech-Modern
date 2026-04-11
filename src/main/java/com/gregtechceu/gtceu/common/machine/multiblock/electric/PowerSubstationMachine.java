@@ -145,7 +145,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (this.energyBank == null) {
             this.energyBank = new PowerStationEnergyBank(this, batteries);
         } else {
-            this.energyBank = energyBank.rebuild(batteries);
+            energyBank.rebuild(batteries);
         }
         this.passiveDrain = this.energyBank.getPassiveDrainPerTick();
     }
@@ -395,6 +395,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
         public PowerStationEnergyBank(MetaMachine machine, List<IBatteryData> batteries) {
             super(machine);
+            setupBatteries(batteries);
+        }
+
+        public void setupBatteries(List<IBatteryData> batteries) {
             storage = new long[batteries.size()];
             maximums = new long[batteries.size()];
             for (int i = 0; i < batteries.size(); i++) {
@@ -436,15 +440,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          * Will use existing stored power and try to map it onto new batteries.
          * If there was more power before the rebuild operation, it will be lost.
          */
-        public PowerStationEnergyBank rebuild(@NotNull List<IBatteryData> batteries) {
+        public void rebuild(@NotNull List<IBatteryData> batteries) {
             if (batteries.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild Power Substation power bank with no batteries!");
             }
-            PowerStationEnergyBank newStorage = new PowerStationEnergyBank(this.machine, batteries);
-            for (long stored : storage) {
-                newStorage.fill(stored);
+            long[] oldStorage = storage.clone();
+            setupBatteries(batteries);
+            for (long stored : oldStorage) {
+                fill(stored);
             }
-            return newStorage;
         }
 
         /** @return Amount filled into storage */

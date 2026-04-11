@@ -38,7 +38,7 @@ public final class MachineTraitHolder {
         return traits;
     }
 
-    public void attachTrait(MachineTrait trait) {
+    public <T extends MachineTrait> T attachTrait(T trait) {
         var traitType = trait.getTraitType();
 
         var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
@@ -48,6 +48,7 @@ public final class MachineTraitHolder {
 
         list.add(trait);
         traits.add(trait);
+        return trait;
     }
 
     /**

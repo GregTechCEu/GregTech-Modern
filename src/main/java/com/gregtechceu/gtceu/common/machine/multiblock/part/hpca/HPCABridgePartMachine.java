@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HPCABridgePartMachine extends HPCAComponentPartMachine {
 
     public HPCABridgePartMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new HPCAComponentTrait(m, GTValues.VA[GTValues.IV], GTValues.VA[GTValues.IV], false, true));
+        super(info, new HPCAComponentTrait(GTValues.VA[GTValues.IV], GTValues.VA[GTValues.IV], false, true));
     }
 
     @Override

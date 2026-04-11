@@ -75,7 +75,7 @@ public class PumpMachine extends TieredEnergyMachine implements IUIMachine {
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
-        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofFluids(cache));
     }
 
     //////////////////////////////////////

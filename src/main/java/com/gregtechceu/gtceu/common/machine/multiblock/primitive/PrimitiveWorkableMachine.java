@@ -40,8 +40,8 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
         this.exportItems = createExportItemHandler();
         this.importFluids = createImportFluidHandler();
         this.exportFluids = createExportFluidHandler();
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
-                0.1f);
+        this.hazardEmitter = attachTrait(new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                0.1f));
     }
 
     //////////////////////////////////////

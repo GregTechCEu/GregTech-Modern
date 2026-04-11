@@ -76,7 +76,7 @@ public class MinerMachine extends WorkableTieredMachine
                 0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
-        this.autoOutput = AutoOutputTrait.ofItems(this, exportItems);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(exportItems));
         autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
     }
 

@@ -175,8 +175,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             for (Direction side : GTUtil.DIRECTIONS) {
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
-                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                        machine.getBlockPos().relative(side), oppositeSide);
+                var energyContainer = GTCapabilityHelper.getEnergyContainer(getLevel(),
+                        getBlockPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                             outputAmperes - amperesUsed);
@@ -271,7 +271,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         long canAccept = getEnergyCapacity() - getEnergyStored();
         if (voltage > 0L && (side == null || inputsEnergy(side))) {
             if (voltage > getInputVoltage()) {
-                var explodable = machine.getTrait(EnvironmentalExplosionTrait.TYPE);
+                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.TYPE);
                 if (explodable != null)
                     GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                 return Math.min(amperage, getInputAmperage() - amps);

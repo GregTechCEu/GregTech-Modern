@@ -46,7 +46,7 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
         super(info, tier);
         this.inventory = createInventory();
         this.tank = createTank();
-        this.autoOutput = new AutoOutputTrait(this, List.of(inventory), List.of(tank));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(inventory), List.of(tank)));
     }
 
     ////////////////////////////////

@@ -29,7 +29,7 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
 
     public LargeChemicalBathMachine(BlockEntityCreationInfo info) {
         super(info);
-        fluidRendererTrait = new MultiblockFluidRendererTrait(this, this::saveOffsets);
+        fluidRendererTrait = attachTrait(new MultiblockFluidRendererTrait(this::saveOffsets));
     }
 
     public Set<BlockPos> saveOffsets() {

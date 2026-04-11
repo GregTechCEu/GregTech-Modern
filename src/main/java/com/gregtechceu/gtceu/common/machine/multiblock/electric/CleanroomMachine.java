@@ -100,7 +100,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public CleanroomMachine(BlockEntityCreationInfo info) {
         super(info, (m) -> new CleanroomLogic((CleanroomMachine) m));
-        this.cleanroomProviderTrait = new CleanroomProviderTrait(this);
+        this.cleanroomProviderTrait = attachTrait(new CleanroomProviderTrait());
     }
 
     @Override

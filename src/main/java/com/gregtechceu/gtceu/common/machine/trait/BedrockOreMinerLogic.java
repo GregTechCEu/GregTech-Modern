@@ -39,7 +39,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Override
     public BedrockOreMinerMachine getMachine() {
-        return (BedrockOreMinerMachine) super.getMachine();
+        return (BedrockOreMinerMachine)super.getMachine();
     }
 
     @Override

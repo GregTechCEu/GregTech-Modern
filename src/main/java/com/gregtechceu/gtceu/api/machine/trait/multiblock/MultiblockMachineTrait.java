@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 
 public abstract class MultiblockMachineTrait extends MachineTrait {
 
-    public MultiblockMachineTrait(MultiblockControllerMachine multiMachine) {
-        super(multiMachine);
+    public MultiblockMachineTrait() {
+        super();
     }
 
     @Override

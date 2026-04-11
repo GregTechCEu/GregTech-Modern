@@ -81,7 +81,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
-        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 

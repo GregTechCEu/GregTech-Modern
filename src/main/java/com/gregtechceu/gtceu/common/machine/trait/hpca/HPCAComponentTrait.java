@@ -28,9 +28,9 @@ public class HPCAComponentTrait extends MachineTrait {
     @Getter
     private boolean isDamaged;
 
-    public HPCAComponentTrait(MetaMachine machine, int upkeepEUt, int maxEUt, boolean canBeDamaged,
+    public HPCAComponentTrait(int upkeepEUt, int maxEUt, boolean canBeDamaged,
                               boolean allowBridging) {
-        super(machine);
+        super();
         this.upkeepEUt = upkeepEUt;
         this.maxEUt = maxEUt;
         this.canBeDamaged = canBeDamaged;

@@ -276,8 +276,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return traitHolder.getAllTraits();
     }
 
-    public void attachTrait(MachineTrait trait) {
-        traitHolder.attachTrait(trait);
+    public <T extends MachineTrait> T attachTrait(T trait) {
+        return traitHolder.attachTrait(trait);
     }
 
     /**
@@ -288,7 +288,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
-    public void registerPersistentTrait(String traitName, MachineTrait trait) {
+    public void attachPersistentTrait(String traitName, MachineTrait trait) {
+        traitHolder.attachTrait(trait);
         traitHolder.registerPersistentTrait(traitName, trait);
     }
 

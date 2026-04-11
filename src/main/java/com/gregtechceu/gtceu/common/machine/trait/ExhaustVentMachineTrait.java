@@ -31,7 +31,7 @@ public class ExhaustVentMachineTrait extends MachineTrait {
 
     @Getter
     @Setter
-    private Direction ventingDirection;
+    private Direction ventingDirection = Direction.UP;
     @Getter
     @Setter
     @SaveField
@@ -40,10 +40,9 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Setter
     private float ventingDamageAmount;
 
-    public ExhaustVentMachineTrait(MetaMachine machine) {
-        super(machine);
+    public ExhaustVentMachineTrait() {
+        super();
 
-        this.ventingDirection = machine.getFrontFacing().getOpposite();
         this.needsVenting = false;
         this.ventingDamageAmount = 0;
     }
@@ -51,6 +50,11 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Override
     public MachineTraitType<ExhaustVentMachineTrait> getTraitType() {
         return TYPE;
+    }
+
+    @Override
+    public void onMachineLoad() {
+        this.ventingDirection = getMachine().getFrontFacing().getOpposite();
     }
 
     public boolean isVentingBlocked() {

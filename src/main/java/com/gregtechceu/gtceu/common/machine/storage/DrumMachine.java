@@ -53,7 +53,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler();
-        this.autoOutput = new AutoOutputTrait(this, List.of(), List.of(cache), false);
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(), List.of(cache), false));
         autoOutput.setFluidOutputDirection(Direction.DOWN);
         autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
     }
