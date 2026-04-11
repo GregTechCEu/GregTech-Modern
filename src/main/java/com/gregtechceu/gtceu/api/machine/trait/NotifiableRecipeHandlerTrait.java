@@ -23,6 +23,8 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
         super(machine);
     }
 
+    public NotifiableRecipeHandlerTrait() {}
+
     public void setDistinct(boolean distinct) {
         isDistinct = distinct;
         syncDataHolder.markClientSyncFieldDirty("isDistinct");

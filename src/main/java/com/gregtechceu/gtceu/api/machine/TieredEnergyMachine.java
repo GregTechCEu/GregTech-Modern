@@ -34,40 +34,33 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
-                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
+                               NotifiableEnergyContainer energyContainer) {
         super(info, tier);
-        energyContainer = energyContainerSupplier.apply(this);
+        this.energyContainer = attachTrait(energyContainer);
         environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0));
     }
+
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
+                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainer) {
+        super(info, tier);
+        this.energyContainer = attachTrait(energyContainer.apply(this));
+        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
+                () -> this.energyContainer.getEnergyStored() > 0));
+    }
+
 
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
 
         long tierVoltage = GTValues.V[tier];
         if (isEnergyEmitter()) {
-            energyContainer = NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+            energyContainer = attachTrait(NotifiableEnergyContainer.emitterContainer(tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage()));
         } else {
-            energyContainer = NotifiableEnergyContainer.receiverContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+            energyContainer = attachTrait(NotifiableEnergyContainer.receiverContainer(tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage()));
         }
         environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0));
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
     }
 
     //////////////////////////////////////

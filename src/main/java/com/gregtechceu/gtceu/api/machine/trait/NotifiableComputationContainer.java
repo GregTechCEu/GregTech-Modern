@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -44,8 +43,8 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     protected long lastTimeStamp;
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public NotifiableComputationContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
-        super(machine);
+    public NotifiableComputationContainer(IO handlerIO, boolean transmitter) {
+        super();
         this.handlerIO = handlerIO;
         this.transmitter = transmitter;
 
@@ -53,7 +52,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         var latestTimeStamp = getMachine().getOffsetTimer();
         if (lastTimeStamp < latestTimeStamp) {
             lastOutputCwu = currentOutputCwu;
@@ -102,7 +101,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
@@ -146,7 +145,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
@@ -228,11 +227,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             }
             sum = sum - canInput;
         }
-        return sum <= 0 ? null : Collections.singletonList(sum);
+        return sum <= 0 ? List.of() : Collections.singletonList(sum);
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return List.of(lastOutputCwu);
     }
 
@@ -286,8 +285,8 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         for (Direction direction : GTUtil.DIRECTIONS) {
             BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(direction));
             if (blockEntity instanceof OpticalPipeBlockEntity) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite())
-                        .orElse(null);
+                var cap = blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).resolve();
+                return cap.orElse(null);
             }
         }
         return null;

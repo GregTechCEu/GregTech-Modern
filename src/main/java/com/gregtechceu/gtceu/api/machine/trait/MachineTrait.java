@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -38,7 +39,6 @@ public abstract class MachineTrait implements ISyncManaged {
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
 
     public MachineTrait(MetaMachine machine) {
-        this.machine = machine;
         this.capabilityValidator = side -> true;
         machine.getTraitHolder().attachTrait(this);
     }
@@ -51,8 +51,20 @@ public abstract class MachineTrait implements ISyncManaged {
         return machine;
     }
 
+    /**
+     * A list containing the machine classes which this trait can be attached to.
+     * If this trait is being attached to a machine class that does not conform to any of the list elements, an exception is thrown.
+     * If this list is empty, the trait can be attached to any machine.
+     */
+    protected List<Class<?>> validMachineClasses() {
+        return List.of();
+    }
+
     public void setMachine(MetaMachine machine) {
         if (this.machine != null) throw new IllegalStateException("Machine trait already attached to a machine.");
+        if (!validMachineClasses().isEmpty() && validMachineClasses().stream().noneMatch(cls -> cls.isAssignableFrom(machine.getClass()))) {
+            throw new IllegalArgumentException("Attempted to attach trait to invalid machine class %s".formatted(machine.getClass()));
+        }
         this.machine = machine;
     }
 

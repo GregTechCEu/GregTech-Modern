@@ -42,7 +42,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -341,7 +340,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         }
     }
 
-    public @NotNull Iterator<GTRecipe> searchRecipe() {
+    public Iterator<GTRecipe> searchRecipe() {
         return machine.getRecipeType().searchRecipe(machine, r -> true);
     }
 
@@ -647,8 +646,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         ValueTransformers.registerTransformer(ChanceCacheMap.class, new ValueTransformer<ChanceCacheMap>() {
 
             @Override
-            public @NotNull Tag serializeNBT(@NotNull ChanceCacheMap value,
-                                             @NotNull TransformerContext<ChanceCacheMap> context) {
+            public Tag serializeNBT(ChanceCacheMap value,
+                                    TransformerContext<ChanceCacheMap> context) {
                 CompoundTag chanceCache = new CompoundTag();
                 if (context.currentValue() == null) return chanceCache;
 
@@ -668,8 +667,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             }
 
             @Override
-            public @Nullable ChanceCacheMap deserializeNBT(@NotNull Tag tag,
-                                                           @NotNull TransformerContext<ChanceCacheMap> context) {
+            public @Nullable ChanceCacheMap deserializeNBT(Tag tag,
+                                                           TransformerContext<ChanceCacheMap> context) {
                 CompoundTag chanceCache = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
                 if (context.currentValue() != null) {
                     for (String key : chanceCache.getAllKeys()) {

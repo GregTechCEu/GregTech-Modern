@@ -39,19 +39,21 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     private final int baseAmp;
 
     public TransformerMachine(BlockEntityCreationInfo info, int tier, int amps) {
-        super(info, tier, (TieredEnergyMachine machine) -> {
-            NotifiableEnergyContainer energyContainer;
-            long tierVoltage = GTValues.V[machine.getTier()];
-            energyContainer = new NotifiableEnergyContainer(machine, tierVoltage * 8L, tierVoltage * 4, amps,
-                    tierVoltage,
-                    4L * amps);
-            return energyContainer;
-        });
+        super(info, tier, getEnergyContainer(tier, amps));
 
         energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         this.isWorkingEnabled = true;
         this.baseAmp = amps;
+    }
+
+    private static NotifiableEnergyContainer getEnergyContainer(int tier, int amps) {
+        NotifiableEnergyContainer energyContainer;
+        long tierVoltage = GTValues.V[tier];
+        energyContainer = new NotifiableEnergyContainer(tierVoltage * 8L, tierVoltage * 4, amps,
+                tierVoltage,
+                4L * amps);
+        return energyContainer;
     }
 
     //////////////////////////////////////

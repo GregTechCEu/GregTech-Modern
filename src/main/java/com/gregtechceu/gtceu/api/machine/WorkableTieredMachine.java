@@ -76,8 +76,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                 IO.IN, IO.BOTH);
         this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
                 IO.OUT);
-        this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
-        this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
+        this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
+        this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }
 
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
@@ -98,8 +98,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                 tankScalingFunction.applyAsInt(getTier()), IO.IN);
         this.exportFluids = new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
                 tankScalingFunction.applyAsInt(getTier()), IO.OUT);
-        this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
-        this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
+        this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
+        this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }
 
     //////////////////////////////////////
@@ -198,7 +198,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         return false;
     }
 
-    @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
     }

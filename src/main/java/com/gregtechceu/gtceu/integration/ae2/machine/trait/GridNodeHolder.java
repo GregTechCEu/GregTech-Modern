@@ -36,12 +36,12 @@ public class GridNodeHolder extends MachineTrait {
     protected final SerializableManagedGridNode mainNode;
 
     public GridNodeHolder(IGridConnectedMachine machine) {
-        super(machine.self());
-        this.mainNode = createManagedNode();
+        super();
+        this.mainNode = createManagedNode(machine);
     }
 
-    protected SerializableManagedGridNode createManagedNode() {
-        var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) getMachine(),
+    protected SerializableManagedGridNode createManagedNode(IGridConnectedMachine machine) {
+        return (SerializableManagedGridNode) new SerializableManagedGridNode(machine,
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setVisualRepresentation(getMachine().getDefinition().getItem())
@@ -51,7 +51,6 @@ public class GridNodeHolder extends MachineTrait {
                         getMachine().hasFrontFacing() ? EnumSet.of(getMachine().getFrontFacing()) :
                                 EnumSet.allOf(Direction.class))
                 .setTagName("proxy");
-        return node;
     }
 
     protected void createMainNode() {

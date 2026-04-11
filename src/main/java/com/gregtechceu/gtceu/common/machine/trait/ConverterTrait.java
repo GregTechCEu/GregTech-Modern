@@ -16,7 +16,8 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
@@ -36,14 +37,25 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(ConverterMachine machine, int amps) {
-        super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
-                GTValues.V[machine.getTier()], amps);
+    public ConverterTrait(ConverterMachine machine, int tier, int amps) {
+        super(GTValues.V[tier] * 16 * amps, GTValues.V[tier], amps,
+                GTValues.V[tier], amps);
         this.amps = amps;
-        this.voltage = GTValues.V[machine.getTier()];
+        this.voltage = GTValues.V[tier];
         setSideInputCondition(side -> !feToEu && side != getMachine().getFrontFacing());
         setSideOutputCondition(side -> feToEu && side == getMachine().getFrontFacing());
-        this.feContainer = new FEContainer(machine);
+        this.feContainer = machine.attachTrait(new FEContainer());
+    }
+
+    @Override
+    public ConverterMachine getMachine() {
+        return (ConverterMachine)super.getMachine();
+    }
+
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(ConverterMachine.class);
     }
 
     ////////////////////////////////
@@ -86,7 +98,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     // ***** Forge Energy ******//
     //////////////////////////////
 
-    private class FEContainer extends MachineTrait implements IEnergyStorage {
+    public class FEContainer extends MachineTrait implements IEnergyStorage {
 
         public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
 
@@ -95,8 +107,8 @@ public class ConverterTrait extends NotifiableEnergyContainer {
             return TYPE;
         }
 
-        public FEContainer(MetaMachine machine) {
-            super(machine);
+        public FEContainer() {
+            super();
         }
 
         @Override

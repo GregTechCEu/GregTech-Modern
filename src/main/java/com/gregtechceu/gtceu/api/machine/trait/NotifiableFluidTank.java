@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,7 +43,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
                                        // while creating tanks.
-    private Boolean isEmpty;
+    private @Nullable Boolean isEmpty;
 
     @SaveField
     @SyncToClient
@@ -91,7 +91,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+    public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
                                                    boolean simulate) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
@@ -276,7 +276,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         List<FluidStack> ingredients = new ArrayList<>();
         for (int i = 0; i < getTanks(); ++i) {
             FluidStack stack = getFluidInTank(i);
@@ -312,7 +312,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return isEmpty;
     }
 
-    public void exportToNearby(@NotNull Direction... facings) {
+    public void exportToNearby(Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
@@ -323,7 +323,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public void importFromNearby(@NotNull Direction... facings) {
+    public void importFromNearby(Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
@@ -336,13 +336,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     //////////////////////////////////////
     // ******* Capability ********//
     //////////////////////////////////////
-    @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
         return storages[tank].getFluid();
     }
 
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
         storages[tank].setFluid(fluidStack);
     }
 
@@ -352,7 +351,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         return storages[tank].isFluidValid(stack);
     }
 
@@ -391,7 +390,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return resource.getAmount() - copied.getAmount();
     }
 
-    @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         if (canCapOutput()) {
@@ -413,7 +411,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return copied;
     }
 
-    @NotNull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         if (canCapOutput()) {
