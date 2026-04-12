@@ -50,10 +50,10 @@ import java.util.function.Consumer;
 
 public class BlockPattern {
 
-    protected static Direction[] FACINGS = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST,
+    protected static final Direction[] FACINGS = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST,
             Direction.UP,
             Direction.DOWN };
-    protected static Direction[] FACINGS_H = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST };
+    protected static final Direction[] FACINGS_H = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST };
     public final int[][] aisleRepetitions;
     public final RelativeDirection[] structureDir;
     public final TraceabilityPredicate[][][] blockMatches; // [z][y][x]
