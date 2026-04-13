@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
@@ -30,10 +31,10 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
     public void addWidgets(WidgetHolder widgets) {
         super.addWidgets(widgets);
         // numbers gotten from the size of the widget
-        slotWidget = new SlotWidget(EmiStack.of(definition.getItem().asItem()), 138, 12)
+        slotWidget = new SlotWidget(EmiStack.of(definition.getItem().asItem()),
+                138 + PatternPreviewWidget.getSizeOffset(), 12)
                 .recipeContext(this)
                 .drawBack(false);
-
         widgets.add(slotWidget);
     }
 
@@ -49,6 +50,7 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return List.of(EmiStack.of(definition.getItem()));
+        ItemStack stack = new ItemStack(definition.getItem());
+        return List.of(EmiStack.of(stack.setHoverName(stack.getHoverName().copy().append("1"))));
     }
 }

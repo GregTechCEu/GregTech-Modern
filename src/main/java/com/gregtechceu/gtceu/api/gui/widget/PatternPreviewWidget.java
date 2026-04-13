@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -28,6 +29,7 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -45,7 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
@@ -53,10 +55,14 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.shedaniel.rei.impl.client.gui.screen.AbstractDisplayViewingScreen;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
+import static com.gregtechceu.gtceu.common.data.machines.GCYMMachines.PARALLEL_HATCH;
 
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
@@ -66,87 +72,30 @@ public class PatternPreviewWidget extends WidgetGroup {
     private static final int REGION_SIZE = 512;
     private static int LAST_OFFSET_INDEX = 0;
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
-    private final SceneWidget sceneWidget;
+    private final PreviewSceneWidget sceneWidget;
     private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
     public final MultiblockMachineDefinition controllerDefinition;
     public final MBPattern[] patterns;
     private final List<SimplePredicate> predicates;
+    public boolean isHighLight;
     private int index;
     public int layer;
     private SlotWidget[] slotWidgets;
     private SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
-        super(0, 0, 160, 160);
+        super(0, 0, 160 + getSizeOffset(), 160 + getSizeOffset());
         setClientSideWidget();
         this.controllerDefinition = controllerDefinition;
         predicates = new ArrayList<>();
         layer = -1;
+        isHighLight = false;
+        sceneWidget = new PreviewSceneWidget(3, 3, 150 + getSizeOffset(), 150 + getSizeOffset(), LEVEL);
+        sceneWidget.setOnSelected(this::onPosSelected);
+        sceneWidget.setRenderFacing(false);
+        addWidget(sceneWidget);
 
-        addWidget(sceneWidget = new SceneWidget(3, 3, 150, 150, LEVEL) {
-
-            @Override
-            public void renderBlockOverLay(WorldSceneRenderer renderer) {
-                PoseStack poseStack = new PoseStack();
-                hoverPosFace = null;
-                hoverItem = null;
-                if (isMouseOverElement(currentMouseX, currentMouseY)) {
-                    BlockHitResult hit = renderer.getLastTraceResult();
-                    if (hit != null) {
-                        if (core.contains(hit.getBlockPos())) {
-                            hoverPosFace = new BlockPosFace(hit.getBlockPos(), hit.getDirection());
-                        } else if (!useOrtho) {
-                            Vector3f hitPos = hit.getLocation().toVector3f();
-                            Level world = renderer.world;
-                            Vec3 eyePos = new Vec3(renderer.getEyePos());
-                            hitPos.mul(2); // Double view range to ensure pos can be seen.
-                            Vec3 endPos = new Vec3((hitPos.x - eyePos.x), (hitPos.y - eyePos.y), (hitPos.z - eyePos.z));
-                            double min = Float.MAX_VALUE;
-                            for (BlockPos pos : core) {
-                                BlockState blockState = world.getBlockState(pos);
-                                if (blockState.getBlock() == Blocks.AIR) {
-                                    continue;
-                                }
-                                hit = world.clipWithInteractionOverride(eyePos, endPos, pos,
-                                        blockState.getShape(world, pos), blockState);
-                                if (hit != null && hit.getType() != HitResult.Type.MISS) {
-                                    double dist = eyePos.distanceToSqr(hit.getLocation());
-                                    if (dist < min) {
-                                        min = dist;
-                                        hoverPosFace = new BlockPosFace(hit.getBlockPos(), hit.getDirection());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (hoverPosFace != null) {
-                    var state = getDummyWorld().getBlockState(hoverPosFace.pos);
-                    hoverItem = state.getBlock().getCloneItemStack(getDummyWorld(), hoverPosFace.pos, state);
-                }
-                BlockPosFace tmp = dragging ? clickPosFace : hoverPosFace;
-                if (selectedPosFace != null || tmp != null) {
-                    if (selectedPosFace != null && renderFacing) {
-                        drawFacingBorder(poseStack, selectedPosFace, 0xff00ff00);
-                    }
-                    if (tmp != null && !tmp.equals(selectedPosFace) && renderFacing) {
-                        drawFacingBorder(poseStack, tmp, 0xffffffff);
-                    }
-                }
-                if (selectedPosFace != null && renderSelect) {
-                    RenderUtils.renderBlockOverLay(poseStack, selectedPosFace.pos, 0.6f, 0, 0, 1.03f);
-                }
-
-                if (this.afterWorldRender != null) {
-                    this.afterWorldRender.accept(this);
-                }
-            }
-        }
-                .setOnSelected(this::onPosSelected)
-                .setRenderFacing(false)
-                .setRenderFacing(false));
-
-        scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 132, 154, 22)
+        scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 136 + getSizeOffset(), 154 + getSizeOffset(), 22)
                 .setXScrollBarHeight(4)
                 .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
                 .setScrollable(true)
@@ -163,7 +112,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
 
-        addWidget(new ImageWidget(3, 3, 160, 10,
+        addWidget(new ImageWidget(3, 3, 160 + getSizeOffset(), 10,
                 new TextTexture(controllerDefinition.getDescriptionId(), -1)
                         .setType(TextTexture.TextType.ROLL)
                         .setWidth(170)
@@ -178,19 +127,381 @@ public class PatternPreviewWidget extends WidgetGroup {
                     .toArray(MBPattern[]::new);
         });
 
-        addWidget(new ButtonWidget(138, 30, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138 + getSizeOffset(), 30, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> "P:" + index)),
                 (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
-                .setHoverBorderTexture(1, -1));
+                .setHoverBorderTexture(1, -1)
+                .appendHoverTooltips(Component.translatable("gtceu.gui.switchlevel")));
 
-        addWidget(new ButtonWidget(138, 50, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138 + getSizeOffset(), 50, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> layer >= 0 ? "L:" + layer : "ALL")),
                 cd -> updateLayer())
-                .setHoverBorderTexture(1, -1));
-
+                .setHoverBorderTexture(1, -1)
+                .appendHoverTooltips(Component.translatable("gtceu.gui.showlayer")));
+        addWidget(new ButtonWidget(138 + getSizeOffset(), 70, 18, 18, new GuiTextureGroup(
+                ColorPattern.T_GRAY.rectTexture(),
+                new TextTexture("1").setSupplier(() -> isHighLight ? "ON" : "OFF")),
+                cd -> updateHighLight())
+                .setHoverBorderTexture(1, -1)
+                .appendHoverTooltips(Component.translatable("gtceu.gui.highlight")));
         setPage(0);
+    }
+
+    static int sizeOffset = -1;
+
+    public static int getSizeOffset() {
+        if (sizeOffset == -1) {
+            if (ConfigHolder.INSTANCE != null &&
+                    ConfigHolder.INSTANCE.client.widgetScale == ConfigHolder.ClientConfigs.WidgetScale.LARGE) {
+                sizeOffset = 40;
+            } else {
+                sizeOffset = 0;
+            }
+        }
+        return sizeOffset;
+    }
+
+    private final class PreviewSceneWidget extends SceneWidget {
+
+        private static final float LINE_HALF_WIDTH = 0.1f;
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+            if (!this.intractable) {
+                return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            } else if (this.dragging && button == 0) {
+                this.rotationPitch = (float) ((double) this.rotationPitch + dragX + 360.0);
+                this.rotationPitch %= 360.0F;
+                this.rotationYaw = (float) Mth.clamp((double) this.rotationYaw + dragY, -89.9, 89.9);
+                if (this.renderer != null) {
+                    this.renderer.setCameraLookAt(this.center, (double) this.camZoom(),
+                            Math.toRadians((double) this.rotationPitch), Math.toRadians((double) this.rotationYaw));
+                }
+                return false;
+            } else if (this.dragging && button == 1) {// 右键情况下
+                if (this.renderer == null) return false;
+
+                Vector3f eyePos = new Vector3f(this.renderer.getEyePos());
+                Vector3f lookAt = new Vector3f(this.renderer.getLookAt());
+                Vector3f worldUp = new Vector3f(this.renderer.getWorldUp());
+
+                float speed = 1.0f;
+
+                // 建议与 zoom 绑定（体验提升非常明显）
+                speed *= (float) this.camZoom();
+
+                // forward = lookAt - eyePos
+                Vector3f forward = new Vector3f(lookAt).sub(eyePos).normalize();
+
+                // right = forward × worldUp
+                Vector3f right = new Vector3f(forward).cross(worldUp).normalize();
+
+                // camera up = right × forward
+                Vector3f up = new Vector3f(right).cross(forward).normalize();
+
+                // 移动向量
+                Vector3f move = new Vector3f();
+
+                move.add(new Vector3f(right).mul((float) (-dragX / getSizeWidth() * speed)));
+                move.add(new Vector3f(up).mul((float) (dragY / getSizeHeight() * speed)));
+
+                eyePos.add(move);
+                lookAt.add(move);
+
+                this.center.add(move);
+
+                this.renderer.setCameraLookAt(eyePos, lookAt, worldUp);
+
+                return false;
+
+            } else {
+                return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            }
+        }
+
+        private final Map<BlockPos, Integer> colorCaches = new HashMap<>();
+
+        private VertexBuffer highlightVbo;
+        private boolean highlightDirty = true;
+        private int vertexCount;
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (super.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            } else if (!this.intractable) {
+                return false;
+            } else if (this.isMouseOverElement(mouseX, mouseY)) {
+                if (this.draggable) {
+                    this.dragging = true;
+                }
+                this.clickPosFace = this.hoverPosFace;
+                return true;
+            } else {
+                this.dragging = false;
+                return false;
+            }
+        }
+
+        public PreviewSceneWidget(int x, int y, int w, int h, TrackedDummyWorld world) {
+            super(x, y, w, h, world);
+        }
+
+        public void markHighlightDirty() {
+            highlightDirty = true;
+            colorCaches.clear();
+        }
+
+        private void rebuildHighlightBuffer() {
+            highlightDirty = false;
+
+            if (highlightVbo != null) {
+                highlightVbo.close();
+                highlightVbo = null;
+            }
+
+            if (!isHighLight || core.isEmpty()) return;
+
+            Map<BlockPos, TraceabilityPredicate> predicateMap = patterns[index].controllerBase
+                    .getMultiblockState()
+                    .getMatchContext()
+                    .get("predicates");
+
+            if (predicateMap == null) return;
+
+            BufferBuilder builder = Tesselator.getInstance().getBuilder();
+
+            builder.begin(VertexFormat.Mode.QUADS,
+                    DefaultVertexFormat.POSITION_COLOR);
+
+            vertexCount = 0;
+
+            for (BlockPos pos : core) {
+
+                if (selectedPosFace != null && pos.equals(selectedPosFace.pos))
+                    continue;
+
+                TraceabilityPredicate p = predicateMap.get(pos);
+                if (p == null) continue;
+                // if (selectedPosFace != null && pos == selectedPosFace.pos) return;
+                int color = 0;
+                if (!colorCaches.containsKey(pos)) {
+                    if (predicateMap.containsKey(pos)) {
+                        var predicate = predicateMap.get(pos);
+                        List<ItemStack> candidates = new ArrayList<ItemStack>();
+                        predicate.common.forEach(y -> candidates.addAll(y.getCandidates()));
+                        predicate.limited.forEach(y -> candidates.addAll(y.getCandidates()));
+                        int cnt = 0;
+                        for (var candidate : candidates) {
+                            if (cnt > 1) break;
+                            if (candidate.equals(ITEM_IMPORT_BUS[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(FLUID_IMPORT_HATCH[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(STEAM_IMPORT_BUS.asStack(), false)) {
+                                cnt++;
+                                color = 0x00ff00ff;// 绿色
+                                continue;
+                            }
+                            if (candidate.equals(ITEM_EXPORT_BUS[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(FLUID_EXPORT_HATCH[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(STEAM_EXPORT_BUS.asStack(), false)) {
+                                cnt++;
+                                color = 0xff8000ff;// 橙色
+                                continue;
+                            }
+                            if (candidate.equals(ENERGY_INPUT_HATCH[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(ENERGY_OUTPUT_HATCH[GTValues.LV].asStack(), false) ||
+                                    candidate.equals(LASER_INPUT_HATCH_256[GTValues.IV].asStack(), false) ||
+                                    candidate.equals(LASER_OUTPUT_HATCH_256[GTValues.IV].asStack(), false) ||
+                                    candidate.equals(STEAM_HATCH.asStack())) {
+                                cnt++;
+                                color = 0xffff00ff;// 黄色
+                                continue;
+                            }
+                            if (candidate.equals(MAINTENANCE_HATCH.asStack(), false)) {
+                                cnt++;
+                                color = 0x00ffffff;// 青色
+                                continue;
+                            }
+                            if (candidate.equals(MUFFLER_HATCH[GTValues.LV].asStack(), false)) {
+                                cnt++;
+                                color = 0x800080ff;// 紫色
+                                continue;
+                            }
+                            if (candidate.equals(PARALLEL_HATCH[GTValues.IV].asStack(), false)) {
+                                cnt++;
+                                color = 0xf0ffffff;// 蔚蓝色
+                            }
+                        }
+
+                        if (cnt > 1) {
+                            color = 0x3b2525ff;
+                        }
+                        colorCaches.put(pos, color);
+                    }
+                } else {
+                    color = colorCaches.get(pos);
+                }
+                appendCube(builder, pos, color);
+
+                vertexCount += 24;
+            }
+
+            BufferBuilder.RenderedBuffer rendered = builder.end();
+
+            highlightVbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
+            highlightVbo.bind();
+            highlightVbo.upload(rendered);
+            VertexBuffer.unbind();
+
+            // rendered.release();
+        }
+
+        private void appendCube(BufferBuilder b, BlockPos pos, int rgba) {
+            float r = ((rgba >> 24) & 255) / 255f;
+            float g = ((rgba >> 16) & 255) / 255f;
+            float bl = ((rgba >> 8) & 255) / 255f;
+            float a = (rgba & 255) / 255f * 0.6f;
+
+            float x = pos.getX();
+            float y = pos.getY();
+            float z = pos.getZ();
+
+            float x2 = x + 1;
+            float y2 = y + 1;
+            float z2 = z + 1;
+
+            // front
+            addQuad(b, x, y, z, x2, y, z, x2, y2, z, x, y2, z, r, g, bl, a);
+
+            // back
+            addQuad(b, x2, y, z2, x, y, z2, x, y2, z2, x2, y2, z2, r, g, bl, a);
+
+            // left
+            addQuad(b, x, y, z2, x, y, z, x, y2, z, x, y2, z2, r, g, bl, a);
+
+            // right
+            addQuad(b, x2, y, z, x2, y, z2, x2, y2, z2, x2, y2, z, r, g, bl, a);
+
+            // top
+            addQuad(b, x, y2, z, x2, y2, z, x2, y2, z2, x, y2, z2, r, g, bl, a);
+
+            // bottom
+            addQuad(b, x, y, z2, x2, y, z2, x2, y, z, x, y, z, r, g, bl, a);
+        }
+
+        private void addQuad(BufferBuilder b,
+                             float x1, float y1, float z1,
+                             float x2, float y2, float z2,
+                             float x3, float y3, float z3,
+                             float x4, float y4, float z4,
+                             float r, float g, float bl, float a) {
+            b.vertex(x1, y1, z1).color(r, g, bl, a).endVertex();
+            b.vertex(x2, y2, z2).color(r, g, bl, a).endVertex();
+            b.vertex(x3, y3, z3).color(r, g, bl, a).endVertex();
+            b.vertex(x4, y4, z4).color(r, g, bl, a).endVertex();
+        }
+
+        private void renderHighlight() {
+            if (!isHighLight) return;
+
+            if (highlightDirty) {
+                rebuildHighlightBuffer();
+            }
+
+            if (highlightVbo == null) return;
+
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+
+            RenderSystem.depthMask(false);
+            GL11.glDepthRange(0.0, 0.01);
+
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+            highlightVbo.bind();
+
+            highlightVbo.drawWithShader(
+                    RenderSystem.getModelViewMatrix(),
+                    RenderSystem.getProjectionMatrix(),
+                    RenderSystem.getShader());
+
+            VertexBuffer.unbind();
+
+            GL11.glDepthRange(0.0, 1.0);
+            RenderSystem.depthMask(true);
+
+            RenderSystem.disableBlend();
+        }
+
+        @Override
+        public void renderBlockOverLay(WorldSceneRenderer renderer) {
+            PoseStack poseStack = new PoseStack();
+            hoverPosFace = null;
+            hoverItem = null;
+            renderHighlight();
+            if (isMouseOverElement(currentMouseX, currentMouseY)) {
+                BlockHitResult hit = renderer.getLastTraceResult();
+                if (hit != null) {
+                    if (core.contains(hit.getBlockPos())) {
+                        hoverPosFace = new BlockPosFace(hit.getBlockPos(), hit.getDirection());
+                    } else if (!useOrtho) {
+                        Vector3f hitPos = hit.getLocation().toVector3f();
+                        Level world = renderer.world;
+                        Vec3 eyePos = new Vec3(renderer.getEyePos());
+                        hitPos.mul(2); // Double view range to ensure pos can be seen.
+                        Vec3 endPos = new Vec3((hitPos.x - eyePos.x), (hitPos.y - eyePos.y), (hitPos.z - eyePos.z));
+                        double min = Float.MAX_VALUE;
+                        for (BlockPos pos : core) {
+                            BlockState blockState = world.getBlockState(pos);
+                            if (blockState.getBlock() == Blocks.AIR) {
+                                continue;
+                            }
+                            hit = world.clipWithInteractionOverride(eyePos, endPos, pos,
+                                    blockState.getShape(world, pos), blockState);
+                            if (hit != null && hit.getType() != HitResult.Type.MISS) {
+                                double dist = eyePos.distanceToSqr(hit.getLocation());
+                                if (dist < min) {
+                                    min = dist;
+                                    hoverPosFace = new BlockPosFace(hit.getBlockPos(), hit.getDirection());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (hoverPosFace != null) {
+                var state = getDummyWorld().getBlockState(hoverPosFace.pos);
+                hoverItem = state.getBlock().getCloneItemStack(getDummyWorld(), hoverPosFace.pos, state);
+            }
+            BlockPosFace tmp = dragging ? clickPosFace : hoverPosFace;
+            if (selectedPosFace != null || tmp != null) {
+                if (selectedPosFace != null && renderFacing) {
+                    drawFacingBorder(poseStack, selectedPosFace, 0xff00ff00);
+                }
+                if (tmp != null && !tmp.equals(selectedPosFace) && renderFacing) {
+                    drawFacingBorder(poseStack, tmp, 0xffffffff);
+                }
+            }
+            if (selectedPosFace != null && renderSelect) {
+                RenderUtils.renderBlockOverLay(poseStack, selectedPosFace.pos, 0.6f, 0, 0, 1.03f);
+            }
+
+            if (this.afterWorldRender != null) {
+                this.afterWorldRender.accept(this);
+            }
+        }
+    }
+
+    private void updateHighLight() {
+        isHighLight = !isHighLight;
+        sceneWidget.markHighlightDirty();
     }
 
     private void updateLayer() {
@@ -207,6 +518,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
         setupScene(pattern);
+        sceneWidget.markHighlightDirty();
     }
 
     private void setupScene(MBPattern pattern) {
@@ -240,12 +552,13 @@ public class PatternPreviewWidget extends WidgetGroup {
         this.layer = -1;
         MBPattern pattern = patterns[index];
         setupScene(pattern);
+        sceneWidget.markHighlightDirty();
         if (slotWidgets != null) {
             for (SlotWidget slotWidget : slotWidgets) {
                 scrollableWidgetGroup.removeWidget(slotWidget);
             }
         }
-        slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
+        slotWidgets = new SlotWidget[pattern.parts.size()];
         CycleItemEntryHandler itemHandler = CycleItemEntryHandler.fromStacks(pattern.parts);
         int xOffset = 0;
         for (int i = 0; i < slotWidgets.length; i++) {
@@ -276,9 +589,11 @@ public class PatternPreviewWidget extends WidgetGroup {
             sceneWidget.setRenderedCore(pattern.blockMap.keySet(), null);
             controllerBase.onStructureInvalid();
         }
+        sceneWidget.markHighlightDirty();
     }
 
     private void onPosSelected(BlockPos pos, Direction facing) {
+        // sceneWidget.markHighlightDirty();
         if (index >= patterns.length || index < 0) return;
         TraceabilityPredicate predicate = patterns[index].predicateMap.get(pos);
         if (predicate != null) {
@@ -305,7 +620,8 @@ public class PatternPreviewWidget extends WidgetGroup {
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false,
+                candidates[i] = new CandidateSlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18,
+                        false,
                         false)
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))

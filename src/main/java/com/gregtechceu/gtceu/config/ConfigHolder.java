@@ -747,6 +747,15 @@ public class ConfigHolder {
 
     public static class ClientConfigs {
 
+        public enum WidgetScale {
+            MEIDUM,
+            LARGE
+        }
+
+        @Configurable
+        @Configurable.Comment({ "Multiblock Structure Display Size" })
+        public WidgetScale widgetScale = WidgetScale.LARGE;
+
         @Configurable
         @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
         public boolean temperaturesInCelsius = false;

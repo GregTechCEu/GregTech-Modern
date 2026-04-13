@@ -252,7 +252,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsClickable(CycleItemEntryHandler handler, int index) {
+    List<Object> getXEIIngredientsClickable(CycleItemEntryHandler handler, int index) {
         ItemEntryList entryList = handler.getEntry(index);
         if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIIngredientsClickable(entryList, getPosition(), getSize(), this::getRealStack);
@@ -269,7 +269,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         private static final Container emptyInventory = new SimpleContainer(0);
         @Getter
         private final IItemHandlerModifiable itemHandler;
-        private final int index;
+        final int index;
 
         public WidgetSlotItemHandler(IItemHandlerModifiable itemHandler, int index, int xPosition, int yPosition) {
             super(emptyInventory, index, xPosition, yPosition);
