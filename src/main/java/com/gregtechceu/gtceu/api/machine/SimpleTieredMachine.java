@@ -82,7 +82,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
-        this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE).shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit)
+        this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
+                .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
     }
 
