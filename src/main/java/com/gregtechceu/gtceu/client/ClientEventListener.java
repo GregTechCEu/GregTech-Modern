@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -181,7 +181,7 @@ public class ClientEventListener {
         BlockPos hitPos = hit.getBlockPos();
         BlockEntity blockEntity = mc.level.getBlockEntity(hitPos);
         // only try to find the correct location if we have a valid machine
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
+        if (!(blockEntity instanceof MetaMachine machineBE)) return;
 
         final List<String> rightLines = event.getRight();
         int lineCount = rightLines.size();
@@ -214,7 +214,7 @@ public class ClientEventListener {
         MutableInt index = new MutableInt(afterBlockSection);
 
         rightLines.add(index.getAndIncrement(), "");
-        machineBE.getMetaMachine().addDebugOverlayText(line -> rightLines.add(index.getAndIncrement(), line));
+        machineBE.addDebugOverlayText(line -> rightLines.add(index.getAndIncrement(), line));
     }
 
     @SubscribeEvent

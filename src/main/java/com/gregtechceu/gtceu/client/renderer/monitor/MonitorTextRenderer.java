@@ -42,7 +42,7 @@ public class MonitorTextRenderer implements IMonitorRenderer {
                 float maxY = graphics.y2();
                 if (maxX == Math.floor(maxX)) maxX--;
                 if (maxY == Math.floor(maxY)) maxY--;
-                BlockPos relativePos = rel.offset(Mth.floor(maxX), -Mth.floor(maxY), 0);
+                BlockPos relativePos = rel.offset(Mth.floor(maxX), Mth.floor(maxY), 0);
                 if (!group.getMonitorPositions().stream().map(machine::toRelative).toList().contains(relativePos))
                     continue;
                 poseStack.pushPose();

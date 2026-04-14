@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -51,11 +49,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
 
     @Override
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
-        if (!(accessor.getTarget() instanceof MetaMachineBlockEntity mmbe)) {
-            return List.of();
-        }
-        MetaMachine machine = mmbe.getMetaMachine();
-        if (machine instanceof QuantumTankMachine qtm) {
+        if (accessor.getTarget() instanceof QuantumTankMachine qtm) {
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
 
@@ -64,7 +58,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
             CompoundTag tag = FluidView.writeDefault(fluidObject, qtm.getMaxAmount());
 
             return Collections.singletonList(new ViewGroup<>(Collections.singletonList(tag)));
-        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferPartMachine buffer) {
+        } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEPatternBufferPartMachine buffer) {
             var tank = buffer.getShareTank();
             List<CompoundTag> list = new ArrayList<>(tank.getTanks());
             for (var storage : tank.getStorages()) {
@@ -75,16 +69,15 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                 list.add(FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stack), capacity));
             }
             return list.isEmpty() ? Collections.emptyList() : Collections.singletonList(new ViewGroup<>(list));
-        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferProxyPartMachine proxy) {
+        } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
 
             Accessor<?> accessor1 = WailaClientRegistration.instance().blockAccessor().from((BlockAccessor) accessor)
-                    .blockEntity(buffer.holder.self())
+                    .blockEntity(buffer.self())
                     .build();
             return FluidStorageProvider.Extension.INSTANCE.getGroups(accessor1);
         }
-
         return FluidStorageProvider.Extension.INSTANCE.getGroups(accessor);
     }
 }

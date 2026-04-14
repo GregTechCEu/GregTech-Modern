@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,21 +13,17 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Accessors(chain = true)
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
-    public static final Codec<MultiLineComponent> CODEC = ComponentSerialization.CODEC.listOf()
-            .xmap(list -> {
-                if (((List<? extends Component>) list) instanceof MultiLineComponent multiLine) {
-                    return multiLine;
-                }
-                MultiLineComponent multiLine = new MultiLineComponent();
-                for (Component c : list) {
-                    multiLine.add(c.copy());
-                }
-                return multiLine;
-            }, MultiLineComponent::toImmutable);
+    // spotless:off
+    public static final Codec<MultiLineComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ComponentSerialization.CODEC.listOf().fieldOf("text").forGetter(MultiLineComponent::toImmutable),
+            GraphicsComponent.CODEC.listOf().orElse(Collections.emptyList()).fieldOf("graphics").forGetter(MultiLineComponent::getGraphics)
+    ).apply(instance, MultiLineComponent::of));
+    // spotless:on
 
     public MultiLineComponent() {}
 
@@ -46,6 +38,14 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         super(components);
     }
 
+    protected static MultiLineComponent of(List<Component> lines, List<GraphicsComponent> graphics) {
+        MultiLineComponent component = lines.stream()
+                .map(Component::copy)
+                .collect(Collectors.toCollection(MultiLineComponent::new));
+        component.addGraphics(graphics);
+        return component;
+    }
+
     public static MultiLineComponent of(List<Component> lines) {
         List<MutableComponent> mutableLines = lines.stream()
                 .map(Component::copy)
@@ -54,7 +54,13 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     }
 
     public static MultiLineComponent of(Component c) {
-        return new MultiLineComponent(List.of(c.copy()));
+        return MultiLineComponent.of(c.copy());
+    }
+
+    public static MultiLineComponent of(MutableComponent c) {
+        MultiLineComponent value = new MultiLineComponent();
+        value.add(c);
+        return value;
     }
 
     public static MultiLineComponent literal(char c) {
@@ -171,38 +177,6 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     public @UnmodifiableView List<Component> toImmutable() {
         return Collections.unmodifiableList(this);
-    }
-
-    public Tag toTag(HolderLookup.Provider registries) {
-        CompoundTag compoundTag = new CompoundTag();
-        ListTag tag = new ListTag();
-        for (MutableComponent component : this) {
-            tag.add(StringTag.valueOf(Component.Serializer.toJson(component, registries)));
-        }
-        compoundTag.put("text", tag);
-        ListTag graphicsTag = new ListTag();
-        for (GraphicsComponent component : this.getGraphics()) {
-            graphicsTag.add(component.toTag());
-        }
-        compoundTag.put("graphics", graphicsTag);
-        return compoundTag;
-    }
-
-    public static MultiLineComponent fromTag(@Nullable Tag tag, HolderLookup.Provider registries) {
-        MultiLineComponent out = MultiLineComponent.empty();
-        out.clear();
-        if (tag == null) return out;
-        if (tag instanceof ListTag listTag) {
-            for (Tag i : listTag) {
-                out.add(Component.Serializer.fromJson(i.getAsString(), registries));
-            }
-        } else if (tag instanceof CompoundTag compoundTag) {
-            ListTag textTag = compoundTag.getList("text", Tag.TAG_STRING);
-            for (Tag i : textTag) out.add(Component.Serializer.fromJson(i.getAsString(), registries));
-            ListTag graphicsTag = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
-            for (Tag i : graphicsTag) out.addGraphics(GraphicsComponent.fromTag(i));
-        }
-        return out;
     }
 
     public long toLong() {

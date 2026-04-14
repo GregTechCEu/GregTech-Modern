@@ -47,6 +47,7 @@ public class ItemDetectorCover extends DetectorCover {
 
     @Nullable
     protected IItemHandler getItemHandler() {
-        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).orElse(null);
+        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
+                .orElse(null);
     }
 }

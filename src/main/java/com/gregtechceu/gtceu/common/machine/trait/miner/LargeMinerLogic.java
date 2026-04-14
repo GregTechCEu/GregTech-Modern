@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,8 +31,6 @@ import java.util.Optional;
 
 public class LargeMinerLogic extends MinerLogic {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerLogic.class,
-            MinerLogic.MANAGED_FIELD_HOLDER);
     private static final int CHUNK_LENGTH = 16;
 
     @Setter
@@ -45,10 +41,10 @@ public class LargeMinerLogic extends MinerLogic {
     private int overclockAmount = 0;
 
     @Getter
-    @Persisted
+    @SaveField
     private boolean isChunkMode;
     @Getter
-    @Persisted
+    @SaveField
     private boolean isSilkTouchMode;
 
     private LootItemFunction dropMultiplier;
@@ -63,11 +59,6 @@ public class LargeMinerLogic extends MinerLogic {
      */
     public LargeMinerLogic(IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius) {
         super(machine, fortune, speed, maximumRadius);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -126,7 +117,7 @@ public class LargeMinerLogic extends MinerLogic {
 
     @Override
     public BlockPos getMiningPos() {
-        return getMachine().getPos().relative(getMachine().getFrontFacing().getOpposite());
+        return getMachine().getBlockPos().relative(getMachine().getFrontFacing().getOpposite());
     }
 
     @Override

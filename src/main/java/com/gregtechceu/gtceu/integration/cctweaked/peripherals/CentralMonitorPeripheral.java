@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
-import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +22,7 @@ public class CentralMonitorPeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult getGroups(ICentralMonitor centralMonitor) {
+    public static MethodResult getGroups(CentralMonitorMachine centralMonitor) {
         return MethodResult.of(centralMonitor.getMonitorGroups().stream().map(LuaMonitorGroup::new).toList());
     }
 

@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -35,12 +34,12 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 2 / 3f, 1, 1 / 3f));
 
-    private final IAutoOutputFluid machine;
+    private final AutoOutputTrait trait;
     private Direction side;
     private ButtonWidget ioModeButton;
 
-    public AutoOutputFluidConfigHandler(IAutoOutputFluid machine) {
-        this.machine = machine;
+    public AutoOutputFluidConfigHandler(AutoOutputTrait trait) {
+        this.trait = trait;
     }
 
     @Override
@@ -56,8 +55,8 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
                     setButtonTexture(TEXTURE_OFF);
                     setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.fluid_auto_output.unselected")
                             .toArray(Component[]::new));
-                } else if (machine.getOutputFacingFluids() == side) {
-                    if (machine.isAutoOutputFluids()) {
+                } else if (trait.getFluidOutputDirection() == side) {
+                    if (trait.isAutoOutputFluids()) {
                         setButtonTexture(TEXTURE_AUTO);
                         setHoverTooltips("gtceu.gui.fluid_auto_output.enabled");
                     } else {
@@ -74,7 +73,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
         group.addWidget(new ToggleButtonWidget(
                 19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
-                machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
+                trait::allowsFluidInputFromOutputSide, trait::setAllowFluidInputFromOutputSide)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));
 
         return group;
@@ -84,11 +83,11 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         if (this.side == null)
             return;
 
-        if (machine.getOutputFacingFluids() == this.side) {
-            machine.setAutoOutputFluids(!machine.isAutoOutputFluids());
+        if (trait.getFluidOutputDirection() == this.side) {
+            trait.setAllowAutoOutputFluids(!trait.isAutoOutputFluids());
         } else {
-            machine.setAutoOutputFluids(false);
-            machine.setOutputFacingFluids(this.side);
+            trait.setAllowAutoOutputFluids(false);
+            trait.setFluidOutputDirection(this.side);
         }
     }
 
@@ -104,14 +103,14 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     public void handleClick(ClickData cd, Direction direction) {
-        if (!canHandleClick(cd) || !machine.hasAutoOutputFluid())
+        if (!canHandleClick(cd) || !trait.supportsAutoOutputFluids())
             return;
 
-        if (machine.getOutputFacingFluids() != side) {
-            machine.setOutputFacingFluids(side);
-            machine.setAutoOutputFluids(false);
+        if (trait.getFluidOutputDirection() != side) {
+            trait.setFluidOutputDirection(side);
+            trait.setAllowAutoOutputFluids(false);
         } else {
-            machine.setAutoOutputFluids(!machine.isAutoOutputFluids());
+            trait.setAllowAutoOutputFluids(!trait.isAutoOutputFluids());
         }
     }
 
@@ -120,20 +119,17 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         if (cd.button == 1)
             return true;
 
-        if (!(machine instanceof IAutoOutputItem) && cd.button == 0)
-            return true;
-
         return false;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
-        if (machine.getOutputFacingFluids() != blockPosFace.facing())
+        if (trait.getFluidOutputDirection() != blockPosFace.facing())
             return;
 
         sceneWidget.drawFacingBorder(new PoseStack(), blockPosFace,
-                machine.isAutoOutputFluids() ? 0xff00b4ff : 0x8f00b4ff, 2);
+                trait.isAutoOutputFluids() ? 0xff00b4ff : 0x8f00b4ff, 2);
     }
 
     @Override
@@ -142,7 +138,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
             @Override
             public boolean isVisible() {
-                return machine.isAutoOutputFluids() && machine.getOutputFacingFluids() != null;
+                return trait.isAutoOutputFluids() && trait.getFluidOutputDirection() != null;
             }
         };
 

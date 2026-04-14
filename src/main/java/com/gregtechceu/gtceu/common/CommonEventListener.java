@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
@@ -24,7 +23,6 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -189,14 +187,9 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        var blockState = event.getLevel().getBlockState(event.getPos());
-        if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
-                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
-            if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
-                    event.getFace())) {
-                event.setCanceled(true);
-            }
-        }
+        var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
+        if (machine != null)
+            event.setCanceled(machine.onLeftClick(event.getEntity(), event.getHand(), event.getFace()));
     }
 
     @SubscribeEvent
@@ -350,6 +343,9 @@ public class CommonEventListener {
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            if (tracker == null) {
+                return;
+            }
             for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(condition);
             }

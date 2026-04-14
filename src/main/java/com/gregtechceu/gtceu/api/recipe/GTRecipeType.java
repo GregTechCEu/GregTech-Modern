@@ -47,6 +47,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Setter(onMethod_ = { @ApiStatus.Internal })
     public GTRecipeSerializer serializer;
 
+    @Getter
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -347,6 +348,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull RecipeDB db() {
         return db;
+    }
+
+    @ApiStatus.Internal
+    public void beginStagingRecipes() {
+        categoryMap.clear();
+        additionHandler.beginStaging();
     }
 
     public interface ICustomRecipeLogic {

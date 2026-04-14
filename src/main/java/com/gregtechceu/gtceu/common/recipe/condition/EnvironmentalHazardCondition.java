@@ -59,7 +59,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
             return false;
         }
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getPos());
+        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getBlockPos());
         return zone != null && zone.strength() > 0;
     }
 

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -43,7 +43,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    @Nullable
     public transient Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public transient boolean addDefaultTooltips = true;
@@ -52,7 +51,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient boolean isGenerator = false;
 
-    @Nullable
     public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
@@ -148,13 +146,13 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @FunctionalInterface
     public interface TieredCreationFunction {
 
-        MetaMachine create(IMachineBlockEntity holder, int tier, Int2IntFunction tankScaling);
+        MetaMachine create(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScaling);
     }
 
     @FunctionalInterface
     public interface CreationFunction<T extends MetaMachine> {
 
-        T create(IMachineBlockEntity holder);
+        T create(BlockEntityCreationInfo info);
     }
 
     @FunctionalInterface

@@ -2,13 +2,16 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +19,6 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -38,7 +40,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         MutableInt expected = new MutableInt();
         helper.runAtTickTime(40 - machine.getOffsetTimer() % 20, () -> {
@@ -56,33 +58,54 @@ public class AdvancedDetectorCoverTest {
     }
 
     @TestHolder()
-    @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
-    public static void BLOCKED_BY_LDLIB_WEIRDNESS_TOO_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedActivityDetectorCoverWithoutActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        SimpleTieredMachine machine = ((SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
-        helper.runAtTickTime(35, () -> helper.pullLever(2, 2, 2));
-        helper.runAtTickTime(40, () -> {
-            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
-            helper.succeed();
+        int offset = (int) (machine.getOffsetTimer() % 20L);
+        helper.runAtTickTime(20 - offset, () -> {
+            // Stop the fluid input
+            helper.pullLever(2, 2, 2);
+            // Also clear out the tank
+            NotifiableFluidTank tank = (NotifiableFluidTank) machine
+                    .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+            tank.setFluidInTank(0, FluidStack.EMPTY);
         });
+        // 20 ticks for the cover to update, 11 ticks for the recipe to finish, 1 tick for the cover to update
+        helper.runAtTickTime(52 - offset,
+                () -> helper.succeedWhen(() -> TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1))));
     }
 
     @TestHolder()
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        SimpleTieredMachine machine = (SimpleTieredMachine) ((IMachineBlockEntity) helper
-                .getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
-        machine.importFluids.setFluidInTank(0, new FluidStack(Fluids.WATER, 10000));
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedFluidDetectorCover cover = (AdvancedFluidDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_FLUID_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMaxValue(100000);
         cover.setMinValue(1);
         cover.setLatched(false);
-        // At t=40, 36k will be inside, giving a redstone value of 5
-        helper.runAtTickTime(40, () -> {
-            TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
+        MutableInt expected = new MutableInt();
+        int offset = (int) (machine.getOffsetTimer() % 20L);
+        helper.runAtTickTime(80 - offset, () -> {
+            // Actually pull in the value at the time, since offset might change the amount
+            var handler = machine.getFluidHandlerCap(null, false);
+            long storedFluid = 0;
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                storedFluid += handler.getFluidInTank(tank).getAmount();
+            }
+            expected.setValue(RedstoneUtil.computeRedstoneBetweenValues(storedFluid,
+                    cover.getMaxValue(), cover.getMinValue(), cover.isInverted()));
+        });
+
+        helper.runAtTickTime(81 - offset, () -> {
+            int value = expected.intValue();
+            TestUtils.assertRedstoneEither(helper, new BlockPos(0, 2, 1),
+                    value,
+                    Math.max(0, value - 1),
+                    Math.min(15, value + 1));
             helper.succeed();
         });
     }
@@ -91,7 +114,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setLatched(true);
@@ -105,7 +128,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMinValue(1);
@@ -120,7 +143,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         machine.getItemHandlerCap(null, false).setStackInSlot(0, new ItemStack(Items.DIRT, 5));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);

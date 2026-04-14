@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -20,12 +20,12 @@ public class DrumMachineItem extends MetaMachineItem {
     @NotNull
     private final Material mat;
 
-    protected DrumMachineItem(IMachineBlock block, Properties properties, @NotNull Material mat) {
+    protected DrumMachineItem(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
         super(block, properties);
         this.mat = mat;
     }
 
-    public static DrumMachineItem create(IMachineBlock block, Properties properties, @NotNull Material mat) {
+    public static DrumMachineItem create(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
         return new DrumMachineItem(block, properties, mat);
     }
 

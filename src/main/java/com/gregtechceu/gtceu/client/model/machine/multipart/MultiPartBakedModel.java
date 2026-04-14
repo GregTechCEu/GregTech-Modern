@@ -35,6 +35,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static com.gregtechceu.gtceu.api.machine.MetaMachine.*;
+
 public class MultiPartBakedModel implements IDynamicBakedModel {
 
     private static final ModelProperty<Map<BakedModel, ModelData>> MULTI_PART_DATA_PROPERTY = new ModelProperty<>();

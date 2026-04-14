@@ -129,6 +129,8 @@ public class GTDataComponents {
             .registerComponentType("data_copy_tag", builder -> builder.persistent(CustomData.CODEC)
                     .networkSynchronized(CustomData.STREAM_CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextLineList>> FORMAT_STRING_LIST = DATA_COMPONENTS
+            .registerComponentType("format_string_list", builder -> builder.persistent(TextLineList.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FormatStringList>> COMPUTER_MONITOR_DATA = DATA_COMPONENTS
             .registerComponentType("computer_monitor_cover_data", builder -> builder.persistent(FormatStringList.CODEC)
                     .networkSynchronized(FormatStringList.STREAM_CODEC));

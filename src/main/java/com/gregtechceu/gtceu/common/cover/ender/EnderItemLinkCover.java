@@ -10,15 +10,17 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -26,28 +28,30 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorage> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderItemLinkCover.class,
-            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
+    @Getter
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     protected static final int TRANSFER_RATE = 8;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected VirtualItemStorage storage;
     protected int itemsLeftToTransferLastSecond;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public EnderItemLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.item(this);
-        if (!isRemote()) storage = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(),
-                EntryTypes.ENDER_ITEM, getChannelName());
+        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), EntryTypes.ENDER_ITEM,
+                getChannelName()));
     }
 
     @Override
@@ -68,6 +72,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Override
     protected void setEntry(VirtualEntry entry) {
         storage = (VirtualItemStorage) entry;
+        syncDataHolder.markClientSyncFieldDirty("storage");
     }
 
     @Override
@@ -101,6 +106,28 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        filterHandler.setFilterItem(
+                ItemStack.parseOptional(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public @NotNull List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
+        }
+        return list;
+    }
+
+    @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
         WidgetGroup group = new WidgetGroup(x, y, width, height);
         for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
@@ -112,10 +139,5 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Override
     protected String getUITitle() {
         return "cover.ender_item_link.title";
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.models;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -641,7 +641,7 @@ public class GTMachineModels {
     public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelInitializer modelInitializer) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
-            if (!(block instanceof IMachineBlock machineBlock)) {
+            if (!(block instanceof MetaMachineBlock machineBlock)) {
                 throw new IllegalArgumentException(
                         "passed block must be a machine block, is " + block.getClass().getName());
             }

@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.item.behavior;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -71,22 +70,22 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         var player = context.getPlayer();
 
-        if (player == null || player instanceof LocalPlayer) return InteractionResult.PASS;
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-                !MachineOwner.canOpenOwnerMachine(context.getPlayer(), machineBlockEntity.getMetaMachine()))
+        if (!(player instanceof ServerPlayer)) return InteractionResult.PASS;
+        if (blockEntity instanceof MetaMachine mm &&
+                !MachineOwner.canOpenOwnerMachine(context.getPlayer(), mm))
             return InteractionResult.FAIL;
 
         var configElem = stack.getOrDefault(GTDataComponents.DATA_COPY_TAG, CustomData.of(new CompoundTag()));
         var configTag = configElem.copyTag();
 
         if (context.isSecondaryUseActive()) {
-            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
+            if (blockEntity instanceof MetaMachine metaMachine) {
                 configTag.putString(COPY_SOURCE,
                         (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
-                configTag.merge(gatherMachineConfig(machineBlockEntity.getMetaMachine()));
+                configTag.merge(gatherMachineConfig(metaMachine));
 
                 ListTag itemsTag = new ListTag();
-                machineBlockEntity.getMetaMachine().getItemsRequiredToPaste()
+                metaMachine.getItemsRequiredToPaste()
                         .forEach(v -> itemsTag.add(v.save(context.getLevel().registryAccess())));
                 configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
@@ -108,7 +107,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         } else {
             List<ItemStack> items = new ArrayList<>();
-            configTag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            configTag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c)
                     items.add(ItemStack.parse(context.getLevel().registryAccess(), c).orElse(ItemStack.EMPTY));
             });
@@ -120,8 +119,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             }
             if (!player.isCreative()) GTTransferUtils.extractItemsFromPlayerInv(player, items, false);
 
-            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity)
-                pasteMachineConfig((ServerPlayer) player, machineBlockEntity.getMetaMachine(), configTag);
+            if (blockEntity instanceof MetaMachine mm)
+                pasteMachineConfig((ServerPlayer) player, mm, configTag);
             if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE)
                 pastePipeConfig((ServerPlayer) player, pipeBE, configTag);
 
@@ -187,16 +186,19 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
-        if (machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.getOutputFacingItems() != null) {
-            tag.putString(ITEM_OUTPUT_SIDE, directionToString(autoOutputItem.getOutputFacingItems()));
-            tag.putBoolean(ITEM_AUTO_OUTPUT, autoOutputItem.isAutoOutputItems());
-            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, autoOutputItem.isAllowInputFromOutputSideItems());
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
+                outputTrait.getItemOutputDirection() != null) {
+            tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
+            tag.putBoolean(ITEM_AUTO_OUTPUT, outputTrait.isAutoOutputItems());
+            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.allowsItemInputFromOutputSide());
         }
 
-        if (machine instanceof IAutoOutputFluid autoOutputFluid && autoOutputFluid.getOutputFacingFluids() != null) {
-            tag.putString(FLUID_OUTPUT_SIDE, directionToString(autoOutputFluid.getOutputFacingFluids()));
-            tag.putBoolean(FLUID_AUTO_OUTPUT, autoOutputFluid.isAutoOutputFluids());
-            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, autoOutputFluid.isAllowInputFromOutputSideFluids());
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids() &&
+                outputTrait.getFluidOutputDirection() != null) {
+            tag.putString(FLUID_OUTPUT_SIDE, directionToString(outputTrait.getFluidOutputDirection()));
+            tag.putBoolean(FLUID_AUTO_OUTPUT, outputTrait.isAutoOutputFluids());
+            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.allowsFluidInputFromOutputSide());
         }
 
         if (machine instanceof IMufflableMachine mufflableMachine) {
@@ -219,20 +221,19 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
-        if (machine instanceof IAutoOutputItem autoOutputItem) {
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
-                autoOutputItem.setOutputFacingItems(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
-            if (tag.contains(ITEM_AUTO_OUTPUT)) autoOutputItem.setAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+                outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
+            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
             if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
-                autoOutputItem.setAllowInputFromOutputSideItems(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
-        }
-
-        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
+                outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
             if (tag.contains(FLUID_OUTPUT_SIDE))
-                autoOutputFluid.setOutputFacingFluids(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
-            if (tag.contains(FLUID_AUTO_OUTPUT)) autoOutputFluid.setAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+                outputTrait.setFluidOutputDirection(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
+            if (tag.contains(FLUID_AUTO_OUTPUT))
+                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
-                autoOutputFluid.setAllowInputFromOutputSideFluids(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
+                outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
         }
 
         Direction facingDir = Direction.byName(tag.getString(FACING_DIR));
@@ -305,9 +306,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config")
                 .append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
 
-        if (tag.contains("itemsToPaste")) {
+        if (tag.contains(ITEMS_TO_PASTE)) {
             List<ItemStack> items = new ArrayList<>();
-            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c)
                     items.add(ItemStack.parse(context.level().registryAccess(), c).orElse(ItemStack.EMPTY));
             });

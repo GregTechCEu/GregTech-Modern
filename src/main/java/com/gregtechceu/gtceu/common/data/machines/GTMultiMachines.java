@@ -508,7 +508,7 @@ public class GTMultiMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
@@ -1121,7 +1121,7 @@ public class GTMultiMachines {
             (builder, overlay) -> builder.sidedWorkableCasingModel(GTCEu.id("block/casings/wood_wall"), overlay));
     public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
             "wooden_multiblock_tank", "Wooden Multiblock Tank", 250 * 1000,
-            CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
+            CASING_WOOD_WALL, WOODEN_TANK_VALVE,
             new PropertyFluidFilter(340, false, false, false, false),
             (builder, overlay) -> builder.sidedWorkableCasingModel(GTCEu.id("block/casings/wood_wall"), overlay));
 
@@ -1131,7 +1131,7 @@ public class GTMultiMachines {
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), overlay));
     public static final MultiblockMachineDefinition BRONZE_MULTIBLOCK_TANK = registerMultiblockTank(
             "bronze_multiblock_tank", "Bronze Multiblock Tank", 500 * 1000,
-            CASING_BRONZE_BRICKS, BRONZE_TANK_VALVE::getBlock,
+            CASING_BRONZE_BRICKS, BRONZE_TANK_VALVE,
             new PropertyFluidFilter(1696, true, false, false, false),
             (builder, overlay) -> builder
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), overlay));
@@ -1142,7 +1142,7 @@ public class GTMultiMachines {
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));
     public static final MultiblockMachineDefinition STEEL_MULTIBLOCK_TANK = registerMultiblockTank(
             "steel_multiblock_tank", "Steel Multiblock Tank", 1000 * 1000,
-            CASING_STEEL_SOLID, STEEL_TANK_VALVE::getBlock,
+            CASING_STEEL_SOLID, STEEL_TANK_VALVE,
             null,
             (builder, overlay) -> builder.workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));

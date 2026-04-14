@@ -31,6 +31,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -85,7 +86,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             try {
                 scale = Float.parseFloat(scaleInput.getCurrentString());
             } catch (NumberFormatException ignored) {}
-            stack.set(GTDataComponents.TEXT_LINE_LIST, new TextLineList(lines, scale));
+            stack.set(GTDataComponents.FORMAT_STRING_LIST, new TextLineList(lines, scale));
             PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
@@ -96,20 +97,22 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             } else {
                 scaleInput.setTextSupplier(null);
             }
-            if (!stack.has(GTDataComponents.TEXT_LINE_LIST)) {
-                stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY,
+            if (!stack.has(GTDataComponents.FORMAT_STRING_LIST)) {
+                stack.update(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY,
                         lines -> lines.withScale(1.0f));
                 PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
                 return "1";
             }
-            return String.valueOf(Mth.clamp(stack.get(GTDataComponents.TEXT_LINE_LIST).scale(), .0001f, 1000f));
+            // noinspection DataFlowIssue
+            return String.valueOf(Mth.clamp(stack.get(GTDataComponents.FORMAT_STRING_LIST).scale(), .0001f, 1000f));
         };
         scaleInput.setTextSupplier(scaleInputSupplier);
         scaleInput.setHoverTooltips(Component.translatable("gtceu.gui.central_monitor.text_scale"));
-        List<String> formatStringLines = stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY)
-                .lines().stream()
+        List<String> formatStringLines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY)
+                .lines()
+                .stream()
                 .map(Component::getString)
-                .collect(Collectors.toList());
+                .toList();
         editor.setLines(formatStringLines);
         builder.addWidget(editor);
         builder.addWidget(saveButton);
@@ -138,17 +141,17 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public void setPlaceholderText(ItemStack stack, String text) {
-        List<Component> lines = new ArrayList<>();
-        for (String line : text.split("\n")) {
-            lines.add(Component.literal(line));
-        }
-        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY,
-                textLineList -> textLineList.withLines(lines));
+        List<Component> lines = Arrays.stream(text.split("\n"))
+                .map(Component::literal)
+                .map(Component.class::cast)
+                .toList();
+        stack.update(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY,
+                formatStringList -> formatStringList.withLines(lines));
     }
 
     public String getPlaceholderText(ItemStack stack) {
         StringBuilder formatStringLines = new StringBuilder();
-        List<Component> lines = stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY).lines();
+        List<Component> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY).lines();
         for (Component line : lines) {
             formatStringLines.append(line.getString()).append('\n');
         }
@@ -161,7 +164,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                 TooltipFlag isAdvanced) {
         if (isAdvanced.isAdvanced()) {
             tooltipComponents.add(Component.literal("Placeholder text:").withStyle(ChatFormatting.GOLD));
-            tooltipComponents.addAll(stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY).lines());
+            tooltipComponents
+                    .addAll(stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY).lines());
             tooltipComponents.add(Component.literal("Processed text:").withStyle(ChatFormatting.GOLD));
             tooltipComponents.addAll(getText(stack));
         }

@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -270,7 +269,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private void onFormedSwitch(boolean isFormed) {
         MBPattern pattern = patterns[index];
-        IMultiController controllerBase = pattern.controllerBase;
+        MultiblockControllerMachine controllerBase = pattern.controllerBase;
         if (isFormed) {
             this.layer = -1;
             loadControllerFormed(pattern.blockMap.keySet(), controllerBase);
@@ -378,7 +377,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
-        IMultiController controllerBase = null;
+        MultiblockControllerMachine controllerBase = null;
         Set<BlockEntity> blockEntitiesToAdd = new HashSet<>();
         BlockPos multiPos = locateNextRegion();
 
@@ -390,12 +389,11 @@ public class PatternPreviewWidget extends WidgetGroup {
                 for (int z = 0; z < column.length; z++) {
                     BlockState blockState = column[z].getBlockState();
                     BlockPos pos = multiPos.offset(x, y, z);
-                    if (column[z].getBlockEntity(pos, LEVEL.registryAccess()) instanceof IMachineBlockEntity holder) {
-                        holder.getSelf().setLevel(LEVEL);
-                        blockEntitiesToAdd.add(holder.getSelf());
-                        if (holder.getMetaMachine() instanceof IMultiController controller) {
-                            controllerBase = controller;
-                        }
+                    if (column[z].getBlockEntity(pos,
+                            LEVEL.getLevel().registryAccess()) instanceof MultiblockControllerMachine controller) {
+                        controller.setLevel(LEVEL);
+                        blockEntitiesToAdd.add(controller);
+                        controllerBase = controller;
                     }
                     blockMap.put(pos, BlockInfo.fromBlockState(blockState));
                 }
@@ -426,7 +424,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 controllerBase);
     }
 
-    private void loadControllerFormed(Collection<BlockPos> positions, IMultiController controllerBase) {
+    private void loadControllerFormed(Collection<BlockPos> positions, MultiblockControllerMachine controllerBase) {
         BlockPattern pattern = controllerBase.getPattern();
         if (pattern != null && pattern.checkPatternAt(controllerBase.getMultiblockState(), true)) {
             controllerBase.onStructureFormed();
@@ -500,12 +498,12 @@ public class PatternPreviewWidget extends WidgetGroup {
         @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
         @NotNull
-        final IMultiController controllerBase;
+        final MultiblockControllerMachine controllerBase;
         final int maxY, minY;
 
         public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts,
                          @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap,
-                         @NotNull IMultiController controllerBase) {
+                         @NotNull MultiblockControllerMachine controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

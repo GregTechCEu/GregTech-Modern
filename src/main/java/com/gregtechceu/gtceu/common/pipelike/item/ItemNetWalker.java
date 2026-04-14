@@ -102,7 +102,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
         if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
-        var handler = GTTransferUtils.getAdjacentItemHandler(pipeTile.getPipeLevel(), pipePos, faceToNeighbour);
+        var handler = GTTransferUtils.getAdjacentItemHandler(pipeTile.getLevel(), pipePos, faceToNeighbour);
         if (handler.isPresent()) {
             List<Predicate<ItemStack>> filters = new ArrayList<>(this.filters);
             List<Predicate<ItemStack>> moreFilters = nextFilters.get(faceToNeighbour);

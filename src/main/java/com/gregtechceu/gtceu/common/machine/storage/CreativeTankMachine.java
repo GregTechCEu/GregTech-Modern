@@ -1,34 +1,25 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.item.datacomponents.CreativeMachineInfo;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -37,35 +28,31 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CreativeTankMachine extends QuantumTankMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
-            QuantumTankMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int mBPerCycle = 1000;
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 1;
 
-    public CreativeTankMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, 1);
+    public CreativeTankMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX, 1);
     }
 
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new InfiniteCache(this);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
     @Override
@@ -73,10 +60,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return (long) Math.ceil(1d * mBPerCycle / ticksPerCycle);
     }
 
-    private ItemInteractionResult updateStored(FluidStack fluid) {
+    private InteractionResult updateStored(FluidStack fluid) {
         stored = fluid.copyWithAmount(FluidType.BUCKET_VOLUME);
         onFluidChanged();
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     private void setTicksPerCycle(String value) {
@@ -92,50 +79,49 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
-            // Clear fluid if empty + shift-rclick
-            if (player.getItemInHand(hand).isEmpty() && player.isShiftKeyDown() && !stored.isEmpty()) {
-                stored = FluidStack.EMPTY;
-                onFluidChanged();
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,
-                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var heldItem = context.getItemInHand();
+        var player = context.getPlayer();
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
-                return FluidUtil.getFluidContained(stack)
+                return FluidUtil.getFluidContained(heldItem)
                         .map(this::updateStored)
-                        .orElse(ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION);
+                        .orElse(InteractionResult.PASS);
             }
 
             // Need to make a fake source to fully fill held-item since our cache only allows mbPerTick extraction
             CustomFluidTank source = new CustomFluidTank(stored.copyWithAmount(Integer.MAX_VALUE));
-            ItemStack result = FluidUtil.tryFillContainer(stack, source, Integer.MAX_VALUE, player, true)
+            ItemStack result = FluidUtil.tryFillContainer(heldItem, source, Integer.MAX_VALUE, player, true)
                     .getResult();
-            if (!result.isEmpty() && stack.getCount() > 1) {
+            if (!result.isEmpty() && heldItem.getCount() > 1) {
                 ItemHandlerHelper.giveItemToPlayer(player, result);
-                result = stack.copy();
+                result = heldItem.copy();
                 result.shrink(1);
             }
 
             if (!result.isEmpty()) {
-                player.setItemInHand(hand, result);
-                return ItemInteractionResult.SUCCESS;
+                player.setItemInHand(context.getHand(), result);
+                return InteractionResult.SUCCESS;
             } else {
-                return FluidUtil.getFluidContained(stack)
+                return FluidUtil.getFluidContained(heldItem)
                         .map(this::updateStored)
-                        .orElse(ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION);
+                        .orElse(InteractionResult.PASS);
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return super.onUseWithItem(context);
+    }
+
+    @Override
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+            // Clear fluid if empty + shift-rclick
+            if (context.getPlayer().isCrouching() && !stored.isEmpty()) {
+                return updateStored(FluidStack.EMPTY);
+            }
+            return InteractionResult.PASS;
+        }
+        return super.onUse(context);
     }
 
     @Override
@@ -167,12 +153,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
+    protected void applyImplicitComponents(DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         CreativeMachineInfo info = componentInput.get(GTDataComponents.CREATIVE_MACHINE_INFO);
         if (info != null) {
@@ -182,16 +163,9 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         components.set(GTDataComponents.CREATIVE_MACHINE_INFO, new CreativeMachineInfo(mBPerCycle, ticksPerCycle));
-    }
-
-    @Override
-    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeItemComponentsFromTag(tag);
-        tag.remove("mBPerCycle");
-        tag.remove("ticksPerCycle");
     }
 
     private class InfiniteCache extends FluidCache {

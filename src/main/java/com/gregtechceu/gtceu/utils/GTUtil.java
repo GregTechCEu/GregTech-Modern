@@ -284,6 +284,25 @@ public class GTUtil {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Returns first non-empty ItemStack from {@code stacks}.
+     *
+     * @param stacks list of candidates
+     * @return an ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack getFirstNonEmpty(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
         if (index >= 0 && index < list.size())
             return list.get(index);
@@ -607,5 +626,28 @@ public class GTUtil {
 
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
+    }
+
+    public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
+        level.removeBlock(pos, false);
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
+                        Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+    }
+
+    public static void setOnFire(Level level, BlockPos pos, double additionalFireChance) {
+        boolean isFirstFireSpawned = false;
+        for (Direction side : DIRECTIONS) {
+            if (level.isEmptyBlock(pos.relative(side))) {
+                if (!isFirstFireSpawned) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                    if (!level.isEmptyBlock(pos.relative(side))) {
+                        isFirstFireSpawned = true;
+                    }
+                } else if (additionalFireChance >= GTValues.RNG.nextDouble() * 100) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                }
+            }
+        }
     }
 }

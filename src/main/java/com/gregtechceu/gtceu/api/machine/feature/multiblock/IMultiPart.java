@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -44,17 +45,17 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * @return An Unmodifiable View of the part's controllers
      */
     @UnmodifiableView
-    SortedSet<IMultiController> getControllers();
+    SortedSet<MultiblockControllerMachine> getControllers();
 
     /**
      * Called when it was removed from a multiblock.
      */
-    void removedFromController(IMultiController controller);
+    void removedFromController(MultiblockControllerMachine controller);
 
     /**
      * Called when it was added to a multiblock.
      */
-    void addedToController(IMultiController controller);
+    void addedToController(MultiblockControllerMachine controller);
 
     /**
      * Get all available traits for recipe logic.
@@ -73,7 +74,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      */
     @Nullable
     default BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             var appearance = controller.getPartAppearance(this, side, sourceState, sourcePos);
             if (appearance != null) return appearance;
         }
@@ -136,5 +137,5 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Attach part's tooltips to the controller.
      */
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {}
+    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {}
 }

@@ -37,7 +37,7 @@ import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
-import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
@@ -210,7 +210,7 @@ public class ClientProxy {
         PipeModel.initDynamicModels();
 
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTKubeJSPlugin.generateMachineBlockModels();
+            GregTechKubeJSPlugin.generateMachineBlockModels();
         }
         RuntimeBlockstateProvider.INSTANCE.run();
         PipeModelBuilder.clearRestrictorModelCache();

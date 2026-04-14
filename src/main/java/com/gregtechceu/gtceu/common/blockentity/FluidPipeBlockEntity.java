@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -32,9 +32,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -68,6 +65,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     public byte lastReceivedFrom = 0, oldLastReceivedFrom = 0;
     private PipeTankList pipeTankList;
     private final EnumMap<Direction, PipeTankList> tankLists = new EnumMap<>(Direction.class);
+    @SaveField(nbtKey = "Fluids")
     private CustomFluidTank[] fluidTanks;
     private long timer = 0L;
     private final int offset = GTValues.RNG.nextInt(20);
@@ -76,6 +74,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+        createTanksList();
     }
 
     public long getOffsetTimer() {
@@ -172,7 +171,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             }
 
             IFluidHandler fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
-                    getPipePos().relative(facing), facing.getOpposite());
+                    getBlockPos().relative(facing), facing.getOpposite());
             if (fluidHandler == null) continue;
 
             IFluidHandlerModifiable pipeTank = tank;
@@ -185,7 +184,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 if (pipeTank == null || checkForPumpCover(cover)) continue;
             } else {
                 ICoverable coverable = getLevel().getCapability(GTCapability.CAPABILITY_COVERABLE,
-                        getPipePos().relative(facing), facing.getOpposite());
+                        getBlockPos().relative(facing), facing.getOpposite());
                 if (coverable != null) {
                     cover = coverable.getCoverAtSide(facing.getOpposite());
                     if (checkForPumpCover(cover)) continue;
@@ -289,7 +288,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                             boolean isShattering, boolean isMelting) {
         // prevent the sound from spamming when filled from anything not a pipe
         if (getOffsetTimer() % 10 == 0) {
-            level.playSound(null, this.getPipePos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, this.getBlockPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         if (isLeaking) {
@@ -301,8 +300,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),
@@ -317,7 +316,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         }
 
         if (isCorroding) {
-            FluidPipeBlockEntity.spawnParticles(getPipeLevel(), getPipePos(), Direction.UP, ParticleTypes.CRIT,
+            FluidPipeBlockEntity.spawnParticles(this.getLevel(), this.getBlockPos(), Direction.UP, ParticleTypes.CRIT,
                     3 + GTValues.RNG.nextInt(2));
 
             // voids 25%
@@ -325,8 +324,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply chemical damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(1));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(1));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyChemicalDamage(entityLivingBase, 2);
                 }
@@ -335,7 +334,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             // 1/10 chance to void everything and destroy the pipe
             if (GTValues.RNG.nextInt(10) == 0) {
                 stack.setAmount(0);
-                level.removeBlock(getPipePos(), false);
+                level.removeBlock(this.getBlockPos(), false);
             }
         }
 
@@ -353,8 +352,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (isMelting && getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),
@@ -378,8 +377,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply frost damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
-                        new AABB(getPipePos()).inflate(2));
+                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                        new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
                             stack.getFluid().getFluidType().getTemperature(stack),
@@ -399,11 +398,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         if (facing != null) {
             lastReceivedFrom |= (1 << facing.ordinal());
         }
-    }
-
-    public FluidStack getContainedFluid(int channel) {
-        if (channel < 0 || channel >= getFluidTanks().length) return null;
-        return getFluidTanks()[channel].getFluid();
     }
 
     private void createTanksList() {
@@ -444,36 +438,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             fluids[i] = fluidTanks[i].getFluid();
         }
         return fluids;
-    }
-
-    @Override
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        ListTag list = new ListTag();
-        for (int i = 0; i < getFluidTanks().length; i++) {
-            FluidStack stack1 = getContainedFluid(i);
-            CompoundTag fluidTag = new CompoundTag();
-            if (stack1.isEmpty()) {
-                fluidTag.putBoolean("isNull", true);
-            } else {
-                stack1.save(level.registryAccess(), fluidTag);
-            }
-            list.add(fluidTag);
-        }
-        tag.put("Fluids", list);
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag nbt) {
-        super.loadCustomPersistedData(nbt);
-        ListTag list = nbt.getList("Fluids", Tag.TAG_COMPOUND);
-        createTanksList();
-        for (int i = 0; i < list.size(); i++) {
-            CompoundTag tag = list.getCompound(i);
-            if (!tag.getBoolean("isNull")) {
-                fluidTanks[i].setFluid(FluidStack.parseOptional(GTRegistries.builtinRegistry(), tag));
-            }
-        }
     }
 
     public static void spawnParticles(Level worldIn, BlockPos pos, Direction direction, ParticleOptions particleType,

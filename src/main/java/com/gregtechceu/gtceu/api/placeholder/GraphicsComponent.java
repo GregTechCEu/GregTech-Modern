@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
@@ -18,18 +16,20 @@ import java.util.function.Supplier;
 public record GraphicsComponent(float x, float y, float x2, float y2, String rendererId, CompoundTag renderData)
         implements Supplier<IMonitorRenderer> {
 
-    public GraphicsComponent(double x, double y, double x2, double y2, String rendererId, CompoundTag renderData) {
-        this((float) x, (float) y, (float) x2, (float) y2, rendererId, renderData);
-    }
-
+    // spotless:off
     public static final Codec<GraphicsComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.FLOAT.fieldOf("x").forGetter(GraphicsComponent::x),
             Codec.FLOAT.fieldOf("y").forGetter(GraphicsComponent::y),
             Codec.FLOAT.fieldOf("x2").forGetter(GraphicsComponent::x2),
             Codec.FLOAT.fieldOf("y2").forGetter(GraphicsComponent::y2),
             Codec.STRING.fieldOf("rendererId").forGetter(GraphicsComponent::rendererId),
-            CompoundTag.CODEC.fieldOf("renderData").forGetter(GraphicsComponent::renderData))
-            .apply(instance, GraphicsComponent::new));
+            CompoundTag.CODEC.fieldOf("renderData").forGetter(GraphicsComponent::renderData)
+    ).apply(instance, GraphicsComponent::new));
+    // spotless:on
+
+    public GraphicsComponent(double x, double y, double x2, double y2, String rendererId, CompoundTag renderData) {
+        this((float) x, (float) y, (float) x2, (float) y2, rendererId, renderData);
+    }
 
     @Override
     public IMonitorRenderer get() {
@@ -47,13 +47,5 @@ public record GraphicsComponent(float x, float y, float x2, float y2, String ren
                 poseStack.popPose();
             }
         };
-    }
-
-    public Tag toTag() {
-        return CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow();
-    }
-
-    public static GraphicsComponent fromTag(Tag tag) {
-        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow().getFirst();
     }
 }

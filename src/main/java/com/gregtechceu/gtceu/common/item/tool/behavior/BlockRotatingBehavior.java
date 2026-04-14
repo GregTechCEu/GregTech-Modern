@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -58,7 +58,7 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
         BlockPos pos = context.getClickedPos();
         BlockEntity te = level.getBlockEntity(pos);
         // MTEs have special handling on rotation
-        if (te instanceof IMachineBlockEntity) {
+        if (te instanceof MetaMachine) {
             return InteractionResult.PASS;
         }
 

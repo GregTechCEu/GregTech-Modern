@@ -1396,11 +1396,13 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.BONE_MEAL))
                 .outputItems(new ItemStack(Items.WHITE_DYE, 1))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("lapis_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("blue_dye")
                 .inputItems(new ItemStack(Items.LAPIS_LAZULI))
                 .outputItems(new ItemStack(Items.BLUE_DYE))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("ink_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("black_dye")
                 .inputItems(new ItemStack(Items.INK_SAC))
                 .outputItems(new ItemStack(Items.BLACK_DYE))
                 .save(provider);

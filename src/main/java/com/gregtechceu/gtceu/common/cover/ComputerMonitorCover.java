@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -24,9 +26,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -38,8 +37,6 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -51,41 +48,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ComputerMonitorCover extends CoverBehavior
                                   implements IUICover, IDataStickInteractable, IPlaceholderInfoProviderCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
-    private @Nullable TickableSubscription subscription;
+    private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<String> formatStringArgs = new ArrayList<>(8);
-    @Persisted
+    private List<String> formatStringArgs = new ArrayList<>(8);
+    @SaveField
     @Getter
-    private final List<String> formatStringLines = new ArrayList<>(8);
-    @Persisted
-    @DescSynced
+    private List<String> formatStringLines = new ArrayList<>(8);
+    @SaveField
+    @SyncToClient
     @Getter
     private List<MutableComponent> text = new ArrayList<>();
-    @Persisted
-    public final CustomItemStackHandler itemHandler = new CustomItemStackHandler(8);
+    @SaveField
+    public CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
     @Setter
     private String placeholderSearch = "";
     @Setter
     @Getter
-    @Persisted
+    @SaveField
     private int updateInterval = 100;
     @Getter
-    @Persisted
+    @SaveField
     private long ticksSincePlaced = 0;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final UUID placeholderUUID;
+    private UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -103,7 +97,8 @@ public class ComputerMonitorCover extends CoverBehavior
         tmp = tmp.stream().map(str -> '{' + str + '}').toList();
         return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
-                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemHandler,
+                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide,
+                        itemStackHandler,
                         this, new MultiLineComponent(text), placeholderUUID));
     }
 
@@ -127,11 +122,6 @@ public class ComputerMonitorCover extends CoverBehavior
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public Widget createUIWidget() {
         int textFieldWidth = 160, horizontalPadding = 10, verticalPadding = 2;
         final WidgetGroup group = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
@@ -150,7 +140,7 @@ public class ComputerMonitorCover extends CoverBehavior
             formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
             mainPage.addWidget(formatStringInput);
             SlotWidget slot = new com.gregtechceu.gtceu.api.gui.widget.SlotWidget(
-                    itemHandler,
+                    itemStackHandler,
                     i,
                     horizontalPadding + 50,
                     20 * i);
@@ -250,8 +240,8 @@ public class ComputerMonitorCover extends CoverBehavior
     public List<ItemStack> getAdditionalDrops() {
         List<ItemStack> drops = super.getAdditionalDrops();
         for (int i = 0; i < 8; i++) {
-            if (!itemHandler.getStackInSlot(i).isEmpty()) {
-                drops.add(itemHandler.getStackInSlot(i));
+            if (!itemStackHandler.getStackInSlot(i).isEmpty()) {
+                drops.add(itemStackHandler.getStackInSlot(i));
             }
         }
         return drops;

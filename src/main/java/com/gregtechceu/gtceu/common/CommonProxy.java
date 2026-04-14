@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -71,7 +71,7 @@ import com.gregtechceu.gtceu.data.placeholder.GTPlaceholders;
 import com.gregtechceu.gtceu.data.recipe.*;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -140,7 +140,7 @@ public class CommonProxy {
         if (GTCEu.Mods.isKubeJSLoaded()) {
             // initialize this before the class's static listeners
             // so KubeJS materials are registered before the material registry is closed.
-            modBus.addListener(EventPriority.LOW, GTKubeJSPlugin::registerWrappers);
+            modBus.addListener(EventPriority.LOW, GregTechKubeJSPlugin::registerWrappers);
         }
         modBus.register(CommonProxy.class);
 
@@ -430,7 +430,7 @@ public class CommonProxy {
                 laserPipe.attachCapabilities(event);
             } else if (block instanceof DuctPipeBlock duct) {
                 duct.attachCapabilities(event);
-            } else if (block instanceof IMachineBlock machine) {
+            } else if (block instanceof MetaMachineBlock machine) {
                 machine.attachCapabilities(event);
             } else if (block instanceof OpticalPipeBlock optical) {
                 optical.attachCapabilities(event);

@@ -335,6 +335,8 @@ public class LangHandler {
         provider.add("metaarmor.message.nightvision.enabled", "§bNightVision: §aOn");
         provider.add("metaarmor.message.nightvision.disabled", "§bNightVision: §cOff");
         provider.add("metaarmor.message.nightvision.error", "§cNot enough power!");
+        provider.add("metaarmor.message.step_assist.enabled", "§bStep-Assist: §aOn");
+        provider.add("metaarmor.message.step_assist.disabled", "§bStep-Assist: §cOff");
         provider.add("metaarmor.tooltip.stepassist", "Provides Step-Assist");
         provider.add("metaarmor.tooltip.speed", "Increases Running Speed");
         provider.add("metaarmor.tooltip.jump", "Increases Jump Height and Distance");
@@ -892,12 +894,13 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.workable_progress", "Progress: %s s / %s s");
         provider.add("behavior.portable_scanner.workable_stored_energy", "Stored Energy: %s EU / %s EU");
         provider.add("behavior.portable_scanner.mode.caption", "Display mode: %s");
-        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info");
+        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info (excluding internal info)");
         provider.add("behavior.portable_scanner.mode.show_block_info", "Show block info");
         provider.add("behavior.portable_scanner.mode.show_machine_info", "Show machine info");
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.portable_scanner.mode.show_internal_info", "Show internal debugging info");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
         provider.add("behavior.data_item.title", "§n%s Construction Data:");

@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -18,10 +17,10 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -30,37 +29,35 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Accessors(fluent = true)
     @Getter
-    @Persisted
+    @SaveField
     protected boolean allowCircuitSlots;
 
-    public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
-        super(holder);
+    public AssemblyLineMachine(BlockEntityCreationInfo info, boolean allowCircuitSlots) {
+        super(info, machine -> new AsslineRecipeLogic((AssemblyLineMachine) machine));
         this.allowCircuitSlots = allowCircuitSlots;
     }
 
-    public AssemblyLineMachine(IMachineBlockEntity holder) {
-        this(holder, false);
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new AsslineRecipeLogic(this);
+    public AssemblyLineMachine(BlockEntityCreationInfo info) {
+        this(info, false);
     }
 
     public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {
-        return Comparator.comparing(p -> p.self().getPos(),
+        return Comparator.comparing(p -> p.self().getBlockPos(),
                 RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
-    private boolean checkItemInputs(@NotNull GTRecipe recipe, boolean isTick) {
+    private boolean checkItemInputs(GTRecipe recipe, boolean isTick) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return true;
@@ -92,7 +89,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeItemContents(@NotNull GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeItemContents(GTRecipe recipe, boolean isTick) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return ActionResult.SUCCESS;
@@ -133,7 +130,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return ActionResult.SUCCESS;
     }
 
-    private boolean checkFluidInputs(@NotNull GTRecipe recipe, boolean isTick) {
+    private boolean checkFluidInputs(GTRecipe recipe, boolean isTick) {
         var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return true;
@@ -164,7 +161,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeFluidContents(@NotNull GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeFluidContents(GTRecipe recipe, boolean isTick) {
         var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return ActionResult.SUCCESS;
@@ -205,7 +202,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return ActionResult.SUCCESS;
     }
 
-    private ActionResult consumeAll(@NotNull GTRecipe recipe, boolean isTick,
+    private ActionResult consumeAll(GTRecipe recipe, boolean isTick,
                                     Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         GTRecipe copyWithItems = recipe.copy();
         copyWithItems.inputs.clear();
@@ -262,16 +259,19 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches);
     }
 
-    class AsslineRecipeLogic extends RecipeLogic {
+    private static class AsslineRecipeLogic extends RecipeLogic {
 
-        public AsslineRecipeLogic(IRecipeLogicMachine machine) {
+        private final AssemblyLineMachine machine;
+
+        public AsslineRecipeLogic(AssemblyLineMachine machine) {
             super(machine);
+            this.machine = machine;
         }
 
         @Override
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return consumeAll(recipe, false, this.getChanceCaches());
+                return machine.consumeAll(recipe, false, this.getChanceCaches());
             }
             return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
         }
@@ -279,7 +279,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         @Override
         protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return consumeAll(recipe, true, this.getChanceCaches());
+                return machine.consumeAll(recipe, true, this.getChanceCaches());
             }
             return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
         }
@@ -292,12 +292,12 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             var config = ConfigHolder.INSTANCE.machines;
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!machine.checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!machine.checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
 
             if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!machine.checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!machine.checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
             return ActionResult.SUCCESS;
         }
     }

@@ -325,7 +325,7 @@ public class GTTransferUtils {
         for (var stack : items) {
             var found = ContainerHelper.clearOrCountMatchingItems(inventory, (s) -> s.is(stack.getItem()),
                     stack.getCount(), simulate);
-            if (found != stack.getCount()) return false;
+            if (found < stack.getCount()) return false;
         }
 
         if (!simulate) player.inventoryMenu.broadcastChanges();

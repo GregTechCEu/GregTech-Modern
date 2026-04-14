@@ -51,6 +51,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
@@ -211,7 +212,7 @@ public interface GTRecipeSchema {
             perTick = true;
             if (cwu > 0) {
                 inputCWU(cwu);
-            } else if (cwu < 0) {
+            } else {
                 outputCWU(-cwu);
             }
             perTick = lastPerTick;
@@ -744,6 +745,15 @@ public interface GTRecipeSchema {
                 if (stack == null || stack.getItems().length == 0) {
                     throw new KubeRuntimeException(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
+                if (stack.ingredient().getItems().length == 0) {
+                    String tagInfo = "";
+                    var values = (stack.ingredient()).getValues();
+                    if (values.length == 1 && values[0] instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+                        tagInfo = " (empty or unknown tag: #" + tag.location() + ")";
+                    }
+                    throw new KubeRuntimeException(
+                            String.format("Invalid or empty %s item (recipe ID: %s)%s", type, id, tagInfo));
+                }
             }
         }
 
@@ -765,7 +775,7 @@ public interface GTRecipeSchema {
 
         private void validateItems(@NotNull String type, IntProviderIngredient... items) {
             for (var item : items) {
-                if (item == null || item.getItemStacks() == null || item.getItemStacks().length == 0) {
+                if (item == null || item.getItemStacks().length == 0) {
                     throw new KubeRuntimeException(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
@@ -790,7 +800,7 @@ public interface GTRecipeSchema {
 
         private void validateFluids(@NotNull String type, FluidIngredient... fluids) {
             for (var fluid : fluids) {
-                if (fluid == null || fluid.getStacks() == null) {
+                if (fluid == null || fluid.getStacks().length == 0) {
                     throw new KubeRuntimeException(
                             String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }
@@ -801,12 +811,17 @@ public interface GTRecipeSchema {
                                 String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                     }
                 }
+                if (fluid instanceof TagFluidIngredient tagFluidIngredient && tagFluidIngredient.hasNoFluids()) {
+                    String tagInfo = " (empty or unknown tag: #" + tagFluidIngredient.tag().location() + ")";
+                    throw new KubeRuntimeException(String.format(
+                            "Invalid or empty %s fluid (recipe ID: %s)%s", type, id, tagInfo));
+                }
             }
         }
 
         private void validateFluids(@NotNull String type, SizedFluidIngredient... stacks) {
             for (var stack : stacks) {
-                if (stack == null || stack.getFluids() == null || stack.getFluids().length == 0) {
+                if (stack == null || stack.getFluids().length == 0) {
                     throw new KubeRuntimeException(
                             String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }

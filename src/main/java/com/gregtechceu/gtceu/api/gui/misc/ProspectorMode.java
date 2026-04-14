@@ -306,16 +306,12 @@ public abstract class ProspectorMode<T> {
         @Override
         public IGuiTexture getItemIcon(OreInfo item) {
             Material material = item.material;
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
-                    material);
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material); // backup 1: crushed; if raw
-                                                                                          // ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material); // backup 2: gem; if crushed ore
-                                                                                      // doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: ore; if gem doesn't
-                                                                                      // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material); // backup 4: just fallback to
-                                                                                       // dust...
+            ItemStack stack = GTUtil.getFirstNonEmpty(
+                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
+                    ChemicalHelper.get(TagPrefix.crushed, material),
+                    ChemicalHelper.get(TagPrefix.gem, material),
+                    ChemicalHelper.get(TagPrefix.ore, material),
+                    ChemicalHelper.get(TagPrefix.dust, material));
             return new ItemStackTexture(stack).scale(0.8f);
         }
 

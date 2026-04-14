@@ -47,7 +47,8 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance)
+        return recipeLogic.getMachine().getTraitHolder().getAllTraits().stream()
+                .filter(IEnergyContainer.class::isInstance)
                 .anyMatch(energyContainer -> ((IEnergyContainer) energyContainer).getEnergyCapacity() > euToStart);
     }
 

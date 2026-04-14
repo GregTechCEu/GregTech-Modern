@@ -22,10 +22,8 @@ public class CCTweakedPlugin {
         ComputerCraftAPI.registerGenericSource(new CentralMonitorPeripheral());
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_CONTROLLABLE);
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER);
-        ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_TURBINE_MACHINE);
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_WORKABLE);
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_COVERABLE);
-        ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_CENTRAL_MONITOR);
         PlaceholderHandler.addPlaceholder(new Placeholder("bufferText") {
 
             @Override

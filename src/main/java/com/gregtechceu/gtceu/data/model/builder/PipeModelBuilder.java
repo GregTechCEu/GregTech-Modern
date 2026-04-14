@@ -30,7 +30,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
@@ -346,43 +345,6 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     }
 
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY = GTCEu.id("block/pipe/blocked/pipe_blocked");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UP = GTCEu.id("block/pipe/blocked/pipe_blocked_up");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DOWN = GTCEu.id("block/pipe/blocked/pipe_blocked_down");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_LEFT = GTCEu.id("block/pipe/blocked/pipe_blocked_left");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_RIGHT = GTCEu
-            .id("block/pipe/blocked/pipe_blocked_right");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NU = GTCEu.id("block/pipe/blocked/pipe_blocked_nu");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_ND = GTCEu.id("block/pipe/blocked/pipe_blocked_nd");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NL = GTCEu.id("block/pipe/blocked/pipe_blocked_nl");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NR = GTCEu.id("block/pipe/blocked/pipe_blocked_nr");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UD = GTCEu.id("block/pipe/blocked/pipe_blocked_ud");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UL = GTCEu.id("block/pipe/blocked/pipe_blocked_ul");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UR = GTCEu.id("block/pipe/blocked/pipe_blocked_ur");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DL = GTCEu.id("block/pipe/blocked/pipe_blocked_dl");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DR = GTCEu.id("block/pipe/blocked/pipe_blocked_dr");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_LR = GTCEu.id("block/pipe/blocked/pipe_blocked_lr");
-
-    private static final Int2ObjectMap<ResourceLocation> RESTRICTOR_MAP = Util.make(() -> {
-        Int2ObjectMap<ResourceLocation> map = new Int2ObjectOpenHashMap<>();
-
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UP, Border.TOP);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DOWN, Border.BOTTOM);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UD, Border.TOP, Border.BOTTOM);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_LEFT, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UL, Border.TOP, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DL, Border.BOTTOM, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NR, Border.TOP, Border.BOTTOM, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_RIGHT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UR, Border.TOP, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DR, Border.BOTTOM, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NL, Border.TOP, Border.BOTTOM, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_LR, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_ND, Border.TOP, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NU, Border.BOTTOM, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY, Border.TOP, Border.BOTTOM, Border.LEFT, Border.RIGHT);
-
-        return map;
-    });
 
     private static BlockModelBuilder[] getOrCreateRestrictorModels(BlockModelProvider provider, float thickness) {
         return RESTRICTOR_MODEL_CACHE.apply(provider, thickness);

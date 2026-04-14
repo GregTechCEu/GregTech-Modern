@@ -76,7 +76,7 @@
 
 // // TODO this should use JUnit
 // @EmptyTemplate
-// @GameTest(batch = "NBTPredicateTest")
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateEqualsTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putString("foo", "bar");
@@ -108,7 +108,7 @@
 
 // // TODO this should use JUnit
 // @EmptyTemplate
-// @GameTest(batch = "NBTPredicateTest")
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateComparisonTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putDouble("num", 10);
@@ -146,7 +146,7 @@
 
 // // TODO this should use JUnit
 // @EmptyTemplate
-// @GameTest(batch = "NBTPredicateTest")
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateAnyTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putInt("a", 5);

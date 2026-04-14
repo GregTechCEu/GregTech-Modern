@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
@@ -58,8 +58,8 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
         }
 
         IFluidHandler fluidHandler;
-        if (level.getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity mmbe) {
-            fluidHandler = mmbe.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
+        if (level.getBlockEntity(context.getClickedPos()) instanceof MetaMachine machine) {
+            fluidHandler = machine.getFluidHandlerCap(context.getClickedFace(), false);
         } else {
             fluidHandler = FluidUtil.getFluidHandler(level, context.getClickedPos(), context.getClickedFace())
                     .orElse(null);

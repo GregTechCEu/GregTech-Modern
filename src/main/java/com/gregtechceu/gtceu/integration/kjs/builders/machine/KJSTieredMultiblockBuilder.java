@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -110,7 +110,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
     @FunctionalInterface
     public interface TieredCreationFunction {
 
-        MultiblockControllerMachine create(IMachineBlockEntity holder, int tier);
+        MultiblockControllerMachine create(BlockEntityCreationInfo info, int tier);
     }
 
     @FunctionalInterface
