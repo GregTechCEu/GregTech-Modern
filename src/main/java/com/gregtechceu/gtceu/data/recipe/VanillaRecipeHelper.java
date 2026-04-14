@@ -64,13 +64,13 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          Ingredient input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
@@ -97,7 +97,7 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          ItemStack input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 
@@ -133,13 +133,13 @@ public class VanillaRecipeHelper {
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          Ingredient input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.blasting(regName).input(input).output(output).cookingTime(100).experience(experience)
+        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.blasting(regName).input(input).output(output).cookingTime(100).experience(experience)
+        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
@@ -171,13 +171,13 @@ public class VanillaRecipeHelper {
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                         TagKey<Item> input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.smoking(regName).input(input).output(output).cookingTime(100).experience(experience)
+        new SmokingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                         ItemStack input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.smoking(regName).input(input).output(output).cookingTime(100).experience(experience)
+        new SmokingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
@@ -199,8 +199,7 @@ public class VanillaRecipeHelper {
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          ItemStack input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.campfireCooking(regName).input(input).output(output).cookingTime(100)
-                .experience(experience)
+        new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
@@ -216,8 +215,7 @@ public class VanillaRecipeHelper {
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
-        SimpleCookingRecipeBuilder.campfireCooking(regName).input(input).output(output).cookingTime(100)
-                .experience(experience)
+        new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
 
