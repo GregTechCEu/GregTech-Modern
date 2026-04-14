@@ -15,9 +15,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -33,9 +34,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class MachineCoverContainer extends MachineTrait implements IFrontFacingTrait, IRenderingTrait, ICoverable, ISyncManaged {
+public class MachineCoverContainer extends MachineTrait
+                                   implements IFrontFacingTrait, IRenderingTrait, ICoverable, ISyncManaged {
 
-    public static final MachineTraitType<MachineCoverContainer> TYPE = new MachineTraitType<>(MachineCoverContainer.class);
+    public static final MachineTraitType<MachineCoverContainer> TYPE = new MachineTraitType<>(
+            MachineCoverContainer.class);
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -78,7 +81,8 @@ public class MachineCoverContainer extends MachineTrait implements IFrontFacingT
     }
 
     @Override
-    public boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held, Set<GTToolType> toolTypes) {
+    public boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held,
+                                           Set<GTToolType> toolTypes) {
         for (CoverBehavior cover : getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
@@ -86,7 +90,8 @@ public class MachineCoverContainer extends MachineTrait implements IFrontFacingT
     }
 
     @Override
-    public @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes, Direction side) {
+    public @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
+                                                        Set<GTToolType> toolTypes, Direction side) {
         var cover = getCoverAtSide(side);
         if (cover != null) {
             return cover.sideTips(player, pos, state, toolTypes, side);

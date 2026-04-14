@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -286,7 +285,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty()) machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        if (!itemStack.isEmpty())
+            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
         machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
@@ -336,7 +336,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
+                                boolean movedByPiston) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine != null) {
             machine.onNeighborChanged(neighborBlock, neighborPos, movedByPiston);

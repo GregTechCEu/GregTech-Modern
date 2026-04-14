@@ -14,14 +14,11 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
 
 import java.util.function.Function;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine {
 

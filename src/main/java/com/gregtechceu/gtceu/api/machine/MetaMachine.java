@@ -65,7 +65,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -201,6 +200,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called to modify the drops returned when this block is destroyed
+     * 
      * @param drops A modifiable list of drops.
      */
     public void modifyDrops(List<ItemStack> drops) {}
@@ -285,6 +285,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Attaches a trait to this machine, with the default trait callback priority of 1.
+     * 
      * @param trait The trait to attach
      * @return The attached trait
      */
@@ -294,8 +295,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Attaches a trait to this machine.
-     * @param trait The trait to attach
-     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired first, which may prevent traits with a lower priority from handling some events.
+     * 
+     * @param trait            The trait to attach
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
@@ -317,6 +320,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets a trait registered by {@code registerPersistentTrait}
+     * 
      * @param traitName the unique identifier for the trait
      * @return the trait, or null if not present
      */
@@ -326,6 +330,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
+     * 
      * @param type The trait type to get
      * @return The trait, or null if no traits of the given type are present.
      */
@@ -335,6 +340,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
+     * 
      * @param type The trait type to get
      * @return An optional result containing the trait if present.
      */
@@ -344,6 +350,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Get all traits with the specified type.
+     * 
      * @return An unmodifiable list containing all traits of the specified type.
      */
     public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
@@ -356,9 +363,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a player clicks this machine with a GT tool
+     * 
      * @param context The context of this interaction.
-     * @return A pair containing the type of the tool (if the interaction was successful), and the result of the interaction.
-     * A result of CONSUME will play the tool sound (based on the first element of the pair) and consume durability.
+     * @return A pair containing the type of the tool (if the interaction was successful), and the result of the
+     *         interaction.
+     *         A result of CONSUME will play the tool sound (based on the first element of the pair) and consume
+     *         durability.
      */
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         // the side hit from the machine grid
@@ -457,6 +467,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a machine is right clicked with an item.
+     * 
      * @param context The context which this interaction is being performed from.
      * @return The result of this interaction callback.
      */
@@ -479,7 +490,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when a machine is right clicked without an item, or if this machine was clicked with an item but no item-specific interaction was performed.
+     * Called when a machine is right clicked without an item, or if this machine was clicked with an item but no
+     * item-specific interaction was performed.
+     * 
      * @param context The context which this interaction is being performed from.
      * @return The result of this interaction callback.
      */
@@ -610,6 +623,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Adds extra information to the F3 debug overlay when looking at this machine.
+     * 
      * @param lines A string consumer which lines are added to.
      */
     public void addDebugOverlayText(Consumer<String> lines) {
@@ -625,6 +639,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * The {@link MachineDefinition} of this machine.
+     * 
      * @return The {@link MachineDefinition}
      */
     public MachineDefinition getDefinition() {
@@ -646,6 +661,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the direction which this machine is facing.
+     * 
      * @return The direction the machine is facing, or north if this machine does not have a front face.
      */
     public Direction getFrontFacing() {
@@ -655,6 +671,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine has a front face.
+     * 
      * @return If this machine has a front face.
      */
     public final boolean hasFrontFacing() {
@@ -663,6 +680,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine can be rotated to face a specific direction
+     * 
      * @param facing The direction to test
      * @return If it is possible to rotate this machine to face the given direction.
      */
@@ -680,6 +698,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns the {@link RotationState} properties which this machine type supports.
+     * 
      * @return The {@link RotationState}
      */
     public RotationState getRotationState() {
@@ -688,6 +707,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Rotates this machine to face a specific direction, if that direction is a valid facing direction.
+     * 
      * @param facing The new facing direction.
      */
     public void setFrontFacing(Direction facing) {
@@ -711,6 +731,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the direction which is this machine's upwards face.
+     * 
      * @return The upwards facing direction, or north if this machine does not allow extended facing.
      */
     public Direction getUpwardsFacing() {
@@ -720,6 +741,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Changes this machine's upwards facing direction, if this machine supports extended facing directions.
+     * 
      * @param upwardsFacing The new upwards facing direction.
      */
     public void setUpwardsFacing(Direction upwardsFacing) {
@@ -743,6 +765,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine supports extended facing directions.
+     * 
      * @return If extended facing directions are supported.
      */
     public boolean allowExtendedFacing() {
@@ -751,6 +774,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when this machine is rotated
+     * 
      * @param oldFacing The previous facing direction
      * @param newFacing The new facing direction
      */
@@ -771,9 +795,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a neighboring block is updated.
+     * 
      * @param neighborBlock The neighbor block type.
-     * @param neighborPos The neighbor position.
-     * @param isMoving If the neighbor block is moving (e.g. moved by a piston)
+     * @param neighborPos   The neighbor position.
+     * @param isMoving      If the neighbor block is moving (e.g. moved by a piston)
      */
     public void onNeighborChanged(Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         getAllTraits().forEach(t -> t.onMachineNeighborChanged(neighborBlock, neighborPos, isMoving));
@@ -784,9 +809,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Returns the {@link BlockState} that this block reports at a given side.
      *
-     * @param level      The level this block is in
-     * @param pos        The block's position in the level
-     * @param side       The side of the block that is being queried
+     * @param level       The level this block is in
+     * @param pos         The block's position in the level
+     * @param side        The side of the block that is being queried
      * @param sourceState The state of the block that is querying the appearance, or {@code null} if not applicable
      * @param sourcePos   The position of the block that is querying the appearance, or {@code null} if not applicable
      * @return The appearance of this block from the given side
@@ -806,6 +831,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Gets the current tick offset, which can be used to run code after a certain number of ticks.
      * For example, {@code getOffsetTimer() % 20 == 0} will be true every 20 ticks (1 second)
+     * 
      * @return The current tick offset.
      */
     public final long getOffsetTimer() {
@@ -921,8 +947,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the item filter for a specific side of this machine.
+     * 
      * @param side Side
-     * @param io The IO mode this filter should be applicable to.
+     * @param io   The IO mode this filter should be applicable to.
      * @return A {@code Predicate<ItemStack>} representing this filter
      */
     public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
@@ -945,8 +972,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the fluid filter for a specific side of this machine.
+     * 
      * @param side Side
-     * @param io The IO mode this filter should be applicable to.
+     * @param io   The IO mode this filter should be applicable to.
      * @return A {@code Predicate<FluidStack>} representing this filter
      */
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
@@ -969,7 +997,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the item handler capability for a specific side of this machine
-     * @param side The side
+     * 
+     * @param side               The side
      * @param useCoverCapability Whether to return an item handler provided by an attached cover, if present.
      * @return The {@link IItemHandlerModifiable} capability, or null.
      */
@@ -1000,7 +1029,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the fluid handler capability for a specific side of this machine
-     * @param side The side
+     * 
+     * @param side               The side
      * @param useCoverCapability Whether to return a fluid handler provided by an attached cover, if present.
      * @return The {@link IFluidHandlerModifiable} capability, or null.
      */
