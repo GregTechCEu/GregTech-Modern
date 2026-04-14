@@ -46,6 +46,7 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -198,12 +199,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public void onMachineDestroyed() {
         getAllTraits().forEach(MachineTrait::onMachineDestroyed);
-<<<<<<< gus/trait-priority
-=======
         for (Direction direction : GTUtil.DIRECTIONS) {
             getCoverContainer().removeCover(direction, null);
         }
->>>>>>> 1.20.1
     }
 
     /**
@@ -737,28 +735,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-<<<<<<< gus/trait-priority
     /**
      * Gets the direction which is this machine's upwards face.
      * 
      * @return The upwards facing direction, or north if this machine does not allow extended facing.
      */
-=======
-    @MustBeInvokedByOverriders
-    public void updateModelData(ModelData.Builder builder) {
-        for (MachineTrait trait : getAllTraits()) {
-            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
-        }
-    }
-
-    @Override
-    public ModelData getModelData() {
-        ModelData.Builder data = super.getModelData().derive();
-        updateModelData(data);
-        return data.build();
-    }
-
->>>>>>> 1.20.1
     public Direction getUpwardsFacing() {
         return this.allowExtendedFacing() ? this.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING) :
                 Direction.NORTH;
@@ -853,15 +834,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return getDefinition().getAppearance().get();
     }
 
-<<<<<<< gus/trait-priority
     /**
      * Gets the current tick offset, which can be used to run code after a certain number of ticks.
      * For example, {@code getOffsetTimer() % 20 == 0} will be true every 20 ticks (1 second)
      * 
      * @return The current tick offset.
      */
-=======
->>>>>>> 1.20.1
     public final long getOffsetTimer() {
         if (getLevel() == null) return getOffset();
         else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
