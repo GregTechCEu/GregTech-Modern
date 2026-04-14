@@ -37,6 +37,9 @@ public abstract class MachineTrait implements ISyncManaged {
     private @Nullable MetaMachine machine;
     @Setter
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
+    @Getter
+    @Setter
+    private int traitPriority = 1;
 
     public MachineTrait(MetaMachine machine) {
         this.capabilityValidator = side -> true;
