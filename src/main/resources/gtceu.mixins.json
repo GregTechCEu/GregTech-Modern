@@ -57,6 +57,7 @@
         "ReloadableServerResourcesMixin",
         "RepairItemRecipeMixin",
         "ResourceKeyArgumentAccessor",
+        "ResourceLocationMixin",
         "ServerChunkProviderMixin",
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
