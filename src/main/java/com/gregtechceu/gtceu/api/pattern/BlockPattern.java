@@ -546,7 +546,7 @@ public class BlockPattern {
     }
 
     protected BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
-                                             boolean isFlipped) {
+                                               boolean isFlipped) {
         int[] c0 = new int[] { x, y, z }, c1 = new int[3];
         if (facing == Direction.UP || facing == Direction.DOWN) {
             Direction of = facing == Direction.DOWN ? upwardsFacing : upwardsFacing.getOpposite();
