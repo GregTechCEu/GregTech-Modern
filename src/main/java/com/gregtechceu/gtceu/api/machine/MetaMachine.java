@@ -272,12 +272,30 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ******* Machine Traits *******//
     //////////////////////////////////////
 
-    public @UnmodifiableView List<MachineTrait> getAllTraits() {
+    /**
+     * @return An unmodifiable list of all traits attached to this machine.
+     */
+    public @Unmodifiable List<MachineTrait> getAllTraits() {
         return traitHolder.getAllTraits();
     }
 
+    /**
+     * Attaches a trait to this machine, with the default trait callback priority of 1.
+     * @param trait The trait to attach
+     * @return The attached trait
+     */
     public <T extends MachineTrait> T attachTrait(T trait) {
         return traitHolder.attachTrait(trait);
+    }
+
+    /**
+     * Attaches a trait to this machine.
+     * @param trait The trait to attach
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired first, which may prevent traits with a lower priority from handling some events.
+     * @return The attached trait
+     */
+    public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        return traitHolder.attachTrait(trait, callbackPriority);
     }
 
     /**
@@ -293,23 +311,36 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         traitHolder.registerPersistentTrait(traitName, trait);
     }
 
+    /**
+     * Gets a trait registered by {@code registerPersistentTrait}
+     * @param traitName the unique identifier for the trait
+     * @return the trait, or null if not present
+     */
     public @Nullable <T extends MachineTrait> T getPersistentTrait(String traitName) {
         return traitHolder.getPersistentTrait(traitName);
     }
 
     /**
-     * Gets the first trait with the specified type.
+     * Gets the first trait (trait with highest priority) of a specified type
+     * @param type The trait type to get
+     * @return The trait, or null if no traits of the given type are present.
      */
     public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
         return traitHolder.getTrait(type);
     }
 
+    /**
+     * Gets the first trait (trait with highest priority) of a specified type
+     * @param type The trait type to get
+     * @return An optional result containing the trait if present.
+     */
     public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
         return Optional.ofNullable(getTrait(type));
     }
 
     /**
      * Get all traits with the specified type.
+     * @return An unmodifiable list containing all traits of the specified type.
      */
     public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
         return traitHolder.getTraits(type);
