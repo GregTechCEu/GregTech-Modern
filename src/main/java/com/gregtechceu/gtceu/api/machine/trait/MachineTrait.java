@@ -79,7 +79,7 @@ public abstract class MachineTrait implements ISyncManaged {
         return getMachine().subscribeServerTick(last, runnable);
     }
 
-    public void unsubscribe(TickableSubscription current) {
+    public void unsubscribe(@Nullable TickableSubscription current) {
         getMachine().unsubscribe(current);
     }
 
@@ -120,6 +120,8 @@ public abstract class MachineTrait implements ISyncManaged {
     public void onMachineLoad() {}
 
     public void onMachineUnload() {}
+
+    public void onMachineDestroyed() {}
 
     public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 }
