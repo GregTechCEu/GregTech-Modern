@@ -113,12 +113,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        importItems.dropInventoryInWorld();
-    }
-
     private void rebuildData(boolean isDataBank) {
         if (isCreative || getLevel() == null || getLevel().isClientSide) return;
         recipes.clear();

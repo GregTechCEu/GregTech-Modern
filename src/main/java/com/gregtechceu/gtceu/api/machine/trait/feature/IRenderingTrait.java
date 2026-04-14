@@ -40,6 +40,4 @@ public interface IRenderingTrait extends ITraitFeature {
                                                          Direction side) {
         return null;
     }
-
-    default void updateModelData(ModelData.Builder builder) {}
 }

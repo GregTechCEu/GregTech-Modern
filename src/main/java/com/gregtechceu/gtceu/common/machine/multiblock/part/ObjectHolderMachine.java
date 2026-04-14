@@ -62,22 +62,12 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         heldItems.setStackInSlot(1, dataItem);
     }
 
-    public NotifiableItemStackHandler getAsHandler() {
-        return heldItems;
-    }
-
     private ItemStack getHeldItem(int slot, boolean remove) {
         ItemStack stackInSlot = heldItems.getStackInSlot(slot);
         if (remove && stackInSlot != ItemStack.EMPTY) {
             heldItems.setStackInSlot(slot, ItemStack.EMPTY);
         }
         return stackInSlot;
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        heldItems.storage.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override

@@ -79,7 +79,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
         if (io == IO.IN) {
             this.circuitSlotEnabled = true;
             this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE))
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false).shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit);
         } else {
             this.circuitSlotEnabled = false;
             this.circuitInventory = attachTrait(new NotifiableItemStackHandler(0, IO.NONE)).shouldSearchContent(false);
@@ -98,13 +98,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
         return initialCapacity * (1 << Math.min(9, tier));
     }
 
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            circuitInventory.dropInventoryInWorld();
-        }
-    }
 
     @Override
     public void onLoad() {

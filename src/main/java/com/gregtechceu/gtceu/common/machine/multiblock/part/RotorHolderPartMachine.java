@@ -76,12 +76,6 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     //////////////////////////////////////
 
     @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        inventory.dropInventoryInWorld();
-    }
-
-    @Override
     public int tintColor(int index) {
         if (index >= 2) {
             return getRotorMaterial().getLayerARGB(index - 2);
