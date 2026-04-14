@@ -545,7 +545,7 @@ public class BlockPattern {
         consumer.accept(blockState.setValue(property, found));
     }
 
-    private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
+    protected BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
                                              boolean isFlipped) {
         int[] c0 = new int[] { x, y, z }, c1 = new int[3];
         if (facing == Direction.UP || facing == Direction.DOWN) {
