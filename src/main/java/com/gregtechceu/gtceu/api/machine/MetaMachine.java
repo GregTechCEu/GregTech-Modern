@@ -158,7 +158,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when this machine ticks for the first time after loading.
+     * Called when this machine is loaded. The entire world is not loaded when this method is called.
+     * To schedule code to run on the first full world tick, do {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
      */
     @MustBeInvokedByOverriders
     public void onLoad() {
