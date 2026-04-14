@@ -41,14 +41,11 @@ public abstract class MachineTrait implements ISyncManaged {
     @Getter
     @Setter
     private int traitPriority = 1;
-<<<<<<< gus/trait-priority
-=======
 
     public MachineTrait(MetaMachine machine) {
         this.capabilityValidator = side -> true;
         machine.getTraitHolder().attachTrait(this);
     }
->>>>>>> 1.20.1
 
     public MachineTrait() {}
 
