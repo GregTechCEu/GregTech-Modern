@@ -116,7 +116,8 @@ public abstract class MachineTrait implements ISyncManaged {
 
     /**
      * Called when the machine is loaded. The entire world is not loaded when this method is called.
-     * To schedule code to run on the first full world tick, do {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
+     * To schedule code to run on the first full world tick, do
+     * {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
      */
     public void onMachineLoad() {}
 
