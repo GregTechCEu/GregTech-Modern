@@ -790,7 +790,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return -1;
     }
 
-<<<<<<< gus/trait-priority
     @Override
     public ModelData getModelData() {
         return super.getModelData().derive().build();
@@ -805,10 +804,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public void onNeighborChanged(Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         getAllTraits().forEach(t -> t.onMachineNeighborChanged(neighborBlock, neighborPos, isMoving));
-=======
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
->>>>>>> 1.20.1
     }
 
     public void animateTick(RandomSource random) {}
