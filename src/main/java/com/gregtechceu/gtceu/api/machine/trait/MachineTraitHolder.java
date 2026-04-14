@@ -40,6 +40,7 @@ public final class MachineTraitHolder {
 
     /**
      * Attaches a trait to this machine, with the default trait callback priority of 1.
+     * 
      * @param trait The trait to attach
      * @return The attached trait
      */
@@ -49,8 +50,10 @@ public final class MachineTraitHolder {
 
     /**
      * Attaches a trait to this machine.
-     * @param trait The trait to attach
-     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired first, which may prevent traits with a lower priority from handling some events.
+     * 
+     * @param trait            The trait to attach
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
@@ -88,6 +91,7 @@ public final class MachineTraitHolder {
 
     /**
      * Gets a trait registered by {@code registerPersistentTrait}
+     * 
      * @param traitName the unique identifier for the trait
      * @return the trait, or null if not present
      */
@@ -99,6 +103,7 @@ public final class MachineTraitHolder {
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
+     * 
      * @param type The trait type to get
      * @return The trait, or null if no traits of the given type are present.
      */
@@ -110,6 +115,7 @@ public final class MachineTraitHolder {
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
+     * 
      * @param type The trait type to get
      * @return An optional result containing the trait if present.
      */
@@ -119,6 +125,7 @@ public final class MachineTraitHolder {
 
     /**
      * Get all traits with the specified type.
+     * 
      * @return An unmodifiable list containing all traits of the specified type.
      */
     @SuppressWarnings("unchecked")
