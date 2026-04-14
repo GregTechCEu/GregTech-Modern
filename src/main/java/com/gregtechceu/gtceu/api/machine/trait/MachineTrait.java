@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -41,11 +42,6 @@ public abstract class MachineTrait implements ISyncManaged {
     @Setter
     private int traitPriority = 1;
 
-    public MachineTrait(MetaMachine machine) {
-        this.capabilityValidator = side -> true;
-        machine.getTraitHolder().attachTrait(this);
-    }
-
     public MachineTrait() {}
 
     public MetaMachine getMachine() {
@@ -63,6 +59,7 @@ public abstract class MachineTrait implements ISyncManaged {
         return List.of();
     }
 
+    @ApiStatus.Internal
     public void setMachine(MetaMachine machine) {
         if (this.machine != null) throw new IllegalStateException("Machine trait already attached to a machine.");
         if (!validMachineClasses().isEmpty() &&
@@ -117,11 +114,23 @@ public abstract class MachineTrait implements ISyncManaged {
         getMachine().scheduleRenderUpdate();
     }
 
+    /**
+     * Called when the machine ticks for the first time after loading.
+     */
     public void onMachineLoad() {}
 
+    /**
+     * Called when the machine is about to be unloaded.
+     */
     public void onMachineUnload() {}
 
+    /**
+     * Called when the machine is destroyed.
+     */
     public void onMachineDestroyed() {}
 
+    /**
+     * Called when a neighboring block is updated
+     */
     public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 }

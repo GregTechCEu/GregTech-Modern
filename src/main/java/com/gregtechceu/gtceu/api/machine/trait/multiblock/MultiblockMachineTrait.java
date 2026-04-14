@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 
 import java.util.List;
 
+/**
+ * A machine trait that is specific to multiblock controllers.
+ */
 public abstract class MultiblockMachineTrait extends MachineTrait {
 
     public MultiblockMachineTrait() {

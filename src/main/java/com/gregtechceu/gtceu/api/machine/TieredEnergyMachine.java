@@ -23,13 +23,12 @@ import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine {
 
     @SaveField
     @SyncToClient
     public final NotifiableEnergyContainer energyContainer;
+
     @Getter
     protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 

@@ -55,6 +55,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
+
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier,
                                  RecipeLogic recipeLogic, int importSlots,
                                  int exportSlots,

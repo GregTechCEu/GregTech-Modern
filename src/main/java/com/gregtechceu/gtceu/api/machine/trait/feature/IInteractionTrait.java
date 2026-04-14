@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A machine trait that provides special interaction behaviour.
  */
 @ParametersAreNonnullByDefault
-public interface IInteractionTrait extends ITraitFeature {
+public interface IInteractionTrait {
 
     /// Called when a player interacts with a machine without an item.
     default InteractionResult onUse(ExtendedUseOnContext context) {

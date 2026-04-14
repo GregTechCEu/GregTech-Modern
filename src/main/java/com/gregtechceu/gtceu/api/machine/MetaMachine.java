@@ -98,6 +98,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ * The base BlockEntity for all GT machines.
+ */
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
 
@@ -154,6 +157,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         super.load(tag);
     }
 
+    /**
+     * Called when this machine ticks for the first time after loading.
+     */
     @MustBeInvokedByOverriders
     public void onLoad() {
         getAllTraits().forEach(MachineTrait::onMachineLoad);
@@ -172,6 +178,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         onUnload();
     }
 
+    /**
+     * Called when this machine is about to be unloaded.
+     */
     @MustBeInvokedByOverriders
     public void onUnload() {
         getAllTraits().forEach(MachineTrait::onMachineUnload);
@@ -180,6 +189,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             serverTick.unsubscribe();
         }
         serverTicks.clear();
+    }
+
+    /**
+     * Called when this machine is destroyed.
+     */
+    public void onMachineDestroyed() {
+        getAllTraits().forEach(MachineTrait::onMachineDestroyed);
     }
 
     public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
@@ -195,10 +211,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public void onMachineDestroyed() {
-        getAllTraits().forEach(MachineTrait::onMachineDestroyed);
-    }
 
+    /**
+     * Called to modify the drops returned when this block is destroyed
+     * @param drops A modifiable list of drops.
+     */
     public void modifyDrops(List<ItemStack> drops) {}
 
     //////////////////////////////////////
@@ -235,6 +252,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public boolean isFirstDummyWorldTick = true;
 
+    /**
+     * Called every tick on the client side.
+     */
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         if (getLevel() instanceof DummyWorld) {
@@ -347,10 +367,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     /**
-     * Called when a player clicks this machine with a tool
-     *
-     * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
-     *         animations will be played
+     * Called when a player clicks this machine with a GT tool
+     * @param context The context of this interaction.
+     * @return A pair containing the type of the tool (if the interaction was successful), and the result of the interaction.
+     * A result of CONSUME will play the tool sound (based on the first element of the pair) and consume durability.
      */
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         // the side hit from the machine grid
@@ -449,6 +469,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a machine is right clicked with an item.
+     * @param context The context which this interaction is being performed from.
+     * @return The result of this interaction callback.
      */
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         var types = context.getToolType();
@@ -469,7 +491,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when a machine is right clicked without an item.
+     * Called when a machine is right clicked without an item, or if this machine was clicked with an item but no item-specific interaction was performed.
+     * @param context The context which this interaction is being performed from.
+     * @return The result of this interaction callback.
      */
     public InteractionResult onUse(ExtendedUseOnContext context) {
         if (context.getPlayer().isShiftKeyDown()) {
@@ -506,12 +530,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             return m;
         }
         return null;
-    }
-
-    public void notifyBlockUpdate() {
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
-        }
     }
 
     public @UnknownNullability Level getLevel() {
@@ -705,6 +723,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    /**
+     * Called when this machine is rotated
+     * @param oldFacing The previous facing direction
+     * @param newFacing The new facing direction
+     */
     public void onRotated(Direction oldFacing, Direction newFacing) {}
 
     public boolean allowExtendedFacing() {
@@ -719,6 +742,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return -1;
     }
 
+    /**
+     * Called when a neighboring block is updated
+     */
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
     }

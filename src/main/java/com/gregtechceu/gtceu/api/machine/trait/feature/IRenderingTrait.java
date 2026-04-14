@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A machine trait that overrides some of the default machine rendering behaviour.
  */
 @ParametersAreNonnullByDefault
-public interface IRenderingTrait extends ITraitFeature {
+public interface IRenderingTrait {
 
     /**
      * Called when a player is looking at this machine, returns whether the grid overlay should be rendered.
