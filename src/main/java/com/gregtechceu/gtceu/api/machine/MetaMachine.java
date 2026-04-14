@@ -81,6 +81,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.extensions.IForgeBlock;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -198,20 +199,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         getAllTraits().forEach(MachineTrait::onMachineDestroyed);
     }
 
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        if (player instanceof ServerPlayer sPlayer) {
-            ownerUUID = sPlayer.getUUID();
-        }
-
-        if (this instanceof IDropSaveMachine dropSaveMachine) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null) {
-                dropSaveMachine.loadFromItem(tag);
-            }
-        }
-    }
-
-
     /**
      * Called to modify the drops returned when this block is destroyed
      * @param drops A modifiable list of drops.
@@ -246,6 +233,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    @ApiStatus.Internal
     public final void serverTick() {
         executeTick();
     }
@@ -536,6 +524,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return super.getLevel();
     }
 
+    @ApiStatus.Internal
     public void setOwnerUUID(UUID uuid) {
         ownerUUID = uuid;
         syncDataHolder.markClientSyncFieldDirty("ownerUUID");
@@ -619,6 +608,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return null;
     }
 
+    /**
+     * Adds extra information to the F3 debug overlay when looking at this machine.
+     * @param lines A string consumer which lines are added to.
+     */
     public void addDebugOverlayText(Consumer<String> lines) {
         lines.accept(ChatFormatting.UNDERLINE + "Targeted Machine: ");
         lines.accept(this.getDefinition().getId().toString());
@@ -630,6 +623,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    /**
+     * The {@link MachineDefinition} of this machine.
+     * @return The {@link MachineDefinition}
+     */
     public MachineDefinition getDefinition() {
         if (getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) {
             return machineBlock.getDefinition();
@@ -637,10 +634,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             throw new IllegalStateException(
                     "MetaMachine created for an incompatible block: " + getBlockState().getBlock());
         }
-    }
-
-    public RotationState getRotationState() {
-        return getDefinition().getRotationState();
     }
 
     /**
@@ -651,19 +644,28 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         collisionList.add(Shapes.block());
     }
 
-    public static Direction getFrontFacing(@Nullable MetaMachine machine) {
-        return machine == null ? Direction.NORTH : machine.getFrontFacing();
-    }
-
+    /**
+     * Gets the direction which this machine is facing.
+     * @return The direction the machine is facing, or north if this machine does not have a front face.
+     */
     public Direction getFrontFacing() {
         return getRotationState() == RotationState.NONE ? Direction.NORTH :
                 getBlockState().getValue(getRotationState().property);
     }
 
+    /**
+     * Returns whether this machine has a front face.
+     * @return If this machine has a front face.
+     */
     public final boolean hasFrontFacing() {
         return getRotationState() != RotationState.NONE;
     }
 
+    /**
+     * Returns whether this machine can be rotated to face a specific direction
+     * @param facing The direction to test
+     * @return If it is possible to rotate this machine to face the given direction.
+     */
     public boolean isFacingValid(Direction facing) {
         if (hasFrontFacing() && facing == getFrontFacing()) return false;
 
@@ -676,8 +678,21 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return getRotationState().test(facing);
     }
 
+    /**
+     * Returns the {@link RotationState} properties which this machine type supports.
+     * @return The {@link RotationState}
+     */
+    public RotationState getRotationState() {
+        return getDefinition().getRotationState();
+    }
+
+    /**
+     * Rotates this machine to face a specific direction, if that direction is a valid facing direction.
+     * @param facing The new facing direction.
+     */
     public void setFrontFacing(Direction facing) {
         var oldFacing = getFrontFacing();
+        if (oldFacing == facing) return;
 
         if (allowExtendedFacing()) {
             var newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
@@ -694,16 +709,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    @Override
-    public ModelData getModelData() {
-        return super.getModelData().derive().build();
-    }
-
+    /**
+     * Gets the direction which is this machine's upwards face.
+     * @return The upwards facing direction, or north if this machine does not allow extended facing.
+     */
     public Direction getUpwardsFacing() {
         return this.allowExtendedFacing() ? this.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING) :
                 Direction.NORTH;
     }
 
+    /**
+     * Changes this machine's upwards facing direction, if this machine supports extended facing directions.
+     * @param upwardsFacing The new upwards facing direction.
+     */
     public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
@@ -724,15 +742,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
+     * Returns whether this machine supports extended facing directions.
+     * @return If extended facing directions are supported.
+     */
+    public boolean allowExtendedFacing() {
+        return getDefinition().isAllowExtendedFacing();
+    }
+
+    /**
      * Called when this machine is rotated
      * @param oldFacing The previous facing direction
      * @param newFacing The new facing direction
      */
     public void onRotated(Direction oldFacing, Direction newFacing) {}
-
-    public boolean allowExtendedFacing() {
-        return getDefinition().isAllowExtendedFacing();
-    }
 
     public int tintColor(int index) {
         // index < -100 => emission if shimmer is installed.
@@ -742,15 +764,34 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return -1;
     }
 
+    @Override
+    public ModelData getModelData() {
+        return super.getModelData().derive().build();
+    }
+
     /**
-     * Called when a neighboring block is updated
+     * Called when a neighboring block is updated.
+     * @param neighborBlock The neighbor block type.
+     * @param neighborPos The neighbor position.
+     * @param isMoving If the neighbor block is moving (e.g. moved by a piston)
      */
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
+    public void onNeighborChanged(Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
+        getAllTraits().forEach(t -> t.onMachineNeighborChanged(neighborBlock, neighborPos, isMoving));
     }
 
     public void animateTick(RandomSource random) {}
 
+    /**
+     * Returns the {@link BlockState} that this block reports at a given side.
+     *
+     * @param level      The level this block is in
+     * @param pos        The block's position in the level
+     * @param side       The side of the block that is being queried
+     * @param sourceState The state of the block that is querying the appearance, or {@code null} if not applicable
+     * @param sourcePos   The position of the block that is querying the appearance, or {@code null} if not applicable
+     * @return The appearance of this block from the given side
+     * @see IForgeBlock#getAppearance(BlockState, BlockAndTintGetter, BlockPos, Direction, BlockState, BlockPos)
+     */
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                          @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
@@ -762,6 +803,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return getDefinition().getAppearance().get();
     }
 
+    /**
+     * Gets the current tick offset, which can be used to run code after a certain number of ticks.
+     * For example, {@code getOffsetTimer() % 20 == 0} will be true every 20 ticks (1 second)
+     * @return The current tick offset.
+     */
     public final long getOffsetTimer() {
         if (getLevel() == null) return getOffset();
         else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
@@ -873,6 +919,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ******** Capabilities *********//
     //////////////////////////////////////
 
+    /**
+     * Gets the item filter for a specific side of this machine.
+     * @param side Side
+     * @param io The IO mode this filter should be applicable to.
+     * @return A {@code Predicate<ItemStack>} representing this filter
+     */
     public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
@@ -891,6 +943,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return item -> true;
     }
 
+    /**
+     * Gets the fluid filter for a specific side of this machine.
+     * @param side Side
+     * @param io The IO mode this filter should be applicable to.
+     * @return A {@code Predicate<FluidStack>} representing this filter
+     */
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
@@ -909,6 +967,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return fluid -> true;
     }
 
+    /**
+     * Gets the item handler capability for a specific side of this machine
+     * @param side The side
+     * @param useCoverCapability Whether to return an item handler provided by an attached cover, if present.
+     * @return The {@link IItemHandlerModifiable} capability, or null.
+     */
     @Nullable
     public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getAllTraits().stream()
@@ -934,6 +998,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
     }
 
+    /**
+     * Gets the fluid handler capability for a specific side of this machine
+     * @param side The side
+     * @param useCoverCapability Whether to return a fluid handler provided by an attached cover, if present.
+     * @return The {@link IFluidHandlerModifiable} capability, or null.
+     */
     @Nullable
     public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getAllTraits().stream()

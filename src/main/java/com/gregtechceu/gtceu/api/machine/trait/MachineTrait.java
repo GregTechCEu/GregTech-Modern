@@ -132,5 +132,5 @@ public abstract class MachineTrait implements ISyncManaged {
     /**
      * Called when a neighboring block is updated
      */
-    public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
+    public void onMachineNeighborChanged(Block neighborBlock, BlockPos neighborPos, boolean isMoving) {}
 }
