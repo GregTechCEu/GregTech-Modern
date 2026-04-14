@@ -109,21 +109,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
             return new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit)
+                    .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit);
         } else {
             hasCircuitSlot = false;
             setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(0, IO.NONE);
-        }
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        getInventory().dropInventoryInWorld();
-
-        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            circuitInventory.dropInventoryInWorld();
         }
     }
 

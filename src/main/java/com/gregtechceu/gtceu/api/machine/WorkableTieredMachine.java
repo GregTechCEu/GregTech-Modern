@@ -141,13 +141,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     // ********** MISC ***********//
     //////////////////////////////////////
 
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        importItems.dropInventoryInWorld();
-        exportItems.dropInventoryInWorld();
-    }
-
     public void setMuffled(boolean muffled) {
         isMuffled = muffled;
         syncDataHolder.markClientSyncFieldDirty("isMuffled");
