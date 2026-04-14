@@ -165,8 +165,6 @@ public class FisherMachine extends TieredEnergyMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
-        baitHandler.dropInventoryInWorld();
-        cache.dropInventoryInWorld();
     }
 
     public static int calcMaxProgress(int tier) {

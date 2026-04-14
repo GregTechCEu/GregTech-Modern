@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -31,10 +30,6 @@ import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 
@@ -58,6 +53,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Setter
     private boolean shouldSearchContent = true;
     private @Nullable Boolean isEmpty;
+    @Accessors(fluent = true)
+    @Getter
+    @Setter
+    private boolean shouldDropInventoryInWorld = true;
 
     public NotifiableItemStackHandler(int slots, IO handlerIO, IO capabilityIO,
                                       IntFunction<CustomItemStackHandler> storageFactory) {
@@ -327,6 +326,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void dropInventoryInWorld() {
         storage.dropInventoryInWorld(getLevel(), getMachine().getBlockPos());
+    }
+
+    @Override
+    public void onMachineDestroyed() {
+        if (shouldDropInventoryInWorld) dropInventoryInWorld();
     }
 
     public static class KJSCallWrapper {

@@ -683,6 +683,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    @MustBeInvokedByOverriders
+    public void updateModelData(ModelData.Builder builder) {
+        for (MachineTrait trait : getAllTraits()) {
+            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
+        }
+    }
+
     @Override
     public ModelData getModelData() {
         ModelData.Builder data = super.getModelData().derive();
@@ -735,7 +742,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public void animateTick(RandomSource random) {}
 
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         BlockState sourceState, BlockPos sourcePos) {
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
         if (this instanceof IMultiPart part && part.isFormed()) {
@@ -743,13 +750,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (appearance != null) return appearance;
         }
         return getDefinition().getAppearance().get();
-    }
-
-    @MustBeInvokedByOverriders
-    public void updateModelData(ModelData.Builder builder) {
-        for (MachineTrait trait : getAllTraits()) {
-            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
-        }
     }
 
     public final long getOffsetTimer() {
