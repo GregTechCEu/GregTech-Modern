@@ -57,10 +57,10 @@ public class BlockPattern {
     public final int[][] aisleRepetitions;
     public final RelativeDirection[] structureDir;
     public final TraceabilityPredicate[][][] blockMatches; // [z][y][x]
+    public final int[] centerOffset; // x, y, z, minZ, maxZ
     protected final int fingerLength; // z size
     protected final int thumbLength; // y size
     protected final int palmLength; // x size
-    public final int[] centerOffset; // x, y, z, minZ, maxZ
     @Getter
     protected int[] formedRepetitionCount;
 
