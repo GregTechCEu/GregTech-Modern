@@ -706,9 +706,18 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    @MustBeInvokedByOverriders
+    public void updateModelData(ModelData.Builder builder) {
+        for (MachineTrait trait : getAllTraits()) {
+            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
+        }
+    }
+
     @Override
     public ModelData getModelData() {
-        return super.getModelData().derive().build();
+        ModelData.Builder data = super.getModelData().derive();
+        updateModelData(data);
+        return data.build();
     }
 
     public Direction getUpwardsFacing() {
