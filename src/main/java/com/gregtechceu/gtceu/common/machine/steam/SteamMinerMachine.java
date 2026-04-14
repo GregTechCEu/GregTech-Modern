@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -66,13 +66,13 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
 
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
                              int fortune, int energyPerTick) {
-        super(info, isHighPressure, (m) -> new SteamMinerLogic(m, fortune, speed, maximumRadius));
+        super(info, isHighPressure, new SteamMinerLogic(fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
-        this.exhaustVentTrait = new ExhaustVentMachineTrait(this);
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
     }
@@ -83,11 +83,11 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     }
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, 0, IO.IN);
+        return new NotifiableItemStackHandler(0, IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.OUT);
+        return new NotifiableItemStackHandler(inventorySize, IO.OUT);
     }
 
     @Override

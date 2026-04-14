@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -16,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -31,37 +34,62 @@ public abstract class MachineTrait implements ISyncManaged {
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    @Getter
-    protected final MetaMachine machine;
+    private @Nullable MetaMachine machine;
     @Setter
-    protected Predicate<@Nullable Direction> capabilityValidator;
+    protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
 
     public MachineTrait(MetaMachine machine) {
-        this.machine = machine;
         this.capabilityValidator = side -> true;
         machine.getTraitHolder().attachTrait(this);
+    }
+
+    public MachineTrait() {}
+
+    public MetaMachine getMachine() {
+        if (machine == null) throw new IllegalStateException("Machine trait not attached to machine.");
+        return machine;
+    }
+
+    /**
+     * A list containing the machine classes which this trait can be attached to.
+     * If this trait is being attached to a machine class that does not conform to any of the list elements, an
+     * exception is thrown.
+     * If this list is empty, the trait can be attached to any machine.
+     */
+    protected List<Class<?>> validMachineClasses() {
+        return List.of();
+    }
+
+    public void setMachine(MetaMachine machine) {
+        if (this.machine != null) throw new IllegalStateException("Machine trait already attached to a machine.");
+        if (!validMachineClasses().isEmpty() &&
+                validMachineClasses().stream().noneMatch(cls -> cls.isAssignableFrom(machine.getClass()))) {
+            throw new IllegalArgumentException(
+                    "Attempted to attach trait to invalid machine class %s".formatted(machine.getClass()));
+        }
+        this.machine = machine;
     }
 
     public abstract MachineTraitType<?> getTraitType();
 
     public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
-        return machine.subscribeServerTick(last, runnable);
+        return getMachine().subscribeServerTick(last, runnable);
     }
 
     public void unsubscribe(TickableSubscription current) {
-        machine.unsubscribe(current);
+        getMachine().unsubscribe(current);
     }
 
     public BlockPos getBlockPos() {
-        return machine.getBlockPos();
+        return getMachine().getBlockPos();
     }
 
     public Level getLevel() {
-        return machine.getLevel();
+        return getMachine().getLevel();
     }
 
     public boolean isRemote() {
-        return machine.isRemote();
+        return getMachine().isRemote();
     }
 
     public final boolean hasCapability(@Nullable Direction side) {
@@ -70,7 +98,8 @@ public abstract class MachineTrait implements ISyncManaged {
 
     @Override
     public void markAsChanged() {
-        machine.markAsChanged();
+        if (machine == null) return;
+        getMachine().markAsChanged();
     }
 
     public MachineRenderState getRenderState() {
@@ -82,7 +111,7 @@ public abstract class MachineTrait implements ISyncManaged {
     }
 
     public void scheduleRenderUpdate() {
-        machine.scheduleRenderUpdate();
+        getMachine().scheduleRenderUpdate();
     }
 
     public void onMachineLoad() {}

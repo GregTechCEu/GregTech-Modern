@@ -82,7 +82,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
         super(info, isConfigurable ? GTValues.HV : GTValues.LV);
         this.isConfigurable = isConfigurable;
-        this.itemStackHandler = createInventory();
+        this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
     }
 
@@ -90,7 +90,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     // ****** Initialization ******//
     //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH);
+        return new NotifiableItemStackHandler(1, IO.BOTH, IO.BOTH);
     }
 
     @Override
@@ -214,7 +214,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * @param entityPlayer Target Player which their inventory would be scanned for tools to fix
      */
     private void fixProblemsWithTools(byte problems, Player entityPlayer) {
-        List<GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
+        List<@Nullable GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
         boolean proceed = false;
         for (byte index = 0; index < 6; index++) {
             if (((problems >> index) & 1) == 0) {

@@ -44,7 +44,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
 
     public SteamSolidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.fuelHandler = createFuelHandler().setFilter(itemStack -> {
+        this.fuelHandler = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.IN));
+        fuelHandler.setFilter(itemStack -> {
             if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;
             }
@@ -60,20 +61,12 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 });
             });
         });
-        this.ashHandler = createAshHandler();
+        this.ashHandler = attachTrait(new NotifiableItemStackHandler(1, IO.OUT, IO.OUT));
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createFuelHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createAshHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.OUT, IO.OUT);
-    }
 
     @Override
     protected long getBaseSteamOutput() {

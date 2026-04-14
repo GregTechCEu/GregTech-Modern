@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -21,8 +22,12 @@ public class CleanroomProviderTrait extends MachineTrait {
     @Setter
     private boolean isActive;
 
-    public CleanroomProviderTrait(MetaMachine machine, Set<CleanroomType> providedTypes) {
-        super(machine);
+    public CleanroomProviderTrait() {
+        this(Set.of(CleanroomType.CLEANROOM));
+    }
+
+    public CleanroomProviderTrait(Set<CleanroomType> providedTypes) {
+        super();
         this.providedTypes = new ObjectOpenHashSet<>(providedTypes);
         this.isActive = false;
     }
@@ -30,9 +35,5 @@ public class CleanroomProviderTrait extends MachineTrait {
     @Override
     public MachineTraitType<CleanroomProviderTrait> getTraitType() {
         return TYPE;
-    }
-
-    public CleanroomProviderTrait(MetaMachine machine) {
-        this(machine, Set.of(CleanroomType.CLEANROOM));
     }
 }

@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidType;
@@ -36,12 +36,13 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
 
     public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
         super(info);
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
-        this.importFluids = createImportFluidHandler();
-        this.exportFluids = createExportFluidHandler();
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
-                0.1f);
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
+        this.importFluids = attachTrait(createImportFluidHandler());
+        this.exportFluids = attachTrait(createExportFluidHandler());
+        this.hazardEmitter = attachTrait(
+                new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                        0.1f));
     }
 
     //////////////////////////////////////
@@ -49,20 +50,20 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     protected NotifiableFluidTank createImportFluidHandler() {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
+        return new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
                 32 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler() {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+        return new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
                 32 * FluidType.BUCKET_VOLUME, IO.OUT);
     }
 

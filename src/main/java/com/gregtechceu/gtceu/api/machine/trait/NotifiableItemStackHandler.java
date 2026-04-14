@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -25,7 +24,6 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,23 +57,23 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Getter
     @Setter
     private boolean shouldSearchContent = true;
-    private Boolean isEmpty;
+    private @Nullable Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO,
+    public NotifiableItemStackHandler(int slots, IO handlerIO, IO capabilityIO,
                                       IntFunction<CustomItemStackHandler> storageFactory) {
-        super(machine);
+        super();
         this.handlerIO = handlerIO;
         this.storage = storageFactory.apply(slots);
         this.capabilityIO = capabilityIO;
         this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO) {
-        this(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
+    public NotifiableItemStackHandler(int slots, IO handlerIO, IO capabilityIO) {
+        this(slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO) {
-        this(machine, slots, handlerIO, handlerIO);
+    public NotifiableItemStackHandler(int slots, IO handlerIO) {
+        this(slots, handlerIO, handlerIO);
     }
 
     public NotifiableItemStackHandler setFilter(Predicate<ItemStack> filter) {
@@ -90,14 +88,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                        boolean simulate) {
         return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
     }
 
     // TODO: See if implementable in outside callers and unstatic; or move to different common class if not
     // Notable caller is ItemRecipeHandler, used for MinerLogic
-    public static List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate,
-                                                IO handlerIO, CustomItemStackHandler storage) {
+    public static @Nullable List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                          boolean simulate,
+                                                          IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 
@@ -221,7 +221,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < getSlots(); ++i) {
             ItemStack stack = getStackInSlot(i);
@@ -257,7 +257,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return isEmpty;
     }
 
-    public void exportToNearby(@NotNull Direction... facings) {
+    public void exportToNearby(Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
@@ -268,7 +268,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         }
     }
 
-    public void importFromNearby(@NotNull Direction... facings) {
+    public void importFromNearby(Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
@@ -281,31 +281,28 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     //////////////////////////////////////
     // ******* Capability ********//
     //////////////////////////////////////
-    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return storage.getStackInSlot(slot);
     }
 
     @Override
-    public void setStackInSlot(int index, @NotNull ItemStack stack) {
+    public void setStackInSlot(int index, ItemStack stack) {
         storage.setStackInSlot(index, stack);
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (canCapInput()) {
             return storage.insertItem(slot, stack, simulate);
         }
         return stack;
     }
 
-    public ItemStack insertItemInternal(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItemInternal(int slot, ItemStack stack, boolean simulate) {
         return storage.insertItem(slot, stack, simulate);
     }
 
-    @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (canCapOutput()) {
@@ -324,7 +321,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+    public boolean isItemValid(int slot, ItemStack stack) {
         return storage.isItemValid(slot, stack);
     }
 

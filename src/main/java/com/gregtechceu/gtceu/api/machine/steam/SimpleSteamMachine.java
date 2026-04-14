@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -21,27 +20,22 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
 import com.google.common.collect.Tables;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachine {
 
     @SaveField
@@ -54,10 +48,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
 
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
 
-        this.exhaustVentTrait = new ExhaustVentMachineTrait(this);
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
@@ -71,11 +65,11 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     @Override
@@ -112,7 +106,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
     }
 
     @Override
-    public void setOutputFacing(@NotNull Direction outputFacing) {
+    public void setOutputFacing(Direction outputFacing) {
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
@@ -131,7 +125,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
     }
 
     @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         var oldFacing = getUpwardsFacing();
         super.setUpwardsFacing(upwardsFacing);
         if (getUpwardsFacing() != oldFacing) {
@@ -158,7 +152,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Steam Machine
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }

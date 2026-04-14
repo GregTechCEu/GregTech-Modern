@@ -14,11 +14,11 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -72,11 +72,11 @@ public class MinerMachine extends WorkableTieredMachine
 
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
         super(info, tier,
-                (m) -> new MinerLogic(m, fortune, speed, maximumRadius),
+                new MinerLogic(fortune, speed, maximumRadius),
                 0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
-        this.autoOutput = AutoOutputTrait.ofItems(this, exportItems);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(exportItems));
         autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
     }
 
@@ -235,7 +235,7 @@ public class MinerMachine extends WorkableTieredMachine
         });
     }
 
-    private void addDisplayText(@NotNull List<Component> textList) {
+    private void addDisplayText(List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
         textList.add(recipeLogic.getCustomProgressLine());
         textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ")

@@ -1,6 +1,5 @@
-package com.gregtechceu.gtceu.api.machine.trait.hpca;
+package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
@@ -28,9 +27,9 @@ public class HPCAComponentTrait extends MachineTrait {
     @Getter
     private boolean isDamaged;
 
-    public HPCAComponentTrait(MetaMachine machine, int upkeepEUt, int maxEUt, boolean canBeDamaged,
+    public HPCAComponentTrait(int upkeepEUt, int maxEUt, boolean canBeDamaged,
                               boolean allowBridging) {
-        super(machine);
+        super();
         this.upkeepEUt = upkeepEUt;
         this.maxEUt = maxEUt;
         this.canBeDamaged = canBeDamaged;

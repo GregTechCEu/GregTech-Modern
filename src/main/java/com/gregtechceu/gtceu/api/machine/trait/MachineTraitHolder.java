@@ -38,7 +38,7 @@ public final class MachineTraitHolder {
         return traits;
     }
 
-    public void attachTrait(MachineTrait trait) {
+    public <T extends MachineTrait> T attachTrait(T trait) {
         var traitType = trait.getTraitType();
 
         var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
@@ -48,18 +48,21 @@ public final class MachineTraitHolder {
 
         list.add(trait);
         traits.add(trait);
+
+        trait.setMachine(machine);
+        return trait;
     }
 
     /**
-     * Registers a trait to be synced/saved.
-     * Do not register a trait to be synced and also store that trait as a syncable machine field, otherwise the trait
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
      * data will be duplicated. Use only one sync method.
      *
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
-    public MachineTraitHolder syncTrait(String traitName, MachineTrait trait) {
-        if (trait.machine != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
+    public MachineTraitHolder registerPersistentTrait(String traitName, MachineTrait trait) {
+        if (trait.getMachine() != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
         if (traitsToSave.containsKey(traitName))
             throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
         traitsToSave.put(traitName, trait);
@@ -67,7 +70,7 @@ public final class MachineTraitHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public @Nullable <T extends MachineTrait> T getSyncTrait(String traitName) {
+    public @Nullable <T extends MachineTrait> T getPersistentTrait(String traitName) {
         MachineTrait trait = traitsToSave.get(traitName);
         return trait == null ? null : (T) trait;
     }
@@ -113,7 +116,7 @@ public final class MachineTraitHolder {
             var compoundTag = (CompoundTag) tag;
 
             for (var key : compoundTag.getAllKeys()) {
-                var trait = traitHolder.getSyncTrait(key);
+                var trait = traitHolder.getPersistentTrait(key);
                 if (trait == null) {
                     GTCEu.LOGGER.warn("Attempted to deserialise syncable trait '{}', but no syncable trait has that ID",
                             key);

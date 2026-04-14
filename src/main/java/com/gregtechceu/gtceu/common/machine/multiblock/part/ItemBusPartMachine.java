@@ -79,9 +79,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         super(info, tier, io);
-        this.inventory = createInventory();
+        this.inventory = attachTrait(createInventory());
         this.circuitSlotEnabled = true;
-        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        this.circuitInventory = attachTrait(createCircuitItemHandler(io)).shouldSearchContent(false);
         filterHandler = FilterHandlers.item(this);
 
         inventory.setFilter(this::matchesFilter);
@@ -97,7 +97,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io);
+        return new NotifiableItemStackHandler(getInventorySize(), io);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
@@ -108,12 +108,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+            return new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
             hasCircuitSlot = false;
             setCircuitSlotEnabled(false);
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+            return new NotifiableItemStackHandler(0, IO.NONE);
         }
     }
 

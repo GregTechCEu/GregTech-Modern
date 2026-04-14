@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -44,9 +44,9 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
 
     public BufferMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.inventory = createInventory();
-        this.tank = createTank();
-        this.autoOutput = new AutoOutputTrait(this, List.of(inventory), List.of(tank));
+        this.inventory = attachTrait(new NotifiableItemStackHandler(getInventorySize(tier), IO.BOTH));
+        this.tank = attachTrait(new NotifiableFluidTank(getTankSize(tier), TANK_SIZE, IO.BOTH));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(inventory), List.of(tank)));
     }
 
     ////////////////////////////////
@@ -59,14 +59,6 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
 
     public static int getTankSize(int tier) {
         return tier + 2;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, getInventorySize(tier), IO.BOTH);
-    }
-
-    protected NotifiableFluidTank createTank() {
-        return new NotifiableFluidTank(this, getTankSize(tier), TANK_SIZE, IO.BOTH);
     }
 
     ////////////////////////////////
