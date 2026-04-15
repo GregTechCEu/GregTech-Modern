@@ -94,12 +94,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     }
 
     @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        itemStackHandler.dropInventoryInWorld();
-    }
-
-    @Override
     public byte startProblems() {
         return ALL_PROBLEMS;
     }

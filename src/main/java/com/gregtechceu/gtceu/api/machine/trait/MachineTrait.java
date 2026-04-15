@@ -37,6 +37,9 @@ public abstract class MachineTrait implements ISyncManaged {
     private @Nullable MetaMachine machine;
     @Setter
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
+    @Getter
+    @Setter
+    private int traitPriority = 1;
 
     public MachineTrait(MetaMachine machine) {
         this.capabilityValidator = side -> true;
@@ -76,7 +79,7 @@ public abstract class MachineTrait implements ISyncManaged {
         return getMachine().subscribeServerTick(last, runnable);
     }
 
-    public void unsubscribe(TickableSubscription current) {
+    public void unsubscribe(@Nullable TickableSubscription current) {
         getMachine().unsubscribe(current);
     }
 
@@ -117,6 +120,8 @@ public abstract class MachineTrait implements ISyncManaged {
     public void onMachineLoad() {}
 
     public void onMachineUnload() {}
+
+    public void onMachineDestroyed() {}
 
     public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 }

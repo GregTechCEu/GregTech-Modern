@@ -68,13 +68,6 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
     }
 
     @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        importItems.dropInventoryInWorld();
-        exportItems.dropInventoryInWorld();
-    }
-
-    @Override
     public void afterWorking() {
         super.afterWorking();
         hazardEmitter.emitHazard();

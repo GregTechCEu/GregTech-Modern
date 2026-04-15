@@ -128,11 +128,4 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                                 GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
     }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        fuelHandler.dropInventoryInWorld();
-        ashHandler.dropInventoryInWorld();
-    }
 }
