@@ -518,7 +518,7 @@ public class BlockPattern {
         return result;
     }
 
-    private void resetFacing(BlockPos pos, BlockState blockState, Direction facing,
+    protected void resetFacing(BlockPos pos, BlockState blockState, Direction facing,
                              BiPredicate<BlockPos, Direction> checker, Consumer<BlockState> consumer) {
         if (blockState.hasProperty(BlockStateProperties.FACING)) {
             tryFacings(blockState, pos, checker, consumer, BlockStateProperties.FACING,
