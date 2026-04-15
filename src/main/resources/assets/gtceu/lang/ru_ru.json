@@ -4483,7 +4483,6 @@
     "behavior.data_item.assemblyline.data": "- §a%s",
     "behavior.data_item.assemblyline.title": "§nДанные для Сборочного конвейера:",
     "behavior.portable_scanner.debug_machine_invalid": " неверный!",
-    "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null!",
     "behavior.portable_scanner.debug_machine_valid": " верный",
     "behavior.portable_scanner.divider": "=========================",
     "behavior.portable_scanner.energy_container_out": "Макс. выход: %s (%s) EU при %s A",

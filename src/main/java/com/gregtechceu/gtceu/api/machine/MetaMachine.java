@@ -655,7 +655,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called to obtain list of AxisAlignedBB used for collision testing, highlight rendering
-     * and ray tracing this meta tile entity's block in world
+     * and ray tracing this machine's block in world
      */
     public void addCollisionBoundingBox(List<VoxelShape> collisionList) {
         collisionList.add(Shapes.block());
