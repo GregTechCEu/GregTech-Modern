@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -29,7 +28,6 @@ import java.util.function.Predicate;
  * Machine traits can also attach additional behaviours to a machine (e.g. {@link AutoOutputTrait},
  * {@link CleanroomProviderTrait})
  */
-@MethodsReturnNonnullByDefault
 public abstract class MachineTrait implements ISyncManaged {
 
     @Getter

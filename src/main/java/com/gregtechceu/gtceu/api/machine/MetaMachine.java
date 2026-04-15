@@ -854,6 +854,12 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ***** Redstone Signals ****//
     ////////////////////////////////
 
+    /**
+     * Gets the redstone output signal at a specific side
+     *
+     * @param side Side
+     * @return Output signal
+     */
     public int getOutputSignal(@Nullable Direction side) {
         if (side == null) return 0;
 
@@ -864,17 +870,32 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return cover.getRedstoneSignalOutput();
     }
 
+    /**
+     * Gets the direct output signal at a specific side
+     *
+     * @param side Side
+     * @return Direct output signal
+     */
     public int getOutputDirectSignal(@Nullable Direction side) {
-        // IDK what this does but MC wants it
         return 0;
     }
 
+    /**
+     * Gets the analog (comparator) output signal
+     *
+     * @return Analog output signal.
+     */
     public int getAnalogOutputSignal() {
         return 0;
     }
 
+    /**
+     * Returns if redstone can be connected to a specific side of this machine
+     *
+     * @param side The side to check
+     * @return If redstone can be connected
+     */
     public boolean canConnectRedstone(Direction side) {
-        // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover == null) return false;
 

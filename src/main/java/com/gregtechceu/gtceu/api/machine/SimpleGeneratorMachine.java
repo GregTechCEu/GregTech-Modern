@@ -33,6 +33,9 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.function.BiFunction;
 
+/**
+ * All singleblock generators are implemented here.
+ */
 public class SimpleGeneratorMachine extends WorkableTieredMachine
                                     implements IFancyUIMachine {
 

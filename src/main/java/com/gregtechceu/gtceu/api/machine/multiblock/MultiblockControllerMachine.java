@@ -42,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MultiblockControllerMachine extends MetaMachine {
 
-    private MultiblockState multiblockState;
+    private @Nullable MultiblockState multiblockState;
     private final List<IMultiPart> parts = new ArrayList<>();
     private @Nullable ParallelHatchPartMachine parallelHatch = null;
     @Getter
@@ -50,10 +50,9 @@ public class MultiblockControllerMachine extends MetaMachine {
     private BlockPos[] partPositions = new BlockPos[0];
 
     /**
-     * Whether Multiblock Formed.
+     * If the multiblock is formed.
      * <br>
-     * NOTE: even machine is formed, it doesn't mean to workable!
-     * Its parts maybe invalid due to chunk unload.
+     * NOTE: Formed multiblocks may not be completely valid in some cases, e.g. due to parts becoming invalid
      */
     @Getter
     @SaveField
@@ -90,13 +89,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Called when structure is formed, have to be called after {@link #checkPattern()}. (server-side / fake scene only)
-     * <br>
-     * Trigger points:
-     * <br>
-     * 1 - Blocks in structure changed but still formed.
-     * <br>
-     * 2 - Literally, structure formed.
+     * Called when multiblock structure becomes valid/formed. Called when blocks in structure change to form a valid
+     * multiblock, or when the controller is loaded.
      */
     public void onStructureFormed() {
         isFormed = true;
@@ -130,13 +124,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Called when structure is invalid. (server-side / fake scene only)
-     * <br>
-     * Trigger points:
-     * <br>
-     * 1 - Blocks in structure changed.
-     * <br>
-     * 2 - Before controller machine removed.
+     * Called when multiblock structure becomes invalid. Called when blocks in structure change, or when controller
+     * machine is about to be unloaded.
      */
     public void onStructureInvalid() {
         isFormed = false;
@@ -159,7 +148,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Called from part, when part is invalid due to chunk unload or broken.
+     * Called when a multiblock part becomes invalid due to chunk unloading or block destruction.
      */
     public void onPartUnload() {
         parts.removeIf(part -> part.self().isRemoved());
@@ -180,7 +169,9 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Get MultiblockState. It records all structure-related information.
+     * Gets {@link MultiblockState}, which holds all structure-related information.
+     * 
+     * @return The {@link MultiblockState}
      */
     public MultiblockState getMultiblockState() {
         if (multiblockState == null) {
@@ -202,7 +193,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Get all parts
+     * @return A list of all multiblock parts
      */
     public List<IMultiPart> getParts() {
         // for the client side, when the chunk unloaded
@@ -218,7 +209,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * The instance of {@link ParallelHatchPartMachine} attached to this Controller.
+     * The instance of {@link ParallelHatchPartMachine} attached to this controller.
      * <p>
      * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
      *
@@ -375,7 +366,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Check MultiBlock Pattern. Just checking pattern without any other logic.
+     * Check Multiblock Pattern. Just checking pattern without any other logic.
      * You can override it but it's unsafe for calling. because it will also be called in an async thread.
      * <br>
      * you should always use {@link MultiblockControllerMachine#checkPatternWithLock()} )} and
