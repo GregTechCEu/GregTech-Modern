@@ -369,7 +369,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param context The context of this interaction.
      * @return A pair containing the type of the tool (if the interaction was successful), and the result of the
      *         interaction.
-     *         A result of CONSUME will play the tool sound (based on the first element of the pair) and consume
+     *         {@link InteractionResult#sidedSuccess(boolean)} will play the tool sound (based on the first element of the pair) and consume
      *         durability.
      */
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
@@ -516,10 +516,18 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a machine is left clicked.
-     * 
+     *
+     * @param player Player that clicked
+     * @param hand Player hand
+     * @param face Clicked face
      * @return true to cancel the click event, false to continue processing
      */
     public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
+        for (var trait : getAllTraits()) {
+            if (trait instanceof IInteractionTrait interactionTrait) {
+                if (interactionTrait.onLeftClick(player, hand, face)) return true;
+            }
+        }
         return false;
     }
 
@@ -782,6 +790,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public void onRotated(Direction oldFacing, Direction newFacing) {}
 
+    /**
+     * Called by the block colour handler to get tint colour for a specific layer index
+     * @param index colour layer index
+     * @return Integer colour, or -1 to not apply a colour tint.
+     */
     public int tintColor(int index) {
         // index < -100 => emission if shimmer is installed.
         if (index == 1 || index == -111) {
@@ -790,6 +803,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return -1;
     }
 
+    /**
+     * @see ModelData
+     * @return ModelData to be passed to the {@link BakedModel}
+     */
     @Override
     public ModelData getModelData() {
         return super.getModelData().derive().build();

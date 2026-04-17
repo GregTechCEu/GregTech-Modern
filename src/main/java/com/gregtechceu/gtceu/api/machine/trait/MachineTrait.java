@@ -36,14 +36,14 @@ public abstract class MachineTrait implements ISyncManaged {
     private @Nullable MetaMachine machine;
     @Setter
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
+
+    /**
+     * The trait's callback priority. Traits with a higher priority will have their events fired
+     * first, which may prevent traits with a lower priority from handling some events.
+     */
     @Getter
     @Setter
     private int traitPriority = 1;
-
-    public MachineTrait(MetaMachine machine) {
-        this.capabilityValidator = side -> true;
-        machine.getTraitHolder().attachTrait(this);
-    }
 
     public MachineTrait() {}
 
@@ -135,7 +135,11 @@ public abstract class MachineTrait implements ISyncManaged {
     public void onMachineDestroyed() {}
 
     /**
-     * Called when a neighboring block is updated
+     * Called when a neighboring block is updated.
+     *
+     * @param neighborBlock The neighbor block type.
+     * @param neighborPos   The neighbor position.
+     * @param isMoving      If the neighbor block is moving (e.g. moved by a piston)
      */
     public void onMachineNeighborChanged(Block neighborBlock, BlockPos neighborPos, boolean isMoving) {}
 }

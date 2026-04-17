@@ -325,7 +325,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     @Override
-    public Pair<GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         var toolType = context.getToolType();
         if (useDefaultToolHandlers) {
             if (toolType.contains(GTToolType.WRENCH)) {
