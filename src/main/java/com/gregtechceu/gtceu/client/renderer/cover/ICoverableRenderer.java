@@ -36,7 +36,7 @@ public interface ICoverableRenderer {
 
     @OnlyIn(Dist.CLIENT)
     static void initSprites(TextureAtlas atlas) {
-        COVER_BACK_PLATE[0] = atlas.getSprite(GTCEu.id("block/material_sets/dull/wire_side"));
+        COVER_BACK_PLATE[0] = atlas.getSprite(GTCEu.id("block/cover/cover_back_plate"));
     }
 
     @OnlyIn(Dist.CLIENT)
