@@ -40,9 +40,8 @@ public interface ICoverableRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @NotNull ICoverable coverable,
-                              BlockPos pos, BlockAndTintGetter level, @Nullable Direction side,
-                              RandomSource rand, @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    default void renderCovers(List<BakedQuad> quads, ICoverable coverable, BlockPos pos, BlockAndTintGetter level,
+                              Direction side, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);

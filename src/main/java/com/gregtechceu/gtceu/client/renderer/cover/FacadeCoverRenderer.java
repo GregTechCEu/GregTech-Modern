@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
-import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
-import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
@@ -15,6 +11,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -33,12 +30,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -49,9 +46,14 @@ import java.util.*;
  */
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
-    private static final AABB FACADE_PLANE = new AABB(0.001, 0.001, 0.001, 0.999, 0.999, 1 / 16f);
-    private static final EnumSet<Direction> FACADE_EDGE_FACES = EnumSet.of(Direction.DOWN, Direction.UP,
-            Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final double THIN_OFFSET = 2e-3;
+
+    // All faces are slightly under a full block's size to never show the beginning of
+    // the second row of pixels of the block's texture and to combat Z-fighting.
+    private static final AABB FACADE_PLANE = new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0 / 16 + 0.002).deflate(THIN_OFFSET);
+    private static final IQuadTransformer FACADE_PLANE_TRANSFORMER = GTQuadTransformers.clamp(FACADE_PLANE);
+
+
     private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
             var normal = dir.getNormal();
@@ -67,7 +69,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     });
 
     public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
-    private static final Int2ObjectMap<ItemBakedModel> CACHE = new Int2ObjectArrayMap<>();
+    private static final Int2ObjectMap<BakedModel> CACHE = new Int2ObjectArrayMap<>();
 
     @OnlyIn(Dist.CLIENT)
     private @Nullable BakedModel defaultItemModel;
@@ -75,8 +77,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private FacadeCoverRenderer() {}
 
     @OnlyIn(Dist.CLIENT)
-    public FacadeCoverRenderer(@Nullable BakedModel defaultItemModel) {
-        this.defaultItemModel = defaultItemModel;
+    public FacadeCoverRenderer(@Nullable BakedModel parentModel) {
+        this.defaultItemModel = parentModel;
     }
 
     public static void clearItemModelCache() {
@@ -85,24 +87,19 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             @NotNull RandomSource rand, @NotNull ModelData extraData,
-                                             @Nullable RenderType renderType) {
-        if (defaultItemModel != null) {
-            return defaultItemModel.getQuads(state, side, rand, extraData, renderType);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                    RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+        if (this.defaultItemModel != null) {
+            return this.defaultItemModel.getQuads(state, side, rand, extraData, renderType);
         }
         return Collections.emptyList();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public @NotNull List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
-        if (!(stack.getItem() instanceof ComponentItem)) {
-            return Collections.singletonList(this);
-        }
-        var mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return Collections.singletonList(this);
+    public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+        if (this.defaultItemModel == null) {
+            return Collections.emptyList();
         }
         BlockState facadeState = FacadeItemBehaviour.getFacadeStateNullable(stack);
         if (facadeState == null) {
@@ -110,88 +107,29 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         int hash = facadeState.hashCode();
-        ItemBakedModel model = CACHE.computeIfAbsent(hash, $ -> new ItemBakedModel() {
-
-            private final FacadeBlockAndTintGetter level = new FacadeBlockAndTintGetter(mc.level,
-                    BlockPos.ZERO, facadeState, null);
-
-            @Override
-            public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                                     @NotNull RandomSource rand) {
-                return getQuads(state, side, rand, ModelData.EMPTY, null);
-            }
-
-            @Override
-            public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                                     @NotNull RandomSource rand, @NotNull ModelData extraData,
-                                                     @Nullable RenderType renderType) {
-                return getFacadeQuads(facadeState, level, rand, extraData, renderType);
-            }
-        });
+        BakedModel model = CACHE.computeIfAbsent(hash,
+                $ -> new FacadeItemBakedModel(this.defaultItemModel, facadeState));
         return Collections.singletonList(model);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> getFacadeQuads(BlockState state, BlockAndTintGetter level, @NotNull RandomSource rand,
-                                          @NotNull ModelData extraData, @Nullable RenderType renderType) {
-        var mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return Collections.emptyList();
-        }
-
-        List<BakedQuad> quads = new LinkedList<>();
-        BakedModel model = mc.getBlockRenderer().getBlockModel(state);
-
-        if (!model.isCustomRenderer()) {
-            extraData = model.getModelData(level, BlockPos.ZERO, state, extraData);
-
-            List<BakedQuad> facadeQuads = new LinkedList<>();
-            facadeQuads.addAll(model.getQuads(state, null, rand, extraData, renderType));
-            facadeQuads.addAll(model.getQuads(state, Direction.NORTH, rand, extraData, renderType));
-
-            // offset all the cover quads by a small value and bake their tint color into the vertices
-            BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-            for (BakedQuad quad : facadeQuads) {
-                if (quad.isTinted()) {
-                    // if the quad has a tint index set, bake the tint into the vertex
-                    int color = blockColors.getColor(state, level, BlockPos.ZERO, quad.getTintIndex());
-                    quad = GTQuadTransformers.setColor(quad, color, true);
-                } else {
-                    // otherwise just copy the quad so we don't mutate the original model with the overlay offset
-                    quad = GTQuadTransformers.copy(quad);
-                }
-                TextureOverrideModel.OVERLAY_OFFSET.processInPlace(quad);
-
-                quads.add(quad);
-            }
-
-            for (Direction modelSide : FACADE_EDGE_FACES) {
-                quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, ICoverableRenderer.COVER_BACK_PLATE[0]));
-            }
-        }
-        return quads;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
-                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                            CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                            ModelData modelData, @Nullable RenderType renderType) {
         if (!(coverBehavior instanceof FacadeCover facadeCover)) {
             return;
         }
-        BlockState state = facadeCover.getFacadeState();
-        if (state.getRenderShape() != RenderShape.MODEL) {
+        BlockState facadeState = facadeCover.getFacadeState();
+        if (facadeState.getRenderShape() != RenderShape.MODEL) {
             return;
         }
 
         Direction attachedSide = coverBehavior.attachedSide;
 
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-        ModelData extraData = model.getModelData(level, pos, state, modelData);
-
-        List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
-        facadeQuads = new LinkedList<>(facadeQuads);
+        BakedModel facadeModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(facadeState);
+        ModelData extraData = facadeModel.getModelData(level, pos, facadeState, modelData);
+        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeState, attachedSide, rand, extraData, renderType);
 
         List<BakedQuad> coverQuads = new ArrayList<>();
         if (side == attachedSide) {
@@ -200,6 +138,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             AABB cube = COVER_BACK_CUBES.get(attachedSide);
 
             for (BakedQuad quad : facadeQuads) {
+                // flatten all the
+                coverQuads.add(FACADE_PLANE_TRANSFORMER.process(quad));
                 coverQuads.add(StaticFaceBakery.bakeFace(cube, attachedSide.getOpposite(),
                         quad.getSprite(), BlockModelRotation.X0_Y0,
                         quad.getTintIndex(), 0, false, quad.isShade()));
@@ -211,13 +151,12 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         for (BakedQuad quad : coverQuads) {
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
-                int color = blockColors.getColor(state, level, pos, quad.getTintIndex());
+                int color = blockColors.getColor(facadeState, level, pos, quad.getTintIndex());
                 quad = GTQuadTransformers.setColor(quad, color, true);
             } else {
                 // otherwise just copy the quad so we don't mutate the original model with the overlay offset
                 quad = GTQuadTransformers.copy(quad);
             }
-            TextureOverrideModel.OVERLAY_OFFSET.processInPlace(quad);
 
             quads.add(quad);
         }
@@ -232,7 +171,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     @Override
-    public @NotNull TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData) {
+    public TextureAtlasSprite getParticleIcon(ModelData modelData) {
         if (defaultItemModel != null) {
             return defaultItemModel.getParticleIcon(modelData);
         }
@@ -240,8 +179,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     @Override
-    public @NotNull BakedModel applyTransform(@NotNull ItemDisplayContext transformType,
-                                              @NotNull PoseStack poseStack, boolean leftHand) {
+    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean leftHand) {
         if (defaultItemModel != null) {
             defaultItemModel.applyTransform(transformType, poseStack, leftHand);
         }
@@ -250,7 +188,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     @SuppressWarnings("deprecation")
     @Override
-    public @NotNull ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         if (defaultItemModel != null) {
             return defaultItemModel.getTransforms();
         }
@@ -258,10 +196,90 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     @Override
-    public @NotNull ItemOverrides getOverrides() {
+    public ItemOverrides getOverrides() {
         if (defaultItemModel != null) {
             return defaultItemModel.getOverrides();
         }
         return super.getOverrides();
+    }
+
+    private static class FacadeItemBakedModel extends BaseBakedModel {
+
+        private final BakedModel parentModel;
+        private final BlockState facadeState;
+        private @Nullable List<BakedQuad> quads = null;
+
+        private FacadeItemBakedModel(BakedModel parentModel, BlockState facadeState) {
+            this.parentModel = parentModel;
+            this.facadeState = facadeState;
+        }
+
+        @Override
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                        RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+            if (this.quads != null) {
+                return this.quads;
+            }
+            this.quads = new LinkedList<>(this.parentModel.getQuads(this.facadeState, side, rand, extraData, renderType));
+
+            BakedModel facadeModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(this.facadeState);
+            if (facadeModel.isCustomRenderer()) {
+                return this.quads;
+            }
+
+            List<BakedQuad> facadeQuads = new LinkedList<>();
+            //noinspection CollectionAddAllCanBeReplacedWithConstructor this is cleaner
+            facadeQuads.addAll(facadeModel.getQuads(this.facadeState, null, rand, extraData, renderType));
+            // always add unculled faces
+            if (side != null) {
+                // if a cullface is given, only draw that + unculled faces
+                facadeQuads.addAll(facadeModel.getQuads(this.facadeState, side, rand, extraData, renderType));
+            } else {
+                // add all culled faces if no cullface is given
+                for (Direction cullFace : GTUtil.DIRECTIONS) {
+                    facadeQuads.addAll(facadeModel.getQuads(this.facadeState, cullFace, rand, extraData, renderType));
+                }
+            }
+
+            // clamp all 'facaded' quads into a box and bake their tint color into the vertices
+            ItemColors itemColors = Minecraft.getInstance().getItemColors();
+            ItemStack stack = null;
+            for (BakedQuad quad : facadeQuads) {
+                if (quad.isTinted()) {
+                    // if the quad has a tint index set, bake the tint into the vertex color
+
+                    // initialize `stack` lazily so we don't allocate it for no reason
+                    if (stack == null) stack = this.facadeState.getBlock().asItem().getDefaultInstance();
+
+                    int color = itemColors.getColor(stack, quad.getTintIndex());
+                    // this also copies the quad
+                    quad = GTQuadTransformers.setColor(quad, color, true);
+                } else {
+                    // otherwise just copy the quad so we don't mutate the original model with the overlay offset
+                    quad = GTQuadTransformers.copy(quad);
+                }
+                // the quad's already been copied by this point, so no need to copy it again.
+                FACADE_PLANE_TRANSFORMER.processInPlace(quad);
+
+                this.quads.add(quad);
+            }
+            return quads;
+        }
+
+        @Override
+        public boolean useAmbientOcclusion() {
+            return false;
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public TextureAtlasSprite getParticleIcon() {
+            return this.parentModel.getParticleIcon();
+        }
+
+        @Override
+        public ItemOverrides getOverrides() {
+            return ItemOverrides.EMPTY;
+        }
     }
 }
