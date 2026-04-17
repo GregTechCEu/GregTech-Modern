@@ -432,22 +432,22 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
         var handler = getCachedItemHandler();
-            if (GTTransferUtils.addItemsToItemHandler(handler, true, blockDrops)) {
-                GTTransferUtils.addItemsToItemHandler(handler, false, blockDrops);
-                var pos = blocksToMine.getFirst();
-                world.setBlock(pos, findMiningReplacementBlock(world, pos), 3);
-                mineX = pos.getX();
-                mineZ = pos.getZ();
-                mineY = pos.getY();
-                blocksToMine.removeFirst();
-                onMineOperation();
+        if (GTTransferUtils.addItemsToItemHandler(handler, true, blockDrops)) {
+            GTTransferUtils.addItemsToItemHandler(handler, false, blockDrops);
+            var pos = blocksToMine.getFirst();
+            world.setBlock(pos, findMiningReplacementBlock(world, pos), 3);
+            mineX = pos.getX();
+            mineZ = pos.getZ();
+            mineY = pos.getY();
+            blocksToMine.removeFirst();
+            onMineOperation();
 
-                // if the inventory was previously considered full, mark it as not since an item was able to fit
-                isInventoryFull = false;
-            } else {
-                // the ore block was not able to fit, so the inventory is considered full
-                isInventoryFull = true;
-            }
+            // if the inventory was previously considered full, mark it as not since an item was able to fit
+            isInventoryFull = false;
+        } else {
+            // the ore block was not able to fit, so the inventory is considered full
+            isInventoryFull = true;
+        }
     }
 
     /**
