@@ -9,6 +9,7 @@ public interface IFrontFacingTrait {
 
     /**
      * Returns if a machine can be rotated to be facing the given direction.
+     * 
      * @param direction The direction to check
      * @return If the provided direction is a valid facing direction
      */

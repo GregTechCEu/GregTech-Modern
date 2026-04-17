@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * A machine trait represents a generic capability or behaviour that is attached to a machine.
+ * A machine trait represents a generic capability or behaviour that is attached to a machine. <br>
  * For example, machine traits may provide a recipe handler that can handle specific inputs/outputs of a recipe (e.g.
- * {@link NotifiableItemStackHandler for items}).
+ * {@link NotifiableItemStackHandler} for items). <br>
  * Machine traits can also attach additional behaviours to a machine (e.g. {@link AutoOutputTrait},
  * {@link CleanroomProviderTrait})
  */

@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
@@ -369,7 +368,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param context The context of this interaction.
      * @return A pair containing the type of the tool (if the interaction was successful), and the result of the
      *         interaction.
-     *         {@link InteractionResult#sidedSuccess(boolean)} will play the tool sound (based on the first element of the pair) and consume
+     *         {@link InteractionResult#sidedSuccess(boolean)} will play the tool sound (based on the first element of
+     *         the pair) and consume
      *         durability.
      */
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
@@ -518,8 +518,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * Called when a machine is left clicked.
      *
      * @param player Player that clicked
-     * @param hand Player hand
-     * @param face Clicked face
+     * @param hand   Player hand
+     * @param face   Clicked face
      * @return true to cancel the click event, false to continue processing
      */
     public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
@@ -792,6 +792,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called by the block colour handler to get tint colour for a specific layer index
+     * 
      * @param index colour layer index
      * @return Integer colour, or -1 to not apply a colour tint.
      */
@@ -840,10 +841,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                                          @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
-        if (this instanceof IMultiPart part && part.isFormed()) {
-            appearance = part.getFormedAppearance(sourceState, sourcePos, side);
-            if (appearance != null) return appearance;
-        }
         return getDefinition().getAppearance().get();
     }
 

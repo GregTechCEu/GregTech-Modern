@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMac
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -36,10 +35,9 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+/**
+ * The base class for all multiblock controllers
+ */
 public class MultiblockControllerMachine extends MetaMachine {
 
     private @Nullable MultiblockState multiblockState;
@@ -52,7 +50,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * If the multiblock is formed.
      * <br>
-     * NOTE: Formed multiblocks may not be completely valid in some cases, e.g. due to parts becoming invalid
+     * NOTE: Formed multiblocks may not be completely valid in some edge cases, e.g. when called on the same tick as a
+     * part becoming invalid
      */
     @Getter
     @SaveField
@@ -163,6 +162,11 @@ public class MultiblockControllerMachine extends MetaMachine {
     // ***** Getters ******//
     /// ///////////////////////////////////
 
+    /**
+     * The {@link MultiblockMachineDefinition} of this multiblock.
+     *
+     * @return The {@link MultiblockMachineDefinition}
+     */
     @Override
     public MultiblockMachineDefinition getDefinition() {
         return (MultiblockMachineDefinition) super.getDefinition();

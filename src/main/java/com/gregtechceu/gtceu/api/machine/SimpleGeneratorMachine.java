@@ -26,7 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -87,7 +86,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Simple Generator
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }

@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListen
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -27,10 +27,9 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+/**
+ * The base class for all multiblock parts
+ */
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @SyncToClient
@@ -161,8 +160,19 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @Override
     @Nullable
-    public BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
+    public BlockState getFormedAppearance(@Nullable BlockState sourceState, @Nullable BlockPos sourcePos,
+                                          Direction side) {
         if (!replacePartModelWhenFormed()) return null;
         return IMultiPart.super.getFormedAppearance(sourceState, sourcePos, side);
+    }
+
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+        if (isFormed()) {
+            var appearance = getFormedAppearance(sourceState, sourcePos, side);
+            if (appearance != null) return appearance;
+        }
+        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 }
