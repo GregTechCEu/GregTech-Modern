@@ -38,16 +38,14 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     public HullMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
-            this.gridNodeHost = new GridNodeHostTrait(this);
+            this.gridNodeHost = attachTrait(new GridNodeHostTrait(this));
         } else {
             this.gridNodeHost = null;
         }
-        reinitializeEnergyContainer();
-    }
 
-    protected void reinitializeEnergyContainer() {
         long tierVoltage = GTValues.V[getTier()];
-        this.energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 16L, tierVoltage, 1L, tierVoltage, 1L);
+        this.energyContainer = attachTrait(
+                new NotifiableEnergyContainer(tierVoltage * 16L, tierVoltage, 1L, tierVoltage, 1L));
         this.energyContainer.setSideOutputCondition(s -> s == getFrontFacing());
     }
 

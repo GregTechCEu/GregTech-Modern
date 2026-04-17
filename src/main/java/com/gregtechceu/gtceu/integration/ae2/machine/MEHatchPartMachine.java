@@ -37,17 +37,13 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     public MEHatchPartMachine(BlockEntityCreationInfo info, IO io) {
         super(info, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE);
-        this.nodeHolder = createNodeHolder();
+        this.nodeHolder = attachTrait(new GridNodeHolder(this));
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
     public void setOnline(boolean online) {
         isOnline = online;
         syncDataHolder.markClientSyncFieldDirty("isOnline");
-    }
-
-    protected GridNodeHolder createNodeHolder() {
-        return new GridNodeHolder(this);
     }
 
     @Override

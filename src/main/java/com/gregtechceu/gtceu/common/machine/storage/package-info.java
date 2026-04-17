@@ -1,4 +1,4 @@
 @NotNullByDefault
-package com.gregtechceu.gtceu.api.machine.trait.hpca;
+package com.gregtechceu.gtceu.common.machine.storage;
 
 import org.jetbrains.annotations.NotNullByDefault;

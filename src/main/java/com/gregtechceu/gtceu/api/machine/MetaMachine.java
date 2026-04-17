@@ -22,9 +22,9 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
@@ -44,8 +44,8 @@ import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -138,8 +138,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public MetaMachine(BlockEntityCreationInfo info) {
         super(info);
         this.renderState = getDefinition().defaultRenderState();
-        this.coverContainer = new MachineCoverContainer(this);
         this.traitHolder = new MachineTraitHolder(this);
+        this.coverContainer = attachTrait(new MachineCoverContainer(this));
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
     }
@@ -156,8 +156,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @MustBeInvokedByOverriders
     public void onLoad() {
-        getTraitHolder().getAllTraits().forEach(MachineTrait::onMachineLoad);
-        coverContainer.onLoad();
+        getAllTraits().forEach(MachineTrait::onMachineLoad);
 
         // update the painted model property if the machine is painted
         MachineRenderState renderState = getRenderState();
@@ -175,8 +174,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @MustBeInvokedByOverriders
     public void onUnload() {
-        getTraitHolder().getAllTraits().forEach(MachineTrait::onMachineUnload);
-        coverContainer.onUnload();
+        getAllTraits().forEach(MachineTrait::onMachineUnload);
+
         for (TickableSubscription serverTick : serverTicks) {
             serverTick.unsubscribe();
         }
@@ -197,9 +196,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public void onMachineDestroyed() {
-        for (Direction direction : GTUtil.DIRECTIONS) {
-            getCoverContainer().removeCover(direction, null);
-        }
+        getAllTraits().forEach(MachineTrait::onMachineDestroyed);
     }
 
     public void modifyDrops(List<ItemStack> drops) {}
@@ -268,6 +265,91 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     //////////////////////////////////////
+    // ******* Machine Traits *******//
+    //////////////////////////////////////
+
+    /**
+     * @return An unmodifiable list of all traits attached to this machine.
+     */
+    public @Unmodifiable List<MachineTrait> getAllTraits() {
+        return traitHolder.getAllTraits();
+    }
+
+    /**
+     * Attaches a trait to this machine, with the default trait callback priority of 1.
+     * 
+     * @param trait The trait to attach
+     * @return The attached trait
+     */
+    public <T extends MachineTrait> T attachTrait(T trait) {
+        return traitHolder.attachTrait(trait);
+    }
+
+    /**
+     * Attaches a trait to this machine.
+     * 
+     * @param trait            The trait to attach
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
+     * @return The attached trait
+     */
+    public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        return traitHolder.attachTrait(trait, callbackPriority);
+    }
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.
+     *
+     * @param traitName Unique identifier for this trait.
+     * @param trait     The trait to register
+     */
+    public void attachPersistentTrait(String traitName, MachineTrait trait) {
+        traitHolder.attachTrait(trait);
+        traitHolder.registerPersistentTrait(traitName, trait);
+    }
+
+    /**
+     * Gets a trait registered by {@code registerPersistentTrait}
+     * 
+     * @param traitName the unique identifier for the trait
+     * @return the trait, or null if not present
+     */
+    public @Nullable <T extends MachineTrait> T getPersistentTrait(String traitName) {
+        return traitHolder.getPersistentTrait(traitName);
+    }
+
+    /**
+     * Gets the first trait (trait with highest priority) of a specified type
+     * 
+     * @param type The trait type to get
+     * @return The trait, or null if no traits of the given type are present.
+     */
+    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
+        return traitHolder.getTrait(type);
+    }
+
+    /**
+     * Gets the first trait (trait with highest priority) of a specified type
+     * 
+     * @param type The trait type to get
+     * @return An optional result containing the trait if present.
+     */
+    public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
+        return Optional.ofNullable(getTrait(type));
+    }
+
+    /**
+     * Get all traits with the specified type.
+     * 
+     * @return An unmodifiable list containing all traits of the specified type.
+     */
+    public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
+        return traitHolder.getTraits(type);
+    }
+
+    //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
 
@@ -312,7 +394,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         if (result != null && result.getSecond() != InteractionResult.PASS) return result;
 
-        for (var trait : getTraitHolder().getAllTraits()) {
+        for (var trait : getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
                 var r = interactionTrait.onToolClick(context);
                 if (r.getSecond() != InteractionResult.PASS) return r;
@@ -402,7 +484,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (cover != null) cover.onScrewdriverClick(context);
         }
 
-        for (var trait : getTraitHolder().getAllTraits()) {
+        for (var trait : getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
                 InteractionResult result = interactionTrait.onUse(context);
                 if (result != InteractionResult.PASS) return result;
@@ -486,11 +568,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH)) return true;
-        for (CoverBehavior cover : coverContainer.getCovers()) {
-            if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
-        }
 
-        for (var trait : getTraitHolder().getAllTraits()) {
+        for (var trait : getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
                 if (result) return true;
@@ -503,12 +582,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Override
     public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                               Direction side) {
-        var cover = coverContainer.getCoverAtSide(side);
-        if (cover != null) {
-            var tips = cover.sideTips(player, pos, state, toolTypes, side);
-            if (tips != null) return tips;
-        }
-
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (player.isShiftKeyDown()) {
                 if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() && side == getFrontFacing())) {
@@ -525,7 +598,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        for (var trait : getTraitHolder().getAllTraits()) {
+        for (var trait : getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.getGridOverlayIcon(player, pos, state, toolTypes, side);
                 if (result != null) return result;
@@ -582,17 +655,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public boolean isFacingValid(Direction facing) {
         if (hasFrontFacing() && facing == getFrontFacing()) return false;
-        var coverContainer = getCoverContainer();
-        if (coverContainer.hasCover(facing)) {
-            // noinspection DataFlowIssue
-            var coverDefinition = coverContainer.getCoverAtSide(facing).coverDefinition;
-            var behaviour = coverDefinition.createCoverBehavior(coverContainer, getFrontFacing());
-            if (!behaviour.canAttach()) {
-                return false;
-            }
-        }
 
-        for (var trait : getTraitHolder().getAllTraits()) {
+        for (var trait : getAllTraits()) {
             if (trait instanceof IFrontFacingTrait modifyFacingTrait) {
                 if (!modifyFacingTrait.isValidFrontFace(facing)) return false;
             }
@@ -616,6 +680,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         if (getLevel() != null && !getLevel().isClientSide) {
             notifyBlockUpdate();
+        }
+    }
+
+    @MustBeInvokedByOverriders
+    public void updateModelData(ModelData.Builder builder) {
+        for (MachineTrait trait : getAllTraits()) {
+            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
         }
     }
 
@@ -665,14 +736,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        coverContainer.onNeighborChanged(block, fromPos, isMoving);
-        getTraitHolder().getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
+        getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
     }
 
     public void animateTick(RandomSource random) {}
 
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         BlockState sourceState, BlockPos sourcePos) {
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
         if (this instanceof IMultiPart part && part.isFormed()) {
@@ -680,13 +750,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (appearance != null) return appearance;
         }
         return getDefinition().getAppearance().get();
-    }
-
-    @MustBeInvokedByOverriders
-    public void updateModelData(ModelData.Builder builder) {
-        for (MachineTrait trait : traitHolder.getAllTraits()) {
-            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
-        }
     }
 
     public final long getOffsetTimer() {
@@ -838,7 +901,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Nullable
     public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        var list = traitHolder.getAllTraits().stream()
+        var list = getAllTraits().stream()
                 .filter(IItemHandlerModifiable.class::isInstance)
                 .filter(t -> t.hasCapability(side))
                 .map(IItemHandlerModifiable.class::cast)
@@ -847,7 +910,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var autoOutputTrait = getTrait(AutoOutputTrait.TYPE);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getItemOutputDirection() == side &&
                 !autoOutputTrait.allowsItemInputFromOutputSide()) {
             io = IO.OUT;
@@ -863,7 +926,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Nullable
     public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        var list = traitHolder.getAllTraits().stream()
+        var list = getAllTraits().stream()
                 .filter(IFluidHandler.class::isInstance)
                 .filter(t -> t.hasCapability(side))
                 .map(IFluidHandler.class::cast)
@@ -872,7 +935,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        var autoOutputTrait = getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var autoOutputTrait = getTrait(AutoOutputTrait.TYPE);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getFluidOutputDirection() == side &&
                 !autoOutputTrait.allowsFluidInputFromOutputSide()) {
             io = IO.OUT;
@@ -912,7 +975,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IWorkable workable) {
                 return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
             }
-            for (MachineTrait trait : machine.traitHolder.getAllTraits()) {
+            for (MachineTrait trait : machine.getAllTraits()) {
                 if (trait instanceof IWorkable workable) {
                     return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
                 }
@@ -921,7 +984,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IControllable controllable) {
                 return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
             }
-            for (MachineTrait trait : machine.traitHolder.getAllTraits()) {
+            for (MachineTrait trait : machine.getAllTraits()) {
                 if (trait instanceof IControllable controllable) {
                     return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
                 }
@@ -930,7 +993,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IEnergyContainer energyContainer) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IEnergyContainer.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, IEnergyContainer.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
@@ -940,7 +1003,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> energyInfoProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IEnergyInfoProvider.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, IEnergyInfoProvider.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
@@ -964,7 +1027,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IEnergyStorage energyStorage) {
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> energyStorage));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IEnergyStorage.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, IEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
@@ -973,7 +1036,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof ILaserContainer energyContainer) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, ILaserContainer.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, ILaserContainer.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
@@ -983,7 +1046,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> computationProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side,
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side,
                     IOpticalComputationProvider.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
@@ -992,7 +1055,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IDataAccessHatch computationProvider) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IDataAccessHatch.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, IDataAccessHatch.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -1000,7 +1063,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (machine instanceof IMonitorComponent monitorComponent) {
                 return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> monitorComponent));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IMonitorComponent.class);
+            var list = getCapabilitiesFromTraits(machine.getAllTraits(), side, IMonitorComponent.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -1023,7 +1086,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
                 }
-                var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side,
+                var list = getCapabilitiesFromTraits(machine.getAllTraits(), side,
                         IInWorldGridNodeHost.class);
                 if (!list.isEmpty()) {
                     // TODO wrap list in the future (or not.)

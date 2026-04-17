@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -28,17 +29,17 @@ public class EnvironmentalExplosionTrait extends MachineTrait {
     @Setter
     private BooleanSupplier explosionPredicate;
 
-    public EnvironmentalExplosionTrait(MetaMachine machine, float explosionPower, float fireChance,
+    public EnvironmentalExplosionTrait(float explosionPower, float fireChance,
                                        BooleanSupplier explosionPredicate) {
-        super(machine);
+        super();
         enableEnvironmentalExplosions = true;
         this.explosionPredicate = explosionPredicate;
         this.explosionPower = explosionPower;
         this.fireChance = fireChance;
     }
 
-    public EnvironmentalExplosionTrait(MetaMachine machine, float explosionPower, float fireChance) {
-        this(machine, explosionPower, fireChance, () -> true);
+    public EnvironmentalExplosionTrait(float explosionPower, float fireChance) {
+        this(explosionPower, fireChance, () -> true);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class EnvironmentalExplosionTrait extends MachineTrait {
 
     private void checkEnvironment() {
         if (!enableEnvironmentalExplosions || !explosionPredicate.getAsBoolean()) return;
-        var level = machine.getLevel();
+        var level = getLevel();
         var pos = getBlockPos();
         if (GTValues.RNG.nextInt(1000) == 0) {
             for (Direction side : GTUtil.DIRECTIONS) {
