@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -29,7 +30,7 @@ public class ExhaustVentMachineTrait extends MachineTrait {
 
     @Getter
     @Setter
-    private Direction ventingDirection;
+    private Direction ventingDirection = Direction.UP;
     @Getter
     @Setter
     @SaveField
@@ -38,10 +39,9 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Setter
     private float ventingDamageAmount;
 
-    public ExhaustVentMachineTrait(MetaMachine machine) {
-        super(machine);
+    public ExhaustVentMachineTrait() {
+        super();
 
-        this.ventingDirection = machine.getFrontFacing().getOpposite();
         this.needsVenting = false;
         this.ventingDamageAmount = 0;
     }
@@ -49,6 +49,11 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Override
     public MachineTraitType<ExhaustVentMachineTrait> getTraitType() {
         return TYPE;
+    }
+
+    @Override
+    public void onMachineLoad() {
+        this.ventingDirection = getMachine().getFrontFacing().getOpposite();
     }
 
     public boolean isVentingBlocked() {

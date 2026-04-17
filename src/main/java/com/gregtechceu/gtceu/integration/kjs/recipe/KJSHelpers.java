@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.longs.LongLongPair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -119,7 +120,7 @@ public class KJSHelpers {
      * Analogous to KubeJS' TagContext::patchIngredientTags for items.
      */
     @Nullable
-    public static ArrayList<Fluid> getFluidsDuringLoad(TagKey<Fluid> tag) {
+    public static Collection<Fluid> getFluidsDuringLoad(TagKey<Fluid> tag) {
         if (RecipesEventJS.instance == null) return null;
 
         var holders = TagContext.INSTANCE.getValue().getTag(tag);

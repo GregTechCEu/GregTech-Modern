@@ -33,13 +33,18 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private List<WeightedMaterial> veinMaterials;
 
-    public BedrockOreMinerLogic(BedrockOreMinerMachine machine) {
-        super(machine);
+    public BedrockOreMinerLogic() {
+        super();
     }
 
     @Override
     public BedrockOreMinerMachine getMachine() {
         return (BedrockOreMinerMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(BedrockOreMinerLogic.class);
     }
 
     @Override
@@ -59,7 +64,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+                if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -123,15 +128,15 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Override
     public void onRecipeFinish() {
-        machine.afterWorking();
+        getMachine().afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+            if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

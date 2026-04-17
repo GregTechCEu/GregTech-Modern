@@ -31,7 +31,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
         super(info);
 
-        tankProxy = new FluidTankProxyTrait(this, IO.BOTH);
+        tankProxy = attachTrait(new FluidTankProxyTrait(IO.BOTH));
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
     }
 

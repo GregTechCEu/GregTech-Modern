@@ -28,7 +28,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,10 +53,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                          implements IUIMachine, IDataInfoProvider {
 
@@ -78,9 +73,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected ISubscription steamTankSubs;
 
     public SteamBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        super(info, isHighPressure, RecipeLogic::new,
-                m -> new NotifiableFluidTank(m, 1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
-        this.waterTank = createWaterTank();
+        super(info, isHighPressure, new RecipeLogic(),
+                new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
+        this.waterTank = attachTrait(createWaterTank());
         this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
     }
 
@@ -89,7 +84,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     protected NotifiableFluidTank createWaterTank() {
-        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
+        return new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     @Override
@@ -250,7 +245,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Steam Boiler
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
             return RecipeModifier.nullWrongType(SteamBoilerMachine.class, machine);
         }

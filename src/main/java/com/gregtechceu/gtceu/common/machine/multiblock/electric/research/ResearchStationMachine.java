@@ -22,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +39,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     private ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new ResearchStationRecipeLogic((ResearchStationMachine) m));
+        super(info, new ResearchStationRecipeLogic());
     }
 
     @Override
@@ -52,12 +51,12 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            if (part instanceof ObjectHolderMachine objectHolder) {
-                if (objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
+            if (part instanceof ObjectHolderMachine holder) {
+                if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     onStructureInvalid();
                     return;
                 }
-                this.objectHolder = objectHolder;
+                this.objectHolder = holder;
             }
 
             part.self()
@@ -115,14 +114,18 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
     public static class ResearchStationRecipeLogic extends RecipeLogic {
 
-        public ResearchStationRecipeLogic(ResearchStationMachine metaTileEntity) {
-            super(metaTileEntity);
+        public ResearchStationRecipeLogic() {
+            super();
         }
 
-        @NotNull
         @Override
         public ResearchStationMachine getMachine() {
             return (ResearchStationMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(ResearchStationMachine.class);
         }
 
         // skip "can fit" checks, it can always fit
@@ -136,7 +139,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         @Override
         public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-            var modified = machine.fullModifyRecipe(match);
+            var modified = getMachine().fullModifyRecipe(match);
             if (modified != null) {
                 // What is the point of this
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
@@ -159,15 +162,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
-            if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-            return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, Collections.emptyMap(), false,
+            if (!getMachine().hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
+            return RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.inputs, Collections.emptyMap(), false,
                     true);
         }
 
         protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
             if (recipe.hasTick()) {
-                if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-                return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.tickInputs, Collections.emptyMap(),
+                if (!getMachine().hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
+                return RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.tickInputs, Collections.emptyMap(),
                         false, true);
             }
             return ActionResult.SUCCESS;

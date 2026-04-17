@@ -1,10 +1,10 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
@@ -56,7 +56,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected @Nullable Direction itemOutputDirection, fluidOutputDirection;
+    protected @Nullable Direction itemOutputDirection = Direction.UP, fluidOutputDirection = Direction.UP;
     @Getter
     @SaveField
     @SyncToClient
@@ -86,12 +86,9 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     protected List<ISubscription> fluidSubs = new ArrayList<>();
     private final boolean useDefaultToolHandlers;
 
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers,
+    public AutoOutputTrait(List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers,
                            boolean useDefaultToolHandlers) {
-        super(machine);
-
-        this.itemOutputDirection = machine.hasFrontFacing() ? machine.getFrontFacing().getOpposite() : Direction.UP;
-        this.fluidOutputDirection = itemOutputDirection;
+        super();
 
         this.itemHandlers = itemHandlers.stream().filter(h -> {
             if (h.getSlots() == 0) return false;
@@ -106,8 +103,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         this.useDefaultToolHandlers = useDefaultToolHandlers;
     }
 
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
-        this(machine, itemHandlers, fluidHandlers, true);
+    public AutoOutputTrait(List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
+        this(itemHandlers, fluidHandlers, true);
     }
 
     @Override
@@ -115,17 +112,22 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         return TYPE;
     }
 
-    public static AutoOutputTrait ofItems(MetaMachine machine, IItemHandler... itemHandlers) {
-        return new AutoOutputTrait(machine, Arrays.asList(itemHandlers), List.of());
+    public static AutoOutputTrait ofItems(IItemHandler... itemHandlers) {
+        return new AutoOutputTrait(Arrays.asList(itemHandlers), List.of());
     }
 
-    public static AutoOutputTrait ofFluids(MetaMachine machine, IFluidHandler... fluidHandlers) {
-        return new AutoOutputTrait(machine, List.of(), Arrays.asList(fluidHandlers));
+    public static AutoOutputTrait ofFluids(IFluidHandler... fluidHandlers) {
+        return new AutoOutputTrait(List.of(), Arrays.asList(fluidHandlers));
     }
 
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
+
+        this.itemOutputDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
+                Direction.UP;
+        this.fluidOutputDirection = itemOutputDirection;
+
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateFluidOutputSubscription));
             serverLevel.getServer().tell(new TickTask(0, this::updateItemOutputSubscription));
@@ -207,7 +209,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public void setFluidOutputDirection(@Nullable Direction outputFacing) {
         if (supportsAutoOutputFluids()) {
             if (!fluidOutputDirectionValidator.test(outputFacing) ||
-                    (machine.hasFrontFacing() && machine.getFrontFacing() == outputFacing))
+                    (getMachine().hasFrontFacing() && getMachine().getFrontFacing() == outputFacing))
                 return;
             this.fluidOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
@@ -218,7 +220,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public void setItemOutputDirection(@Nullable Direction outputFacing) {
         if (supportsAutoOutputItems()) {
             if (!itemOutputDirectionValidator.test(outputFacing) ||
-                    (machine.hasFrontFacing() && machine.getFrontFacing() == outputFacing))
+                    (getMachine().hasFrontFacing() && getMachine().getFrontFacing() == outputFacing))
                 return;
             this.itemOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
@@ -230,7 +232,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         if (!supportsAutoOutputItems()) return false;
 
         if (!isAutoOutputItems() || getItemOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentItemHandler(getLevel(), machine.getBlockPos(), getItemOutputDirection()))
+                !GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection()))
             return false;
         return true;
     }
@@ -238,14 +240,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     private boolean shouldKeepFluidSubscription() {
         if (!supportsAutoOutputFluids()) return false;
         if (!isAutoOutputFluids() || getFluidOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), machine.getBlockPos(), getFluidOutputDirection()))
+                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection()))
             return false;
         return true;
     }
 
     protected void updateItemOutputSubscription() {
         if (shouldKeepItemSubscription()) {
-            itemOutputSub = machine.subscribeServerTick(itemOutputSub, this::autoOutputItems);
+            itemOutputSub = subscribeServerTick(itemOutputSub, this::autoOutputItems);
         } else if (itemOutputSub != null) {
             itemOutputSub.unsubscribe();
             itemOutputSub = null;
@@ -254,7 +256,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     protected void updateFluidOutputSubscription() {
         if (shouldKeepFluidSubscription()) {
-            fluidOutputSub = machine.subscribeServerTick(fluidOutputSub, this::autoOutputFluids);
+            fluidOutputSub = subscribeServerTick(fluidOutputSub, this::autoOutputFluids);
         } else if (fluidOutputSub != null) {
             fluidOutputSub.unsubscribe();
             fluidOutputSub = null;
@@ -262,14 +264,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     protected void autoOutputItems() {
-        if (machine.getOffsetTimer() % ticksPerCycle == 0 && getItemOutputDirection() != null) {
+        if (getMachine().getOffsetTimer() % ticksPerCycle == 0 && getItemOutputDirection() != null) {
             itemHandlers.forEach(this::exportItemToNearby);
         }
         updateItemOutputSubscription();
     }
 
     protected void autoOutputFluids() {
-        if (machine.getOffsetTimer() % ticksPerCycle == 0 && getFluidOutputDirection() != null) {
+        if (getMachine().getOffsetTimer() % ticksPerCycle == 0 && getFluidOutputDirection() != null) {
             fluidHandlers.forEach(this::exportFluidToNearby);
         }
         updateFluidOutputSubscription();
@@ -277,13 +279,13 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     private void exportFluidToNearby(IFluidHandler handler) {
         var filter = getMachine().getFluidCapFilter(getFluidOutputDirection(), IO.OUT);
-        GTTransferUtils.getAdjacentFluidHandler(getLevel(), machine.getBlockPos(), getFluidOutputDirection())
+        GTTransferUtils.getAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection())
                 .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(handler, adj, filter));
     }
 
     private void exportItemToNearby(IItemHandler handler) {
         var filter = getMachine().getItemCapFilter(getItemOutputDirection(), IO.OUT);
-        GTTransferUtils.getAdjacentItemHandler(getLevel(), machine.getBlockPos(), getItemOutputDirection())
+        GTTransferUtils.getAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection())
                 .ifPresent(adj -> GTTransferUtils.transferItemsFiltered(handler, adj, filter));
     }
 
@@ -303,7 +305,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                                                         Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
-                if (!machine.hasFrontFacing() || side != machine.getFrontFacing()) {
+                if (!getMachine().hasFrontFacing() || side != getMachine().getFrontFacing()) {
                     var canSwitchItemOutputToSide = supportsAutoOutputItems() &&
                             itemOutputDirectionValidator.test(side) && side != getItemOutputDirection();
                     var canSwitchFluidOutputToSide = supportsAutoOutputFluids() &&
@@ -337,7 +339,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     private InteractionResult onWrenchClick(ExtendedUseOnContext context) {
-        var player = context.getPlayer();
         var itemStack = context.getItemInHand();
         var gridSide = context.getGridSide();
 
@@ -347,20 +348,20 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
         boolean hasChanged = false;
         if (type.isItem()) {
-            if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) &&
+            if ((!getMachine().hasFrontFacing() || gridSide != getMachine().getFrontFacing()) &&
                     itemOutputDirectionValidator.test(gridSide)) {
                 setItemOutputDirection(gridSide);
                 hasChanged = true;
             }
         }
         if (type.isFluid()) {
-            if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) &&
+            if ((!getMachine().hasFrontFacing() || gridSide != getMachine().getFrontFacing()) &&
                     fluidOutputDirectionValidator.test(gridSide)) {
                 setFluidOutputDirection(gridSide);
                 hasChanged = true;
             }
         }
-        return hasChanged ? InteractionResult.sidedSuccess(machine.isRemote()) : InteractionResult.PASS;
+        return hasChanged ? InteractionResult.sidedSuccess(isRemote()) : InteractionResult.PASS;
     }
 
     private InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {

@@ -10,13 +10,13 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -39,13 +39,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-@NotNullByDefault
 public class QuantumTankMachine extends TieredMachine implements IControllable,
                                 IDropSaveMachine, IFancyUIMachine {
 
@@ -77,9 +74,9 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     public QuantumTankMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
         super(info, tier);
         this.maxAmount = maxAmount;
-        this.cache = createCacheFluidHandler();
+        this.cache = attachTrait(createCacheFluidHandler());
         this.lockedFluid = new CustomFluidTank(1000);
-        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofFluids(cache));
     }
 
     //////////////////////////////////////
@@ -87,7 +84,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
 
     protected FluidCache createCacheFluidHandler() {
-        return new FluidCache(this);
+        return new FluidCache();
     }
 
     @Override
@@ -238,12 +235,12 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
         private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 
-        public FluidCache(MetaMachine holder) {
-            super(holder);
+        public FluidCache() {
+            super();
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return new FluidStack(stored, GTMath.saturatedCast(storedAmount));
         }
 
@@ -263,7 +260,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (stored.isEmpty()) return FluidStack.EMPTY;
             long toDrain = Math.min(storedAmount, maxDrain);
             var copy = new FluidStack(stored, (int) toDrain);
@@ -276,7 +273,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!resource.isFluidEqual(stored)) return FluidStack.EMPTY;
             return drain(resource.getAmount(), action);
         }
@@ -292,11 +289,11 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return filter.test(stack);
         }
 
-        public void exportToNearby(@NotNull Direction... facings) {
+        public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
             var pos = getMachine().getBlockPos();
