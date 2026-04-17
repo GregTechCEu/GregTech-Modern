@@ -34,6 +34,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,8 @@ public class ModelUtils {
 
     private ModelUtils() {}
 
-    private static final List<EventListenerHolder> EVENT_LISTENERS = new ArrayList<>();
+    @ApiStatus.Internal
+    public static final List<EventListenerHolder<?>> EVENT_LISTENERS = new ArrayList<>();
     public static final Map<TextureAtlasSprite, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
 
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
@@ -71,7 +73,7 @@ public class ModelUtils {
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload,
                                                           AssetEventListener.AtlasStitched listener) {
-        EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
+        EVENT_LISTENERS.add(new EventListenerHolder<>(listener, removeOnReload));
     }
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload, final ResourceLocation atlasLocation,
@@ -84,13 +86,13 @@ public class ModelUtils {
     }
 
     public static void registerBakeEventListener(boolean removeOnReload,
-                                                 AssetEventListener.ModifyBakingResult listener) {
-        EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
+                                                 AssetEventListener.BakedModelReplacement listener) {
+        EVENT_LISTENERS.add(new EventListenerHolder<>(listener, removeOnReload));
     }
 
     public static void registerAddModelsEventListener(boolean removeOnReload,
                                                       AssetEventListener.RegisterAdditional listener) {
-        EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
+        EVENT_LISTENERS.add(new EventListenerHolder<>(listener, removeOnReload));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -127,35 +129,36 @@ public class ModelUtils {
         }
 
         for (var listener : EVENT_LISTENERS) {
-            Class<?> eventClass = listener.listener.eventClass();
+            if (!(listener.listener instanceof AssetEventListener<?> assetEventListener)) continue;
+
+            Class<?> eventClass = assetEventListener.eventClass();
             if (eventClass != null && eventClass.isInstance(event)) {
                 ((AssetEventListener<TextureStitchEvent.Post>) listener.listener).accept(event);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        for (var listener : EVENT_LISTENERS) {
-            Class<?> eventClass = listener.listener.eventClass();
-            if (eventClass != null && eventClass.isInstance(event)) {
-                ((AssetEventListener<ModelEvent.ModifyBakingResult>) listener.listener).accept(event);
-            }
-        }
-
-        // don't process the CTM model unwrapping here if modernfix dynamic resources is enabled
+        // don't process baked model replacement here if modernfix dynamic resources is enabled
         if (GTCEu.Mods.isModernFixLoaded() && GTModernFixIntegration.isDynamicResourcesEnabled()) return;
 
-        // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
-        // Also, the caching they have stops our models from updating properly
         for (var entry : event.getModels().entrySet()) {
             BakedModel model = entry.getValue();
-            if (!(model instanceof CustomBakedModel ctmModel)) {
-                continue;
+
+            // run through all model replacers first
+            for (var listener : EVENT_LISTENERS) {
+                if (!(listener.listener instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
+                model = modelReplacement.modifyBakedModel(entry.getKey(), model, event.getModelBakery());
             }
-            if (ctmModel.getParent() instanceof MachineModel machine) {
-                entry.setValue(machine);
+            entry.setValue(model);
+
+            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
+            // Also, the caching they have stops our models from updating properly
+            if (model instanceof CustomBakedModel ctmModel) {
+                if (ctmModel.getParent() instanceof MachineModel machineModel) {
+                    entry.setValue(machineModel);
+                }
             }
         }
     }
@@ -164,12 +167,15 @@ public class ModelUtils {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterAdditional(ModelEvent.RegisterAdditional event) {
         for (var listener : EVENT_LISTENERS) {
-            Class<?> eventClass = listener.listener.eventClass();
+            if (!(listener.listener instanceof AssetEventListener<?> assetEventListener)) continue;
+
+            Class<?> eventClass = assetEventListener.eventClass();
             if (eventClass != null && eventClass.isInstance(event)) {
                 ((AssetEventListener<ModelEvent.RegisterAdditional>) listener.listener).accept(event);
             }
         }
     }
 
-    private record EventListenerHolder(AssetEventListener<?> listener, boolean removeOnReload) {}
+    @ApiStatus.Internal
+    public record EventListenerHolder<T>(T listener, boolean removeOnReload) {}
 }

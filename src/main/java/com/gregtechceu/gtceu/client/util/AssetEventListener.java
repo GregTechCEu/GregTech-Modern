@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.client.util;
 
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -15,6 +18,7 @@ public interface AssetEventListener<T extends Event> {
         return null;
     }
 
+    @FunctionalInterface
     interface AtlasStitched extends AssetEventListener<TextureStitchEvent.Post> {
 
         @Override
@@ -24,15 +28,13 @@ public interface AssetEventListener<T extends Event> {
         }
     }
 
-    interface ModifyBakingResult extends AssetEventListener<ModelEvent.ModifyBakingResult> {
+    @FunctionalInterface
+    interface BakedModelReplacement {
 
-        @Override
-        @Nullable
-        default Class<ModelEvent.ModifyBakingResult> eventClass() {
-            return ModelEvent.ModifyBakingResult.class;
-        }
+        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model, ModelBakery modelBakery);
     }
 
+    @FunctionalInterface
     interface RegisterAdditional extends AssetEventListener<ModelEvent.RegisterAdditional> {
 
         @Override

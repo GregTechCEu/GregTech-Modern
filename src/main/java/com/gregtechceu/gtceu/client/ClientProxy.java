@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
@@ -29,6 +30,7 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -54,6 +56,7 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
+import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
@@ -175,6 +178,22 @@ public class ClientProxy extends CommonProxy {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
         event.register(PipeModelLoader.ID.getPath(), PipeModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
+
+        // register CTM model (un)wrapper
+        ModelUtils.registerBakeEventListener(false, (modelLocation, model, modelBakery) -> {
+            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
+            if (model instanceof CustomBakedModel ctmModel) {
+                if (ctmModel.getParent() instanceof MachineModel machineModel) {
+                    return machineModel;
+                }
+            }
+            // do not register automatic CTM for machine models, they handle it themselves
+            if (model instanceof MachineModel) {
+                return model;
+            }
+
+            return model;
+        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
