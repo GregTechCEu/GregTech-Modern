@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -31,7 +32,7 @@ public interface AssetEventListener<T extends Event> {
     @FunctionalInterface
     interface BakedModelReplacement {
 
-        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model, ModelBakery modelBakery);
+        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model, UnbakedModel rootModel, ModelBakery modelBakery);
     }
 
     @FunctionalInterface

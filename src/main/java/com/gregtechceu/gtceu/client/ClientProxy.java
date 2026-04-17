@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.client.model.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
@@ -57,11 +58,16 @@ import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
+import com.lowdragmc.lowdraglib.client.model.custommodel.LDLMetadataSection;
+
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -73,6 +79,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ClientProxy extends CommonProxy {
 
@@ -180,7 +191,9 @@ public class ClientProxy extends CommonProxy {
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
 
         // register CTM model (un)wrapper
-        ModelUtils.registerBakeEventListener(false, (modelLocation, model, modelBakery) -> {
+        ModelUtils.registerBakeEventListener(false, (modelLocation, model, rootModel, modelBakery) -> {
+            if (model == null) return null;
+
             // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
             if (model instanceof CustomBakedModel ctmModel) {
                 if (ctmModel.getParent() instanceof MachineModel machineModel) {
@@ -190,6 +203,57 @@ public class ClientProxy extends CommonProxy {
             // do not register automatic CTM for machine models, they handle it themselves
             if (model instanceof MachineModel) {
                 return model;
+            }
+
+
+            if (modelLocation instanceof ModelResourceLocation && rootModel != null) {
+                if (model.isCustomRenderer()) { // Nothing we can add to builtin models
+                    return model;
+                }
+                Deque<ResourceLocation> dependencies = new ArrayDeque<>();
+                Set<ResourceLocation> seenModels = new HashSet<>();
+                dependencies.push(modelLocation);
+                seenModels.add(modelLocation);
+                boolean shouldWrap = ModelUtils.WRAPPED_MODELS.getOrDefault(modelLocation, false);
+                // Breadth-first loop through dependencies
+                // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
+                while (!shouldWrap && !dependencies.isEmpty()) {
+                    ResourceLocation dep = dependencies.pop();
+                    UnbakedModel unbaked;
+                    try {
+                        unbaked = dep == modelLocation ? rootModel : modelBakery.getModel(dep);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    try {
+                        // have to copy because the set is updated during this loop
+                        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+                        Set<Material> textures = new HashSet<>(ModelUtils.SCRAPED_TEXTURES.get(dep));
+                        for (Material tex : textures) {
+                            // Cache all dependent texture metadata
+                            // TODO lazy
+                            if (!LDLMetadataSection.getMetadata(LDLMetadataSection.spriteToAbsolute(tex.texture())).isMissing()) {
+                                // At least one texture has CTM metadata, so we should wrap this model
+                                shouldWrap = true;
+                                break;
+                            }
+                        }
+                        if (!shouldWrap) {
+                            for (ResourceLocation newDep : unbaked.getDependencies()) {
+                                if (seenModels.add(newDep)) {
+                                    dependencies.push(newDep);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        GTCEu.LOGGER.error("Error loading baked dependency {} for baked {}. Skipping...",
+                                dep, modelLocation, e);
+                    }
+                }
+                ModelUtils.WRAPPED_MODELS.put(modelLocation, shouldWrap);
+                if (shouldWrap) {
+                    return new CTMBakedModel<>(model);
+                }
             }
 
             return model;

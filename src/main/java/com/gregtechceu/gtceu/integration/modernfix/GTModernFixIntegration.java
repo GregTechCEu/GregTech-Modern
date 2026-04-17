@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.modernfix;
 
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
-
 import com.gregtechceu.gtceu.client.util.AssetEventListener;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -46,17 +43,10 @@ public class GTModernFixIntegration implements ModernFixClientIntegration {
     public BakedModel onBakedModelLoad(ResourceLocation modelLocation, UnbakedModel baseModel,
                                        BakedModel model, ModelState state, ModelBakery bakery,
                                        Function<Material, TextureAtlasSprite> textureGetter) {
-        // run through all model replacers first
+        // process all model replacers
         for (var listener : ModelUtils.EVENT_LISTENERS) {
             if (!(listener.listener() instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
-            model = modelReplacement.modifyBakedModel(modelLocation, model, bakery);
-        }
-
-        if (model instanceof CustomBakedModel ctmModel) {
-            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
-            if (ctmModel.getParent() instanceof MachineModel machineModel) {
-                return machineModel;
-            }
+            model = modelReplacement.modifyBakedModel(modelLocation, model, baseModel, bakery);
         }
         return model;
     }

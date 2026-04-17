@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.Submap;
-import com.lowdragmc.lowdraglib.client.model.custommodel.Connections;
+import com.gregtechceu.gtceu.client.model.connected.CTMCache;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,6 +11,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IQuadTransformer;
 
+import it.unimi.dsi.fastutil.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -62,6 +62,19 @@ public class QuadUtils {
         return quad.subdivide();
     }
 
+    public static Pair<Vector2f, Vector2f> findMinMaxUVs(Vector2f[] uvs) {
+        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE, maxU = Float.MIN_VALUE, maxV = Float.MIN_VALUE;
+
+        for (int i = 0; i < 4; i++) {
+            Vector2f uv = uvs[i];
+            minU = Math.min(minU, uv.x());
+            minV = Math.min(minV, uv.y());
+            maxU = Math.max(maxU, uv.x());
+            maxV = Math.max(maxV, uv.y());
+        }
+        return Pair.of(new Vector2f(minU, minV), new Vector2f(maxU, maxV));
+    }
+
     private static void putVertexData(int[] vertices, int index, Vector3f pos, Vector2f uv) {
         int posOffset = index * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
         vertices[posOffset] = Float.floatToRawIntBits(pos.x());
@@ -108,11 +121,16 @@ public class QuadUtils {
     }
 
     public static List<BakedQuad> buildCTMQuads(List<BakedQuad> quads, BlockAndTintGetter level, BlockPos pos,
-                                                @NotNull BlockState state, @Nullable Direction elementSide) {
-        return buildCTMQuads(Connections.checkConnections(level, pos, state, elementSide), quads);
+                                                @NotNull BlockState state, @Nullable Direction side) {
+        CTMCache ctmCache = CTMCache.getInstance();
+        if (side != null) {
+            ctmCache.getSubmapIds(level, pos, state, side);
+        }
+
+        return buildCTMQuads(ctmCache, quads);
     }
 
-    public static List<BakedQuad> buildCTMQuads(Connections connections, List<BakedQuad> base) {
+    public static List<BakedQuad> buildCTMQuads(CTMCache cachedConnections, List<BakedQuad> base) {
         List<BakedQuad> result = new ArrayList<>();
         for (BakedQuad originalQuad : base) {
             TextureAtlasSprite connection = CTM_SPRITE_CACHE.get(originalQuad.getSprite());
@@ -120,18 +138,18 @@ public class QuadUtils {
                 result.add(originalQuad);
                 continue;
             }
-            GTQuadTransformers.derotate().processInPlace(originalQuad);
+            // make sure to copy the quad here so the original model isn't mutated
+            BakedQuad newBQ = GTQuadTransformers.derotate().process(originalQuad);
 
-            QuadInfo[] subdivided = QuadUtils.subdivide(originalQuad);
-            int[] ctm = connections.getSubmapIndices();
+            QuadInfo[] subdivided = QuadUtils.subdivide(newBQ);
+            int[] ctm = cachedConnections.getSubmapIndices();
 
             for (int j = 0; j < subdivided.length; j++) {
                 QuadInfo quad = subdivided[j];
                 if (quad != null) {
                     int quadrant = quad.getNormalizedUVQuadrant();
-                    Submap submap = quad.findSubmap(connections);
                     TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalQuad.getSprite() : connection;
-                    subdivided[j] = quad.grow().transformUVs(ctmSprite, submap);
+                    subdivided[j] = quad.grow().transformUVs(ctmSprite, CTMCache.uvs[ctm[quadrant]].unitScale());
                 }
             }
             result.addAll(Arrays.stream(subdivided).filter(Objects::nonNull).map(QuadInfo::rebake).toList());

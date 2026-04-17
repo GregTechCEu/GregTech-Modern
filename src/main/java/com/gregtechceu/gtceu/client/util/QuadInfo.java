@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.ISubmap;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.Submap;
-import com.lowdragmc.lowdraglib.client.model.custommodel.Connection;
-import com.lowdragmc.lowdraglib.client.model.custommodel.Connections;
+import com.gregtechceu.gtceu.client.model.connected.ISubmap;
+import com.gregtechceu.gtceu.client.model.connected.OctagonalOrientation;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -13,20 +11,21 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.IQuadTransformer;
 
 import it.unimi.dsi.fastutil.Pair;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import static com.gregtechceu.gtceu.client.model.connected.OctagonalOrientation.*;
 
 public record QuadInfo(TextureAtlasSprite sprite, int tintIndex, Direction direction,
                        boolean shade, boolean ao, int blockLight, int skyLight,
                        Vector3f[] vertices, Vector2f[] uvs, Vector2f minUV, Vector2f maxUV) {
 
     // Mapping the different corner indices to their respective dirs
-    private static final Connection[][] SUBMAP_MAP = new Connection[][] {
-            { Connection.DOWN, Connection.LEFT, Connection.DOWN_LEFT },
-            { Connection.DOWN, Connection.RIGHT, Connection.DOWN_RIGHT },
-            { Connection.UP, Connection.RIGHT, Connection.UP_RIGHT },
-            { Connection.UP, Connection.LEFT, Connection.UP_LEFT }
+    private static final OctagonalOrientation[][] SUBMAP_MAP = new OctagonalOrientation[][] {
+            { BOTTOM, LEFT, BOTTOM_LEFT },
+            { BOTTOM, RIGHT, BOTTOM_RIGHT },
+            { TOP, RIGHT, TOP_RIGHT },
+            { TOP, LEFT, TOP_LEFT }
     };
 
     public QuadInfo(TextureAtlasSprite sprite, int tintIndex, Direction direction, boolean shade, boolean ao,
@@ -91,7 +90,7 @@ public record QuadInfo(TextureAtlasSprite sprite, int tintIndex, Direction direc
     public Vector2f[] transformUVData(TextureAtlasSprite other, ISubmap submap) {
         Vector2f[] normalized = normalizeUVs();
         var maxUVs = QuadUtils.findMinMaxUVs(normalized);
-        submap = submap.normalize();
+        submap = submap.unitScale();
 
         float width = maxUVs.second().x() - maxUVs.first().x();
         float height = maxUVs.second().y() - maxUVs.first().y();
@@ -104,41 +103,24 @@ public record QuadInfo(TextureAtlasSprite sprite, int tintIndex, Direction direc
         float maxU = minU + (width * submap.getWidth());
         float maxV = minV + (height * submap.getHeight());
 
-        Vector2f[] newUvs = new Vector2f[4];
+        Vector2f[] newUVs = new Vector2f[4];
         for (int i = 0; i < 4; i++) {
             Vector2f uv = new Vector2f(this.uvs[i]);
-            // same as sprite.getX(oldSprite.getXOffset(x)), but we don't multiply and divide in between
+            // same as sprite.getU(oldSprite.getUOffset(uv.x)), but we don't multiply and divide in between
+            // NOTE: can be simplified to ^ on 1.21
             uv.x = Mth.map(uv.x, this.sprite.getU0(), this.sprite.getU1(), other.getU0(), other.getU1());
             uv.y = Mth.map(uv.y, this.sprite.getV0(), this.sprite.getV1(), other.getV0(), other.getV1());
-            newUvs[i] = uv;
+            newUVs[i] = uv;
         }
 
         // FIXME this... isn't all that great.
-        Vector2f[] newUVs = {
-                new Vector2f(newUvs[0].x() == this.minUV.x() ? minU : maxU, newUvs[0].y() == this.minUV.y() ? minV : maxV),
-                new Vector2f(newUvs[1].x() == this.minUV.x() ? minU : maxU, newUvs[1].y() == this.minUV.y() ? minV : maxV),
-                new Vector2f(newUvs[2].x() == this.minUV.x() ? minU : maxU, newUvs[2].y() == this.minUV.y() ? minV : maxV),
-                new Vector2f(newUvs[3].x() == this.minUV.x() ? minU : maxU, newUvs[3].y() == this.minUV.y() ? minV : maxV)
+        newUVs = new Vector2f[] {
+                new Vector2f(newUVs[0].x() == this.minUV.x() ? minU : maxU, newUVs[0].y() == this.minUV.y() ? minV : maxV),
+                new Vector2f(newUVs[1].x() == this.minUV.x() ? minU : maxU, newUVs[1].y() == this.minUV.y() ? minV : maxV),
+                new Vector2f(newUVs[2].x() == this.minUV.x() ? minU : maxU, newUVs[2].y() == this.minUV.y() ? minV : maxV),
+                new Vector2f(newUVs[3].x() == this.minUV.x() ? minU : maxU, newUVs[3].y() == this.minUV.y() ? minV : maxV)
         };
         return QuadUtils.relativizeUVs(other, newUVs);
-    }
-
-    public @Nullable Submap findSubmap(Connections connections) {
-        Vector2f uv = QuadUtils.normalizeUV(sprite, maxUV);
-        int xPos = uv.x() <= 0.5f ? 0 : 1;
-        int yPos = uv.y() <= 0.5f ? 0 : 1;
-
-        Connection[] toConnect = SUBMAP_MAP[xPos + yPos];
-        if (connections.connectedOr(toConnect[0], toConnect[1])) {
-            // If all dirs are connected, we use the fully connected face, the base offset value.
-            if (!connections.connectedAnd(toConnect)) {
-                // if a location isn't connected on all sides, the edge submap is at base+2 in the submap table
-                xPos += connections.contains(toConnect[0]) ? 2 : 0;
-                yPos += connections.contains(toConnect[1]) ? 2 : 0;
-            }
-            return Submap.X4[xPos][yPos];
-        }
-        return null;
     }
 
     public Vector2f[] copyUVs() {

@@ -97,7 +97,7 @@ public class LampBlockItem extends BlockItem {
 
             if (registeredListener) return;
             registeredListener = true;
-            ModelUtils.registerBakeEventListener(false, (modelLocation, model, modelBakery) -> {
+            ModelUtils.registerBakeEventListener(false, (modelLocation, model, unbakedModel, modelBakery) -> {
 
                 // handle both cases 1.20 can have passed here. 1.21 *only* has the ModelResourceLocation case.
                 ResourceLocation possibleItemId;
