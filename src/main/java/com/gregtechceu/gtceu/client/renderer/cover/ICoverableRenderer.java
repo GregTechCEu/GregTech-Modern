@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -40,9 +38,9 @@ public interface ICoverableRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @NotNull ICoverable coverable,
-                              BlockPos pos, BlockAndTintGetter level, @Nullable Direction side,
-                              RandomSource rand, @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    default void renderCovers(List<BakedQuad> quads, ICoverable coverable, BlockPos pos, BlockAndTintGetter level,
+                              @Nullable Direction side, RandomSource rand, ModelData modelData,
+                              @Nullable RenderType renderType) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
@@ -59,11 +57,9 @@ public interface ICoverableRenderer {
                             normal.getY() >= 0 ? 0.99 : min,
                             normal.getZ() >= 0 ? 0.99 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
+                        quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
                     } else if (side != face.getOpposite()) { // render sides
-                        quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
+                        quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
                     }
                 }
                 // it won't ever be null on the client
