@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.gregtechceu.gtceu.client.util.quad;
 
 import com.gregtechceu.gtceu.client.model.quad.QuadView;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+
+import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 /**
  * Static routines of general utility for renderer implementations.
@@ -105,10 +104,8 @@ public class GeometryHelper {
         z = Mth.clamp(z, -1, 1);
         w = Mth.clamp(w, -1, 1);
 
-        return ((int) (x * 127) & 255)
-                | (((int) (y * 127) & 255) << 8)
-                | (((int) (z * 127) & 255) << 16)
-                | (((int) (w * 127) & 255) << 24);
+        return ((int) (x * 127) & 255) | (((int) (y * 127) & 255) << 8) | (((int) (z * 127) & 255) << 16) |
+                (((int) (w * 127) & 255) << 24);
     }
 
     /**
@@ -192,8 +189,7 @@ public class GeometryHelper {
 
         int i = face.getAxis().ordinal();
         final float val = quad.posByIndex(0, i);
-        return Mth.equal(val, quad.posByIndex(1, i))
-                && Mth.equal(val, quad.posByIndex(2, i))
-                && Mth.equal(val, quad.posByIndex(3, i));
+        return Mth.equal(val, quad.posByIndex(1, i)) && Mth.equal(val, quad.posByIndex(2, i)) &&
+                Mth.equal(val, quad.posByIndex(3, i));
     }
 }

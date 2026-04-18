@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.gregtechceu.gtceu.client.model.quad;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -26,6 +22,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Indexes a texture atlas to allow fast lookup of Sprites from baked vertex coordinates.
@@ -95,13 +94,18 @@ public class SpriteFinder {
     }
 
     private class Node {
+
         final float midU;
         final float midV;
         final float cellRadius;
-        @Nullable Object lowLow = null;
-        @Nullable Object lowHigh = null;
-        @Nullable Object highLow = null;
-        @Nullable Object highHigh = null;
+        @Nullable
+        Object lowLow = null;
+        @Nullable
+        Object lowHigh = null;
+        @Nullable
+        Object highLow = null;
+        @Nullable
+        Object highHigh = null;
 
         Node(float midU, float midV, float radius) {
             this.midU = midU;
@@ -172,6 +176,7 @@ public class SpriteFinder {
     }
 
     public interface SpriteFinderAccess {
+
         SpriteFinder gtceu$spriteFinder();
     }
 }

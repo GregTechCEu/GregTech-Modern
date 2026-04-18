@@ -598,7 +598,8 @@ public class GTMachineModels {
     }
 
     public static final ResourceLocation OVERLAY_SCREEN_TEXTURE = GTCEu.id("block/overlay/machine/overlay_screen");
-    public static final ResourceLocation OVERLAY_QTANK_EMISSIVE_TEXTURE = GTCEu.id("block/overlay/machine/overlay_qtank_emissive");
+    public static final ResourceLocation OVERLAY_QTANK_EMISSIVE_TEXTURE = GTCEu
+            .id("block/overlay/machine/overlay_qtank_emissive");
 
     public static MachineBuilder.ModelInitializer createFisherModel() {
         return (ctx, prov, builder) -> {

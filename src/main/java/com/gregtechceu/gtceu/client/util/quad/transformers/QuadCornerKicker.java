@@ -9,18 +9,17 @@
  *
  * CodeChickenLib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with CodeChickenLib. If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
 package com.gregtechceu.gtceu.client.util.quad.transformers;
 
+import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
 import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
-import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
@@ -31,8 +30,8 @@ import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.core.Direction.AxisDirection.*;
 import static net.minecraft.core.Direction.*;
+import static net.minecraft.core.Direction.AxisDirection.*;
 
 /**
  * This transformer is a little complicated.
@@ -40,10 +39,10 @@ import static net.minecraft.core.Direction.*;
  * <p>
  * Use it by specifying
  * <ul>
- *     <li>the side of the block you are on,</li>
- *     <li>the bitmask for where the other Facades / Covers are,</li>
- *     <li>the bounding box of the facade (NOT the hole piece),</li>
- *     <li>and the thickness of your Facade / Cover (which is used as the kick amount).</li>
+ * <li>the side of the block you are on,</li>
+ * <li>the bitmask for where the other Facades / Covers are,</li>
+ * <li>the bounding box of the facade (NOT the hole piece),</li>
+ * <li>and the thickness of your Facade / Cover (which is used as the kick amount).</li>
  * </ul>
  *
  * @author covers1624
@@ -127,9 +126,8 @@ public class QuadCornerKicker implements QuadTransform {
                 float x = quad.posByIndex(i, 0);
                 float y = quad.posByIndex(i, 1);
                 float z = quad.posByIndex(i, 2);
-                if (Mth.equal(x, corner.pX(this.bounds))
-                        && Mth.equal(y, corner.pY(this.bounds))
-                        && Mth.equal(z, corner.pZ(this.bounds))) {
+                if (Mth.equal(x, corner.pX(this.bounds)) && Mth.equal(y, corner.pY(this.bounds)) &&
+                        Mth.equal(z, corner.pZ(this.bounds))) {
                     Vec3i normal = hoz.getNormal();
                     x -= normal.getX() * this.thickness;
                     y -= normal.getY() * this.thickness;
@@ -143,9 +141,7 @@ public class QuadCornerKicker implements QuadTransform {
     }
 
     @Override
-    public void processInPlace(BakedQuad quad) {
-
-    }
+    public void processInPlace(BakedQuad quad) {}
 
     public enum Corner {
 
@@ -206,5 +202,4 @@ public class QuadCornerKicker implements QuadTransform {
             return (float) (this.zAxis == NEGATIVE ? box.minZ : box.maxZ);
         }
     }
-
 }

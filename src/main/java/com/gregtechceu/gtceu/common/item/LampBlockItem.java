@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
 import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
@@ -21,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +99,8 @@ public class LampBlockItem extends BlockItem {
 
                 // handle both cases 1.20 can have passed here. 1.21 *only* has the ModelResourceLocation case.
                 ResourceLocation possibleItemId;
-                if (modelLocation instanceof ModelResourceLocation modelResLoc && Objects.equals(modelResLoc.getVariant(), "inventory")) {
+                if (modelLocation instanceof ModelResourceLocation modelResLoc &&
+                        Objects.equals(modelResLoc.getVariant(), "inventory")) {
                     // unwrap ModelResourceLocations
                     // 1.21 needs different code here as ModelResourceLocation is a wrapper record instead of a subclass
                     possibleItemId = modelResLoc.withPrefix("");

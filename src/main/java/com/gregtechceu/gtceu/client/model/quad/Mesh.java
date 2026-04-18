@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  * @implNote The way we encode meshes makes it very simple.
  */
 public class Mesh {
+
     /** Used to satisfy external calls to {@link #forEach(Consumer)}. */
     private static final ThreadLocal<QuadView> POOL = ThreadLocal.withInitial(QuadView::new);
 

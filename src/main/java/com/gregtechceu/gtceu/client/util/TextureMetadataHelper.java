@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @UtilityClass
 public class TextureMetadataHelper {
-    
+
     private static final Map<ResourceLocation, @Nullable GTTextureMetadata> metadataCache = new HashMap<>();
 
     public static Optional<GTTextureMetadata> getMetadata(ResourceLocation res) {
@@ -60,7 +60,7 @@ public class TextureMetadataHelper {
         }
         return sprite;
     }
-    
+
     static void invalidateCaches() {
         metadataCache.clear();
     }

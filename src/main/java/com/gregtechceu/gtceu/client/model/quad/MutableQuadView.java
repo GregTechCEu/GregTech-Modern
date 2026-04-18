@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.gregtechceu.gtceu.client.model.quad;
 
 import com.gregtechceu.gtceu.client.util.TextureHelper;
 import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
-
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -30,12 +25,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.QuadTransformers;
 
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
 import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
+
 /**
  * A mutable {@link QuadView} instance.
  *
  * <p>
- * Instances of {@link MutableQuadView} will practically always be thread local and/or reused - do not retain references.
+ * Instances of {@link MutableQuadView} will practically always be thread local and/or reused - do not retain
+ * references.
  *
  * <p>
  * Only the renderer should implement or extend this interface.
@@ -104,8 +105,9 @@ public abstract class MutableQuadView extends QuadView {
         return MutableQuadView.THREAD_LOCAL.get();
     }
 
+    public static final ThreadLocal<MutableQuadView> THREAD_LOCAL = ThreadLocal
+            .withInitial(() -> new MutableQuadView() {
 
-    public static final ThreadLocal<MutableQuadView> THREAD_LOCAL = ThreadLocal.withInitial(() -> new MutableQuadView() {
                 {
                     begin(new int[QUAD_STRIDE], 0);
                 }
@@ -438,7 +440,6 @@ public abstract class MutableQuadView extends QuadView {
      */
     public abstract MutableQuadView emit();
 
-
     /**
      * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
      * is effectively zero - meaning the face is a cull face.
@@ -457,7 +458,8 @@ public abstract class MutableQuadView extends QuadView {
      * <p>
      * All coordinates should be normalized (0-1).
      */
-    public MutableQuadView square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
+    public MutableQuadView square(Direction nominalFace, float left, float bottom, float right, float top,
+                                  float depth) {
         if (Math.abs(depth) < CULL_FACE_EPSILON) {
             cullFace(nominalFace);
             depth = 0; // avoid any inconsistency for face quads

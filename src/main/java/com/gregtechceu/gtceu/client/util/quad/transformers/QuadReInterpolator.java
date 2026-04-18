@@ -9,13 +9,12 @@
  *
  * CodeChickenLib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with CodeChickenLib. If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
 package com.gregtechceu.gtceu.client.util.quad.transformers;
 
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
@@ -187,5 +186,4 @@ public class QuadReInterpolator implements QuadTransform {
             return 2;
         }
     }
-
 }

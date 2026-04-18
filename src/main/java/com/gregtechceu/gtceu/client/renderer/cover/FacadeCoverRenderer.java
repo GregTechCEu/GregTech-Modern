@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
-import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -191,8 +191,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         BakedModel model = RenderUtil.getModelForState(state);
         ModelData facadeModelData = model.getModelData(level, pos, state, modelData);
 
-
-        if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeModelData).contains(renderType)) {
+        if (renderType != null &&
+                !facadeModel.getRenderTypes(facadeState, rand, facadeModelData).contains(renderType)) {
             return;
         }
 

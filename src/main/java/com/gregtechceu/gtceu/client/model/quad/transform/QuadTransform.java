@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.IQuadTransformer;
 
 @FunctionalInterface
 public interface QuadTransform extends IQuadTransformer {
+
     /**
      * Return false to filter out quads from rendering. When more than one transform is in effect, returning false
      * means unapplied transforms will not receive the quad.

@@ -1,21 +1,20 @@
 /*
  * This file is part of ConnectedTexturesMod (https://github.com/Chisel-Team/ConnectedTexturesMod).
- * Copyright (c) 2023  Chisel Team.
-
+ * Copyright (c) 2023 Chisel Team.
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
-
+ * 
  * ConnectedTexturesMod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ * 
  * You should have received a copy of the GNU General Public License along
  * with ConnectedTexturesMod; if not, If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.gregtechceu.gtceu.client.model.ctm;
 
 import net.createmod.catnip.math.DirectionHelper;
@@ -39,10 +38,12 @@ import static net.minecraft.core.Direction.*;
  * but connected in the diagonal direction represented by {@link #TOP_RIGHT}.
  * This is used for inner corner rendering.
  * <p>
- * Sourced from <a href="https://github.com/Chisel-Team/ConnectedTexturesMod/blob/19a58b080ff2d4fec4fd44ffdb426fc078ce853d/src/main/java/team/chisel/ctm/client/util/Dir.java">ConnectedTexturesMod</a>.
+ * Sourced from <a href=
+ * "https://github.com/Chisel-Team/ConnectedTexturesMod/blob/19a58b080ff2d4fec4fd44ffdb426fc078ce853d/src/main/java/team/chisel/ctm/client/util/Dir.java">ConnectedTexturesMod</a>.
  */
 public enum OctagonalOrientation implements StringRepresentable {
-	// spotless:off
+
+    // spotless:off
     TOP(UP), 
     TOP_RIGHT(UP, EAST),
     RIGHT(EAST), 
@@ -53,24 +54,24 @@ public enum OctagonalOrientation implements StringRepresentable {
     TOP_LEFT(UP, WEST);
     // spotless:on
 
-	public static final OctagonalOrientation[] VALUES = values();
-	private static final Direction NORMAL = SOUTH;
-	
-	static {
-	    // Run after static init
-	    for (OctagonalOrientation dir : OctagonalOrientation.VALUES) {
-	        dir.buildCaches();
-	    }
-	}
+    public static final OctagonalOrientation[] VALUES = values();
+    private static final Direction NORMAL = SOUTH;
 
-	private final Direction[] dirs;
-	
-	private final BlockPos[] offsets = new BlockPos[6];
-
-	OctagonalOrientation(Direction... dirs) {
-		this.dirs = dirs;
+    static {
+        // Run after static init
+        for (OctagonalOrientation dir : OctagonalOrientation.VALUES) {
+            dir.buildCaches();
+        }
     }
-	
+
+    private final Direction[] dirs;
+
+    private final BlockPos[] offsets = new BlockPos[6];
+
+    OctagonalOrientation(Direction... dirs) {
+        this.dirs = dirs;
+    }
+
     private void buildCaches() {
         // Fill normalized dirs
         for (Direction normal : Direction.values()) {
@@ -108,34 +109,36 @@ public enum OctagonalOrientation implements StringRepresentable {
             }
             offsets[normal.ordinal()] = ret;
         }
-	}
+    }
 
     /**
      * Finds if this block is connected for the given side in this OctagonalOrientation.
      *
-     * @param ctm The ConnectionCheck instance to use for logic.
+     * @param ctm   The ConnectionCheck instance to use for logic.
      * @param level The level the block is in.
-     * @param pos The position of your block.
+     * @param pos   The position of your block.
      * @param state The state of your block.
-     * @param side The side of the current face.
+     * @param side  The side of the current face.
      * @return True if the block is connected in the given OctagonalOrientation, false otherwise.
      */
-    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side) {
+    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state,
+                               Direction side) {
         return ctm.isConnected(level, pos, state, applyConnection(pos, side), side);
     }
 
     /**
      * Finds if this block is connected for the given side in this OctagonalOrientation.
      *
-     * @param ctm The ConnectionCheck instance to use for logic.
-     * @param level The level the block is in.
-     * @param pos The position of your block.
-     * @param state The state of your block.
-     * @param side The side of the current face.
+     * @param ctm             The ConnectionCheck instance to use for logic.
+     * @param level           The level the block is in.
+     * @param pos             The position of your block.
+     * @param state           The state of your block.
+     * @param side            The side of the current face.
      * @param connectionState The state to check for connection with.
      * @return True if the block is connected in the given OctagonalOrientation, false otherwise.
      */
-    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, BlockState connectionState) {
+    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state,
+                               Direction side, BlockState connectionState) {
         return ctm.isConnected(level, pos, state, applyConnection(pos, side), side, connectionState);
     }
 
@@ -147,12 +150,12 @@ public enum OctagonalOrientation implements StringRepresentable {
     public BlockPos applyConnection(BlockPos pos, Direction side) {
         return pos.offset(getOffset(side));
     }
-    
+
     public BlockPos getOffset(Direction normal) {
         return offsets[normal.ordinal()];
     }
 
-	private Direction rotate(Direction facing, Direction axisFacing) {
+    private Direction rotate(Direction facing, Direction axisFacing) {
         Direction.Axis axis = axisFacing.getAxis();
         AxisDirection axisDir = axisFacing.getAxisDirection();
 
@@ -165,7 +168,7 @@ public enum OctagonalOrientation implements StringRepresentable {
         }
 
         return facing;
-	}
+    }
 
     @Override
     public String getSerializedName() {

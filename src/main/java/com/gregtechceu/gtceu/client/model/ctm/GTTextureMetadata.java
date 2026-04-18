@@ -61,5 +61,4 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture) {
             return SECTION_NAME;
         }
     }
-
 }

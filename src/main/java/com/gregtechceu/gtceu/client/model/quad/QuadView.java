@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.gregtechceu.gtceu.client.model.quad;
 
 import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
-
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -31,6 +23,13 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.QuadTransformers;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
 
@@ -43,6 +42,7 @@ import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
  */
 @Accessors(fluent = true, chain = true)
 public class QuadView {
+
     /**
      * See {@link MutableQuadView#nominalFace(Direction)}.
      */
@@ -226,7 +226,6 @@ public class QuadView {
         return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X]);
     }
 
-
     /**
      * Retrieve geometric position, y coordinate.
      */
@@ -270,24 +269,24 @@ public class QuadView {
      * Will return {@link Float#NaN} if normal not present.
      */
     public float normalX(int vertexIndex) {
-        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 0)
-                : Float.NaN;
+        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 0) :
+                Float.NaN;
     }
 
     /**
      * Will return {@link Float#NaN} if normal not present.
      */
     public float normalY(int vertexIndex) {
-        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 1)
-                : Float.NaN;
+        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 1) :
+                Float.NaN;
     }
 
     /**
      * Will return {@link Float#NaN} if normal not present.
      */
     public float normalZ(int vertexIndex) {
-        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 2)
-                : Float.NaN;
+        return hasNormal(vertexIndex) ? GeometryHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 2) :
+                Float.NaN;
     }
 
     /**

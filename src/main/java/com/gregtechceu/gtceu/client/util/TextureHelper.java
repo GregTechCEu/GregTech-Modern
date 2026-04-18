@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
@@ -109,12 +108,13 @@ public class TextureHelper {
             // If the UV is outside the texture's boundaries, this was probably called by mistake.
             if (u < uMin || u > uMax || v < vMin || v > vMax) continue;
 
-            q.uv(i, (u - uMin) / uSpan,  (v - vMin) / vSpan);
+            q.uv(i, (u - uMin) / uSpan, (v - vMin) / vSpan);
         }
     }
 
     @FunctionalInterface
     public interface VertexModifier {
+
         void apply(MutableQuadView quad, int vertexIndex);
     }
 

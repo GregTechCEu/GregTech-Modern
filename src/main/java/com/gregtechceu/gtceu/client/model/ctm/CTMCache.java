@@ -1,22 +1,22 @@
 /*
  * This file is part of ConnectedTexturesMod (https://github.com/Chisel-Team/ConnectedTexturesMod).
- * Copyright (c) 2023  Chisel Team.
-
+ * Copyright (c) 2023 Chisel Team.
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
-
+ * 
  * ConnectedTexturesMod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ * 
  * You should have received a copy of the GNU General Public License along
  * with ConnectedTexturesMod; if not, If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.gregtechceu.gtceu.client.model.ctm;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -139,7 +139,6 @@ public class CTMCache {
     protected byte connectionMap;
     protected int[] submapCache = defaultSubmapCache.clone();
 
-
     public static CTMCache getInstance() {
         return new CTMCache();
     }
@@ -192,7 +191,7 @@ public class CTMCache {
         // TODO this naive check doesn't work for models that have unculled faces.
         // Perhaps a smarter optimization could be done eventually?
         for (OctagonalOrientation dir : OctagonalOrientation.VALUES) {
-            //Note: We can't cache the state that we are checking about connection for as we want to ensure that
+            // Note: We can't cache the state that we are checking about connection for as we want to ensure that
             // we can take into account the side of the block we want to know the "state" of as if the block is
             // a facade of some sort it might return different results based on where it is being queried from
             setConnectedState(dir, dir.isConnected(this.connectionCheck, world, pos, state, side));
@@ -210,7 +209,8 @@ public class CTMCache {
                 // This is a bit magic-y, but basically the array is ordered so
                 // the first dir requires an offset of 2, and the second dir requires an offset of 8
                 // plus the initial offset for the corner.
-                this.submapCache[idx] = submapOffsets[idx] + (connected(dirs[0]) ? 2 : 0) + (connected(dirs[1]) ? 8 : 0);
+                this.submapCache[idx] = submapOffsets[idx] + (connected(dirs[0]) ? 2 : 0) +
+                        (connected(dirs[1]) ? 8 : 0);
             }
         }
     }
@@ -226,8 +226,9 @@ public class CTMCache {
 
     /**
      * @param dirs
-     *            The directions to check connection in.
-     * @return True if the cached connectionMap holds a connection in <i><b>all</b></i> the given {@link OctagonalOrientation directions}.
+     *             The directions to check connection in.
+     * @return True if the cached connectionMap holds a connection in <i><b>all</b></i> the given
+     *         {@link OctagonalOrientation directions}.
      */
     @SuppressWarnings("null")
     public boolean connectedAnd(OctagonalOrientation... dirs) {
@@ -241,8 +242,9 @@ public class CTMCache {
 
     /**
      * @param dirs
-     *            The directions to check connection in.
-     * @return True if the cached connectionMap holds a connection in <i><b>one of</b></i> the given {@link OctagonalOrientation directions}.
+     *             The directions to check connection in.
+     * @return True if the cached connectionMap holds a connection in <i><b>one of</b></i> the given
+     *         {@link OctagonalOrientation directions}.
      */
     @SuppressWarnings("null")
     public boolean connectedOr(OctagonalOrientation... dirs) {
