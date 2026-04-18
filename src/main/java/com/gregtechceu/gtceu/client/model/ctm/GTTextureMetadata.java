@@ -44,7 +44,7 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture) {
 
         // spotless:off
         public static final Codec<GTTextureMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("connection", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture)
+                ResourceLocation.CODEC.optionalFieldOf("connection_texture", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture)
         ).apply(instance, GTTextureMetadata::new));
         // spotless:on
 
