@@ -124,12 +124,6 @@ public abstract class MutableQuadView extends QuadView {
         clear();
     }
 
-    @Override
-    protected void computeGeometry() {
-        this.populateMissingNormals();
-        super.computeGeometry();
-    }
-
     public void clear() {
         System.arraycopy(EMPTY, 0, data, baseIndex, QUAD_STRIDE);
         isGeometryInvalid = true;

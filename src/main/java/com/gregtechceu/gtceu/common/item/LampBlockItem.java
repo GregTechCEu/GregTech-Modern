@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -88,14 +88,20 @@ public class LampBlockItem extends BlockItem {
     private static class ClientCallWrapper {
 
         private static boolean registeredListener = false;
-        private static final Map<Item, @Nullable ResourceLocation> trackedItems = new Reference2ObjectArrayMap<>();
+        private static final Set<Item> trackedItems = new ReferenceLinkedOpenHashSet<>();
+        private static final Set<ResourceLocation> trackedItemIds = new ObjectLinkedOpenHashSet<>();
 
         private static void registerEventListener(LampBlockItem toWrap) {
-            trackedItems.put(toWrap, null);
+            trackedItems.add(toWrap);
 
             if (registeredListener) return;
             registeredListener = true;
             ModelEventHelper.registerBakeEventListener(false, (modelLocation, model, unbakedModel, modelBakery) -> {
+                if (trackedItemIds.isEmpty()) {
+                    for (Item item : trackedItems) {
+                        trackedItemIds.add(BuiltInRegistries.ITEM.getKey(item));
+                    }
+                }
 
                 // handle both cases 1.20 can have passed here. 1.21 *only* has the ModelResourceLocation case.
                 ResourceLocation possibleItemId;
@@ -111,25 +117,19 @@ public class LampBlockItem extends BlockItem {
                     return model;
                 }
 
-                for (var entry : trackedItems.entrySet()) {
-                    ResourceLocation itemId = entry.getValue();
-                    if (itemId == null) {
-                        entry.setValue(itemId = BuiltInRegistries.ITEM.getKey(entry.getKey()));
-                    }
+                if (trackedItemIds.contains(possibleItemId)) {
                     // if the current model is a lamp item, replace it with one that has isCustomRenderer()==true
                     // so the custom renderer in `LampBlockItem#initializeClient` works
-                    if (itemId.equals(possibleItemId)) {
-                        return new BakedModelWrapper<>(model) {
+                    return new BakedModelWrapper<>(model) {
 
-                            @Override
-                            public boolean isCustomRenderer() {
-                                return true;
-                            }
-                        };
-                    }
+                        @Override
+                        public boolean isCustomRenderer() {
+                            return true;
+                        }
+                    };
+                } else {
+                    return model;
                 }
-
-                return model;
             });
         }
     }

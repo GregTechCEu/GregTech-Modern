@@ -72,6 +72,7 @@ public class MeshBuilder {
         @Override
         public Maker emit() {
             computeGeometry();
+            populateMissingNormals();
             index += EncodingFormat.QUAD_STRIDE;
             ensureCapacity();
             baseIndex = index;

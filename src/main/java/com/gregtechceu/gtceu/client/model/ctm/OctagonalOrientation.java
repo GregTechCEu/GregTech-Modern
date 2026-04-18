@@ -17,7 +17,6 @@
  */
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import net.createmod.catnip.math.DirectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -160,14 +159,10 @@ public enum OctagonalOrientation implements StringRepresentable {
         AxisDirection axisDir = axisFacing.getAxisDirection();
 
         if (axisDir == AxisDirection.POSITIVE) {
-            return DirectionHelper.rotateAround(facing, axis);
-        }
-
-        if (facing.getAxis() != axis) {
+            return facing.getClockWise(axis);
+        } else {
             return facing.getCounterClockWise(axis);
         }
-
-        return facing;
     }
 
     @Override
