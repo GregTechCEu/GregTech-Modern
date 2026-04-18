@@ -21,6 +21,7 @@
         "client.ModelManagerMixin",
         "client.MultiPlayerGameModeMixin",
         "client.PlayerInfoAccessor",
+        "client.TextureAtlasMixin",
         "client.VariantDeserializerMixin",
         "dev.client.KeyboardHandlerMixin",
         "ftbchunks.FTBChunksClientMixin",
