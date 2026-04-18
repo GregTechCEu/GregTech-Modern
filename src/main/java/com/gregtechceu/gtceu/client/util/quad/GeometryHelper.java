@@ -16,6 +16,7 @@
 
 package com.gregtechceu.gtceu.client.util.quad;
 
+import com.gregtechceu.gtceu.client.model.quad.QuadView;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import lombok.experimental.UtilityClass;

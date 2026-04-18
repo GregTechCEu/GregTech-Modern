@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
+
+import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -30,7 +32,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.QuadTransformers;
 
-import static com.gregtechceu.gtceu.client.util.quad.EncodingFormat.*;
+import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
 
 /**
  * Interface for reading quad data encoded by {@link MeshBuilder}.

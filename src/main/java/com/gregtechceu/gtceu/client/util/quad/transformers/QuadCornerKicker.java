@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with CodeChickenLib. If not, see <http://www.gnu.org/licenses/lgpl>.
  */
+
 package com.gregtechceu.gtceu.client.util.quad.transformers;
 
+import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
 import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
-import com.gregtechceu.gtceu.client.util.quad.MutableQuadView;
-import com.gregtechceu.gtceu.client.util.quad.QuadTransform;
+import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;

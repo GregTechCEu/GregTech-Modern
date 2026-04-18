@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
+
+import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
 
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;

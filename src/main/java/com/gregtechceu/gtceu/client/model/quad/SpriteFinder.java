@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
 
 import java.util.Map;
 import java.util.function.Consumer;

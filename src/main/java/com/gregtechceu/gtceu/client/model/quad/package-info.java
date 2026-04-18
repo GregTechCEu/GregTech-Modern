@@ -1,4 +1,4 @@
 @NotNullByDefault
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
 
 import org.jetbrains.annotations.NotNullByDefault;

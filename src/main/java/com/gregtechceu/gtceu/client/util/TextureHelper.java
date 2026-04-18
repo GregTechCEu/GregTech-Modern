@@ -16,7 +16,7 @@
 
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.client.util.quad.MutableQuadView;
+import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;

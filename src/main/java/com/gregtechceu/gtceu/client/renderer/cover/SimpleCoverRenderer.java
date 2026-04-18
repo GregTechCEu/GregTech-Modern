@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.ModelEventHelper;
-import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

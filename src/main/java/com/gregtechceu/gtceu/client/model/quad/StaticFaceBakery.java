@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 

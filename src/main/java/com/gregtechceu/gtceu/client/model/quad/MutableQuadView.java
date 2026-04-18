@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad;
 
 import com.gregtechceu.gtceu.client.util.TextureHelper;
 
@@ -28,7 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.QuadTransformers;
 
-import static com.gregtechceu.gtceu.client.util.quad.EncodingFormat.*;
+import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
 /**
  * A mutable {@link QuadView} instance.
  *
@@ -134,9 +134,9 @@ public abstract class MutableQuadView extends QuadView {
     }
 
     /**
-     * Sets the geometric vertex position for the given vertex, relative to block origin, (0,0,0). Minecraft rendering
-     * is designed for models that fit within a single block space and is recommended that coordinates remain in the 0-1
-     * range, with multi-block meshes split into multiple per-block models.
+     * Sets the geometric vertex position for the given vertex, relative to block origin, (0,0,0).
+     * Minecraft rendering is designed for models that fit within a single block space and is recommended
+     * that coordinates remain in the 0-1 range, with multi-block meshes split into multiple per-block models.
      */
     public MutableQuadView pos(int vertexIndex, float x, float y, float z) {
         final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;

@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.quad.transform;
+
+import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.client.model.IQuadTransformer;
