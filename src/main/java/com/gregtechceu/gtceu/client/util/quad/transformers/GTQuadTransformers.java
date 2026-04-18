@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.util.quad.transformers;
 
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -62,9 +62,9 @@ public final class GTQuadTransformers {
             vertices[offset] = Float.floatToRawIntBits(u);
             vertices[offset + 1] = Float.floatToRawIntBits(v);
         }
-        BakedQuad newQuad = new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
-                sprite, quad.isShade(), quad.hasAmbientOcclusion());
-        return newQuad.gtceu$setTextureKey(quad.gtceu$getTextureKey());
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
+                sprite, quad.isShade(), quad.hasAmbientOcclusion())
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
     }
 
     public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
