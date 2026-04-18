@@ -31,7 +31,7 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -191,8 +191,67 @@ public class ClientProxy extends CommonProxy {
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
 
         // register CTM model (un)wrapper
-        ModelUtils.registerBakeEventListener(false, (modelLocation, model, rootModel, modelBakery) -> {
-            if (model == null) return null;
+        ModelEventUtils.registerBakeEventListener(false, (modelLocation, baked, rootModel, modelBakery) -> {
+            if (!(modelLocation instanceof ModelResourceLocation) || baked instanceof CTMBakedModel<?> || baked.isCustomRenderer()) {
+                return baked;
+            }
+            Deque<ResourceLocation> dependencies = new ArrayDeque<>();
+            Set<ResourceLocation> seenModels = new HashSet<>();
+            dependencies.push(modelLocation);
+            seenModels.add(modelLocation);
+
+            // each model is (should be) processed once, so caching what models have been wrapped is a waste of RAM,
+            // especially when the cache is only updated after wrapping a model
+            boolean shouldWrap = false;
+            Set<Pair<String, String>> errors = new HashSet<>();
+            // Breadth-first loop through dependencies, exiting as soon as a CTM texture is found,
+            // and skipping duplicates/cycles
+            PARENT_LOOP:
+            while (!shouldWrap && !dependencies.isEmpty()) {
+                ResourceLocation dep = dependencies.pop();
+                UnbakedModel model;
+                try {
+                    model = dep == modelLocation ? rootModel : modelBakery.getModel(dep);
+                } catch (Exception e) {
+                    continue;
+                }
+
+                // have to copy because the set is updated during this loop
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+                Set<Material> textures = new HashSet<>(ModelEventUtils.getModelUsedCTMTextures(dep));
+                for (Material tex : textures) {
+                    IMetadataSectionCTM meta = null;
+                    // Cache all dependent texture metadata
+                    // TODO make lazy
+                    try {
+                        meta = ResourceUtil.getMetadata(ResourceUtil.spriteToAbsolute(tex.texture())).orElse(null);
+                    } catch (IOException ignored) {} // Fallthrough
+                    if (meta != null) {
+                        // At least one texture has CTM metadata, so we should wrap this model
+                        shouldWrap = true;
+                        break PARENT_LOOP;
+                    }
+                }
+                // shouldWrap is always false here because of the `break` above
+                Collection<ResourceLocation> newDependencies = model.getDependencies();
+                for (ResourceLocation newDep : newDependencies) {
+                    if (seenModels.add(newDep)) {
+                        dependencies.push(newDep);
+                    }
+                }
+            }
+            if (shouldWrap) {
+                try {
+                    baked = new CTMBakedModel<>(baked);
+                    handleInit(modelLocation, baked, bakery);
+                    dependencies.clear();
+                } catch (IOException e) {
+                    GTCEu.LOGGER.error("Could not wrap model {}. Aborting...", modelLocation, e);
+                }
+            }
+            return baked;
+
+            if (baked == null) return null;
 
             // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
             if (model instanceof CustomBakedModel ctmModel) {

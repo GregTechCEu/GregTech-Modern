@@ -22,7 +22,7 @@ public class SpriteFunctionWrapper implements Function<Material, TextureAtlasSpr
 
     @Override
     public TextureAtlasSprite apply(Material material) {
-        ModelUtils.textureScraped(modelLocation, material);
+        ModelEventHelper.textureScraped(modelLocation, material);
         return internal.apply(material);
     }
 }

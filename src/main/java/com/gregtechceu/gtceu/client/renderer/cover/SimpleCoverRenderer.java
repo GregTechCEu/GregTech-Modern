@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
 
 import net.minecraft.client.renderer.RenderType;
@@ -34,7 +34,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     }
 
     public SimpleCoverRenderer(ResourceLocation texture, ResourceLocation emissiveTexture) {
-        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelEventHelper.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
             sprite = atlas.getSprite(texture);

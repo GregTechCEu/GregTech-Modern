@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.modernfix;
 
 import com.gregtechceu.gtceu.client.util.AssetEventListener;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -44,7 +44,7 @@ public class GTModernFixIntegration implements ModernFixClientIntegration {
                                        BakedModel model, ModelState state, ModelBakery bakery,
                                        Function<Material, TextureAtlasSprite> textureGetter) {
         // process all model replacers
-        for (var listener : ModelUtils.EVENT_LISTENERS) {
+        for (var listener : ModelEventHelper.EVENT_LISTENERS) {
             if (!(listener.listener() instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
             model = modelReplacement.modifyBakedModel(modelLocation, model, baseModel, bakery);
         }

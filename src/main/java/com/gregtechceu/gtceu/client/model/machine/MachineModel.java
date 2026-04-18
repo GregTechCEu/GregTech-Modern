@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.QuadUtils;
 import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
@@ -297,7 +298,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         var controllers = part.getControllers();
         for (MultiblockControllerMachine controller : controllers) {
             var state = controller.getBlockState();
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            BakedModel model = RenderUtil.getModelForState(state);
             List<BakedQuad> newQuads = null;
 
             // spotless:off

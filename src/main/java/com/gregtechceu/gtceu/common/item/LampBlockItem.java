@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -97,7 +96,7 @@ public class LampBlockItem extends BlockItem {
 
             if (registeredListener) return;
             registeredListener = true;
-            ModelUtils.registerBakeEventListener(false, (modelLocation, model, unbakedModel, modelBakery) -> {
+            ModelEventHelper.registerBakeEventListener(false, (modelLocation, model, unbakedModel, modelBakery) -> {
 
                 // handle both cases 1.20 can have passed here. 1.21 *only* has the ModelResourceLocation case.
                 ResourceLocation possibleItemId;

@@ -35,16 +35,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import org.jetbrains.annotations.NotNull;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@UtilityClass
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ModelUtils {
-
-    private ModelUtils() {}
+public class ModelEventHelper {
 
     @ApiStatus.Internal
     public static final List<EventListenerHolder<?>> EVENT_LISTENERS = new ArrayList<>();
@@ -64,29 +63,6 @@ public class ModelUtils {
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
-    }
-
-    public static BakedModel getModelForState(BlockState state) {
-        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-    }
-
-    @SuppressWarnings("deprecation")
-    public static TextureAtlasSprite getBlockSprite(ResourceLocation textureLocation) {
-        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(textureLocation);
-    }
-
-    public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {
-        Property<?> property = entry.getKey();
-        Comparable<?> value = entry.getValue();
-
-        String valueString = Util.getPropertyName(property, value);
-        if (Boolean.TRUE.equals(value)) {
-            valueString = ChatFormatting.GREEN + valueString;
-        } else if (Boolean.FALSE.equals(value)) {
-            valueString = ChatFormatting.RED + valueString;
-        }
-
-        return property.getName() + ": " + valueString;
     }
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload,

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
@@ -187,14 +188,23 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
         Direction attachedSide = coverBehavior.attachedSide;
 
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-        ModelData extraData = model.getModelData(level, pos, state, modelData);
+        BakedModel model = RenderUtil.getModelForState(state);
+        ModelData facadeModelData = model.getModelData(level, pos, state, modelData);
 
-        List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
+
+        if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeModelData).contains(renderType)) {
+            return;
+        }
+
+        List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, facadeModelData, renderType);
         facadeQuads = new LinkedList<>(facadeQuads);
 
         List<BakedQuad> coverQuads = new ArrayList<>();
         if (side == attachedSide) {
+            for (BakedQuad quad : facadeQuads) {
+                // clamp the facade quads' vertices into the model
+                coverQuads.add(FACADE_PLANE_TRANSFORMER.process(quad));
+            }
             coverQuads.addAll(facadeQuads);
         } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
             AABB cube = COVER_BACK_CUBES.get(attachedSide);

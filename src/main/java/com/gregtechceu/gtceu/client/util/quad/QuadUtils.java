@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.client.util.ModelUtils.*;
+import static com.gregtechceu.gtceu.client.util.ModelEventHelper.*;
 
 public class QuadUtils {
 
