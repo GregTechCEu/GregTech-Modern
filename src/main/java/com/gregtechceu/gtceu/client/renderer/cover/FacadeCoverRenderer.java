@@ -181,30 +181,26 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         if (!(coverBehavior instanceof FacadeCover facadeCover)) {
             return;
         }
-        BlockState state = facadeCover.getFacadeState();
-        if (state.getRenderShape() != RenderShape.MODEL) {
+        BlockState facadeSate = facadeCover.getFacadeState();
+        if (facadeSate.getRenderShape() != RenderShape.MODEL) {
             return;
         }
 
         Direction attachedSide = coverBehavior.attachedSide;
 
-        BakedModel model = RenderUtil.getModelForState(state);
-        ModelData facadeModelData = model.getModelData(level, pos, state, modelData);
+        BakedModel facadeModel = RenderUtil.getModelForState(facadeSate);
+        ModelData facadeModelData = facadeModel.getModelData(level, pos, facadeSate, modelData);
 
         if (renderType != null &&
-                !facadeModel.getRenderTypes(facadeState, rand, facadeModelData).contains(renderType)) {
+                !facadeModel.getRenderTypes(facadeSate, rand, facadeModelData).contains(renderType)) {
             return;
         }
 
-        List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, facadeModelData, renderType);
+        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeSate, attachedSide, rand, facadeModelData, renderType);
         facadeQuads = new LinkedList<>(facadeQuads);
 
         List<BakedQuad> coverQuads = new ArrayList<>();
         if (side == attachedSide) {
-            for (BakedQuad quad : facadeQuads) {
-                // clamp the facade quads' vertices into the model
-                coverQuads.add(FACADE_PLANE_TRANSFORMER.process(quad));
-            }
             coverQuads.addAll(facadeQuads);
         } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
             AABB cube = COVER_BACK_CUBES.get(attachedSide);
@@ -221,7 +217,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         for (BakedQuad quad : coverQuads) {
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
-                int color = blockColors.getColor(state, level, pos, quad.getTintIndex());
+                int color = blockColors.getColor(facadeSate, level, pos, quad.getTintIndex());
                 quad = GTQuadTransformers.setColor(quad, color, true);
             } else {
                 // otherwise just copy the quad so we don't mutate the original model with the overlay offset
