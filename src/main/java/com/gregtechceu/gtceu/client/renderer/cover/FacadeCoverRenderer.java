@@ -53,7 +53,6 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private static final AABB FACADE_PLANE = new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0 / 16 + 0.002).deflate(THIN_OFFSET);
     private static final IQuadTransformer FACADE_PLANE_TRANSFORMER = GTQuadTransformers.clamp(FACADE_PLANE);
 
-
     private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
             var normal = dir.getNormal();
@@ -220,7 +219,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             if (this.quads != null) {
                 return this.quads;
             }
-            this.quads = new LinkedList<>(this.parentModel.getQuads(this.facadeState, side, rand, extraData, renderType));
+            this.quads = new LinkedList<>(
+                    this.parentModel.getQuads(this.facadeState, side, rand, extraData, renderType));
 
             BakedModel facadeModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(this.facadeState);
             if (facadeModel.isCustomRenderer()) {
@@ -228,7 +228,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             }
 
             List<BakedQuad> facadeQuads = new LinkedList<>();
-            //noinspection CollectionAddAllCanBeReplacedWithConstructor this is cleaner
+            // noinspection CollectionAddAllCanBeReplacedWithConstructor this is cleaner
             facadeQuads.addAll(facadeModel.getQuads(this.facadeState, null, rand, extraData, renderType));
             // always add unculled faces
             if (side != null) {

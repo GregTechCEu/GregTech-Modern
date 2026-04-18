@@ -55,7 +55,7 @@ public final class GTQuadTransformers {
                 float x = Float.intBitsToFloat(vertices[offset]);
                 float y = Float.intBitsToFloat(vertices[offset + 1]);
                 float z = Float.intBitsToFloat(vertices[offset + 2]);
-                //noinspection PointlessArithmeticExpression looks nicer
+                // noinspection PointlessArithmeticExpression looks nicer
                 vertices[offset + 0] = Float.floatToRawIntBits(Mth.clamp(x, (float) bounds.minX, (float) bounds.maxX));
                 vertices[offset + 1] = Float.floatToRawIntBits(Mth.clamp(y, (float) bounds.minY, (float) bounds.maxY));
                 vertices[offset + 2] = Float.floatToRawIntBits(Mth.clamp(z, (float) bounds.minZ, (float) bounds.maxZ));
