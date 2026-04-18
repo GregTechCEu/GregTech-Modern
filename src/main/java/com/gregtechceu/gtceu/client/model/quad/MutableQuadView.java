@@ -17,11 +17,13 @@
 package com.gregtechceu.gtceu.client.model.quad;
 
 import com.gregtechceu.gtceu.client.util.TextureHelper;
+import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -155,6 +157,39 @@ public abstract class MutableQuadView extends QuadView {
     }
 
     /**
+     * Sets the vertex <strong>X</strong> position for the given vertex, relative to block origin, (0,0,0).
+     * Minecraft rendering is designed for models that fit within a single block space and is recommended
+     * that coordinates remain in the 0-1 range, with multi-block meshes split into multiple per-block models.
+     */
+    public MutableQuadView x(int vertexIndex, float x) {
+        data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X] = Float.floatToRawIntBits(x);
+        isGeometryInvalid = true;
+        return this;
+    }
+
+    /**
+     * Sets the vertex <strong>Y</strong> position for the given vertex, relative to block origin, (0,0,0).
+     * Minecraft rendering is designed for models that fit within a single block space and is recommended
+     * that coordinates remain in the 0-1 range, with multi-block meshes split into multiple per-block models.
+     */
+    public MutableQuadView y(int vertexIndex, float y) {
+        data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_Y] = Float.floatToRawIntBits(y);
+        isGeometryInvalid = true;
+        return this;
+    }
+
+    /**
+     * Sets the vertex <strong>Z</strong> position for the given vertex, relative to block origin, (0,0,0).
+     * Minecraft rendering is designed for models that fit within a single block space and is recommended
+     * that coordinates remain in the 0-1 range, with multi-block meshes split into multiple per-block models.
+     */
+    public MutableQuadView z(int vertexIndex, float z) {
+        data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_Z] = Float.floatToRawIntBits(z);
+        isGeometryInvalid = true;
+        return this;
+    }
+
+    /**
      * Set vertex color.
      */
     public MutableQuadView color(int vertexIndex, int color) {
@@ -201,7 +236,7 @@ public abstract class MutableQuadView extends QuadView {
      * Can handle UV locking, rotation, interpolation, etc.
      * Control this behavior by passing additive combinations of the BAKE_ flags defined in this interface.
      */
-    public MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
+    public MutableQuadView spriteBake(@Nullable TextureAtlasSprite sprite, int bakeFlags) {
         TextureHelper.bakeSprite(this, sprite, bakeFlags);
         return this;
     }
@@ -212,6 +247,15 @@ public abstract class MutableQuadView extends QuadView {
      */
     public MutableQuadView lightmap(int vertexIndex, int lightmap) {
         data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
+        return this;
+    }
+
+    /**
+     * Accept vanilla lightmap values.
+     * Input values will override lightmap values computed from world state if input values are higher.
+     */
+    public MutableQuadView lightmap(int vertexIndex, int block, int sky) {
+        data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = LightTexture.pack(block, sky);
         return this;
     }
 
@@ -229,7 +273,7 @@ public abstract class MutableQuadView extends QuadView {
     }
 
     protected void normalFlags(int flags) {
-        this.flags = EncodingFormat.normalFlags(this.flags, flags);
+        headerFlags = EncodingFormat.normalFlags(headerFlags, flags);
     }
 
     /**
@@ -285,7 +329,7 @@ public abstract class MutableQuadView extends QuadView {
      * face geometry and must be non-null in vanilla quads. That computed value is returned by {@link #lightFace()}.
      */
     public final MutableQuadView cullFace(@Nullable Direction face) {
-        flags = EncodingFormat.cullFace(flags, face);
+        headerFlags = EncodingFormat.cullFace(headerFlags, face);
         nominalFace(face);
         return this;
     }
@@ -377,7 +421,7 @@ public abstract class MutableQuadView extends QuadView {
      */
     public final MutableQuadView fromVanilla(BakedQuad quad, @Nullable Direction cullFace) {
         fromVanilla(quad.getVertices(), 0);
-        flags = EncodingFormat.cullFace(0, cullFace);
+        headerFlags = EncodingFormat.cullFace(0, cullFace);
 
         nominalFace(quad.getDirection());
         tintIndex(quad.getTintIndex());

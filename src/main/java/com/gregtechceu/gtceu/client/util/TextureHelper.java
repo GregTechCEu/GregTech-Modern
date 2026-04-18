@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles most texture-baking use cases for model loaders and model libraries via
@@ -37,8 +38,12 @@ public class TextureHelper {
     /**
      * Bakes textures in the provided vertex data, handling UV locking, rotation, interpolation, etc.
      * Textures must not be already baked.
+     *
+     * <p>
+     * If {@code sprite == null}, only the UV modifiers will be applied, but they won't be translated to the sprite's
+     * atlas coordinates.
      */
-    public static void bakeSprite(MutableQuadView quad, TextureAtlasSprite sprite, int bakeFlags) {
+    public static void bakeSprite(MutableQuadView quad, @Nullable TextureAtlasSprite sprite, int bakeFlags) {
         if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UV_LOCKERS[quad.nominalFace().get3DDataValue()]);
@@ -68,14 +73,16 @@ public class TextureHelper {
             applyModifier(quad, (q, i) -> q.uv(i, q.u(i), 1 - q.v(i)));
         }
 
-        interpolate(quad, sprite);
+        if (sprite != null) {
+            interpolate(quad, sprite);
+        }
     }
 
     /**
      * Faster than sprite method. Sprite computes span and normalizes inputs each call, so we'd have to denormalize
      * before we called, only to have the sprite renormalize immediately.
      */
-    private static void interpolate(MutableQuadView q, TextureAtlasSprite sprite) {
+    public static void interpolate(MutableQuadView q, TextureAtlasSprite sprite) {
         final float uMin = sprite.getU0();
         final float uSpan = sprite.getU1() - uMin;
         final float vMin = sprite.getV0();
@@ -86,8 +93,28 @@ public class TextureHelper {
         }
     }
 
+    /**
+     * Faster than sprite method. Sprite computes span and normalizes inputs each call, so we'd have to denormalize
+     * before we called, only to have the sprite renormalize immediately.
+     */
+    public static void normalizeBy(MutableQuadView q, TextureAtlasSprite sprite) {
+        final float uMin = sprite.getU0(), uMax = sprite.getU1();
+        final float uSpan = uMax - uMin;
+        final float vMin = sprite.getV0(), vMax = sprite.getV1();
+        final float vSpan = vMax - vMin;
+
+        for (int i = 0; i < 4; i++) {
+            final float u = q.u(i), v = q.v(i);
+            // Skip invalid UV coordinates.
+            // If the UV is outside the texture's boundaries, this was probably called by mistake.
+            if (u < uMin || u > uMax || v < vMin || v > vMax) continue;
+
+            q.uv(i, (u - uMin) / uSpan,  (v - vMin) / vSpan);
+        }
+    }
+
     @FunctionalInterface
-    private interface VertexModifier {
+    public interface VertexModifier {
         void apply(MutableQuadView quad, int vertexIndex);
     }
 

@@ -50,7 +50,7 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         ctmCache.getSubmapIds(level, pos, state, side);
         return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
                 .computeIfAbsent(ctmCache, cache -> QuadUtils.buildCTMQuads(cache,
-                        super.getQuads(state, side, rand, parentModelData, renderType)));
+                        super.getQuads(state, side, rand, parentModelData, renderType), side));
     }
 
     @Override

@@ -16,7 +16,7 @@
 
 package com.gregtechceu.gtceu.core.mixins.client;
 
-import com.gregtechceu.gtceu.client.util.quad.SpriteFinder;
+import com.gregtechceu.gtceu.client.model.quad.SpriteFinder;
 
 import java.util.Map;
 

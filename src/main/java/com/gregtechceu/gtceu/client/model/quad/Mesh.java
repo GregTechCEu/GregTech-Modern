@@ -1,5 +1,11 @@
 package com.gregtechceu.gtceu.client.model.quad;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -16,7 +22,7 @@ import java.util.function.Consumer;
  */
 public class Mesh {
     /** Used to satisfy external calls to {@link #forEach(Consumer)}. */
-    ThreadLocal<QuadView> POOL = ThreadLocal.withInitial(QuadView::new);
+    private static final ThreadLocal<QuadView> POOL = ThreadLocal.withInitial(QuadView::new);
 
     final int[] data;
 
@@ -45,5 +51,15 @@ public class Mesh {
             consumer.accept(cursor);
             index += EncodingFormat.QUAD_STRIDE;
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public List<BakedQuad> toBakedBlockQuads() {
+        SpriteFinder finder = SpriteFinder.get(Minecraft.getInstance().getModelManager()
+                .getAtlas(TextureAtlas.LOCATION_BLOCKS));
+
+        List<BakedQuad> result = new ArrayList<>();
+        forEach(qv -> result.add(qv.toBakedQuad(finder.find(qv))));
+        return result;
     }
 }

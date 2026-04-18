@@ -71,7 +71,7 @@ public class QuadView {
     @Getter
     protected int tintIndex;
 
-    protected long flags = 0;
+    protected long headerFlags = 0;
     /** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
     protected int @UnknownNullability [] data;
 
@@ -105,7 +105,7 @@ public class QuadView {
     }
 
     public int normalFlags() {
-        return EncodingFormat.normalFlags(flags);
+        return EncodingFormat.normalFlags(headerFlags);
     }
 
     /** True if any vertex normal has been set. */
@@ -120,7 +120,7 @@ public class QuadView {
             GeometryHelper.computeFaceNormal(faceNormal, this);
 
             // depends on face normal
-            flags = EncodingFormat.lightFace(flags, GeometryHelper.lightFace(this));
+            headerFlags = EncodingFormat.lightFace(headerFlags, GeometryHelper.lightFace(this));
         }
     }
 
@@ -131,7 +131,7 @@ public class QuadView {
      */
     public final Direction lightFace() {
         computeGeometry();
-        return EncodingFormat.lightFace(flags);
+        return EncodingFormat.lightFace(headerFlags);
     }
 
     /**
@@ -141,7 +141,7 @@ public class QuadView {
      */
     public final @Nullable Direction cullFace() {
         computeGeometry();
-        return EncodingFormat.cullFace(flags);
+        return EncodingFormat.cullFace(headerFlags);
     }
 
     /**
@@ -170,7 +170,7 @@ public class QuadView {
         quad.nominalFace = this.nominalFace;
         quad.isGeometryInvalid = false;
         quad.shade(this.shade);
-        quad.flags = this.flags;
+        quad.headerFlags = this.headerFlags;
     }
 
     /**

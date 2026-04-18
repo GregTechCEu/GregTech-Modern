@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.QuadUtils;
-import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
@@ -275,7 +275,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         // we have to recalculate CTM ourselves.
         // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
         if (level != null && pos != null && blockState != null) {
-            return QuadUtils.buildCTMQuads(quads, level, pos, blockState, side);
+            return QuadUtils.buildCTMQuads(level, pos, blockState, quads, side);
         }
         return quads;
     }
