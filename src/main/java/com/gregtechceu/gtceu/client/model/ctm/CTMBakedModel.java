@@ -1,6 +1,5 @@
-package com.gregtechceu.gtceu.client.model;
+package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.model.connected.CTMCache;
 import com.gregtechceu.gtceu.client.util.QuadUtils;
 
 import net.minecraft.client.renderer.RenderType;

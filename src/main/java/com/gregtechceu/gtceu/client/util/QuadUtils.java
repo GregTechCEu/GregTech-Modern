@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.client.model.connected.CTMCache;
+import com.gregtechceu.gtceu.client.model.ctm.CTMCache;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

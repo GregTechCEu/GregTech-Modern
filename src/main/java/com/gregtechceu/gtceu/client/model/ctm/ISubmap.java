@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.model.connected;
+package com.gregtechceu.gtceu.client.model.ctm;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 

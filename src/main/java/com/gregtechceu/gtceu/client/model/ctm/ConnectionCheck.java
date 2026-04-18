@@ -1,6 +1,6 @@
-package com.gregtechceu.gtceu.client.model.connected;
+package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.model.connected.CTMCache.StateComparisonCallback;
+import com.gregtechceu.gtceu.client.model.ctm.CTMCache.StateComparisonCallback;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

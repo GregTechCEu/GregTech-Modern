@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.client.model.connected.ISubmap;
-import com.gregtechceu.gtceu.client.model.connected.OctagonalOrientation;
+import com.gregtechceu.gtceu.client.model.ctm.ISubmap;
+import com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -14,7 +14,7 @@ import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static com.gregtechceu.gtceu.client.model.connected.OctagonalOrientation.*;
+import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
 
 public record QuadInfo(TextureAtlasSprite sprite, int tintIndex, Direction direction,
                        boolean shade, boolean ao, int blockLight, int skyLight,

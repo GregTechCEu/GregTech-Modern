@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.model.connected;
+package com.gregtechceu.gtceu.client.model.ctm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import static com.gregtechceu.gtceu.client.model.connected.OctagonalOrientation.*;
+import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
 
 // @formatter:off
 /**

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.model.connected;
+package com.gregtechceu.gtceu.client.model.ctm;
 
 import net.createmod.catnip.math.DirectionHelper;
 import net.minecraft.core.BlockPos;
