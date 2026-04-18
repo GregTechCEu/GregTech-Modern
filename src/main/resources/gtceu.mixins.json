@@ -55,6 +55,7 @@
         "PotionBrewingAccessor",
         "PrimedTntAccessor",
         "RecipeManagerMixin",
+        "ReloadableResourceManagerAccessor",
         "RepairItemRecipeMixin",
         "ServerChunkProviderMixin",
         "ServerGamePacketListenerImplAccessor",

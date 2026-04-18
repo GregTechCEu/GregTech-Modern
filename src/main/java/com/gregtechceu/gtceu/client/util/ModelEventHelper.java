@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
+import com.gregtechceu.gtceu.core.mixins.ReloadableResourceManagerAccessor;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -75,12 +77,15 @@ public class ModelEventHelper {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> {
-            EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
+        ((ReloadableResourceManagerAccessor) Minecraft.getInstance().getResourceManager()).getListeners()
+                .add(0, (ResourceManagerReloadListener) resourceManager -> {
+                    EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
 
-            CTM_SPRITE_CACHE.clear();
-            TextureMetadataHelper.invalidateCaches();
-        });
+                    CTM_SPRITE_CACHE.clear();
+                    WRAPPED_MODELS.clear();
+                    SCRAPED_TEXTURES.clear();
+                    TextureMetadataHelper.invalidateCaches();
+                });
     }
 
     @SuppressWarnings("unchecked")
