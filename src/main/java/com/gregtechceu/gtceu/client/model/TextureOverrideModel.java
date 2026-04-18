@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.quad.GTQuadTransformers;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

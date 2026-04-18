@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util;
+package com.gregtechceu.gtceu.client.util.quad;
 
 import com.gregtechceu.gtceu.client.model.ctm.ISubmap;
 import com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation;

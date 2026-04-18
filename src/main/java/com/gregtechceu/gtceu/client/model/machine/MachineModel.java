@@ -12,8 +12,8 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.client.util.QuadUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.quad.QuadUtils;
+import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 

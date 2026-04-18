@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util;
+package com.gregtechceu.gtceu.client.util.quad;
 
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;

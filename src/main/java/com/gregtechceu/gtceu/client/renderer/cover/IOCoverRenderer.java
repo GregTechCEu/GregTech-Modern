@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IIOCover;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.quad.StaticFaceBakery;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

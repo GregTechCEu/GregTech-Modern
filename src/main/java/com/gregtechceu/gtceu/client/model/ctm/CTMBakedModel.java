@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.util.QuadUtils;
+import com.gregtechceu.gtceu.client.util.quad.QuadUtils;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
