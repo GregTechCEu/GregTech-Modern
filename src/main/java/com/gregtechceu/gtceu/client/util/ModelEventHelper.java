@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-
-import com.lowdragmc.lowdraglib.client.model.custommodel.LDLMetadataSection;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
@@ -30,9 +28,13 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("deprecation")
 @UtilityClass
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModelEventHelper {
+
+    @ApiStatus.Internal
+    public record EventListenerHolder<T>(T listener, boolean removeOnReload) {}
 
     @ApiStatus.Internal
     public static final List<EventListenerHolder<?>> EVENT_LISTENERS = new ArrayList<>();
@@ -40,17 +42,11 @@ public class ModelEventHelper {
     public static final Map<ResourceLocation, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
 
     private static final Multimap<ResourceLocation, Material> SCRAPED_TEXTURES = HashMultimap.create();
-    @ApiStatus.Internal
-    public static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
 
     @ApiStatus.Internal
     public static void markTextureUsedForModel(ResourceLocation modelLocation, Material material) {
         SCRAPED_TEXTURES.put(modelLocation, material);
-    }
-
-    @ApiStatus.Internal
-    public static Collection<Material> getModelUsedCTMTextures(ResourceLocation modelLocation) {
-        return SCRAPED_TEXTURES.get(modelLocation);
     }
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload,
@@ -79,36 +75,17 @@ public class ModelEventHelper {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ResourceManagerReloadListener() {
+        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> {
+            EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
 
-            @Override
-            public void onResourceManagerReload(ResourceManager resourceManager) {
-                EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
-            }
+            CTM_SPRITE_CACHE.clear();
+            TextureMetadataHelper.invalidateCaches();
         });
     }
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onAtlasStitched(TextureStitchEvent.Post event) {
-        TextureAtlas atlas = event.getAtlas();
-        if (atlas.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            // Cache all textures' CTM metadata
-            // TODO lazy
-            CTM_SPRITE_CACHE.clear();
-            for (ResourceLocation location : event.getAtlas().getTextureLocations()) {
-                ResourceLocation absLoc = LDLMetadataSection.spriteToAbsolute(location);
-                LDLMetadataSection section = LDLMetadataSection.getMetadata(absLoc);
-                if (section.connection != null) {
-                    TextureAtlasSprite ctmSprite = event.getAtlas().getSprite(section.connection);
-                    CTM_SPRITE_CACHE.put(location, ctmSprite);
-                }
-            }
-
-            MachineModel.initSprites(atlas);
-            ICoverableRenderer.initSprites(atlas);
-        }
-
         for (var listener : EVENT_LISTENERS) {
             if (!(listener.listener instanceof AssetEventListener<?> assetEventListener)) continue;
 
@@ -121,7 +98,7 @@ public class ModelEventHelper {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        // don't process baked model replacement here if modernfix is loaded, as
+        // don't process baked model replacement here if ModernFix is loaded, as
         // GTModernFixIntegration#onBakedModelLoad does the same thing & it's always called
         if (GTCEu.Mods.isModernFixLoaded()) return;
 
@@ -151,6 +128,87 @@ public class ModelEventHelper {
         }
     }
 
+    // INTERNAL ASSET RELOAD LISTENER REGISTRATION
+
     @ApiStatus.Internal
-    public record EventListenerHolder<T>(T listener, boolean removeOnReload) {}
+    public static void initInternalAssetReloadListeners() {
+        registerAtlasStitchedEventListener(false, TextureAtlas.LOCATION_BLOCKS, event -> {
+            TextureAtlas atlas = event.getAtlas();
+            // Cache all textures' CTM metadata
+            // TODO lazy
+            for (ResourceLocation location : atlas.getTextureLocations()) {
+                var sec = TextureMetadataHelper.getMetadataFromRelativeLocation(location);
+                sec.ifPresent(section -> {
+                    if (section.connectionTexture() != null) {
+                        TextureAtlasSprite ctmSprite = atlas.getSprite(section.connectionTexture());
+                        CTM_SPRITE_CACHE.put(location, ctmSprite);
+                    }
+                });
+            }
+
+            MachineModel.initSprites(atlas);
+            ICoverableRenderer.initSprites(atlas);
+        });
+
+        // register CTM model wrapper
+        ModelEventHelper.registerBakeEventListener(false, (rl, baked, rootModel, modelBakery) -> {
+            if (baked.isCustomRenderer()) {
+                // Nothing we can add to builtin models
+                return baked;
+            }
+            // do not register automatic CTM for machine models, they handle it themselves
+            if (baked instanceof MachineModel) {
+                return baked;
+            }
+
+            if (!(rl instanceof ModelResourceLocation) || rootModel == null || baked instanceof CTMBakedModel<?>) {
+                return baked;
+            }
+            Deque<ResourceLocation> dependencies = new ArrayDeque<>();
+            Set<ResourceLocation> seenModels = new HashSet<>();
+            dependencies.push(rl);
+            seenModels.add(rl);
+
+            boolean shouldWrap = ModelEventHelper.WRAPPED_MODELS.getOrDefault(rl, false);
+            // Breadth-first loop through dependencies
+            // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
+            PARENT_LOOP:
+            while (!shouldWrap && !dependencies.isEmpty()) {
+                ResourceLocation dependencyName = dependencies.pop();
+                UnbakedModel unbaked;
+                try {
+                    unbaked = dependencyName == rl ? rootModel : modelBakery.getModel(dependencyName);
+                } catch (Exception e) {
+                    continue;
+                }
+                try {
+                    // have to copy because the set is updated during this loop
+                    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+                    Set<Material> textures = new HashSet<>(SCRAPED_TEXTURES.get(dependencyName));
+                    for (Material tex : textures) {
+                        if (TextureMetadataHelper.getMetadata(tex).isPresent()) {
+                            // At least one texture has CTM metadata, so we should wrap this model
+                            shouldWrap = true;
+                            break PARENT_LOOP;
+                        }
+                    }
+                    // shouldWrap is always false here because of the `break` above
+                    for (ResourceLocation newDep : unbaked.getDependencies()) {
+                        if (seenModels.add(newDep)) {
+                            dependencies.push(newDep);
+                        }
+                    }
+                } catch (Exception e) {
+                    GTCEu.LOGGER.error("Error loading dependency {} for model {}. Skipping...",
+                            dependencyName, rl, e);
+                }
+            }
+            ModelEventHelper.WRAPPED_MODELS.put(rl, shouldWrap);
+            if (shouldWrap) {
+                return new CTMBakedModel<>(baked);
+            }
+
+            return baked;
+        });
+    }
 }

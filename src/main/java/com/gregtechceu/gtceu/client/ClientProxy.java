@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
@@ -54,20 +52,14 @@ import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
-import com.gregtechceu.gtceu.utils.ResourceUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
-
-import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -80,7 +72,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.io.IOException;
 import java.util.*;
 
 public class ClientProxy extends CommonProxy {
@@ -102,6 +93,7 @@ public class ClientProxy extends CommonProxy {
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
         }
         initializeDynamicRenders();
+        ModelEventHelper.initInternalAssetReloadListeners();
     }
 
     @SubscribeEvent
@@ -169,7 +161,7 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    public static void initializeDynamicRenders() {
+    private static void initializeDynamicRenders() {
         DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
         DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
 
@@ -187,83 +179,6 @@ public class ClientProxy extends CommonProxy {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
         event.register(PipeModelLoader.ID.getPath(), PipeModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
-
-        // register CTM model (un)wrapper
-        ModelEventHelper.registerBakeEventListener(false, (originalModelName, baked, rootUnbaked, modelBakery) -> {
-            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
-            if (baked instanceof CustomBakedModel ctmModel) {
-                if (ctmModel.getParent() instanceof MachineModel machineModel) {
-                    return machineModel;
-                } else {
-                    // Skip LDLib CTM models
-                    return baked;
-                }
-            }
-            if (baked.isCustomRenderer()) {
-                // Nothing we can add to builtin models
-                return baked;
-            }
-            // do not register automatic CTM for machine models, they handle it themselves
-            if (baked instanceof MachineModel) {
-                return baked;
-            }
-
-            if (!(originalModelName instanceof ModelResourceLocation) || rootUnbaked == null || baked instanceof CTMBakedModel<?>) {
-                return baked;
-            }
-            Deque<ResourceLocation> dependencies = new ArrayDeque<>();
-            Set<ResourceLocation> seenModels = new HashSet<>();
-            dependencies.push(originalModelName);
-            seenModels.add(originalModelName);
-
-            boolean shouldWrap = ModelEventHelper.WRAPPED_MODELS.getOrDefault(originalModelName, false);
-            // Breadth-first loop through dependencies
-            // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
-            PARENT_LOOP:
-            while (!shouldWrap && !dependencies.isEmpty()) {
-                ResourceLocation dependencyModelName = dependencies.pop();
-                UnbakedModel unbaked;
-                try {
-                    unbaked = dependencyModelName == originalModelName ? rootUnbaked
-                            : modelBakery.getModel(dependencyModelName);
-                } catch (Exception e) {
-                    continue;
-                }
-                try {
-                    // have to copy because the set is updated during this loop
-                    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-                    Set<Material> textures = new HashSet<>(ModelEventHelper.getModelUsedCTMTextures(dependencyModelName));
-                    for (Material tex : textures) {
-                        Optional<IMetadataSectionCTM> meta = Optional.empty();
-                        // Cache all dependent texture metadata
-                        // TODO lazy
-                        try {
-                            meta = ResourceUtil.getMetadata(ResourceUtil.spriteToAbsolute(tex.texture()));
-                        } catch (IOException ignored) {} // Fallthrough
-                        if (meta.isPresent()) {
-                            // At least one texture has CTM metadata, so we should wrap this model
-                            shouldWrap = true;
-                            break PARENT_LOOP;
-                        }
-                    }
-                    // shouldWrap is always false here because of the `break` above
-                    for (ResourceLocation newDep : unbaked.getDependencies()) {
-                        if (seenModels.add(newDep)) {
-                            dependencies.push(newDep);
-                        }
-                    }
-                } catch (Exception e) {
-                    GTCEu.LOGGER.error("Error loading dependency {} for model {}. Skipping...",
-                            dependencyModelName, originalModelName, e);
-                }
-            }
-            ModelEventHelper.WRAPPED_MODELS.put(originalModelName, shouldWrap);
-            if (shouldWrap) {
-                return new CTMBakedModel<>(baked);
-            }
-
-            return baked;
-        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
