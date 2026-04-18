@@ -32,7 +32,8 @@ public interface AssetEventListener<T extends Event> {
     @FunctionalInterface
     interface BakedModelReplacement {
 
-        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model, UnbakedModel rootModel, ModelBakery modelBakery);
+        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model,
+                                    @Nullable UnbakedModel rootModel, ModelBakery modelBakery);
     }
 
     @FunctionalInterface

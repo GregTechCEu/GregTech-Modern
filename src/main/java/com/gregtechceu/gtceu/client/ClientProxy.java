@@ -54,11 +54,11 @@ import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
+import com.gregtechceu.gtceu.utils.ResourceUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
-import com.lowdragmc.lowdraglib.client.model.custommodel.LDLMetadataSection;
 
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -80,10 +80,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 public class ClientProxy extends CommonProxy {
 
@@ -191,131 +189,80 @@ public class ClientProxy extends CommonProxy {
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
 
         // register CTM model (un)wrapper
-        ModelEventUtils.registerBakeEventListener(false, (modelLocation, baked, rootModel, modelBakery) -> {
-            if (!(modelLocation instanceof ModelResourceLocation) || baked instanceof CTMBakedModel<?> || baked.isCustomRenderer()) {
+        ModelEventHelper.registerBakeEventListener(false, (originalModelName, baked, rootUnbaked, modelBakery) -> {
+            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
+            if (baked instanceof CustomBakedModel ctmModel) {
+                if (ctmModel.getParent() instanceof MachineModel machineModel) {
+                    return machineModel;
+                } else {
+                    // Skip LDLib CTM models
+                    return baked;
+                }
+            }
+            if (baked.isCustomRenderer()) {
+                // Nothing we can add to builtin models
+                return baked;
+            }
+            // do not register automatic CTM for machine models, they handle it themselves
+            if (baked instanceof MachineModel) {
+                return baked;
+            }
+
+            if (!(originalModelName instanceof ModelResourceLocation) || rootUnbaked == null || baked instanceof CTMBakedModel<?>) {
                 return baked;
             }
             Deque<ResourceLocation> dependencies = new ArrayDeque<>();
             Set<ResourceLocation> seenModels = new HashSet<>();
-            dependencies.push(modelLocation);
-            seenModels.add(modelLocation);
+            dependencies.push(originalModelName);
+            seenModels.add(originalModelName);
 
-            // each model is (should be) processed once, so caching what models have been wrapped is a waste of RAM,
-            // especially when the cache is only updated after wrapping a model
-            boolean shouldWrap = false;
-            Set<Pair<String, String>> errors = new HashSet<>();
-            // Breadth-first loop through dependencies, exiting as soon as a CTM texture is found,
-            // and skipping duplicates/cycles
+            boolean shouldWrap = ModelEventHelper.WRAPPED_MODELS.getOrDefault(originalModelName, false);
+            // Breadth-first loop through dependencies
+            // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
             PARENT_LOOP:
             while (!shouldWrap && !dependencies.isEmpty()) {
-                ResourceLocation dep = dependencies.pop();
-                UnbakedModel model;
+                ResourceLocation dependencyModelName = dependencies.pop();
+                UnbakedModel unbaked;
                 try {
-                    model = dep == modelLocation ? rootModel : modelBakery.getModel(dep);
+                    unbaked = dependencyModelName == originalModelName ? rootUnbaked
+                            : modelBakery.getModel(dependencyModelName);
                 } catch (Exception e) {
                     continue;
                 }
-
-                // have to copy because the set is updated during this loop
-                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-                Set<Material> textures = new HashSet<>(ModelEventUtils.getModelUsedCTMTextures(dep));
-                for (Material tex : textures) {
-                    IMetadataSectionCTM meta = null;
-                    // Cache all dependent texture metadata
-                    // TODO make lazy
-                    try {
-                        meta = ResourceUtil.getMetadata(ResourceUtil.spriteToAbsolute(tex.texture())).orElse(null);
-                    } catch (IOException ignored) {} // Fallthrough
-                    if (meta != null) {
-                        // At least one texture has CTM metadata, so we should wrap this model
-                        shouldWrap = true;
-                        break PARENT_LOOP;
-                    }
-                }
-                // shouldWrap is always false here because of the `break` above
-                Collection<ResourceLocation> newDependencies = model.getDependencies();
-                for (ResourceLocation newDep : newDependencies) {
-                    if (seenModels.add(newDep)) {
-                        dependencies.push(newDep);
-                    }
-                }
-            }
-            if (shouldWrap) {
                 try {
-                    baked = new CTMBakedModel<>(baked);
-                    handleInit(modelLocation, baked, bakery);
-                    dependencies.clear();
-                } catch (IOException e) {
-                    GTCEu.LOGGER.error("Could not wrap model {}. Aborting...", modelLocation, e);
+                    // have to copy because the set is updated during this loop
+                    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+                    Set<Material> textures = new HashSet<>(ModelEventHelper.getModelUsedCTMTextures(dependencyModelName));
+                    for (Material tex : textures) {
+                        Optional<IMetadataSectionCTM> meta = Optional.empty();
+                        // Cache all dependent texture metadata
+                        // TODO lazy
+                        try {
+                            meta = ResourceUtil.getMetadata(ResourceUtil.spriteToAbsolute(tex.texture()));
+                        } catch (IOException ignored) {} // Fallthrough
+                        if (meta.isPresent()) {
+                            // At least one texture has CTM metadata, so we should wrap this model
+                            shouldWrap = true;
+                            break PARENT_LOOP;
+                        }
+                    }
+                    // shouldWrap is always false here because of the `break` above
+                    for (ResourceLocation newDep : unbaked.getDependencies()) {
+                        if (seenModels.add(newDep)) {
+                            dependencies.push(newDep);
+                        }
+                    }
+                } catch (Exception e) {
+                    GTCEu.LOGGER.error("Error loading dependency {} for model {}. Skipping...",
+                            dependencyModelName, originalModelName, e);
                 }
             }
+            ModelEventHelper.WRAPPED_MODELS.put(originalModelName, shouldWrap);
+            if (shouldWrap) {
+                return new CTMBakedModel<>(baked);
+            }
+
             return baked;
-
-            if (baked == null) return null;
-
-            // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
-            if (model instanceof CustomBakedModel ctmModel) {
-                if (ctmModel.getParent() instanceof MachineModel machineModel) {
-                    return machineModel;
-                }
-            }
-            // do not register automatic CTM for machine models, they handle it themselves
-            if (model instanceof MachineModel) {
-                return model;
-            }
-
-
-            if (modelLocation instanceof ModelResourceLocation && rootModel != null) {
-                if (model.isCustomRenderer()) { // Nothing we can add to builtin models
-                    return model;
-                }
-                Deque<ResourceLocation> dependencies = new ArrayDeque<>();
-                Set<ResourceLocation> seenModels = new HashSet<>();
-                dependencies.push(modelLocation);
-                seenModels.add(modelLocation);
-                boolean shouldWrap = ModelUtils.WRAPPED_MODELS.getOrDefault(modelLocation, false);
-                // Breadth-first loop through dependencies
-                // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
-                while (!shouldWrap && !dependencies.isEmpty()) {
-                    ResourceLocation dep = dependencies.pop();
-                    UnbakedModel unbaked;
-                    try {
-                        unbaked = dep == modelLocation ? rootModel : modelBakery.getModel(dep);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    try {
-                        // have to copy because the set is updated during this loop
-                        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-                        Set<Material> textures = new HashSet<>(ModelUtils.SCRAPED_TEXTURES.get(dep));
-                        for (Material tex : textures) {
-                            // Cache all dependent texture metadata
-                            // TODO lazy
-                            if (!LDLMetadataSection.getMetadata(LDLMetadataSection.spriteToAbsolute(tex.texture())).isMissing()) {
-                                // At least one texture has CTM metadata, so we should wrap this model
-                                shouldWrap = true;
-                                break;
-                            }
-                        }
-                        if (!shouldWrap) {
-                            for (ResourceLocation newDep : unbaked.getDependencies()) {
-                                if (seenModels.add(newDep)) {
-                                    dependencies.push(newDep);
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        GTCEu.LOGGER.error("Error loading baked dependency {} for baked {}. Skipping...",
-                                dep, modelLocation, e);
-                    }
-                }
-                ModelUtils.WRAPPED_MODELS.put(modelLocation, shouldWrap);
-                if (shouldWrap) {
-                    return new CTMBakedModel<>(model);
-                }
-            }
-
-            return model;
         });
     }
 

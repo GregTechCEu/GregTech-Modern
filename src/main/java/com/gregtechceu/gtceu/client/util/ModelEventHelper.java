@@ -6,35 +6,24 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.LDLMetadataSection;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -50,19 +39,18 @@ public class ModelEventHelper {
     @ApiStatus.Internal
     public static final Map<ResourceLocation, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
 
+    private static final Multimap<ResourceLocation, Material> SCRAPED_TEXTURES = HashMultimap.create();
     @ApiStatus.Internal
-    public static final Multimap<ResourceLocation, Material> SCRAPED_TEXTURES = HashMultimap.create();
-    @ApiStatus.Internal
-    public static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanLinkedOpenHashMap<>();
+    public static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
 
     @ApiStatus.Internal
-    public static void textureScraped(ResourceLocation modelLocation, Material material) {
+    public static void markTextureUsedForModel(ResourceLocation modelLocation, Material material) {
         SCRAPED_TEXTURES.put(modelLocation, material);
     }
 
-    public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
-                                                     BlockState state, Direction side, RandomSource rand) {
-        return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
+    @ApiStatus.Internal
+    public static Collection<Material> getModelUsedCTMTextures(ResourceLocation modelLocation) {
+        return SCRAPED_TEXTURES.get(modelLocation);
     }
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload,
@@ -94,7 +82,7 @@ public class ModelEventHelper {
         event.registerReloadListener(new ResourceManagerReloadListener() {
 
             @Override
-            public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
+            public void onResourceManagerReload(ResourceManager resourceManager) {
                 EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
             }
         });
@@ -103,7 +91,8 @@ public class ModelEventHelper {
     @SuppressWarnings({ "unchecked", "deprecation" })
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onAtlasStitched(TextureStitchEvent.Post event) {
-        if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+        TextureAtlas atlas = event.getAtlas();
+        if (atlas.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             // Cache all textures' CTM metadata
             // TODO lazy
             CTM_SPRITE_CACHE.clear();
@@ -115,10 +104,7 @@ public class ModelEventHelper {
                     CTM_SPRITE_CACHE.put(location, ctmSprite);
                 }
             }
-        }
 
-        TextureAtlas atlas = event.getAtlas();
-        if (atlas.location() == TextureAtlas.LOCATION_BLOCKS) {
             MachineModel.initSprites(atlas);
             ICoverableRenderer.initSprites(atlas);
         }

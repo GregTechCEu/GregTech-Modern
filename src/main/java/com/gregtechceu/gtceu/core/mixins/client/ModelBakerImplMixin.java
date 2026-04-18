@@ -16,14 +16,16 @@ import java.util.function.Function;
 @Mixin(targets = {"net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl"})
 public abstract class ModelBakerImplMixin {
 
+    // the parameters aren't remapped because Parchment can't remap Forge's patches
+    @SuppressWarnings("NameDoesntMatchTargetClass")
     // Note: We don't remap this method as it's added by forge
     @ModifyVariable(at = @At("HEAD"),
                     method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;",
                     argsOnly = true,
                     remap = false)
-    private Function<Material, TextureAtlasSprite> ldlib$scrapeTextures(Function<Material, TextureAtlasSprite> sprites,
-                                                                        ResourceLocation modelLocation,
-                                                                        ModelState modelState) {
-        return new SpriteFunctionWrapper(sprites, modelLocation);
+    private Function<Material, TextureAtlasSprite> gtceu$injectTextureScraper(Function<Material, TextureAtlasSprite> spriteGetter,
+                                                                              ResourceLocation modelLocation,
+                                                                              ModelState transform) {
+        return new SpriteFunctionWrapper(spriteGetter, modelLocation);
     }
 }
