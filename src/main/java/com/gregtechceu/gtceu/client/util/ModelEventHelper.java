@@ -29,6 +29,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 @UtilityClass
@@ -75,11 +77,15 @@ public class ModelEventHelper {
         EVENT_LISTENERS.add(new EventListenerHolder<>(listener, removeOnReload));
     }
 
+    private static final AtomicInteger reloadCounter = new AtomicInteger(0);
+
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
         ((ReloadableResourceManagerAccessor) Minecraft.getInstance().getResourceManager()).getListeners()
                 .add(0, (ResourceManagerReloadListener) resourceManager -> {
-                    EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
+                    if (reloadCounter.addAndGet(1) > 1) {
+                        EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
+                    }
 
                     CTM_SPRITE_CACHE.clear();
                     WRAPPED_MODELS.clear();
@@ -174,7 +180,12 @@ public class ModelEventHelper {
             dependencies.push(rl);
             seenModels.add(rl);
 
-            boolean shouldWrap = ModelEventHelper.WRAPPED_MODELS.getOrDefault(rl, false);
+            boolean shouldWrap = WRAPPED_MODELS.getOrDefault(rl, false);
+            if (WRAPPED_MODELS.containsKey(rl)) {
+                // shortcut if the model's already been checked
+                if (shouldWrap) return new CTMBakedModel<>(baked);
+                else return baked;
+            }
             // Breadth-first loop through dependencies
             // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
             PARENT_LOOP:

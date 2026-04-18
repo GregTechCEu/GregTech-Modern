@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.util.quad;
 
 import com.gregtechceu.gtceu.client.model.ctm.CTMCache;
 import com.gregtechceu.gtceu.client.model.ctm.ISubmap;
+import com.gregtechceu.gtceu.client.model.ctm.Submap;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 import com.gregtechceu.gtceu.client.util.TextureHelper;
@@ -14,9 +15,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.model.IQuadTransformer;
 
-import it.unimi.dsi.fastutil.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -28,7 +29,7 @@ import static com.gregtechceu.gtceu.client.util.ModelEventHelper.*;
 
 public class QuadUtils {
 
-    public static Pair<Vector2f, Vector2f> findMinMaxUVs(Vector2f[] uvs) {
+    public static Vector2f[] findMinMaxUVs(Vector2f[] uvs) {
         float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE, maxU = Float.MIN_VALUE, maxV = Float.MIN_VALUE;
 
         for (int i = 0; i < 4; i++) {
@@ -38,7 +39,7 @@ public class QuadUtils {
             maxU = Math.max(maxU, uv.x());
             maxV = Math.max(maxV, uv.y());
         }
-        return Pair.of(new Vector2f(minU, minV), new Vector2f(maxU, maxV));
+        return new Vector2f[]{ new Vector2f(minU, minV), new Vector2f(maxU, maxV) };
     }
 
     public static int findMinUVIndex(Vector2f[] uvs) {
@@ -118,10 +119,10 @@ public class QuadUtils {
         QuadReInterpolator interpolator = new QuadReInterpolator();
 
         for (BakedQuad originalQuad : base) {
-            TextureAtlasSprite sprite = originalQuad.getSprite();
+            TextureAtlasSprite originalSprite = originalQuad.getSprite();
 
-            TextureAtlasSprite connection = CTM_SPRITE_CACHE.get(sprite.contents().name());
-            if (connection == null) {
+            TextureAtlasSprite connectionSprite = CTM_SPRITE_CACHE.get(originalSprite.contents().name());
+            if (connectionSprite == null) {
                 emitter.fromVanilla(originalQuad, cullFace);
                 emitter.emit();
                 continue;
@@ -130,24 +131,65 @@ public class QuadUtils {
             int[] ctm = cachedConnections.getSubmapIndices();
 
             for (int quadrant = 0; quadrant < 4; quadrant++) {
-                TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalQuad.getSprite() : connection;
+                TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalSprite : connectionSprite;
 
                 emitter.fromVanilla(originalQuad, cullFace);
-                TextureHelper.normalizeBy(emitter, sprite);
+                TextureHelper.normalizeBy(emitter, originalSprite);
                 interpolator.setInputQuad(emitter);
 
                 // slice quad into the current quadrant
-                subsect(emitter, CTMCache.uvs[ctm[quadrant]].unitScale());
-
-                interpolator.transform(emitter);
+                subsect(emitter, Submap.X2[quadrant % 2][quadrant / 2]);
+                transformUVs(emitter, CTMCache.uvs[ctm[quadrant]]);
 
                 // derotate quad here
-                emitter.spriteBake(ctmSprite, BAKE_LOCK_UV | BAKE_NORMALIZED);
+                emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
+
+                //interpolator.transform(emitter);
 
                 emitter.emit();
             }
         }
         return meshBuilder.build().toBakedBlockQuads();
+    }
+
+    private static void growQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
+        Vector2f interpolatedMinUV = new Vector2f(maxUV.x > 0.5f ? 0.5f : 0.0f, maxUV.y > 0.5f ? 0.5f : 0.0f);
+        Vector2f interpolatedMaxUV = new Vector2f(maxUV.x <= 0.5f ? 0.5f : 1.0f, maxUV.y <= 0.5f ? 0.5f : 1.0f);
+
+        uvs[0] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[0]);
+        uvs[1] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[1]);
+        uvs[2] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[2]);
+        uvs[3] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[3]);
+    }
+
+    private static void transformUVs(MutableQuadView quad, ISubmap submap) {
+        submap = submap.unitScale();
+
+        Vector2f[] uvs = new Vector2f[4];
+        for (int i = 0; i < 4; i++) {
+            uvs[i] = quad.copyUv(i, uvs[i]);
+        }
+        Vector2f[] minMaxUVs = findMinMaxUVs(uvs);
+        Vector2f minUV = minMaxUVs[0], maxUV = minMaxUVs[1];
+
+        growQuadrantUVs(uvs, maxUV);
+
+
+        float width = maxUV.x - minUV.x;
+        float height = maxUV.y - minUV.y;
+
+        float minU = submap.getXOffset();
+        float minV = submap.getYOffset();
+        minU += minUV.x * submap.getWidth();
+        minV += minUV.y * submap.getHeight();
+
+        float maxU = minU + (width * submap.getWidth());
+        float maxV = minV + (height * submap.getHeight());
+
+        quad.uv(0, equal(uvs[0].x, minUV.x) ? minU : maxU, equal(uvs[0].y, minUV.y) ? minV : maxV);
+        quad.uv(1, equal(uvs[1].x, minUV.x) ? minU : maxU, equal(uvs[1].y, minUV.y) ? minV : maxV);
+        quad.uv(2, equal(uvs[2].x, minUV.x) ? minU : maxU, equal(uvs[2].y, minUV.y) ? minV : maxV);
+        quad.uv(3, equal(uvs[3].x, minUV.x) ? minU : maxU, equal(uvs[3].y, minUV.y) ? minV : maxV);
     }
 
     // TODO simplify, this is quite long
@@ -238,8 +280,16 @@ public class QuadUtils {
         return quad;
     }
 
-    public static float normalize(float min, float max, float x) {
+    private static Vector2f normalize(Vector2f min, Vector2f max, Vector2f delta) {
+        return new Vector2f(normalize(min.x, max.x, delta.x), normalize(min.y, max.y, delta.y));
+    }
+
+    public static float normalize(float min, float max, float delta) {
         if (min == max) return 0.5f;
-        return Mth.inverseLerp(x, min, max);
+        return Mth.inverseLerp(delta, min, max);
+    }
+
+    public static boolean equal(float x, float y) {
+        return Math.abs(y - x) < 1.0E-2F;
     }
 }

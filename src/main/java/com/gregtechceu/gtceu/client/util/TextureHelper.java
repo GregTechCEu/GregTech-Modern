@@ -47,7 +47,7 @@ public class TextureHelper {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UV_LOCKERS[quad.nominalFace().get3DDataValue()]);
         } else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) {
-            // flag is NOT set, UVs are assumed to not be normalized yet as is the default,
+            // flag is NOT set, UVs are assumed to not be normalized yet as is the default.
             // normalize through dividing by 16
 
             // Scales from 0-16 to 0-1

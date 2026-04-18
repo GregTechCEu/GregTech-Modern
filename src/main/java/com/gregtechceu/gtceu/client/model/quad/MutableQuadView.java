@@ -96,8 +96,8 @@ public abstract class MutableQuadView extends QuadView {
     /**
      * UV coordinates by default are assumed to be 0-16 scale for consistency with conventional Minecraft model format.
      * This is scaled to 0-1 during baking before interpolation. Model loaders that already have 0-1 coordinates can
-     * avoid wasteful multiplication/division by passing 0-1 coordinates directly. Pass in bakeFlags parameter to
-     * {@link #spriteBake(TextureAtlasSprite, int)}.
+     * avoid wasteful multiplication/division by passing 0-1 coordinates directly.
+     * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
      */
     public static final int BAKE_NORMALIZED = 0b100000;
 
@@ -403,7 +403,7 @@ public abstract class MutableQuadView extends QuadView {
 
         for (int i = 0; i < 4; i++) {
             // ARGB -> ABGR is a transitive process, e.g. it can be reversed and works fine.
-            this.data[colorIndex] = QuadTransformers.toABGR(this.data[colorIndex]);
+            //this.data[colorIndex] = QuadTransformers.toABGR(this.data[colorIndex]);
             colorIndex += VERTEX_STRIDE;
         }
 

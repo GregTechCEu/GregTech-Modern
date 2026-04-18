@@ -322,13 +322,9 @@ public class QuadView {
     public final void toVanilla(int[] target, int targetIndex) {
         System.arraycopy(data, baseIndex, target, targetIndex, QUAD_STRIDE);
 
-        // The color is the fourth integer in each vertex.
-        // EncodingFormat.VERTEX_COLOR is not used because it also
-        // contains the header size; vanilla quads do not have a header.
-        int colorIndex = targetIndex + 3;
-
+        int colorIndex = EncodingFormat.VERTEX_COLOR;
         for (int i = 0; i < 4; i++) {
-            target[colorIndex] = QuadTransformers.toABGR(target[colorIndex]);
+            //target[colorIndex] = QuadTransformers.toABGR(target[colorIndex]);
             colorIndex += VERTEX_STRIDE;
         }
     }
