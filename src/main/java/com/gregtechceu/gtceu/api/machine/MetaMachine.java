@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRedstoneSignalTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -314,9 +315,26 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
-    public void attachPersistentTrait(String traitName, MachineTrait trait) {
+    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait) {
         traitHolder.attachTrait(trait);
         traitHolder.registerPersistentTrait(traitName, trait);
+        return trait;
+    }
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.
+     *
+     * @param traitName        Unique identifier for this trait.
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
+     * @param trait            The trait to register
+     */
+    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait, int callbackPriority) {
+        traitHolder.attachTrait(trait, callbackPriority);
+        traitHolder.registerPersistentTrait(traitName, trait);
+        return trait;
     }
 
     /**
@@ -879,9 +897,17 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
-        if (cover == null) return 0;
 
-        return cover.getRedstoneSignalOutput();
+        if (cover != null) return cover.getRedstoneSignalOutput();
+
+        var signal = 0;
+        for (var trait : getAllTraits()) {
+            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
+                signal = Math.max(signal, redstoneSignalTrait.getOutputSignal(side));
+            }
+        }
+
+        return signal;
     }
 
     /**
@@ -891,7 +917,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return Direct output signal
      */
     public int getOutputDirectSignal(@Nullable Direction side) {
-        return 0;
+        var signal = 0;
+        for (var trait : getAllTraits()) {
+            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
+                signal = Math.max(signal, redstoneSignalTrait.getOutputDirectSignal(side));
+            }
+        }
+
+        return signal;
     }
 
     /**
@@ -900,7 +933,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return Analog output signal.
      */
     public int getAnalogOutputSignal() {
-        return 0;
+        var signal = 0;
+        for (var trait : getAllTraits()) {
+            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
+                signal = Math.max(signal, redstoneSignalTrait.getAnalogOutputSignal());
+            }
+        }
+
+        return signal;
     }
 
     /**
@@ -911,9 +951,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public boolean canConnectRedstone(Direction side) {
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        if (cover == null) return false;
+        if (cover != null) return cover.canConnectRedstone();
 
-        return cover.canConnectRedstone();
+        for (var trait : getAllTraits()) {
+            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
+                if (redstoneSignalTrait.canConnectRedstone(side)) return true;
+            }
+        }
+        return false;
     }
 
     //////////////////////////////////////
