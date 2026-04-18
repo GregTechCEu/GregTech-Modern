@@ -36,15 +36,21 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                     RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+        ModelData parentModelData = data.has(PARENT_MODEL_DATA) ? data.get(PARENT_MODEL_DATA) : data;
+        if (state == null || side == null) {
+            return super.getQuads(state, side, rand, parentModelData, renderType);
+        }
         BlockAndTintGetter level = data.get(LEVEL);
         BlockPos pos = data.get(POS);
-        ModelData parentData = data.has(PARENT_MODEL_DATA) ? data.get(PARENT_MODEL_DATA) : data;
-
-        if (level != null && pos != null && state != null) {
-            return getCustomQuads(level, pos, state, side, rand, parentData, renderType);
-        } else {
-            return super.getQuads(state, side, rand, parentData, renderType);
+        if (level == null || pos == null) {
+            return super.getQuads(state, side, rand, parentModelData, renderType);
         }
+
+        CTMCache ctmCache = CTMCache.getInstance();
+        ctmCache.getSubmapIds(level, pos, state, side);
+        return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
+                .computeIfAbsent(ctmCache, cache -> QuadUtils.buildCTMQuads(cache,
+                        super.getQuads(state, side, rand, parentModelData, renderType)));
     }
 
     @Override
@@ -55,19 +61,5 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
                 .with(POS, pos)
                 .with(PARENT_MODEL_DATA, parentModelData)
                 .build();
-    }
-
-    public List<BakedQuad> getCustomQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                          @Nullable Direction side, RandomSource rand,
-                                          ModelData modelData, @Nullable RenderType renderType) {
-        if (side == null) {
-            return super.getQuads(state, null, rand, modelData, renderType);
-        }
-
-        CTMCache ctmCache = CTMCache.getInstance();
-        ctmCache.getSubmapIds(level, pos, state, side);
-        return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
-                .computeIfAbsent(ctmCache, cache -> QuadUtils.buildCTMQuads(cache,
-                        super.getQuads(state, side, rand, modelData, renderType)));
     }
 }
