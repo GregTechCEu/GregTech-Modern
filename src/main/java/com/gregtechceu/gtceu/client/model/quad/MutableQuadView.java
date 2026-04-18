@@ -69,12 +69,13 @@ public abstract class MutableQuadView extends QuadView {
     public static final int BAKE_ROTATE_270 = 0b000011;
 
     /**
-     * When enabled, texture coordinate are assigned based on vertex position. Any existing UV coordinates will be
-     * replaced. Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+     * When enabled, texture coordinates are assigned based on vertex position.
+     * Any existing UV coordinates will be replaced.
+     * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
      *
      * <p>
-     * UV lock always derives texture coordinates based on nominal face, even when the quad is not co-planar with that
-     * face, and the result is the same as if the quad were projected onto the nominal face, which is usually the
+     * UV lock always derives texture coordinates based on nominal face, even when the quad is not co-planar
+     * with that face. The result is the same as if the quad were projected onto the nominal face, which is usually the
      * desired result.
      */
     public static final int BAKE_LOCK_UV = 0b000100;
@@ -445,13 +446,13 @@ public abstract class MutableQuadView extends QuadView {
     private static final float CULL_FACE_EPSILON = Mth.EPSILON;
 
     /**
-     * Helper method to assign vertex coordinates for a square aligned with the given face. Ensures that vertex order is
-     * consistent with vanilla convention. (Incorrect order can lead to bad AO lighting unless enhanced lighting logic
-     * is available/enabled.)
+     * Helper method to assign vertex coordinates for a square aligned with the given face.
+     * Ensures that vertex order is consistent with vanilla convention.
+     * (Incorrect order can lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
      *
      * <p>
-     * Square will be parallel to the given face and coplanar with the face (and culled if the face is occluded) if the
-     * depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
+     * Square will be parallel to the given face and coplanar with the face (and culled if the face is occluded)
+     * if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
      *
      * <p>
      * All coordinates should be normalized (0-1).
