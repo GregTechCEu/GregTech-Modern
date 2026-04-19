@@ -56,7 +56,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
             } else if (removePercent != 0) {
                 float time = entry.getFloatValue();
                 double timeToRemove = Math.ceil(time * (removePercent / 100.0f));
-                tracker.progressCondition(condition, (int) timeToRemove);
+                tracker.progressCondition(condition, (int) -timeToRemove);
             }
         }
         return itemstack;
