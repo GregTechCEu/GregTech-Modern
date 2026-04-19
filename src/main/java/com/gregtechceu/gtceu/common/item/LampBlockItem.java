@@ -110,7 +110,7 @@ public class LampBlockItem extends BlockItem {
                     // unwrap ModelResourceLocations
                     // 1.21 needs different code here as ModelResourceLocation is a wrapper record instead of a subclass
                     possibleItemId = modelResLoc.withPrefix("");
-                } else if (!modelLocation.getPath().startsWith("item/")) {
+                } else if (modelLocation.getPath().startsWith("item/")) {
                     // remove the "item/" prefix from the model path
                     possibleItemId = modelLocation.withPath(path -> path.substring("item/".length()));
                 } else {
