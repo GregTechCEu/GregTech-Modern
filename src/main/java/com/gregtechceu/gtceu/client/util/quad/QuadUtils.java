@@ -152,14 +152,20 @@ public class QuadUtils {
         return meshBuilder.build().toBakedBlockQuads();
     }
 
+    /**
+     * See {@link #subsect(MutableQuadView, ISubmap)}'s documentation for the quadrant layout table.
+     * @see #subsect(MutableQuadView, ISubmap)
+     */
     private static void growQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
-        Vector2f interpolatedMinUV = new Vector2f(maxUV.x > 0.5f ? 0.5f : 0.0f, maxUV.y > 0.5f ? 0.5f : 0.0f);
-        Vector2f interpolatedMaxUV = new Vector2f(maxUV.x <= 0.5f ? 0.5f : 1.0f, maxUV.y <= 0.5f ? 0.5f : 1.0f);
+        float minUInterp = maxUV.x > 0.5f ? 0.5f : 0.0f,
+                minVInterp = maxUV.y > 0.5f ? 0.5f : 0.0f;
+        float maxUInterp = maxUV.x > 0.5f ? 1.0f : 0.5f,
+                maxVInterp = maxUV.y > 0.5f ? 1.0f : 0.5f;
 
-        uvs[0] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[0]);
-        uvs[1] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[1]);
-        uvs[2] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[2]);
-        uvs[3] = normalize(interpolatedMinUV, interpolatedMaxUV, uvs[3]);
+        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[0]);
+        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[1]);
+        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[2]);
+        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[3]);
     }
 
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
@@ -170,10 +176,11 @@ public class QuadUtils {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
         Vector2f[] minMaxUVs = findMinMaxUVs(uvs);
+        growQuadrantUVs(uvs, minMaxUVs[1]);
+
+        // recompute min & max UVs
+        minMaxUVs = findMinMaxUVs(uvs);
         Vector2f minUV = minMaxUVs[0], maxUV = minMaxUVs[1];
-
-        growQuadrantUVs(uvs, maxUV);
-
 
         float width = maxUV.x - minUV.x;
         float height = maxUV.y - minUV.y;
@@ -186,12 +193,24 @@ public class QuadUtils {
         float maxU = minU + (width * submap.getWidth());
         float maxV = minV + (height * submap.getHeight());
 
-        quad.uv(0, equal(uvs[0].x, minUV.x) ? minU : maxU, equal(uvs[0].y, minUV.y) ? minV : maxV);
-        quad.uv(1, equal(uvs[1].x, minUV.x) ? minU : maxU, equal(uvs[1].y, minUV.y) ? minV : maxV);
-        quad.uv(2, equal(uvs[2].x, minUV.x) ? minU : maxU, equal(uvs[2].y, minUV.y) ? minV : maxV);
-        quad.uv(3, equal(uvs[3].x, minUV.x) ? minU : maxU, equal(uvs[3].y, minUV.y) ? minV : maxV);
+        quad.uv(0, uvs[0].x == minUV.x ? minU : maxU, uvs[0].y == minUV.y ? minV : maxV);
+        quad.uv(1, uvs[1].x == minUV.x ? minU : maxU, uvs[1].y == minUV.y ? minV : maxV);
+        quad.uv(2, uvs[2].x == minUV.x ? minU : maxU, uvs[2].y == minUV.y ? minV : maxV);
+        quad.uv(3, uvs[3].x == minUV.x ? minU : maxU, uvs[3].y == minUV.y ? minV : maxV);
     }
 
+    /**
+     * Quadrant table is as follows:
+     * <pre>
+     * ╔══════╤══════╗
+     * ║      │      ║
+     * ║  2   │  3   ║
+     * ╟──────┼──────╢
+     * ║      │      ║
+     * ║  0   │  1   ║
+     * ╚══════╧══════╝
+     * </pre>
+     */
     // TODO simplify, this is quite long
     public static MutableQuadView subsect(MutableQuadView quad, ISubmap submap) {
         Vector2f[] uvs = new Vector2f[4];
@@ -206,17 +225,11 @@ public class QuadUtils {
             positions[i] = quad.copyPos(i, positions[idx]);
         }
 
-        Direction normal = quad.nominalFace();
-
-        Vector2f[] xy = new Vector2f[4];
-        Vector2f[] newXy = new Vector2f[4];
-        for (int i = 0; i < 4; i++) {
             switch (normal.getAxis()) {
-                case Y -> xy[i] = new Vector2f(positions[i].x, positions[i].z);
-                case Z -> xy[i] = new Vector2f(positions[i].x, positions[i].y);
-                case X -> xy[i] = new Vector2f(positions[i].z, positions[i].y);
+                case X -> xy[i].set(position.z, position.y);
+                case Y -> xy[i].set(position.x, position.z);
+                case Z -> xy[i].set(position.x, position.y);
             }
-            newXy[i] = new Vector2f();
         }
 
         if (normal.getAxis() != Direction.Axis.Y) {
@@ -228,7 +241,7 @@ public class QuadUtils {
 
         submap = submap.unitScale();
 
-        if (normal.getAxis() == Direction.Axis.Y || normal.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+        if (normal.getAxis() == Direction.Axis.Y || normal == Direction.SOUTH || normal == Direction.WEST) {
             // Relative X is the same sign for DOWN, UP, SOUTH, and WEST
             newXy[0].x = Math.max(xy[0].x, submap.getXOffset());                      // DUSW
             newXy[1].x = Math.max(xy[1].x, submap.getXOffset());                      // DUSW
@@ -255,41 +268,40 @@ public class QuadUtils {
             newXy[3].y = Math.max(xy[3].y, submap.getYOffset());                      // U
         }
 
-        float u0 = normalize(xy[0].x, xy[3].x, newXy[0].x);
-        float v0 = normalize(xy[0].y, xy[1].y, newXy[0].y);
-        float u1 = normalize(xy[1].x, xy[2].x, newXy[1].x);
-        float v1 = normalize(xy[1].y, xy[0].y, newXy[1].y);
-        float u2 = normalize(xy[2].x, xy[1].x, newXy[2].x);
-        float v2 = normalize(xy[2].y, xy[3].y, newXy[2].y);
-        float u3 = normalize(xy[3].x, xy[0].x, newXy[3].x);
-        float v3 = normalize(xy[3].y, xy[2].y, newXy[3].y);
+        float u0 = normalize(newXy[0].x, xy[0].x, xy[3].x),
+                v0 = normalize(newXy[0].y, xy[0].y, xy[1].y);
+        float u1 = normalize(newXy[1].x, xy[1].x, xy[2].x),
+                v1 = normalize(newXy[1].y, xy[1].y, xy[0].y);
+        float u2 = normalize(newXy[2].x, xy[2].x, xy[1].x),
+                v2 = normalize(newXy[2].y, xy[2].y, xy[3].y);
+        float u3 = normalize(newXy[3].x, xy[3].x, xy[0].x),
+                v3 = normalize(newXy[3].y, xy[3].y, xy[2].y);
 
-        quad.uv(0, Mth.lerp(uvs[0].x, uvs[3].x, u0), Mth.lerp(uvs[0].y, uvs[1].y, v0));
-        quad.uv(1, Mth.lerp(uvs[1].x, uvs[2].x, u1), Mth.lerp(uvs[1].y, uvs[0].y, v1));
-        quad.uv(2, Mth.lerp(uvs[2].x, uvs[1].x, u2), Mth.lerp(uvs[2].y, uvs[3].y, v2));
-        quad.uv(3, Mth.lerp(uvs[3].x, uvs[0].x, u3), Mth.lerp(uvs[3].y, uvs[2].y, v3));
+        quad.uv(0, Mth.lerp(u0, uvs[0].x, uvs[3].x), Mth.lerp(v0, uvs[0].y, uvs[1].y));
+        quad.uv(1, Mth.lerp(u1, uvs[1].x, uvs[2].x), Mth.lerp(v1, uvs[1].y, uvs[0].y));
+        quad.uv(2, Mth.lerp(u2, uvs[2].x, uvs[1].x), Mth.lerp(v2, uvs[2].y, uvs[3].y));
+        quad.uv(3, Mth.lerp(u3, uvs[3].x, uvs[0].x), Mth.lerp(v3, uvs[3].y, uvs[2].y));
 
         for (int i = 0; i < 4; i++) {
             switch (normal.getAxis()) {
+                case X -> quad.pos(i, quad.x(i), newXy[i].y, newXy[i].x);
                 case Y -> quad.pos(i, newXy[i].x, quad.y(i), newXy[i].y);
                 case Z -> quad.pos(i, newXy[i].x, newXy[i].y, quad.z(i));
-                case X -> quad.pos(i, quad.x(i), newXy[i].y, newXy[i].x);
             }
         }
 
         return quad;
     }
 
-    private static Vector2f normalize(Vector2f min, Vector2f max, Vector2f delta) {
-        return new Vector2f(normalize(min.x, max.x, delta.x), normalize(min.y, max.y, delta.y));
+    /// scale {@code value} to a 0-1 range component-wise based on {@code min} and {@code max}
+    private static Vector2f normalize(float minU, float minV, float maxU, float maxV, Vector2f value) {
+        value.set(normalize(value.x, minU, maxU), normalize(value.y, minV, maxV));
+        return value;
     }
 
-    public static float normalize(float min, float max, float delta) {
+    /// scale {@code delta} to a 0-1 range based on {@code min} and {@code max}
+    public static float normalize(float delta, float min, float max) {
         if (min == max) return 0.5f;
         return Mth.inverseLerp(delta, min, max);
-    }
-
-    public static boolean equal(float x, float y) {
-        return Math.abs(y - x) < 1.0E-2F;
     }
 }
