@@ -61,10 +61,6 @@ import java.util.function.BiFunction;
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
 
-    public static BakedModel getModelForState(BlockState state) {
-        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-    }
-
     public enum FluidTextureType {
 
         STILL((fluidTypeExtensions, fluidStack) -> {
@@ -218,6 +214,10 @@ public class RenderUtil {
         poseStack.translate(Math.fma(face.getStepX(), 0.5f, x),
                 Math.fma(face.getStepY(), 0.5f, y),
                 Math.fma(face.getStepZ(), 0.5f, z));
+    }
+
+    public static BakedModel getModelForState(BlockState state) {
+        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
     }
 
     public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,

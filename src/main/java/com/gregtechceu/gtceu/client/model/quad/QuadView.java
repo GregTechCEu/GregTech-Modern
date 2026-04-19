@@ -22,10 +22,11 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.QuadTransformers;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Vector2f;
@@ -72,7 +73,13 @@ public class QuadView {
     protected int tintIndex;
 
     protected long headerFlags = 0;
-    /** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
+    /**
+     * Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array.
+     *
+     * -- GETTER --
+     * Reference to underlying array. Use with caution. Meant for fast renderer access
+     */
+    @Getter
     protected int @UnknownNullability [] data;
 
     /** Beginning of the quad. Also the header index. */
@@ -99,11 +106,6 @@ public class QuadView {
         GeometryHelper.computeFaceNormal(faceNormal, this);
     }
 
-    /** Reference to underlying array. Use with caution. Meant for fast renderer access */
-    public int[] data() {
-        return data;
-    }
-
     public int normalFlags() {
         return EncodingFormat.normalFlags(headerFlags);
     }
@@ -113,7 +115,8 @@ public class QuadView {
         return normalFlags() != 0;
     }
 
-    protected void computeGeometry() {
+    @ApiStatus.Internal
+    public void computeGeometry() {
         if (isGeometryInvalid) {
             isGeometryInvalid = false;
 
@@ -161,6 +164,7 @@ public class QuadView {
      * calling {link QuadEmitter#emit()} on the target instance. Meant for re-texturing, analysis and static
      * transformation use cases.
      */
+    @Contract(mutates = "param")
     public void copyTo(MutableQuadView quad) {
         computeGeometry();
 
@@ -174,8 +178,12 @@ public class QuadView {
     }
 
     /**
-     * Pass a non-null target to avoid allocation - will be returned with values. Otherwise returns a new instance.
+     * Returns the specified vertex's geometric position.
+     *
+     * <p>
+     * Pass a non-null target to avoid allocation - will be returned with values. Otherwise, returns a new instance.
      */
+    @Contract(value = "_, !null -> param2; _, null -> new", mutates = "param2")
     public Vector3f copyPos(int vertexIndex, @Nullable Vector3f target) {
         if (target == null) {
             target = new Vector3f();
@@ -188,9 +196,23 @@ public class QuadView {
     }
 
     /**
+     * Returns the specified vertex's geometric position.
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public Vector3f copyPos(int vertexIndex) {
+        return copyPos(vertexIndex, null);
+    }
+
+    /**
+     * Returns the specified vertex's normal vector.
+     *
+     * <p>
      * Pass a non-null target to avoid allocation - will be returned with values. Otherwise, returns a new instance.
+     *
+     * <p>
      * Returns null if normal not present.
      */
+    @Contract(value = "_, !null -> param2; _, null -> new", mutates = "param2")
     public @Nullable Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target) {
         if (hasNormal(vertexIndex)) {
             if (target == null) {
@@ -208,8 +230,23 @@ public class QuadView {
     }
 
     /**
-     * Pass a non-null target to avoid allocation - will be returned with values. Otherwise returns a new instance.
+     * Returns the specified vertex's normal vector.
+     *
+     * <p>
+     * Returns null if normal not present.
      */
+    @Contract(value = "_ -> new", pure = true)
+    public @Nullable Vector3f copyNormal(int vertexIndex) {
+        return copyNormal(vertexIndex, null);
+    }
+
+    /**
+     * Returns the specified vertex's UV coordinates.
+     *
+     * <p>
+     * Pass a non-null target to avoid allocation - will be returned with values. Otherwise, returns a new instance.
+     */
+    @Contract(value = "_, !null -> param2; _, null -> new", mutates = "param2")
     public Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
         if (target == null) {
             target = new Vector2f();
@@ -217,6 +254,14 @@ public class QuadView {
 
         target.set(u(vertexIndex), v(vertexIndex));
         return target;
+    }
+
+    /**
+     * Returns the specified vertex's UV coordinates.
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public Vector2f copyUv(int vertexIndex) {
+        return copyUv(vertexIndex, null);
     }
 
     /**

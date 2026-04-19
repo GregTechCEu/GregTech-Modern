@@ -49,11 +49,11 @@ public class SpriteFinder {
     }
 
     private final Node root;
-    private final TextureAtlas spriteAtlasTexture;
+    private final TextureAtlas textureAtlas;
 
-    public SpriteFinder(Map<ResourceLocation, TextureAtlasSprite> sprites, TextureAtlas spriteAtlasTexture) {
+    public SpriteFinder(Map<ResourceLocation, TextureAtlasSprite> sprites, TextureAtlas textureAtlas) {
         root = new Node(0.5f, 0.5f, 0.25f);
-        this.spriteAtlasTexture = spriteAtlasTexture;
+        this.textureAtlas = textureAtlas;
         sprites.values().forEach(root::add);
     }
 
@@ -95,17 +95,14 @@ public class SpriteFinder {
 
     private class Node {
 
-        final float midU;
-        final float midV;
-        final float cellRadius;
-        @Nullable
-        Object lowLow = null;
-        @Nullable
-        Object lowHigh = null;
-        @Nullable
-        Object highLow = null;
-        @Nullable
-        Object highHigh = null;
+        private final float midU;
+        private final float midV;
+        private final float cellRadius;
+
+        private @Nullable Object lowLow = null;
+        private @Nullable Object lowHigh = null;
+        private @Nullable Object highLow = null;
+        private @Nullable Object highHigh = null;
 
         Node(float midU, float midV, float radius) {
             this.midU = midU;
@@ -147,8 +144,8 @@ public class SpriteFinder {
             } else {
                 Node n = new Node(midU + cellRadius * uStep, midV + cellRadius * vStep, cellRadius * 0.5f);
 
-                if (quadrant instanceof TextureAtlasSprite) {
-                    n.add((TextureAtlasSprite) quadrant);
+                if (quadrant instanceof TextureAtlasSprite quadrantSprite) {
+                    n.add(quadrantSprite);
                 }
 
                 n.add(sprite);
@@ -170,7 +167,7 @@ public class SpriteFinder {
             } else if (quadrant instanceof Node node) {
                 return node.find(u, v);
             } else {
-                return spriteAtlasTexture.getSprite(MissingTextureAtlasSprite.getLocation());
+                return textureAtlas.getSprite(MissingTextureAtlasSprite.getLocation());
             }
         }
     }

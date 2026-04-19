@@ -55,7 +55,7 @@ public class Mesh {
     }
 
     @SuppressWarnings("deprecation")
-    public List<BakedQuad> toBakedBlockQuads() {
+    public List<BakedQuad> toBlockBakedQuads() {
         SpriteFinder finder = SpriteFinder.get(Minecraft.getInstance().getModelManager()
                 .getAtlas(TextureAtlas.LOCATION_BLOCKS));
 
