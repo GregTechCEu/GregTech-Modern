@@ -47,7 +47,7 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         }
 
         CTMCache ctmCache = CTMCache.getInstance();
-        ctmCache.getSubmapIds(level, pos, state, side);
+        ctmCache.fillSubmapCache(level, pos, state, side);
         return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
                 .computeIfAbsent(ctmCache, cache -> QuadUtils.buildCTMQuads(cache,
                         super.getQuads(state, side, rand, parentModelData, renderType), side));

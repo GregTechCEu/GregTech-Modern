@@ -17,8 +17,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
+import org.joml.Vector2ic;
 import org.joml.Vector3f;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
@@ -58,7 +60,7 @@ public class QuadUtils {
                                                 List<BakedQuad> quads, @Nullable Direction cullFace) {
         CTMCache ctmCache = CTMCache.getInstance();
         if (cullFace != null) {
-            ctmCache.getSubmapIds(level, pos, state, cullFace);
+            ctmCache.fillSubmapCache(level, pos, state, cullFace);
         }
 
         return buildCTMQuads(ctmCache, quads, cullFace);
@@ -66,6 +68,7 @@ public class QuadUtils {
 
     public static List<BakedQuad> buildCTMQuads(CTMCache cachedConnections, List<BakedQuad> base,
                                                 @Nullable Direction cullFace) {
+        List<BakedQuad> result = new LinkedList<>();
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
 
@@ -74,31 +77,35 @@ public class QuadUtils {
 
             TextureAtlasSprite connectionSprite = CTM_SPRITE_CACHE.get(originalSprite.contents().name());
             if (connectionSprite == null) {
-                emitter.fromVanilla(originalQuad, cullFace);
-                emitter.emit();
+                result.add(originalQuad);
                 continue;
             }
 
-            int[] ctm = cachedConnections.getSubmapIndices();
+            Vector2ic[][] ctm = cachedConnections.getCachedSubmapIndices();
 
-            for (int quadrant = 0; quadrant < 4; quadrant++) {
-                TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalSprite : connectionSprite;
+            for (int xQ = 0; xQ < 2; xQ++) {
+                for (int yQ = 0; yQ < 2; yQ++) {
+                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[xQ][yQ]);
+                    TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
-                emitter.fromVanilla(originalQuad, cullFace);
-                TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
+                    emitter.fromVanilla(originalQuad, cullFace);
+                    TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
 
-                // slice quad into the current quadrant
-                subsect(emitter, Submap.X2[quadrant % 2][quadrant / 2]);
-                transformUVs(emitter, CTMCache.uvs[ctm[quadrant]]);
+                    // slice quad into the current quadrant
+                    subsect(emitter, Submap.X2[yQ][xQ]);
+                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[xQ][yQ]));
 
-                // derotate quad here
-                emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
+                    emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
+                    emitter.computeGeometry();
+                    emitter.populateMissingNormals();
 
-                emitter.emit();
+                    result.add(emitter.toBakedQuad(ctmSprite));
+                    emitter.emit();
+                }
             }
         }
-        return meshBuilder.build().toBakedBlockQuads();
+        return result;
     }
 
     /**

@@ -24,52 +24,55 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
 
-// @formatter:off
 /**
  * The CTM renderer will draw the block's FACE by assembling 4 quadrants from the 5 available block textures.
- * The normal {@code texture.png} is the block's "unconnected" texture, and is used when CTM is disabled or the block has nothing to connect to.
+ * The normal {@code texture.png} is the block's "unconnected" texture, and is used when CTM is disabled or the block
+ * has nothing to connect to.
  * This texture has all the outside corner quadrants, and {@code texture_ctm.png} contains the rest of the quadrants.
  * <pre>
  * ┌─────────────────┐ ┌────────────────────────────────┐
  * │ texture.png     │ │ texture_ctm.png                │
  * │ ╔══════╤══════╗ │ │  ──────┼────── ║ ─────┼───── ║ │
  * │ ║      │      ║ │ │ │      │      │║      │      ║ │
- * │ ║ 16   │ 17   ║ │ │ │ 0    │ 1    │║ 2    │ 3    ║ │
+ * │ ║ 4/4  │ 4/5  ║ │ │ │ 0/0  │ 1/0  │║ 2/0  │ 3/0  ║ │
  * │ ╟──────┼──────╢ │ │ ┼──────┼──────┼╟──────┼──────╢ │
  * │ ║      │      ║ │ │ │      │      │║      │      ║ │
- * │ ║ 18   │ 19   ║ │ │ │ 4    │ 5    │║ 6    │ 7    ║ │
+ * │ ║ 5/4  │ 5/5  ║ │ │ │ 0/1  │ 1/1  │║ 2/1  │ 3/1  ║ │
  * │ ╚══════╧══════╝ │ │  ──────┼────── ║ ─────┼───── ║ │
  * └─────────────────┘ │ ═══════╤═══════╝ ─────┼───── ╚ │
  *                     │ │      │      ││      │      │ │
- *                     │ │ 8    │ 9    ││ 10   │ 11   │ │
+ *                     │ │ 0/2  │ 1/2  ││ 2/2  │ 3/2  │ │
  *                     │ ┼──────┼──────┼┼──────┼──────┼ │
  *                     │ │      │      ││      │      │ │
- *                     │ │ 12   │ 13   ││ 14   │ 15   │ │
+ *                     │ │ 0/3  │ 1/3  ││ 2/3  │ 3/3  │ │
  *                     │ ═══════╧═══════╗ ─────┼───── ╔ │
  *                     └────────────────────────────────┘
  * </pre>
- * combining { 18, 13,  9, 16 }, we can generate a texture connected to the right!
+ * combining { { 5/4, 1/3 }, { 1/2, 4/4 } }, we can generate a texture connected to the right!
  * <pre>
  * ╔══════╤═══════
  * ║      │      │
- * ║ 16   │ 9    │
+ * ║ 4/4  │ 1/2  │
  * ╟──────┼──────┼
  * ║      │      │
- * ║ 18   │ 13   │
+ * ║ 5/4  │ 1/3  │
  * ╚══════╧═══════
  * </pre>
  *
- * combining { 18, 13, 11,  2 }, we can generate a texture, in the shape of an L (connected to the right, and up
+ * combining { { 5/4, 1/3 }, { 3/2, 2/0 } }, we can generate a texture in the shape of an L
+ * (connected to the right and up)
  * <pre>
  * ║ ─────┼───── ╚
  * ║      │      │
- * ║ 2    │ 11   │
+ * ║ 2/0  │ 3/2  │
  * ╟──────┼──────┼
  * ║      │      │
- * ║ 18   │ 13   │
+ * ║ 5/4  │ 1/3  │
  * ╚══════╧═══════
  * </pre>
  *
@@ -84,51 +87,27 @@ public class CTMCache {
     @FunctionalInterface
     public interface StateComparisonCallback {
         
-        StateComparisonCallback DEFAULT = (connectionCheck, from, to, dir) -> connectionCheck.ignoreStates() ? from.getBlock() == to.getBlock() : from == to;
+        StateComparisonCallback DEFAULT = (connectionCheck, from, to, dir) -> {
+            return connectionCheck.ignoreStates() ? from.getBlock() == to.getBlock() : from == to;
+        };
         
         boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
     }
-	
-    /**
-     * The UVs for the specific "magic number" value
-     */
-    public static final ISubmap[] uvs = {
-            // CTM texture
-            Submap.fromPixelScale(4, 4, 0, 0),   // 0
-            Submap.fromPixelScale(4, 4, 4, 0),   // 1
-            Submap.fromPixelScale(4, 4, 8, 0),   // 2
-            Submap.fromPixelScale(4, 4, 12, 0),  // 3
-            Submap.fromPixelScale(4, 4, 0, 4),   // 4
-            Submap.fromPixelScale(4, 4, 4, 4),   // 5
-            Submap.fromPixelScale(4, 4, 8, 4),   // 6
-            Submap.fromPixelScale(4, 4, 12, 4),  // 7
-            Submap.fromPixelScale(4, 4, 0, 8),   // 8
-            Submap.fromPixelScale(4, 4, 4, 8),   // 9
-            Submap.fromPixelScale(4, 4, 8, 8),   // 10
-            Submap.fromPixelScale(4, 4, 12, 8),  // 11
-            Submap.fromPixelScale(4, 4, 0, 12),  // 12
-            Submap.fromPixelScale(4, 4, 4, 12),  // 13
-            Submap.fromPixelScale(4, 4, 8, 12),  // 14
-            Submap.fromPixelScale(4, 4, 12, 12), // 15
-            // Default texture
-            Submap.fromPixelScale(8, 8, 0, 0),   // 16
-            Submap.fromPixelScale(8, 8, 8, 0),   // 17
-            Submap.fromPixelScale(8, 8, 0, 8),   // 18
-            Submap.fromPixelScale(8, 8, 8, 8)    // 19
-    };
-    
-    public static final ISubmap FULL_TEXTURE = Submap.X1;
-
-    // @formatter:on
 
     /** Some hardcoded offset values for the different corner indeces */
-    protected static int[] submapOffsets = { 4, 5, 1, 0 };
-    protected static int[] defaultSubmapCache = { 18, 19, 17, 16 };
+    protected static Vector2ic[][] submapOffsets = {
+            { new Vector2i(0, 3), new Vector2i(1, 3) },
+            { new Vector2i(0, 2), new Vector2i(1, 2) },
+    };
+    protected static Vector2ic[][] defaultSubmapCache = {
+            { new Vector2i(4, 5), new Vector2i(5, 5) },
+            { new Vector2i(4, 4), new Vector2i(5, 4) },
+    };
 
     // TODO encapsulate
     public ConnectionCheck connectionCheck = new ConnectionCheck();
 
-    // Mapping the different corner indeces to their respective dirs
+    // Mapping the different corner indices to their respective dirs
     protected static final OctagonalOrientation[][] submapMap = {
             { BOTTOM, LEFT, BOTTOM_LEFT },
             { BOTTOM, RIGHT, BOTTOM_RIGHT },
@@ -137,7 +116,7 @@ public class CTMCache {
     };
 
     protected byte connectionMap;
-    protected int[] submapCache = defaultSubmapCache.clone();
+    protected Vector2ic[][] submapCache = defaultSubmapCache.clone();
 
     public static CTMCache getInstance() {
         return new CTMCache();
@@ -148,26 +127,41 @@ public class CTMCache {
      *
      * @return The indeces of the typical 4x4 submap to use for the given face at the given location.
      */
-    public int[] getSubmapIds(@Nullable BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side) {
+    public Vector2ic[][] fillSubmapCache(@Nullable BlockAndTintGetter level, BlockPos pos,
+                                         BlockState state, Direction side) {
         if (level == null) {
             return this.submapCache;
         }
 
         buildConnectionMap(level, pos, state, side);
         // Map connections to submap indices
-        for (int i = 0; i < 4; i++) {
-            fillSubmaps(i);
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                fillSubmaps(x, y);
+            }
         }
 
         return this.submapCache;
     }
 
-    public int[] getSubmapIndices() {
+    public Vector2ic[][] getCachedSubmapIndices() {
         return this.submapCache;
     }
 
     public static boolean isDefaultTexture(int id) {
         return (id == 16 || id == 17 || id == 18 || id == 19);
+    }
+
+    public static boolean isDefaultTexture(Vector2ic id) {
+        return id.x() >= 4 && id.y() >= 4;
+    }
+
+    public static ISubmap getSubmapFor(Vector2ic coordinates) {
+        if (isDefaultTexture(coordinates)) {
+            return Submap.X2[coordinates.x() % 4][coordinates.y() % 4];
+        } else {
+            return Submap.X4[(coordinates.x() + 2) % 4][(coordinates.y() + 2) % 4];
+        }
     }
 
     protected void setConnectedState(OctagonalOrientation dir, boolean connected) {
@@ -199,25 +193,25 @@ public class CTMCache {
     }
 
     @SuppressWarnings("null")
-    protected void fillSubmaps(int idx) {
-        OctagonalOrientation[] dirs = submapMap[idx];
+    protected void fillSubmaps(int x, int y) {
+        OctagonalOrientation[] dirs = submapMap[x + y * 2];
         if (connectedOr(dirs[0], dirs[1])) {
             if (connectedAnd(dirs)) {
                 // If all dirs are connected, we use the fully connected face, the base offset value.
-                this.submapCache[idx] = submapOffsets[idx];
+                this.submapCache[x][y] = submapOffsets[x][y];
             } else {
-                // This is a bit magic-y, but basically the array is ordered so
-                // the first dir requires an offset of 2, and the second dir requires an offset of 8
-                // plus the initial offset for the corner.
-                this.submapCache[idx] = submapOffsets[idx] + (connected(dirs[0]) ? 2 : 0) +
-                        (connected(dirs[1]) ? 8 : 0);
+                // dirs[0] is vertical, dirs[1] is horizontal
+                Vector2i offsets = new Vector2i(submapOffsets[x][y]);
+                if (connected(dirs[0])) offsets.x += 2;
+                if (connected(dirs[1])) offsets.y += 2;
+
+                this.submapCache[x][y] = offsets;
             }
         }
     }
 
     /**
-     * @param dir
-     *            The direction to check connection in.
+     * @param dir The direction to check connection in.
      * @return True if the cached connectionMap holds a connection in this {@link OctagonalOrientation direction}.
      */
     public boolean connected(OctagonalOrientation dir) {
@@ -225,8 +219,7 @@ public class CTMCache {
     }
 
     /**
-     * @param dirs
-     *             The directions to check connection in.
+     * @param dirs The directions to check connection in.
      * @return True if the cached connectionMap holds a connection in <i><b>all</b></i> the given
      *         {@link OctagonalOrientation directions}.
      */
