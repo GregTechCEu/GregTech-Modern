@@ -272,4 +272,15 @@ public class CTMCache {
         }
         return map == this.connectionMap;
     }
+
+    @Override
+    public int hashCode() {
+        return this.connectionMap;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CTMCache other)) return false;
+        return this.connectionMap == other.connectionMap;
+    }
 }
