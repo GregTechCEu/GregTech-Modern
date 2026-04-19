@@ -85,7 +85,7 @@ public class QuadUtils {
                 TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalSprite : connectionSprite;
 
                 emitter.fromVanilla(originalQuad, cullFace);
-                TextureHelper.normalizeBy(emitter, originalSprite);
+                TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
 
                 // slice quad into the current quadrant
                 subsect(emitter, Submap.X2[quadrant % 2][quadrant / 2]);

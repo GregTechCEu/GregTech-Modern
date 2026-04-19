@@ -23,6 +23,8 @@ import net.minecraft.core.Direction;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 
+import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
+
 /**
  * Handles most texture-baking use cases for model loaders and model libraries via
  * {@link #bakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
@@ -31,22 +33,26 @@ import org.jetbrains.annotations.Nullable;
 public class TextureHelper {
 
     public static final float NORMALIZER = 1f / 16f;
+    public static final float DENORMALIZER = 16f;
 
-    private static final int BAKE_ROTATE_ANY = 3;
+    private static final int BAKE_ROTATE_ANY = BAKE_ROTATE_270 | BAKE_ROTATE_180 | BAKE_ROTATE_90;
 
     /**
      * Bakes textures in the provided vertex data, handling UV locking, rotation, interpolation, etc.
      * Textures must not be already baked.
      *
      * <p>
-     * If {@code sprite == null}, only the UV modifiers will be applied, but they won't be translated to the sprite's
-     * atlas coordinates.
+     * If {@code sprite == null}, only the UV modifiers will be applied,
+     * but they won't be translated to the sprite's atlas coordinates.
+     *
+     * @see #unbakeSprite(MutableQuadView, TextureAtlasSprite, int)
+     * @see MutableQuadView#BAKE_ROTATE_NONE bake flags
      */
     public static void bakeSprite(MutableQuadView quad, @Nullable TextureAtlasSprite sprite, int bakeFlags) {
-        if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
+        if (quad.nominalFace() != null && (BAKE_LOCK_UV & bakeFlags) != 0) {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UV_LOCKERS[quad.nominalFace().get3DDataValue()]);
-        } else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) {
+        } else if ((BAKE_NORMALIZED & bakeFlags) == 0) {
             // flag is NOT set, UVs are assumed to not be normalized yet as is the default.
             // normalize through dividing by 16
 
@@ -62,12 +68,12 @@ public class TextureHelper {
             applyModifier(quad, ROTATIONS[rotation]);
         }
 
-        if ((MutableQuadView.BAKE_FLIP_U & bakeFlags) != 0) {
+        if ((BAKE_FLIP_U & bakeFlags) != 0) {
             // Inverts U coordinates. Assumes normalized (0-1) values.
             applyModifier(quad, (q, i) -> q.uv(i, 1 - q.u(i), q.v(i)));
         }
 
-        if ((MutableQuadView.BAKE_FLIP_V & bakeFlags) != 0) {
+        if ((BAKE_FLIP_V & bakeFlags) != 0) {
             // Inverts V coordinates. Assumes normalized (0-1) values.
             applyModifier(quad, (q, i) -> q.uv(i, q.u(i), 1 - q.v(i)));
         }
@@ -93,22 +99,65 @@ public class TextureHelper {
     }
 
     /**
+     * The reverse operation of {@link #bakeSprite}. Undoes the same operations <i>except UV locking</i>.
+     * Textures must be already baked.
+     *
+     * <p>
+     * Note this the function's order of operations is reversed in relation to {@link #bakeSprite}.<br>
+     * The {@link MutableQuadView#BAKE_NORMALIZED BAKE_NORMALIZED} flag also works inversely
+     * to the one in {@link #bakeSprite}.
+     *
+     * <p>
+     * If {@code sprite == null}, only the UV modifiers will be applied,
+     * but they won't be translated from the sprite's atlas coordinates to a 0-16 range.
+     *
+     * @see #bakeSprite(MutableQuadView, TextureAtlasSprite, int)
+     * @see MutableQuadView#BAKE_ROTATE_NONE bake flags
+     */
+    public static void unbakeSprite(MutableQuadView quad, @Nullable TextureAtlasSprite sprite, int bakeFlags) {
+        if (sprite != null) {
+            deInterpolate(quad, sprite);
+        }
+
+        if ((BAKE_FLIP_V & bakeFlags) != 0) {
+            // Inverts V coordinates. Assumes normalized (0-1) values.
+            applyModifier(quad, (q, i) -> q.uv(i, q.u(i), 1 - q.v(i)));
+        }
+
+        if ((BAKE_FLIP_U & bakeFlags) != 0) {
+            // Inverts U coordinates. Assumes normalized (0-1) values.
+            applyModifier(quad, (q, i) -> q.uv(i, 1 - q.u(i), q.v(i)));
+        }
+
+        final int rotation = bakeFlags & BAKE_ROTATE_ANY;
+
+        if (rotation != 0) {
+            // Rotates texture around the center of sprite.
+            // Assumes normalized coordinates.
+            applyModifier(quad, ROTATIONS[rotation]);
+        }
+
+        if ((BAKE_NORMALIZED & bakeFlags) == 0) {
+            // flag is NOT set, UVs are assumed to be normalized as is the default.
+            // denormalize through multiplying by 16
+
+            // Scales from 0-1 to 0-16
+            applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * DENORMALIZER, q.v(i) * DENORMALIZER));
+        }
+    }
+
+    /**
      * Faster than sprite method. Sprite computes span and normalizes inputs each call, so we'd have to denormalize
      * before we called, only to have the sprite renormalize immediately.
      */
-    public static void normalizeBy(MutableQuadView q, TextureAtlasSprite sprite) {
-        final float uMin = sprite.getU0(), uMax = sprite.getU1();
-        final float uSpan = uMax - uMin;
-        final float vMin = sprite.getV0(), vMax = sprite.getV1();
-        final float vSpan = vMax - vMin;
+    public static void deInterpolate(MutableQuadView q, TextureAtlasSprite sprite) {
+        final float uMin = sprite.getU0();
+        final float uSpan = sprite.getU1() - uMin;
+        final float vMin = sprite.getV0();
+        final float vSpan = sprite.getV1() - vMin;
 
         for (int i = 0; i < 4; i++) {
-            final float u = q.u(i), v = q.v(i);
-            // Skip invalid UV coordinates.
-            // If the UV is outside the texture's boundaries, this was probably called by mistake.
-            if (u < uMin || u > uMax || v < vMin || v > vMax) continue;
-
-            q.uv(i, (u - uMin) / uSpan, (v - vMin) / vSpan);
+            q.uv(i, (q.u(i) - uMin) / uSpan, (q.v(i) - vMin) / vSpan);
         }
     }
 
