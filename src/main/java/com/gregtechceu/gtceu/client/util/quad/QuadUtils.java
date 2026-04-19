@@ -168,10 +168,24 @@ public class QuadUtils {
         normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[3]);
     }
 
+    // these are only used within the below methods, but are stored here as consts to reduce allocations
+    // because they can be reused infinitely. DO NOT USE OUTSIDE subsect()/transformUVs()!!
+
+    // filled in first copyUv() calls
+    private static final ThreadLocal<Vector2f[]> uvs = ThreadLocal.withInitial(() -> new Vector2f[4]);
+    // set in copyPos() calls
+    private static final ThreadLocal<Vector3f> position = ThreadLocal.withInitial(Vector3f::new);
+    private static final ThreadLocal<Vector2f[]> xy = ThreadLocal.withInitial(() -> {
+        return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
+    });
+    private static final ThreadLocal<Vector2f[]> newXy = ThreadLocal.withInitial(() -> {
+        return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
+    });
+
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
 
-        Vector2f[] uvs = new Vector2f[4];
+        Vector2f[] uvs = QuadUtils.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
@@ -213,17 +227,21 @@ public class QuadUtils {
      */
     // TODO simplify, this is quite long
     public static MutableQuadView subsect(MutableQuadView quad, ISubmap submap) {
-        Vector2f[] uvs = new Vector2f[4];
+        Direction normal = quad.nominalFace();
+
+        Vector2f[] uvs = QuadUtils.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
         int firstIndex = findMinUVIndex(uvs);
 
-        Vector3f[] positions = new Vector3f[4];
+        Vector2f[] xy = QuadUtils.xy.get();
+        Vector2f[] newXy = QuadUtils.newXy.get();
+        Vector3f position = QuadUtils.position.get();
         for (int i = 0; i < 4; i++) {
             int idx = (firstIndex + i) % 4;
-            positions[i] = quad.copyPos(i, positions[idx]);
-        }
+            // updates position
+            quad.copyPos(idx, position);
 
             switch (normal.getAxis()) {
                 case X -> xy[i].set(position.z, position.y);
