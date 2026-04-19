@@ -85,15 +85,15 @@ public class QuadUtils {
 
             for (int xQ = 0; xQ < 2; xQ++) {
                 for (int yQ = 0; yQ < 2; yQ++) {
-                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[xQ][yQ]);
+                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[yQ][xQ]);
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
                     TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
 
                     // slice quad into the current quadrant
-                    subsect(emitter, Submap.X2[yQ][xQ]);
-                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[xQ][yQ]));
+                    subsect(emitter, Submap.X2[xQ][yQ]);
+                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[yQ][xQ]));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
@@ -256,13 +256,15 @@ public class QuadUtils {
         quad.uv(2, Mth.lerp(u2, uvs[2].x, uvs[1].x), Mth.lerp(v2, uvs[2].y, uvs[3].y));
         quad.uv(3, Mth.lerp(u3, uvs[3].x, uvs[0].x), Mth.lerp(v3, uvs[3].y, uvs[2].y));
 
+        // spotless:off
         for (int i = 0; i < 4; i++) {
             switch (normal.getAxis()) {
-                case X -> quad.pos(i, quad.x(i), newXy[i].y, newXy[i].x);
-                case Y -> quad.pos(i, newXy[i].x, quad.y(i), newXy[i].y);
-                case Z -> quad.pos(i, newXy[i].x, newXy[i].y, quad.z(i));
+                case X -> quad.pos(i, quad.x(i),      1 - newXy[i].y, 1 - newXy[i].x);
+                case Y -> quad.pos(i, 1 - newXy[i].x, quad.y(i),      1 - newXy[i].y);
+                case Z -> quad.pos(i, 1 - newXy[i].x, 1 - newXy[i].y, quad.z(i)     );
             }
         }
+        // spotless:on
 
         return quad;
     }

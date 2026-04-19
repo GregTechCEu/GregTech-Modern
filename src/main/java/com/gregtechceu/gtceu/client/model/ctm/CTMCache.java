@@ -94,14 +94,15 @@ public class CTMCache {
         boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
     }
 
-    /** Some hardcoded offset values for the different corner indeces */
+    // these are inverted (on y) compared to the graphic; top row is bottom row and vice versa.
+    /** Some hardcoded offset values for the different corner indices */
     protected static Vector2ic[][] submapOffsets = {
-            { new Vector2i(0, 3), new Vector2i(1, 3) },
-            { new Vector2i(0, 2), new Vector2i(1, 2) },
+            { new Vector2i(0, 0), new Vector2i(1, 0) },
+            { new Vector2i(0, 1), new Vector2i(1, 1) },
     };
     protected static Vector2ic[][] defaultSubmapCache = {
-            { new Vector2i(4, 5), new Vector2i(5, 5) },
             { new Vector2i(4, 4), new Vector2i(5, 4) },
+            { new Vector2i(4, 5), new Vector2i(5, 5) },
     };
 
     // TODO encapsulate
@@ -160,7 +161,7 @@ public class CTMCache {
         if (isDefaultTexture(coordinates)) {
             return Submap.X2[coordinates.x() % 4][coordinates.y() % 4];
         } else {
-            return Submap.X4[(coordinates.x() + 2) % 4][(coordinates.y() + 2) % 4];
+            return Submap.X4[3 - (coordinates.x() + 2) % 4][3 - (coordinates.y() + 0) % 4];
         }
     }
 
@@ -177,7 +178,7 @@ public class CTMCache {
     }
 
     /**
-     * Builds the connection map and stores it in this CTMLogic instance.
+     * Builds the connection map and stores it in this CTMLogic instance.<br>
      * The {@link #connected(OctagonalOrientation)}, {@link #connectedAnd(OctagonalOrientation...)},
      * and {@link #connectedOr(OctagonalOrientation...)} methods can be used to access it.
      */
@@ -201,11 +202,11 @@ public class CTMCache {
                 this.submapCache[x][y] = submapOffsets[x][y];
             } else {
                 // dirs[0] is vertical, dirs[1] is horizontal
-                Vector2i offsets = new Vector2i(submapOffsets[x][y]);
-                if (connected(dirs[0])) offsets.x += 2;
-                if (connected(dirs[1])) offsets.y += 2;
+                Vector2i offset = new Vector2i(submapOffsets[x][y]);
+                if (connected(dirs[1])) offset.x += 2;
+                if (connected(dirs[0])) offset.y += 2;
 
-                this.submapCache[x][y] = offsets;
+                this.submapCache[x][y] = offset;
             }
         }
     }

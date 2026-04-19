@@ -93,8 +93,12 @@ public class ConnectionCheck {
         BlockState obscuring = getConnectionState(level, obscuringPos, level.getBlockState(obscuringPos),
                 dir, current, currentState);
 
-        // check that we aren't already connected to / from this side
-        return stateComparator(state, connectionState, dir) && !stateComparator(state, obscuring, dir);
+        boolean ret = stateComparator(state, connectionState, dir);
+
+        // check that we aren't already connected outwards from this side
+        ret &= !stateComparator(state, obscuring, dir);
+
+        return ret;
     }
 
     public boolean stateComparator(BlockState from, BlockState to, Direction dir) {
