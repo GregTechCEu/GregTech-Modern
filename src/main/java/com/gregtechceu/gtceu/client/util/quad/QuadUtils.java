@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.client.model.ctm.Submap;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 import com.gregtechceu.gtceu.client.util.TextureHelper;
-import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -15,8 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.model.IQuadTransformer;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -57,50 +54,6 @@ public class QuadUtils {
         return minIndex;
     }
 
-    private static void putVertexData(int[] vertices, int index, Vector3f pos, Vector2f uv) {
-        int posOffset = index * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
-        vertices[posOffset] = Float.floatToRawIntBits(pos.x());
-        vertices[posOffset + 1] = Float.floatToRawIntBits(pos.y());
-        vertices[posOffset + 2] = Float.floatToRawIntBits(pos.z());
-
-        int uvOffset = index * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-        vertices[uvOffset] = Float.floatToRawIntBits(uv.x());
-        vertices[uvOffset + 1] = Float.floatToRawIntBits(uv.y());
-    }
-
-    public static Vector2f[] normalizeUVs(Vector2f min, Vector2f max, Vector2f... uvs) {
-        Vector2f[] ret = new Vector2f[uvs.length];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = normalizeUV(min, max, uvs[i]);
-        }
-        return ret;
-    }
-
-    public static Vector2f normalizeUV(TextureAtlasSprite sprite, Vector2f vec) {
-        return new Vector2f(
-                Mth.inverseLerp(vec.x(), sprite.getU0(), sprite.getU1()),
-                Mth.inverseLerp(vec.y(), sprite.getV0(), sprite.getV1()));
-    }
-
-    public static Vector2f normalizeUV(Vector2f min, Vector2f max, Vector2f vec) {
-        return new Vector2f(
-                Mth.inverseLerp(vec.x(), min.x(), max.x()),
-                Mth.inverseLerp(vec.y(), min.y(), max.y()));
-    }
-
-    public static Vector2f[] relativizeUVs(TextureAtlasSprite sprite, Vector2f... uvs) {
-        for (int i = 0; i < uvs.length; i++) {
-            uvs[i] = relativizeUV(sprite, uvs[i]);
-        }
-        return uvs;
-    }
-
-    public static Vector2f relativizeUV(TextureAtlasSprite sprite, Vector2f vec) {
-        return new Vector2f(
-                Mth.lerp(vec.x(), sprite.getU0(), sprite.getU1()),
-                Mth.lerp(vec.y(), sprite.getV0(), sprite.getV1()));
-    }
-
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                                 List<BakedQuad> quads, @Nullable Direction cullFace) {
         CTMCache ctmCache = CTMCache.getInstance();
@@ -115,8 +68,6 @@ public class QuadUtils {
                                                 @Nullable Direction cullFace) {
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
-
-        QuadReInterpolator interpolator = new QuadReInterpolator();
 
         for (BakedQuad originalQuad : base) {
             TextureAtlasSprite originalSprite = originalQuad.getSprite();
@@ -135,7 +86,6 @@ public class QuadUtils {
 
                 emitter.fromVanilla(originalQuad, cullFace);
                 TextureHelper.normalizeBy(emitter, originalSprite);
-                interpolator.setInputQuad(emitter);
 
                 // slice quad into the current quadrant
                 subsect(emitter, Submap.X2[quadrant % 2][quadrant / 2]);
@@ -144,7 +94,6 @@ public class QuadUtils {
                 // derotate quad here
                 emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
-                //interpolator.transform(emitter);
 
                 emitter.emit();
             }
