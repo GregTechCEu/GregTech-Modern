@@ -50,11 +50,11 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         long amperesUsed = 0;
         for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
-            BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
+            BlockEntity be = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
             Direction oppositeSide = side.getOpposite();
             ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
                     getMachine().getBlockPos().relative(side), oppositeSide);
-            if (tileEntity != null && laserContainer != null) {
+            if (be != null && laserContainer != null) {
                 if (!laserContainer.inputsEnergy(oppositeSide)) continue;
                 amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                         outputAmperes - amperesUsed);

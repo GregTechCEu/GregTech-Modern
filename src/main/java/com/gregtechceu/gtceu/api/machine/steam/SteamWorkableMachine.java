@@ -33,6 +33,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * A singleblock steam machine with recipe logic.
+ */
 public abstract class SteamWorkableMachine extends SteamMachine
                                            implements IRecipeLogicMachine, IMufflableMachine {
 

@@ -1,17 +1,15 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import org.jetbrains.annotations.NotNull;
-
 public final class MachineTraitType<T extends MachineTrait> {
 
     private final Class<T> clazz;
     private final boolean allowMultipleInstances;
 
-    public MachineTraitType(@NotNull Class<T> clazz) {
+    public MachineTraitType(Class<T> clazz) {
         this(clazz, true);
     }
 
-    public MachineTraitType(@NotNull Class<T> clazz, boolean allowMultipleInstances) {
+    public MachineTraitType(Class<T> clazz, boolean allowMultipleInstances) {
         this.clazz = clazz;
         this.allowMultipleInstances = allowMultipleInstances;
     }
@@ -20,7 +18,7 @@ public final class MachineTraitType<T extends MachineTrait> {
         return allowMultipleInstances;
     }
 
-    public @NotNull T castTrait(@NotNull MachineTrait trait) {
+    public T castTrait(MachineTrait trait) {
         return clazz.cast(trait);
     }
 }
