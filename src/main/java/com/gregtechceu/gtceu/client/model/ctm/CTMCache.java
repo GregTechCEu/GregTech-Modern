@@ -17,6 +17,8 @@
  */
 package com.gregtechceu.gtceu.client.model.ctm;
 
+import com.gregtechceu.gtceu.utils.ArrayHelpers;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -97,15 +99,16 @@ public class CTMCache {
     /** Hardcoded offset values for the different submap indices */
     // store the full table(s) to reduce non-required allocations
     protected static final Vector2ic[][] submapOffsets = {
-            { new Vector2i(0, 0), new Vector2i(0, 1), },
-            { new Vector2i(1, 0), new Vector2i(1, 1), },
+            { new Vector2i(0, 0), new Vector2i(0, 1), new Vector2i(0, 2), new Vector2i(0, 3), },
+            { new Vector2i(1, 0), new Vector2i(1, 1), new Vector2i(1, 2), new Vector2i(1, 3), },
+            { new Vector2i(2, 0), new Vector2i(2, 1), new Vector2i(2, 2), new Vector2i(2, 3), },
+            { new Vector2i(3, 0), new Vector2i(3, 1), new Vector2i(3, 2), new Vector2i(3, 3), },
     };
     protected static final Vector2ic[][] defaultSubmapCache = {
             { new Vector2i(4, 4), new Vector2i(4, 5), },
             { new Vector2i(5, 4), new Vector2i(5, 5), },
     };
 
-    // TODO encapsulate
     public ConnectionCheck connectionCheck = new ConnectionCheck();
 
     // spotless:off
@@ -117,7 +120,7 @@ public class CTMCache {
     // spotless:on
 
     protected byte connectionMap;
-    protected Vector2ic[][] submapCache = defaultSubmapCache.clone();
+    protected Vector2ic[][] submapCache = ArrayHelpers.deepCopy(defaultSubmapCache);
 
     public static CTMCache getInstance() {
         return new CTMCache();
@@ -161,7 +164,7 @@ public class CTMCache {
         if (isDefaultTexture(coordinates)) {
             return Submap.X2[coordinates.x() % 4][coordinates.y() % 4];
         } else {
-            return Submap.X4[3 - (coordinates.x() + 0) % 4][3 - (coordinates.y() + 0) % 4];
+            return Submap.X4[coordinates.x()][coordinates.y()];
         }
     }
 
@@ -202,12 +205,8 @@ public class CTMCache {
                 // If all dirs are connected, we use the fully connected face, the base offset value.
                 this.submapCache[x][y] = submapOffsets[x][y];
             } else {
-                // dirs[0] is vertical, dirs[1] is horizontal
-                Vector2i offset = new Vector2i(submapOffsets[x][y]);
-                if (connected(dirs[1])) offset.x += 2;
-                if (connected(dirs[0])) offset.y += 2;
-
-                this.submapCache[x][y] = offset;
+                this.submapCache[x][y] = submapOffsets[x + (connected(dirs[0]) ? 2 : 0)]
+                        [y + (connected(dirs[1]) ? 2 : 0)];
             }
         }
     }
