@@ -207,7 +207,7 @@ public class CTMHelper {
             }
         }
 
-        if (normal.getAxis() != Direction.Axis.Y) {
+        if (normal != Direction.UP) {
             submap = submap.flipY();
         }
         if (normal == Direction.EAST || normal == Direction.NORTH) {
