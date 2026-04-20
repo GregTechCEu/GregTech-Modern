@@ -107,10 +107,6 @@ public class CTMHelper {
         return result;
     }
 
-    /**
-     * See {@link #subsect(MutableQuadView, ISubmap)}'s documentation for the quadrant layout table.
-     * @see #subsect(MutableQuadView, ISubmap)
-     */
     private static void growQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
         float minUInterp = maxUV.x > 0.5f ? 0.5f : 0.0f,
                 minVInterp = maxUV.y > 0.5f ? 0.5f : 0.0f;
@@ -170,18 +166,6 @@ public class CTMHelper {
         quad.uv(3, uvs[3].x == minUV.x ? minU : maxU, uvs[3].y == minUV.y ? minV : maxV);
     }
 
-    /**
-     * Quadrant table is as follows:
-     * <pre>
-     * ╔══════╤══════╗
-     * ║      │      ║
-     * ║  2   │  3   ║
-     * ╟──────┼──────╢
-     * ║      │      ║
-     * ║  0   │  1   ║
-     * ╚══════╧══════╝
-     * </pre>
-     */
     // TODO simplify, this is quite long
     public static MutableQuadView subsect(MutableQuadView quad, ISubmap submap) {
         Direction normal = quad.nominalFace();
