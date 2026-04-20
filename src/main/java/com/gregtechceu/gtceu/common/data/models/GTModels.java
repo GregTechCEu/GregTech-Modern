@@ -23,6 +23,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.*;
 
@@ -94,17 +95,17 @@ public class GTModels {
                         if (state.getValue(LampBlock.LIGHT)) {
                             ModelBuilder<?> model = prov.models()
                                     .getBuilder(ctx.getName() +
-                                            (state.getValue(GTBlockStateProperties.BLOOM) ? "_bloom" : ""))
+                                            (state.getValue(BlockStateProperties.BLOOM) ? "_bloom" : ""))
                                     .parent(parentOn);
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
-                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
+                                if (state.getValue(BlockStateProperties.BLOOM)) {
                                     model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
                                 } else {
                                     model.texture("active_overlay", "block/lamps/" + color.getName());
                                 }
                             } else {
-                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
+                                if (state.getValue(BlockStateProperties.BLOOM)) {
                                     model.texture("active",
                                             "block/lamps/" + color.getName() + "_borderless_emissive");
                                 } else {

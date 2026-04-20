@@ -13,8 +13,6 @@ public class GTBlockStateProperties {
             Direction.Plane.VERTICAL);
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-    public static final BooleanProperty BLOOM = BooleanProperty.create("bloom");
-    public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
 
     public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
 }

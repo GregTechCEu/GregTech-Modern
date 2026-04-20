@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,9 +32,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LampBlock extends Block {
 
-    public static final BooleanProperty BLOOM = GTBlockStateProperties.BLOOM;
+    public static final BooleanProperty BLOOM = BlockStateProperties.BLOOM;
     public static final BooleanProperty LIGHT = BlockStateProperties.LIT;
-    public static final BooleanProperty INVERTED = GTBlockStateProperties.INVERTED;
+    public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public static final String TAG_INVERTED = "inverted";
@@ -56,7 +54,7 @@ public class LampBlock extends Block {
         this.color = color;
         this.bordered = bordered;
         registerDefaultState(defaultBlockState()
-                .setValue(GTBlockStateProperties.BLOOM, true)
+                .setValue(BLOOM, true)
                 .setValue(LIGHT, true)
                 .setValue(INVERTED, false)
                 .setValue(POWERED, false));
@@ -75,7 +73,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isBloomEnabled(BlockState state) {
-        return state.getValue(GTBlockStateProperties.BLOOM);
+        return state.getValue(BLOOM);
     }
 
     public static boolean isInverted(CompoundTag tag) {
@@ -92,7 +90,7 @@ public class LampBlock extends Block {
 
     public CompoundTag getTagFromState(BlockState state) {
         CompoundTag tag = new CompoundTag();
-        tag.putBoolean(TAG_BLOOM, state.getValue(GTBlockStateProperties.BLOOM));
+        tag.putBoolean(TAG_BLOOM, state.getValue(BLOOM));
         tag.putBoolean(TAG_LIT, state.getValue(LIGHT));
         tag.putBoolean(TAG_INVERTED, state.getValue(INVERTED));
         return tag;
@@ -110,7 +108,7 @@ public class LampBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(INVERTED, GTBlockStateProperties.BLOOM, LIGHT, POWERED));
+        super.createBlockStateDefinition(builder.add(INVERTED, BLOOM, LIGHT, POWERED));
     }
 
     @Override
