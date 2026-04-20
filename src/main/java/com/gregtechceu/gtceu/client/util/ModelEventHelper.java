@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.core.mixins.ReloadableResourceManagerAccessor;
 
+import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -109,9 +110,8 @@ public class ModelEventHelper {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        // don't process baked model replacement here if ModernFix is loaded, as
-        // GTModernFixIntegration#onBakedModelLoad does the same thing & it's always called
-        if (GTCEu.Mods.isModernFixLoaded()) return;
+        // don't process baked model replacement here if ModernFix is loaded & dynamic resources is enabled
+        if (GTCEu.Mods.isModernFixLoaded() && GTModernFixIntegration.isDynamicResourcesEnabled()) return;
 
         for (var entry : event.getModels().entrySet()) {
             BakedModel model = entry.getValue();
