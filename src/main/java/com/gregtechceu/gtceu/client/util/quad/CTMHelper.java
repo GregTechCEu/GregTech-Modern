@@ -141,10 +141,12 @@ public class CTMHelper {
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
 
+        // cache UVs
         Vector2f[] uvs = CTMHelper.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
+        // scale the quadrants' UVs to the full block range
         Vector2f[] minMaxUVs = findMinMaxUVs(uvs);
         growQuadrantUVs(uvs, minMaxUVs[1]);
 
@@ -259,9 +261,9 @@ public class CTMHelper {
         // spotless:off
         for (int i = 0; i < 4; i++) {
             switch (normal.getAxis()) {
-                case X -> quad.pos(i, quad.x(i),      1 - newXy[i].y, 1 - newXy[i].x);
-                case Y -> quad.pos(i, 1 - newXy[i].x, quad.y(i),      1 - newXy[i].y);
-                case Z -> quad.pos(i, 1 - newXy[i].x, 1 - newXy[i].y, quad.z(i)     );
+                case X -> quad.pos(i, quad.x(i),  newXy[i].y, newXy[i].x);
+                case Y -> quad.pos(i, newXy[i].x, quad.y(i),  newXy[i].y);
+                case Z -> quad.pos(i, newXy[i].x, newXy[i].y, quad.z(i));
             }
         }
         // spotless:on

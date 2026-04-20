@@ -161,7 +161,7 @@ public class CTMCache {
         if (isDefaultTexture(coordinates)) {
             return Submap.X2[coordinates.x() % 4][coordinates.y() % 4];
         } else {
-            return Submap.X4[3 - (coordinates.x() + 2) % 4][3 - (coordinates.y() + 0) % 4];
+            return Submap.X4[3 - (coordinates.x() + 0) % 4][3 - (coordinates.y() + 0) % 4];
         }
     }
 
