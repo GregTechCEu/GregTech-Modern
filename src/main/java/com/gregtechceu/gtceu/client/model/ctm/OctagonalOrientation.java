@@ -17,6 +17,8 @@
  */
 package com.gregtechceu.gtceu.client.model.ctm;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -73,7 +75,7 @@ public enum OctagonalOrientation implements StringRepresentable {
 
     private void buildCaches() {
         // Fill normalized dirs
-        for (Direction normal : Direction.values()) {
+        for (Direction normal : GTUtil.DIRECTIONS) {
             Direction[] normalized;
             if (normal == NORMAL) {
                 normalized = dirs;

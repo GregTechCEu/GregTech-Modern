@@ -57,7 +57,7 @@ public class CTMHelper {
     }
 
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                                List<BakedQuad> quads, @Nullable Direction cullFace) {
+                                                List<BakedQuad> quads, Direction cullFace) {
         CTMCache ctmCache = CTMCache.getInstance();
         if (cullFace != null) {
             ctmCache.fillSubmapCache(level, pos, state, cullFace);
@@ -66,8 +66,7 @@ public class CTMHelper {
         return buildCTMQuads(ctmCache, quads, cullFace);
     }
 
-    public static List<BakedQuad> buildCTMQuads(CTMCache cachedConnections, List<BakedQuad> base,
-                                                @Nullable Direction cullFace) {
+    public static List<BakedQuad> buildCTMQuads(CTMCache cachedConnections, List<BakedQuad> base, Direction cullFace) {
         List<BakedQuad> result = new LinkedList<>();
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
@@ -83,17 +82,17 @@ public class CTMHelper {
 
             Vector2ic[][] ctm = cachedConnections.getCachedSubmapIndices();
 
-            for (int xQ = 0; xQ < 2; xQ++) {
-                for (int yQ = 0; yQ < 2; yQ++) {
-                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[yQ][xQ]);
+            for (int x = 0; x < 2; x++) {
+                for (int y = 0; y < 2; y++) {
+                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[x][y]);
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
                     TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
 
                     // slice quad into the current quadrant
-                    subsect(emitter, Submap.X2[xQ][yQ]);
-                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[yQ][xQ]));
+                    subsect(emitter, Submap.X2[x][y]);
+                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[x][y]));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
