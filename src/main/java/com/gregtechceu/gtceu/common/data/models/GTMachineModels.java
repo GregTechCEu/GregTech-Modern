@@ -23,7 +23,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 
 import com.google.common.collect.ImmutableMap;
@@ -584,7 +583,8 @@ public class GTMachineModels {
     }
 
     public static final ResourceLocation OVERLAY_SCREEN_TEXTURE = GTCEu.id("block/overlay/machine/overlay_screen");
-    public static final ResourceLocation OVERLAY_QTANK_EMISSIVE_TEXTURE = GTCEu.id("block/overlay/machine/overlay_qtank_emissive");
+    public static final ResourceLocation OVERLAY_QTANK_EMISSIVE_TEXTURE = GTCEu
+            .id("block/overlay/machine/overlay_qtank_emissive");
 
     public static MachineBuilder.ModelInitializer createFisherModel() {
         return (ctx, prov, builder) -> {
@@ -655,7 +655,7 @@ public class GTMachineModels {
     // spotless:on
 
     public static ModelFile addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
-                                                        BlockModelBuilder model) {
+                                                BlockModelBuilder model) {
         for (var entry : overlays.getTextures().entrySet()) {
             var face = entry.getKey();
             var textures = entry.getValue();
