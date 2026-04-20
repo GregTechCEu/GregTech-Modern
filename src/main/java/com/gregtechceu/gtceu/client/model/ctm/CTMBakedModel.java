@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.util.quad.QuadUtils;
+import com.gregtechceu.gtceu.client.util.quad.CTMHelper;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -49,7 +49,7 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         CTMCache ctmCache = CTMCache.getInstance();
         ctmCache.fillSubmapCache(level, pos, state, side);
         return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
-                .computeIfAbsent(ctmCache, cache -> QuadUtils.buildCTMQuads(cache,
+                .computeIfAbsent(ctmCache, cache -> CTMHelper.buildCTMQuads(cache,
                         super.getQuads(state, side, rand, parentModelData, renderType), side));
     }
 

@@ -26,7 +26,7 @@ import java.util.List;
 import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
 import static com.gregtechceu.gtceu.client.util.ModelEventHelper.*;
 
-public class QuadUtils {
+public class CTMHelper {
 
     public static Vector2f[] findMinMaxUVs(Vector2f[] uvs) {
         float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE, maxU = Float.MIN_VALUE, maxV = Float.MIN_VALUE;
@@ -141,7 +141,7 @@ public class QuadUtils {
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
 
-        Vector2f[] uvs = QuadUtils.uvs.get();
+        Vector2f[] uvs = CTMHelper.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
@@ -185,15 +185,15 @@ public class QuadUtils {
     public static MutableQuadView subsect(MutableQuadView quad, ISubmap submap) {
         Direction normal = quad.nominalFace();
 
-        Vector2f[] uvs = QuadUtils.uvs.get();
+        Vector2f[] uvs = CTMHelper.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
         }
         int firstIndex = findMinUVIndex(uvs);
 
-        Vector2f[] xy = QuadUtils.xy.get();
-        Vector2f[] newXy = QuadUtils.newXy.get();
-        Vector3f position = QuadUtils.position.get();
+        Vector2f[] xy = CTMHelper.xy.get();
+        Vector2f[] newXy = CTMHelper.newXy.get();
+        Vector3f position = CTMHelper.position.get();
         for (int i = 0; i < 4; i++) {
             int idx = (firstIndex + i) % 4;
             // updates position
