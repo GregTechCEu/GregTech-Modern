@@ -9,6 +9,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTDevBlocks {
 
     public static final BlockEntry<Block> CTM_TEST = REGISTRATE.block("ctm_test", Block::new)
+            .lang("Connected Texture Test Block")
             .properties(p -> p.noLootTable().sound(SoundType.SCULK))
             .simpleItem()
             .register();
