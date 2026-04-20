@@ -39,12 +39,11 @@ public class LampBlock extends Block {
 
     public static final String TAG_INVERTED = "inverted";
     public static final String TAG_BLOOM = "bloom";
-    public static final String TAG_LIT = "lit";
+    public static final String TAG_LIGHT = "lit";
 
-    public static final int BLOOM_FLAG = 1;
-    public static final int LIGHT_FLAG = 2;
-    public static final int INVERTED_FLAG = 4;
-    public static final int POWERED_FLAG = 8;
+    public static final int BLOOM_FLAG = 0b001;
+    public static final int LIGHT_FLAG = 0b010;
+    public static final int INVERTED_FLAG = 0b100;
 
     public final DyeColor color;
     public final boolean bordered;
@@ -61,7 +60,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isLightActive(BlockState state) {
-        return state.getValue(INVERTED) != state.getValue(POWERED);
+        return isInverted(state) != state.getValue(POWERED);
     }
 
     public static boolean isInverted(BlockState state) {
@@ -81,7 +80,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isLightEnabled(CompoundTag tag) {
-        return tag.getBoolean(TAG_LIT);
+        return tag.getBoolean(TAG_LIGHT);
     }
 
     public static boolean isBloomEnabled(CompoundTag tag) {
@@ -91,16 +90,16 @@ public class LampBlock extends Block {
     public CompoundTag getTagFromState(BlockState state) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_BLOOM, state.getValue(BLOOM));
-        tag.putBoolean(TAG_LIT, state.getValue(LIGHT));
+        tag.putBoolean(TAG_LIGHT, state.getValue(LIGHT));
         tag.putBoolean(TAG_INVERTED, state.getValue(INVERTED));
         return tag;
     }
 
     public ItemStack getStackFromIndex(int i) {
         CompoundTag tag = new CompoundTag();
-        tag.putBoolean(LampBlock.TAG_INVERTED, (i & LampBlock.INVERTED_FLAG) == 0);
-        tag.putBoolean(LampBlock.TAG_BLOOM, (i & LampBlock.BLOOM_FLAG) == 0);
-        tag.putBoolean(LampBlock.TAG_LIT, (i & LampBlock.LIGHT_FLAG) == 0);
+        tag.putBoolean(LampBlock.TAG_INVERTED, (i & LampBlock.INVERTED_FLAG) != 0);
+        tag.putBoolean(LampBlock.TAG_BLOOM, (i & LampBlock.BLOOM_FLAG) != 0);
+        tag.putBoolean(LampBlock.TAG_LIGHT, (i & LampBlock.LIGHT_FLAG) != 0);
         ItemStack stack = new ItemStack(this);
         stack.setTag(tag);
         return stack;
@@ -108,12 +107,12 @@ public class LampBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(INVERTED, BLOOM, LIGHT, POWERED));
+        builder.add(INVERTED, BLOOM, LIGHT, POWERED);
     }
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(LIGHT) && isLightActive(state) ? 15 : 0;
+        return isLightEnabled(state) && isLightActive(state) ? 15 : 0;
     }
 
     @Override
@@ -122,14 +121,18 @@ public class LampBlock extends Block {
         return state.getBlock().defaultBlockState();
     }
 
+    public void update(BlockState state, Level level, BlockPos pos) {
+        if (state.getValue(POWERED) != level.hasNeighborSignal(pos)) {
+            level.setBlock(pos, state.cycle(POWERED),
+                    state.getValue(LIGHT) ? Block.UPDATE_ALL_IMMEDIATE : Block.UPDATE_ALL);
+        }
+    }
+
     @Override
     @SuppressWarnings("deprecation")
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         if (!level.isClientSide) {
-            boolean powered = state.getValue(POWERED);
-            if (powered != level.hasNeighborSignal(pos)) {
-                level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
-            }
+            update(state, level, pos);
         }
         super.onPlace(state, level, pos, oldState, movedByPiston);
     }
@@ -139,19 +142,14 @@ public class LampBlock extends Block {
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
                                 boolean movedByPiston) {
         if (!level.isClientSide) {
-            boolean powered = state.getValue(POWERED);
-            if (powered != level.hasNeighborSignal(pos)) {
-                level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
-            }
+            update(state, level, pos);
         }
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.cycle(POWERED), state.getValue(LIGHT) ? 2 | 8 : 2);
-        }
+        update(state, level, pos);
     }
 
     @Override
@@ -167,12 +165,10 @@ public class LampBlock extends Block {
                                 TooltipFlag flag) {
         if (stack.hasTag()) {
             var tag = stack.getTag();
-            if (isInverted(tag))
-                tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.inverted"));
-            if (!isBloomEnabled(tag))
-                tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_bloom"));
-            if (!isLightEnabled(tag))
-                tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_light"));
+
+            if (isInverted(tag)) tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.inverted"));
+            if (!isBloomEnabled(tag)) tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_bloom"));
+            if (!isLightEnabled(tag)) tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_light"));
         }
     }
 

@@ -23,7 +23,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.*;
 
@@ -86,31 +85,29 @@ public class GTModels {
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
                                                                                                               boolean border) {
         return (ctx, prov) -> {
+            final String colorName = color.getSerializedName();
             final String borderPart = (border ? "" : "_borderless");
             ModelFile parentOn = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart));
             ModelFile parentOff = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart + "_off"));
 
             prov.getVariantBuilder(ctx.getEntry())
-                    .forAllStates(state -> {
-                        if (state.getValue(LampBlock.LIGHT)) {
+                    .forAllStatesExcept(state -> {
+                        if (LampBlock.isLightActive(state)) {
                             ModelBuilder<?> model = prov.models()
-                                    .getBuilder(ctx.getName() +
-                                            (state.getValue(BlockStateProperties.BLOOM) ? "_bloom" : ""))
+                                    .getBuilder(ctx.getName() + (state.getValue(LampBlock.BLOOM) ? "_bloom" : ""))
                                     .parent(parentOn);
                             if (border) {
-                                model.texture("active", "block/lamps/" + color.getName());
-                                if (state.getValue(BlockStateProperties.BLOOM)) {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
+                                model.texture("active", "block/lamps/" + colorName);
+                                if (state.getValue(LampBlock.BLOOM)) {
+                                    model.texture("active_overlay", "block/lamps/" + colorName + "_emissive");
                                 } else {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName());
+                                    model.texture("active_overlay", "block/lamps/" + colorName);
                                 }
                             } else {
-                                if (state.getValue(BlockStateProperties.BLOOM)) {
-                                    model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless_emissive");
+                                if (state.getValue(LampBlock.BLOOM)) {
+                                    model.texture("active", "block/lamps/" + colorName + "_borderless_emissive");
                                 } else {
-                                    model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless");
+                                    model.texture("active", "block/lamps/" + colorName + "_borderless");
                                 }
                             }
                             return ConfiguredModel.builder()
@@ -121,11 +118,10 @@ public class GTModels {
                                     .modelFile(prov.models()
                                             .getBuilder(ctx.getName() + "_off")
                                             .parent(parentOff)
-                                            .texture("inactive",
-                                                    "block/lamps/" + color.getName() + "_off" + borderPart))
+                                            .texture("inactive", "block/lamps/" + colorName + "_off" + borderPart))
                                     .build();
                         }
-                    });
+                    }, LampBlock.LIGHT);
         };
     }
 
