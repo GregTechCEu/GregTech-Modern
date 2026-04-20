@@ -39,40 +39,40 @@ import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
  * │ texture.png     │ │ texture_ctm.png                │
  * │ ╔══════╤══════╗ │ │  ──────┼────── ║ ─────┼───── ║ │
  * │ ║      │      ║ │ │ │      │      │║      │      ║ │
- * │ ║ 4/4  │ 4/5  ║ │ │ │ 0/0  │ 1/0  │║ 2/0  │ 3/0  ║ │
+ * │ ║ 4/4  │ 4/5  ║ │ │ │ 0/0  │ 0/1  │║ 0/2  │ 0/3  ║ │
  * │ ╟──────┼──────╢ │ │ ┼──────┼──────┼╟──────┼──────╢ │
  * │ ║      │      ║ │ │ │      │      │║      │      ║ │
- * │ ║ 5/4  │ 5/5  ║ │ │ │ 0/1  │ 1/1  │║ 2/1  │ 3/1  ║ │
+ * │ ║ 5/4  │ 5/5  ║ │ │ │ 1/0  │ 1/1  │║ 1/2  │ 1/3  ║ │
  * │ ╚══════╧══════╝ │ │  ──────┼────── ║ ─────┼───── ║ │
  * └─────────────────┘ │ ═══════╤═══════╝ ─────┼───── ╚ │
  *                     │ │      │      ││      │      │ │
- *                     │ │ 0/2  │ 1/2  ││ 2/2  │ 3/2  │ │
+ *                     │ │ 2/0  │ 2/1  ││ 2/2  │ 2/3  │ │
  *                     │ ┼──────┼──────┼┼──────┼──────┼ │
  *                     │ │      │      ││      │      │ │
- *                     │ │ 0/3  │ 1/3  ││ 2/3  │ 3/3  │ │
+ *                     │ │ 3/0  │ 3/1  ││ 3/2  │ 3/3  │ │
  *                     │ ═══════╧═══════╗ ─────┼───── ╔ │
  *                     └────────────────────────────────┘
  * </pre>
- * combining { { 5/4, 1/3 }, { 1/2, 4/4 } }, we can generate a texture connected to the right!
+ * combining { { 5/4, 3/1 }, { 2/1, 4/4 } }, we can generate a texture connected to the right!
  * <pre>
  * ╔══════╤═══════
  * ║      │      │
- * ║ 4/4  │ 1/2  │
+ * ║ 4/4  │ 2/1  │
  * ╟──────┼──────┼
  * ║      │      │
- * ║ 5/4  │ 1/3  │
+ * ║ 5/4  │ 3/1  │
  * ╚══════╧═══════
  * </pre>
  *
- * combining { { 5/4, 1/3 }, { 3/2, 2/0 } }, we can generate a texture in the shape of an L
+ * combining { { 5/4, 3/1 }, { 0/2, 2/3 } }, we can generate a texture in the shape of an L
  * (connected to the right and up)
  * <pre>
  * ║ ─────┼───── ╚
  * ║      │      │
- * ║ 2/0  │ 3/2  │
+ * ║ 0/2  │ 2/3  │
  * ╟──────┼──────┼
  * ║      │      │
- * ║ 5/4  │ 1/3  │
+ * ║ 5/4  │ 3/1  │
  * ╚══════╧═══════
  * </pre>
  *
@@ -94,27 +94,27 @@ public class CTMCache {
         boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
     }
 
-    // these are inverted (on y) compared to the graphic; top row is bottom row and vice versa.
-    /** Some hardcoded offset values for the different corner indices */
-    protected static Vector2ic[][] submapOffsets = {
-            { new Vector2i(0, 0), new Vector2i(1, 0) },
-            { new Vector2i(0, 1), new Vector2i(1, 1) },
+    /** Hardcoded offset values for the different submap indices */
+    // store the full table(s) to reduce non-required allocations
+    protected static final Vector2ic[][] submapOffsets = {
+            { new Vector2i(0, 0), new Vector2i(0, 1), },
+            { new Vector2i(1, 0), new Vector2i(1, 1), },
     };
-    protected static Vector2ic[][] defaultSubmapCache = {
-            { new Vector2i(4, 4), new Vector2i(5, 4) },
-            { new Vector2i(4, 5), new Vector2i(5, 5) },
+    protected static final Vector2ic[][] defaultSubmapCache = {
+            { new Vector2i(4, 4), new Vector2i(4, 5), },
+            { new Vector2i(5, 4), new Vector2i(5, 5), },
     };
 
     // TODO encapsulate
     public ConnectionCheck connectionCheck = new ConnectionCheck();
 
+    // spotless:off
     // Mapping the different corner indices to their respective dirs
-    protected static final OctagonalOrientation[][] submapMap = {
-            { BOTTOM, LEFT, BOTTOM_LEFT },
-            { BOTTOM, RIGHT, BOTTOM_RIGHT },
-            { TOP, RIGHT, TOP_RIGHT },
-            { TOP, LEFT, TOP_LEFT }
+    protected static final OctagonalOrientation[][][] submapMap = {
+            { { LEFT, TOP, TOP_LEFT },       { RIGHT, TOP, TOP_RIGHT },       },
+            { { LEFT, BOTTOM, BOTTOM_LEFT }, { RIGHT, BOTTOM, BOTTOM_RIGHT }, },
     };
+    // spotless:on
 
     protected byte connectionMap;
     protected Vector2ic[][] submapCache = defaultSubmapCache.clone();
@@ -195,7 +195,8 @@ public class CTMCache {
 
     @SuppressWarnings("null")
     protected void fillSubmaps(int x, int y) {
-        OctagonalOrientation[] dirs = submapMap[x + y * 2];
+        // [0] is horizontal, [1] is vertical, [2] is diagonal
+        OctagonalOrientation[] dirs = submapMap[x][y];
         if (connectedOr(dirs[0], dirs[1])) {
             if (connectedAnd(dirs)) {
                 // If all dirs are connected, we use the fully connected face, the base offset value.
