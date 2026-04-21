@@ -402,8 +402,7 @@ public abstract class MutableQuadView extends QuadView {
         int colorIndex = baseIndex + VERTEX_COLOR;
 
         for (int i = 0; i < 4; i++) {
-            // ARGB -> ABGR is a transitive process, e.g. it can be reversed and works fine.
-            //this.data[colorIndex] = QuadTransformers.toABGR(this.data[colorIndex]);
+            this.data[colorIndex] = QuadTransformers.toABGR(this.data[colorIndex]);
             colorIndex += VERTEX_STRIDE;
         }
 

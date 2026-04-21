@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.QuadTransformers;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -369,7 +370,7 @@ public class QuadView {
 
         int colorIndex = EncodingFormat.VERTEX_COLOR;
         for (int i = 0; i < 4; i++) {
-            //target[colorIndex] = QuadTransformers.toABGR(target[colorIndex]);
+            target[colorIndex] = QuadTransformers.toABGR(target[colorIndex]);
             colorIndex += VERTEX_STRIDE;
         }
     }
