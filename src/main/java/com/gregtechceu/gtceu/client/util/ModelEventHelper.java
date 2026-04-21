@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.core.mixins.ReloadableResourceManagerAccessor;
-
 import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")

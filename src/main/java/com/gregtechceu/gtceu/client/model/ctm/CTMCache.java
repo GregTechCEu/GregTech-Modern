@@ -31,6 +31,7 @@ import org.joml.Vector2ic;
 
 import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
 
+// spotless:off
 /**
  * The CTM renderer will draw the block's FACE by assembling 4 quadrants from the 5 available block textures.
  * The normal {@code texture.png} is the block's "unconnected" texture, and is used when CTM is disabled or the block
@@ -83,16 +84,17 @@ import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
  * <p>
  * Sourced from <a href="https://github.com/Chisel-Team/ConnectedTexturesMod/blob/19a58b080ff2d4fec4fd44ffdb426fc078ce853d/src/main/java/team/chisel/ctm/client/util/CTMLogic.java">ConnectedTexturesMod</a>.
  */
+// spotless:on
 @Accessors(fluent = true, chain = true)
 public class CTMCache {
 
     @FunctionalInterface
     public interface StateComparisonCallback {
-        
+
         StateComparisonCallback DEFAULT = (connectionCheck, from, to, dir) -> {
             return connectionCheck.ignoreStates() ? from.getBlock() == to.getBlock() : from == to;
         };
-        
+
         boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
     }
 
@@ -205,8 +207,8 @@ public class CTMCache {
                 // If all dirs are connected, we use the fully connected face, the base offset value.
                 this.submapCache[x][y] = submapOffsets[x][y];
             } else {
-                this.submapCache[x][y] = submapOffsets[x + (connected(dirs[0]) ? 2 : 0)]
-                        [y + (connected(dirs[1]) ? 2 : 0)];
+                this.submapCache[x][y] = submapOffsets[x + (connected(dirs[0]) ? 2 : 0)][y +
+                        (connected(dirs[1]) ? 2 : 0)];
             }
         }
     }

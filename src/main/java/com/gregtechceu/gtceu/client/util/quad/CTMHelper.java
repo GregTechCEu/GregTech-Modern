@@ -15,7 +15,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2ic;
 import org.joml.Vector3f;
@@ -38,7 +37,7 @@ public class CTMHelper {
             maxU = Math.max(maxU, uv.x());
             maxV = Math.max(maxV, uv.y());
         }
-        return new Vector2f[]{ new Vector2f(minU, minV), new Vector2f(maxU, maxV) };
+        return new Vector2f[] { new Vector2f(minU, minV), new Vector2f(maxU, maxV) };
     }
 
     public static int findMinUVIndex(Vector2f[] uvs) {

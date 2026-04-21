@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.common.data.blocks;
 
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+
+import com.tterrag.registrate.util.entry.BlockEntry;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
