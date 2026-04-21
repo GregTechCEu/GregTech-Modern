@@ -15,7 +15,6 @@
   "behavior.portable_scanner.debug_lag_count": "Попередження про затримку %s (все, що триває довше, ніж %sмс) на сервері.",
   "behavior.portable_scanner.debug_machine": "Мета-ID: %s",
   "behavior.portable_scanner.debug_machine_invalid": " недійсний!",
-  "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null!",
   "behavior.portable_scanner.debug_machine_valid": " дійсний",
   "behavior.portable_scanner.divider": "=========================",
   "behavior.portable_scanner.energy_container_in": "Макс. Вхід: %s (%s) EU з %s A",

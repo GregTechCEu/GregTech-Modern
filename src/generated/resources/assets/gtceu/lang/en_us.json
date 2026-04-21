@@ -14,7 +14,6 @@
   "behavior.portable_scanner.debug_lag_count": "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.",
   "behavior.portable_scanner.debug_machine": "Meta-ID: %s",
   "behavior.portable_scanner.debug_machine_invalid": " invalid!",
-  "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null!",
   "behavior.portable_scanner.debug_machine_valid": " valid",
   "behavior.portable_scanner.divider": "=========================",
   "behavior.portable_scanner.energy_container_in": "Max IN: %s (%s) EU at %s A",

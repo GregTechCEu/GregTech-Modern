@@ -409,7 +409,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             Set<CleanroomReceiverTrait> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getTileEntity();
+            BlockEntity blockEntity = blockWorldState.getBlockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return false;
