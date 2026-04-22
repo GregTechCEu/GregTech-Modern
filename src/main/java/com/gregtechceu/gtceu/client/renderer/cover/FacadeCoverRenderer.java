@@ -32,6 +32,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -45,7 +46,7 @@ import java.util.*;
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
     public static final double THIN_OFFSET = 2e-3;
-    private static final double FACADE_PLANE_BACK = 1.0 / 16 - 0.002 + THIN_OFFSET;
+    private static final double FACADE_PLANE_BACK = 1.0 / 16 - THIN_OFFSET;
 
     private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(THIN_OFFSET);
 
@@ -110,7 +111,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         int hash = facadeState.hashCode();
         BakedModel model = CACHE.computeIfAbsent(hash,
                 $ -> new FacadeItemBakedModel(this.defaultItemModel, facadeState));
-        return Collections.singletonList(model);
+        return model.getRenderPasses(stack, fabulous);
     }
 
     @Override
@@ -205,75 +206,86 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         return super.getOverrides();
     }
 
-    private static class FacadeItemBakedModel extends BakedModelWrapper<BakedModel> {
+    private static class FacadeItemBakedModel extends BakedModelWrapper<BakedModel> implements IDynamicBakedModel {
 
         private final BlockState facadeState;
-        private @Nullable List<BakedQuad> quads = null;
+        private final Map<Direction, List<BakedQuad>> quads = new IdentityHashMap<>();
+
+        private final ItemStack facadeStack;
 
         private FacadeItemBakedModel(BakedModel parentModel, BlockState facadeState) {
             super(parentModel);
             this.facadeState = facadeState;
+
+            this.facadeStack = this.facadeState.getBlock().asItem().getDefaultInstance();;
+        }
+
+        @Override
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+            return IDynamicBakedModel.super.getQuads(state, side, rand);
         }
 
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                         RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
-            if (this.quads != null) {
-                return this.quads;
+            if (this.quads.containsKey(side)) {
+                return this.quads.get(side);
             }
-            this.quads = new LinkedList<>(this.originalModel.getQuads(state, side, rand, modelData, renderType));
+            List<BakedQuad> quads = new LinkedList<>();
+            this.quads.put(side, quads);
 
             if (facadeState.getRenderShape() != RenderShape.MODEL) {
-                return this.quads;
+                return quads;
             }
             BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
             if (facadeModel.isCustomRenderer()) {
-                return this.quads;
+                return quads;
             }
+
 
             ModelData facadeData = modelData.get(GTModelProperties.CHILD_MODEL_DATA);
             if (facadeData == null) facadeData = ModelData.EMPTY;
-            if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeData).contains(renderType)) {
-                return this.quads;
-            }
 
-            // always add unculled faces
-            List<BakedQuad> facadeQuads = new LinkedList<>(
-                    facadeModel.getQuads(this.facadeState, null, rand, facadeData, renderType));
-            if (side != null) {
-                // if a cullface is given, only draw that + unculled faces
-                facadeQuads.addAll(facadeModel.getQuads(this.facadeState, side, rand, facadeData, renderType));
-            } else {
-                // add all culled faces if no cullface is given
-                for (Direction cullFace : GTUtil.DIRECTIONS) {
-                    facadeQuads.addAll(facadeModel.getQuads(this.facadeState, cullFace, rand, facadeData, renderType));
-                }
-            }
-
-            // clamp all 'facaded' quads into a box and bake their tint color into the vertices
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
-            ItemStack stack = null;
-            for (BakedQuad quad : facadeQuads) {
-                // bake the quad's colors into its vertices
-                if (quad.isTinted()) {
-                    // if the quad has a tint index set, bake the tint into the vertex color
 
-                    // initialize `stack` lazily so we don't allocate it for no reason
-                    if (stack == null) stack = this.facadeState.getBlock().asItem().getDefaultInstance();
-
-                    int color = itemColors.getColor(stack, quad.getTintIndex());
-                    // this also copies the quad
-                    quad = GTQuadTransformers.setColor(quad, color, true);
-                } else {
-                    // otherwise just copy the quad so we don't mutate the original model with the clamping
-                    quad = GTQuadTransformers.copy(quad);
+            for (var model : facadeModel.getRenderPasses(this.facadeStack, true)) {
+                if (renderType != null && !model.getRenderTypes(facadeState, rand, facadeData).contains(renderType)) {
+                    continue;
                 }
 
-                // clamp the quad's vertex positions to fit into the facade plane
-                FACADE_ITEM_PLANE_TRANSFORMER.processInPlace(quad);
+                // always add unculled faces
+                List<BakedQuad> facadeQuads = new LinkedList<>(
+                        model.getQuads(this.facadeState, null, rand, facadeData, renderType));
+                if (side != null) {
+                    // if a cullface is given, only draw that + unculled faces
+                    facadeQuads.addAll(model.getQuads(this.facadeState, side, rand, facadeData, renderType));
+                } else {
+                    // add all culled faces if no cullface is given
+                    for (Direction cullFace : GTUtil.DIRECTIONS) {
+                        facadeQuads.addAll(model.getQuads(this.facadeState, cullFace, rand, facadeData, renderType));
+                    }
+                }
 
-                this.quads.add(quad);
+                // clamp all 'facaded' quads into a box and bake their tint color into the vertices
+                for (BakedQuad quad : facadeQuads) {
+                    // bake the quad's colors into its vertices
+                    if (quad.isTinted()) {
+                        // if the quad has a tint index set, bake the tint into the vertex color
+                        int color = itemColors.getColor(this.facadeStack, quad.getTintIndex());
+                        // this also copies the quad
+                        quad = GTQuadTransformers.setColor(quad, color, true);
+                    } else {
+                        // otherwise just copy the quad so we don't mutate the original model with the clamping
+                        quad = GTQuadTransformers.copy(quad);
+                    }
+
+                    // clamp the quad's vertex positions to fit into the facade plane
+                    FACADE_ITEM_PLANE_TRANSFORMER.processInPlace(quad);
+
+                    quads.add(quad);
+                }
             }
+
             return quads;
         }
 
@@ -283,6 +295,23 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                     .with(GTModelProperties.CHILD_MODEL_DATA,
                             ModelUtils.getModelForState(facadeState).getModelData(level, pos, state, modelData))
                     .build();
+        }
+
+        @Override
+        public List<RenderType> getRenderTypes(ItemStack stack, boolean fabulous) {
+            List<RenderType> renderTypes = new ArrayList<>();
+
+            BakedModel facadeModel = ModelUtils.getModelForState(this.facadeState);
+            for (var model : facadeModel.getRenderPasses(stack, fabulous)) {
+                renderTypes.addAll(model.getRenderTypes(this.facadeStack, fabulous));
+            }
+
+            return renderTypes;
+        }
+
+        @Override
+        public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+            return List.of(originalModel, this);
         }
     }
 }
