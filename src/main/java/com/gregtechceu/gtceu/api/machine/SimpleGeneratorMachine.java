@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -26,13 +26,15 @@ import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.function.BiFunction;
 
+/**
+ * All singleblock generators are implemented here.
+ */
 public class SimpleGeneratorMachine extends WorkableTieredMachine
                                     implements IFancyUIMachine {
 
@@ -44,8 +46,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         super(info, tier, tankScalingFunction);
 
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        this.hazardEmitter = new EnvironmentalHazardEmitterTrait(this, GTMedicalConditions.CARBON_MONOXIDE_POISONING,
-                hazardStrengthPerOperation);
+        this.hazardEmitter = attachTrait(
+                new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                        hazardStrengthPerOperation));
     }
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
@@ -83,7 +86,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Simple Generator
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

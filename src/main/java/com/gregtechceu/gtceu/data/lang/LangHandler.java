@@ -838,8 +838,6 @@ public class LangHandler {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =",
-                " null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
         provider.add("behavior.portable_scanner.divider", "=========================");
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");
@@ -1627,6 +1625,7 @@ public class LangHandler {
         multiLang(provider, "gtceu.placeholder_info.data",
                 "Stores or retrieves some data from a data item (data stick/orb/module) in one of the slots.",
                 "If you leave the <index> argument empty, it will be replaced with the value p (p is an integer from 0 to (capacity - 1) that is stored in the data item nbt).",
+                "If the slot argument is equal to 0, this placeholder will manipulate the data stick that is currently targeted by this text module inside a data hatch.",
                 "Usage:",
                 "  {data get <slot> <index>} -> the data stored in the item in the specified slot",
                 "  {data set <slot> <index> <value>} -> sets the data stored in the item in the specified slot, returns an empty string",
@@ -1739,6 +1738,16 @@ public class LangHandler {
                 "Usage:",
                 "  {blockNbt} -> full block entity nbt",
                 "  {blockNbt [key1] [key2] ...} -> part of the nbt");
+        multiLang(provider, "gtceu.placeholder_info.targetSlot",
+                "Returns the index of the targeted data hatch slot",
+                "Usage:",
+                "  {targetSlot} -> <slot> (from 1 to 4/9/16)");
+        multiLang(provider, "gtceu.placeholder_info.setTargetSlot",
+                "Sets the index of the targeted data hatch slot.",
+                "The change will take effect immediately after this placeholder executes.",
+                "(Further placeholders will reference the new target)",
+                "Usage:",
+                "  {setTargetSlot <slot>} -> empty string");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_item_link_cover.tooltip",
                 "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
@@ -1766,6 +1775,8 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.bf_invalid_num",
                 "Invalid number at index %d when processing symbol number %d");
         provider.add("gtceu.computer_monitor_cover.error.bf_invalid", "Invalid character at %d");
+        provider.add("gtceu.provider.computer_monitor_cover.error.no_target",
+                "No target selected for the monitor group");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.main_textbox_tooltip",
                 "Input string to display on line %d here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",

@@ -26,7 +26,7 @@ public class OpticalComputationHatchMachine extends MultiblockPartMachine {
     public OpticalComputationHatchMachine(BlockEntityCreationInfo info, boolean transmitter) {
         super(info);
         this.transmitter = transmitter;
-        this.computationContainer = new NotifiableComputationContainer(this, IO.IN, transmitter);
+        this.computationContainer = attachTrait(new NotifiableComputationContainer(IO.IN, transmitter));
     }
 
     @Override

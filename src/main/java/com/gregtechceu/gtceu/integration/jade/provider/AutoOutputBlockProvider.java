@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;

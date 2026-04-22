@@ -64,7 +64,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
+        super(info, new LargeMinerLogic(fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }

@@ -69,7 +69,7 @@ public class GTCapabilityHelper {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
+                return blockEntity.getCapability(ForgeCapabilities.ENERGY, side).resolve().orElse(null);
             }
         }
         return null;

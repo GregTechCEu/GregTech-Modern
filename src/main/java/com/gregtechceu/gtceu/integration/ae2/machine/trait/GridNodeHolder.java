@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import lombok.Getter;
 
 import java.util.EnumSet;
@@ -36,32 +35,31 @@ public class GridNodeHolder extends MachineTrait {
     protected final SerializableManagedGridNode mainNode;
 
     public GridNodeHolder(IGridConnectedMachine machine) {
-        super(machine.self());
-        this.mainNode = createManagedNode();
+        super();
+        this.mainNode = createManagedNode(machine);
     }
 
-    protected SerializableManagedGridNode createManagedNode() {
-        var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) machine,
+    protected SerializableManagedGridNode createManagedNode(IGridConnectedMachine machine) {
+        return (SerializableManagedGridNode) new SerializableManagedGridNode(machine,
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .setVisualRepresentation(machine.getDefinition().getItem())
+                .setVisualRepresentation(machine.self().getDefinition().getItem())
                 .setIdlePowerUsage(ConfigHolder.INSTANCE.compat.ae2.meHatchEnergyUsage)
                 .setInWorldNode(true)
                 .setExposedOnSides(
-                        machine.hasFrontFacing() ? EnumSet.of(machine.getFrontFacing()) :
+                        machine.self().hasFrontFacing() ? EnumSet.of(machine.self().getFrontFacing()) :
                                 EnumSet.allOf(Direction.class))
                 .setTagName("proxy");
-        return node;
     }
 
     protected void createMainNode() {
-        this.mainNode.create(machine.getLevel(), machine.getBlockPos());
+        this.mainNode.create(getLevel(), getBlockPos());
     }
 
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
-        if (machine.getLevel() instanceof ServerLevel serverLevel) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::createMainNode));
         }
     }

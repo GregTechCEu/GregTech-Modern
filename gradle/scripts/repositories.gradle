@@ -7,6 +7,8 @@ repositories {
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
         }
     }
 

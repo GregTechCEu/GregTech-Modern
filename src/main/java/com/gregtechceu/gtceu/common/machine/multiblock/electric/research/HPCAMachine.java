@@ -16,9 +16,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
@@ -27,6 +24,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -110,7 +110,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
 
-            componentTraits.addAll(part.self().getTraitHolder().getTraits(HPCAComponentTrait.TYPE));
+            componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
 
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
@@ -218,7 +218,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.self().getTraitHolder().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.self().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
         }
     }
 
@@ -735,7 +735,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
                         MetaMachine be = MetaMachine.getMachine(world, tempPos);
                         if (be == null) continue;
-                        var trait = be.getTraitHolder().getTrait(HPCAComponentTrait.TYPE);
+                        var trait = be.getTrait(HPCAComponentTrait.TYPE);
                         if (trait != null) {
                             components.add(trait);
                         }

@@ -36,17 +36,13 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     public MEBusPartMachine(BlockEntityCreationInfo info, IO io) {
         super(info, GTValues.LuV, io);
-        this.nodeHolder = createNodeHolder();
+        this.nodeHolder = attachTrait(new GridNodeHolder(this));
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
     public void setOnline(boolean online) {
         isOnline = online;
         syncDataHolder.markClientSyncFieldDirty("isOnline");
-    }
-
-    protected GridNodeHolder createNodeHolder() {
-        return new GridNodeHolder(this);
     }
 
     @Override

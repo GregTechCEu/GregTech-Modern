@@ -14,7 +14,6 @@
     "behavior.portable_scanner.debug_lag_count": "已在伺服器中造成%s次延遲尖峰警告（任何大於%sms的情況）。",
     "behavior.portable_scanner.debug_machine": "元ID：%s",
     "behavior.portable_scanner.debug_machine_invalid": " 無效！",
-    "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null!",
     "behavior.portable_scanner.debug_machine_valid": "無效！",
     "behavior.portable_scanner.divider": "=========================",
     "behavior.portable_scanner.energy_container_in": "輸入上限：%s（%s）EU，%s A",

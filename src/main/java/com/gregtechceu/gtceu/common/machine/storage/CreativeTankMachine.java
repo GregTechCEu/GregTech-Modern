@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -14,7 +13,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -23,12 +21,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreativeTankMachine extends QuantumTankMachine {
 
     @Getter
@@ -43,7 +36,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     protected FluidCache createCacheFluidHandler() {
-        return new InfiniteCache(this);
+        return new InfiniteCache();
     }
 
     @Override
@@ -163,12 +156,12 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     private class InfiniteCache extends FluidCache {
 
-        public InfiniteCache(MetaMachine holder) {
-            super(holder);
+        public InfiniteCache() {
+            super();
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return stored;
         }
 
@@ -179,19 +172,19 @@ public class CreativeTankMachine extends QuantumTankMachine {
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (!stored.isEmpty()) return new FluidStack(stored, mBPerCycle);
             return FluidStack.EMPTY;
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!stored.isEmpty() && stored.isFluidEqual(resource)) return new FluidStack(resource, mBPerCycle);
             return FluidStack.EMPTY;
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 

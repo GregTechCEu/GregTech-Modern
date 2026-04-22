@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
@@ -56,8 +56,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static com.gregtechceu.gtceu.api.machine.MetaMachine.*;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
                                 IBlockEntityRendererBakedModel<BlockEntity> {
@@ -228,7 +226,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render output overlays
-        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
             var itemFace = outputTrait.getItemOutputDirection();
             if (itemFace != null && side == itemFace) {
