@@ -145,7 +145,18 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
-        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeState, attachedSide, rand, facadeData, renderType);
+        // always add unculled faces
+        List<BakedQuad> facadeQuads = new LinkedList<>(
+                facadeModel.getQuads(facadeState, null, rand, facadeData, renderType));
+        if (side != null) {
+            // if a cullface is given, only draw that + unculled faces
+            facadeQuads.addAll(facadeModel.getQuads(facadeState, side, rand, facadeData, renderType));
+        } else {
+            // add all culled faces if no cullface is given
+            for (Direction cullFace : GTUtil.DIRECTIONS) {
+                facadeQuads.addAll(facadeModel.getQuads(facadeState, cullFace, rand, facadeData, renderType));
+            }
+        }
 
         for (BakedQuad quad : facadeQuads) {
             // bake the quad's colors into its vertices
