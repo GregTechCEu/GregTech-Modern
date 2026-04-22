@@ -455,7 +455,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public void load(CompoundTag tag) {
-        TagFixer.fixFluidTags(tag);
+        // TagFixer.fixFluidTags(tag);
         super.load(tag);
     }
 

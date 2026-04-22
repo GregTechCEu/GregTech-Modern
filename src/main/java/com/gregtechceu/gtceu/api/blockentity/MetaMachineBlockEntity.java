@@ -325,7 +325,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
 
     @Override
     public void load(CompoundTag tag) {
-        TagFixer.fixFluidTags(tag);
+        // TagFixer.fixFluidTags(tag);
         super.load(tag);
     }
 

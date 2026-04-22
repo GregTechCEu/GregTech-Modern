@@ -403,6 +403,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 chanceCaches.clear();
             }
             failureReasonMap.clear();
+            failureReasons.clear();
             recipeDirty = false;
             lastRecipe = recipe;
             setStatus(Status.WORKING);
