@@ -150,6 +150,8 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 CoverBehavior coverBehavior = pipeNode.getCoverContainer().getCoverAtSide(side);
                 if (coverBehavior == null) continue;
 
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
                 ModelData data = coverBehavior.getCoverRenderer().get()
                         .getModelData(coverBehavior, pos, level, modelData);
 

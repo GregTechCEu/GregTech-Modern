@@ -110,6 +110,8 @@ public interface ICoverableRenderer {
             CoverBehavior cover = coverable.getCoverAtSide(side);
             if (cover == null) continue;
 
+            // it won't ever be null on the client
+            // noinspection DataFlowIssue
             ChunkRenderTypeSet renderTypes = cover.getCoverRenderer().get()
                     .getRenderTypes(cover, pos, level, rand, coverModelData.get(side));
             renderTypeSets.add(renderTypes);

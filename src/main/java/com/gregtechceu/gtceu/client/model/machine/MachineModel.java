@@ -196,6 +196,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 CoverBehavior coverBehavior = machine.getCoverContainer().getCoverAtSide(side);
                 if (coverBehavior == null) continue;
 
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
                 ModelData data = coverBehavior.getCoverRenderer().get()
                         .getModelData(coverBehavior, pos, level, modelData);
 
