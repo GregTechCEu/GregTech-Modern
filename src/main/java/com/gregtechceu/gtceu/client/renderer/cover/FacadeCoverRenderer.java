@@ -46,10 +46,9 @@ import java.util.*;
 
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
-    public static final double THIN_OFFSET = 2e-3;
-    private static final double FACADE_PLANE_BACK = 1.0 / 16 - THIN_OFFSET;
+    private static final double FACADE_PLANE_BACK = 1.0 / 16 - ICoverableRenderer.THIN_OFFSET;
 
-    private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(THIN_OFFSET);
+    private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(ICoverableRenderer.THIN_OFFSET);
 
     // spotless:off
     private static final Map<Direction, IQuadTransformer> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
