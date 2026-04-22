@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.IQuadTransformer;
@@ -163,6 +164,36 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
             quads.add(quad);
         }
+    }
+
+    @Override
+    public ModelData getModelData(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                                  ModelData holderModelData) {
+        if (!(coverBehavior instanceof FacadeCover facadeCover)) {
+            return ModelData.EMPTY;
+        }
+        BlockState facadeState = facadeCover.getFacadeState();
+        if (facadeState.getRenderShape() != RenderShape.MODEL) {
+            return ModelData.EMPTY;
+        }
+
+        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        return facadeModel.getModelData(level, pos, facadeState, holderModelData);
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                                             RandomSource rand, ModelData modelData) {
+        if (!(coverBehavior instanceof FacadeCover facadeCover)) {
+            return ChunkRenderTypeSet.none();
+        }
+        BlockState facadeState = facadeCover.getFacadeState();
+        if (facadeState.getRenderShape() != RenderShape.MODEL) {
+            return ChunkRenderTypeSet.none();
+        }
+
+        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        return facadeModel.getRenderTypes(facadeState, rand, modelData);
     }
 
     @Override
