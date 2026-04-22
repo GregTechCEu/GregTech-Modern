@@ -121,7 +121,7 @@ public class MachineCoverContainer extends MachineTrait
         machine.addCollisionBoundingBox(collisionList);
         // noinspection RedundantIfStatement
         if (ICoverable.doesCoverCollide(side, collisionList, getCoverPlateThickness())) {
-            // cover collision box overlaps with meta tile entity collision box
+            // cover collision box overlaps with machine collision box
             return false;
         }
 

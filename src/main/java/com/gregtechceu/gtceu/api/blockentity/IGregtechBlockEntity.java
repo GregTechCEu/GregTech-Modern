@@ -23,7 +23,14 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
     boolean isRemoved();
 
-    void notifyBlockUpdate();
+    /**
+     * Called to notify neighboring blocks that this block has changed.
+     */
+    default void notifyBlockUpdate() {
+        if (getLevel() != null) {
+            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        }
+    }
 
     default void scheduleNeighborShapeUpdate() {
         Level level = getLevel();
