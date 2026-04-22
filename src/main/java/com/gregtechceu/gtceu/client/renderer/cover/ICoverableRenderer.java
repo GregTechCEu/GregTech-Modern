@@ -51,6 +51,10 @@ public interface ICoverableRenderer {
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
             if (cover != null) {
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
+
                 if (thickness > 0 && cover.shouldRenderPlate()) {
                     double min = thickness + 0.01;
                     double max = 0.99 - thickness;
@@ -62,18 +66,17 @@ public interface ICoverableRenderer {
                             normal.getX() >= 0 ? 1.0 - THIN_OFFSET : min,
                             normal.getY() >= 0 ? 1.0 - THIN_OFFSET : min,
                             normal.getZ() >= 0 ? 1.0 - THIN_OFFSET : min);
-                    if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
-                    } else if (side != face.getOpposite()) { // render sides
-                        quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
+                    if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
+                        if (side == null) { // render back
+                            quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
+                                    .cube(cube).cubeUV().bake());
+                        } else if (side != face.getOpposite()) { // render sides
+                            quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
+                                    .cube(cube).cubeUV().bake());
+                        }
                     }
                 }
-                // it won't ever be null on the client
-                // noinspection DataFlowIssue
-                cover.getCoverRenderer().get()
-                        .renderCover(quads, side, rand, cover, pos, level, coverModelData.get(face), renderType);
+                coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverModelData.get(face), renderType);
             }
         }
     }

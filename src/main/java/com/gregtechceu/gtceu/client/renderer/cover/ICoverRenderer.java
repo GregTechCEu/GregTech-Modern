@@ -13,7 +13,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,5 +32,10 @@ public interface ICoverRenderer {
     default ModelData getModelData(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
                                    ModelData holderModelData) {
         return ModelData.EMPTY;
+    }
+
+    default boolean shouldRenderBackPlateForSide(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                                                 @Nullable Direction side) {
+        return true;
     }
 }

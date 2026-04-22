@@ -196,6 +196,13 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     @Override
+    public boolean shouldRenderBackPlateForSide(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                                                @Nullable Direction side) {
+        // skip rendering the cover baseplate for the attachment side
+        return side != coverBehavior.attachedSide;
+    }
+
+    @Override
     public boolean useAmbientOcclusion() {
         if (defaultItemModel != null) {
             return defaultItemModel.useAmbientOcclusion();
