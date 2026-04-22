@@ -25,6 +25,7 @@ import static net.minecraft.client.renderer.block.model.FaceBakery.calculateFaci
 
 public class StaticFaceBakery {
 
+    public static final AABB BLOCK = new AABB(0, 0, 0, 1, 1, 1);
     public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f,
             1.001f, 1.001f, 1.001f);
     public static final AABB OUTPUT_OVERLAY = new AABB(-.006f, -.006f, -.006f,

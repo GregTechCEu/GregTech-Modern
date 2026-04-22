@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
@@ -18,7 +20,6 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -40,32 +42,32 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-/**
- * It can only be used for item.
- * call it in other renderer to render a facade cover.
- */
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
     public static final double THIN_OFFSET = 2e-3;
+    private static final double FACADE_PLANE_BACK = 1.0 / 16 - 0.002 + THIN_OFFSET;
 
-    // All faces are slightly under a full block's size to never show the beginning of
-    // the second row of pixels of the block's texture and to combat Z-fighting.
-    private static final AABB FACADE_PLANE = new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0 / 16 + 0.002).deflate(THIN_OFFSET);
-    private static final IQuadTransformer FACADE_PLANE_TRANSFORMER = GTQuadTransformers.clamp(FACADE_PLANE);
+    private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(THIN_OFFSET);
 
-    private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
+    // spotless:off
+    private static final Map<Direction, IQuadTransformer> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
-            var normal = dir.getNormal();
-            var cube = new AABB(
-                    normal.getX() > 0 ? 1.001 : -0.001,
-                    normal.getY() > 0 ? 1.001 : -0.001,
-                    normal.getZ() > 0 ? 1.001 : -0.001,
-                    normal.getX() >= 0 ? 1.001 : -0.001,
-                    normal.getY() >= 0 ? 1.001 : -0.001,
-                    normal.getZ() >= 0 ? 1.001 : -0.001);
-            map.put(dir, cube);
+            // All faces are slightly under a full block's size to never show the beginning of
+            // the second row of pixels of the block's texture and to combat Z-fighting.
+            AABB facadePlane = switch (dir) {
+                case DOWN -> FACADE_PLANE.setMaxY(FACADE_PLANE_BACK);
+                case UP -> FACADE_PLANE.setMinY(FACADE_PLANE_BACK);
+                case NORTH -> FACADE_PLANE.setMaxZ(FACADE_PLANE_BACK);
+                case SOUTH -> FACADE_PLANE.setMinZ(FACADE_PLANE_BACK);
+                case WEST -> FACADE_PLANE.setMaxX(FACADE_PLANE_BACK);
+                case EAST -> FACADE_PLANE.setMinX(FACADE_PLANE_BACK);
+            };
+
+            map.put(dir, GTQuadTransformers.clamp(facadePlane));
         }
     });
+    private static final IQuadTransformer FACADE_ITEM_PLANE_TRANSFORMER = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
+    // spotless:on
 
     public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
     private static final Int2ObjectMap<BakedModel> CACHE = new Int2ObjectArrayMap<>();
@@ -124,30 +126,28 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return;
         }
 
-        Direction attachedSide = coverBehavior.attachedSide;
-
-        BakedModel facadeModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(facadeState);
-        ModelData extraData = facadeModel.getModelData(level, pos, facadeState, modelData);
-        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeState, attachedSide, rand, extraData, renderType);
-
-        List<BakedQuad> coverQuads = new ArrayList<>();
-        if (side == attachedSide) {
-            coverQuads.addAll(facadeQuads);
-        } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
-            AABB cube = COVER_BACK_CUBES.get(attachedSide);
-
-            for (BakedQuad quad : facadeQuads) {
-                // flatten all the
-                coverQuads.add(FACADE_PLANE_TRANSFORMER.process(quad));
-                coverQuads.add(StaticFaceBakery.bakeFace(cube, attachedSide.getOpposite(),
-                        quad.getSprite(), BlockModelRotation.X0_Y0,
-                        quad.getTintIndex(), 0, false, quad.isShade()));
-            }
+        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        if (facadeModel.isCustomRenderer()) {
+            return;
         }
 
-        // offset all the cover quads by a small value and bake their tint color into the vertices
+        ModelData facadeData = facadeModel.getModelData(level, pos, facadeState, modelData);
+        if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeData).contains(renderType)) {
+            return;
+        }
+
+        Direction attachedSide = coverBehavior.attachedSide;
+        if (side != attachedSide && (side != null || !coverBehavior.coverHolder.shouldRenderBackSide())) {
+            return;
+        }
+
+        IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-        for (BakedQuad quad : coverQuads) {
+
+        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeState, attachedSide, rand, facadeData, renderType);
+
+        for (BakedQuad quad : facadeQuads) {
+            // bake the quad's colors into its vertices
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
                 int color = blockColors.getColor(facadeState, level, pos, quad.getTintIndex());
@@ -156,6 +156,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // otherwise just copy the quad so we don't mutate the original model with the overlay offset
                 quad = GTQuadTransformers.copy(quad);
             }
+
+            // clamp the quad's vertex positions to fit into the facade plane
+            clamper.processInPlace(quad);
 
             quads.add(quad);
         }
@@ -202,42 +205,48 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         return super.getOverrides();
     }
 
-    private static class FacadeItemBakedModel extends BaseBakedModel {
+    private static class FacadeItemBakedModel extends BakedModelWrapper<BakedModel> {
 
-        private final BakedModel parentModel;
         private final BlockState facadeState;
         private @Nullable List<BakedQuad> quads = null;
 
         private FacadeItemBakedModel(BakedModel parentModel, BlockState facadeState) {
-            this.parentModel = parentModel;
+            super(parentModel);
             this.facadeState = facadeState;
         }
 
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                        RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+                                        RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
             if (this.quads != null) {
                 return this.quads;
             }
-            this.quads = new LinkedList<>(
-                    this.parentModel.getQuads(this.facadeState, side, rand, extraData, renderType));
+            this.quads = new LinkedList<>(this.originalModel.getQuads(state, side, rand, modelData, renderType));
 
-            BakedModel facadeModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(this.facadeState);
+            if (facadeState.getRenderShape() != RenderShape.MODEL) {
+                return this.quads;
+            }
+            BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
             if (facadeModel.isCustomRenderer()) {
                 return this.quads;
             }
 
-            List<BakedQuad> facadeQuads = new LinkedList<>();
-            // noinspection CollectionAddAllCanBeReplacedWithConstructor this is cleaner
-            facadeQuads.addAll(facadeModel.getQuads(this.facadeState, null, rand, extraData, renderType));
+            ModelData facadeData = modelData.get(GTModelProperties.CHILD_MODEL_DATA);
+            if (facadeData == null) facadeData = ModelData.EMPTY;
+            if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeData).contains(renderType)) {
+                return this.quads;
+            }
+
             // always add unculled faces
+            List<BakedQuad> facadeQuads = new LinkedList<>(
+                    facadeModel.getQuads(this.facadeState, null, rand, facadeData, renderType));
             if (side != null) {
                 // if a cullface is given, only draw that + unculled faces
-                facadeQuads.addAll(facadeModel.getQuads(this.facadeState, side, rand, extraData, renderType));
+                facadeQuads.addAll(facadeModel.getQuads(this.facadeState, side, rand, facadeData, renderType));
             } else {
                 // add all culled faces if no cullface is given
                 for (Direction cullFace : GTUtil.DIRECTIONS) {
-                    facadeQuads.addAll(facadeModel.getQuads(this.facadeState, cullFace, rand, extraData, renderType));
+                    facadeQuads.addAll(facadeModel.getQuads(this.facadeState, cullFace, rand, facadeData, renderType));
                 }
             }
 
@@ -245,6 +254,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
             ItemStack stack = null;
             for (BakedQuad quad : facadeQuads) {
+                // bake the quad's colors into its vertices
                 if (quad.isTinted()) {
                     // if the quad has a tint index set, bake the tint into the vertex color
 
@@ -255,11 +265,12 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                     // this also copies the quad
                     quad = GTQuadTransformers.setColor(quad, color, true);
                 } else {
-                    // otherwise just copy the quad so we don't mutate the original model with the overlay offset
+                    // otherwise just copy the quad so we don't mutate the original model with the clamping
                     quad = GTQuadTransformers.copy(quad);
                 }
-                // the quad's already been copied by this point, so no need to copy it again.
-                FACADE_PLANE_TRANSFORMER.processInPlace(quad);
+
+                // clamp the quad's vertex positions to fit into the facade plane
+                FACADE_ITEM_PLANE_TRANSFORMER.processInPlace(quad);
 
                 this.quads.add(quad);
             }
@@ -267,19 +278,11 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         @Override
-        public boolean useAmbientOcclusion() {
-            return false;
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public TextureAtlasSprite getParticleIcon() {
-            return this.parentModel.getParticleIcon();
-        }
-
-        @Override
-        public ItemOverrides getOverrides() {
-            return ItemOverrides.EMPTY;
+        public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+            return super.getModelData(level, pos, state, modelData).derive()
+                    .with(GTModelProperties.CHILD_MODEL_DATA,
+                            ModelUtils.getModelForState(facadeState).getModelData(level, pos, state, modelData))
+                    .build();
         }
     }
 }
