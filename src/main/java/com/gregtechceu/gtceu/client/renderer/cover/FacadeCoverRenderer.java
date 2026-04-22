@@ -46,7 +46,7 @@ import java.util.*;
 
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
-    private static final double FACADE_PLANE_BACK = 1.0 / 16 - ICoverableRenderer.THIN_OFFSET;
+    private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
     private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(ICoverableRenderer.THIN_OFFSET);
 

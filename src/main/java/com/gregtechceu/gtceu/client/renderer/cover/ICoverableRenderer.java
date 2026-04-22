@@ -35,6 +35,7 @@ public interface ICoverableRenderer {
     @OnlyIn(Dist.CLIENT)
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
     double THIN_OFFSET = 0.002;
+    double LESS_THIN_OFFSET = 0.005;
 
     @OnlyIn(Dist.CLIENT)
     static void initSprites(TextureAtlas atlas) {
@@ -60,12 +61,12 @@ public interface ICoverableRenderer {
                     double max = 0.99 - thickness;
                     var normal = face.getNormal();
                     var cube = new AABB(
-                            normal.getX() > 0 ? max : THIN_OFFSET,
-                            normal.getY() > 0 ? max : THIN_OFFSET,
-                            normal.getZ() > 0 ? max : THIN_OFFSET,
-                            normal.getX() >= 0 ? 1.0 - THIN_OFFSET : min,
-                            normal.getY() >= 0 ? 1.0 - THIN_OFFSET : min,
-                            normal.getZ() >= 0 ? 1.0 - THIN_OFFSET : min);
+                            normal.getX() > 0 ? max : LESS_THIN_OFFSET,
+                            normal.getY() > 0 ? max : LESS_THIN_OFFSET,
+                            normal.getZ() > 0 ? max : LESS_THIN_OFFSET,
+                            normal.getX() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
+                            normal.getY() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
+                            normal.getZ() >= 0 ? 1.0 - LESS_THIN_OFFSET : min);
                     if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                         if (side == null) { // render back
                             quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
