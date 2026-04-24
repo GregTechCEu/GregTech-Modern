@@ -25,7 +25,6 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
@@ -150,7 +149,6 @@ public class GTOreDefinition {
         return w;
     }
 
-    @HideFromJS
     public void register(ResourceLocation id) {
         GTRegistries.ORE_VEINS.registerOrOverride(id, this);
     }

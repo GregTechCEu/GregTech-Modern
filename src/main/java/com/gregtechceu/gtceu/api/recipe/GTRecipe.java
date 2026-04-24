@@ -44,9 +44,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
 
     public final List<RecipeCondition<?>> conditions;
-    // for KubeJS. actual type is List<IngredientAction>.
-    // Must be List<?> to not cause crashes without KubeJS.
-    public final List<?> ingredientActions;
     @NotNull
     public CompoundTag data;
     public int duration;
@@ -62,25 +59,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
 
     public GTRecipe(GTRecipeType recipeType,
-                    Map<RecipeCapability<?>, List<Content>> inputs,
-                    Map<RecipeCapability<?>, List<Content>> outputs,
-                    Map<RecipeCapability<?>, List<Content>> tickInputs,
-                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
-                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition<?>> conditions,
-                    List<?> ingredientActions,
-                    @NotNull CompoundTag data,
-                    int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
-        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
-                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, recipeCategory);
-    }
-
-    public GTRecipe(GTRecipeType recipeType,
                     @Nullable ResourceLocation id,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
@@ -91,7 +69,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
                     List<RecipeCondition<?>> conditions,
-                    List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
                     @NotNull GTRecipeCategory recipeCategory) {
@@ -109,7 +86,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.tickOutputChanceLogics = tickOutputChanceLogics;
 
         this.conditions = conditions;
-        this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
@@ -129,8 +105,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 modifier.applyContents(tickInputs), modifier.applyContents(tickOutputs),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
-                new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
+                new ArrayList<>(conditions), data, duration, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }

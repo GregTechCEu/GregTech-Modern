@@ -24,10 +24,8 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -57,10 +55,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.client.LangEventJS;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -81,7 +75,6 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends MachineBuilder<DEFINITION, TYPE>>
                            extends BuilderBase<DEFINITION> {
@@ -118,9 +111,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @Nullable
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
-    @Getter // getter for KJS
+    @Getter
     private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
-    @Getter // getter for KJS
+    @Getter
     private int tier;
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
@@ -148,10 +141,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean regressWhenWaiting = true;
     private boolean allowCoverOnFront = false;
     private Supplier<BlockState> appearance;
-    @Getter // getter for KJS
+    @Getter
     @Nullable
     private EditableMachineUI editableUI;
-    @Getter // getter for KJS
+    @Getter
     @Nullable
     private String langValue = null;
 
@@ -531,22 +524,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    // KJS helpers for model property defaults
-    // These don't need to be copied to the multiblock builder because KJS doesn't care about the return type downgrade
-
-    public TYPE kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
-    public TYPE kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
-    public <T extends Enum<T> & Comparable<T>> TYPE kjs$modelPropertyEnum(Property<T> property,
-                                                                          T defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
     @Tolerate
     public TYPE modelProperties(Property<?>... properties) {
         return this.modelProperties(List.of(properties));
@@ -619,20 +596,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return definition.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
-    @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
-        super.generateAssetJsons(generator);
-        KJSCallWrapper.generateAssetJsons(generator, this, this.value);
-    }
-
-    @Override
-    public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
-        if (langValue() != null) {
-            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        }
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void setupStateDefinition(MachineDefinition definition) {
         StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
@@ -649,7 +612,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         definition.registerDefaultState(defaultState);
     }
 
-    @HideFromJS
     public DEFINITION register() {
         this.registrate.object(name);
         var definition = createDefinition();
@@ -804,28 +766,4 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         }
     }
     // spotless:on
-
-    protected static final class KJSCallWrapper {
-
-        public static <D extends MachineDefinition> void generateAssetJsons(@Nullable AssetJsonGenerator generator,
-                                                                            MachineBuilder<D, ?> builder,
-                                                                            D definition) {
-            if (builder.model() == null && builder.blockModel() == null) return;
-
-            final ResourceLocation id = definition.getId();
-            // if generator is null, we're making the block models through GT
-            if (generator == null) {
-                // Fake a data provider for the GT model builders
-                var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
-                if (builder.blockModel() != null) {
-                    builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
-                } else {
-                    GTMachineModels.createMachineModel(builder.model())
-                            .accept(context, RuntimeBlockstateProvider.INSTANCE);
-                }
-            } else {
-                generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
-            }
-        }
-    }
 }

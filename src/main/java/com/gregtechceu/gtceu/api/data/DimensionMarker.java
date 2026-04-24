@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.data;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
@@ -14,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -86,12 +84,7 @@ public class DimensionMarker {
             this(dimKey);
         }
 
-        @HideFromJS
         public DimensionMarker buildAndRegister() {
-            Validator.validate(
-                    id,
-                    Validator.errorIfNull(iconSupplier, "icon"),
-                    Validator.errorIfOutOfRange(tier, "tier", 0, MAX_TIER - 1));
             DimensionMarker marker = new DimensionMarker(tier, iconSupplier, overrideName);
             marker.register(id);
             return marker;

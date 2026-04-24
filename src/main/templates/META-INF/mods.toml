@@ -54,14 +54,6 @@ side = "BOTH"
     modrinth = "configuration"
     curseforge = "configuration"
 
-
-[[dependencies.${mod_id}]]
-modId = "kubejs"
-mandatory = false
-versionRange = "[${kjs_version},)"
-ordering = "AFTER"
-side = "BOTH"
-
 [[dependencies.${mod_id}]]
 modId = "jade"
 mandatory = false

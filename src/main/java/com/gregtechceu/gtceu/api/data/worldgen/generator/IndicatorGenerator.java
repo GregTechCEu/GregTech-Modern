@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -55,11 +54,10 @@ public abstract class IndicatorGenerator {
      * Note that, if in any way possible, this is NOT supposed to directly place any of the indicator blocks, as
      * their respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
      */
-    @HideFromJS
+
     public abstract Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random,
                                                                GeneratedVeinMetadata metadata);
 
-    @HideFromJS
     public GTOreDefinition parent() {
         return entry;
     }

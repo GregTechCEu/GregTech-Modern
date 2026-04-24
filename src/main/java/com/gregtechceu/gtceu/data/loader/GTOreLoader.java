@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.loader;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -9,8 +8,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import net.minecraft.resources.RegistryOps;
@@ -27,7 +24,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,9 +52,6 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ORE_VEINS, GTOreDefinition.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.fireKJSEvent();
-        }
 
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
@@ -106,12 +99,5 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
 
     public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
         return GTOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
-    }
-
-    public static final class KJSCallWrapper {
-
-        public static void fireKJSEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
-        }
     }
 }

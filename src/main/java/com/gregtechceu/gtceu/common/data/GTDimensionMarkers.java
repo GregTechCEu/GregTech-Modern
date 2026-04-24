@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -72,9 +70,6 @@ public class GTDimensionMarkers {
 
     public static void init() {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.DIMENSION_MARKERS.getRegistryName());
-        }
         GTRegistries.DIMENSION_MARKERS.freeze();
     }
 }

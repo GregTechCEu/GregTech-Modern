@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +21,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,9 +50,6 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         AddonFinder.getAddons().forEach(IGTAddon::registerBedrockOreVeins);
         ModLoader.get().postEvent(
                 new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.fireKJSEvent();
-        }
 
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
@@ -82,12 +76,5 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
     public static BedrockOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
         return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
-    }
-
-    public static final class KJSCallWrapper {
-
-        public static void fireKJSEvent() {
-            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTBedrockOreVeinEventJS());
-        }
     }
 }

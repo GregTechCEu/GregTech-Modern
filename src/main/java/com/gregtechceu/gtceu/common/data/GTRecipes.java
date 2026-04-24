@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
@@ -17,8 +16,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
-import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
-import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Set;
@@ -98,11 +95,8 @@ public class GTRecipes {
 
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
 
-        // Must run recycling recipes very last
-        if (!(GTCEu.Mods.isKubeJSLoaded() && KJSCallWrapper.recipeEventHasListeners())) {
-            RecyclingRecipes.init(consumer);
-            ItemMaterialData.resolveItemMaterialInfos(consumer);
-        }
+        RecyclingRecipes.init(consumer);
+        ItemMaterialData.resolveItemMaterialInfos(consumer);
     }
 
     /*
@@ -115,12 +109,5 @@ public class GTRecipes {
 
         RecipeRemoval.init(RECIPE_FILTERS::add);
         AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
-    }
-
-    private static class KJSCallWrapper {
-
-        private static boolean recipeEventHasListeners() {
-            return ServerEvents.RECIPES.hasListeners() && RecipesEventJS.instance != null;
-        }
     }
 }

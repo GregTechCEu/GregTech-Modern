@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,9 +94,5 @@ public class MaterialIconSet {
         return name;
     }
 
-    public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_SET.registryKey);
-        }
-    }
+    public static void init() {}
 }

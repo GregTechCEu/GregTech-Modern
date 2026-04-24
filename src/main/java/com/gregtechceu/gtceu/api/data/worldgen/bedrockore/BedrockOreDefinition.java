@@ -19,7 +19,6 @@ import net.minecraft.world.level.biome.Biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
@@ -210,7 +209,6 @@ public class BedrockOreDefinition {
             return this;
         }
 
-        @HideFromJS
         public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
             this.dimensions = dimensions;
             return this;

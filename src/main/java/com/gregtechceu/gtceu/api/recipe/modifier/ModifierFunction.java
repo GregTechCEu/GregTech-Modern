@@ -182,7 +182,7 @@ public interface ModifierFunction {
                         applyAllButEU(tickOutputModifier, recipe.tickOutputs),
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
-                        newConditions, new ArrayList<>(recipe.ingredientActions),
+                        newConditions,
                         recipe.data, recipe.duration, recipe.recipeCategory);
                 copied.parallels = recipe.parallels * parallels;
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;

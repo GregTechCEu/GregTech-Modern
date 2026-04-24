@@ -8,7 +8,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 import com.google.gson.JsonObject;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, int value) {
         return new EqualsNBTPredicate(key, IntTag.valueOf(value));
     }
@@ -32,7 +30,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, float value) {
         return new EqualsNBTPredicate(key, FloatTag.valueOf(value));
     }
@@ -41,7 +38,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, double value) {
         return new EqualsNBTPredicate(key, DoubleTag.valueOf(value));
     }
@@ -51,7 +47,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, boolean value) {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
     }
@@ -60,7 +55,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, byte value) {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
     }
@@ -69,7 +63,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, Tag value) {
         return new EqualsNBTPredicate(key, value);
     }
@@ -78,7 +71,6 @@ public final class NBTPredicates {
         return eq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate eq(String key, String value) {
         return new EqualsNBTPredicate(key, StringTag.valueOf(value));
     }
@@ -87,7 +79,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, int value) {
         return new EqualsNBTPredicate(key, IntTag.valueOf(value), true);
     }
@@ -96,7 +87,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, float value) {
         return new EqualsNBTPredicate(key, FloatTag.valueOf(value), true);
     }
@@ -105,7 +95,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, double value) {
         return new EqualsNBTPredicate(key, DoubleTag.valueOf(value), true);
     }
@@ -115,7 +104,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, boolean value) {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
     }
@@ -124,7 +112,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, byte value) {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
     }
@@ -133,7 +120,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, Tag value) {
         return new EqualsNBTPredicate(key, value, true);
     }
@@ -142,7 +128,6 @@ public final class NBTPredicates {
         return neq(key, value);
     }
 
-    @HideFromJS
     public static NBTPredicate neq(String key, String value) {
         return new EqualsNBTPredicate(key, StringTag.valueOf(value), true);
     }
@@ -167,7 +152,6 @@ public final class NBTPredicates {
         return new AnyNBTPredicate(List.of(predicates));
     }
 
-    @HideFromJS
     public static NBTPredicate any(List<NBTPredicate> predicates) {
         return new AnyNBTPredicate(predicates);
     }
@@ -176,7 +160,6 @@ public final class NBTPredicates {
         return new AllNBTPredicate(List.of(predicates));
     }
 
-    @HideFromJS
     public static NBTPredicate all(List<NBTPredicate> predicates) {
         return new AllNBTPredicate(predicates);
     }

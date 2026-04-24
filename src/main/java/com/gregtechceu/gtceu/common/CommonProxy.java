@@ -50,9 +50,6 @@ import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -226,17 +223,11 @@ public class CommonProxy {
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialRegistry();
-        }
 
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
         ModLoader.get().postEvent(new PostMaterialEvent());
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialModification();
-        }
 
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         managerInternal.freezeRegistries();
@@ -331,17 +322,6 @@ public class CommonProxy {
                     event.getPackType(),
                     Pack.Position.BOTTOM,
                     GTDynamicDataPack::new));
-        }
-    }
-
-    public static final class KJSEventWrapper {
-
-        public static void materialRegistry() {
-            GTRegistryInfo.registerFor(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).getRegistryName());
-        }
-
-        public static void materialModification() {
-            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
         }
     }
 }

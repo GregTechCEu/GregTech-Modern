@@ -152,10 +152,6 @@ public class GTCEu {
 
     public static class Mods {
 
-        public static boolean isKubeJSLoaded() {
-            return isModLoaded(GTValues.MODID_KUBEJS);
-        }
-
         public static boolean isIrisOculusLoaded() {
             return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
         }

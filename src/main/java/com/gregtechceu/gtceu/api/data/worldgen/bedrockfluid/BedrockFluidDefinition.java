@@ -19,7 +19,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -196,7 +195,6 @@ public class BedrockFluidDefinition {
             return this;
         }
 
-        @HideFromJS
         public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
             this.dimensions = dimensions;
             return this;

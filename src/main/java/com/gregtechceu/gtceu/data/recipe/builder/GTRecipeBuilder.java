@@ -1717,7 +1717,7 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory);
+                conditions, data, duration, recipeCategory);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,
