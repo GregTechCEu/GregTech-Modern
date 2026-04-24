@@ -626,7 +626,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     public void updateScreen() {
         super.updateScreen();
         // I can only think of this way
-        if (!isLoaded && GTCEu.Mods.isEMILoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
+        if (!isLoaded && Minecraft.getInstance().screen instanceof RecipeScreen) {
             setPage(0);
             isLoaded = true;
         }

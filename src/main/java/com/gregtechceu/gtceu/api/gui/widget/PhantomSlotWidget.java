@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -25,7 +23,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.emi.emi.api.stack.EmiStack;
-import mezz.jei.api.ingredients.ITypedIngredient;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collections;
@@ -126,14 +123,12 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<Target> getPhantomTargets(Object ingredient) {
-        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+        if (ingredient instanceof EmiStack emiStack) {
             Item item = emiStack.getKeyOfType(Item.class);
             if (item != null) {
                 ingredient = new ItemStack(item, (int) emiStack.getAmount());
                 ((ItemStack) ingredient).setTag(emiStack.getNbt());
             }
-        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getItemStack().orElse(null);
         }
         if (!(ingredient instanceof ItemStack)) {
             return Collections.emptyList();
@@ -150,14 +145,12 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
 
             @Override
             public void accept(@Nonnull Object ingredient) {
-                if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+                if (ingredient instanceof EmiStack emiStack) {
                     Item item = emiStack.getKeyOfType(Item.class);
                     if (item != null) {
                         ingredient = new ItemStack(item, (int) emiStack.getAmount());
                         ((ItemStack) ingredient).setTag(emiStack.getNbt());
                     }
-                } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-                    ingredient = jeiStack.getItemStack().orElse(null);
                 }
                 if (slotReference != null && ingredient instanceof ItemStack stack) {
                     long id = Minecraft.getInstance().getWindow().getWindow();

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 
@@ -13,7 +11,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
-import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -53,17 +50,13 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
     }
 
     default Object convertIngredient(Object ingredient) {
-        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack itemEmiStack) {
+        if (ingredient instanceof EmiStack itemEmiStack) {
             Item item = itemEmiStack.getKeyOfType(Item.class);
             ItemStack itemStack = item == null ? ItemStack.EMPTY : new ItemStack(item, (int) itemEmiStack.getAmount());
             if (!itemStack.isEmpty()) {
                 itemStack.setTag(itemEmiStack.getNbt());
             }
             ingredient = itemStack;
-        }
-
-        if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
-            return itemJeiStack.getItemStack().orElse(ItemStack.EMPTY);
         }
         return ingredient;
     }

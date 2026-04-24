@@ -4,15 +4,12 @@ registrate = "MC1.20-1.3.11"
 configuration = "2.2.0"
 mixinExtras = "0.5.0-rc.3"
 
-jei = "15.20.0.115"
-rei = "12.1.785"
-emi = "1.1.13+1.20.1"
+emi = "8081375"
 ae2 = "15.4.10"
 kubejs = "2001.6.5-build.16"
 rhino = "2001.2.3-build.10"
 architectury = "9.2.14"
 clothconfig = "11.1.136"
-theoneprobe = "1.20.1-10.0.1-3"
 curios = "5.9.1+1.20.1"
 kotlinforforge = "4.11.0"
 shimmer = "1.20.1-0.2.4"
@@ -61,10 +58,7 @@ configuration       = { module = "dev.toma.configuration:configuration-forge-1.2
 mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
 mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
 
-jei-common-api      = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
-jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
-jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
-emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
+emi                 = { module = "curse.maven:emi-580555", version.ref = "emi" }
 
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
 create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create"}
@@ -75,7 +69,6 @@ kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = 
 rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
-theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref = "journeyMapApi" }
@@ -117,6 +110,6 @@ ftbquests-cm        = { module = "curse.maven:ftb-quests-forge-289412", version.
 ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]
-jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
+
 kjs = ["kubejs", "rhino", "architectury"]
 

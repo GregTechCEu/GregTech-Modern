@@ -18,12 +18,9 @@ dependencies {
     }
 
     // Recipe Viewers
-    modCompileOnly(forge.bundles.jei)
-
     modCompileOnly(forge.emi)
 
     // WAILA-likes
-    modCompileOnly(forge.theoneprobe)
     modCompileOnly(forge.jade)
 
     // Curios
@@ -78,10 +75,7 @@ dependencies {
     modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 
-    // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modLocalRuntime(forge.emi)
-//    modLocalRuntime(forge.jei.forge.impl)
-//    modLocalRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)

@@ -63,27 +63,6 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "jei"
-mandatory = false
-versionRange = "[${jei_version},)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "emi"
-mandatory = false
-versionRange = "[${emi_version},)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "theoneprobe"
-mandatory = false
-versionRange = "[${top_version},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
 modId = "jade"
 mandatory = false
 versionRange = "[${jade_version},)"

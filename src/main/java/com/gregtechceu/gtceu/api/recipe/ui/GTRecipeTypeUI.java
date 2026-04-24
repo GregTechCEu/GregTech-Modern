@@ -15,9 +15,7 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
@@ -29,7 +27,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -57,7 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 public class GTRecipeTypeUI {
@@ -237,21 +233,13 @@ public class GTRecipeTypeUI {
                 progress.add(dualProgressWidget);
             });
             // add recipe button
-            if (!isJEI && (GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded())) {
+            if (!isJEI) {
                 for (Widget widget : progress) {
                     template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y,
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
-                                    if (GTCEu.Mods.isJEILoaded()) {
-                                        JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
-                                                recipeType.getCategories().stream()
-                                                        .filter(GTRecipeCategory::isXEIVisible)
-                                                        .map(GTRecipeJEICategory::machineType)
-                                                        .collect(Collectors.toList()));
-                                    } else if (GTCEu.Mods.isEMILoaded()) {
-                                        EmiApi.displayRecipeCategory(
-                                                GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
-                                    }
+                                    EmiApi.displayRecipeCategory(
+                                            GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
                 }

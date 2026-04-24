@@ -17,7 +17,6 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import dev.emi.emi.config.EmiConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -152,14 +151,6 @@ public class GTCEu {
     }
 
     public static class Mods {
-
-        public static boolean isJEILoaded() {
-            return !(isModLoaded(GTValues.MODID_EMI)) && isModLoaded(GTValues.MODID_JEI);
-        }
-
-        public static boolean isEMILoaded() {
-            return isModLoaded(GTValues.MODID_EMI) && (!isClientSide() || EmiConfig.enabled);
-        }
 
         public static boolean isKubeJSLoaded() {
             return isModLoaded(GTValues.MODID_KUBEJS);

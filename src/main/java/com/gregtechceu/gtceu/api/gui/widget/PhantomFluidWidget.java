@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
@@ -35,7 +33,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.stack.EmiStack;
 import lombok.Getter;
 import lombok.Setter;
-import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -108,7 +105,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<Target> getPhantomTargets(Object ingredient) {
-        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+        if (ingredient instanceof EmiStack emiStack) {
             var key = emiStack.getKey();
             if (key instanceof Fluid f) {
                 int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
@@ -119,8 +116,6 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
             } else {
                 ingredient = null;
             }
-        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getIngredient();
         }
 
         if (!(ingredient instanceof FluidStack) && drainFrom(ingredient).isEmpty()) {
@@ -138,7 +133,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
             @Override
             public void accept(@Nonnull Object ingredient) {
-                if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+                if (ingredient instanceof EmiStack emiStack) {
                     var key = emiStack.getKey();
                     if (key instanceof Fluid f) {
                         int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
