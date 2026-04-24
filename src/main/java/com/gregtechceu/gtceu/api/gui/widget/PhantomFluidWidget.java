@@ -108,9 +108,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<Target> getPhantomTargets(Object ingredient) {
-        if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getTag());
-        } else if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
             var key = emiStack.getKey();
             if (key instanceof Fluid f) {
                 int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
@@ -140,11 +138,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
             @Override
             public void accept(@Nonnull Object ingredient) {
-                if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-                    ingredient = new FluidStack(fluidStack.getFluid(),
-                            (int) fluidStack.getAmount(),
-                            fluidStack.getTag());
-                } else if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+                if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
                     var key = emiStack.getKey();
                     if (key instanceof Fluid f) {
                         int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();

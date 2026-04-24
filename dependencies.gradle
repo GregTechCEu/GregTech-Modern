@@ -19,7 +19,7 @@ dependencies {
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
-    modCompileOnly(forge.bundles.rei)
+
     modCompileOnly(forge.emi)
 
     // WAILA-likes

@@ -113,9 +113,7 @@ public class GTValues {
                 .toArray();
     }
 
-    public static final String MODID_TOP = "theoneprobe",
-            MODID_JEI = "jei",
-            MODID_REI = "roughlyenoughitems",
+    public static final String MODID_JEI = "jei",
             MODID_EMI = "emi",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
