@@ -24,7 +24,6 @@
         "client.PlayerInfoAccessor",
         "client.PostChainAccessor",
         "client.PostChainMixin",
-        "client.RebuildTaskMixin",
         "client.VariantDeserializerMixin",
         "client.VertexBufferAccessor",
         "dev.client.KeyboardHandlerMixin",

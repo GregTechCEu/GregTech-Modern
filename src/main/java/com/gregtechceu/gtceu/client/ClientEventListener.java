@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -89,9 +90,9 @@ public class ClientEventListener {
             return;
         }
 
-        BlockPos.MutableBlockPos chunkPos = chunk.getPos().getWorldPosition().mutable();
+        ChunkPos chunkPos = chunk.getPos();
         for (int y = level.getMinSection(); y < level.getMaxSection(); y++) {
-            BloomUtil.removeBloomChunk(chunkPos.setY(SectionPos.sectionToBlockCoord(y)));
+            BloomUtil.removeBloomChunk(SectionPos.of(chunkPos, y));
         }
     }
 

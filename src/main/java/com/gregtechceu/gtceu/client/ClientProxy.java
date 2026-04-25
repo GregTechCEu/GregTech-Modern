@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
@@ -65,7 +66,6 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -94,7 +94,7 @@ public class ClientProxy extends CommonProxy {
 
             BloomUtil.init();
             if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
-                MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
+                GTEmbeddiumCompat.init();
             }
         }
         initializeDynamicRenders();
