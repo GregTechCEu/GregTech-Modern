@@ -193,6 +193,11 @@ public class ClientProxy extends CommonProxy {
         GTShaders.onRegisterShaders(event);
     }
 
+    @SubscribeEvent
+    public void registerLevelRenderStages(RenderLevelStageEvent.RegisterStageEvent event) {
+        BloomUtil.AFTER_BLOOM_RENDER_STAGE = event.register(GTCEu.id("after_bloom"), GTRenderTypes.bloom());
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         PipeModel.DYNAMIC_MODELS.clear();
