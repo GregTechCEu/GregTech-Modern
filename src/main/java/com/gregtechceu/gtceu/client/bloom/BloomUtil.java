@@ -22,8 +22,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -51,6 +52,10 @@ public class BloomUtil {
     public static Map<SectionPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
     public static Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
     public static Map<SectionPos, BufferBuilder.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
+
+    public static RenderLevelStageEvent.@UnknownNullability Stage AFTER_BLOOM_RENDER_STAGE;
+
+    public static void init() {}
 
     /**
      * <p>
@@ -219,49 +224,43 @@ public class BloomUtil {
         }
         ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
         Vec3 camPos = camera.getPosition();
-        Minecraft.getInstance().getProfiler().popPush("gtceu:bloom");
 
-        BLOOM_RENDER_LOCK.writeLock().lock();
-        try {
-            GTRenderTypes.bloom().setupRenderState();
+        GTRenderTypes.bloom().setupRenderState();
 
-            profiler.popPush("gtceu:bloom");
+        profiler.popPush("gtceu:bloom");
 
-            preDraw();
-            if (!BLOOM_RENDERS.isEmpty()) {
-                EffectRenderContext context = EffectRenderContext.getInstance()
-                        .update(camera, frustum, partialTicks);
+        preDraw();
+        if (!BLOOM_RENDERS.isEmpty()) {
+            EffectRenderContext context = EffectRenderContext.getInstance()
+                    .update(camera, frustum, partialTicks);
 
-                BLOOM_RENDER_LOCK.readLock().lock();
-                try {
-                    BLOOM_RENDERS.forEach((renderSetup, list) -> {
-                        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-                        draw(poseStack, buffer, context, renderSetup, list);
-                    });
-                } finally {
-                    BLOOM_RENDER_LOCK.readLock().unlock();
-                }
-
-                postDraw();
+            BLOOM_RENDER_LOCK.readLock().lock();
+            try {
+                BLOOM_RENDERS.forEach((renderSetup, list) -> {
+                    BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                    draw(poseStack, buffer, context, renderSetup, list);
+                });
+            } finally {
+                BLOOM_RENDER_LOCK.readLock().unlock();
             }
 
-            if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
-                setupBloomUniforms(true);
-                drawBlockBloom(poseStack, projectionMatrix, camPos);
-            } else {
-                setupBloomUniforms(false);
-            }
-            // copy depth buffer from the main render target so bloom won't render through blocks
-            // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
-
-            GTShaders.BLOOM_CHAIN.process(partialTicks);
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-            VertexBuffer.unbind();
-
-            // the profiler section is popped by popPush() in the calling method so we won't pop it here.
-        } finally {
-            BLOOM_RENDER_LOCK.writeLock().unlock();
+            postDraw();
         }
+
+        if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+            setupBloomUniforms(true);
+            drawBlockBloom(poseStack, projectionMatrix, camPos);
+        } else {
+            setupBloomUniforms(false);
+        }
+        // copy depth buffer from the main render target so bloom won't render through blocks
+        // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+
+        GTShaders.BLOOM_CHAIN.process(partialTicks);
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+        VertexBuffer.unbind();
+
+        // the profiler section is popped by popPush() in the calling method so we won't pop it here.
 
         // noinspection UnstableApiUsage
         ForgeHooksClient.dispatchRenderStage(AFTER_BLOOM_RENDER_STAGE, levelRenderer,
@@ -271,11 +270,16 @@ public class BloomUtil {
     }
 
     private static void preDraw() {
-        for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
-            if (!ticket.isValid()) continue;
-            BLOOM_RENDERS.computeIfAbsent(ticket.renderSetup, k -> new ArrayList<>()).add(ticket);
+        BLOOM_RENDER_LOCK.writeLock().lock();
+        try {
+            for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
+                if (!ticket.isValid()) continue;
+                BLOOM_RENDERS.computeIfAbsent(ticket.renderSetup, k -> new ArrayList<>()).add(ticket);
+            }
+            SCHEDULED_BLOOM_RENDERS.clear();
+        } finally {
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
-        SCHEDULED_BLOOM_RENDERS.clear();
     }
 
     private static void draw(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
@@ -305,23 +309,33 @@ public class BloomUtil {
     }
 
     private static void postDraw() {
-        for (var it = BLOOM_RENDERS.values().iterator(); it.hasNext();) {
-            List<BloomRenderTicket> list = it.next();
+        BLOOM_RENDER_LOCK.writeLock().lock();
+        try {
+            for (var it = BLOOM_RENDERS.values().iterator(); it.hasNext();) {
+                List<BloomRenderTicket> list = it.next();
 
-            if (!list.isEmpty()) {
-                if (!list.removeIf(ticket -> {
-                    ticket.checkValidity();
-                    return !ticket.isValid();
-                }) || !list.isEmpty()) continue;
+                if (!list.isEmpty()) {
+                    if (!list.removeIf(ticket -> {
+                        ticket.checkValidity();
+                        return !ticket.isValid();
+                    }) || !list.isEmpty()) continue;
+                }
+
+                it.remove();
             }
-
-            it.remove();
+        } finally {
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
     }
 
     public static void finishBloomBuffer(SectionPos pos, BufferBuilder builder) {
         BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
-        if (buffer != null) {
+        if (buffer == null) {
+            return;
+        }
+
+        BLOOM_RENDER_LOCK.writeLock().lock();
+        try {
             BLOOM_BUFFER_BUILDERS.remove(pos, builder);
             BLOOM_BUFFER_SORT_STATES.put(pos, builder.getSortState());
 
@@ -336,6 +350,8 @@ public class BloomUtil {
                     BloomUtil.uploadBloomBuffer(buffer, vertexBuffer);
                 });
             }
+        } finally {
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
     }
 
@@ -348,15 +364,22 @@ public class BloomUtil {
     }
 
     public static void removeBloomChunk(SectionPos origin) {
-        BLOOM_BUFFER_BUILDERS.remove(origin);
-        BLOOM_BUFFER_SORT_STATES.remove(origin);
-        VertexBuffer buffer = BLOOM_BUFFERS.remove(origin);
-        if (buffer != null) {
-            if (!RenderSystem.isOnRenderThread()) {
-                RenderSystem.recordRenderCall(buffer::close);
-            } else {
-                buffer.close();
+        BLOOM_RENDER_LOCK.writeLock().lock();
+
+        try {
+            BLOOM_BUFFER_BUILDERS.remove(origin);
+            BLOOM_BUFFER_SORT_STATES.remove(origin);
+            VertexBuffer buffer = BLOOM_BUFFERS.remove(origin);
+
+            if (buffer != null) {
+                if (!RenderSystem.isOnRenderThread()) {
+                    RenderSystem.recordRenderCall(buffer::close);
+                } else {
+                    buffer.close();
+                }
             }
+        } finally {
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
     }
 
@@ -428,30 +451,32 @@ public class BloomUtil {
     private static void drawBlockBloom(PoseStack poseStack, Matrix4f projectionMatrix, Vec3 camPos) {
         ShaderInstance shader = setupShaderUniforms(poseStack, projectionMatrix);
         Uniform chunkOffsetUniform = shader.CHUNK_OFFSET;
-        for (var entry : BLOOM_BUFFERS.entrySet()) {
-            SectionPos pos = entry.getKey();
-            VertexBuffer buffer = entry.getValue();
 
-            // return early if buffer is invalid or has no vertex data bound
-            // VertexBuffer#mode's nullness is the easiest way to check this.
-            if (buffer.isInvalid() || ((VertexBufferAccessor) buffer).getMode() == null) {
-                continue;
+        BLOOM_RENDER_LOCK.readLock().lock();
+        try {
+            for (var entry : BLOOM_BUFFERS.entrySet()) {
+                SectionPos pos = entry.getKey();
+                VertexBuffer buffer = entry.getValue();
+
+                // return early if buffer is invalid or has no vertex data bound
+                // VertexBuffer#mode's nullness is the easiest way to check this.
+                if (buffer.isInvalid() || ((VertexBufferAccessor) buffer).getMode() == null) {
+                    continue;
+                }
+
+                if (chunkOffsetUniform != null) {
+                    chunkOffsetUniform.set(SectionPos.sectionToBlockCoord(pos.getX()) - (float) camPos.x(),
+                            SectionPos.sectionToBlockCoord(pos.getY()) - (float) camPos.y(),
+                            SectionPos.sectionToBlockCoord(pos.getZ()) - (float) camPos.z());
+                    chunkOffsetUniform.upload();
+                }
+
+                buffer.bind();
+                buffer.draw();
             }
-
-            if (chunkOffsetUniform != null) {
-                chunkOffsetUniform.set(SectionPos.sectionToBlockCoord(pos.getX()) - (float) camPos.x(),
-                        SectionPos.sectionToBlockCoord(pos.getY()) - (float) camPos.y(),
-                        SectionPos.sectionToBlockCoord(pos.getZ()) - (float) camPos.z());
-                chunkOffsetUniform.upload();
-            }
-
-            buffer.bind();
-            buffer.draw();
+        } finally {
+            BLOOM_RENDER_LOCK.readLock().unlock();
         }
-
-            poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
         if (chunkOffsetUniform != null) {
             chunkOffsetUniform.set(0, 0, 0);
