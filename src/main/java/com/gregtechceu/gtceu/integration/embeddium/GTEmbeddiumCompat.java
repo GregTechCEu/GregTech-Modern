@@ -9,6 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.embeddedt.embeddium.api.ChunkMeshEvent;
 
 public class GTEmbeddiumCompat {
+
     public static void init() {
         MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
     }

@@ -12,9 +12,12 @@ repositories {
         }
     }
 
-    maven { // JEI
-        name = "Jared's Maven"
-        url = "https://maven.blamejared.com/"
+    exclusiveContent { // Create, Ponder, Flywheel
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
     }
 
     maven { // JEI mirror, AE2
