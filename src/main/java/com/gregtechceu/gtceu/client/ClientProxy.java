@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
@@ -31,7 +30,6 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -186,16 +184,6 @@ public class ClientProxy extends CommonProxy {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
         event.register(PipeModelLoader.ID.getPath(), PipeModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
-    }
-
-    @SubscribeEvent
-    public void registerShaders(RegisterShadersEvent event) {
-        GTShaders.onRegisterShaders(event);
-    }
-
-    @SubscribeEvent
-    public void registerLevelRenderStages(RenderLevelStageEvent.RegisterStageEvent event) {
-        BloomUtil.AFTER_BLOOM_RENDER_STAGE = event.register(GTCEu.id("after_bloom"), GTRenderTypes.bloom());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

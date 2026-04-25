@@ -6,11 +6,9 @@ import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
@@ -21,9 +19,7 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -31,10 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +36,6 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -64,7 +56,6 @@ public class ClientEventListener {
 
     @SubscribeEvent
     public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
-        LevelRenderer levelRenderer = event.getLevelRenderer();
         Camera camera = event.getCamera();
         PoseStack poseStack = event.getPoseStack();
         float partialTick = event.getPartialTick();
@@ -77,35 +68,7 @@ public class ClientEventListener {
     }
 
     @SubscribeEvent
-    public static void onChunkUnloadEvent(ChunkEvent.Unload event) {
-        if (!GTShaders.canUseBloomShader() || GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
-            return;
-        }
-        ChunkAccess chunk = event.getChunk();
-        LevelAccessor level = chunk.getWorldForge();
-        if (level == null) {
-            return;
-        }
-
-        ChunkPos chunkPos = chunk.getPos();
-        for (int y = level.getMinSection(); y < level.getMaxSection(); y++) {
-            BloomUtil.removeBloomChunk(SectionPos.of(chunkPos, y));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && Minecraft.getInstance().level != null) {
-            if (GTShaders.canUseBloomShader()) {
-                GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-                Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
-        BloomUtil.invalidateLevelTickets(event.getLevel());
         FacadeCoverRenderer.clearItemModelCache();
     }
 
