@@ -73,9 +73,6 @@ public class ClientEventListener {
             // to render the preview after block entities, before the translucent.
             // so it can be seen through the transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
-        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
-            BloomUtil.renderBloom(camera, camera.getEntity(), levelRenderer,
-                    poseStack, event.getProjectionMatrix(), event.getFrustum(), partialTick);
         }
     }
 
