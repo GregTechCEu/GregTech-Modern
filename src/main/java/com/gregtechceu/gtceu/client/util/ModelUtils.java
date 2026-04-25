@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
@@ -98,6 +99,8 @@ public class ModelUtils {
             @Override
             public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
                 EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
+
+                BloomMetadataSection.KNOWN_BLOOM_TEXTURES.clear();
             }
         });
     }

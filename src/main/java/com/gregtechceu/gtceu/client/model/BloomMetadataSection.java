@@ -11,17 +11,19 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.util.GsonHelper;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.io.IOException;
 
 public record BloomMetadataSection(boolean bloom) {
 
     public static final String SECTION_NAME = GTCEu.MOD_ID;
-    public static final BloomMetadataSection MISSING = new BloomMetadataSection(false);
+
+    public static final Object2BooleanMap<ResourceLocation> KNOWN_BLOOM_TEXTURES = new Object2BooleanOpenHashMap<>();
 
     public static boolean hasBloom(TextureAtlasSprite sprite) {
         ResourceLocation textureLoc = SpriteSource.TEXTURE_ID_CONVERTER.idToFile(sprite.contents().name());
@@ -29,16 +31,19 @@ public record BloomMetadataSection(boolean bloom) {
     }
 
     public static boolean hasBloom(ResourceLocation res) {
-        try {
-            var resource = Minecraft.getInstance().getResourceManager().getResource(res);
-            if (resource.isPresent()) {
-                return resource.get().metadata().getSection(Serializer.INSTANCE)
-                        .orElse(MISSING).bloom;
+        return KNOWN_BLOOM_TEXTURES.computeIfAbsent(res, loc -> {
+            try {
+                var resource = Minecraft.getInstance().getResourceManager().getResource(res);
+                if (resource.isPresent()) {
+                    return resource.get().metadata()
+                            .getSection(Serializer.INSTANCE).map(BloomMetadataSection::bloom)
+                            .orElse(false);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+            return false;
+        });
     }
 
     public static boolean hasBloom(BakedQuad quad, int[] ambientPackedLights) {
@@ -72,7 +77,6 @@ public record BloomMetadataSection(boolean bloom) {
 
         static BloomMetadataSection.Serializer INSTANCE = new BloomMetadataSection.Serializer();
 
-        @NotNull
         @Override
         public String getMetadataSectionName() {
             return SECTION_NAME;
@@ -80,18 +84,7 @@ public record BloomMetadataSection(boolean bloom) {
 
         @Override
         public BloomMetadataSection fromJson(JsonObject json) {
-            boolean bloom = false;
-            if (json.isJsonObject()) {
-                JsonObject obj = json.getAsJsonObject();
-                if (obj.has("bloom")) {
-                    JsonElement element = obj.get("bloom");
-                    if (element.isJsonPrimitive() &&
-                            element.getAsJsonPrimitive().isBoolean()) {
-                        bloom = element.getAsBoolean();
-                    }
-                }
-            }
-            return new BloomMetadataSection(bloom);
+            return new BloomMetadataSection(GsonHelper.getAsBoolean(json, "bloom"));
         }
     }
 }
