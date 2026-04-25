@@ -51,12 +51,13 @@ public class BlockRendererMixin {
     private void gtceu$captureBloomQuads(BlockRenderer instance, BlockRenderContext ctx, ChunkModelBuilder builder,
                                          Vec3 offset, Material material, BakedQuadView quad,
                                          int[] colors, QuadLightData light, Operation<Void> original) {
-        BlockPos chunkOrigin = SectionPos.of(ctx.pos()).origin();
+        SectionPos chunkOrigin = SectionPos.of(ctx.pos());
         // Check if quad is full brightness OR we have bloom enabled for the quad
         // TODO improve, don't mixin to embeddium, maybe ask for an API? doubt we'll get it though
         if (GTShaders.canUseBloomShader() && gtceu$hasBloom(quad, light)) {
             ModelQuadOrientation orientation = this.useReorienting ?
                     ModelQuadOrientation.orientByBrightness(light.br, light.lm) : ModelQuadOrientation.NORMAL;
+
             for (int dstIndex = 0; dstIndex < 4; ++dstIndex) {
                 int srcIndex = orientation.getVertexIndex(dstIndex);
                 int color = this.colorEncoder.writeColor(
@@ -82,6 +83,7 @@ public class BlockRendererMixin {
                                 NormI8.unpackZ(normal));
             }
         }
+
         original.call(instance, ctx, builder, offset, material, quad, colors, light);
     }
 

@@ -22,7 +22,8 @@ public class QuadLighterMixin {
                                          float[] colorMuls, float red, float green, float blue,
                                          int[] combinedLights, int combinedOverlay, boolean mulColor,
                                          Operation<Void> original) {
-        BloomUtil.copyToBloomBuffer(consumer, pose, quad, colorMuls, red, green, blue,
-                combinedLights, combinedOverlay, mulColor, original);
+        BloomUtil.copyToBloomBuffer(consumer, quad, combinedLights, vertexConsumer -> {
+            original.call(vertexConsumer, pose, quad, colorMuls, red, green, blue, colorMuls, colorMuls, mulColor);
+        });
     }
 }

@@ -81,17 +81,14 @@ public abstract class LevelRendererMixin {
     @Unique
     private final RandomSource gtceu$modelRandom = RandomSource.create();
 
-    @Shadow
-    public abstract ChunkRenderDispatcher getChunkRenderDispatcher();
-
-    @Inject(method = "applyFrustum",
+    @Inject(method = "compileChunks",
             at = @At(value = "INVOKE",
-                     target = "Lit/unimi/dsi/fastutil/objects/ObjectArrayList;add(Ljava/lang/Object;)Z",
-                     remap = false))
-    private void gtceu$compileBloomBuffers(Frustum frustum, CallbackInfo ci,
-                                           @Local LevelRenderer.RenderChunkInfo chunkInfo) {
-        BloomUtil.bakeBloomChunkBuffers(chunkInfo.chunk.getOrigin(),
-                this.getChunkRenderDispatcher().getCameraPosition());
+                     ordinal = 0,
+                     target = "Lnet/minecraft/world/level/lighting/LevelLightEngine;lightOnInSection(Lnet/minecraft/core/SectionPos;)Z"))
+    private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
+                                           @Local SectionPos chunkOrigin) {
+        BloomUtil.CURRENT_RENDERING_SECTION.set(chunkOrigin);
+        BloomUtil.bakeBloomChunkBuffers(chunkOrigin, camera.getPosition());
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

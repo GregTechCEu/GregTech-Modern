@@ -13,8 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.SectionPos;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,6 +36,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -47,9 +48,9 @@ public class BloomUtil {
 
     private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
 
-    public static Map<BlockPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
-    public static Map<BlockPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
-    public static Map<BlockPos, BufferBuilder.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
+    public static Map<SectionPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
+    public static Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
+    public static Map<SectionPos, BufferBuilder.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
     /**
      * <p>
@@ -210,14 +211,13 @@ public class BloomUtil {
         }
     }
 
-    public static void init() {}
-
-    public static void renderBloom(Camera camera, @NotNull Entity entity, LevelRenderer levelRenderer,
+    public static void renderBloom(Camera camera, LevelRenderer levelRenderer,
                                    PoseStack poseStack, Matrix4f projectionMatrix, Frustum frustum,
                                    float partialTicks) {
         if (!GTShaders.canUseBloomShader()) {
             return;
         }
+        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
         Vec3 camPos = camera.getPosition();
         Minecraft.getInstance().getProfiler().popPush("gtceu:bloom");
 
@@ -225,15 +225,23 @@ public class BloomUtil {
         try {
             GTRenderTypes.bloom().setupRenderState();
 
+            profiler.popPush("gtceu:bloom");
+
             preDraw();
             if (!BLOOM_RENDERS.isEmpty()) {
                 EffectRenderContext context = EffectRenderContext.getInstance()
-                        .update(entity, camPos, frustum, partialTicks);
+                        .update(camera, frustum, partialTicks);
 
-                for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
-                    BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-                    draw(poseStack, buffer, context, list);
+                BLOOM_RENDER_LOCK.readLock().lock();
+                try {
+                    BLOOM_RENDERS.forEach((renderSetup, list) -> {
+                        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                        draw(poseStack, buffer, context, renderSetup, list);
+                    });
+                } finally {
+                    BLOOM_RENDER_LOCK.readLock().unlock();
                 }
+
                 postDraw();
             }
 
@@ -246,10 +254,20 @@ public class BloomUtil {
             // copy depth buffer from the main render target so bloom won't render through blocks
             // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
-            render(partialTicks, poseStack, projectionMatrix, levelRenderer, camera, frustum);
+            GTShaders.BLOOM_CHAIN.process(partialTicks);
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+            VertexBuffer.unbind();
+
+            // the profiler section is popped by popPush() in the calling method so we won't pop it here.
         } finally {
             BLOOM_RENDER_LOCK.writeLock().unlock();
         }
+
+        // noinspection UnstableApiUsage
+        ForgeHooksClient.dispatchRenderStage(AFTER_BLOOM_RENDER_STAGE, levelRenderer,
+                poseStack, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
+
+        GTRenderTypes.bloom().clearRenderState();
     }
 
     private static void preDraw() {
@@ -301,7 +319,7 @@ public class BloomUtil {
         }
     }
 
-    public static void finishBloomBuffer(BlockPos pos, BufferBuilder builder) {
+    public static void finishBloomBuffer(SectionPos pos, BufferBuilder builder) {
         BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
         if (buffer != null) {
             BLOOM_BUFFER_BUILDERS.remove(pos, builder);
@@ -329,7 +347,7 @@ public class BloomUtil {
         }
     }
 
-    public static void removeBloomChunk(BlockPos origin) {
+    public static void removeBloomChunk(SectionPos origin) {
         BLOOM_BUFFER_BUILDERS.remove(origin);
         BLOOM_BUFFER_SORT_STATES.remove(origin);
         VertexBuffer buffer = BLOOM_BUFFERS.remove(origin);
@@ -342,7 +360,7 @@ public class BloomUtil {
         }
     }
 
-    public static BufferBuilder getOrStartBloomBuffer(BlockPos pos) {
+    public static BufferBuilder getOrStartBloomBuffer(SectionPos pos) {
         BufferBuilder builder = BLOOM_BUFFER_BUILDERS.computeIfAbsent(pos,
                 $ -> new BufferBuilder(GTRenderTypes.bloom().bufferSize()));
         if (!builder.building()) {
@@ -351,7 +369,7 @@ public class BloomUtil {
         return builder;
     }
 
-    public static void bakeBloomChunkBuffers(BlockPos pos, Vec3 camPos) {
+    public static void bakeBloomChunkBuffers(SectionPos pos, Vec3 camPos) {
         if (!GTShaders.canUseBloomShader()) {
             return;
         }
@@ -366,7 +384,8 @@ public class BloomUtil {
         finishBloomBuffer(pos, builder);
     }
 
-    public static ThreadLocal<BlockPos> CURRENT_RENDERING_CHUNK_POS = new ThreadLocal<>();
+    @ApiStatus.Internal
+    public static ThreadLocal<@Nullable SectionPos> CURRENT_RENDERING_SECTION = new ThreadLocal<>();
 
     private static final String FILTER_TOGGLE_UNIFORM = "EnableFilter";
     private static final String DEPTH_NEAR_UNIFORM = "DepthNear";
@@ -407,8 +426,10 @@ public class BloomUtil {
     }
 
     private static void drawBlockBloom(PoseStack poseStack, Matrix4f projectionMatrix, Vec3 camPos) {
+        ShaderInstance shader = setupShaderUniforms(poseStack, projectionMatrix);
+        Uniform chunkOffsetUniform = shader.CHUNK_OFFSET;
         for (var entry : BLOOM_BUFFERS.entrySet()) {
-            BlockPos pos = entry.getKey();
+            SectionPos pos = entry.getKey();
             VertexBuffer buffer = entry.getValue();
 
             // return early if buffer is invalid or has no vertex data bound
@@ -416,50 +437,65 @@ public class BloomUtil {
             if (buffer.isInvalid() || ((VertexBufferAccessor) buffer).getMode() == null) {
                 continue;
             }
+
+            if (chunkOffsetUniform != null) {
+                chunkOffsetUniform.set(SectionPos.sectionToBlockCoord(pos.getX()) - (float) camPos.x(),
+                        SectionPos.sectionToBlockCoord(pos.getY()) - (float) camPos.y(),
+                        SectionPos.sectionToBlockCoord(pos.getZ()) - (float) camPos.z());
+                chunkOffsetUniform.upload();
+            }
+
             buffer.bind();
+            buffer.draw();
+        }
 
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
-            // noinspection DataFlowIssue
-            buffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
-                    GameRenderer.getRendertypeCutoutShader());
-            poseStack.popPose();
+        if (chunkOffsetUniform != null) {
+            chunkOffsetUniform.set(0, 0, 0);
         }
-    }
-
-    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix,
-                               LevelRenderer levelRenderer, Camera camera, Frustum frustum) {
-        GTShaders.BLOOM_CHAIN.process(partialTicks);
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+        shader.clear();
         VertexBuffer.unbind();
-
-        Minecraft.getInstance().getProfiler().pop();
-
-        // noinspection UnstableApiUsage
-        ForgeHooksClient.dispatchRenderStage(GTRenderTypes.bloom(), levelRenderer,
-                poseStack, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
-
-        GTRenderTypes.bloom().clearRenderState();
     }
 
-    public static void copyToBloomBuffer(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
-                                         float[] colorMuls, float red, float green, float blue,
-                                         int[] combinedLights, int combinedOverlay, boolean mulColor,
-                                         Operation<Void> original) {
-        original.call(consumer, pose, quad,
-                colorMuls, red, green, blue,
-                combinedLights, combinedOverlay, mulColor);
+    private static ShaderInstance setupShaderUniforms(PoseStack poseStack, Matrix4f projectionMatrix) {
+        ShaderInstance shader = RenderSystem.getShader();
+        assert shader != null;
+
+        for(int i = 0; i < 12; ++i) {
+            int textureId = RenderSystem.getShaderTexture(i);
+            shader.setSampler("Sampler" + i, textureId);
+        }
+        if (shader.MODEL_VIEW_MATRIX != null) shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
+        if (shader.PROJECTION_MATRIX != null) shader.PROJECTION_MATRIX.set(projectionMatrix);
+        if (shader.COLOR_MODULATOR != null) shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
+        if (shader.GLINT_ALPHA != null) shader.GLINT_ALPHA.set(RenderSystem.getShaderGlintAlpha());
+        if (shader.FOG_START != null) shader.FOG_START.set(RenderSystem.getShaderFogStart());
+        if (shader.FOG_END != null) shader.FOG_END.set(RenderSystem.getShaderFogEnd());
+        if (shader.FOG_COLOR != null) shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
+        if (shader.FOG_SHAPE != null) shader.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
+        if (shader.TEXTURE_MATRIX != null) shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
+        if (shader.GAME_TIME != null) shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
+
+        RenderSystem.setupShaderLights(shader);
+        shader.apply();
+
+        return shader;
+    }
+
+    public static void copyToBloomBuffer(VertexConsumer originalVertexConsumer, BakedQuad quad, int[] combinedLights,
+                                         Consumer<VertexConsumer> draw) {
+        draw.accept(originalVertexConsumer);
+
         if (!GTShaders.canUseBloomShader()) {
             return;
         }
 
-        BlockPos chunkOrigin = BloomUtil.CURRENT_RENDERING_CHUNK_POS.get();
-        if (chunkOrigin != null && BloomMetadataSection.hasBloom(quad, combinedLights)) {
-            original.call(BloomUtil.getOrStartBloomBuffer(chunkOrigin), pose, quad,
-                    colorMuls, red, green, blue,
-                    combinedLights, combinedOverlay, mulColor);
+        SectionPos sectionOrigin = BloomUtil.CURRENT_RENDERING_SECTION.get();
+        if (sectionOrigin != null && BloomMetadataSection.hasBloom(quad, combinedLights)) {
+            draw.accept(BloomUtil.getOrStartBloomBuffer(sectionOrigin));
         }
     }
 
@@ -504,12 +540,5 @@ public class BloomUtil {
                 invalidate();
             }
         }
-    }
-
-    @ApiStatus.Internal
-    @FunctionalInterface
-    public interface RegionVisibilityTest {
-
-        boolean isAxisAlignedWith(int x, int y, int z);
     }
 }
