@@ -45,16 +45,15 @@ public final class EffectRenderContext {
     @Getter
     private float rotationXZ;
 
-    @NotNull
-    public EffectRenderContext update(@NotNull Entity renderViewEntity, Vec3 camPos,
-                                      Frustum frustum, float partialTicks) {
-        this.renderViewEntity = renderViewEntity;
-        this.camPos = camPos;
+    public EffectRenderContext update(Camera camera, Frustum frustum, float partialTicks) {
+        this.renderViewEntity = camera.getEntity();
+        this.camPos = camera.getPosition();
         this.partialTicks = partialTicks;
 
         float i = Minecraft.getInstance().options.getCameraType().isFirstPerson() ? 1 : -1;
-        float pitch = renderViewEntity.getYRot();
-        float yaw = renderViewEntity.getXRot();
+        float pitch = camera.getYRot();
+        float yaw = camera.getXRot();
+
         this.rotationX = Mth.cos(yaw * Mth.DEG_TO_RAD) * i;
         this.rotationZ = Mth.sin(yaw * Mth.DEG_TO_RAD) * i;
         this.rotationYZ = -this.rotationX * Mth.sin(pitch * Mth.DEG_TO_RAD) * i;

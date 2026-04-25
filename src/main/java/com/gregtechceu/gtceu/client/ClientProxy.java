@@ -189,7 +189,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onRegisterShaders(RegisterShadersEvent event) {
+    public void registerShaders(RegisterShadersEvent event) {
         GTShaders.onRegisterShaders(event);
     }
 

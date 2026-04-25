@@ -58,15 +58,13 @@ public class BloomUtil {
     public static void init() {}
 
     /**
-     * <p>
      * Register a custom bloom render callback for subsequent world render. The render call persists until the
      * {@code blockEntity} is invalidated, or the world associated with {@code blockEntity} or the ticket is
      * manually freed by calling {@link BloomRenderTicket#invalidate()}.
-     * </p>
+     *
      * <p>
      * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
-     * </p>
      *
      * @param setup       Render setup, if exists
      * @param render      Rendering callback
@@ -97,15 +95,13 @@ public class BloomUtil {
     }
 
     /**
-     * <p>
      * Register a custom bloom render callback for subsequent world render. The render call persists until the
      * {@code particle} is invalidated, or the ticket is manually freed by calling
      * {@link BloomRenderTicket#invalidate()}.
-     * </p>
+     *
      * <p>
      * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
-     * </p>
      *
      * @param setup    Render setup, if exists
      * @param render   Rendering callback
@@ -120,14 +116,12 @@ public class BloomUtil {
     }
 
     /**
-     * <p>
      * Register a custom bloom render callback for subsequent world render. The render call persists until it is
      * manually freed by calling {@link BloomRenderTicket#invalidate()}, or invalidated by validity checker.
-     * </p>
+     *
      * <p>
      * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
-     * </p>
      *
      * @param setup           Render setup, if exists
      * @param render          Rendering callback
@@ -145,14 +139,12 @@ public class BloomUtil {
     }
 
     /**
-     * <p>
      * Register a custom bloom render callback for subsequent world render. The render call persists until it is
      * manually freed by calling {@link BloomRenderTicket#invalidate()}, or invalidated by validity checker.
-     * </p>
+     *
      * <p>
      * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
-     * </p>
      *
      * @param setup           Render setup, if exists
      * @param render          Rendering callback
@@ -275,16 +267,15 @@ public class BloomUtil {
     }
 
     private static void draw(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context,
-                             List<BloomRenderTicket> tickets) {
+                             @Nullable IRenderSetup renderSetup, List<BloomRenderTicket> tickets) {
         boolean initialized = false;
-        @Nullable
-        IRenderSetup renderSetup = null;
+
         for (BloomRenderTicket ticket : tickets) {
             ticket.checkValidity();
             if (!ticket.isValid() || !ticket.render.shouldRenderBloomEffect(context)) continue;
+
             if (!initialized) {
                 initialized = true;
-                renderSetup = ticket.renderSetup;
                 if (renderSetup != null) {
                     renderSetup.preDraw(buffer);
                 }
@@ -295,6 +286,7 @@ public class BloomUtil {
             ticket.render.renderBloomEffect(poseStack, buffer, context);
             poseStack.popPose();
         }
+
         if (initialized && renderSetup != null) {
             renderSetup.postDraw(buffer);
         }

@@ -46,15 +46,16 @@ public class GTParticleManager {
     }
 
     public void updateEffects() {
-        if (!depthEnabledParticles.isEmpty()) {
-            updateQueue(depthEnabledParticles);
+        if (!this.depthEnabledParticles.isEmpty()) {
+            updateQueue(this.depthEnabledParticles);
         }
-        if (!depthDisabledParticles.isEmpty()) {
-            updateQueue(depthDisabledParticles);
+        if (!this.depthDisabledParticles.isEmpty()) {
+            updateQueue(this.depthDisabledParticles);
         }
+
         if (!newParticleQueue.isEmpty()) {
             for (GTParticle particle : newParticleQueue) {
-                var queue = particle.shouldDisableDepth() ? depthDisabledParticles : depthEnabledParticles;
+                var queue = particle.shouldDisableDepth() ? this.depthDisabledParticles : this.depthEnabledParticles;
 
                 ArrayDeque<GTParticle> particles = queue.computeIfAbsent(particle.getRenderSetup(),
                         setup -> new ArrayDeque<>());
@@ -64,6 +65,7 @@ public class GTParticleManager {
                 }
                 particles.add(particle);
             }
+
             newParticleQueue.clear();
         }
     }
@@ -71,24 +73,26 @@ public class GTParticleManager {
     private void updateQueue(Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
         Iterator<ArrayDeque<GTParticle>> it = renderQueue.values().iterator();
         while (it.hasNext()) {
-            ArrayDeque<GTParticle> particles = it.next();
+            ArrayDeque<GTParticle> particlesForSetup = it.next();
 
-            Iterator<GTParticle> it2 = particles.iterator();
-            while (it2.hasNext()) {
-                GTParticle particle = it2.next();
+            Iterator<GTParticle> particles = particlesForSetup.iterator();
+            while (particles.hasNext()) {
+                GTParticle particle = particles.next();
+
                 if (particle.isAlive()) {
                     try {
                         particle.onUpdate();
                     } catch (RuntimeException exception) {
-                        GTCEu.LOGGER.error("particle update error: {}", particle, exception);
+                        GTCEu.LOGGER.error("Particle update error: {}", particle, exception);
                         particle.setExpired();
                     }
                     if (particle.isAlive()) continue;
                 }
-                it2.remove();
+
+                particles.remove();
             }
 
-            if (particles.isEmpty()) {
+            if (particlesForSetup.isEmpty()) {
                 it.remove();
             }
         }
@@ -96,40 +100,40 @@ public class GTParticleManager {
 
     public void clearAllEffects(boolean cleanNewQueue) {
         if (cleanNewQueue) {
-            for (GTParticle particle : newParticleQueue) {
+            for (GTParticle particle : this.newParticleQueue) {
                 particle.setExpired();
             }
-            newParticleQueue.clear();
+            this.newParticleQueue.clear();
         }
-        for (ArrayDeque<GTParticle> particles : depthEnabledParticles.values()) {
+        for (ArrayDeque<GTParticle> particles : this.depthEnabledParticles.values()) {
             for (GTParticle particle : particles) {
                 particle.setExpired();
             }
         }
-        for (ArrayDeque<GTParticle> particles : depthDisabledParticles.values()) {
+        for (ArrayDeque<GTParticle> particles : this.depthDisabledParticles.values()) {
             for (GTParticle particle : particles) {
                 particle.setExpired();
             }
         }
-        depthEnabledParticles.clear();
-        depthDisabledParticles.clear();
+        this.depthEnabledParticles.clear();
+        this.depthDisabledParticles.clear();
     }
 
     public void renderParticles(PoseStack poseStack, Camera camera, Frustum frustum, float partialTicks) {
-        if (depthEnabledParticles.isEmpty() && depthDisabledParticles.isEmpty()) return;
+        if (this.depthEnabledParticles.isEmpty() && this.depthDisabledParticles.isEmpty()) return;
 
         EffectRenderContext instance = EffectRenderContext.getInstance()
-                .update(renderViewEntity, camera.getPosition(), frustum, partialTicks);
+                .update(camera, frustum, partialTicks);
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        if (!depthDisabledParticles.isEmpty()) {
+        if (!this.depthDisabledParticles.isEmpty()) {
             RenderSystem.depthMask(false);
-            renderParticlesInLayer(poseStack, depthDisabledParticles, instance);
+            renderParticlesInLayer(poseStack, this.depthDisabledParticles, instance);
             RenderSystem.depthMask(true);
         }
-        renderParticlesInLayer(poseStack, depthEnabledParticles, instance);
+        renderParticlesInLayer(poseStack, this.depthEnabledParticles, instance);
 
         RenderSystem.disableBlend();
     }
@@ -138,26 +142,29 @@ public class GTParticleManager {
                                                Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
                                                EffectRenderContext context) {
         for (var entry : renderQueue.entrySet()) {
-            IRenderSetup handler = entry.getKey();
             ArrayDeque<GTParticle> particles = entry.getValue();
             if (particles.isEmpty()) continue;
 
+            IRenderSetup handler = entry.getKey();
             boolean initialized = false;
+
             BufferBuilder buffer = Tesselator.getInstance().getBuilder();
             for (GTParticle particle : particles) {
-                if (particle.shouldRender(context)) {
-                    try {
-                        if (!initialized) {
-                            initialized = true;
-                            if (handler != null) {
-                                handler.preDraw(buffer);
-                            }
+                if (!particle.shouldRender(context)) {
+                    continue;
+                }
+                try {
+                    if (!initialized) {
+                        initialized = true;
+                        if (handler != null) {
+                            handler.preDraw(buffer);
                         }
-                        particle.renderParticle(poseStack, buffer, context);
-                    } catch (Throwable throwable) {
-                        GTCEu.LOGGER.error("particle render error: {}", particle, throwable);
-                        particle.setExpired();
                     }
+                    particle.renderParticle(poseStack, buffer, context);
+
+                } catch (Throwable throwable) {
+                    GTCEu.LOGGER.error("Particle render error: {}", particle, throwable);
+                    particle.setExpired();
                 }
             }
             if (initialized && handler != null) {
@@ -196,8 +203,8 @@ public class GTParticleManager {
                 entity = Minecraft.getInstance().player;
             }
             if (entity != null) {
-                INSTANCE.renderParticles(event.getPoseStack(), entity,
-                        event.getCamera(), event.getFrustum(), event.getPartialTick());
+                INSTANCE.renderParticles(event.getPoseStack(), event.getCamera(), event.getFrustum(),
+                        event.getPartialTick());
             }
         }
     }
@@ -214,10 +221,10 @@ public class GTParticleManager {
     }
 
     private static int count(Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
-        int g = 0;
+        int total = 0;
         for (Deque<GTParticle> queue : renderQueue.values()) {
-            g += queue.size();
+            total += queue.size();
         }
-        return g;
+        return total;
     }
 }
