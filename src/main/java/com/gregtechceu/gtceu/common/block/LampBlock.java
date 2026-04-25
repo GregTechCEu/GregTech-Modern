@@ -60,19 +60,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isLightActive(BlockState state) {
-        return isInverted(state) != state.getValue(POWERED);
-    }
-
-    public static boolean isInverted(BlockState state) {
-        return state.getValue(INVERTED);
-    }
-
-    public static boolean isLightEnabled(BlockState state) {
-        return state.getValue(LIGHT);
-    }
-
-    public static boolean isBloomEnabled(BlockState state) {
-        return state.getValue(BLOOM);
+        return state.getValue(INVERTED) != state.getValue(POWERED);
     }
 
     public static boolean isInverted(CompoundTag tag) {
@@ -112,7 +100,7 @@ public class LampBlock extends Block {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return isLightEnabled(state) && isLightActive(state) ? 15 : 0;
+        return state.getValue(LIGHT) && isLightActive(state) ? 15 : 0;
     }
 
     @Override
