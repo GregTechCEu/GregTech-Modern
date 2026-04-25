@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.client.model;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -16,8 +18,11 @@ import net.minecraft.util.GsonHelper;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
 public record BloomMetadataSection(boolean bloom) {
 
@@ -31,9 +36,9 @@ public record BloomMetadataSection(boolean bloom) {
     }
 
     public static boolean hasBloom(ResourceLocation res) {
-        return KNOWN_BLOOM_TEXTURES.computeIfAbsent(res, loc -> {
+        return KNOWN_BLOOM_TEXTURES.computeIfAbsent(res, (Predicate<ResourceLocation>) (loc -> {
             try {
-                var resource = Minecraft.getInstance().getResourceManager().getResource(res);
+                var resource = Minecraft.getInstance().getResourceManager().getResource(loc);
                 if (resource.isPresent()) {
                     return resource.get().metadata()
                             .getSection(Serializer.INSTANCE).map(BloomMetadataSection::bloom)
@@ -43,7 +48,7 @@ public record BloomMetadataSection(boolean bloom) {
                 throw new RuntimeException(e);
             }
             return false;
-        });
+        }));
     }
 
     public static boolean hasBloom(BakedQuad quad, int[] ambientPackedLights) {
@@ -71,6 +76,21 @@ public record BloomMetadataSection(boolean bloom) {
             }
         }
         return false;
+    }
+
+    /// Helper function for skipping bloom quads drawn with non-bloom render types
+    @ApiStatus.Internal
+    public static boolean shouldDrawQuad(BakedQuad quad, @Nullable RenderType renderType, int[] combinedLights) {
+        if (renderType == null) {
+            return true;
+        }
+
+        if (renderType != GTRenderTypes.bloom() && renderType != GTRenderTypes.entityBloomBlockSheet() &&
+                BloomMetadataSection.hasBloom(quad, combinedLights)) {
+            return false;
+        }
+
+        return true;
     }
 
     public static class Serializer implements MetadataSectionSerializer<BloomMetadataSection> {

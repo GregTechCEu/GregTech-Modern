@@ -9,6 +9,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
@@ -71,6 +72,11 @@ public class BloomEventListeners {
         @SubscribeEvent
         public void registerLevelRenderStages(RenderLevelStageEvent.RegisterStageEvent event) {
             BloomUtil.AFTER_BLOOM_RENDER_STAGE = event.register(GTCEu.id("after_bloom"), GTRenderTypes.bloom());
+        }
+
+        @SubscribeEvent
+        public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
+            event.register("bloom", GTRenderTypes.bloom(), GTRenderTypes.entityBloomBlockSheet());
         }
     }
 }

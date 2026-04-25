@@ -6,6 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,21 +35,31 @@ public class GTRenderTypes extends RenderType {
     private static final RenderType LIGHT_RING = RenderType.create("light_ring", DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.TRIANGLE_STRIP, RenderType.SMALL_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setCullState(NO_CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom", DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS, RenderType.BIG_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
-                    .setLightmapState(RenderStateShard.LIGHTMAP)
-                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
-                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
                     .setOutputState(BLOOM_TARGET)
                     .createCompositeState(false));
+    private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
+        return create("gtceu:entity_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
+                RenderType.TRANSIENT_BUFFER_SIZE, true, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setLightmapState(LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .createCompositeState(false));
+    });
 
     private static final RenderType MONITOR = RenderType.create("central_monitor",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, RenderType.TRANSIENT_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(NO_CULL)
                     .setShaderState(POSITION_COLOR_SHADER)
@@ -77,6 +88,15 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
+    }
+
+    public static RenderType entityBloom(ResourceLocation location) {
+        return ENTITY_BLOOM.apply(location);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static RenderType entityBloomBlockSheet() {
+        return entityBloom(TextureAtlas.LOCATION_BLOCKS);
     }
 
     public static RenderType getMonitor() {

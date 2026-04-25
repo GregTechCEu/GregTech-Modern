@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -25,7 +26,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LevelRenderer.class)
-public class LevelRendererMixin {
+public abstract class LevelRendererMixin {
+
+    @Shadow
+    protected abstract void renderChunkLayer(RenderType renderType, PoseStack poseStack,
+                                             double camX, double camY, double camZ, Matrix4f projectionMatrix);
 
     @Inject(method = "compileChunks",
             at = @At(value = "INVOKE",
@@ -55,7 +60,7 @@ public class LevelRendererMixin {
                                    @Local Frustum frustum, @Local Vec3 camPos) {
         if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
             BloomUtil.setupBloomShaderUniforms(true);
-            BloomUtil.drawBlockBloom(poseStack, projectionMatrix, camPos);
+            this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
         } else {
             BloomUtil.setupBloomShaderUniforms(false);
         }
