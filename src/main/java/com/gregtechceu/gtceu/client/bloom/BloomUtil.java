@@ -231,12 +231,14 @@ public class BloomUtil {
             postDraw();
         }
 
+        /* shader uniforms are set up where this is called from
         if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
-            setupBloomUniforms(true);
+            setupBloomShaderUniforms(true);
             drawBlockBloom(poseStack, projectionMatrix, camPos);
         } else {
-            setupBloomUniforms(false);
+            setupBloomShaderUniforms(false);
         }
+        */
         // copy depth buffer from the main render target so bloom won't render through blocks
         // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
@@ -405,7 +407,8 @@ public class BloomUtil {
     private static final String MIN_BRIGHTNESS_UNIFORM = "MinBrightness";
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
-    private static void setupBloomUniforms(boolean drawBlockBloom) {
+    @ApiStatus.Internal
+    public static void setupBloomShaderUniforms(boolean drawBlockBloom) {
         var config = ConfigHolder.INSTANCE.client.shader;
 
         // Forcefully insert config values to shader
@@ -432,8 +435,34 @@ public class BloomUtil {
         }
     }
 
+    /// @return the shader to use for drawing block bloom.
+    private static ShaderInstance setupBlockShaderUniforms(PoseStack poseStack, Matrix4f projectionMatrix) {
+        ShaderInstance shader = RenderSystem.getShader();
+        assert shader != null;
+
+        for(int i = 0; i < 12; ++i) {
+            int textureId = RenderSystem.getShaderTexture(i);
+            shader.setSampler("Sampler" + i, textureId);
+        }
+        if (shader.MODEL_VIEW_MATRIX != null) shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
+        if (shader.PROJECTION_MATRIX != null) shader.PROJECTION_MATRIX.set(projectionMatrix);
+        if (shader.COLOR_MODULATOR != null) shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
+        if (shader.GLINT_ALPHA != null) shader.GLINT_ALPHA.set(RenderSystem.getShaderGlintAlpha());
+        if (shader.FOG_START != null) shader.FOG_START.set(RenderSystem.getShaderFogStart());
+        if (shader.FOG_END != null) shader.FOG_END.set(RenderSystem.getShaderFogEnd());
+        if (shader.FOG_COLOR != null) shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
+        if (shader.FOG_SHAPE != null) shader.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
+        if (shader.TEXTURE_MATRIX != null) shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
+        if (shader.GAME_TIME != null) shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
+
+        RenderSystem.setupShaderLights(shader);
+        shader.apply();
+
+        return shader;
+    }
+
     private static void drawBlockBloom(PoseStack poseStack, Matrix4f projectionMatrix, Vec3 camPos) {
-        ShaderInstance shader = setupShaderUniforms(poseStack, projectionMatrix);
+        ShaderInstance shader = setupBlockShaderUniforms(poseStack, projectionMatrix);
         Uniform chunkOffsetUniform = shader.CHUNK_OFFSET;
 
         BLOOM_RENDER_LOCK.readLock().lock();
@@ -467,31 +496,6 @@ public class BloomUtil {
         }
         shader.clear();
         VertexBuffer.unbind();
-    }
-
-    private static ShaderInstance setupShaderUniforms(PoseStack poseStack, Matrix4f projectionMatrix) {
-        ShaderInstance shader = RenderSystem.getShader();
-        assert shader != null;
-
-        for(int i = 0; i < 12; ++i) {
-            int textureId = RenderSystem.getShaderTexture(i);
-            shader.setSampler("Sampler" + i, textureId);
-        }
-        if (shader.MODEL_VIEW_MATRIX != null) shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
-        if (shader.PROJECTION_MATRIX != null) shader.PROJECTION_MATRIX.set(projectionMatrix);
-        if (shader.COLOR_MODULATOR != null) shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
-        if (shader.GLINT_ALPHA != null) shader.GLINT_ALPHA.set(RenderSystem.getShaderGlintAlpha());
-        if (shader.FOG_START != null) shader.FOG_START.set(RenderSystem.getShaderFogStart());
-        if (shader.FOG_END != null) shader.FOG_END.set(RenderSystem.getShaderFogEnd());
-        if (shader.FOG_COLOR != null) shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
-        if (shader.FOG_SHAPE != null) shader.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
-        if (shader.TEXTURE_MATRIX != null) shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
-        if (shader.GAME_TIME != null) shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
-
-        RenderSystem.setupShaderLights(shader);
-        shader.apply();
-
-        return shader;
     }
 
     public static void copyToBloomBuffer(VertexConsumer originalVertexConsumer, BakedQuad quad, int[] combinedLights,

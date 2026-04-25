@@ -2,13 +2,16 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.SectionPos;
+import net.minecraft.world.phys.Vec3;
 
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
@@ -16,6 +19,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -48,7 +52,14 @@ public class LevelRendererMixin {
                                    boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                    LightTexture lightTexture, Matrix4f projectionMatrix,
                                    CallbackInfo ci,
-                                   @Local Frustum frustum) {
+                                   @Local Frustum frustum, @Local Vec3 camPos) {
+        if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+            BloomUtil.setupBloomShaderUniforms(true);
+            BloomUtil.drawBlockBloom(poseStack, projectionMatrix, camPos);
+        } else {
+            BloomUtil.setupBloomShaderUniforms(false);
+        }
+
         BloomUtil.renderBloom(camera, (LevelRenderer) (Object) this, poseStack, projectionMatrix, frustum, partialTick);
     }
 }
