@@ -2,6 +2,9 @@
     "net/minecraft/client/renderer/block/model/BakedQuad": [
         "com/gregtechceu/gtceu/core/IGTBakedQuad"
     ],
+    "com/mojang/blaze3d/vertex/VertexConsumer": [
+        "com/gregtechceu/gtceu/core/IGTVertexConsumer"
+    ],
     "net/minecraft/world/entity/Entity": [
         "com/gregtechceu/gtceu/core/IFireImmuneEntity",
         "com/gregtechceu/gtceu/core/IBreathingEntity"

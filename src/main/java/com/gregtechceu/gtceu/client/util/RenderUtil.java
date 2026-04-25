@@ -51,11 +51,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -138,10 +136,28 @@ public class RenderUtil {
         return DIRECTION_NORMAL_MAP.get(direction);
     }
 
-    public static int getFluidLight(Fluid fluid, BlockPos pos) {
-        if (Minecraft.getInstance().level == null) return 0;
-        return LevelRenderer.getLightColor(Minecraft.getInstance().level, fluid.defaultFluidState().createLegacyBlock(),
-                pos);
+    public static int getFluidLight(Fluid fluid, BlockPos pos, @Nullable BlockAndTintGetter level) {
+        if (level == null) level = Minecraft.getInstance().level;
+        if (level == null) return 0;
+
+        return LevelRenderer.getLightColor(level, fluid.defaultFluidState().createLegacyBlock(), pos);
+    }
+
+    public static void vertex(PoseStack.Pose pose, VertexConsumer vertexConsumer,
+                              Vector3fc pos, Vector3fc normal, float u, float v,
+                              int argb, int packedOverlay, int packedLight) {
+        /*
+         * For future reference:
+         * The order of the vertex calls is important.
+         * Change it, and it'll break and complain that you didn't fill all elements (even though you did).
+         */
+        vertexConsumer.gtceu$vertex(pose.pose(), pos)
+                .color(argb)
+                .uv(u, v)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .gtceu$normal(pose.normal(), normal)
+                .endVertex();
     }
 
     public static void vertex(PoseStack.Pose pose, VertexConsumer vertexConsumer,

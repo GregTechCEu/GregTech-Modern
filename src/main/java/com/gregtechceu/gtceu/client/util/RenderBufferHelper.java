@@ -12,12 +12,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 import java.util.EnumSet;
 import java.util.Set;
-
-import static net.minecraft.util.FastColor.ARGB32.*;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBufferHelper {
@@ -236,15 +235,17 @@ public class RenderBufferHelper {
                                       float x3, float y3, float z3, float u3, float v3,
                                       float x4, float y4, float z4, float u4, float v4) {
         Vector3fc normal = GTMatrixUtils.getDirectionAxis(normalDir);
-        int r = red(color), g = green(color), b = blue(color), a = alpha(color);
 
-        RenderUtil.vertex(pose, buffer, x1, y1, z1, r, g, b, a, u1, v1,
-                OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        RenderUtil.vertex(pose, buffer, x2, y2, z2, r, g, b, a, u2, v2,
-                OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        RenderUtil.vertex(pose, buffer, x3, y3, z3, r, g, b, a, u3, v3,
-                OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        RenderUtil.vertex(pose, buffer, x4, y4, z4, r, g, b, a, u4, v4,
-                OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
+        Vector3f pos = new Vector3f(x1, y1, z1);
+        RenderUtil.vertex(pose, buffer, pos, normal, u1, v1, color, OverlayTexture.NO_OVERLAY, combinedLight);
+
+        pos.set(x2, y2, z2);
+        RenderUtil.vertex(pose, buffer, pos, normal, u2, v2, color, OverlayTexture.NO_OVERLAY, combinedLight);
+
+        pos.set(x3, y3, z3);
+        RenderUtil.vertex(pose, buffer, pos, normal, u3, v3, color, OverlayTexture.NO_OVERLAY, combinedLight);
+
+        pos.set(x4, y4, z4);
+        RenderUtil.vertex(pose, buffer, pos, normal, u4, v4, color, OverlayTexture.NO_OVERLAY, combinedLight);
     }
 }

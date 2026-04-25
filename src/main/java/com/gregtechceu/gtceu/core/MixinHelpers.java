@@ -52,6 +52,8 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import org.jetbrains.annotations.ApiStatus;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -364,4 +366,8 @@ public class MixinHelpers {
             }
         }
     }
+
+    // package-private so only things in this package can use it
+    @ApiStatus.Internal
+    static final ThreadLocal<Vector3f> scratch = ThreadLocal.withInitial(Vector3f::new);
 }
