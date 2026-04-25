@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.PostPass;

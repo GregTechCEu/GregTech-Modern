@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;

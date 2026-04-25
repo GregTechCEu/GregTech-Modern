@@ -20,10 +20,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
@@ -36,8 +35,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -60,7 +57,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(value = LevelRenderer.class, priority = 500)
-@OnlyIn(Dist.CLIENT)
 public abstract class LevelRendererMixin {
 
     @Shadow
@@ -77,26 +73,6 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     private @Nullable ClientLevel level;
-
-    @Unique
-    private final RandomSource gtceu$modelRandom = RandomSource.create();
-
-    @Inject(method = "compileChunks",
-            at = @At(value = "INVOKE",
-                     ordinal = 0,
-                     target = "Lnet/minecraft/world/level/lighting/LevelLightEngine;lightOnInSection(Lnet/minecraft/core/SectionPos;)Z"))
-    private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
-                                           @Local SectionPos chunkOrigin) {
-        BloomUtil.CURRENT_RENDERING_SECTION.set(chunkOrigin);
-        BloomUtil.bakeBloomChunkBuffers(chunkOrigin, camera.getPosition());
-    }
-
-    @Inject(method = "resize", at = @At("TAIL"))
-    private void gtceu$resize(int width, int height, CallbackInfo ci) {
-        if (GTShaders.BLOOM_CHAIN != null) {
-            GTShaders.BLOOM_CHAIN.resize(width, height);
-        }
-    }
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,

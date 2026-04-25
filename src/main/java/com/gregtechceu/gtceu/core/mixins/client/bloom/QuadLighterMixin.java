@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.forge;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 

@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.client.PostChainAccessor;
-import com.gregtechceu.gtceu.core.mixins.client.VertexBufferAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.VertexBufferAccessor;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
