@@ -10,12 +10,12 @@ public interface IRenderSetup {
      *
      * @param buffer Buffer builder
      */
-    void preDraw(@NotNull BufferBuilder buffer);
+    void preDraw(BufferBuilder buffer);
 
     /**
      * Run any post render gl code here.
      *
      * @param buffer Buffer builder
      */
-    void postDraw(@NotNull BufferBuilder buffer);
+    void postDraw(BufferBuilder buffer);
 }

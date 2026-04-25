@@ -24,7 +24,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -42,7 +41,7 @@ public class GTParticleManager {
 
     private final List<GTParticle> newParticleQueue = new ArrayList<>();
 
-    public void addEffect(@NotNull GTParticle particles) {
+    public void addEffect(GTParticle particles) {
         newParticleQueue.add(particles);
     }
 
@@ -69,7 +68,7 @@ public class GTParticleManager {
         }
     }
 
-    private void updateQueue(Map<IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
+    private void updateQueue(Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
         Iterator<ArrayDeque<GTParticle>> it = renderQueue.values().iterator();
         while (it.hasNext()) {
             ArrayDeque<GTParticle> particles = it.next();
@@ -116,8 +115,7 @@ public class GTParticleManager {
         depthDisabledParticles.clear();
     }
 
-    public void renderParticles(@NotNull PoseStack poseStack, @NotNull Entity renderViewEntity, Camera camera,
-                                Frustum frustum, float partialTicks) {
+    public void renderParticles(PoseStack poseStack, Camera camera, Frustum frustum, float partialTicks) {
         if (depthEnabledParticles.isEmpty() && depthDisabledParticles.isEmpty()) return;
 
         EffectRenderContext instance = EffectRenderContext.getInstance()
@@ -136,9 +134,9 @@ public class GTParticleManager {
         RenderSystem.disableBlend();
     }
 
-    private static void renderParticlesInLayer(@NotNull PoseStack poseStack,
-                                               @NotNull Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
-                                               @NotNull EffectRenderContext context) {
+    private static void renderParticlesInLayer(PoseStack poseStack,
+                                               Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
+                                               EffectRenderContext context) {
         for (var entry : renderQueue.entrySet()) {
             IRenderSetup handler = entry.getKey();
             ArrayDeque<GTParticle> particles = entry.getValue();

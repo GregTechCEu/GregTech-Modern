@@ -29,8 +29,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
 
 import java.util.*;
@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 @OnlyIn(Dist.CLIENT)
 public class BloomUtil {
 
-    private static final Map<IRenderSetup, List<BloomRenderTicket>> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
+    private static final Map<@Nullable IRenderSetup, List<BloomRenderTicket>> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
     private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
     private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
@@ -74,22 +74,20 @@ public class BloomUtil {
      * @return Ticket for the registered bloom render callback
      * @throws NullPointerException if {@code bloomType == null || render == null || blockEntity == null}
      */
-    @NotNull
-    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup,
-                                                        @NotNull IBloomEffect render,
-                                                        @NotNull BlockEntity blockEntity) {
+    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
+                                                        BlockEntity blockEntity) {
         Objects.requireNonNull(blockEntity, "blockEntity == null");
         return registerBloomRender(setup,
                 new IBloomEffect() {
 
                     @Override
-                    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                                                  @NotNull EffectRenderContext context) {
+                    public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer,
+                                                  EffectRenderContext context) {
                         render.renderBloomEffect(poseStack, buffer, context);
                     }
 
                     @Override
-                    public boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {
+                    public boolean shouldRenderBloomEffect(EffectRenderContext context) {
                         return blockEntity.getLevel() == context.getRenderViewEntity().level() &&
                                 render.shouldRenderBloomEffect(context);
                     }
@@ -115,10 +113,8 @@ public class BloomUtil {
      * @return Ticket for the registered bloom render callback
      * @throws NullPointerException if {@code bloomType == null || render == null || metaTileEntity == null}
      */
-    @NotNull
-    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup,
-                                                        @NotNull IBloomEffect render,
-                                                        @NotNull GTParticle particle) {
+    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
+                                                        GTParticle particle) {
         Objects.requireNonNull(particle, "particle == null");
         return registerBloomRender(setup, render, t -> particle.isAlive());
     }
@@ -143,9 +139,7 @@ public class BloomUtil {
      * @see #registerBloomRender(IRenderSetup, IBloomEffect, GTParticle)
      * @see #registerBloomRender(IRenderSetup, IBloomEffect, Predicate, Supplier)
      */
-    @NotNull
-    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup,
-                                                        @NotNull IBloomEffect render,
+    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker) {
         return registerBloomRender(setup, render, validityChecker, null);
     }
@@ -172,11 +166,9 @@ public class BloomUtil {
      * @see #registerBloomRender(IRenderSetup, IBloomEffect, BlockEntity)
      * @see #registerBloomRender(IRenderSetup, IBloomEffect, GTParticle)
      */
-    @NotNull
-    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup,
-                                                        @NotNull IBloomEffect render,
+    public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
-                                                        @Nullable Supplier<Level> worldContext) {
+                                                        @Nullable Supplier<@Nullable Level> worldContext) {
         if (!GTShaders.canUseBloomShader()) return BloomRenderTicket.INVALID;
 
         BloomRenderTicket ticket = new BloomRenderTicket(setup, render, validityChecker, worldContext);
@@ -194,7 +186,7 @@ public class BloomUtil {
      *
      * @param level the level that was unloaded
      */
-    public static void invalidateLevelTickets(@NotNull LevelAccessor level) {
+    public static void invalidateLevelTickets(LevelAccessor level) {
         Objects.requireNonNull(level, "level == null");
         BLOOM_RENDER_LOCK.readLock().lock();
         try {
@@ -282,8 +274,8 @@ public class BloomUtil {
         }
     }
 
-    private static void draw(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                             @NotNull EffectRenderContext context, @NotNull List<BloomRenderTicket> tickets) {
+    private static void draw(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context,
+                             List<BloomRenderTicket> tickets) {
         boolean initialized = false;
         @Nullable
         IRenderSetup renderSetup = null;
@@ -528,24 +520,21 @@ public class BloomUtil {
 
         public static final BloomRenderTicket INVALID = new BloomRenderTicket();
 
-        @Nullable
-        private final IRenderSetup renderSetup;
+        private final @Nullable IRenderSetup renderSetup;
         private final IBloomEffect render;
-        @Nullable
-        private final Predicate<BloomRenderTicket> validityChecker;
-        @Nullable
-        private final Supplier<Level> worldContext;
+        private final @Nullable Predicate<BloomRenderTicket> validityChecker;
+        private final @Nullable Supplier<@Nullable Level> worldContext;
 
         private boolean invalidated;
 
-        BloomRenderTicket() {
+        private BloomRenderTicket() {
             this(null, (p, b, c) -> {}, null, null);
             this.invalidated = true;
         }
 
-        BloomRenderTicket(@Nullable IRenderSetup renderSetup, @NotNull IBloomEffect render,
+        BloomRenderTicket(@Nullable IRenderSetup renderSetup, IBloomEffect render,
                           @Nullable Predicate<BloomRenderTicket> validityChecker,
-                          @Nullable Supplier<Level> worldContext) {
+                          @Nullable Supplier<@Nullable Level> worldContext) {
             this.renderSetup = renderSetup;
             this.render = Objects.requireNonNull(render, "render == null");
             this.validityChecker = validityChecker;

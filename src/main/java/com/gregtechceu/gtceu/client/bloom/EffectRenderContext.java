@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.bloom;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.util.Mth;
@@ -8,8 +9,8 @@ import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Objects;
 
@@ -28,12 +29,11 @@ public final class EffectRenderContext {
     @Getter
     private Frustum frustum = new Frustum(Minecraft.getInstance().levelRenderer.getFrustum());
 
-    @Nullable
-    private Entity renderViewEntity;
+    private @Nullable Entity renderViewEntity;
     @Getter
     private float partialTicks;
     @Getter
-    private Vec3 camPos;
+    private @UnknownNullability Vec3 camPos;
     @Getter
     private float rotationX;
     @Getter
@@ -69,7 +69,6 @@ public final class EffectRenderContext {
     /**
      * @return render view entity
      */
-    @NotNull
     public Entity getRenderViewEntity() {
         return Objects.requireNonNull(renderViewEntity, "renderViewEntity not available yet");
     }

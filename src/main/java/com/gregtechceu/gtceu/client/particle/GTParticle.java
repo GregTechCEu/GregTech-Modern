@@ -9,7 +9,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -47,7 +46,7 @@ public abstract class GTParticle {
         this.posZ = posZ;
     }
 
-    public boolean shouldRender(@NotNull EffectRenderContext context) {
+    public boolean shouldRender(EffectRenderContext context) {
         if (squaredRenderRange < 0) return true;
         return context.getRenderViewEntity().getEyePosition(context.partialTicks())
                 .distanceToSqr(posX, posY, posZ) <= squaredRenderRange;
@@ -105,8 +104,7 @@ public abstract class GTParticle {
      * @param context   render context
      */
     @OnlyIn(Dist.CLIENT)
-    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                               @NotNull EffectRenderContext context) {}
+    public void renderParticle(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {}
 
     /**
      * @return Render setup for this particle, if exists

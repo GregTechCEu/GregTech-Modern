@@ -6,7 +6,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Render callback interface for {@link BloomUtil#registerBloomRender(IRenderSetup, IBloomEffect, BlockEntity)}.
@@ -21,8 +20,7 @@ public interface IBloomEffect {
      * @param context render context
      */
     @OnlyIn(Dist.CLIENT)
-    void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                           @NotNull EffectRenderContext context);
+    void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context);
 
     /**
      * @param context render context
@@ -30,7 +28,7 @@ public interface IBloomEffect {
      *         {@link #renderBloomEffect(PoseStack, BufferBuilder, EffectRenderContext)}.
      */
     @OnlyIn(Dist.CLIENT)
-    default boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {
+    default boolean shouldRenderBloomEffect(EffectRenderContext context) {
         return true;
     }
 }

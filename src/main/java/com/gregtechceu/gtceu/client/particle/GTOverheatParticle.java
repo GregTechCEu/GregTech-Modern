@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -143,7 +142,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         return RenderUtil.interpolateColor(color, blackBodyColors[index + 1], temperature % 200 / 200f);
     }
 
-    private final CableBlockEntity tileEntity;
+    private final CableBlockEntity blockEntity;
 
     protected final int meltTemp;
     protected int temperature = 293;
@@ -153,10 +152,9 @@ public class GTOverheatParticle extends GTBloomParticle {
     protected float alpha = 0;
     protected int color = blackBodyColors[0];
 
-    public GTOverheatParticle(@NotNull CableBlockEntity tileEntity, int meltTemp,
-                              @NotNull VoxelShape pipeBoxes, boolean insulated) {
-        super(tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
-        this.tileEntity = tileEntity;
+    public GTOverheatParticle(CableBlockEntity blockEntity, int meltTemp, VoxelShape pipeBoxes, boolean insulated) {
+        super(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
+        this.blockEntity = blockEntity;
         this.meltTemp = meltTemp;
         this.pipeBoxes = pipeBoxes;
         updatePipeBoxes(pipeBoxes);
@@ -180,7 +178,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         color = getBlackBodyColor(temperature);
     }
 
-    public void updatePipeBoxes(@NotNull VoxelShape pipeBoxes) {
+    public void updatePipeBoxes(VoxelShape pipeBoxes) {
         List<AABB> boxes = pipeBoxes.toAabbs();
         this.pipeBoxes = boxes.stream()
                 .map(aabb -> aabb.inflate(0.001))
@@ -191,9 +189,9 @@ public class GTOverheatParticle extends GTBloomParticle {
 
     @Override
     public void onUpdate() {
-        if (tileEntity.isRemoved() || !tileEntity.isParticleAlive()) {
+        if (blockEntity.isRemoved() || !blockEntity.isParticleAlive()) {
             setExpired();
-            tileEntity.killParticle();
+            blockEntity.killParticle();
             return;
         }
 
@@ -217,19 +215,19 @@ public class GTOverheatParticle extends GTBloomParticle {
     }
 
     private void spawnSmoke() {
-        BlockPos pos = tileEntity.getBlockPos();
+        BlockPos pos = blockEntity.getBlockPos();
         float xPos = pos.getX() + 0.5F;
         float yPos = pos.getY() + 0.9F;
         float zPos = pos.getZ() + 0.5F;
 
-        float ySpd = 0.3F + 0.1F * GTValues.RNG.nextFloat();
-        tileEntity.getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
+        float ySpd = 0.3F + 0.1F * blockEntity.getLevel().random.nextFloat();
+        blockEntity.getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
     }
 
     @Override
     public String toString() {
         return "GTOverheatParticle{" +
-                "tileEntity=" + tileEntity +
+                "tileEntity=" + blockEntity +
                 ", pipeBoxes=" + pipeBoxes +
                 ", insulated=" + insulated +
                 ", alpha=" + alpha +
@@ -243,7 +241,7 @@ public class GTOverheatParticle extends GTBloomParticle {
     }
 
     @Override
-    public boolean shouldRender(@NotNull EffectRenderContext context) {
+    public boolean shouldRender(EffectRenderContext context) {
         if (this.insulated) return false;
         for (AABB cuboid : pipeBoxes.toAabbs()) {
             if (!context.frustum().isVisible(cuboid.move(posX, posY, posZ))) {
@@ -258,8 +256,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         return SETUP;
     }
 
-    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                                  @NotNull EffectRenderContext context) {
+    public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
         float blue = (color & 0xFF) / 255f;
@@ -276,7 +273,7 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void preDraw(@NotNull BufferBuilder buffer) {
+        public void preDraw(BufferBuilder buffer) {
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -284,7 +281,7 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void postDraw(@NotNull BufferBuilder buffer) {
+        public void postDraw(BufferBuilder buffer) {
             BufferUploader.drawWithShader(buffer.end());
             RenderSystem.disableBlend();
         }
