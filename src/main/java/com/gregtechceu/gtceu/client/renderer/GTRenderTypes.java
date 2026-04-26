@@ -31,6 +31,8 @@ public class GTRenderTypes extends RenderType {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });
+    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(GTShaders::getRendertypeBloomShader);
+    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(GTShaders::getRendertypeEntityBloomShader);
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring", DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.TRIANGLE_STRIP, RenderType.SMALL_BUFFER_SIZE, false, false,
@@ -42,19 +44,20 @@ public class GTRenderTypes extends RenderType {
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom", DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS, RenderType.BIG_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
-                    .setLightmapState(LIGHTMAP)
-                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
-                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setShaderState(RENDERTYPE_BLOOM_SHADER)
                     .setOutputState(BLOOM_TARGET)
+                    .setLightmapState(LIGHTMAP)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(false));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, true, false,
                 RenderType.CompositeState.builder()
-                        .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
-                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setShaderState(RENDERTYPE_ENTITY_BLOOM_SHADER)
+                        .setOutputState(BLOOM_TARGET)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
                         .createCompositeState(false));
     });
 

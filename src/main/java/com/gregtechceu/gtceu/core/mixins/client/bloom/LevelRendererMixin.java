@@ -49,10 +49,10 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Expression("this.renderChunkLayer(tripwire(), ?, ?, ?, ?, ?)")
     @Definition(id = "renderChunkLayer", method = "Lnet/minecraft/client/renderer/LevelRenderer;renderChunkLayer(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/PoseStack;DDDLorg/joml/Matrix4f;)V")
     @Definition(id = "tripwire", method = "Lnet/minecraft/client/renderer/RenderType;tripwire()Lnet/minecraft/client/renderer/RenderType;")
-    @Inject(method = "renderLevel", at = @At("MIXINEXTRAS:EXPRESSION"))
+    @Expression("this.renderChunkLayer(tripwire(), ?, ?, ?, ?, ?)")
+    @Inject(method = "renderLevel", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
     private void gtceu$renderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
                                    boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                    LightTexture lightTexture, Matrix4f projectionMatrix,

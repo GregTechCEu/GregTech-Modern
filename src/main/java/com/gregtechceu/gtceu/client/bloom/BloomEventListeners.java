@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 
 import lombok.experimental.UtilityClass;
 
+import java.io.IOException;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 @UtilityClass
 public class BloomEventListeners {
@@ -65,7 +67,7 @@ public class BloomEventListeners {
     public static class ModBus {
 
         @SubscribeEvent
-        public void registerShaders(RegisterShadersEvent event) {
+        public void registerShaders(RegisterShadersEvent event) throws IOException {
             GTShaders.onRegisterShaders(event);
         }
 

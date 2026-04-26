@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,6 +16,9 @@ import net.minecraftforge.client.event.RegisterShadersEvent;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -25,10 +29,23 @@ public class GTShaders {
     public static BloomAlgorithm BLOOM_TYPE = ConfigHolder.INSTANCE.client.shader.bloomAlgorithm;
     public static RenderTarget BLOOM_TARGET = null;
 
-    public static void onRegisterShaders(RegisterShadersEvent event) {
+    @Getter
+    private static @Nullable ShaderInstance rendertypeBloomShader;
+    @Getter
+    private static @Nullable ShaderInstance rendertypeEntityBloomShader;
+
+    public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
         if (!canLoadBloomShader()) {
             return;
         }
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                        GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
+                shader -> rendertypeBloomShader = shader);
+
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                        GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
+                shader -> rendertypeEntityBloomShader = shader);
+
 
         initPostShaders();
     }
