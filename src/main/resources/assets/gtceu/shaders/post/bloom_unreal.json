@@ -1,6 +1,6 @@
 {
     "targets": [
-        "gtceu:filter_temp",
+        "filter",
         {
             "name": "swap2a",
             "bilinear": true
@@ -39,16 +39,16 @@
         {
             "name": "gtceu:filter_bloom_color",
             "intarget": "final",
-            "outtarget": "gtceu:filter_temp",
+            "outtarget": "filter",
             "auxtargets": [
-                { "id": "final:depth", "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main", "name": "MainSampler" },
+                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
+                { "id": "minecraft:main",       "name": "MainSampler" },
                 { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
             ]
         },
         {
             "name": "gtceu:blur",
-            "intarget": "gtceu:filter_temp",
+            "intarget": "filter",
             "outtarget": "swap2a",
             "uniforms": [
                 {
@@ -171,11 +171,11 @@
             "intarget": "minecraft:main",
             "outtarget": "final",
             "auxtargets": [
-                { "id": "gtceu:filter_temp", "name": "HighlightSampler" },
-                { "id": "swap2b",            "name": "BlurTexture1" },
-                { "id": "swap4b",            "name": "BlurTexture2" },
-                { "id": "swap8b",            "name": "BlurTexture3" },
-                { "id": "swap16b",           "name": "BlurTexture4" }
+                { "id": "filter",  "name": "HighlightSampler" },
+                { "id": "swap2b",  "name": "BlurTexture1" },
+                { "id": "swap4b",  "name": "BlurTexture2" },
+                { "id": "swap8b",  "name": "BlurTexture3" },
+                { "id": "swap16b", "name": "BlurTexture4" }
             ],
             "uniforms": [
                 { "name": "BloomRadius", "values": [1.0] }

@@ -1,5 +1,7 @@
 #version 150
 
+#define OUTPUT_SCALE_FACTOR (0.25 * 0.25 * 0.125)
+
 uniform sampler2D DiffuseSampler;
 uniform vec2 OutSize;
 uniform vec2 InSize;
@@ -19,41 +21,39 @@ vec2 outTexelNegX = vec2(-outTexel.x, outTexel.y);
 vec2 outTexelNegY = vec2(outTexel.x, -outTexel.y);
 
 vec4 four_k(vec2 uv) {
-    return 0.25 * (
-      texture(DiffuseSampler, uv + inTexel)     //  1  1
-    + texture(DiffuseSampler, uv + inTexelNegX) // -1  1
-    + texture(DiffuseSampler, uv + inTexelNegY) //  1 -1
-    + texture(DiffuseSampler, uv - inTexel));   // -1 -1
+    return texture(DiffuseSampler, uv + inTexel)     //  1  1
+         + texture(DiffuseSampler, uv + inTexelNegX) // -1  1
+         + texture(DiffuseSampler, uv + inTexelNegY) //  1 -1
+         + texture(DiffuseSampler, uv - inTexel);    // -1 -1
 }
 
 void main() {
-    fragColor = 0.25 * 0.125 * (
-      four_k(texCoord - outTexel)  // -1 -1
-    + four_k(texCoord - outTexelX) // -1  0
-    + four_k(texCoord - outTexelY) //  0 -1
-    + four_k(texCoord));           //  0  0
+    fragColor = four_k(texCoord - outTexel)      // -1 -1
+              + four_k(texCoord - outTexelX)     // -1  0
+              + four_k(texCoord - outTexelY)     //  0 -1
+              + four_k(texCoord);                //  0  0
 
-    fragColor += 0.25 * 0.125 * (
-      four_k(texCoord + outTexelNegY) //  1 -1
-    + four_k(texCoord - outTexelY)    //  0 -1
-    + four_k(texCoord + outTexelX)    //  1  0
-    + four_k(texCoord));              //  0  0
+    fragColor += four_k(texCoord + outTexelNegY) //  1 -1
+               + four_k(texCoord - outTexelY)    //  0 -1
+               + four_k(texCoord + outTexelX)    //  1  0
+               + four_k(texCoord);               //  0  0
 
-    fragColor += 0.25 * 0.125 * (
-      four_k(texCoord + outTexelNegX) // -1  1
-    + four_k(texCoord - outTexelX)    // -1  0
-    + four_k(texCoord + outTexelY)    //  0  1
-    + four_k(texCoord));              //  0  0
+    fragColor += four_k(texCoord + outTexelNegX) // -1  1
+               + four_k(texCoord - outTexelX)    // -1  0
+               + four_k(texCoord + outTexelY)    //  0  1
+               + four_k(texCoord);               //  0  0
 
-    fragColor += 0.25 * 0.125 * (
-      four_k(texCoord + outTexel)  //  1  1
-    + four_k(texCoord + outTexelX) //  1  0
-    + four_k(texCoord + outTexelY) //  0  1
-    + four_k(texCoord));           //  0  0
+    fragColor += four_k(texCoord + outTexel)     //  1  1
+               + four_k(texCoord + outTexelX)    //  1  0
+               + four_k(texCoord + outTexelY)    //  0  1
+               + four_k(texCoord);               //  0  0
 
-    fragColor += 0.25 * 0.125 * (
-      four_k(texCoord + outTexel)     //  1  1
-    + four_k(texCoord + outTexelNegX) // -1  1
-    + four_k(texCoord + outTexelNegY) //  1 -1
-    + four_k(texCoord - outTexel));   // -1 -1
+    fragColor += four_k(texCoord + outTexel)     //  1  1
+               + four_k(texCoord + outTexelNegX) // -1  1
+               + four_k(texCoord + outTexelNegY) //  1 -1
+               + four_k(texCoord - outTexel);    // -1 -1
+
+    // Optimization: do multiplication in one step at the end
+    // They used to be done separately on each addition to fragColor (and in four_k)
+    fragColor *= OUTPUT_SCALE_FACTOR;
 }

@@ -1,6 +1,6 @@
 {
     "targets": [
-        "gtceu:filter_temp",
+        "filter",
         {
             "name": "swap2a",
             "bilinear": true
@@ -36,10 +36,10 @@
         {
             "name": "gtceu:filter_bloom_color",
             "intarget": "final",
-            "outtarget": "gtceu:filter_temp",
+            "outtarget": "filter",
             "auxtargets": [
-                { "id": "final:depth", "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main", "name": "MainSampler" },
+                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
+                { "id": "minecraft:main",       "name": "MainSampler" },
                 { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
             ]
         },
@@ -94,10 +94,10 @@
         },
         {
             "name": "gtceu:unity_composite",
-            "intarget": "swap",
+            "intarget": "swap",w
             "outtarget": "final",
             "auxtargets": [
-                { "id": "gtceu:filter_temp", "name": "HighlightSampler" },
+                { "id": "filter",         "name": "HighlightSampler" },
                 { "id": "minecraft:main", "name": "MainSampler" }
             ]
         },

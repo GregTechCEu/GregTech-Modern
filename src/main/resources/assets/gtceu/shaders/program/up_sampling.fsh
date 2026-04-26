@@ -15,19 +15,19 @@ vec2 outTexelNegX = vec2(-outTexel.x, outTexel.y);
 vec2 outTexelNegY = vec2(outTexel.x, -outTexel.y);
 
 void main() {
-    vec4 out_color = texture(DiffuseSampler, texCoord) * 4.0; // 0 0
+    vec4 out_color = texture(DiffuseSampler, texCoord) * 4.0;         //  0  0
 
-    out_color += texture(DiffuseSampler, texCoord + outTexel);     //  1  1
-    out_color += texture(DiffuseSampler, texCoord + outTexelNegX); // -1  1
-    out_color += texture(DiffuseSampler, texCoord + outTexelNegY); //  1 -1
-    out_color += texture(DiffuseSampler, texCoord - outTexel);     // -1 -1
+    out_color += texture(DiffuseSampler, texCoord + outTexel);        //  1  1
+    out_color += texture(DiffuseSampler, texCoord + outTexelNegX);    // -1  1
+    out_color += texture(DiffuseSampler, texCoord + outTexelNegY);    //  1 -1
+    out_color += texture(DiffuseSampler, texCoord - outTexel);        // -1 -1
 
     out_color += texture(DiffuseSampler, texCoord + outTexelX) * 2.0; //  1  0
     out_color += texture(DiffuseSampler, texCoord - outTexelX) * 2.0; // -1  0
     out_color += texture(DiffuseSampler, texCoord + outTexelY) * 2.0; //  0  1
     out_color += texture(DiffuseSampler, texCoord - outTexelY) * 2.0; //  0 -1
 
-    vec3 total = out_color.rgb * 0.8 / 16.0 + texture(DownTexture, texCoord).rgb * 0.8;
+    vec4 total = out_color * 0.8 / 16.0 + texture(DownTexture, texCoord) * 0.8;
     total = clamp(total, 0.0, 1.0);
-    fragColor = vec4(total, 1.0);
+    fragColor = total;
 }

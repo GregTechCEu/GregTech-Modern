@@ -14,10 +14,10 @@
     ],
     "uniforms": [
         { "name": "ProjMat",        "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "OutSize",        "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
-        { "name": "BloomStrength",  "type": "float", "count": 1, "values": [ 1.7 ] },
-        { "name": "BaseBrightness", "type": "float", "count": 1, "values": [ 0.0 ] },
-        { "name": "MaxBrightness",  "type": "float", "count": 1, "values": [ 1.3 ] },
-        { "name": "MinBrightness",  "type": "float", "count": 1, "values": [ 0.3 ] }
+        { "name": "OutSize",        "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+        { "name": "BloomStrength",  "type": "float",     "count": 1,  "values": [ 1.7 ] },
+        { "name": "BaseBrightness", "type": "float",     "count": 1,  "values": [ 0.1 ] },
+        { "name": "MaxBrightness",  "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "MinBrightness",  "type": "float",     "count": 1,  "values": [ 0.2 ] }
     ]
 }

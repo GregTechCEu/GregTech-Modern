@@ -20,6 +20,7 @@ void main() {
 
     float min = min(background.r, min(background.g, background.b));
     float max = max(background.r, max(background.g, background.b));
+    float backgroundBrightness = (max + min) / 2.0;
 
-    fragColor = vec4(background.rgb + bloom.rgb * ((1.0 - (max + min) / 2.0) * (MaxBrightness - MinBrightness) + MinBrightness + BaseBrightness), 1.0);
+    fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
 }

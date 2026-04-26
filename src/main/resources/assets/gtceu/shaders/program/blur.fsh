@@ -33,9 +33,11 @@ void main() {
         float x = float(i);
         float w = gaussianPdf(x, Radius);
         vec2 uvOffset = BlurDir * invSize * x;
+
         // sample both +x and -x offsets
         vec4 sample1 = texture(DiffuseSampler, texCoord + uvOffset);
         vec4 sample2 = texture(DiffuseSampler, texCoord - uvOffset);
+
         diffuseSum += (sample1 + sample2) * w;
         weightSum += 2.0 * w;
     }
