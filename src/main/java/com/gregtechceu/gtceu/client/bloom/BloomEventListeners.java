@@ -57,7 +57,7 @@ public class BloomEventListeners {
 
         ChunkPos chunkPos = chunk.getPos();
         for (int y = level.getMinSection(); y < level.getMaxSection(); y++) {
-            BloomUtil.removeBloomChunk(SectionPos.of(chunkPos, y));
+            BloomUtil.chunkSectionUnloaded(SectionPos.of(chunkPos, y));
         }
     }
 

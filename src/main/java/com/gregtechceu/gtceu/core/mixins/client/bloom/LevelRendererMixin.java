@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.core.SectionPos;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 import com.llamalad7.mixinextras.expression.Definition;
@@ -32,16 +32,6 @@ public abstract class LevelRendererMixin {
     protected abstract void renderChunkLayer(RenderType renderType, PoseStack poseStack,
                                              double camX, double camY, double camZ, Matrix4f projectionMatrix);
 
-    @Inject(method = "compileChunks",
-            at = @At(value = "INVOKE",
-                    ordinal = 0,
-                    target = "Lnet/minecraft/world/level/lighting/LevelLightEngine;lightOnInSection(Lnet/minecraft/core/SectionPos;)Z"))
-    private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
-                                           @Local SectionPos chunkOrigin) {
-        BloomUtil.CURRENT_RENDERING_SECTION.set(chunkOrigin);
-        BloomUtil.bakeBloomChunkBuffers(chunkOrigin, camera.getPosition());
-    }
-
     @Inject(method = "resize", at = @At("TAIL"))
     private void gtceu$resize(int width, int height, CallbackInfo ci) {
         if (GTShaders.BLOOM_CHAIN != null) {
@@ -57,7 +47,11 @@ public abstract class LevelRendererMixin {
                                    boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                    LightTexture lightTexture, Matrix4f projectionMatrix,
                                    CallbackInfo ci,
-                                   @Local Frustum frustum, @Local Vec3 camPos) {
+                                   @Local Frustum frustum, @Local Vec3 camPos, @Local ProfilerFiller profilerFiller) {
+        if (!GTShaders.canUseBloomShader()) return;
+
+        profilerFiller.popPush("gtceu:bloom");
+
         if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
             BloomUtil.setupBloomShaderUniforms(true);
             this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
@@ -66,5 +60,7 @@ public abstract class LevelRendererMixin {
         }
 
         BloomUtil.renderBloom(camera, (LevelRenderer) (Object) this, poseStack, projectionMatrix, frustum, partialTick);
+
+        // profiler section is popped by popPush() in the calling function; don't pop it here
     }
 }

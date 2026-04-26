@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
-import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
+import com.gregtechceu.gtceu.client.bloom.BloomUtil;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.core.util.ContextualObjectHelper;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.util.CapturedQuadData;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -22,24 +24,25 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+@SuppressWarnings("SameReturnValue")
 @Mixin(ModelBlockRenderer.class)
 public class ModelBlockRendererMixin {
 
     @Unique
-    private static final ThreadLocal<ContextualObjectHelper<RenderType>> gtceu$currentRenderType_thr = ThreadLocal
-            .withInitial(ContextualObjectHelper::new);
+    private static final ThreadLocal<CapturedQuadData> gtceu$currentRenderType_tl = ThreadLocal
+            .withInitial(CapturedQuadData::new);
 
     @WrapMethod(method = {
             "tesselateWithAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
             "tesselateWithoutAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V"
     }, remap = false)
-    private void gtceu$captureQuadRenderType$1(BlockAndTintGetter level, BakedModel model, BlockState state,
-                                               BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
-                                               boolean checkSides, RandomSource random, long seed, int packedOverlay,
-                                               ModelData modelData, RenderType renderType,
-                                               Operation<Void> original) {
-        if (GTShaders.canUseBloomShader()) {
-            try (var $ = gtceu$currentRenderType_thr.get().with(renderType)) {
+    private void gtceu$captureBloomQuads$1(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
+                                           PoseStack poseStack, VertexConsumer consumer, boolean checkSides,
+                                           RandomSource random, long seed, int packedOverlay,
+                                           ModelData modelData, RenderType renderType,
+                                           Operation<Void> original) {
+        if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom && GTShaders.canUseBloomShader()) {
+            try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
                 original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                         modelData, renderType);
             }
@@ -53,15 +56,18 @@ public class ModelBlockRendererMixin {
             at = @At(value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V")
     )
-    private boolean gtceu$skipBloomyQuadsFromModel$1$2(VertexConsumer instance, PoseStack.Pose poseEntry,
-                                                       BakedQuad quad, float[] colorMuls,
-                                                       float red, float green, float blue,
-                                                       int[] combinedLights, int combinedOverlay,
-                                                       boolean mulColor) {
-        if (!GTShaders.canUseBloomShader()) return true;
+    private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
+                                              float[] brightness, float red, float green, float blue,
+                                              int[] packedLights, int packedOverlay, boolean mulColor) {
+        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
+            return true;
+        }
+        CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
+        // don't capture quads already on the bloom layer
+        if (currentData.renderType() == GTRenderTypes.bloom()) return true;
 
-        RenderType currentRenderType = gtceu$currentRenderType_thr.get().getCurrent();
-
-        return BloomMetadataSection.shouldDrawQuad(quad, currentRenderType, combinedLights);
+        BloomUtil.captureBloomQuad(quad, currentData.renderType(), currentData.pos(), poseEntry.pose(),
+                packedLights, packedOverlay, brightness, red, green, blue);
+        return true;
     }
 }
