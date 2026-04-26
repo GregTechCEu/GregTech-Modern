@@ -23,7 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -294,7 +293,6 @@ public class BloomUtil {
             PostPass pass = passes.get(i);
             EffectInstance shader = pass.getEffect();
 
-            // TODO investigate if filter is required
             shader.safeGetUniform(FILTER_TOGGLE_UNIFORM).set(drawBlockBloom ? 1 : 0);
             shader.safeGetUniform(DEPTH_NEAR_UNIFORM).set(GameRenderer.PROJECTION_Z_NEAR);
             shader.safeGetUniform(DEPTH_FAR_UNIFORM).set(Minecraft.getInstance().gameRenderer.getDepthFar());

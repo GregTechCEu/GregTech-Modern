@@ -89,12 +89,12 @@
             "intarget": "swap2b",
             "outtarget": "swap",
             "auxtargets": [
-                { "id": "gtceu:filter_temp", "name": "DownTexture" }
+                { "id": "filter", "name": "DownTexture" }
             ]
         },
         {
             "name": "gtceu:unity_composite",
-            "intarget": "swap",w
+            "intarget": "swap",
             "outtarget": "final",
             "auxtargets": [
                 { "id": "filter",         "name": "HighlightSampler" },

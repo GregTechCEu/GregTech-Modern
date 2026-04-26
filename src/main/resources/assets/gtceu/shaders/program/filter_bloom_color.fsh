@@ -32,9 +32,5 @@ void main() {
         if (abs(mainDepth - diffuseDepth) > 0.01) {
             fragColor = vec4(0.0);
         }
-        // also clear it if the main sampler's color is off by too much
-        else if (distance((mainColor.rgb * fragColor.a), fragColor.rgb) > 0.05) {
-            fragColor = vec4(0.0);
-        }
     }
 }
