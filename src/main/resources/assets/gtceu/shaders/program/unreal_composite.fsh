@@ -31,11 +31,7 @@ vec3 jodieReinhard2(const vec3 color) {
     vec3 mappedColor = rgbl.rgb;
     float mappedLuma = rgbl.a;
 
-    float channelMax = max(max(max(
-                                   mappedColor.r,
-                                   mappedColor.g),
-                               mappedColor.b),
-                           1.);
+    float channelMax = max(max(max(mappedColor.r, mappedColor.g), mappedColor.b), 1.0);
 
     // this is just the simplified/optimised math
     // of the more human readable version below
@@ -43,29 +39,6 @@ vec3 jodieReinhard2(const vec3 color) {
         (mappedLuma * mappedColor - mappedColor) -
         (channelMax * mappedLuma - mappedLuma)
     ) / (mappedLuma - channelMax);
-
-/*
-    const vec3 white = vec3(1);
-
-    // prevent clipping
-    vec3 clampedColor = mappedColor / channelMax;
-
-    // x is how much white needs to be mixed with
-    // clampedColor so that its luma equals the
-    // mapped luma
-    //
-    // mix(mappedLuma/channelMax,1.,x) = mappedLuma;
-    //
-    // mix is defined as
-    // x*(1-a)+y*a
-    // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mix.xhtml
-    //
-    // (mappedLuma/channelMax)*(1.-x)+1.*x = mappedLuma
-
-    float x = (mappedLuma - mappedLuma * channelMax)
-    / (mappedLuma - channelMax);
-    return mix(clampedColor, white, x);
-*/
 }
 
 void main() {
@@ -84,5 +57,5 @@ void main() {
     float max = max(background.r, max(background.g, background.b));
     float backgroundBrightness = (max + min) / 2.0;
 
-    fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
+    fragColor = vec4(background.rgb + bloom.rgb * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness)), background.a);
 }
