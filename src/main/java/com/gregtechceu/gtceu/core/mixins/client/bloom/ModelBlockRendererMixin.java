@@ -33,32 +33,18 @@ public class ModelBlockRendererMixin {
             "tesselateWithAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
             "tesselateWithoutAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V"
     }, remap = false)
-    private static void gtceu$removeBloomyQuadsFromModel$1$1(BlockAndTintGetter level, BakedModel model,
-                                                             BlockState state, BlockPos pos, PoseStack poseStack,
-                                                             VertexConsumer consumer, boolean checkSides,
-                                                             RandomSource random, long seed, int packedOverlay,
-                                                             ModelData modelData, RenderType renderType,
-                                                             Operation<Void> original) {
-        if (!GTShaders.canUseBloomShader()) return;
-
-        try (var $ = gtceu$currentRenderType_thr.get().with(renderType)) {
+    private void gtceu$captureQuadRenderType$1(BlockAndTintGetter level, BakedModel model, BlockState state,
+                                               BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
+                                               boolean checkSides, RandomSource random, long seed, int packedOverlay,
+                                               ModelData modelData, RenderType renderType,
+                                               Operation<Void> original) {
+        if (GTShaders.canUseBloomShader()) {
+            try (var $ = gtceu$currentRenderType_thr.get().with(renderType)) {
+                original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
+                        modelData, renderType);
+            }
+        } else {
             original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
-                    modelData, renderType);
-        }
-    }
-
-    @WrapMethod(method = "renderModel(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/BakedModel;FFFIILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
-            remap = false)
-    private static void gtceu$removeBloomyQuadsFromModel$2$1(PoseStack.Pose pose, VertexConsumer consumer,
-                                                             BlockState state, BakedModel model,
-                                                             float red, float green, float blue,
-                                                             int packedLight, int packedOverlay,
-                                                             ModelData modelData, RenderType renderType,
-                                                             Operation<Void> original) {
-        if (!GTShaders.canUseBloomShader()) return;
-
-        try (var $ = gtceu$currentRenderType_thr.get().with(renderType)) {
-            original.call(pose, consumer, state, model, red, green, blue, packedLight, packedOverlay,
                     modelData, renderType);
         }
     }
@@ -67,30 +53,14 @@ public class ModelBlockRendererMixin {
             at = @At(value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V")
     )
-    private static boolean gtceu$skipBloomyQuadsFromModel$1$2(VertexConsumer instance,
-                                                              PoseStack.Pose poseEntry, BakedQuad quad,
-                                                              float[] colorMuls, float red, float green, float blue,
-                                                              int[] combinedLights, int combinedOverlay,
-                                                              boolean mulColor) {
+    private boolean gtceu$skipBloomyQuadsFromModel$1$2(VertexConsumer instance, PoseStack.Pose poseEntry,
+                                                       BakedQuad quad, float[] colorMuls,
+                                                       float red, float green, float blue,
+                                                       int[] combinedLights, int combinedOverlay,
+                                                       boolean mulColor) {
         if (!GTShaders.canUseBloomShader()) return true;
 
         RenderType currentRenderType = gtceu$currentRenderType_thr.get().getCurrent();
-
-        return BloomMetadataSection.shouldDrawQuad(quad, currentRenderType, combinedLights);
-    }
-
-    @WrapWithCondition(method = "renderQuadList",
-            at = @At(value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;FFFII)V")
-    )
-    private static boolean gtceu$skipBloomyQuadsFromModel$2$2(VertexConsumer instance,
-                                                              PoseStack.Pose poseEntry, BakedQuad quad,
-                                                              float red, float green, float blue,
-                                                              int combinedLight, int combinedOverlay) {
-        if (!GTShaders.canUseBloomShader()) return true;
-
-        RenderType currentRenderType = gtceu$currentRenderType_thr.get().getCurrent();
-        int[] combinedLights = new int[] { combinedLight, combinedLight, combinedLight, combinedLight };
 
         return BloomMetadataSection.shouldDrawQuad(quad, currentRenderType, combinedLights);
     }
