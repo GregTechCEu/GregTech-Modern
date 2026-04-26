@@ -37,6 +37,7 @@ import org.joml.Matrix4f;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -54,7 +55,8 @@ public class BloomUtil {
     private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
 
     @ApiStatus.Internal
-    private record QuadCacheEntry(BakedQuad quad, Matrix4f transformation, int[] packedLights, int packedOverlay,
+    private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
+                                  Matrix4f transformation, int[] packedLights, int packedOverlay,
                                   float[] brightness, float tintR, float tintG, float tintB) { }
 
     /// @implNote values are {@link LinkedHashSet}s for iteration order stability
@@ -318,14 +320,16 @@ public class BloomUtil {
     private static final ThreadLocal<PoseStack> poseStack_tl = ThreadLocal.withInitial(PoseStack::new);
 
     public static void drawBlockBloomForChunk(long sectionPos,
-                                              VertexConsumer bloomVertexConsumer,
-                                              VertexConsumer cutoutVertexConsumer) {
+                                              Function<RenderType, VertexConsumer> vertexConsumerProvider) {
         BLOOM_RENDER_LOCK.readLock().lock();
         try {
             Set<QuadCacheEntry> quads = TEMPORARY_RENDER_QUAD_CACHE.remove(sectionPos);
             if (quads == null) {
                 return;
             }
+
+            VertexConsumer bloomVertexConsumer = null;
+            VertexConsumer cutoutVertexConsumer = null;
 
             PoseStack poseStack = poseStack_tl.get();
             for (QuadCacheEntry quad : quads) {
@@ -334,10 +338,21 @@ public class BloomUtil {
                 quad.transformation.get(poseStack.last().pose());
                 quad.transformation.normal(poseStack.last().normal());
 
-                cutoutVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
-                        quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
-                bloomVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
-                        quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
+                if (quad.renderType == GTRenderTypes.bloom()) {
+                    if (cutoutVertexConsumer == null)
+                        cutoutVertexConsumer = vertexConsumerProvider.apply(RenderType.cutout());
+
+                    // copy quads that are already on the bloom layer to cutout
+                    cutoutVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
+                            quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
+                } else {
+                    if (bloomVertexConsumer == null)
+                        bloomVertexConsumer = vertexConsumerProvider.apply(GTRenderTypes.bloom());
+
+                    // copy everything else to bloom
+                    bloomVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
+                            quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
+                }
 
                 poseStack.popPose();
             }
@@ -372,7 +387,7 @@ public class BloomUtil {
             }
 
             TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos), $ -> new LinkedHashSet<>())
-                    .add(new QuadCacheEntry(quad, transformation, packedLights, packedOverlay,
+                    .add(new QuadCacheEntry(quad, renderType, transformation, packedLights, packedOverlay,
                             brightness, tintR, tintG, tintB));
         }
     }

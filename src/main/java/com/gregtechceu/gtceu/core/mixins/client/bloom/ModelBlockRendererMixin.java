@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.util.CapturedQuadData;
@@ -62,10 +61,8 @@ public class ModelBlockRendererMixin {
         if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return true;
         }
-        CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
-        // don't capture quads already on the bloom layer
-        if (currentData.renderType() == GTRenderTypes.bloom()) return true;
 
+        CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
         BloomUtil.captureBloomQuad(quad, currentData.renderType(), currentData.pos(), poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);
         return true;

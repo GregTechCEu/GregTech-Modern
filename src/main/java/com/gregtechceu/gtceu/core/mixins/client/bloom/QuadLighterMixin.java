@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IGTQuadLighter;
@@ -40,8 +39,6 @@ public class QuadLighterMixin implements IGTQuadLighter {
         if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return true;
         }
-        // don't capture quads already on the bloom layer
-        if (this.gtceu$renderType == GTRenderTypes.bloom()) return true;
 
         BloomUtil.captureBloomQuad(quad, this.gtceu$renderType, this.pos, poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);

@@ -14,11 +14,6 @@ public class BloomMeshAppender implements MeshAppender {
 
     @Override
     public void render(Context context) {
-        SectionPos sectionPos = context.sectionOrigin();
-        var vertexConsumerProvider = context.vertexConsumerProvider();
-
-        BloomUtil.drawBlockBloomForChunk(sectionPos.asLong(),
-                vertexConsumerProvider.apply(GTRenderTypes.bloom()),
-                vertexConsumerProvider.apply(RenderType.cutout()));
+        BloomUtil.drawBlockBloomForChunk(context.sectionOrigin().asLong(), context.vertexConsumerProvider());
     }
 }

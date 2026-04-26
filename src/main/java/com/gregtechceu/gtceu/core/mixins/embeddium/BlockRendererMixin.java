@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.embeddium;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ArrayHelpers;
@@ -45,8 +44,6 @@ public class BlockRendererMixin {
         if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return;
         }
-        // don't capture quads that are already on the bloom layer
-        if (ctx.renderLayer() == GTRenderTypes.bloom()) return;
 
         float avgR = FastColor.ABGR32.red(vertexColors[0]);
         float avgG = FastColor.ABGR32.green(vertexColors[0]);

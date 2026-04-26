@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
@@ -27,28 +26,6 @@ abstract class RebuildTaskMixin {
     @Final
     ChunkRenderDispatcher.RenderChunk this$1;
 
-    /*
-    @Definition(id = "chunkBufferBuilderPack", local = @Local(type = ChunkBufferBuilderPack.class, argsOnly = true))
-    @Definition(id = "builder", method = "Lnet/minecraft/client/renderer/ChunkBufferBuilderPack;builder(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/BufferBuilder;")
-    @Definition(id = "endOrDiscardIfEmpty", method = "Lcom/mojang/blaze3d/vertex/BufferBuilder;endOrDiscardIfEmpty()Lcom/mojang/blaze3d/vertex/BufferBuilder$RenderedBuffer;")
-    @Definition(id = "renderType1", local = @Local(type = RenderType.class))
-    @Expression("@(chunkBufferBuilderPack.builder(renderType1)).endOrDiscardIfEmpty()")
-    @SuppressWarnings("NameDoesntMatchTargetClass")
-    @ModifyExpressionValue(method = "compile", at = @At("MIXINEXTRAS:EXPRESSION"))
-    private BufferBuilder gtceu$tryAddBlockEntity(BufferBuilder buffer,
-                                                  @Local(ordinal = 0) BlockPos sectionOrigin,
-                                                  @Local(ordinal = 0) RenderType renderType) {
-        if (renderType != GTRenderTypes.bloom()) return buffer;
-
-        long sectionPos = SectionPos.asLong(sectionOrigin);
-        if (BloomUtil.chunkSectionHasBloomQuads(sectionPos)) {
-            BloomUtil.drawBlockBloomForChunk(sectionPos, buffer);
-        }
-
-        return buffer;
-    }
-    */
-
     @SuppressWarnings("NameDoesntMatchTargetClass")
     @Inject(method = "compile",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false))
@@ -57,15 +34,16 @@ abstract class RebuildTaskMixin {
                                          @Local(ordinal = 0) BlockPos sectionOrigin,
                                          @Local Set<RenderType> usedRenderTypes) {
         long sectionPos = SectionPos.asLong(sectionOrigin);
-        if (BloomUtil.chunkSectionHasBloomQuads(sectionPos)) {
-            BufferBuilder bloomBuffer = chunkBufferBuilders.builder(GTRenderTypes.bloom());
-            // no existing geometry on this layer
-            if (usedRenderTypes.add(GTRenderTypes.bloom())) this$1.beginLayer(bloomBuffer);
-
-            BufferBuilder cutoutBuffer = chunkBufferBuilders.builder(RenderType.cutout());
-            if (usedRenderTypes.add(RenderType.cutout())) this$1.beginLayer(cutoutBuffer);
-
-            BloomUtil.drawBlockBloomForChunk(sectionPos, bloomBuffer, cutoutBuffer);
+        if (!BloomUtil.chunkSectionHasBloomQuads(sectionPos)) {
+            return;
         }
+
+        BloomUtil.drawBlockBloomForChunk(sectionPos, renderType -> {
+            BufferBuilder buffer = chunkBufferBuilders.builder(renderType);
+            // no existing geometry on this layer
+            if (usedRenderTypes.add(renderType)) this$1.beginLayer(buffer);
+
+            return buffer;
+        });
     }
 }
