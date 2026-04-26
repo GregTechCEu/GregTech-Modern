@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.embeddium;
 
+import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.integration.embeddium.renderer.BloomMeshAppender;
@@ -28,7 +29,8 @@ public class GTEmbeddiumCompat {
 
     @SubscribeEvent
     public static void registerChunkMeshAppenders(ChunkMeshEvent event) {
-        if (!GTShaders.canUseBloomShader()) {
+        if (!GTShaders.canUseBloomShader()) return;
+        if (!BloomUtil.chunkSectionHasBloomQuads(event.getSectionOrigin().asLong())) {
             return;
         }
 

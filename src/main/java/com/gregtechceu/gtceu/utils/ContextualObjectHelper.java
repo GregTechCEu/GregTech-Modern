@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.util;
+package com.gregtechceu.gtceu.utils;
 
 import lombok.Getter;
 

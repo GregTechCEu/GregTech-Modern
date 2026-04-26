@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.embeddium.renderer;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.phys.Vec3;
 
 import org.embeddedt.embeddium.api.MeshAppender;
 
@@ -14,13 +14,11 @@ public class BloomMeshAppender implements MeshAppender {
 
     @Override
     public void render(Context context) {
-        SectionPos sectionOrigin = context.sectionOrigin();
-        if (!BloomUtil.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
-            return;
-        }
+        SectionPos sectionPos = context.sectionOrigin();
+        var vertexConsumerProvider = context.vertexConsumerProvider();
 
-        Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        BloomUtil.CURRENT_RENDERING_SECTION.set(sectionOrigin);
-        BloomUtil.bakeBloomChunkBuffers(sectionOrigin, camPos);
+        BloomUtil.drawBlockBloomForChunk(sectionPos.asLong(),
+                vertexConsumerProvider.apply(GTRenderTypes.bloom()),
+                vertexConsumerProvider.apply(RenderType.cutout()));
     }
 }

@@ -40,6 +40,11 @@ public class BloomEventListeners {
     }
 
     @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        GTShaders.updateShaderAvailability(event);
+    }
+
+    @SubscribeEvent
     public static void onChunkUnloadEvent(ChunkEvent.Unload event) {
         if (!GTShaders.canUseBloomShader() || GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
             return;

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.bloom.BloomAlgorithm;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
@@ -13,11 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterShadersEvent;
+import net.minecraftforge.event.TickEvent;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -33,7 +36,11 @@ public class GTShaders {
     @Getter
     private static @Nullable ShaderInstance rendertypeEntityBloomShader;
 
+    @ApiStatus.Internal
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
+        // forcefully update availability on reload
+        bloomShaderAvailable = updateBloomShaderAvailability();
+
         if (!canLoadBloomShader()) {
             return;
         }
@@ -77,11 +84,15 @@ public class GTShaders {
             BLOOM_CHAIN.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
             BLOOM_TARGET = BLOOM_CHAIN.getTempTarget("final");
         } catch (IOException e) {
-            GTCEu.LOGGER.error("Failed to load shader: {}", id, e);
+            GTCEu.LOGGER.error("Failed to load shader {}:", id, e);
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
         } catch (JsonSyntaxException e) {
-            GTCEu.LOGGER.error("Failed to parse shader: {}", id, e);
+            GTCEu.LOGGER.error("Failed to parse shader {}:", id, e);
+            BLOOM_CHAIN = null;
+            BLOOM_TARGET = null;
+        } catch (RuntimeException e) {
+            GTCEu.LOGGER.error("Unexpected error loading shader {}:", id, e);
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
         }
@@ -92,8 +103,24 @@ public class GTShaders {
     }
 
     private static boolean canLoadBloomShader() {
-        return ConfigHolder.INSTANCE.client.shader.enableBloom &&
-                !GTCEu.isModLoaded(GTValues.MODID_OPTIFINE) &&
+        return ConfigHolder.INSTANCE.client.shader.enableBloom && bloomShaderAvailable;
+    }
+
+    private static boolean bloomShaderAvailable;
+
+    @ApiStatus.Internal
+    public static void updateShaderAvailability(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
+
+        int tick = ((GameRendererAccessor) Minecraft.getInstance().gameRenderer).getTick();
+        // only update bloom availability once a second so every frame isn't bogged down with mod loaded checks
+        if (tick % 20 != 0) return;
+
+        bloomShaderAvailable = updateBloomShaderAvailability();
+    }
+
+    private static boolean updateBloomShaderAvailability() {
+        return !GTCEu.isModLoaded(GTValues.MODID_OPTIFINE) &&
                 !(GTCEu.Mods.isIrisOculusLoaded() && IrisCallWrapper.isShaderActive());
     }
 
