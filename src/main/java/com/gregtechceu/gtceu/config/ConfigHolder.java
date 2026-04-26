@@ -836,36 +836,39 @@ public class ConfigHolder {
             @Configurable.Comment({ "Bloom Algorithm",
                     "UNITY - Unity-like Bloom (rescale)",
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
+                    "DISABLED - No bloom",
                     "Default: UNREAL" })
             public BloomAlgorithm bloomAlgorithm = BloomAlgorithm.UNREAL;
 
             @Configurable
             @Configurable.Comment({
                     "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights (e.g., daytime)",
-                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*({HT}-LT)))",
-                    "This value should be greater than lowBrightnessThreshold.", "Default: 0.5" })
+                    "This value should be greater than minBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + min + (1 - BACKGROUND_BRIGHTNESS) * ({max} - min)))",
+                    "Default: 0.5" })
             @Configurable.DecimalRange(min = 0)
             public float maxBrightness = 0.5f;
 
             @Configurable
             @Configurable.Comment({
                     "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts (e.g., night/caves)",
-                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + {LT} + (1 - BACKGROUND_BRIGHTNESS)*(HT-{LT})))",
-                    "This value should be smaller than highBrightnessThreshold.", "Default: 0.2" })
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + {min} + (1 - BACKGROUND_BRIGHTNESS) * (max - {min})))",
+                    "Default: 0.2" })
             @Configurable.DecimalRange(min = 0)
             public float minBrightness = 0.2f;
 
             @Configurable
             @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
-                    "This value should be smaller than highBrightnessThreshold.",
-                    "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
                     "Default: 0.1" })
             @Configurable.DecimalRange(min = 0)
             public float baseBrightness = 0.1f;
 
             @Configurable
             @Configurable.Comment({ "Bloom Strength",
-                    "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                    "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
                     "Default: 1.5" })
             @Configurable.DecimalRange(min = 0)
             public float strength = 1.5f;
