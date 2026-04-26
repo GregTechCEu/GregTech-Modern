@@ -26,7 +26,6 @@ import java.io.IOException;
 public class GTShaders {
 
     public static PostChain BLOOM_CHAIN = null;
-    public static BloomAlgorithm BLOOM_TYPE = ConfigHolder.INSTANCE.client.shader.bloomAlgorithm;
     public static RenderTarget BLOOM_TARGET = null;
 
     @Getter
@@ -57,7 +56,7 @@ public class GTShaders {
 
         ResourceLocation id = null;
 
-        switch (BLOOM_TYPE) {
+        switch (ConfigHolder.INSTANCE.client.shader.bloomAlgorithm) {
             case UNITY -> id = GTCEu.id("shaders/post/bloom_unity.json");
             case UNREAL -> id = GTCEu.id("shaders/post/bloom_unreal.json");
             case DISABLED -> {
@@ -68,7 +67,6 @@ public class GTShaders {
         if (id == null) {
             GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.shader.bloomAlgorithm);
             ConfigHolder.INSTANCE.client.shader.bloomAlgorithm = BloomAlgorithm.DISABLED;
-            BLOOM_TYPE = BloomAlgorithm.DISABLED;
             return;
         }
 
@@ -78,12 +76,12 @@ public class GTShaders {
             BLOOM_CHAIN = new PostChain(mc.getTextureManager(), mc.getResourceManager(), mc.getMainRenderTarget(), id);
             BLOOM_CHAIN.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
             BLOOM_TARGET = BLOOM_CHAIN.getTempTarget("final");
-        } catch (IOException ioexception) {
-            GTCEu.LOGGER.error("Failed to load shader: {}", id, ioexception);
+        } catch (IOException e) {
+            GTCEu.LOGGER.error("Failed to load shader: {}", id, e);
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
-        } catch (JsonSyntaxException jsonsyntaxexception) {
-            GTCEu.LOGGER.error("Failed to parse shader: {}", id, jsonsyntaxexception);
+        } catch (JsonSyntaxException e) {
+            GTCEu.LOGGER.error("Failed to parse shader: {}", id, e);
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
         }
