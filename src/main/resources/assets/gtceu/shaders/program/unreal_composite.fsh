@@ -20,8 +20,14 @@ float lerpBloomFactor(float factor) {
     return mix(factor, mirrorFactor, BloomRadius);
 }
 
-// from https://www.shadertoy.com/view/4dBcD1
-vec3 jodieReinhard2(const vec3 color) {
+// from https://www.shadertoy.com/view/4dBcD1, explanation(s) there
+vec3 jodieReinhardTonemap(vec3 color) {
+    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    vec3 tc = color / (color + 1.0);
+
+    return mix(color / (luma + 1.0), tc, tc);
+}
+vec3 jodieReinhard2Tonemap(const vec3 color) {
     float luma = dot(color, vec3(.2126, .7152, .0722));
 
     // tonemap curve goes on this line
@@ -47,7 +53,7 @@ void main() {
     lerpBloomFactor(0.8) * texture(BlurTexture2, texCoord) +
     lerpBloomFactor(0.6) * texture(BlurTexture3, texCoord) +
     lerpBloomFactor(0.4) * texture(BlurTexture4, texCoord));
-    bloom.rgb = jodieReinhard2(bloom.rgb);
+    bloom.rgb = jodieReinhardTonemap(bloom.rgb);
 
     vec4 background = texture(DiffuseSampler, texCoord);
     vec4 highlight = texture(HighlightSampler, texCoord);
