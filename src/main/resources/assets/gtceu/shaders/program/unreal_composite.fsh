@@ -8,9 +8,9 @@ uniform sampler2D BlurTexture3;
 uniform sampler2D BlurTexture4;
 uniform float BloomRadius;
 uniform float BloomStrength;
-//uniform float BaseBrightness;
-//uniform float MaxBrightness;
-//uniform float MinBrightness;
+uniform float BaseBrightness;
+uniform float MaxBrightness;
+uniform float MinBrightness;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -20,22 +20,69 @@ float lerpBloomFactor(float factor) {
     return mix(factor, mirrorFactor, BloomRadius);
 }
 
-vec3 jodieReinhardTonemap(vec3 c) {
-    float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
-    vec3 tc = c / (c + 1.0);
+// from https://www.shadertoy.com/view/4dBcD1
+vec3 jodieReinhard2(const vec3 color) {
+    float luma = dot(color, vec3(.2126, .7152, .0722));
 
-    return mix(c / (l + 1.0), tc, tc);
+    // tonemap curve goes on this line
+    // (I used reinhard here)
+    vec4 rgbl = vec4(color, luma) / (luma + 1.);
+
+    vec3 mappedColor = rgbl.rgb;
+    float mappedLuma = rgbl.a;
+
+    float channelMax = max(max(max(
+                                   mappedColor.r,
+                                   mappedColor.g),
+                               mappedColor.b),
+                           1.);
+
+    // this is just the simplified/optimised math
+    // of the more human readable version below
+    return (
+        (mappedLuma * mappedColor - mappedColor) -
+        (channelMax * mappedLuma - mappedLuma)
+    ) / (mappedLuma - channelMax);
+
+/*
+    const vec3 white = vec3(1);
+
+    // prevent clipping
+    vec3 clampedColor = mappedColor / channelMax;
+
+    // x is how much white needs to be mixed with
+    // clampedColor so that its luma equals the
+    // mapped luma
+    //
+    // mix(mappedLuma/channelMax,1.,x) = mappedLuma;
+    //
+    // mix is defined as
+    // x*(1-a)+y*a
+    // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mix.xhtml
+    //
+    // (mappedLuma/channelMax)*(1.-x)+1.*x = mappedLuma
+
+    float x = (mappedLuma - mappedLuma * channelMax)
+    / (mappedLuma - channelMax);
+    return mix(clampedColor, white, x);
+*/
 }
 
 void main() {
     vec4 bloom = BloomStrength * (
-        lerpBloomFactor(1.0) * texture(BlurTexture1, texCoord) +
-        lerpBloomFactor(0.8) * texture(BlurTexture2, texCoord) +
-        lerpBloomFactor(0.6) * texture(BlurTexture3, texCoord) +
-        lerpBloomFactor(0.4) * texture(BlurTexture4, texCoord));
+    lerpBloomFactor(1.0) * texture(BlurTexture1, texCoord) +
+    lerpBloomFactor(0.8) * texture(BlurTexture2, texCoord) +
+    lerpBloomFactor(0.6) * texture(BlurTexture3, texCoord) +
+    lerpBloomFactor(0.4) * texture(BlurTexture4, texCoord));
+    bloom.rgb = jodieReinhard2(bloom.rgb);
 
     vec4 background = texture(DiffuseSampler, texCoord);
     vec4 highlight = texture(HighlightSampler, texCoord);
     background.rgb = background.rgb * (1 - highlight.a) + highlight.a * highlight.rgb;
-    fragColor = vec4(background.rgb + jodieReinhardTonemap(bloom.rgb), 1.0);
+
+    float min = min(background.r, min(background.g, background.b));
+    float max = max(background.r, max(background.g, background.b));
+    float backgroundBrightness = (max + min) / 2.0;
+
+    fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
 }

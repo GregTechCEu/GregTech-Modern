@@ -20,5 +20,8 @@
         { "name": "OutSize",        "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
         { "name": "BloomRadius",    "type": "float",     "count": 1,  "values": [ 1.0 ] },
         { "name": "BloomStrength",  "type": "float",     "count": 1,  "values": [ 1.7 ] },
+        { "name": "BaseBrightness", "type": "float",     "count": 1,  "values": [ 0.1 ] },
+        { "name": "MaxBrightness",  "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "MinBrightness",  "type": "float",     "count": 1,  "values": [ 0.2 ] }
     ]
 }
