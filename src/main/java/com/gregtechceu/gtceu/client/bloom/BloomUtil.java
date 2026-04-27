@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import com.mojang.blaze3d.vertex.*;
@@ -33,15 +33,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BloomUtil {
@@ -201,14 +198,11 @@ public class BloomUtil {
         }
     }
 
-    public static void renderBloom(Camera camera, LevelRenderer levelRenderer,
-                                   PoseStack poseStack, Matrix4f projectionMatrix, Frustum frustum,
-                                   float partialTicks) {
-        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
+    public static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
+                                          ProfilerFiller profilerFiller) {
+        profilerFiller.push("special");
 
-        GTRenderTypes.bloom().setupRenderState();
-
-        profiler.push("special");
+        // render state is set up & cleared in calling function
 
         preDraw();
         if (!BLOOM_RENDERS.isEmpty()) {
@@ -227,21 +221,19 @@ public class BloomUtil {
             postDraw();
         }
 
-        // copy depth buffer from the main render target so bloom won't render through blocks
-        // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+        profilerFiller.pop();
+    }
+
+    public static void processPostEffect(float partialTicks, ProfilerFiller profilerFiller) {
+        profilerFiller.push("processPostEffect");
+
+        // render state is set up & cleared in calling function
 
         GTShaders.BLOOM_CHAIN.process(partialTicks);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         VertexBuffer.unbind();
 
-        // pop the "special" profiler section before posting forge render stage event
-        profiler.pop();
-
-        // noinspection UnstableApiUsage
-        ForgeHooksClient.dispatchRenderStage(AFTER_BLOOM_RENDER_STAGE, levelRenderer,
-                poseStack, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
-
-        GTRenderTypes.bloom().clearRenderState();
+        profilerFiller.pop();
     }
 
     private static void preDraw() {
@@ -278,16 +270,11 @@ public class BloomUtil {
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
     @ApiStatus.Internal
-    public static void setupBloomShaderUniforms(boolean drawBlockBloom) {
-        var config = ConfigHolder.INSTANCE.client.shader;
+    public static void setupBloomShaderUniforms() {
+        final var config = ConfigHolder.INSTANCE.client.shader;
 
         // Forcefully insert config values to shader
-        List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
-        for (int i = 0; i < passes.size(); i++) {
-            PostPass pass = passes.get(i);
-            EffectInstance shader = pass.getEffect();
-
-            shader.safeGetUniform(FILTER_TOGGLE_UNIFORM).set(drawBlockBloom ? 1 : 0);
+        modifyBloomPostShaders((index, shader) -> {
             shader.safeGetUniform(DEPTH_NEAR_UNIFORM).set(GameRenderer.PROJECTION_Z_NEAR);
             shader.safeGetUniform(DEPTH_FAR_UNIFORM).set(Minecraft.getInstance().gameRenderer.getDepthFar());
 

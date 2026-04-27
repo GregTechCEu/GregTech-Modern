@@ -39,6 +39,11 @@ public abstract class LevelRendererMixin {
         }
     }
 
+    @Inject(method = "graphicsChanged", at = @At("TAIL"))
+    private void gtceu$graphicsChanged(CallbackInfo ci) {
+        GTShaders.deinitPostShaders();
+    }
+
     @Definition(id = "renderBuffers", field = "Lnet/minecraft/client/renderer/LevelRenderer;renderBuffers:Lnet/minecraft/client/renderer/RenderBuffers;")
     @Definition(id = "crumblingBufferSource", method = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;")
     @Definition(id = "endBatch", method = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V")
@@ -54,14 +59,22 @@ public abstract class LevelRendererMixin {
 
         profilerFiller.popPush("gtceu:bloom");
 
+        BloomUtil.setupBloomShaderUniforms();
+
         if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
-            BloomUtil.setupBloomShaderUniforms(true);
+            BloomUtil.setFilterToggleUniform(true);
             this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
         } else {
-            BloomUtil.setupBloomShaderUniforms(false);
+            BloomUtil.setFilterToggleUniform(false);
         }
 
-        BloomUtil.renderBloom(camera, (LevelRenderer) (Object) this, poseStack, projectionMatrix, frustum, partialTick);
+        // have to re-setup here. so sad. very aw.
+        GTRenderTypes.bloom().setupRenderState();
+
+        BloomUtil.renderSpecialBloom(camera, poseStack, frustum, partialTick, profilerFiller);
+        BloomUtil.processPostEffect(partialTick, profilerFiller);
+
+        GTRenderTypes.bloom().clearRenderState();
 
         // profiler section is popped by popPush() in the calling function; don't pop it here
     }

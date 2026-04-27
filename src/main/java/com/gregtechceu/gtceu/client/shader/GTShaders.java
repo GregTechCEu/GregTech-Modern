@@ -57,9 +57,7 @@ public class GTShaders {
     }
 
     private static void initPostShaders() {
-        if (BLOOM_CHAIN != null) {
-            BLOOM_CHAIN.close();
-        }
+        deinitPostShaders();
 
         ResourceLocation id = null;
 
@@ -93,6 +91,17 @@ public class GTShaders {
             BLOOM_TARGET = null;
         } catch (RuntimeException e) {
             GTCEu.LOGGER.error("Unexpected error loading shader {}:", id, e);
+            BLOOM_CHAIN = null;
+            BLOOM_TARGET = null;
+        }
+    }
+
+    @ApiStatus.Internal
+    public static void deinitPostShaders() {
+        if (BLOOM_CHAIN != null) {
+            BLOOM_CHAIN.close();
+            BLOOM_TARGET.destroyBuffers();
+
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
         }
