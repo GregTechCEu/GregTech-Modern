@@ -4,10 +4,10 @@
       "model": "gtceu:block/green_borderless_lamp_off"
     },
     "bloom=false,inverted=false,powered=true": {
-      "model": "gtceu:block/green_borderless_lamp"
+      "model": "gtceu:block/green_borderless_lamp_on"
     },
     "bloom=false,inverted=true,powered=false": {
-      "model": "gtceu:block/green_borderless_lamp"
+      "model": "gtceu:block/green_borderless_lamp_on"
     },
     "bloom=false,inverted=true,powered=true": {
       "model": "gtceu:block/green_borderless_lamp_off"

@@ -4,10 +4,10 @@
       "model": "gtceu:block/light_blue_lamp_off"
     },
     "bloom=false,inverted=false,powered=true": {
-      "model": "gtceu:block/light_blue_lamp"
+      "model": "gtceu:block/light_blue_lamp_on"
     },
     "bloom=false,inverted=true,powered=false": {
-      "model": "gtceu:block/light_blue_lamp"
+      "model": "gtceu:block/light_blue_lamp_on"
     },
     "bloom=false,inverted=true,powered=true": {
       "model": "gtceu:block/light_blue_lamp_off"

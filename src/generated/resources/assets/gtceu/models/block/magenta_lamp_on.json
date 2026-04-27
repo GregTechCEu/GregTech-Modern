@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/lamp_on",
+  "textures": {
+    "active": "gtceu:block/lamps/magenta"
+  }
+}

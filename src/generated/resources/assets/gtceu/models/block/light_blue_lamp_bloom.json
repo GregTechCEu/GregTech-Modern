@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/lamp",
+  "parent": "gtceu:block/lamp_bloom",
   "textures": {
     "active": "gtceu:block/lamps/light_blue",
     "active_overlay": "gtceu:block/lamps/light_blue_emissive"
