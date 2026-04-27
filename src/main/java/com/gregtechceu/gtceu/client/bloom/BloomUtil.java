@@ -28,13 +28,13 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -55,10 +55,6 @@ public class BloomUtil {
     private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
     private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
-
-    /// @implNote values are {@link LinkedHashSet}s for iteration order stability
-    private static final Long2ObjectMap<@Nullable Set<QuadCacheEntry>> TEMPORARY_RENDER_QUAD_CACHE = Long2ObjectMaps
-            .synchronize(new Long2ObjectOpenHashMap<>());
 
     public static void init() {}
 
@@ -203,14 +199,6 @@ public class BloomUtil {
         } finally {
             BLOOM_RENDER_LOCK.readLock().lock();
         }
-
-        BLOOM_RENDER_LOCK.writeLock().lock();
-        try {
-            // Completely dump the temp quad cache when changing dimensions etc.
-            TEMPORARY_RENDER_QUAD_CACHE.clear();
-        } finally {
-            BLOOM_RENDER_LOCK.writeLock().unlock();
-        }
     }
 
     public static void renderBloom(Camera camera, LevelRenderer levelRenderer,
@@ -317,10 +305,48 @@ public class BloomUtil {
         }
     }
 
+    public static void setFilterToggleUniform(final boolean fragmentFilterEnabled) {
+        modifyBloomPostShaders((index, shader) -> {
+            if (shader.getName().contains("filter_bloom_color")) {
+                shader.safeGetUniform("EnableFilter").set(fragmentFilterEnabled ? 1 : 0);
+            }
+        });
+    }
+
+    private static void modifyBloomPostShaders(IntObjectConsumer<EffectInstance> consumer) {
+        // Forcefully insert config values to shader
+        List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
+        for (int i = 0; i < passes.size(); i++) {
+            PostPass pass = passes.get(i);
+            consumer.accept(i, pass.getEffect());
+        }
+    }
+
+    // region vanilla-only code paths for automagic block bloom
+
+    /// @implNote map values are {@link LinkedHashSet}s for iteration order stability
+    private static final ThreadLocal<@Nullable Long2ObjectMap<@Nullable Set<QuadCacheEntry>>> quadCache_tl = new ThreadLocal<>();
+
+    private static @Nullable Long2ObjectMap<@Nullable Set<QuadCacheEntry>> getThreadQuadCache() {
+        return quadCache_tl.get();
+    }
+
+    private static Long2ObjectMap<@Nullable Set<QuadCacheEntry>> getOrCreateThreadQuadCache() {
+        var quadCache = getThreadQuadCache();
+        if (quadCache == null) {
+            quadCache = new Long2ObjectOpenHashMap<>();
+            quadCache_tl.set(quadCache);
+        }
+        return quadCache;
+    }
+
     public static boolean chunkSectionHasBloomQuads(long sectionPos) {
         BLOOM_RENDER_LOCK.readLock().lock();
         try {
-            return TEMPORARY_RENDER_QUAD_CACHE.containsKey(sectionPos);
+            var quadCache = getThreadQuadCache();
+            if (quadCache == null) return false;
+
+            return quadCache.containsKey(sectionPos);
         } finally {
             BLOOM_RENDER_LOCK.readLock().unlock();
         }
@@ -332,9 +358,18 @@ public class BloomUtil {
                                               Function<RenderType, VertexConsumer> vertexConsumerProvider) {
         BLOOM_RENDER_LOCK.readLock().lock();
         try {
-            Set<QuadCacheEntry> quads = TEMPORARY_RENDER_QUAD_CACHE.remove(sectionPos);
-            if (quads == null) {
+            var quadCache = getThreadQuadCache();
+            if (quadCache == null) {
                 return;
+            }
+
+            Set<QuadCacheEntry> quads = quadCache.remove(sectionPos);
+            if (quads == null || quads.isEmpty()) {
+                return;
+            }
+            if (quadCache.isEmpty()) {
+                // remove the thread local's value if this thread's map is empty so GC can work on it
+                quadCache_tl.remove();
             }
 
             VertexConsumer bloomVertexConsumer = null;
@@ -370,19 +405,10 @@ public class BloomUtil {
         }
     }
 
-    public static void chunkSectionUnloaded(long sectionPos) {
-        BLOOM_RENDER_LOCK.writeLock().lock();
-        try {
-            TEMPORARY_RENDER_QUAD_CACHE.remove(sectionPos);
-        } finally {
-            BLOOM_RENDER_LOCK.writeLock().unlock();
-        }
-    }
-
     /// Helper function for skipping bloom quads drawn with non-bloom render types
     @ApiStatus.Internal
     public static void captureBloomQuad(BakedQuad quad, @Nullable RenderType renderType, BlockPos pos,
-                                        @Nullable Matrix4f transformation, int[] packedLights, int packedOverlay,
+                                        Matrix4fc transformation, int[] packedLights, int packedOverlay,
                                         float[] brightness, float tintR, float tintG, float tintB) {
         if (renderType == null || renderType == GTRenderTypes.bloom() ||
                 renderType == GTRenderTypes.entityBloomBlockSheet()) {
@@ -390,17 +416,13 @@ public class BloomUtil {
         }
 
         if (BloomMetadataSection.hasBloom(quad, packedLights)) {
-            if (transformation == null) {
-                transformation = new Matrix4f();
-                transformation.translate(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
-            }
-            QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation, packedLights, packedOverlay,
-                    brightness, tintR, tintG, tintB);
+            QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation,
+                    packedLights, packedOverlay, brightness, tintR, tintG, tintB);
 
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
-                Set<QuadCacheEntry> sectionQuads = TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos),
-                        $ -> new LinkedHashSet<>());
+                Set<QuadCacheEntry> sectionQuads = getOrCreateThreadQuadCache()
+                        .computeIfAbsent(SectionPos.asLong(pos), $ -> new LinkedHashSet<>());
                 if (!sectionQuads.add(entry)) {
                     GTCEu.LOGGER.warn("Duplicate quad {} on block [{}]???", entry, pos.toShortString());
                 }
@@ -409,6 +431,8 @@ public class BloomUtil {
             }
         }
     }
+
+    // endregion
 
     public static final class BloomRenderTicket {
 
@@ -504,7 +528,7 @@ public class BloomUtil {
 
     @ApiStatus.Internal
     private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
-                                  Matrix4f transformation, int[] packedLights, int packedOverlay,
+                                  Matrix4fc transformation, int[] packedLights, int packedOverlay,
                                   float[] brightness, float tintR, float tintG, float tintB) {
 
         @Override
