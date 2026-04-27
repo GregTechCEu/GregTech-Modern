@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -62,14 +63,53 @@ public class BloomUtil {
 
         @Override
         public String toString() {
-            return "QuadCacheEntry{" +
+            int[][] unpackedLights = Arrays.stream(packedLights)
+                    .mapToObj(packed -> new int[]{ LightTexture.block(packed), LightTexture.sky(packed) })
+                    .toArray(int[][]::new);
+
+            return "{ " +
                     "renderType=" + (renderType != null ? ((RenderStateShardAccessor) renderType).getName() : null) +
-                    ", transformation=" + transformation +
-                    ", packedLights=" + Arrays.toString(packedLights) +
+                    ", transformation=" + FormattingUtil.matrixToSingleLineString(transformation) +
+                    ", lights=" + Arrays.deepToString(unpackedLights) +
                     ", packedOverlay=" + packedOverlay +
                     ", brightness=" + Arrays.toString(brightness) +
                     ", tint=[" + tintR + ", " + tintG + ", " + tintB + ']' +
-                    '}';
+                    " }";
+        }
+
+        @Override
+        public boolean equals(@Nullable Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+
+            QuadCacheEntry that = (QuadCacheEntry) o;
+            return this.renderType == that.renderType &&
+                    this.packedOverlay() == that.packedOverlay &&
+                    Float.floatToIntBits(this.tintR) == Float.floatToIntBits(that.tintR) &&
+                    Float.floatToIntBits(this.tintG) == Float.floatToIntBits(that.tintG) &&
+                    Float.floatToIntBits(this.tintB) == Float.floatToIntBits(that.tintB) &&
+
+                    this.transformation.equals(that.transformation) &&
+                    Arrays.equals(this.packedLights, that.packedLights) &&
+                    Arrays.equals(this.brightness, that.brightness) &&
+                    // quad is compared last because it has the slowest equals()
+                    this.quad.equals(that.quad);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = this.quad.hashCode();
+            result = 31 * result + Objects.hashCode(this.renderType);
+            result = 31 * result + this.transformation.hashCode();
+
+            result = 31 * result + Arrays.hashCode(this.packedLights);
+            result = 31 * result + this.packedOverlay;
+
+            result = 31 * result + Arrays.hashCode(this.brightness);
+            result = 31 * result + Float.hashCode(this.tintR);
+            result = 31 * result + Float.hashCode(this.tintG);
+            result = 31 * result + Float.hashCode(this.tintB);
+
+            return result;
         }
     }
 
