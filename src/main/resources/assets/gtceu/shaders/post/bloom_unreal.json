@@ -1,39 +1,12 @@
 {
     "targets": [
+        "final",
         "filter",
-        {
-            "name": "swap2a",
-            "bilinear": true
-        },
-        {
-            "name": "swap4a",
-            "bilinear": true
-        },
-        {
-            "name": "swap8a",
-            "bilinear": true
-        },
-        {
-            "name": "swap16a",
-            "bilinear": true
-        },
-        {
-            "name": "swap2b",
-            "bilinear": true
-        },
-        {
-            "name": "swap4b",
-            "bilinear": true
-        },
-        {
-            "name": "swap8b",
-            "bilinear": true
-        },
-        {
-            "name": "swap16b",
-            "bilinear": true
-        },
-        "final"
+        { "name": "swap",     "bilinear": true },
+        { "name": "swap_b1",  "bilinear": true },
+        { "name": "swap_b2",  "bilinear": true },
+        { "name": "swap_b3",  "bilinear": true },
+        { "name": "swap_b4", "bilinear": true }
     ],
     "passes": [
         {
@@ -49,7 +22,7 @@
         {
             "name": "gtceu:blur",
             "intarget": "filter",
-            "outtarget": "swap2a",
+            "outtarget": "swap",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -63,8 +36,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap2a",
-            "outtarget": "swap2b",
+            "intarget": "swap",
+            "outtarget": "swap_b1",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -78,8 +51,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap2b",
-            "outtarget": "swap4a",
+            "intarget": "swap_b1",
+            "outtarget": "swap",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -93,8 +66,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap4a",
-            "outtarget": "swap4b",
+            "intarget": "swap",
+            "outtarget": "swap_b2",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -108,8 +81,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap4b",
-            "outtarget": "swap8a",
+            "intarget": "swap_b2",
+            "outtarget": "swap",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -123,8 +96,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap8a",
-            "outtarget": "swap8b",
+            "intarget": "swap",
+            "outtarget": "swap_b3",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -138,8 +111,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap8b",
-            "outtarget": "swap16a",
+            "intarget": "swap_b3",
+            "outtarget": "swap",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -153,8 +126,8 @@
         },
         {
             "name": "gtceu:blur",
-            "intarget": "swap16a",
-            "outtarget": "swap16b",
+            "intarget": "swap",
+            "outtarget": "swap_b4",
             "uniforms": [
                 {
                     "name": "BlurDir",
@@ -172,10 +145,10 @@
             "outtarget": "final",
             "auxtargets": [
                 { "id": "filter",  "name": "HighlightSampler" },
-                { "id": "swap2b",  "name": "BlurTexture1" },
-                { "id": "swap4b",  "name": "BlurTexture2" },
-                { "id": "swap8b",  "name": "BlurTexture3" },
-                { "id": "swap16b", "name": "BlurTexture4" }
+                { "id": "swap_b1", "name": "BlurTexture1" },
+                { "id": "swap_b2", "name": "BlurTexture2" },
+                { "id": "swap_b3", "name": "BlurTexture3" },
+                { "id": "swap_b4", "name": "BlurTexture4" }
             ],
             "uniforms": [
                 { "name": "BloomRadius", "values": [1.0] }
