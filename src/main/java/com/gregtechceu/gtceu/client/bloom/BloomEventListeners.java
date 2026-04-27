@@ -5,15 +5,10 @@ import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.SectionPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,24 +37,6 @@ public class BloomEventListeners {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         GTShaders.updateShaderAvailability(event);
-    }
-
-    @SubscribeEvent
-    public static void onChunkUnloadEvent(ChunkEvent.Unload event) {
-        if (!GTShaders.canUseBloomShader()) {
-            return;
-        }
-        ChunkAccess chunk = event.getChunk();
-        LevelAccessor level = chunk.getWorldForge();
-        if (level == null) {
-            return;
-        }
-
-        ChunkPos chunkPos = chunk.getPos();
-        int minSection = level.getMinSection(), maxSection = level.getMaxSection();
-        for (int y = minSection; y < maxSection; y++) {
-            BloomUtil.chunkSectionUnloaded(SectionPos.asLong(chunkPos.x, y, chunkPos.z));
-        }
     }
 
     @SubscribeEvent

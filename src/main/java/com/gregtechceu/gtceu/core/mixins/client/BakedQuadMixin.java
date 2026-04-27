@@ -29,13 +29,14 @@ public class BakedQuadMixin implements IGTBakedQuad {
     // @Intrinsic means this'll be skipped if someone else does it too
     @Intrinsic
     public boolean equals(Object o) {
-        if (!(o instanceof BakedQuad other)) return false;
-        return self().isShade() == other.isShade() &&
-                self().hasAmbientOcclusion() == other.hasAmbientOcclusion() &&
-                self().getTintIndex() == other.getTintIndex() &&
-                self().getDirection() == other.getDirection() &&
-                self().getSprite() == other.getSprite() &&
-                Arrays.equals(self().getVertices(), other.getVertices());
+        if (!(o instanceof BakedQuad that)) return false;
+
+        return self().isShade() == that.isShade() &&
+                self().hasAmbientOcclusion() == that.hasAmbientOcclusion() &&
+                self().getTintIndex() == that.getTintIndex() &&
+                self().getDirection() == that.getDirection() &&
+                self().getSprite() == that.getSprite() &&
+                Arrays.equals(self().getVertices(), that.getVertices());
     }
 
     @Intrinsic

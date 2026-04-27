@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Options;
 import org.joml.Runtime;
 
@@ -296,7 +296,7 @@ public class FormattingUtil {
      *
      * @return the string representation
      */
-    public static String matrixToSingleLineString(Matrix4f matrix) {
+    public static String matrixToSingleLineString(Matrix4fc matrix) {
         String str = matrixToSingleLineString(matrix, Options.NUMBER_FORMAT);
         StringBuilder res = new StringBuilder();
         int eIndex = Integer.MIN_VALUE;
@@ -325,7 +325,7 @@ public class FormattingUtil {
      * @return the string representation
      */
     // spotless:off
-    public static String matrixToSingleLineString(Matrix4f matrix, NumberFormat formatter) {
+    public static String matrixToSingleLineString(Matrix4fc matrix, NumberFormat formatter) {
         return "{ [" + Runtime.format(matrix.m00(), formatter) + " " + Runtime.format(matrix.m10(), formatter) + " " + Runtime.format(matrix.m20(), formatter) + " " + Runtime.format(matrix.m30(), formatter) + "]. "
                 + "[" + Runtime.format(matrix.m01(), formatter) + " " + Runtime.format(matrix.m11(), formatter) + " " + Runtime.format(matrix.m21(), formatter) + " " + Runtime.format(matrix.m31(), formatter) + "], "
                 + "[" + Runtime.format(matrix.m02(), formatter) + " " + Runtime.format(matrix.m12(), formatter) + " " + Runtime.format(matrix.m22(), formatter) + " " + Runtime.format(matrix.m32(), formatter) + "]. "
