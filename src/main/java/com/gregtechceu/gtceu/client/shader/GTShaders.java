@@ -45,13 +45,12 @@ public class GTShaders {
             return;
         }
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
-                        GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
+                GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
                 shader -> rendertypeBloomShader = shader);
 
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
-                        GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
+                GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
                 shader -> rendertypeEntityBloomShader = shader);
-
 
         initPostShaders();
     }

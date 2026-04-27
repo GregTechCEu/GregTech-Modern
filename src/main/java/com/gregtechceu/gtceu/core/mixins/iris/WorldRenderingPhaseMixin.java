@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = WorldRenderingPhase.class, remap = false)
 public class WorldRenderingPhaseMixin {
+
     @Shadow
     @Final
     @Mutable

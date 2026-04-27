@@ -509,7 +509,7 @@ public class BloomUtil {
         @Override
         public String toString() {
             int[][] unpackedLights = Arrays.stream(packedLights)
-                    .mapToObj(packed -> new int[]{ LightTexture.block(packed), LightTexture.sky(packed) })
+                    .mapToObj(packed -> new int[] { LightTexture.block(packed), LightTexture.sky(packed) })
                     .toArray(int[][]::new);
 
             return "{ " +

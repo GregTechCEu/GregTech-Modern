@@ -19,8 +19,8 @@ public class ArrayHelpers {
      * Note: if the array object has an element type which is a reference type that is not an array type,
      * the elements themselves are not deeply copied. This method only copies array objects.
      *
-     * @param  array the array object to deep copy
-     * @param  <T>   the type of the array to deep copy
+     * @param array the array object to deep copy
+     * @param <T>   the type of the array to deep copy
      * @return a copy of the specified array object, deeply copying multidimensional arrays, or null if the object is
      *         null
      */
@@ -37,7 +37,7 @@ public class ArrayHelpers {
 
         if (componentType.isArray()) {
             for (int i = 0; i < array.length; ++i) {
-                //noinspection unchecked
+                // noinspection unchecked
                 Array.set(copy, i, deepCopy((T[]) array[i]));
             }
         } else {

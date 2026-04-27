@@ -26,7 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ForgeModelBlockRendererMixin {
 
     @Inject(method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraftforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
     private static void gtceu$skipBloomyQuadsFromModel(VertexConsumer vertexConsumer, QuadLighter lighter,
                                                        BlockAndTintGetter level, BakedModel model, BlockState state,
                                                        BlockPos pos, PoseStack poseStack, boolean checkSides,

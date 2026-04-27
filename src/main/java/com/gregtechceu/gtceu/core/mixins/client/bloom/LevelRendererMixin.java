@@ -44,13 +44,16 @@ public abstract class LevelRendererMixin {
         GTShaders.deinitPostShaders();
     }
 
-    @Definition(id = "renderBuffers", field = "Lnet/minecraft/client/renderer/LevelRenderer;renderBuffers:Lnet/minecraft/client/renderer/RenderBuffers;")
-    @Definition(id = "crumblingBufferSource", method = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;")
+    @Definition(id = "renderBuffers",
+                field = "Lnet/minecraft/client/renderer/LevelRenderer;renderBuffers:Lnet/minecraft/client/renderer/RenderBuffers;")
+    @Definition(id = "crumblingBufferSource",
+                method = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;")
     @Definition(id = "endBatch", method = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V")
     @Expression("this.renderBuffers.crumblingBufferSource().endBatch()")
     @Inject(method = "renderLevel", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
     private void gtceu$renderBloomBeforeTranslucent(PoseStack poseStack, float partialTick, long finishNanoTime,
-                                                    boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
+                                                    boolean renderBlockOutline, Camera camera,
+                                                    GameRenderer gameRenderer,
                                                     LightTexture lightTexture, Matrix4f projectionMatrix,
                                                     CallbackInfo ci,
                                                     @Local Frustum frustum, @Local Vec3 camPos,

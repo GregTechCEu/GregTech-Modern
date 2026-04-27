@@ -5,8 +5,7 @@ import org.joml.*;
 
 public interface IGTVertexConsumer {
 
-    private VertexConsumer self()
-    {
+    private VertexConsumer self() {
         return (VertexConsumer) this;
     }
 

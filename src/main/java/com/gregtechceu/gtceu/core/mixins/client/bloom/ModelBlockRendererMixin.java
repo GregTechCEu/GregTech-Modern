@@ -52,9 +52,8 @@ public class ModelBlockRendererMixin {
     }
 
     @WrapWithCondition(method = "putQuadData",
-            at = @At(value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V")
-    )
+                       at = @At(value = "INVOKE",
+                                target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
     private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                               float[] brightness, float red, float green, float blue,
                                               int[] packedLights, int packedOverlay, boolean mulColor) {

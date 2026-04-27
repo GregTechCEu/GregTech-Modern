@@ -29,8 +29,8 @@ public class QuadLighterMixin implements IGTQuadLighter {
     private @Nullable RenderType gtceu$renderType;
 
     @WrapWithCondition(method = "process",
-            at = @At(value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
+                       at = @At(value = "INVOKE",
+                                target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
     private boolean gtceu$skipBloomyQuadsFromModel(VertexConsumer instance, PoseStack.Pose poseEntry,
                                                    BakedQuad quad, float[] brightness,
                                                    float red, float green, float blue,

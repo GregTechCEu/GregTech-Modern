@@ -15,6 +15,5 @@ public class GTEmbeddiumCompat {
     public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS,
             AlphaCutoffParameter.ONE_TENTH, false);
 
-
     public static void init() {}
 }

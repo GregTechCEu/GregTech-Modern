@@ -31,8 +31,10 @@ public class GTRenderTypes extends RenderType {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });
-    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(GTShaders::getRendertypeBloomShader);
-    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(GTShaders::getRendertypeEntityBloomShader);
+    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
+            GTShaders::getRendertypeBloomShader);
+    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
+            GTShaders::getRendertypeEntityBloomShader);
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring", DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.TRIANGLE_STRIP, RenderType.SMALL_BUFFER_SIZE, false, false,
