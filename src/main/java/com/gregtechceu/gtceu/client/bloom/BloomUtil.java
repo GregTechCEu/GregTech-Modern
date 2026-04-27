@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.client.bloom;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 
 import net.minecraft.client.Camera;
@@ -56,7 +58,20 @@ public class BloomUtil {
     @ApiStatus.Internal
     private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
                                   Matrix4f transformation, int[] packedLights, int packedOverlay,
-                                  float[] brightness, float tintR, float tintG, float tintB) { }
+                                  float[] brightness, float tintR, float tintG, float tintB) {
+
+        @Override
+        public String toString() {
+            return "QuadCacheEntry{" +
+                    "renderType=" + (renderType != null ? ((RenderStateShardAccessor) renderType).getName() : null) +
+                    ", transformation=" + transformation +
+                    ", packedLights=" + Arrays.toString(packedLights) +
+                    ", packedOverlay=" + packedOverlay +
+                    ", brightness=" + Arrays.toString(brightness) +
+                    ", tint=[" + tintR + ", " + tintG + ", " + tintB + ']' +
+                    '}';
+        }
+    }
 
     /// @implNote values are {@link LinkedHashSet}s for iteration order stability
     private static final Long2ObjectMap<@Nullable Set<QuadCacheEntry>> TEMPORARY_RENDER_QUAD_CACHE = Long2ObjectMaps
@@ -383,10 +398,14 @@ public class BloomUtil {
                 transformation = new Matrix4f();
                 transformation.translate(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
             }
+            QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation, packedLights, packedOverlay,
+                    brightness, tintR, tintG, tintB);
 
-            TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos), $ -> new LinkedHashSet<>())
-                    .add(new QuadCacheEntry(quad, renderType, transformation, packedLights, packedOverlay,
-                            brightness, tintR, tintG, tintB));
+            Set<QuadCacheEntry> sectionQuads = TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos),
+                    $ -> new LinkedHashSet<>());
+            if (!sectionQuads.add(entry)) {
+                GTCEu.LOGGER.warn("Duplicate quad {} on block [{}]???", entry, pos.toShortString());
+            }
         }
     }
 

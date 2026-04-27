@@ -23,6 +23,7 @@
         "client.ModelManagerMixin",
         "client.MultiPlayerGameModeMixin",
         "client.PlayerInfoAccessor",
+        "client.RenderStateShardAccessor",
         "client.VariantDeserializerMixin",
         "client.VertexConsumerMixin",
         "client.bloom.ForgeModelBlockRendererMixin",

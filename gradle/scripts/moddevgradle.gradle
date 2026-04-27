@@ -156,6 +156,9 @@ legacyForge {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             logLevel = org.slf4j.event.Level.INFO
+
+            // Disable JOML using scientific notation for its types' toString() outputs
+            systemProperty 'joml.format', 'false'
         }
     }
 }
