@@ -240,7 +240,7 @@ public class BloomUtil {
      *
      * @param level the level that was unloaded
      */
-    public static void invalidateLevelTickets(LevelAccessor level) {
+    public static void invalidateLevelData(LevelAccessor level) {
         Objects.requireNonNull(level, "level == null");
         BLOOM_RENDER_LOCK.readLock().lock();
         try {
@@ -259,6 +259,14 @@ public class BloomUtil {
             }
         } finally {
             BLOOM_RENDER_LOCK.readLock().lock();
+        }
+
+        BLOOM_RENDER_LOCK.writeLock().lock();
+        try {
+            // Completely dump the temp quad cache when changing dimensions etc.
+            TEMPORARY_RENDER_QUAD_CACHE.clear();
+        } finally {
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
     }
 
@@ -367,7 +375,12 @@ public class BloomUtil {
     }
 
     public static boolean chunkSectionHasBloomQuads(long sectionPos) {
-        return TEMPORARY_RENDER_QUAD_CACHE.containsKey(sectionPos);
+        BLOOM_RENDER_LOCK.readLock().lock();
+        try {
+            return TEMPORARY_RENDER_QUAD_CACHE.containsKey(sectionPos);
+        } finally {
+            BLOOM_RENDER_LOCK.readLock().unlock();
+        }
     }
 
     private static final ThreadLocal<PoseStack> poseStack_tl = ThreadLocal.withInitial(PoseStack::new);
@@ -414,10 +427,10 @@ public class BloomUtil {
         }
     }
 
-    public static void chunkSectionUnloaded(SectionPos sectionPos) {
+    public static void chunkSectionUnloaded(long sectionPos) {
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
-            TEMPORARY_RENDER_QUAD_CACHE.remove(sectionPos.asLong());
+            TEMPORARY_RENDER_QUAD_CACHE.remove(sectionPos);
         } finally {
             BLOOM_RENDER_LOCK.writeLock().unlock();
         }
@@ -441,10 +454,15 @@ public class BloomUtil {
             QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation, packedLights, packedOverlay,
                     brightness, tintR, tintG, tintB);
 
-            Set<QuadCacheEntry> sectionQuads = TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos),
-                    $ -> new LinkedHashSet<>());
-            if (!sectionQuads.add(entry)) {
-                GTCEu.LOGGER.warn("Duplicate quad {} on block [{}]???", entry, pos.toShortString());
+            BLOOM_RENDER_LOCK.writeLock().lock();
+            try {
+                Set<QuadCacheEntry> sectionQuads = TEMPORARY_RENDER_QUAD_CACHE.computeIfAbsent(SectionPos.asLong(pos),
+                        $ -> new LinkedHashSet<>());
+                if (!sectionQuads.add(entry)) {
+                    GTCEu.LOGGER.warn("Duplicate quad {} on block [{}]???", entry, pos.toShortString());
+                }
+            } finally {
+                BLOOM_RENDER_LOCK.writeLock().unlock();
             }
         }
     }

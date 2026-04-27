@@ -46,7 +46,7 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onChunkUnloadEvent(ChunkEvent.Unload event) {
-        if (!GTShaders.canUseBloomShader() || GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
+        if (!GTShaders.canUseBloomShader()) {
             return;
         }
         ChunkAccess chunk = event.getChunk();
@@ -56,14 +56,15 @@ public class BloomEventListeners {
         }
 
         ChunkPos chunkPos = chunk.getPos();
-        for (int y = level.getMinSection(); y < level.getMaxSection(); y++) {
-            BloomUtil.chunkSectionUnloaded(SectionPos.of(chunkPos, y));
+        int minSection = level.getMinSection(), maxSection = level.getMaxSection();
+        for (int y = minSection; y < maxSection; y++) {
+            BloomUtil.chunkSectionUnloaded(SectionPos.asLong(chunkPos.x, y, chunkPos.z));
         }
     }
 
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
-        BloomUtil.invalidateLevelTickets(event.getLevel());
+        BloomUtil.invalidateLevelData(event.getLevel());
     }
 
     // Merge into parent class in 1.21, event listener discovery is smarter there
