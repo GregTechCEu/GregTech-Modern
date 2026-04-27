@@ -45,9 +45,6 @@ public class BloomUtil {
 
     public static RenderLevelStageEvent.@UnknownNullability Stage AFTER_BLOOM_RENDER_STAGE;
 
-    // always outside the world border
-    public static final long INVALID_SECTION_POS = SectionPos.asLong(60000000, 60000000, 60000000);
-
     private static final Map<@Nullable IRenderSetup, BloomRenderList> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
     private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
@@ -258,38 +255,29 @@ public class BloomUtil {
         }
     }
 
-    private static final String FILTER_TOGGLE_UNIFORM = "EnableFilter";
-    private static final String DEPTH_NEAR_UNIFORM = "DepthNear";
-    private static final String DEPTH_FAR_UNIFORM = "DepthFar";
-
-    private static final String BLUR_SHADER_NAME = "blur";
-    private static final String BLOOM_STRENGTH_UNIFORM = "BloomStrength";
-    private static final String BASE_BRIGHTNESS_UNIFORM = "BaseBrightness";
-    private static final String MAX_BRIGHTNESS_UNIFORM = "MaxBrightness";
-    private static final String MIN_BRIGHTNESS_UNIFORM = "MinBrightness";
-    private static final String BLUR_DIR_UNIFORM = "BlurDir";
-
     @ApiStatus.Internal
     public static void setupBloomShaderUniforms() {
         final var config = ConfigHolder.INSTANCE.client.shader;
 
         // Forcefully insert config values to shader
         modifyBloomPostShaders((index, shader) -> {
-            shader.safeGetUniform(DEPTH_NEAR_UNIFORM).set(GameRenderer.PROJECTION_Z_NEAR);
-            shader.safeGetUniform(DEPTH_FAR_UNIFORM).set(Minecraft.getInstance().gameRenderer.getDepthFar());
+            shader.safeGetUniform("DepthNear").set(GameRenderer.PROJECTION_Z_NEAR);
+            shader.safeGetUniform("DepthFar").set(Minecraft.getInstance().gameRenderer.getDepthFar());
 
-            if (shader.getName().contains(BLUR_SHADER_NAME)) {
-                if (i % 2 == 0) {
-                    shader.safeGetUniform(BLUR_DIR_UNIFORM).set(0.0f, config.step);
+            // look for blur steps & change their blur strength to match the config
+            if (shader.getName().contains("blur")) {
+                if (index % 2 == 0) {
+                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
                 } else {
-                    shader.safeGetUniform(BLUR_DIR_UNIFORM).set(config.step, 0.0f);
+                    shader.safeGetUniform("BlurDir").set(config.step, 0.0f);
                 }
             }
-            shader.safeGetUniform(BLOOM_STRENGTH_UNIFORM).set(config.strength);
-            shader.safeGetUniform(BASE_BRIGHTNESS_UNIFORM).set(config.baseBrightness);
-            shader.safeGetUniform(MAX_BRIGHTNESS_UNIFORM).set(config.maxBrightness);
-            shader.safeGetUniform(MIN_BRIGHTNESS_UNIFORM).set(config.minBrightness);
-        }
+
+            shader.safeGetUniform("BloomStrength").set(config.strength);
+            shader.safeGetUniform("BaseBrightness").set(config.baseBrightness);
+            shader.safeGetUniform("MinBrightness").set(config.minBrightness);
+            shader.safeGetUniform("MaxBrightness").set(config.maxBrightness);
+        });
     }
 
     public static void setFilterToggleUniform(final boolean fragmentFilterEnabled) {
