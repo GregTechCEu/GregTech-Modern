@@ -56,63 +56,6 @@ public class BloomUtil {
 
     private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
 
-    @ApiStatus.Internal
-    private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
-                                  Matrix4f transformation, int[] packedLights, int packedOverlay,
-                                  float[] brightness, float tintR, float tintG, float tintB) {
-
-        @Override
-        public String toString() {
-            int[][] unpackedLights = Arrays.stream(packedLights)
-                    .mapToObj(packed -> new int[]{ LightTexture.block(packed), LightTexture.sky(packed) })
-                    .toArray(int[][]::new);
-
-            return "{ " +
-                    "renderType=" + (renderType != null ? ((RenderStateShardAccessor) renderType).getName() : null) +
-                    ", transformation=" + FormattingUtil.matrixToSingleLineString(transformation) +
-                    ", lights=" + Arrays.deepToString(unpackedLights) +
-                    ", packedOverlay=" + packedOverlay +
-                    ", brightness=" + Arrays.toString(brightness) +
-                    ", tint=[" + tintR + ", " + tintG + ", " + tintB + ']' +
-                    " }";
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-
-            QuadCacheEntry that = (QuadCacheEntry) o;
-            return this.renderType == that.renderType &&
-                    this.packedOverlay() == that.packedOverlay &&
-                    Float.floatToIntBits(this.tintR) == Float.floatToIntBits(that.tintR) &&
-                    Float.floatToIntBits(this.tintG) == Float.floatToIntBits(that.tintG) &&
-                    Float.floatToIntBits(this.tintB) == Float.floatToIntBits(that.tintB) &&
-
-                    this.transformation.equals(that.transformation) &&
-                    Arrays.equals(this.packedLights, that.packedLights) &&
-                    Arrays.equals(this.brightness, that.brightness) &&
-                    // quad is compared last because it has the slowest equals()
-                    this.quad.equals(that.quad);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = this.quad.hashCode();
-            result = 31 * result + Objects.hashCode(this.renderType);
-            result = 31 * result + this.transformation.hashCode();
-
-            result = 31 * result + Arrays.hashCode(this.packedLights);
-            result = 31 * result + this.packedOverlay;
-
-            result = 31 * result + Arrays.hashCode(this.brightness);
-            result = 31 * result + Float.hashCode(this.tintR);
-            result = 31 * result + Float.hashCode(this.tintG);
-            result = 31 * result + Float.hashCode(this.tintB);
-
-            return result;
-        }
-    }
-
     /// @implNote values are {@link LinkedHashSet}s for iteration order stability
     private static final Long2ObjectMap<@Nullable Set<QuadCacheEntry>> TEMPORARY_RENDER_QUAD_CACHE = Long2ObjectMaps
             .synchronize(new Long2ObjectOpenHashMap<>());
@@ -556,6 +499,63 @@ public class BloomUtil {
                 return true;
             }
             return this.isEmpty();
+        }
+    }
+
+    @ApiStatus.Internal
+    private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
+                                  Matrix4f transformation, int[] packedLights, int packedOverlay,
+                                  float[] brightness, float tintR, float tintG, float tintB) {
+
+        @Override
+        public String toString() {
+            int[][] unpackedLights = Arrays.stream(packedLights)
+                    .mapToObj(packed -> new int[]{ LightTexture.block(packed), LightTexture.sky(packed) })
+                    .toArray(int[][]::new);
+
+            return "{ " +
+                    "renderType=" + (renderType != null ? ((RenderStateShardAccessor) renderType).getName() : null) +
+                    ", transformation=" + FormattingUtil.matrixToSingleLineString(transformation) +
+                    ", lights=" + Arrays.deepToString(unpackedLights) +
+                    ", packedOverlay=" + packedOverlay +
+                    ", brightness=" + Arrays.toString(brightness) +
+                    ", tint=[" + tintR + ", " + tintG + ", " + tintB + ']' +
+                    " }";
+        }
+
+        @Override
+        public boolean equals(@Nullable Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+
+            QuadCacheEntry that = (QuadCacheEntry) o;
+            return this.renderType == that.renderType &&
+                    this.packedOverlay() == that.packedOverlay &&
+                    Float.floatToIntBits(this.tintR) == Float.floatToIntBits(that.tintR) &&
+                    Float.floatToIntBits(this.tintG) == Float.floatToIntBits(that.tintG) &&
+                    Float.floatToIntBits(this.tintB) == Float.floatToIntBits(that.tintB) &&
+
+                    this.transformation.equals(that.transformation) &&
+                    Arrays.equals(this.packedLights, that.packedLights) &&
+                    Arrays.equals(this.brightness, that.brightness) &&
+                    // quad is compared last because it has the slowest equals()
+                    this.quad.equals(that.quad);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = this.quad.hashCode();
+            result = 31 * result + Objects.hashCode(this.renderType);
+            result = 31 * result + this.transformation.hashCode();
+
+            result = 31 * result + Arrays.hashCode(this.packedLights);
+            result = 31 * result + this.packedOverlay;
+
+            result = 31 * result + Arrays.hashCode(this.brightness);
+            result = 31 * result + Float.hashCode(this.tintR);
+            result = 31 * result + Float.hashCode(this.tintG);
+            result = 31 * result + Float.hashCode(this.tintB);
+
+            return result;
         }
     }
 }
