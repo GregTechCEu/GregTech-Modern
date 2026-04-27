@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -99,6 +100,13 @@ public class LampBlock extends Block {
     }
 
     @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState originalState = super.getStateForPlacement(context);
+        if (originalState == null) return null;
+        return originalState.setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
+    }
+
+    @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getValue(LIGHT) && isLightActive(state) ? 15 : 0;
     }
@@ -111,18 +119,8 @@ public class LampBlock extends Block {
 
     public void update(BlockState state, Level level, BlockPos pos) {
         if (state.getValue(POWERED) != level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.cycle(POWERED),
-                    state.getValue(LIGHT) ? Block.UPDATE_ALL_IMMEDIATE : Block.UPDATE_ALL);
+            level.setBlock(pos, state.cycle(POWERED), Block.UPDATE_CLIENTS);
         }
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (!level.isClientSide) {
-            update(state, level, pos);
-        }
-        super.onPlace(state, level, pos, oldState, movedByPiston);
     }
 
     @Override

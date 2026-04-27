@@ -41,26 +41,25 @@ public class LampBlockItem extends BlockItem {
         }
     }
 
-    @NotNull
     @Override
     public LampBlock getBlock() {
         return (LampBlock) super.getBlock();
     }
 
-    @Nullable
     @Override
-    protected BlockState getPlacementState(BlockPlaceContext context) {
+    protected @Nullable BlockState getPlacementState(BlockPlaceContext context) {
         BlockState state = super.getPlacementState(context);
+        if (state == null) return null;
+
         return getStateFromStack(context.getItemInHand(), state);
     }
 
-    public BlockState getStateFromStack(ItemStack stack, @Nullable BlockState baseState) {
+    public BlockState getStateFromStack(ItemStack stack, BlockState baseState) {
         if (!stack.hasTag() || !stack.is(this)) {
             return baseState;
         }
         var tag = stack.getTag();
-        return (baseState != null ? baseState : getBlock().defaultBlockState())
-                .setValue(LampBlock.INVERTED, isInverted(tag))
+        return baseState.setValue(LampBlock.INVERTED, isInverted(tag))
                 .setValue(LampBlock.BLOOM, isBloomEnabled(tag))
                 .setValue(LampBlock.LIGHT, isLightEnabled(tag));
     }
