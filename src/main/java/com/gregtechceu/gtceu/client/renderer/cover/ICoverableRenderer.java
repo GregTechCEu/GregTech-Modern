@@ -75,7 +75,9 @@ public interface ICoverableRenderer {
                         }
                     }
                 }
-                coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverModelData.get(face), renderType);
+                coverRenderer.renderCover(quads, side, rand, cover, pos, level,
+                        coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY,
+                        renderType);
             }
         }
     }
