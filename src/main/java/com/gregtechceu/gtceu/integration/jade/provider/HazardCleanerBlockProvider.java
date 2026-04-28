@@ -26,7 +26,7 @@ public class HazardCleanerBlockProvider extends MachineTraitProvider<Environment
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        float cleaned = capData.getFloat("Cleaned");
+        float cleaned = capData.getFloatOr("Cleaned", 0);
         if (cleaned > 0) {
             tooltip.add(Component.translatable("gtceu.jade.cleaned_this_second", cleaned));
         }

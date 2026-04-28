@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachi
 import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
@@ -65,7 +64,7 @@ public class GridNodeHolder extends MachineTrait {
     public void onMachineLoad() {
         super.onMachineLoad();
         if (machine.getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::createMainNode));
+            serverLevel.getServer().executeIfPossible(this::createMainNode);
         }
     }
 

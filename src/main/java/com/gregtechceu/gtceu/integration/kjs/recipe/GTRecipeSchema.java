@@ -27,13 +27,16 @@ import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -47,11 +50,11 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
@@ -96,7 +99,7 @@ public interface GTRecipeSchema {
         @Setter
         public int tierChanceBoost = 0;
         @Getter
-        private ResourceLocation idWithoutType;
+        private Identifier idWithoutType;
         @Setter
         public Consumer<GTKubeRecipe> onSave;
         @Getter
@@ -117,12 +120,13 @@ public interface GTRecipeSchema {
         @HideFromJS
         @Override
         public GTKubeRecipe id(KubeResourceLocation _id) {
-            String namespace = _id.wrapped().getNamespace();
+            Identifier originalId = GTResourceLocation.wrap(_id).wrapped();
+            String namespace = originalId.getNamespace();
             if (namespace.equals("kubejs")) {
                 namespace = this.type.id.getNamespace();
             }
-            this.idWithoutType = ResourceLocation.fromNamespaceAndPath(namespace, _id.wrapped().getPath());
-            this.id = idWithoutType.withPrefix(this.type.id.getPath() + "/");
+            this.idWithoutType = Identifier.fromNamespaceAndPath(namespace, originalId.getPath());
+            this.id = GTResourceLocation.toResourceLocation(idWithoutType.withPrefix(this.type.id.getPath() + "/"));
             return this;
         }
 
@@ -246,10 +250,11 @@ public interface GTRecipeSchema {
             validateItems("input", inputs);
 
             for (var stack : inputs) {
+                ItemStack[] stacks = SizedIngredientExtensions.getItems(stack);
                 // test simple item that have pure singular material stack
-                var matStack = ChemicalHelper.getMaterialStack(stack.getItems()[0].getItem());
+                var matStack = ChemicalHelper.getMaterialStack(stacks[0].getItem());
                 // test item that has multiple material stacks
-                var matInfo = ChemicalHelper.getMaterialInfo(stack.getItems()[0].getItem());
+                var matInfo = ChemicalHelper.getMaterialInfo(stacks[0].getItem());
                 if (chance == maxChance && chance != 0) {
                     if (!matStack.isEmpty()) {
                         itemMaterialStacks.add(matStack.multiply(stack.count()));
@@ -259,7 +264,7 @@ public interface GTRecipeSchema {
                             itemMaterialStacks.add(ms.multiply(stack.count()));
                         }
                     } else {
-                        tempItemStacks.add(stack.getItems()[0].copyWithCount(stack.count()));
+                        tempItemStacks.add(stacks[0].copyWithCount(stack.count()));
                     }
                 }
             }
@@ -278,13 +283,13 @@ public interface GTRecipeSchema {
             return input(ItemRecipeCapability.CAP,
                     Arrays.stream(inputs)
                             .map(stack -> new SizedIngredient(
-                                    Ingredient.of(stack),
+                                    DataComponentIngredient.of(false, stack),
                                     stack.getCount()))
                             .toArray());
         }
 
         public GTKubeRecipe inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(new SizedIngredient(Ingredient.of(tag), amount));
+            return inputItems(new SizedIngredient(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag)), amount));
         }
 
         public GTKubeRecipe inputItems(Item input, int amount) {
@@ -341,7 +346,9 @@ public interface GTRecipeSchema {
         public GTKubeRecipe inputItemsRanged(ItemStack stack, int min, int max) {
             validateItems("ranged input", stack);
             return input(ItemRecipeCapability.CAP, new SizedIngredient(
-                    IntProviderIngredient.of(Ingredient.of(stack), UniformInt.of(min, max)).toVanilla(), 1));
+                    IntProviderIngredient.of(DataComponentIngredient.of(false, stack), UniformInt.of(min, max))
+                            .toVanilla(),
+                    1));
         }
 
         public GTKubeRecipe itemInputsRanged(TagPrefix orePrefix, Material material, int min, int max) {
@@ -742,15 +749,14 @@ public interface GTRecipeSchema {
 
         private void validateItems(@NotNull String type, SizedIngredient... items) {
             for (var stack : items) {
-                if (stack == null || stack.getItems().length == 0) {
+                if (stack == null || SizedIngredientExtensions.getItems(stack).length == 0) {
                     throw new KubeRuntimeException(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
-                if (stack.ingredient().getItems().length == 0) {
-                    String tagInfo = "";
-                    var values = (stack.ingredient()).getValues();
-                    if (values.length == 1 && values[0] instanceof Ingredient.TagValue(TagKey<Item> tag)) {
-                        tagInfo = " (empty or unknown tag: #" + tag.location() + ")";
-                    }
+                if (stack.ingredient().isEmpty()) {
+                    var values = stack.ingredient().getValues();
+                    String tagInfo = values.unwrapKey()
+                            .map(tag -> " (empty or unknown tag: #" + tag.location() + ")")
+                            .orElse("");
                     throw new KubeRuntimeException(
                             String.format("Invalid or empty %s item (recipe ID: %s)%s", type, id, tagInfo));
                 }
@@ -800,28 +806,23 @@ public interface GTRecipeSchema {
 
         private void validateFluids(@NotNull String type, FluidIngredient... fluids) {
             for (var fluid : fluids) {
-                if (fluid == null || fluid.getStacks().length == 0) {
+                if (fluid == null || fluid.fluids().isEmpty()) {
                     throw new KubeRuntimeException(
                             String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }
 
-                for (var stack : fluid.getStacks()) {
-                    if (stack == null || stack.isEmpty()) {
+                for (var stack : fluid.fluids()) {
+                    if (stack == null || !stack.isBound()) {
                         throw new KubeRuntimeException(
                                 String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                     }
-                }
-                if (fluid instanceof TagFluidIngredient tagFluidIngredient && tagFluidIngredient.hasNoFluids()) {
-                    String tagInfo = " (empty or unknown tag: #" + tagFluidIngredient.tag().location() + ")";
-                    throw new KubeRuntimeException(String.format(
-                            "Invalid or empty %s fluid (recipe ID: %s)%s", type, id, tagInfo));
                 }
             }
         }
 
         private void validateFluids(@NotNull String type, SizedFluidIngredient... stacks) {
             for (var stack : stacks) {
-                if (stack == null || stack.getFluids().length == 0) {
+                if (stack == null || SizedIngredientExtensions.getFluids(stack).length == 0) {
                     throw new KubeRuntimeException(
                             String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }
@@ -1196,11 +1197,11 @@ public interface GTRecipeSchema {
         public ResourceLocation getOrCreateId() {
             boolean wasNull = id == null;
 
-            super.getOrCreateId();
+            ResourceLocation recipeId = super.getOrCreateId();
             if (wasNull) {
-                idWithoutType = id.withPath(p -> StringUtils.substringAfter(p, '/'));
+                idWithoutType = recipeId.toIdentifier().withPath(p -> StringUtils.substringAfter(p, '/'));
             }
-            return id;
+            return recipeId;
         }
 
         @Override
@@ -1213,13 +1214,13 @@ public interface GTRecipeSchema {
     }
 
     // spotless:off
-    KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("machine"), GTKubeRecipe.class, GTKubeRecipe::new);
+    KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTResourceLocation.toResourceLocation(GTCEu.id("machine")), GTKubeRecipe.class, GTKubeRecipe::new);
 
-    RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
+    RecipeKey<Identifier> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
     RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.key("duration", ComponentRole.OTHER).optional(new TickDuration(100));
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.NBT_TAG.key("data", ComponentRole.OTHER).optional(r -> new CompoundTag());
     RecipeKey<List<RecipeCondition<?>>> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asList().key("recipeConditions", ComponentRole.OTHER).defaultOptional();
-    RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category", ComponentRole.OTHER).defaultOptional();
+    RecipeKey<Identifier> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category", ComponentRole.OTHER).defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = CapabilityMapComponent.INSTANCE.key("inputs", ComponentRole.INPUT).defaultOptional();
     RecipeKey<CapabilityMap> ALL_TICK_INPUTS = CapabilityMapComponent.INSTANCE.key("tickInputs", ComponentRole.INPUT).defaultOptional();

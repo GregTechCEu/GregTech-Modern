@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -32,17 +33,18 @@ public class DrumMachineItem extends MetaMachineItem {
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         if (mat.hasProperty(PropertyKey.FLUID_PIPE)) {
             FluidPipeProperties property = mat.getProperty(PropertyKey.FLUID_PIPE);
-            event.registerItem(Capabilities.FluidHandler.ITEM,
-                    (stack, ignored) -> new ThermalFluidHandlerItemStack(stack,
+            event.registerItem(Capabilities.Fluid.ITEM,
+                    (stack, ignored) -> FluidHandlerAdapters.toResourceHandler(new ThermalFluidHandlerItemStack(stack,
                             GTMachineUtils.DRUM_CAPACITY.getInt(getDefinition()),
                             property.getMaxFluidTemperature(), property.isGasProof(), property.isAcidProof(),
                             property.isCryoProof(),
-                            property.isPlasmaProof()),
+                            property.isPlasmaProof())),
                     this);
         } else {
-            event.registerItem(Capabilities.FluidHandler.ITEM,
-                    (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack,
-                            GTMachineUtils.DRUM_CAPACITY.getInt(getDefinition())),
+            event.registerItem(Capabilities.Fluid.ITEM,
+                    (stack, ignored) -> FluidHandlerAdapters.toResourceHandler(new FluidHandlerItemStack(
+                            GTDataComponents.FLUID_CONTENT, stack,
+                            GTMachineUtils.DRUM_CAPACITY.getInt(getDefinition()))),
                     this);
         }
     }

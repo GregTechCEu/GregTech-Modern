@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jei.circuit;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class GTProgrammedCircuitCategory extends ModularUIRecipeCategory<GTProgrammedCircuitWidget> {
 
     public final static RecipeType<GTProgrammedCircuitWidget> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("programmed_circuit"), GTProgrammedCircuitWidget.class);
+            GTJeiIds.id("programmed_circuit"), GTProgrammedCircuitWidget.class);
     @Getter
     private final IDrawable background;
     @Getter

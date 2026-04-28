@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -8,7 +9,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,10 +17,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -30,6 +32,10 @@ public class BedrockOreVeinSavedData extends SavedData {
 
     public static final int VEIN_CHUNK_SIZE = 3; // veins are 3x3 chunk squares
     public static final int MAXIMUM_VEIN_OPERATIONS = 100_000;
+    public static final SavedDataType<BedrockOreVeinSavedData> TYPE = new SavedDataType<>(
+            GTCEu.id("gtceu_bedrock_ore"),
+            BedrockOreVeinSavedData::new,
+            BedrockOreVeinSavedData::codec);
     public final HashMap<ChunkPos, OreVeinWorldEntry> veinOres = new HashMap<>();
 
     // runtime
@@ -38,10 +44,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockOreVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage()
-                .computeIfAbsent(new SavedData.Factory<>(() -> new BedrockOreVeinSavedData(serverLevel),
-                        (tag, provider) -> new BedrockOreVeinSavedData(serverLevel, tag)),
-                        "gtceu_bedrock_ore");
+        return serverLevel.getDataStorage().computeIfAbsent(TYPE);
     }
 
     public BedrockOreVeinSavedData(ServerLevel serverLevel) {
@@ -50,27 +53,54 @@ public class BedrockOreVeinSavedData extends SavedData {
 
     public BedrockOreVeinSavedData(ServerLevel serverLevel, CompoundTag nbt) {
         this(serverLevel);
-        var list = nbt.getList("veinInfo", Tag.TAG_COMPOUND);
+        var list = nbt.getListOrEmpty("veinInfo");
         for (Tag tag : list) {
             if (tag instanceof CompoundTag compoundTag) {
-                var chunkPos = new ChunkPos(compoundTag.getLong("pos"));
-                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("data"),
+                var chunkPos = ChunkPos.unpack(compoundTag.getLongOr("pos", ChunkPos.INVALID_CHUNK_POS));
+                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompoundOrEmpty("data"),
                         serverLevel.registryAccess()));
             }
         }
     }
 
-    @Override
-    public @NotNull CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag nbt) {
         var oreList = new ListTag();
         for (var entry : veinOres.entrySet()) {
             var tag = new CompoundTag();
-            tag.putLong("pos", entry.getKey().toLong());
+            tag.putLong("pos", entry.getKey().pack());
             tag.put("data", entry.getValue().writeToNBT());
             oreList.add(tag);
         }
         nbt.put("veinInfo", oreList);
         return nbt;
+    }
+
+    private static Codec<BedrockOreVeinSavedData> codec(ServerLevel serverLevel) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                RecordCodecBuilder.point(serverLevel),
+                VeinInfo.CODEC.listOf().fieldOf("vein_info").forGetter(BedrockOreVeinSavedData::veinInfo))
+                .apply(instance, BedrockOreVeinSavedData::new));
+    }
+
+    private BedrockOreVeinSavedData(ServerLevel serverLevel, List<VeinInfo> veinInfo) {
+        this(serverLevel);
+        for (VeinInfo info : veinInfo) {
+            this.veinOres.put(info.pos(), info.entry());
+        }
+    }
+
+    private List<VeinInfo> veinInfo() {
+        return this.veinOres.entrySet().stream()
+                .map(entry -> new VeinInfo(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private record VeinInfo(ChunkPos pos, OreVeinWorldEntry entry) {
+
+        private static final Codec<VeinInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ChunkPos.CODEC.fieldOf("pos").forGetter(VeinInfo::pos),
+                OreVeinWorldEntry.CODEC.fieldOf("data").forGetter(VeinInfo::entry))
+                .apply(instance, VeinInfo::new));
     }
 
     public static int getVeinCoord(int chunkCoord) {
@@ -103,7 +133,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 var registry = serverLevel.registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)
+                        .lookupOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var oreDefinition = holder.value();
@@ -140,26 +170,31 @@ public class BedrockOreVeinSavedData extends SavedData {
         if (holder != null) {
             BedrockOreDefinition definition = holder.value();
             int radius = definition.size() / 2;
-            for (int x = pos.x - radius; x <= pos.x + radius; ++x) {
-                for (int z = pos.z - radius; z <= pos.z + radius; ++z) {
+            for (int x = pos.x() - radius; x <= pos.x() + radius; ++x) {
+                for (int z = pos.z() - radius; z <= pos.z() + radius; ++z) {
                     ChunkPos pos2 = new ChunkPos(x, z);
-                    float distanceFromOriginal = Math.abs(pos.x - x) + Math.abs(pos.z - z);
+                    float distanceFromOriginal = Math.abs(pos.x() - x) + Math.abs(pos.z() - z);
                     distanceFromOriginal = distanceFromOriginal == 0 ? 1 : distanceFromOriginal;
                     distanceFromOriginal = (float) Math.pow(distanceFromOriginal, 2);
 
                     var random = RandomSource
-                            .create(31L * 31 * pos2.x + pos2.z * 31L + Long.hashCode(serverLevel.getSeed()));
+                            .create(31L * 31 * pos2.x() + pos2.z() * 31L + Long.hashCode(serverLevel.getSeed()));
 
                     int maximumYield;
-                    if ((definition.yield().getMaxValue() - definition.yield().getMinValue()) / distanceFromOriginal <=
+                    if ((definition.yield().sample(net.minecraft.util.RandomSource.create()) -
+                            definition.yield().sample(net.minecraft.util.RandomSource.create())) /
+                            distanceFromOriginal <=
                             0) {
-                        maximumYield = definition.yield().getMinValue();
+                        maximumYield = definition.yield().sample(net.minecraft.util.RandomSource.create());
                     } else {
-                        maximumYield = (int) ((definition.yield().sample(random) + definition.yield().getMinValue()) /
+                        maximumYield = (int) ((definition.yield().sample(random) +
+                                definition.yield().sample(net.minecraft.util.RandomSource.create())) /
                                 distanceFromOriginal);
-                        maximumYield = Math.max(maximumYield, definition.yield().getMinValue());
+                        maximumYield = Math.max(maximumYield,
+                                definition.yield().sample(net.minecraft.util.RandomSource.create()));
                     }
-                    maximumYield = Math.min(maximumYield, definition.yield().getMaxValue());
+                    maximumYield = Math.min(maximumYield,
+                            definition.yield().sample(net.minecraft.util.RandomSource.create()));
 
                     veinOres.put(pos2, new OreVeinWorldEntry(holder, maximumYield, MAXIMUM_VEIN_OPERATIONS));
                 }
@@ -176,7 +211,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().lookupOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)) {
                 if (!definition.canGenerate()) {
                     continue;
                 }

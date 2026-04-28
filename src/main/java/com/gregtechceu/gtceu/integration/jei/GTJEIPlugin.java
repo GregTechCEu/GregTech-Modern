@@ -43,7 +43,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return GTCEu.id("jei_plugin");
+        return GTJeiIds.id("jei_plugin");
     }
 
     @Override
@@ -122,7 +122,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (!GTCEu.Mods.isJEILoaded()) return;
 
         Collection<FluidStack> potionFluids = new ArrayList<>(BuiltInRegistries.POTION.size());
-        BuiltInRegistries.POTION.holders().forEach(potion -> {
+        BuiltInRegistries.POTION.listElements().forEach(potion -> {
             FluidStack potionFluid = PotionFluid.of(1000, potion);
             potionFluids.add(potionFluid);
         });

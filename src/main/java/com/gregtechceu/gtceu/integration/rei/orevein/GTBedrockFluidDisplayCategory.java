@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBedrockFluidDisplay> {
 
     public static final CategoryIdentifier<GTBedrockFluidDisplay> CATEGORY = CategoryIdentifier
-            .of(GTCEu.id("bedrock_fluid_diagram"));
+            .of(GTReiIds.toResourceLocation("bedrock_fluid_diagram"));
 
     private final Renderer icon;
 
@@ -60,8 +60,8 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
 
     public static void registerDisplays(DisplayRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        fluids.holders()
+                .lookupOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
+        fluids.listElements()
                 .filter(fluid -> fluid.value().canGenerate())
                 .forEach(fluid -> registry.add(new GTBedrockFluidDisplay(fluid)));
     }

@@ -22,13 +22,12 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.GTUIFactories;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -51,10 +50,7 @@ import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
-import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
-import com.gregtechceu.gtceu.common.item.GTBucketItem;
-import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -76,8 +72,6 @@ import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
-
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -86,7 +80,6 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -99,7 +92,6 @@ import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
@@ -108,7 +100,6 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.fluids.crafting.*;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
@@ -144,9 +135,9 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
-        UIFactory.register(MachineUIFactory.INSTANCE);
-        UIFactory.register(CoverUIFactory.INSTANCE);
-        UIFactory.register(GTUIEditorFactory.INSTANCE);
+        if (!GTCEu.isDataGen() && GTCEu.Mods.isLDLibLoaded()) {
+            GTUIFactories.init();
+        }
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
@@ -156,9 +147,11 @@ public class CommonProxy {
         GTCreativeModeTabs.init();
         GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
 
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+        if (!GTCEu.isDataGen()) {
+            FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+            FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+            FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+        }
 
         AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
@@ -197,7 +190,6 @@ public class CommonProxy {
         GTToolTiers.init();
         GTToolBehaviors.init();
         GTDataComponents.DATA_COMPONENTS.register(modBus);
-        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
 
         GTMachineUtils.init();
@@ -338,7 +330,7 @@ public class CommonProxy {
 
             MapIngredientTypeManager.registerMapIngredient(DataComponentFluidIngredient.class, FluidDataComponentMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
-            MapIngredientTypeManager.registerMapIngredient(SingleFluidIngredient.class, FluidStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(SimpleFluidIngredient.class, FluidStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(IntersectionFluidIngredient.class, IntersectionMapIngredient::from);
 
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidTagMapIngredient::from);
@@ -390,12 +382,14 @@ public class CommonProxy {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(FluidHandler.ITEM, BottleItemFluidHandler::new, Items.GLASS_BOTTLE);
+        event.registerItem(Capabilities.Fluid.ITEM,
+                (stack, ignored) -> FluidHandlerAdapters.toResourceHandler(new BottleItemFluidHandler(stack)),
+                Items.GLASS_BOTTLE);
 
         Stream<MachineDefinition> quantumTanks = Stream.of(GTMachines.SUPER_TANK, GTMachines.QUANTUM_TANK)
                 .flatMap(Arrays::stream);
         quantumTanks = Stream.concat(quantumTanks, Stream.of(GTMachines.CREATIVE_FLUID));
-        event.registerItem(FluidHandler.ITEM, (stack, ctx) -> {
+        event.registerItem(Capabilities.Fluid.ITEM, (stack, ctx) -> {
             if (!(stack.getItem() instanceof MetaMachineItem machineItem)) {
                 return null;
             }
@@ -403,17 +397,17 @@ public class CommonProxy {
             if (capacity == -1) {
                 return null;
             }
-            return new QuantumFluidHandlerItemStack(stack, capacity);
+            return FluidHandlerAdapters.toResourceHandler(new QuantumFluidHandlerItemStack(stack, capacity));
         }, quantumTanks.filter(Objects::nonNull).map(MachineDefinition::getItem).toArray(Item[]::new));
 
         for (Block block : BuiltInRegistries.BLOCK) {
             if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                    event.isBlockRegistered(Capabilities.EnergyStorage.BLOCK, block)) {
+                    event.isBlockRegistered(Capabilities.Energy.BLOCK, block)) {
                 event.registerBlock(GTCapability.CAPABILITY_ENERGY_CONTAINER,
                         (level, pos, state, blockEntity, side) -> {
-                            IEnergyStorage forgeEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos,
-                                    state, blockEntity, side);
-                            if (forgeEnergy != null) {
+                            var energy = level.getCapability(Capabilities.Energy.BLOCK, pos, state, blockEntity, side);
+                            if (energy != null) {
+                                IEnergyStorage forgeEnergy = IEnergyStorage.of(energy);
                                 return new EUToFEProvider(forgeEnergy);
                             }
                             return null;
@@ -444,11 +438,6 @@ public class CommonProxy {
                 tool.attachCapabilities(event);
             } else if (item instanceof DrumMachineItem drum) {
                 drum.attachCapabilities(event);
-            } else if (item instanceof GTBucketItem) {
-                event.registerItem(Capabilities.FluidHandler.ITEM,
-                        (stack, ctx) -> new FluidBucketWrapper(stack), item);
-            } else if (item instanceof PotionItem) {
-                event.registerItem(Capabilities.FluidHandler.ITEM, PotionItemFluidHandler::new, item);
             }
         }
     }

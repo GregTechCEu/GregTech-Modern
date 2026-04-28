@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -90,7 +90,7 @@ public class ToolEventHandlers {
             if (target instanceof ItemFrame itemFrame) {
                 ItemStack brokenStack = def.getToolStats().getBrokenStack();
                 if (!brokenStack.isEmpty()) {
-                    itemFrame.interact(player, hand);
+                    itemFrame.interact(player, hand, Vec3.ZERO);
 
                     return InteractionResult.SUCCESS;
                 }
@@ -123,7 +123,7 @@ public class ToolEventHandlers {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));
-                level.getServer().tell(new TickTask(0, () -> {
+                level.getServer().executeIfPossible(() -> {
                     BlockState oldState = level.getBlockState(pos);
                     if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
                         // I think it may be a waterlogged block, although the probability is very small
@@ -132,7 +132,7 @@ public class ToolEventHandlers {
                                 Blocks.AIR.defaultBlockState();
                         level.setBlockAndUpdate(pos, newState);
                     }
-                }));
+                });
                 ((IGTTool) tool.getItem()).playSound(player);
             }
         }

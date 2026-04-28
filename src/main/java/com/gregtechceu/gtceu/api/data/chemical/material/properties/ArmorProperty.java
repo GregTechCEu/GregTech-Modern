@@ -4,21 +4,24 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.Util;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
@@ -27,25 +30,29 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 // TODO document
 public class ArmorProperty implements IMaterialProperty {
 
-    private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(
-            new EnumMap<>(ArmorItem.Type.class), (map) -> {
-                map.put(ArmorItem.Type.BOOTS, 13);
-                map.put(ArmorItem.Type.LEGGINGS, 15);
-                map.put(ArmorItem.Type.CHESTPLATE, 16);
-                map.put(ArmorItem.Type.HELMET, 11);
+    private static final EnumMap<ArmorType, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(
+            new EnumMap<>(ArmorType.class), (map) -> {
+                map.put(ArmorType.BOOTS, 13);
+                map.put(ArmorType.LEGGINGS, 15);
+                map.put(ArmorType.CHESTPLATE, 16);
+                map.put(ArmorType.HELMET, 11);
             });
+    private static final ArmorType[] HUMANOID_ARMOR_TYPES = {
+            ArmorType.HELMET, ArmorType.CHESTPLATE, ArmorType.LEGGINGS, ArmorType.BOOTS
+    };
+    private static final TagKey<Item> EMPTY_REPAIR_INGREDIENT = TagKey.create(Registries.ITEM,
+            GTCEu.id("empty_armor_repair"));
 
     @Getter
     @Setter
     @Range(from = 0, to = Integer.MAX_VALUE)
     private int durabilityMultiplier;
     @Setter
-    private Map<ArmorItem.Type, Integer> protectionValues;
+    private Map<ArmorType, Integer> protectionValues;
     @Setter
     private int enchantability;
     @Setter
@@ -56,11 +63,11 @@ public class ArmorProperty implements IMaterialProperty {
     private float knockbackResistance;
 
     @Setter
-    private Supplier<@Nullable Ingredient> repairIngredient;
+    private TagKey<Item> repairIngredient;
     private boolean noRepair;
 
     @Setter
-    private ResourceLocation textureName = GTCEu.id("metal");
+    private Identifier textureName = GTCEu.id("metal");
     @Getter
     @Setter
     private CustomTextureGetter customTextureGetter = (stack, entity, slot, overlay) -> null;
@@ -71,17 +78,17 @@ public class ArmorProperty implements IMaterialProperty {
 
     @Getter
     @Setter
-    private List<ArmorMaterial.Layer> layers = null;
+    private ResourceKey<EquipmentAsset> assetId = null;
 
     @Getter
-    private Holder<ArmorMaterial> armorMaterial;
+    private ArmorMaterial armorMaterial;
     private Material material;
 
     public ArmorProperty(int durabilityMultiplier, int[] protectionValues) {
         this.durabilityMultiplier = durabilityMultiplier;
-        this.protectionValues = Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        this.protectionValues = Util.make(new EnumMap<>(ArmorType.class), map -> {
             for (int i = 0; i < 4; i++) {
-                map.put(ArmorItem.Type.values()[i], protectionValues[i]);
+                map.put(HUMANOID_ARMOR_TYPES[i], protectionValues[i]);
             }
         });
         this.sound = SoundEvents.ARMOR_EQUIP_IRON;
@@ -96,21 +103,17 @@ public class ArmorProperty implements IMaterialProperty {
         }
 
         if (this.repairIngredient == null && noRepair) {
-            this.repairIngredient = () -> null;
+            this.repairIngredient = EMPTY_REPAIR_INGREDIENT;
         } else if (this.repairIngredient == null) {
-            this.repairIngredient = GTMemoizer
-                    .memoize(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, material)));
+            this.repairIngredient = ChemicalHelper.getTag(TagPrefix.plate, material);
         }
 
-        if (this.layers == null) {
-            this.layers = List.of(new ArmorMaterial.Layer(this.textureName, "", this.dyeable));
+        if (this.assetId == null) {
+            this.assetId = ResourceKey.create(EquipmentAssets.ROOT_ID, this.textureName);
         }
         if (this.armorMaterial == null) {
-            GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(this.material.getModid());
-            this.armorMaterial = registrate.generic(this.material.getName(), Registries.ARMOR_MATERIAL,
-                    () -> new ArmorMaterial(protectionValues, enchantability, sound, repairIngredient,
-                            layers, toughness, knockbackResistance))
-                    .register();
+            this.armorMaterial = new ArmorMaterial(durabilityMultiplier, protectionValues, enchantability, sound,
+                    toughness, knockbackResistance, repairIngredient, assetId);
         }
     }
 
@@ -127,7 +130,7 @@ public class ArmorProperty implements IMaterialProperty {
          *                             Ordered as Helmet, Chestplate, Leggings, Boots.
          * @throws IllegalArgumentException If the protectionValues array parameter does not have exactly 4 entries.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          */
         public static ArmorProperty.Builder of(int durabilityMultiplier, int[] protectionValues) {
             Preconditions.checkArgument(protectionValues != null && protectionValues.length == 4,
@@ -158,7 +161,7 @@ public class ArmorProperty implements IMaterialProperty {
         /**
          * Set the protection value for a specific piece of armor made from this Material.
          */
-        public ArmorProperty.Builder protectionValue(ArmorItem.Type type, int value) {
+        public ArmorProperty.Builder protectionValue(ArmorType type, int value) {
             armorProperty.protectionValues.put(type, value);
             return this;
         }
@@ -168,19 +171,19 @@ public class ArmorProperty implements IMaterialProperty {
          *
          * @throws IllegalArgumentException If the provided map does not have a value for all 4 armor pieces.
          */
-        public ArmorProperty.Builder protectionValues(Map<ArmorItem.Type, Integer> protectionValues) {
+        public ArmorProperty.Builder protectionValues(Map<ArmorType, Integer> protectionValues) {
             Preconditions.checkArgument(protectionValues != null && protectionValues.size() == 4,
                     "protectionValues must have 4 entries!");
             armorProperty.protectionValues = protectionValues;
             return this;
         }
 
-        public ArmorProperty.Builder repairIngredient(@Nullable Supplier<Ingredient> repairIngredient) {
+        public ArmorProperty.Builder repairIngredient(@Nullable TagKey<Item> repairIngredient) {
             if (repairIngredient == null) {
-                armorProperty.repairIngredient = () -> null;
+                armorProperty.repairIngredient = EMPTY_REPAIR_INGREDIENT;
                 armorProperty.noRepair = true;
             } else {
-                armorProperty.repairIngredient = GTMemoizer.memoize(repairIngredient);
+                armorProperty.repairIngredient = repairIngredient;
             }
             return this;
         }
@@ -189,7 +192,7 @@ public class ArmorProperty implements IMaterialProperty {
          * Set the toughness granted for wearing armors made of this Material.
          * Diamond is 2, Netherite is 3, other armors are 0.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          * @see <a href="https://minecraft.wiki/w/Armor#Armor_toughness">Armor Toughness - Minecraft Wiki</a>
          */
         public ArmorProperty.Builder toughness(float toughness) {
@@ -201,7 +204,7 @@ public class ArmorProperty implements IMaterialProperty {
          * Set the knockback resistance granted for wearing armor made of this Material.<br>
          * Netherite is 0.1 (10%), other armors are 0.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          */
         public ArmorProperty.Builder knockbackResistance(float knockbackResistance) {
             armorProperty.knockbackResistance = knockbackResistance;
@@ -216,12 +219,8 @@ public class ArmorProperty implements IMaterialProperty {
             return this;
         }
 
-        public ArmorProperty.Builder layers(ArmorMaterial.Layer... layers) {
-            return layers(Arrays.asList(layers));
-        }
-
-        public ArmorProperty.Builder layers(List<ArmorMaterial.Layer> layers) {
-            armorProperty.layers = layers;
+        public ArmorProperty.Builder assetId(ResourceKey<EquipmentAsset> assetId) {
+            armorProperty.assetId = assetId;
             return this;
         }
 
@@ -241,7 +240,7 @@ public class ArmorProperty implements IMaterialProperty {
     @FunctionalInterface
     public interface CustomTextureGetter {
 
-        ResourceLocation getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                          ArmorMaterial.Layer layer);
+        Identifier getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                    EquipmentClientInfo.Layer layer);
     }
 }

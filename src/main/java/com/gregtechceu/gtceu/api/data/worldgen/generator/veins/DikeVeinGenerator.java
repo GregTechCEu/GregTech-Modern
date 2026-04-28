@@ -74,7 +74,7 @@ public class DikeVeinGenerator extends VeinGenerator {
 
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D);
-        ChunkPos chunkPos = new ChunkPos(origin);
+        ChunkPos chunkPos = ChunkPos.containing(origin);
 
         float density = entry.density();
         int size = entry.clusterSize().sample(random);

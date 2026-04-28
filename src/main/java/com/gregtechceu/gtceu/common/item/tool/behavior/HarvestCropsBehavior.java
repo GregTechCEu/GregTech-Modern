@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ import java.util.List;
 public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior> {
 
     public static final HarvestCropsBehavior INSTANCE = new HarvestCropsBehavior();
-    public static final Codec<HarvestCropsBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<HarvestCropsBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, HarvestCropsBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected HarvestCropsBehavior() {/**/}
@@ -70,7 +71,7 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
             if (stack.isEmpty()) break;
         }
 
-        return harvested ? InteractionResult.sidedSuccess(level.isClientSide) : InteractionResult.PASS;
+        return harvested ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     private static boolean isBlockCrops(UseOnContext context) {
@@ -91,9 +92,9 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
         BlockState blockState = level.getBlockState(pos);
         if (!(blockState.getBlock() instanceof CropBlock cropBlock)) return false;
 
-        ItemStack seed = blockState.getCloneItemStack(context.getHitResult().withPosition(pos), level, pos, player);
+        ItemStack seed = blockState.getBlock().getCloneItemStack(level, pos, blockState, true, player);
         if (cropBlock.isMaxAge(blockState)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
                 boolean removedSeed = false;
                 for (ItemStack drop : drops) {

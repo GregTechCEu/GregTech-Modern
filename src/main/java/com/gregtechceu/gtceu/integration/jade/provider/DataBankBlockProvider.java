@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -20,13 +19,13 @@ public class DataBankBlockProvider implements IBlockComponentProvider, IServerDa
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("data_bank");
+        return GTJadeIds.toResourceLocation("data_bank");
     }
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof DataBankMachine) {
-            long energyUsage = blockAccessor.getServerData().getLong("energyUsage");
+            long energyUsage = blockAccessor.getServerData().getLongOr("energyUsage", 0);
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
             // wrap in text component to keep it from being formatted
             Component voltageName = Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);

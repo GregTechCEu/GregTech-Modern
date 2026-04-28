@@ -13,11 +13,12 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -25,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 
@@ -160,17 +160,17 @@ public class IntProviderIngredientTest {
      */
     private static BusHolder getBussesAndFormLCR(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(2, 1, 0)));
         FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(2, 2, 0)));
         ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
         FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 2, 0)));
         return new BusHolder(inputBus1, inputHatch1, outputBus1, outputHatch1, controller);
     }
 
@@ -182,19 +182,19 @@ public class IntProviderIngredientTest {
      */
     private static BusHolderBatchParallel getBussesAndFormLCENT(GameTestHelper helper) {
         WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(2, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(CENTRIFUGE_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(1, 2, 0)));
         FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 2, 0)));
         ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(2, 1, 0)));
         FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(1, 1, 0)));
         ParallelHatchPartMachine parallelHatch = (ParallelHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(3, 3, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(3, 3, 0)));
         return new BusHolderBatchParallel(inputBus1, inputHatch1, outputBus1, outputHatch1, controller, parallelHatch);
     }
 
@@ -270,7 +270,7 @@ public class IntProviderIngredientTest {
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients", required = false)
     public static void singleblockRangedItemOutputSabotaged(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -345,7 +345,7 @@ public class IntProviderIngredientTest {
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInputFailure(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -374,7 +374,7 @@ public class IntProviderIngredientTest {
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -432,7 +432,7 @@ public class IntProviderIngredientTest {
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemOutput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;

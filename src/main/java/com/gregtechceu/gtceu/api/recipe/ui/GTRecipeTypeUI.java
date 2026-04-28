@@ -39,7 +39,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import com.google.common.collect.Table;
@@ -58,7 +58,6 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
@@ -82,7 +81,7 @@ public class GTRecipeTypeUI {
     private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
     @Setter
     @Nullable
-    protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
+    protected GTRecipeType.RecipeUIBuilder uiBuilder;
     @Setter
     @Getter
     protected int maxTooltips = 3;
@@ -97,6 +96,27 @@ public class GTRecipeTypeUI {
      */
     public GTRecipeTypeUI(@NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
+        recipeType.getSlotOverlays().forEach((overlayKey, overlaySupplier) -> {
+            var overlay = overlaySupplier.get();
+            if (overlay instanceof IGuiTexture texture) {
+                this.slotOverlays.put(overlayKey, texture);
+            }
+        });
+        if (recipeType.getProgressBar() != null) {
+            var progressBar = recipeType.getProgressBar().get();
+            if (progressBar instanceof ResourceTexture texture) {
+                setProgressBar(texture, convertDirection(recipeType.getProgressBarDirection()));
+            }
+        }
+        if (recipeType.getSteamProgressBar() != null) {
+            var steamProgressBar = recipeType.getSteamProgressBar().get();
+            if (steamProgressBar instanceof SteamTexture texture) {
+                this.steamProgressBarTexture = texture;
+                this.steamMoveType = convertDirection(recipeType.getSteamMoveType());
+            }
+        }
+        this.uiBuilder = recipeType.getUiBuilder();
+        this.maxTooltips = recipeType.getMaxTooltips();
     }
 
     public CompoundTag getCustomUI() {
@@ -113,7 +133,7 @@ public class GTRecipeTypeUI {
                 try {
                     var resource = resourceManager
                             .getResourceOrThrow(
-                                    ResourceLocation.fromNamespaceAndPath(recipeType.registryName.getNamespace(),
+                                    Identifier.fromNamespaceAndPath(recipeType.registryName.getNamespace(),
                                             "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
                     try (InputStream inputStream = resource.open()) {
                         try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
@@ -193,8 +213,8 @@ public class GTRecipeTypeUI {
             if (isCustomUI) {
                 CompoundTag nbt = getCustomUI();
                 WidgetGroup group = new WidgetGroup();
-                IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"),
-                        Resources.fromNBT(nbt.getCompound("resources")), false,
+                IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root").orElse(new CompoundTag()),
+                        Resources.fromNBT(nbt.getCompound("resources").orElse(new CompoundTag())), false,
                         GTRegistries.builtinRegistry());
                 group.setSelfPosition(new Position(0, 0));
                 return group;
@@ -276,7 +296,8 @@ public class GTRecipeTypeUI {
                     RecipeCapability<?> cap = storagesEntry.getKey();
                     Object storage = storagesEntry.getValue();
                     // bind overlays
-                    var widgetClass = cap.getWidgetClass();
+                    @SuppressWarnings("unchecked")
+                    var widgetClass = (Class<? extends Widget>) cap.getWidgetClass();
                     if (widgetClass != null) {
                         WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                                 widget -> {
@@ -321,13 +342,14 @@ public class GTRecipeTypeUI {
         int index = 0;
         for (var entry : map.object2IntEntrySet()) {
             RecipeCapability<?> cap = entry.getKey();
-            var widgetClass = cap.getWidgetClass();
+            @SuppressWarnings("unchecked")
+            var widgetClass = (Class<? extends Widget>) cap.getWidgetClass();
             if (widgetClass == null) {
                 continue;
             }
             int capCount = entry.getIntValue();
             for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
-                var slot = cap.createWidget();
+                Widget slot = (Widget) cap.createWidget();
                 // noinspection DataFlowIssue
                 slot.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
                 slot.setBackground(
@@ -432,5 +454,15 @@ public class GTRecipeTypeUI {
         this.progressBarTexture = new ProgressTexture(progressBar.getSubTexture(0, 0, 1, 0.5),
                 progressBar.getSubTexture(0, 0.5, 1, 0.5)).setFillDirection(moveType);
         return this;
+    }
+
+    private static ProgressTexture.FillDirection convertDirection(GTRecipeType.ProgressBarDirection direction) {
+        return switch (direction) {
+            case LEFT_TO_RIGHT -> ProgressTexture.FillDirection.LEFT_TO_RIGHT;
+            case RIGHT_TO_LEFT -> ProgressTexture.FillDirection.RIGHT_TO_LEFT;
+            case UP_TO_DOWN -> ProgressTexture.FillDirection.UP_TO_DOWN;
+            case DOWN_TO_UP -> ProgressTexture.FillDirection.DOWN_TO_UP;
+            case ALWAYS_FULL -> ProgressTexture.FillDirection.ALWAYS_FULL;
+        };
     }
 }

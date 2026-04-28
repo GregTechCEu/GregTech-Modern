@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -21,12 +18,12 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -37,7 +34,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -168,7 +164,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     protected void transferEnergyTick() {
-        if (!getLevel().isClientSide) {
+        if (!getLevel().isClientSide()) {
             if (getOffsetTimer() % 20 == 0) {
                 // active here is just used for rendering
                 getRecipeLogic()
@@ -247,14 +243,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_in",
                                 avgInComponent.setStyle(STYLE_GREEN))
-                        .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(
                                 Component.translatable("gtceu.multiblock.power_substation.average_in_hover")))));
 
                 var avgOutComponent = Component.literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec / 20)));
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_out",
                                 avgOutComponent.setStyle(STYLE_RED))
-                        .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(
                                 Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
 
                 if (inputPerSec > outputPerSec) {
@@ -348,20 +344,13 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .setMaxWidthLimit(150)
-                        .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
+    public Object createUIWidget() {
+        return PowerSubstationMachineUI.createUIWidget(this);
     }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
+        return PowerSubstationMachineUI.createUI(this, entityPlayer);
     }
 
     @Override
@@ -371,10 +360,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        for (IMultiPart part : getParts()) {
-            part.attachFancyTooltipsToController(this, tooltipsPanel);
-        }
+    public void attachTooltips(Object tooltipsPanelObject) {
+        PowerSubstationMachineUI.attachTooltips(this, tooltipsPanelObject);
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
@@ -408,15 +395,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
 
         public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag storageTag) {
-            int size = storageTag.getInt(NBT_SIZE);
+            int size = storageTag.getIntOr(NBT_SIZE, 0);
             storage = new long[size];
             maximums = new long[size];
             for (int i = 0; i < size; i++) {
-                CompoundTag subtag = storageTag.getCompound(String.valueOf(i));
+                CompoundTag subtag = storageTag.getCompoundOrEmpty(String.valueOf(i));
                 if (subtag.contains(NBT_STORED)) {
-                    storage[i] = subtag.getLong(NBT_STORED);
+                    storage[i] = subtag.getLongOr(NBT_STORED, 0);
                 }
-                maximums[i] = subtag.getLong(NBT_MAX);
+                maximums[i] = subtag.getLongOr(NBT_MAX, 0);
             }
             capacity = summarize(maximums);
         }

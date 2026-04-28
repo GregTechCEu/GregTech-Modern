@@ -9,16 +9,18 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -77,7 +79,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     public static AdjacentFluidCondition fromTags(Collection<TagKey<Fluid>> tags) {
         return new AdjacentFluidCondition(tags.stream()
-                .<HolderSet<Fluid>>map(BuiltInRegistries.FLUID::getOrCreateTag)
+                .<HolderSet<Fluid>>map(BuiltInRegistries.FLUID::getOrThrow)
                 .toList());
     }
 
@@ -140,11 +142,17 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
             this.resolvedFluids.clear();
 
-            Fluid fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
+            Fluid fluidA = BuiltInRegistries.FLUID
+                    .get(Identifier.parse(recipe.data.getStringOr("fluidA", "")))
+                    .map(Holder::value)
+                    .orElse(Fluids.EMPTY);
             if (!fluidA.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
-            Fluid fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
+            Fluid fluidB = BuiltInRegistries.FLUID
+                    .get(Identifier.parse(recipe.data.getStringOr("fluidB", "")))
+                    .map(Holder::value)
+                    .orElse(Fluids.EMPTY);
             if (!fluidB.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ItemLike;
@@ -45,14 +45,14 @@ public class GTDimensionMarkers {
         }
 
         DimensionMarker marker = new DimensionMarker(tier, supplier, overrideName);
-        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimension.location(), marker);
+        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimension.identifier(), marker);
         return marker;
     }
 
     private static BlockEntry<Block> createMarker(String name) {
         return REGISTRATE.block("%s_marker".formatted(name), Block::new)
                 .lang(FormattingUtil.toEnglishName(name))
-                .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cube(ctx.getName(),
+                .gtBlockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cube(ctx.getName(),
                         prov.modLoc("block/dim_markers/%s/down".formatted(name)),
                         prov.modLoc("block/dim_markers/%s/up".formatted(name)),
                         prov.modLoc("block/dim_markers/%s/north".formatted(name)),
@@ -60,7 +60,7 @@ public class GTDimensionMarkers {
                         prov.modLoc("block/dim_markers/%s/east".formatted(name)),
                         prov.modLoc("block/dim_markers/%s/west".formatted(name)))
                         .texture("particle", "#north")
-                        .guiLight(BlockModel.GuiLight.FRONT)))
+                        .guiLight(UnbakedModel.GuiLight.FRONT)))
                 .simpleItem()
                 .register();
     }

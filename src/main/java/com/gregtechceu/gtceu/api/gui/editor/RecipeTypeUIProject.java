@@ -20,7 +20,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -85,7 +85,7 @@ public class RecipeTypeUIProject extends UIProject {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.deserializeNBT(provider, tag);
         if (tag.contains("recipe_type")) {
-            var type = BuiltInRegistries.RECIPE_TYPE.get(ResourceLocation.parse(tag.getString("recipe_type")));
+            var type = BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(tag.getStringOr("recipe_type", "")));
             recipeType = (GTRecipeType) type;
         }
     }
@@ -143,8 +143,8 @@ public class RecipeTypeUIProject extends UIProject {
                         root.clearAllWidgets();
                         if (recipeType.getRecipeUI().hasCustomUI()) {
                             var nbt = recipeType.getRecipeUI().getCustomUI();
-                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"),
-                                    Resources.fromNBT(nbt.getCompound("resources")), false,
+                            IConfigurableWidget.deserializeNBT(root, nbt.getCompoundOrEmpty("root"),
+                                    Resources.fromNBT(nbt.getCompoundOrEmpty("resources")), false,
                                     GTRegistries.builtinRegistry());
                         } else {
                             var widget = recipeType.getRecipeUI().createEditableUITemplate(false, false)

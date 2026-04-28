@@ -49,7 +49,7 @@ public class ConditionalSubscriptionHandler {
      * @param server The event loop to create the subscription in. This is usually the {@link MinecraftServer}.
      */
     protected void initialize(BlockableEventLoop<TickTask> server) {
-        server.tell(new TickTask(0, this::updateSubscription));
+        server.executeIfPossible(this::updateSubscription);
     }
 
     /**

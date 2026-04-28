@@ -19,23 +19,26 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A widget for selecting a value from an enum or a subset of its values.
  */
-public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.SelectableEnum> extends WidgetGroup {
+public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
 
     public interface SelectableEnum {
 
         String getTooltip();
 
-        IGuiTexture getIcon();
+        Object getIcon();
     }
 
     public final CycleButtonWidget buttonWidget;
 
     public final List<T> values;
     public final Consumer<T> onChanged;
+    private final Function<T, String> tooltipGetter;
+    private final Function<T, Object> iconGetter;
 
     public int selected = 0;
 
@@ -52,10 +55,26 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
 
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue,
                               Consumer<T> onChanged) {
+        this(xPosition, yPosition, width, height, values, initialValue, onChanged,
+                EnumSelectorWidget::getSelectableTooltip, EnumSelectorWidget::getSelectableIcon);
+    }
+
+    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue,
+                              Consumer<T> onChanged, Function<T, String> tooltipGetter,
+                              Function<T, Object> iconGetter) {
+        this(xPosition, yPosition, width, height, Arrays.asList(values), initialValue, onChanged, tooltipGetter,
+                iconGetter);
+    }
+
+    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue,
+                              Consumer<T> onChanged, Function<T, String> tooltipGetter,
+                              Function<T, Object> iconGetter) {
         super(xPosition, yPosition, width, height);
 
         this.values = values;
         this.onChanged = onChanged;
+        this.tooltipGetter = tooltipGetter;
+        this.iconGetter = iconGetter;
 
         this.buttonWidget = new CycleButtonWidget(0, 0, width, height, values.size(), this::getTexture,
                 this::onSelected);
@@ -82,7 +101,7 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
 
     public IGuiTexture getTexture(int selected) {
         var selectedValue = values.get(selected);
-        return textureSupplier.apply(selectedValue, selectedValue.getIcon());
+        return textureSupplier.apply(selectedValue, (IGuiTexture) iconGetter.apply(selectedValue));
     }
 
     private void onSelected(int selected) {
@@ -94,7 +113,7 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
         this.textureSupplier = textureSupplier;
 
         T selectedValue = getCurrentValue();
-        buttonWidget.setBackground(textureSupplier.apply(selectedValue, selectedValue.getIcon()));
+        buttonWidget.setBackground(textureSupplier.apply(selectedValue, (IGuiTexture) iconGetter.apply(selectedValue)));
 
         return this;
     }
@@ -124,6 +143,20 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
             return;
 
         T selectedValue = getCurrentValue();
-        buttonWidget.setHoverTooltips(tooltipSupplier.apply(selectedValue, selectedValue.getTooltip()));
+        buttonWidget.setHoverTooltips(tooltipSupplier.apply(selectedValue, tooltipGetter.apply(selectedValue)));
+    }
+
+    private static String getSelectableTooltip(Enum<?> value) {
+        if (value instanceof SelectableEnum selectable) {
+            return selectable.getTooltip();
+        }
+        throw new IllegalArgumentException(value + " does not provide a selector tooltip.");
+    }
+
+    private static Object getSelectableIcon(Enum<?> value) {
+        if (value instanceof SelectableEnum selectable) {
+            return selectable.getIcon();
+        }
+        throw new IllegalArgumentException(value + " does not provide a selector icon.");
     }
 }

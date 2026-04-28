@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 
 public class AdvancedJetpack extends Jetpack {
@@ -62,8 +62,8 @@ public class AdvancedJetpack extends Jetpack {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                            ArmorMaterial.Layer layer) {
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                      EquipmentClientInfo.Layer layer) {
         return GTCEu.id("textures/armor/advanced_jetpack.png");
     }
 }

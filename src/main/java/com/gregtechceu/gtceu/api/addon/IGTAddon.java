@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Consumer;
 
@@ -42,7 +42,7 @@ public interface IGTAddon {
 
     default void addRecipes(RecipeOutput provider) {}
 
-    default void removeRecipes(Consumer<ResourceLocation> consumer) {}
+    default void removeRecipes(Consumer<Identifier> consumer) {}
 
     /**
      * Register Material -> Casing block mappings here

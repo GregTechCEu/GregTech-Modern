@@ -6,29 +6,15 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -43,8 +29,8 @@ import java.util.stream.Collectors;
 
 public class MachineControllerCover extends CoverBehavior implements IUICover {
 
-    private CustomItemStackHandler sideCoverSlot;
-    private ButtonWidget modeButton;
+    CustomItemStackHandler sideCoverSlot;
+    Object modeButton;
 
     @SaveField
     @Getter
@@ -130,7 +116,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     ///////////////////////////////////////////////////
 
     @Nullable
-    private IControllable getControllable(@Nullable Direction side) {
+    IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
             return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
@@ -195,49 +181,11 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        if (controllerMode != null && getControllable(controllerMode.side) == null) {
-            setControllerMode(null);
-        }
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
-
-        group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
-        group.addWidget(new IntInputWidget(10, 20, 131, 20,
-                this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
-
-        modeButton = new ButtonWidget(10, 45, 131, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
-                cd -> selectNextMode());
-        group.addWidget(modeButton);
-
-        // Inverted Mode Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                146, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.machine_controller.invert"));
-
-        group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
-        group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
-                this::preventPowerFail, (data) -> {
-                    preventPowerFail = data;
-                }));
-
-        sideCoverSlot = new CustomItemStackHandler(1);
-        group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
-
-            @Override
-            public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
-                return sideCoverSlot.getStackInSlot(0);
-            }
-        });
-
-        updateUI();
-
-        return group;
+    public Object createUIWidget() {
+        return MachineControllerCoverUI.createUIWidget(this);
     }
 
-    private void selectNextMode() {
+    void selectNextMode() {
         var allowedModes = getAllowedModes();
 
         setControllerMode(allowedModes.stream()
@@ -250,42 +198,11 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     private void updateUI() {
-        updateModeButton();
-        updateCoverSlot();
+        MachineControllerCoverUI.updateUI(this);
     }
 
-    private void updateModeButton() {
-        if (modeButton == null) {
-            return;
-        }
-
-        modeButton.setButtonTexture(new GuiTextureGroup(
-                GuiTextures.VANILLA_BUTTON,
-                new TextTexture(controllerMode != null ? controllerMode.localeName : ControllerMode.nullLocaleName)));
-    }
-
-    private void updateCoverSlot() {
-        if (sideCoverSlot == null) {
-            return;
-        }
-
-        if (controllerMode == null) {
-            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
-            sideCoverSlot.onContentsChanged(0);
-        } else {
-            var side = controllerMode.side;
-            if (side == null && coverHolder instanceof MachineCoverContainer coverContainer) {
-                sideCoverSlot.setStackInSlot(0, coverContainer.getMachine().getDefinition().asStack());
-            } else {
-                var cover = coverHolder.getCoverAtSide(side);
-                if (cover != null) {
-                    sideCoverSlot.setStackInSlot(0, cover.getAttachItem().copy());
-                } else {
-                    sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
-                }
-            }
-            sideCoverSlot.onContentsChanged(0);
-        }
+    void setPreventPowerFail(boolean preventPowerFail) {
+        this.preventPowerFail = preventPowerFail;
     }
 
     @Override
@@ -298,9 +215,9 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setInverted(tag.getBoolean("inverted"));
-        setMinRedstoneStrength(tag.getInt("redstoneLvl"));
-        preventPowerFail = tag.getBoolean("preventPowerfail");
+        setInverted(tag.getBooleanOr("inverted", false));
+        setMinRedstoneStrength(tag.getIntOr("redstoneLvl", 0));
+        preventPowerFail = tag.getBooleanOr("preventPowerfail", false);
         super.pasteConfig(player, tag);
     }
 }

@@ -70,7 +70,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     }
 
     public OpticalPipeNet getOpticalPipeNet() {
-        if (level == null || level.isClientSide)
+        if (level == null || level.isClientSide())
             return null;
         OpticalPipeNet currentPipeNet = this.currentPipeNet.get();
         if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos()))
@@ -91,7 +91,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
 
     @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
-        if (!getLevel().isClientSide && connected && !fromNeighbor) {
+        if (!getLevel().isClientSide() && connected && !fromNeighbor) {
             // never allow more than two connections total
             if (getNumConnections() >= 2) return;
 

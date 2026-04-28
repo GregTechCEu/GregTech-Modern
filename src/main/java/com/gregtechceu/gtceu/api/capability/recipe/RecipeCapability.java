@@ -11,9 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
@@ -42,10 +39,10 @@ public abstract class RecipeCapability<T> {
     // spotless:off
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTCEu.GTCEU_ID
                     .comapFlatMap(
-                            id -> GTRegistries.RECIPE_CAPABILITIES.getHolder(id)
+                            id -> GTRegistries.RECIPE_CAPABILITIES.get(id)
                                     .map(DataResult::success)
                                     .orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + id)),
-                            (Holder.Reference<RecipeCapability<?>> holder) -> holder.key().location()
+                            (Holder.Reference<RecipeCapability<?>> holder) -> holder.key().identifier()
                     )
             .flatComapMap(Holder.Reference::value, cap -> safeReference(GTRegistries.RECIPE_CAPABILITIES.wrapAsHolder(cap)));
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
@@ -185,7 +182,7 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
+    public void addXEIInfo(Object group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput, MutableInt yOffset) {}
 
     @NotNull
@@ -199,7 +196,7 @@ public abstract class RecipeCapability<T> {
     }
 
     @Nullable("null when getWidgetClass() == null")
-    public Widget createWidget() {
+    public Object createWidget() {
         return null;
     }
 
@@ -207,11 +204,11 @@ public abstract class RecipeCapability<T> {
      * Return the class of the supported widget that should be used to display this capability.
      */
     @Nullable
-    public Class<? extends Widget> getWidgetClass() {
+    public Class<?> getWidgetClass() {
         return null;
     }
 
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull Object widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,

@@ -16,7 +16,7 @@ public interface IContentSerializer<T> {
     }
 
     default T fromNetwork(RegistryFriendlyByteBuf buf) {
-        return buf.readJsonWithCodec(codec());
+        return buf.readLenientJsonWithCodec(codec());
     }
 
     default T fromJson(JsonElement json, HolderLookup.Provider provider) {

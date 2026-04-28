@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 
@@ -19,7 +18,7 @@ public class TransformerBlockProvider implements IBlockComponentProvider, IServe
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("transformer");
+        return GTJadeIds.toResourceLocation("transformer");
     }
 
     @Override
@@ -35,9 +34,9 @@ public class TransformerBlockProvider implements IBlockComponentProvider, IServe
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof TransformerMachine transformer) {
-            boolean transformUp = blockAccessor.getServerData().getBoolean("transformUp");
-            int voltage = blockAccessor.getServerData().getInt("baseVoltage");
-            int amp = blockAccessor.getServerData().getInt("baseAmp");
+            boolean transformUp = blockAccessor.getServerData().getBooleanOr("transformUp", false);
+            int voltage = blockAccessor.getServerData().getIntOr("baseVoltage", 0);
+            int amp = blockAccessor.getServerData().getIntOr("baseAmp", 0);
             if (transformUp) {
                 tooltip.add(Component.translatable("gtceu.top.transform_up",
                         (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A) -> " + GTValues.VNF[voltage + 1] + " §r(" +
@@ -51,7 +50,7 @@ public class TransformerBlockProvider implements IBlockComponentProvider, IServe
             }
 
             if (blockAccessor.getHitResult().getDirection() ==
-                    Direction.from3DDataValue(blockAccessor.getServerData().getInt("side"))) {
+                    Direction.from3DDataValue(blockAccessor.getServerData().getIntOr("side", 0))) {
                 tooltip.add(
                         Component.translatable(
                                 (transformUp ? "gtceu.top.transform_output" : "gtceu.top.transform_input"),

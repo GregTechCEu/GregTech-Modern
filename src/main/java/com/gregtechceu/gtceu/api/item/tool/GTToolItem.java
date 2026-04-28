@@ -13,10 +13,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -29,8 +29,9 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class GTToolItem extends TieredItem implements IGTTool {
+public class GTToolItem extends Item implements IGTTool {
 
     @Getter
     protected final GTToolType toolType;
@@ -39,13 +40,16 @@ public class GTToolItem extends TieredItem implements IGTTool {
     @Getter
     protected final Material material;
     @Getter
+    protected final MaterialToolTier tier;
+    @Getter
     private final IGTToolDefinition toolStats;
 
     public GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
                       Properties properties) {
-        super(tier, material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() : properties);
+        super(material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() : properties);
         this.toolType = toolType;
         this.material = material;
+        this.tier = tier;
         this.electricTier = toolType.electricTier;
         this.toolStats = definition;
         if (GTCEu.isClientSide()) {
@@ -65,8 +69,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
-        return definition$canPerformAction(stack, action);
+    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
+        return stack instanceof ItemStack itemStack && definition$canPerformAction(itemStack, action);
     }
 
     @Override
@@ -79,12 +83,6 @@ public class GTToolItem extends TieredItem implements IGTTool {
         return definition$onItemUse(context);
     }
 
-    @Override
-    public String getDescriptionId() {
-        return toolType.getUnlocalizedName();
-    }
-
-    @Override
     public Component getDescription() {
         return Component.translatable(toolType.getUnlocalizedName(), material.getLocalizedName());
     }
@@ -121,8 +119,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        return definition$hurtEnemy(stack, target, attacker);
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        definition$hurtEnemy(stack, target, attacker);
     }
 
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
@@ -130,17 +128,18 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+                                Consumer<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        definition$appendHoverText(stack, context, tooltipComponents, isAdvanced);
+        List<Component> componentTooltips = new java.util.ArrayList<>();
+        definition$appendHoverText(stack, context, componentTooltips, isAdvanced);
+        componentTooltips.forEach(tooltipComponents);
     }
 
-    @Override
     public int getEnchantmentValue(ItemStack stack) {
         return getTotalEnchantability(stack);
     }
 
-    @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return definition$isValidRepairItem(stack, repairCandidate);
     }
@@ -151,11 +150,10 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-        return definition$getEnchantmentLevel(stack, enchantment);
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
+        return stack instanceof ItemStack itemStack ? definition$getEnchantmentLevel(itemStack, enchantment) : 0;
     }
 
-    @Override
     public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
         return definition$canDisableShield(shield, shield, entity, attacker);
     }
@@ -170,14 +168,21 @@ public class GTToolItem extends TieredItem implements IGTTool {
         return definition$shouldCauseBlockBreakReset(oldStack, newStack);
     }
 
-    @Override
     public boolean hasCraftingRemainingItem(ItemStack stack) {
         return definition$hasCraftingRemainingItem(stack);
     }
 
-    @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         return definition$getCraftingRemainingItem(itemStack);
+    }
+
+    @Override
+    public ItemStackTemplate getCraftingRemainder(ItemInstance itemInstance) {
+        if (!(itemInstance instanceof ItemStack itemStack)) {
+            return null;
+        }
+        ItemStack remainder = definition$getCraftingRemainingItem(itemStack);
+        return remainder.isEmpty() ? null : ItemStackTemplate.fromNonEmptyStack(remainder);
     }
 
     @Override
@@ -186,7 +191,7 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         return definition$use(level, player, usedHand);
     }
 

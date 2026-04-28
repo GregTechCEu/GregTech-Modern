@@ -116,7 +116,7 @@ public abstract class GuiMapMixin extends ScreenBase implements IRightClickableE
                     GTCEu.id("textures/gui/widget/button_" + button.name + ".png"),
                     guiButton -> {
                         ButtonState.toggleButton(button);
-                        init(minecraft, width, height);
+                        init(width, height);
                     },
                     () -> new CursorBox("gtceu.button." + button.name));
 

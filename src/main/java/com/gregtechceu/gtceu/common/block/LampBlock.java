@@ -14,7 +14,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.phys.HitResult;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -96,14 +96,14 @@ public class LampBlock extends Block {
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
         return state.getBlock().defaultBlockState();
     }
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean powered = state.getValue(POWERED);
             if (powered != level.hasNeighborSignal(pos)) {
                 level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
@@ -113,14 +113,15 @@ public class LampBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
-                                boolean movedByPiston) {
-        if (!level.isClientSide) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+                                   Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
             boolean powered = state.getValue(POWERED);
             if (powered != level.hasNeighborSignal(pos)) {
                 level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
             }
         }
+        super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
     }
 
     @Override
@@ -131,14 +132,13 @@ public class LampBlock extends Block {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData,
                                        Player player) {
-        ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+        ItemStack stack = super.getCloneItemStack(level, pos, state, includeData);
         stack.set(GTDataComponents.LAMP_DATA, getDataFromState(state));
         return stack;
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> tooltip,
                                 TooltipFlag flag) {
         LampBlockItem.LampData data = stack.getOrDefault(GTDataComponents.LAMP_DATA, LampBlockItem.LampData.EMPTY);

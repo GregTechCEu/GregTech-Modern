@@ -26,6 +26,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ import java.util.List;
 public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
 
     public static final WaxOffBehavior INSTANCE = new WaxOffBehavior();
-    public static final Codec<WaxOffBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<WaxOffBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, WaxOffBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected WaxOffBehavior() {/**/}
@@ -81,7 +82,7 @@ public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
 
         if (unwaxed) {
             level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

@@ -5,14 +5,14 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import org.jetbrains.annotations.NotNull;
 
 public class SPacketProspectBedrockOre extends SPacketProspect<ProspectorMode.OreInfo> {
 
-    public static final ResourceLocation ID = GTCEu.id("prospect_bedrock_ore");
+    public static final Identifier ID = GTCEu.id("prospect_bedrock_ore");
     public static final Type<SPacketProspectBedrockOre> TYPE = new Type<>(ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, SPacketProspectBedrockOre> CODEC = StreamCodec
             .ofMember(SPacketProspectBedrockOre::encode, SPacketProspectBedrockOre::new);

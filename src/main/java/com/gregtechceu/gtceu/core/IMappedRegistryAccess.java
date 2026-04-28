@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.core;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -26,7 +26,7 @@ public interface IMappedRegistryAccess<T> {
         throw new AssertionError();
     }
 
-    default Map<ResourceLocation, Holder.Reference<T>> gtceu$getByLocation() {
+    default Map<Identifier, Holder.Reference<T>> gtceu$getByLocation() {
         throw new AssertionError();
     }
 
@@ -55,7 +55,7 @@ public interface IMappedRegistryAccess<T> {
             return; // not present, nothing to remove
         }
 
-        this.gtceu$getByLocation().remove(key.location());
+        this.gtceu$getByLocation().remove(key.identifier());
 
         T value = ref.value();
         this.gtceu$getByValue().remove(value);

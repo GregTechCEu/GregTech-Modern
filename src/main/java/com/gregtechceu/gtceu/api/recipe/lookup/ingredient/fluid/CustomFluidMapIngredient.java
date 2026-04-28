@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +28,9 @@ public class CustomFluidMapIngredient extends AbstractMapIngredient {
 
     public static List<AbstractMapIngredient> from(FluidIngredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
-        FluidStack[] stacks = ingredient.getStacks();
-        for (FluidStack stack : stacks) {
+        for (FluidStack stack : ingredient.fluids().stream()
+                .map(holder -> new FluidStack(holder, FluidType.BUCKET_VOLUME))
+                .toList()) {
             ingredients.add(new CustomFluidMapIngredient(stack, ingredient));
         }
         return ingredients;

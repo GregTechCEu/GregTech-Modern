@@ -6,18 +6,18 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
@@ -92,12 +92,16 @@ public class OverclockLogicTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = helper.getBlockEntity(new BlockPos(1, 2, 0));
+        WorkableMultiblockMachine controller = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 0));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = helper.getBlockEntity(new BlockPos(2, 1, 0));
-        ItemBusPartMachine inputBus2 = helper.getBlockEntity(new BlockPos(2, 2, 0));
-        ItemBusPartMachine outputBus1 = helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine inputBus1 = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(2, 1, 0));
+        ItemBusPartMachine inputBus2 = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(2, 2, 0));
+        ItemBusPartMachine outputBus1 = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
         return new BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
@@ -315,7 +319,8 @@ public class OverclockLogicTest {
     @TestHolder()
     @GameTest(template = "singleblock_charged_cr", batch = "OverclockLogic")
     public static void overclockLogicHVPowerTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = helper.getBlockEntity(new BlockPos(0, 1, 0));
+        SimpleTieredMachine machine = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
         machine.setRecipeType(CR_RECIPE_TYPE);
 
         long originalCharge = GTValues.V[GTValues.HV] * 64L;
@@ -342,7 +347,8 @@ public class OverclockLogicTest {
     @TestHolder()
     @GameTest(template = "singleblock_charged_cr", batch = "OverclockLogic")
     public static void overclockLogicMVPowerTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = helper.getBlockEntity(new BlockPos(0, 1, 0));
+        SimpleTieredMachine machine = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
         machine.setRecipeType(CR_RECIPE_TYPE);
 
         long originalCharge = GTValues.V[GTValues.HV] * 64L;

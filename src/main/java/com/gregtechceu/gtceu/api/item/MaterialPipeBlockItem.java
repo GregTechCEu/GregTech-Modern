@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
+import com.gregtechceu.gtceu.client.color.ItemColor;
 
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -33,7 +33,6 @@ public class MaterialPipeBlockItem extends PipeBlockItem {
         };
     }
 
-    @Override
     public Component getDescription() {
         return this.getBlock().getName();
     }

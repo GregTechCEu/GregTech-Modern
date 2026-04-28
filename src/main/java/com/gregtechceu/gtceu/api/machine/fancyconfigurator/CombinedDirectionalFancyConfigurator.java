@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.CoverableConfig
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.chat.Component;
@@ -38,7 +36,10 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
     }
 
     @Override
-    public Widget createMainPage(FancyMachineUIWidget widget) {
+    public Object createMainPage(Object widgetObject) {
+        if (!(widgetObject instanceof FancyMachineUIWidget widget)) {
+            return null;
+        }
         Size parentSize = widget.getSize();
         return new CombinedDirectionalConfigurator(
                 widget, configs.stream().map(Supplier::get).toArray(IDirectionalConfigHandler[]::new), machine,
@@ -47,7 +48,7 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
     }
 
     @Override
-    public IGuiTexture getTabIcon() {
+    public Object getTabIcon() {
         return GuiTextures.TOOL_COVER_SETTINGS;
     }
 

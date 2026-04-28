@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -17,13 +17,14 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
     public static final GTBedrockFluidEmiCategory CATEGORY = new GTBedrockFluidEmiCategory();
 
     public GTBedrockFluidEmiCategory() {
-        super(GTCEu.id("bedrock_fluid_diagram"), EmiStack.of(GTMaterials.Oil.getFluid().getBucket().asItem()));
+        super(GTEmiIds.toResourceLocation("bedrock_fluid_diagram"),
+                EmiStack.of(GTMaterials.Oil.getFluid().getBucket().asItem()));
     }
 
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        fluids.holders()
+                .lookupOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
+        fluids.listElements()
                 .filter(fluid -> fluid.value().canGenerate())
                 .forEach(fluid -> registry.addRecipe(new GTBedrockFluid(fluid)));
     }

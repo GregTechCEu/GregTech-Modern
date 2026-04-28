@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.misc.forge.ItemHandlerAdapters;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
 import net.minecraft.core.BlockPos;
@@ -58,7 +59,8 @@ public class GTTransferUtils {
      * @return LazyOpt of ItemHandler of given block
      */
     public static Optional<IItemHandler> getItemHandler(Level level, BlockPos pos, @Nullable Direction side) {
-        return Optional.ofNullable(level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side));
+        return Optional.ofNullable(ItemHandlerAdapters.toItemHandler(level.getCapability(Capabilities.Item.BLOCK, pos,
+                side)));
     }
 
     // Same as getAdjacentFluidHandler, but for ItemHandler

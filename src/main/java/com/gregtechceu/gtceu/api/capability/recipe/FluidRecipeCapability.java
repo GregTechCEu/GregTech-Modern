@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
@@ -67,7 +66,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public SizedFluidIngredient copyWithModifier(SizedFluidIngredient content, ContentModifier modifier) {
-        if (content.ingredient().hasNoFluids()) return content.copy();
+        if (content.ingredient().fluids().isEmpty()) return content.copy();
         if (content.ingredient() instanceof IntProviderFluidIngredient provider) {
             IntProviderFluidIngredient copy = IntProviderFluidIngredient.of(provider.getInner(),
                     ModifiedIntProvider.of(provider.getCountProvider(), modifier));
@@ -77,7 +76,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     }
 
     public IntProviderFluidIngredient copyWithModifier(IntProviderFluidIngredient content, ContentModifier modifier) {
-        if (content.hasNoFluids()) return content.copy();
+        if (content.fluids().isEmpty()) return content.copy();
         return IntProviderFluidIngredient.of(content.getInner(),
                 ModifiedIntProvider.of(content.getCountProvider(), modifier));
     }
@@ -208,19 +207,22 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
             int amount;
             if (ing.ingredient() instanceof IntProviderFluidIngredient provider) {
-                amount = provider.getCountProvider().getMaxValue();
+                amount = provider.getCountProvider().sample(net.minecraft.util.RandomSource.create());
             } else {
                 amount = ing.amount();
             }
+            if (amount <= 0) continue;
 
             if (content.chance == 0) {
                 nonConsumables.addTo(ing, amount);
             } else {
+                var stack = getGroupingFluid(ing);
+                if (stack == null) continue;
+
                 boolean has = false;
                 for (var recipeIng : consumables.object2LongEntrySet()) {
-                    var stack = ing.getFluids()[0];
                     if (recipeIng.getKey().ingredient().test(stack)) {
-                        recipeIng.setValue(recipeIng.getLongValue() + stack.getAmount());
+                        recipeIng.setValue(recipeIng.getLongValue() + amount);
                         has = true;
                         break;
                     }
@@ -290,6 +292,18 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         }
 
         return maxMultiplier;
+    }
+
+    private static @Nullable FluidStack getGroupingFluid(SizedFluidIngredient ingredient) {
+        if (ingredient.ingredient() instanceof IntProviderFluidIngredient ranged) {
+            return ranged.getInner().fluids().stream()
+                    .findFirst()
+                    .map(fluid -> new FluidStack(fluid, Math.max(1, ingredient.amount())))
+                    .orElse(null);
+        }
+
+        FluidStack[] fluids = ingredient.getFluids();
+        return fluids.length == 0 ? null : fluids[0];
     }
 
     private static List<Object2LongMap<FluidStack>> getInputContents(IRecipeCapabilityHolder holder) {
@@ -363,7 +377,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @NotNull
     @Override
-    public Widget createWidget() {
+    public Object createWidget() {
         TankWidget tank = new TankWidget();
         tank.initTemplate();
         tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
@@ -372,12 +386,12 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @NotNull
     @Override
-    public Class<? extends Widget> getWidgetClass() {
+    public Class<?> getWidgetClass() {
         return TankWidget.class;
     }
 
     @Override
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull Object widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,
@@ -408,7 +422,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                     if (ingredient.ingredient() instanceof IntProviderFluidIngredient provider) {
                         IntProvider countProvider = provider.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
-                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                countProvider.sample(net.minecraft.util.RandomSource.create()),
+                                countProvider.sample(net.minecraft.util.RandomSource.create()))
                                 .withStyle(ChatFormatting.GOLD));
                     }
                     GTRecipeWidget.setConsumedChance(content,
@@ -436,10 +451,13 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
         if (ingredient.ingredient() instanceof IntersectionFluidIngredient intersection) {
             return mapIntersection(intersection, amount);
-        } else if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
-            return FluidTagList.of(tag.tag(), amount, DataComponentPatch.EMPTY);
+        } else if (ingredient.ingredient() instanceof SimpleFluidIngredient simple) {
+            var key = simple.fluidSet().unwrapKey();
+            if (key.isPresent()) {
+                return FluidTagList.of(key.get(), amount, DataComponentPatch.EMPTY);
+            }
         } else if (ingredient.ingredient() instanceof DataComponentFluidIngredient component) {
-            var key = component.fluids().unwrapKey();
+            var key = component.fluidSet().unwrapKey();
             if (key.isPresent()) {
                 return FluidTagList.of(key.get(), amount, component.components().asPatch());
             }

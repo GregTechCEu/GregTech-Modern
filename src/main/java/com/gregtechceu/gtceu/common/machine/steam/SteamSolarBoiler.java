@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -69,16 +67,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return super.createUI(entityPlayer)
-                .widget(new ProgressWidget(
-                        () -> GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getBlockPos()) ? 1.0 : 0.0,
-                        114,
-                        44, 20,
-                        20)
-                        .setProgressTexture(
-                                GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
-                                GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0.5, 1,
-                                        0.5)));
+        return SteamSolarBoilerUI.create(this, entityPlayer);
     }
 
     @Override

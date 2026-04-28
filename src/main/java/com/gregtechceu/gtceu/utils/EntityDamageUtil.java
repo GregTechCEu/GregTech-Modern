@@ -50,7 +50,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // fire/lava mobs cannot be burned
-        if (entity.getType().is(CustomTags.HEAT_IMMUNE))
+        if (entity.getType().builtInRegistryHolder().is(CustomTags.HEAT_IMMUNE))
             return;
         // fire resistance entities cannot be burned
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
@@ -70,7 +70,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // snow/frost mobs cannot be chilled
-        if (entity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES))
+        if (entity.getType().builtInRegistryHolder().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES))
             return;
         if (entity.level() instanceof ServerLevel serverLevel) {
             // frost walker entities cannot be chilled
@@ -117,7 +117,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // skeletons cannot breathe in the toxins
-        if (entity.getType().is(CustomTags.CHEMICAL_IMMUNE))
+        if (entity.getType().builtInRegistryHolder().is(CustomTags.CHEMICAL_IMMUNE))
             return;
 
         entity.hurt(entity.level().damageSources().source(GTDamageTypes.CHEMICAL), damage);

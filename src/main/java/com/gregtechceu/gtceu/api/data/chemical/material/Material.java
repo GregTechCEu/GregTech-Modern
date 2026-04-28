@@ -25,13 +25,14 @@ import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.google.common.base.Preconditions;
@@ -139,8 +140,8 @@ public class Material {
     }
 
     // thou shall not call
-    protected Material(ResourceLocation resourceLocation) {
-        materialInfo = new MaterialInfo(resourceLocation);
+    protected Material(Identifier Identifier) {
+        materialInfo = new MaterialInfo(Identifier);
         materialInfo.iconSet = MaterialIconSet.DULL;
         properties = new MaterialProperties();
         flags = new MaterialFlags();
@@ -151,11 +152,11 @@ public class Material {
     }
 
     public String getName() {
-        return materialInfo.resourceLocation.getPath();
+        return materialInfo.Identifier.getPath();
     }
 
     public String getModid() {
-        return materialInfo.resourceLocation.getNamespace();
+        return materialInfo.Identifier.getNamespace();
     }
 
     /**
@@ -275,7 +276,7 @@ public class Material {
     }
 
     public SizedFluidIngredient asFluidIngredient(int amount) {
-        return SizedFluidIngredient.of(getFluidTag(), amount);
+        return new SizedFluidIngredient(FluidIngredient.of(getFluid()), amount);
     }
 
     public SizedFluidIngredient asSingleFluidIngredient(int amount) {
@@ -328,7 +329,7 @@ public class Material {
     public MaterialToolTier getToolTier() {
         ToolProperty prop = getProperty(PropertyKey.TOOL);
         if (prop == null)
-            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a tool!");
+            throw new IllegalArgumentException("Material " + materialInfo.Identifier + " does not have a tool!");
         return prop.getTier(this);
     }
 
@@ -349,7 +350,7 @@ public class Material {
 
     public int getBlockHarvestLevel() {
         if (!hasProperty(PropertyKey.DUST))
-            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation +
+            throw new IllegalArgumentException("Material " + materialInfo.Identifier +
                     " does not have a harvest level! Is probably a Fluid");
         int harvestLevel = getProperty(PropertyKey.DUST).getHarvestLevel();
         return harvestLevel > 0 ? harvestLevel - 1 : harvestLevel;
@@ -357,7 +358,7 @@ public class Material {
 
     public int getToolHarvestLevel() {
         if (!hasProperty(PropertyKey.TOOL))
-            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation +
+            throw new IllegalArgumentException("Material " + materialInfo.Identifier +
                     " does not have a tool harvest level! Is probably not a Tool Material");
         return getProperty(PropertyKey.TOOL).getHarvestLevel();
     }
@@ -488,12 +489,12 @@ public class Material {
     }
 
     @NotNull
-    public ResourceLocation getResourceLocation() {
-        return materialInfo.resourceLocation;
+    public Identifier getResourceLocation() {
+        return materialInfo.Identifier;
     }
 
     public String getUnlocalizedName() {
-        return materialInfo.resourceLocation.toLanguageKey("material");
+        return materialInfo.Identifier.toLanguageKey("material");
     }
 
     public MutableComponent getLocalizedName() {
@@ -502,7 +503,7 @@ public class Material {
 
     @Override
     public String toString() {
-        return materialInfo.resourceLocation.toString();
+        return materialInfo.Identifier.toString();
     }
 
     // must be named multiply for GroovyScript to allow `material * quantity -> MaterialStack`
@@ -596,15 +597,15 @@ public class Material {
          * Constructs a {@link Material}. This Builder replaces the old constructors, and
          * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
          *
-         * @param resourceLocation The Name of this Material. Will be formatted as
-         *                         "material.<name>" for the Translation Key.
+         * @param Identifier The Name of this Material. Will be formatted as
+         *                   "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        public Builder(ResourceLocation resourceLocation) {
-            String name = resourceLocation.getPath();
+        public Builder(Identifier Identifier) {
+            String name = Identifier.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
-            materialInfo = new MaterialInfo(resourceLocation);
+            materialInfo = new MaterialInfo(Identifier);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
         }
@@ -1169,7 +1170,7 @@ public class Material {
             for (int i = 0; i < components.length; i += 2) {
                 if (components[i] == null) {
                     throw new IllegalArgumentException(
-                            "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
+                            "Material in Components List is null for Material " + this.materialInfo.Identifier);
                 }
                 composition.add(new MaterialStack(
                         components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) :
@@ -1883,7 +1884,7 @@ public class Material {
          * <p>
          * Required.
          */
-        private final ResourceLocation resourceLocation;
+        private final Identifier Identifier;
 
         /**
          * The colors of this Material.
@@ -1932,8 +1933,8 @@ public class Material {
         @Setter
         private Element element;
 
-        private MaterialInfo(ResourceLocation resourceLocation) {
-            this.resourceLocation = resourceLocation;
+        private MaterialInfo(Identifier Identifier) {
+            this.Identifier = Identifier;
         }
 
         private void verifyInfo(MaterialProperties p, boolean averageRGB) {

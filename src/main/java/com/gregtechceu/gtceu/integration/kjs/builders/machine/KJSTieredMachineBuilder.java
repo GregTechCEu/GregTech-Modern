@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
@@ -51,7 +51,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient boolean isGenerator = false;
 
-    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
+    public transient BiFunction<Identifier, GTRecipeType, Object> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(GTResourceLocation.implicitAsGtceu(id));
@@ -61,7 +61,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     }
 
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
-                                   BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
+                                   BiFunction<Identifier, GTRecipeType, Object> editableUI,
                                    boolean isGenerator) {
         super(GTResourceLocation.implicitAsGtceu(id));
         this.machine = machine;
@@ -83,7 +83,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
             MachineDefinition definition = this.object[tier];
             if (definition == null) continue;
 
-            final ResourceLocation id = definition.getId();
+            final ResourceLocation id = GTResourceLocation.toResourceLocation(definition.getId());
             generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
         }
     }
@@ -121,14 +121,15 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);
             if (this.addDefaultModel) {
-                builder.workableTieredHullModel(id.withPrefix("block/machines/"));
+                builder.workableTieredHullModel(
+                        this.id.toIdentifier().withPrefix("block/machines/"));
             }
             this.definition.apply(tier, builder);
 
             if (builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
                 if (this.editableUI != null && builder.editableUI() == null) {
-                    builder.editableUI(this.editableUI.apply(this.id, recipeType));
+                    builder.editableUI(this.editableUI.apply(this.id.toIdentifier(), recipeType));
                 }
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(

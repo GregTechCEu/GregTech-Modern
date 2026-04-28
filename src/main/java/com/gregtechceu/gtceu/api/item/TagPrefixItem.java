@@ -7,25 +7,28 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.client.color.ItemColor;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TagPrefixItem extends Item {
 
@@ -42,7 +45,7 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
         return getItemBurnTime();
     }
 
@@ -52,20 +55,17 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+                                Consumer<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipComponents, isAdvanced);
+        List<Component> extraTooltips = new java.util.ArrayList<>();
         if (this.tagPrefix.tooltip() != null) {
-            this.tagPrefix.tooltip().accept(material, tooltipComponents);
+            this.tagPrefix.tooltip().accept(material, extraTooltips);
         }
+        extraTooltips.forEach(tooltipComponents);
     }
 
-    @Override
-    public String getDescriptionId() {
-        return tagPrefix.getUnlocalizedName(material);
-    }
-
-    @Override
     public Component getDescription() {
         return tagPrefix.getLocalizedName(material);
     }
@@ -76,8 +76,8 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST))

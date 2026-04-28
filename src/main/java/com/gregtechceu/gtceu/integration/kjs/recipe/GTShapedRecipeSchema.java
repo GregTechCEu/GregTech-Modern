@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -89,7 +91,8 @@ public interface GTShapedRecipeSchema {
                 for (char c : pattern.get(i).toCharArray()) { // Inject tool symbol mappings
                     if (tools.contains(c) && !addedTools.contains(c)) {
                         var tool = ToolHelper.getToolFromSymbol(c);
-                        keyEntries.add(new TinyMap.Entry<>(c, Ingredient.of(tool.craftingTags.get(0))));
+                        keyEntries.add(new TinyMap.Entry<>(c,
+                                Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tool.craftingTags.get(0)))));
                         addedTools.add(c);
                     }
                 }
@@ -117,7 +120,7 @@ public interface GTShapedRecipeSchema {
     }
 
     // spotless:off
-    KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("shaped"), ShapedKubeRecipe.class, ShapedKubeRecipe::new);
+    KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTResourceLocation.toResourceLocation(GTCEu.id("shaped")), ShapedKubeRecipe.class, ShapedKubeRecipe::new);
 
     RecipeKey<ItemStack> RESULT = ItemStackComponent.ITEM_STACK.outputKey("result");
     RecipeKey<List<String>> PATTERN = ListRecipeComponent.create(StringComponent.STRING.instance(), false, false)

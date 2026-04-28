@@ -8,17 +8,14 @@ import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 
 public class MachineRenderState extends StateHolder<MachineDefinition, MachineRenderState> {
 
     public static final Codec<MachineRenderState> CODEC = codec(GTRegistries.MACHINES.byNameCodec(),
-            MachineDefinition::defaultRenderState).stable();
+            MachineDefinition::defaultRenderState, MachineDefinition::getStateDefinition).stable();
 
-    public MachineRenderState(MachineDefinition owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> values,
-                              MapCodec<MachineRenderState> propertiesCodec) {
-        super(owner, values, propertiesCodec);
+    public MachineRenderState(MachineDefinition owner, Property<?>[] propertyKeys, Comparable<?>[] propertyValues) {
+        super(owner, propertyKeys, propertyValues);
     }
 
     public MachineDefinition getDefinition() {

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class DisableShieldBehavior implements IToolBehavior<DisableShieldBehavior> {
 
     public static final DisableShieldBehavior INSTANCE = new DisableShieldBehavior();
-    public static final Codec<DisableShieldBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<DisableShieldBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, DisableShieldBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected DisableShieldBehavior() {/**/}

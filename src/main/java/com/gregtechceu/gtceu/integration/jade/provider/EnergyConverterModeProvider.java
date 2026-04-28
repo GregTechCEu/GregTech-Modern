@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +17,7 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("converterMode")) {
-            boolean isFeToEu = blockAccessor.getServerData().getBoolean("converterMode");
+            boolean isFeToEu = blockAccessor.getServerData().getBooleanOr("converterMode", false);
             if (isFeToEu) {
                 iTooltip.add(Component.translatable("gtceu.top.convert_fe"));
             } else {
@@ -36,6 +35,6 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("energy_converter_provider");
+        return GTJadeIds.toResourceLocation("energy_converter_provider");
     }
 }

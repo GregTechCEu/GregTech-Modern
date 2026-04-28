@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.rei.multipage;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
@@ -18,7 +18,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<MultiblockInfoDisplay> {
 
     public static final CategoryIdentifier<MultiblockInfoDisplay> CATEGORY = CategoryIdentifier
-            .of(GTCEu.id("multiblock_info"));
+            .of(GTReiIds.toResourceLocation("multiblock_info"));
     private final Renderer icon;
 
     public MultiblockInfoDisplayCategory() {

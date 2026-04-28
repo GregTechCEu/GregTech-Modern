@@ -7,8 +7,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -24,17 +25,17 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     }
 
     public DynamiteEntity(double x, double y, double z, Level worldIn) {
-        super(GTEntityTypes.DYNAMITE.get(), x, y, z, worldIn);
+        super(GTEntityTypes.DYNAMITE.get(), x, y, z, worldIn, new ItemStack(GTItems.DYNAMITE.get()));
     }
 
     public DynamiteEntity(LivingEntity throwerIn, Level worldIn) {
-        super(GTEntityTypes.DYNAMITE.get(), throwerIn, worldIn);
+        super(GTEntityTypes.DYNAMITE.get(), throwerIn, worldIn, new ItemStack(GTItems.DYNAMITE.get()));
     }
 
     @Override
     public void onAddedToLevel() {
         super.onAddedToLevel();
-        ticksUntilExplosion = 80 + level().random.nextInt(60);
+        ticksUntilExplosion = 80 + level().getRandom().nextInt(60);
     }
 
     @Override
@@ -56,13 +57,13 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     public void tick() {
         ticksUntilExplosion--;
 
-        if (level().random.nextInt(3) == 2) {
+        if (level().getRandom().nextInt(3) == 2) {
             level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(),
                     -this.getDeltaMovement().x * 0.05f,
                     this.onGround() ? 0.05f : -this.getDeltaMovement().y * 0.05f, -this.getDeltaMovement().z * 0.05f);
         }
 
-        if (ticksUntilExplosion < 0 && !level().isClientSide) {
+        if (ticksUntilExplosion < 0 && !level().isClientSide()) {
             Entity thrower = getOwner();
             level().explode(thrower == null ? this : thrower, this.getX(), this.getY(), this.getZ(), 1.5f,
                     Level.ExplosionInteraction.TNT);

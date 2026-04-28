@@ -53,12 +53,12 @@ public class TooltipsHandler {
             if (!(fluid instanceof EmptyFluid)) {
                 appendFluidTooltips(new FluidStack(fluid, FluidType.BUCKET_VOLUME), tooltips::add, flag, context);
             }
-        } else if (stack.getItem() instanceof MilkBucketItem) {
+        } else if (stack.is(Items.MILK_BUCKET)) {
             appendFluidTooltips(GTMaterials.Milk.getFluid(FluidType.BUCKET_VOLUME), tooltips::add, flag, context);
         }
 
         // Block/Item custom tooltips
-        String translationKey = stack.getDescriptionId();
+        String translationKey = stack.getItem().getDescriptionId();
         if (translationKey.startsWith(ITEM_PREFIX) || translationKey.startsWith(BLOCK_PREFIX)) {
             String tooltipKey = translationKey + ".tooltip";
             if (Language.getInstance().has(tooltipKey)) {

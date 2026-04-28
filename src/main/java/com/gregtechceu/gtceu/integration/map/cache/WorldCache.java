@@ -47,7 +47,8 @@ public abstract class WorldCache {
         for (DimensionCache levelCache : cache.values()) {
             for (GridCache gridCache : levelCache.getCache().values()) {
                 gridCache.getVeins().removeIf(vein -> {
-                    Optional<Holder.Reference<GTOreDefinition>> def = registry.getHolder(vein.definition().getKey());
+                    Optional<Holder.Reference<GTOreDefinition>> def = registry
+                            .get(vein.definition().getKey().identifier());
                     def.ifPresent(vein::definition);
                     return def.isEmpty();
                 });

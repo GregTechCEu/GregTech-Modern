@@ -8,9 +8,15 @@
                 "parent": "gtceu:block/casings/voltage/hv",
                 "textures": {
                     "overlay_back": "gtceu:block/machines/centrifuge/overlay_back",
+                    "overlay_back_emissive": "gtceu:block/machines/centrifuge/overlay_back_emissive",
+                    "overlay_bottom": "gtceu:block/machines/centrifuge/overlay_bottom",
+                    "overlay_bottom_emissive": "gtceu:block/machines/centrifuge/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/machines/centrifuge/overlay_front",
+                    "overlay_front_emissive": "gtceu:block/machines/centrifuge/overlay_front_emissive",
                     "overlay_side": "gtceu:block/machines/centrifuge/overlay_side",
-                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top"
+                    "overlay_side_emissive": "gtceu:block/machines/centrifuge/overlay_side_emissive",
+                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top",
+                    "overlay_top_emissive": "gtceu:block/machines/centrifuge/overlay_top_emissive"
                 }
             }
         },
@@ -18,10 +24,16 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/hv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/centrifuge/overlay_back",
-                    "overlay_front": "gtceu:block/machines/centrifuge/overlay_front",
-                    "overlay_side": "gtceu:block/machines/centrifuge/overlay_side",
-                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top"
+                    "overlay_back": "gtceu:block/machines/centrifuge/overlay_back_paused",
+                    "overlay_back_emissive": "gtceu:block/machines/centrifuge/overlay_back_paused_emissive",
+                    "overlay_bottom": "gtceu:block/machines/centrifuge/overlay_bottom_paused",
+                    "overlay_bottom_emissive": "gtceu:block/machines/centrifuge/overlay_bottom_paused_emissive",
+                    "overlay_front": "gtceu:block/machines/centrifuge/overlay_front_paused",
+                    "overlay_front_emissive": "gtceu:block/machines/centrifuge/overlay_front_paused_emissive",
+                    "overlay_side": "gtceu:block/machines/centrifuge/overlay_side_paused",
+                    "overlay_side_emissive": "gtceu:block/machines/centrifuge/overlay_side_paused_emissive",
+                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_paused",
+                    "overlay_top_emissive": "gtceu:block/machines/centrifuge/overlay_top_paused_emissive"
                 }
             }
         },
@@ -30,9 +42,15 @@
                 "parent": "gtceu:block/casings/voltage/hv",
                 "textures": {
                     "overlay_back": "gtceu:block/machines/centrifuge/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/machines/centrifuge/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/machines/centrifuge/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/machines/centrifuge/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/centrifuge/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/machines/centrifuge/overlay_front_active_emissive",
                     "overlay_side": "gtceu:block/machines/centrifuge/overlay_side_active",
-                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active"
+                    "overlay_side_emissive": "gtceu:block/machines/centrifuge/overlay_side_active_emissive",
+                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active",
+                    "overlay_top_emissive": "gtceu:block/machines/centrifuge/overlay_top_active_emissive"
                 }
             }
         },
@@ -41,9 +59,15 @@
                 "parent": "gtceu:block/casings/voltage/hv",
                 "textures": {
                     "overlay_back": "gtceu:block/machines/centrifuge/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/machines/centrifuge/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/machines/centrifuge/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/machines/centrifuge/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/centrifuge/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/machines/centrifuge/overlay_front_active_emissive",
                     "overlay_side": "gtceu:block/machines/centrifuge/overlay_side_active",
-                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active"
+                    "overlay_side_emissive": "gtceu:block/machines/centrifuge/overlay_side_active_emissive",
+                    "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active",
+                    "overlay_top_emissive": "gtceu:block/machines/centrifuge/overlay_top_active_emissive"
                 }
             }
         }

@@ -1,7 +1,7 @@
 [versions]
-ldlib = "1.0.35.a"
-registrate = "MC1.21-1.3.0+67"
-configuration = "3.1.1-neoforge"
+ldlib2 = "26.0.0"
+registrate = "MC26.1-1.3.0+9"
+configuration = "4.1.2+26.1.2"
 
 jei = "19.25.1.328"
 rei = "16.0.799"
@@ -48,9 +48,9 @@ observable = "5733591"
 
 
 [libraries]
-ldlib               = { module = "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1", version.ref = "ldlib" }
-registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
-configuration       = { module = "dev.toma.configuration:configuration-1.21.1", version.ref = "configuration" }
+ldlib2             = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge", version.ref = "ldlib2" }
+registrate          = { module = "com.tterrag.registrate:Registrate-LT", version.ref = "registrate" }
+configuration       = { module = "maven.modrinth:configuration", version.ref = "configuration" }
 # mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
 # mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
 

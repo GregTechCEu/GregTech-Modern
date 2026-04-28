@@ -16,7 +16,7 @@ public class AutoReleasedSound extends AbstractTickableSoundInstance {
 
     protected AutoReleasedSound(SoundEntry soundEntry, BooleanSupplier predicate, BlockPos pos, boolean loop, int delay,
                                 float volume, float pitch) {
-        super(soundEntry.getMainEvent(), soundEntry.category, Minecraft.getInstance().level.random);
+        super(soundEntry.getMainEvent(), soundEntry.category, Minecraft.getInstance().level.getRandom());
         this.soundEntry = soundEntry;
         this.predicate = predicate;
         this.looping = loop;

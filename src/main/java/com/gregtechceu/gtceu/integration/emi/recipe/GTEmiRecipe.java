@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -47,7 +48,7 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return recipe.getId();
+        return GTEmiIds.toResourceLocation(recipe.getId());
     }
 
     @Override

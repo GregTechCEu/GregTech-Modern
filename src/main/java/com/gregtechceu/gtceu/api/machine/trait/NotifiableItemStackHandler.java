@@ -110,7 +110,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (ingredient.ingredient().hasNoItems()) {
+            if (ingredient.ingredient().isEmpty()) {
                 it.remove();
                 continue;
             }

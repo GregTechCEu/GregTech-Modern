@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,30 +24,32 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         BlockEntity be = blockAccessor.getBlockEntity();
         if (be != null) {
-            CompoundTag data = blockAccessor.getServerData().getCompound(getUid().toString());
-            if (data.contains("cableData", Tag.TAG_COMPOUND)) {
-                var tag = data.getCompound("cableData");
-                long voltage = tag.getLong("currentVoltage");
-                double amperage = tag.getDouble("currentAmperage");
+            CompoundTag data = blockAccessor.getServerData().getCompoundOrEmpty(getUid().toString());
+            var cableData = data.getCompound("cableData");
+            if (cableData.isPresent()) {
+                var tag = cableData.get();
+                long voltage = tag.getLongOr("currentVoltage", 0);
+                double amperage = tag.getDoubleOr("currentAmperage", 0);
                 iTooltip.add(Component.translatable("gtceu.top.cable_voltage"));
                 if (voltage != 0) {
                     iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]));
                     iTooltip.append(Component.literal(" / "));
                 }
-                iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]));
+                iTooltip.append(
+                        Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(tag.getLongOr("maxVoltage", 0))]));
 
                 iTooltip.add(Component.translatable("gtceu.top.cable_amperage"));
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage")) + "A"));
+                iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(tag.getDoubleOr("maxAmperage", 0)) + "A"));
             }
         }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        CompoundTag data = compoundTag.getCompound(getUid().toString());
+        CompoundTag data = compoundTag.getCompoundOrEmpty(getUid().toString());
         if (blockAccessor.getBlock() instanceof CableBlock cableBlock) {
             CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(),
                     blockAccessor.getPosition());
@@ -67,6 +67,6 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("cable_info");
+        return GTJadeIds.toResourceLocation("cable_info");
     }
 }

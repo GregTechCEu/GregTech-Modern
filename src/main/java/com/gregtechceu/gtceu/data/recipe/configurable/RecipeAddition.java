@@ -15,11 +15,13 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -218,33 +220,33 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_bucket", new ItemStack(Items.BUCKET), "XhX", " X ", 'X',
                 new MaterialEntry(TagPrefix.plate, GTMaterials.Iron));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chain_iron", new ItemStack(Items.CHAIN), " R ",
+        VanillaRecipeHelper.addShapedRecipe(provider, "chain_iron", new ItemStack(Items.IRON_CHAIN), " R ",
                 "wR ", " R ",
                 'R', new MaterialEntry(ring, Iron));
 
         ASSEMBLER_RECIPES.recipeBuilder("chain_iron")
                 .inputItems(ring, Iron, 3)
-                .outputItems(new ItemStack(Items.CHAIN, 2))
+                .outputItems(new ItemStack(Items.IRON_CHAIN, 2))
                 .circuitMeta(1)
                 .duration(40).EUt(10).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chain_wrought_iron", new ItemStack(Items.CHAIN, 2), " R ",
+        VanillaRecipeHelper.addShapedRecipe(provider, "chain_wrought_iron", new ItemStack(Items.IRON_CHAIN, 2), " R ",
                 "wR ", " R ",
                 'R', new MaterialEntry(ring, WroughtIron));
 
         ASSEMBLER_RECIPES.recipeBuilder("chain_wrought_iron")
                 .inputItems(ring, WroughtIron, 3)
-                .outputItems(new ItemStack(Items.CHAIN, 3))
+                .outputItems(new ItemStack(Items.IRON_CHAIN, 3))
                 .circuitMeta(1)
                 .duration(40).EUt(10).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chain_steel", new ItemStack(Items.CHAIN, 3), " R ",
+        VanillaRecipeHelper.addShapedRecipe(provider, "chain_steel", new ItemStack(Items.IRON_CHAIN, 3), " R ",
                 "wR ", " R ",
                 'R', new MaterialEntry(ring, Steel));
 
         ASSEMBLER_RECIPES.recipeBuilder("chain_steel")
                 .inputItems(ring, Steel, 3)
-                .outputItems(new ItemStack(Items.CHAIN, 6))
+                .outputItems(new ItemStack(Items.IRON_CHAIN, 6))
                 .circuitMeta(1)
                 .duration(40).EUt(10).save(provider);
     }
@@ -1320,9 +1322,9 @@ public class RecipeAddition {
     private static void addBedRecipe(RecipeOutput provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed",
-                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))),
+                new ItemStack(vanillaItem(colorName + "_bed")),
                 "WWW", "PPP", "FrF",
-                'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet")),
+                'W', vanillaItem(colorName + "_carpet"),
                 'P', ItemTags.PLANKS,
                 'F', ItemTags.WOODEN_FENCES);
     }
@@ -1330,9 +1332,9 @@ public class RecipeAddition {
     private static void addCarpetRecipe(RecipeOutput provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_carpet",
-                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet"))),
+                new ItemStack(vanillaItem(colorName + "_carpet")),
                 "WW",
-                'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_wool")));
+                'W', vanillaItem(colorName + "_wool"));
     }
 
     private static void hardGlassRecipes(RecipeOutput provider) {
@@ -1342,10 +1344,9 @@ public class RecipeAddition {
         for (DyeColor color : DyeColor.values()) {
             String dyeName = color.getName();
             VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
-                    new ItemStack(BuiltInRegistries.ITEM
-                            .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
+                    new ItemStack(vanillaItem(dyeName + "_stained_glass_pane"), 2),
                     "sG",
-                    'G', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass")));
+                    'G', vanillaItem(dyeName + "_stained_glass"));
         }
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("tinted_glass")
@@ -1365,6 +1366,10 @@ public class RecipeAddition {
                 " r ", "SSS", " B ",
                 'S', new MaterialEntry(dust, GTMaterials.Paper),
                 'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));
+    }
+
+    private static Item vanillaItem(String path) {
+        return BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(path)).map(Holder::value).orElseThrow();
     }
 
     private static void hardAdvancedIronRecipes(RecipeOutput provider) {

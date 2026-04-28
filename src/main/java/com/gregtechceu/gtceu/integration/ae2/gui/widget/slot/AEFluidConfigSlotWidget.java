@@ -17,11 +17,13 @@ import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -228,7 +230,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
     @Override
     public void acceptFluid(FluidStack fluidStack) {
         // noinspection UnclearExpression
-        if (((FluidStackAccessor) (Object) fluidStack).getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
+        Holder<Fluid> rawFluid = ((FluidStackAccessor) (Object) fluidStack).getRawFluid();
+        if (rawFluid != null && !rawFluid.value().isSame(Fluids.EMPTY) && fluidStack.getAmount() <= 0L) {
             fluidStack.setAmount(1000);
         }
 

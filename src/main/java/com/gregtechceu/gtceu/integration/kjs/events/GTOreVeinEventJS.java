@@ -10,8 +10,8 @@ import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.KubeEvent;
@@ -34,7 +34,7 @@ public class GTOreVeinEventJS implements KubeEvent {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
+    public void add(Context cx, Identifier id, Consumer<GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
@@ -43,74 +43,74 @@ public class GTOreVeinEventJS implements KubeEvent {
         register(id, vein);
     }
 
-    private void register(ResourceLocation id, GTOreDefinition def) {
+    private void register(Identifier id, GTOreDefinition def) {
         registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
+    public void modify(Context cx, Identifier id, Consumer<GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
-        var vein = registry.get(id);
+        var vein = registry.getValue(id);
         if (vein == null) throw new IllegalArgumentException("Ore vein doesn't exist: " + id);
 
         vein.biomeLookup(biomes);
         consumer.accept(vein);
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, GTOreDefinition> consumer) {
+    public void modifyAll(Context cx, BiConsumer<Identifier, GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
-        Set<ResourceLocation> keys = registry.keySet();
+        Set<Identifier> keys = registry.keySet();
         keys.forEach(id -> {
-            var vein = registry.get(id);
+            var vein = registry.getValue(id);
             if (vein == null) throw new IllegalArgumentException("Ore vein doesn't exist: " + id);
             vein.biomeLookup(biomes);
             consumer.accept(id, vein);
         });
     }
 
-    public void remove(Context cx, ResourceLocation id) {
+    public void remove(Context cx, Identifier id) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         remove(cx, registry, id);
     }
 
     public void removeAll(Context cx) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
 
-        Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
+        Set<Identifier> keys = Set.copyOf(registry.keySet());
         keys.forEach(key -> remove(cx, registry, key));
     }
 
-    public void removeAll(Context cx, BiPredicate<ResourceLocation, GTOreDefinition> predicate) {
+    public void removeAll(Context cx, BiPredicate<Identifier, GTOreDefinition> predicate) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
 
-        Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
+        Set<Identifier> keys = Set.copyOf(registry.keySet());
         keys.stream()
-                .filter(key -> predicate.test(key, registry.get(key)))
+                .filter(key -> predicate.test(key, registry.getValue(key)))
                 .forEach(key -> remove(cx, registry, key));
     }
 
-    private void remove(Context cx, Registry<GTOreDefinition> registry, ResourceLocation id) {
+    private void remove(Context cx, Registry<GTOreDefinition> registry, Identifier id) {
         if (!registry.containsKey(id)) {
             ConsoleJS.SERVER.error("", new KubeRuntimeException("Trying to remove nonexistent bedrock ore vein " + id)
                     .source(SourceLine.of(cx)));
             return;
         }
         // blank out the vein info because we can't remove from the registry
-        var holder = registry.getHolderOrThrow(GTOreVeins.create(id));
-        holder.value().veinGenerator(NoopVeinGenerator.INSTANCE);
-        holder.value().biomeWeightModifier(BiomeWeightModifier.EMPTY);
-        holder.value().weight(0);
+        var vein = registry.getValueOrThrow(GTOreVeins.create(id));
+        vein.veinGenerator(NoopVeinGenerator.INSTANCE);
+        vein.biomeWeightModifier(BiomeWeightModifier.EMPTY);
+        vein.weight(0);
     }
 
-    public static ResourceKey<GTOreDefinition> createKey(ResourceLocation id) {
+    public static ResourceKey<GTOreDefinition> createKey(Identifier id) {
         return ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
     }
 }

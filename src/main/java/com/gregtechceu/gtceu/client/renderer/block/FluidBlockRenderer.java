@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.Codec;
@@ -22,7 +21,7 @@ import org.joml.Vector3fc;
 import java.util.*;
 
 import static com.gregtechceu.gtceu.client.util.RenderUtil.*;
-import static net.minecraft.util.FastColor.ARGB32.*;
+import static net.minecraft.util.ARGB.*;
 
 public class FluidBlockRenderer {
 
@@ -55,10 +54,9 @@ public class FluidBlockRenderer {
     public void drawBlocks(Set<BlockPos> offsets, Matrix4f pose, VertexConsumer consumer,
                            Fluid fluid,
                            RenderUtil.FluidTextureType texture, int combinedOverlay, int combinedLight) {
-        var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
-        var sprite = texture.map(fluidClientInfo);
+        var sprite = texture.map(fluid);
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
-        int color = fluidClientInfo.getTintColor();
+        int color = RenderUtil.getFluidTint(fluid);
         int r = red(color), g = green(color), b = blue(color), a = alpha(color);
 
         for (var pos : offsets) {
@@ -89,10 +87,9 @@ public class FluidBlockRenderer {
 
     public void drawPlane(Direction face, Collection<BlockPos> offsets, Matrix4f pose, VertexConsumer consumer,
                           Fluid fluid, RenderUtil.FluidTextureType texture, int combinedOverlay, BlockPos origin) {
-        var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
-        var sprite = texture.map(fluidClientInfo);
+        var sprite = texture.map(fluid);
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
-        int color = fluidClientInfo.getTintColor();
+        int color = RenderUtil.getFluidTint(fluid);
         int r = red(color), g = green(color), b = blue(color), a = alpha(color);
         var normal = getNormal(face);
         var vertices = transformVertices(getVertices(face), face);
@@ -109,10 +106,9 @@ public class FluidBlockRenderer {
 
     public void drawPlane(Direction face, Collection<BlockPos> offsets, Matrix4f pose, VertexConsumer consumer,
                           Fluid fluid, RenderUtil.FluidTextureType texture, int combinedOverlay, int combinedLight) {
-        var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
-        var sprite = texture.map(fluidClientInfo);
+        var sprite = texture.map(fluid);
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
-        int color = fluidClientInfo.getTintColor();
+        int color = RenderUtil.getFluidTint(fluid);
         int r = red(color), g = green(color), b = blue(color), a = alpha(color);
         var normal = getNormal(face);
         var vertices = transformVertices(getVertices(face), face);
@@ -128,10 +124,9 @@ public class FluidBlockRenderer {
 
     public void drawFace(Direction face, Matrix4f pose, VertexConsumer consumer, Fluid fluid,
                          RenderUtil.FluidTextureType texture, int combinedOverlay, int combinedLight) {
-        var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
-        var sprite = texture.map(fluidClientInfo);
+        var sprite = texture.map(fluid);
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
-        int color = fluidClientInfo.getTintColor();
+        int color = RenderUtil.getFluidTint(fluid);
         int r = red(color), g = green(color), b = blue(color), a = alpha(color);
         var normal = getNormal(face);
         var vertices = transformVertices(getVertices(face), face);

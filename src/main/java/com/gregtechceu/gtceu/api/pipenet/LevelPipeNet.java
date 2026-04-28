@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -27,9 +26,9 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
     public LevelPipeNet(ServerLevel serverLevel, CompoundTag tag, HolderLookup.Provider provider) {
         this(serverLevel);
         this.pipeNets = new ArrayList<>();
-        ListTag allEnergyNets = tag.getList("PipeNets", Tag.TAG_COMPOUND);
+        ListTag allEnergyNets = tag.getListOrEmpty("PipeNets");
         for (int i = 0; i < allEnergyNets.size(); i++) {
-            CompoundTag pNetTag = allEnergyNets.getCompound(i);
+            CompoundTag pNetTag = allEnergyNets.getCompoundOrEmpty(i);
             T pipeNet = createNetInstance();
             pipeNet.deserializeNBT(provider, pNetTag);
             addPipeNetSilently(pipeNet);
@@ -111,7 +110,7 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
     }
 
     public T getNetFromPos(BlockPos blockPos) {
-        List<T> pipeNetsInChunk = pipeNetsByChunk.getOrDefault(new ChunkPos(blockPos), Collections.emptyList());
+        List<T> pipeNetsInChunk = pipeNetsByChunk.getOrDefault(chunkPos(blockPos), Collections.emptyList());
         for (T pipeNet : pipeNetsInChunk) {
             if (pipeNet.containsNode(blockPos))
                 return pipeNet;
@@ -138,7 +137,6 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
 
     protected abstract T createNetInstance();
 
-    @Override
     public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         ListTag allPipeNets = new ListTag();
         for (T pipeNet : pipeNets) {
@@ -147,5 +145,9 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         }
         compound.put("PipeNets", allPipeNets);
         return compound;
+    }
+
+    protected static ChunkPos chunkPos(BlockPos blockPos) {
+        return new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
     }
 }

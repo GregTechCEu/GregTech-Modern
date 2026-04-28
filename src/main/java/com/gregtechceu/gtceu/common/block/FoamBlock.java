@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,14 +27,14 @@ public class FoamBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-                                              Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!stack.isEmpty() && stack.is(ItemTags.SAND)) {
             level.setBlockAndUpdate(pos, getPetrifiedBlock(state));
             level.playSound(player, pos, SoundEvents.SAND_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (!player.isCreative())
                 stack.shrink(1);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
@@ -42,7 +42,7 @@ public class FoamBlock extends Block {
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.randomTick(state, level, pos, random);
-        int lightLevel = (level.canSeeSky(pos) && level.isDay()) ? 16 : level.getRawBrightness(pos, 0);
+        int lightLevel = (level.canSeeSky(pos) && level.isBrightOutside()) ? 16 : level.getRawBrightness(pos, 0);
         if (random.nextInt(20 - lightLevel) == 0) {
             level.setBlockAndUpdate(pos, getPetrifiedBlock(state));
         }

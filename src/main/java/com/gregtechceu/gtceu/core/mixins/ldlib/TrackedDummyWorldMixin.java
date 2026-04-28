@@ -4,9 +4,9 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.extensions.IBlockGetterExtension;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;

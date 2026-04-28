@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.stacks.GenericStack;
@@ -20,7 +19,7 @@ public interface IMEStockingPart extends IAutoPullPart {
         if (self().getLevel() instanceof ServerLevel serverLevel) {
             // wait for 1 tick
             // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
+            serverLevel.getServer().executeIfPossible(this::validateConfig);
         }
     }
 

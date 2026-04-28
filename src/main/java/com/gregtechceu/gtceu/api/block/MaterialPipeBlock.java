@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
+import com.gregtechceu.gtceu.client.color.BlockColor;
 
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,7 +23,7 @@ public abstract class MaterialPipeBlock<
     public final Material material;
 
     public MaterialPipeBlock(Properties properties, PipeType pipeType, Material material) {
-        super(properties, pipeType);
+        super(properties.overrideDescription(pipeType.getTagPrefix().getUnlocalizedName(material)), pipeType);
         this.material = material;
     }
 
@@ -70,11 +70,6 @@ public abstract class MaterialPipeBlock<
     }
 
     protected abstract NodeDataType createMaterialData();
-
-    @Override
-    public String getDescriptionId() {
-        return pipeType.getTagPrefix().getUnlocalizedName(material);
-    }
 
     @Override
     public MutableComponent getName() {

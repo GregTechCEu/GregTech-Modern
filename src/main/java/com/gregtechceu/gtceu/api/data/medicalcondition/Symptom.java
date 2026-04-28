@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -20,10 +20,10 @@ import java.util.function.Supplier;
 
 public class Symptom {
 
-    public static final ResourceLocation SYMPTOM_HEALTH_DEBUFF_ID = GTCEu.id("health_debuff");
-    public static final ResourceLocation SYMPTOM_ATTACK_SPEED_DEBUFF_ID = GTCEu.id("attack_speed_debuff");
-    public static final ResourceLocation SYMPTOM_WEAKNESS_ID = GTCEu.id("weakness_debuff");
-    public static final ResourceLocation SYMPTOM_SLOWNESS_ID = GTCEu.id("slowness_debuff");
+    public static final Identifier SYMPTOM_HEALTH_DEBUFF_ID = GTCEu.id("health_debuff");
+    public static final Identifier SYMPTOM_ATTACK_SPEED_DEBUFF_ID = GTCEu.id("attack_speed_debuff");
+    public static final Identifier SYMPTOM_WEAKNESS_ID = GTCEu.id("weakness_debuff");
+    public static final Identifier SYMPTOM_SLOWNESS_ID = GTCEu.id("slowness_debuff");
 
     public static final Symptom DEATH = new Symptom(defaultKey("death"), 1, 1,
             ((medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
@@ -52,9 +52,9 @@ public class Symptom {
             (hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
                     .setMaxAirSupply(300 - 10 * modifier));
     public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"), 10, 0, MobEffects.BLINDNESS);
-    public static final Symptom NAUSEA = new Symptom(defaultKey("nausea"), 10, 0, MobEffects.CONFUSION);
+    public static final Symptom NAUSEA = new Symptom(defaultKey("nausea"), 10, 0, MobEffects.NAUSEA);
     public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 1,
-            MobEffects.DIG_SLOWDOWN);
+            MobEffects.MINING_FATIGUE);
     public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1,
             MobEffects.WITHER);
     public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10,
@@ -91,7 +91,7 @@ public class Symptom {
      * @param id         AttributeModifier ID
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier,
-                   Holder<Attribute> attribute, ResourceLocation id) {
+                   Holder<Attribute> attribute, Identifier id) {
         this(name, defaultStages, defaultProgressionThreshold,
                 ((medicalConditionTracker, $1, $2, $3, modifier) -> {
                     if (!medicalConditionTracker.getPlayer().getAttributes().hasAttribute(attribute)) {

@@ -74,7 +74,7 @@ repositories {
         }
     }
     exclusiveContent { // tterrag - registrate
-        forRepository { maven { url = "https://mvn.devos.one/snapshots/" } }
+        forRepository { maven { url = "https://maven.gegy.dev/releases/" } }
         filter { includeGroup("com.tterrag.registrate") }
     }
     exclusiveContent { // Curios

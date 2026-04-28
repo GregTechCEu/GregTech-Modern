@@ -3,20 +3,19 @@ package com.gregtechceu.gtceu.api.recipe.category;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeCategoryIcons;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 @Accessors(chain = true)
 public class GTRecipeCategory {
@@ -25,15 +24,14 @@ public class GTRecipeCategory {
     public static final GTRecipeCategory DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
             GTRecipeTypes.DUMMY_RECIPES);
 
-    public final ResourceLocation registryKey;
+    public final Identifier registryKey;
     public final String name;
     @Getter
     private final GTRecipeType recipeType;
     @Getter
     private final String languageKey;
     @Nullable
-    @Setter
-    private IGuiTexture icon = null;
+    private Supplier<?> icon = null;
     @Getter
     @Setter
     private boolean isXEIVisible = true;
@@ -45,7 +43,7 @@ public class GTRecipeCategory {
         this.languageKey = recipeType.getTranslationKey();
     }
 
-    public GTRecipeCategory(@NotNull ResourceLocation registryKey, @NotNull GTRecipeType recipeType) {
+    public GTRecipeCategory(@NotNull Identifier registryKey, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
         this.name = registryKey.getPath();
         this.registryKey = registryKey;
@@ -58,12 +56,21 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public IGuiTexture getIcon() {
+    public Object getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) icon = new ItemStackTexture(recipeType.getIconSupplier().get());
-            else icon = new ItemStackTexture(Items.BARRIER);
+            icon = () -> GTRecipeCategoryIcons.defaultIcon(recipeType);
         }
-        return icon;
+        return icon.get();
+    }
+
+    public GTRecipeCategory setIcon(Object icon) {
+        this.icon = () -> icon;
+        return this;
+    }
+
+    public GTRecipeCategory setIcon(Supplier<?> icon) {
+        this.icon = icon;
+        return this;
     }
 
     public void addRecipe(GTRecipe recipe) {

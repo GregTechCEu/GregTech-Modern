@@ -4,16 +4,11 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FluidRegulatorCover extends PumpCover {
 
-    private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
+    static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
 
     @SaveField
     @SyncToClient
@@ -44,8 +39,8 @@ public class FluidRegulatorCover extends PumpCover {
     protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
 
-    private NumberInputWidget<Integer> transferSizeInput;
-    private EnumSelectorWidget<BucketMode> transferBucketModeInput;
+    Object transferSizeInput;
+    Object transferBucketModeInput;
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                                int maxTransferRate) {
@@ -148,24 +143,18 @@ public class FluidRegulatorCover extends PumpCover {
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private void setTransferBucketMode(BucketMode transferBucketMode) {
+    void setTransferBucketMode(BucketMode transferBucketMode) {
         var oldMultiplier = this.transferBucketMode.multiplier;
         var newMultiplier = transferBucketMode.multiplier;
 
         this.transferBucketMode = transferBucketMode;
         syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
-        if (transferSizeInput == null) return;
-
-        if (oldMultiplier > newMultiplier) {
-            transferSizeInput.setValue(getCurrentBucketModeTransferSize());
-        }
-        this.transferSizeInput.setMax(MAX_STACK_SIZE / this.transferBucketMode.multiplier);
-        if (newMultiplier > oldMultiplier) {
-            transferSizeInput.setValue(getCurrentBucketModeTransferSize());
+        if (transferSizeInput != null) {
+            FluidRegulatorCoverUI.configureTransferSizeInputValue(this, oldMultiplier, newMultiplier);
         }
     }
 
-    private void setTransferMode(TransferMode transferMode) {
+    void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
         configureTransferSizeInput();
@@ -202,41 +191,23 @@ public class FluidRegulatorCover extends PumpCover {
         return "cover.fluid_regulator.title";
     }
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
-
-        this.transferSizeInput = new IntInputWidget(35, 45, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(0)
-                .setMax(Integer.MAX_VALUE);
-        configureTransferSizeInput();
-        group.addWidget(this.transferSizeInput);
-
-        this.transferBucketModeInput = new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.transferBucketModeInput);
-    }
-
-    private int getCurrentBucketModeTransferSize() {
+    int getCurrentBucketModeTransferSize() {
         return this.globalTransferLimit / this.transferBucketMode.multiplier;
     }
 
-    private void setCurrentBucketModeTransferSize(int transferSize) {
+    void setCurrentBucketModeTransferSize(int transferSize) {
         this.globalTransferLimit = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
                 MAX_STACK_SIZE);
         syncDataHolder.markClientSyncFieldDirty("globalTransferLimit");
     }
 
-    private void configureTransferSizeInput() {
-        if (this.transferSizeInput == null || transferBucketModeInput == null)
-            return;
-
-        this.transferSizeInput.setVisible(shouldShowTransferSize());
-        this.transferBucketModeInput.setVisible(shouldShowTransferSize());
+    void configureTransferSizeInput() {
+        if (this.transferSizeInput != null && this.transferBucketModeInput != null) {
+            FluidRegulatorCoverUI.configureTransferSizeInputVisibility(this);
+        }
     }
 
-    private boolean shouldShowTransferSize() {
+    boolean shouldShowTransferSize() {
         if (this.transferMode == TransferMode.TRANSFER_ANY)
             return false;
 
@@ -256,9 +227,9 @@ public class FluidRegulatorCover extends PumpCover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
-        globalTransferLimit = (tag.getInt("transferLimit"));
-        setTransferBucketMode(BucketMode.values()[tag.getInt("transferBucket")]);
+        setTransferMode(TransferMode.values()[tag.getIntOr("transferMode", 0)]);
+        globalTransferLimit = tag.getIntOr("transferLimit", 0);
+        setTransferBucketMode(BucketMode.values()[tag.getIntOr("transferBucket", 0)]);
         super.pasteConfig(player, tag);
     }
 }

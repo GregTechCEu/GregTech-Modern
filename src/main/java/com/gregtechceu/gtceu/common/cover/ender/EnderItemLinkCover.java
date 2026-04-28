@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
@@ -15,11 +14,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -107,14 +104,20 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     @Override
     public CompoundTag copyConfig(CompoundTag tag) {
-        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        tag.put("filter", ItemStack.OPTIONAL_CODEC
+                .encodeStart(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        filterHandler.getFilterItem())
+                .getOrThrow());
         return super.copyConfig(tag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        filterHandler.setFilterItem(
-                ItemStack.parseOptional(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")));
+        filterHandler.setFilterItem(ItemStack.OPTIONAL_CODEC
+                .parse(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        tag.getCompoundOrEmpty("filter"))
+                .result()
+                .orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }
 
@@ -128,12 +131,8 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        WidgetGroup group = new WidgetGroup(x, y, width, height);
-        for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
-            group.addWidget(new SlotWidget(((VirtualItemStorage) entry).getHandler(), i, 8 * i, 0, canClick, canClick));
-        }
-        return group;
+    protected Object addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
+        return EnderItemLinkCoverUI.addVirtualEntryWidget(entry, x, y, width, height, canClick);
     }
 
     @Override

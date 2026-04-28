@@ -2,12 +2,9 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
@@ -24,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin extends CustomRecipe {
 
-    public RepairItemRecipeMixin(CraftingBookCategory category) {
-        super(category);
+    public RepairItemRecipeMixin() {
+        super();
     }
 
     /**
@@ -64,11 +61,10 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     @Inject(
-            method = "assemble(Lnet/minecraft/world/item/crafting/CraftingInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;",
+            method = "assemble(Lnet/minecraft/world/item/crafting/CraftingInput;)Lnet/minecraft/world/item/ItemStack;",
             at = @At(value = "RETURN", ordinal = 1),
             cancellable = true)
-    public void gtceu$assemble(CraftingInput input, HolderLookup.Provider registries,
-                               CallbackInfoReturnable<ItemStack> cir,
+    public void gtceu$assemble(CraftingInput input, CallbackInfoReturnable<ItemStack> cir,
                                @Local(ordinal = 0) ItemStack itemstack,
                                @Local(ordinal = 0) int maxItemDamage,
                                @Local(ordinal = 3) int calculatedDamage) {
@@ -79,8 +75,8 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
             // re-apply the enchantments to the new item
             EnchantmentHelper.updateEnchantments(
                     ret,
-                    itemEnchants -> registries.lookupOrThrow(Registries.ENCHANTMENT)
-                            .listElements()
+                    itemEnchants -> doneEnchants.keySet()
+                            .stream()
                             .filter(enchant -> enchant.is(EnchantmentTags.CURSE))
                             .forEach(enchant -> {
                                 itemEnchants.upgrade(enchant, doneEnchants.getLevel(enchant));

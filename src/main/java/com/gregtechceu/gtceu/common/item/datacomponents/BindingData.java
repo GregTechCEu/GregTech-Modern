@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.datacomponents;
 
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -51,7 +52,8 @@ public record BindingData(int permissionLevel, UUID uuid) implements TooltipProv
     }
 
     @Override
-    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag,
+                             DataComponentGetter componentGetter) {
         Component displayName = getBoundPlayerName(context.level());
         if (displayName == null) {
             displayName = Component.translatable("gtceu.tooltip.player_name.unknown");

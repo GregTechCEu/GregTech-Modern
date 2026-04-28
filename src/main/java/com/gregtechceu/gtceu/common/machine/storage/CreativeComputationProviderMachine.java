@@ -2,19 +2,12 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 
 import net.minecraft.world.entity.player.Player;
 
@@ -28,8 +21,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                                 implements IUIMachine, IOpticalComputationProvider {
 
     @SaveField
-    private int maxCWUt;
-    private int lastRequestedCWUt;
+    int maxCWUt;
+    int lastRequestedCWUt;
     private int requestedCWUPerSec;
     @SaveField
     @Getter
@@ -95,18 +88,6 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(140, 95, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(7, 7, "CWUt"))
-                .widget(new TextFieldWidget(9, 20, 122, 16, () -> String.valueOf(maxCWUt),
-                        value -> maxCWUt = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new LabelWidget(7, 42, "gtceu.creative.computation.average"))
-                .widget(new LabelWidget(7, 54, () -> String.valueOf(lastRequestedCWUt)))
-                .widget(new SwitchWidget(9, 66, 122, 20, (clickData, value) -> setActive(value))
-                        .setSupplier(this::isActive)
-                        .setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.on"))));
+        return CreativeComputationProviderMachineUI.create(this, entityPlayer);
     }
 }

@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "gtceu:block/uiv_item_passthrough_hatch"
+    }
+}

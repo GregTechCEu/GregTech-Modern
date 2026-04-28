@@ -1,0 +1,68 @@
+{
+    "model": {
+        "type": "minecraft:range_dispatch",
+        "entries": [
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/0"
+                },
+                "threshold": 0.0
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/1"
+                },
+                "threshold": 0.01
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/2"
+                },
+                "threshold": 0.02
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/3"
+                },
+                "threshold": 0.03
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/4"
+                },
+                "threshold": 0.04
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/5"
+                },
+                "threshold": 0.05
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/6"
+                },
+                "threshold": 0.06
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/hv_cadmium_battery/7"
+                },
+                "threshold": 0.07
+            }
+        ],
+        "fallback": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/hv_cadmium_battery/0"
+        },
+        "property": "gtceu:battery"
+    }
+}

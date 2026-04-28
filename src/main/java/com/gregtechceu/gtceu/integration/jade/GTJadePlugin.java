@@ -102,7 +102,8 @@ public class GTJadePlugin implements IWailaPlugin {
                     .map(ItemProviderEntry::asItem)
                     .toList();
             if (tools.isEmpty()) return;
-            HarvestToolProvider.registerHandler(SimpleToolHandler.create(GTCEu.id(type.name), tools, true));
+            HarvestToolProvider.registerHandler(
+                    SimpleToolHandler.create(GTJadeIds.toResourceLocation(type.name), tools, true));
         });
     }
 }

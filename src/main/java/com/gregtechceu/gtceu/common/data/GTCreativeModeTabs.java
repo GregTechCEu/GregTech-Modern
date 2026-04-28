@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.*;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -28,7 +29,7 @@ public class GTCreativeModeTabs {
             .defaultCreativeTab("material_fluid",
                     builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_fluid", REGISTRATE))
                             .icon(() -> GTItems.FLUID_CELL.asStack())
-                            .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_fluid"),
+                            .title(REGISTRATE.addLang("itemGroup", registrateLangId("material_fluid"),
                                     GTCEu.NAME + " Material Fluid Containers"))
                             .build())
             .register();
@@ -36,7 +37,7 @@ public class GTCreativeModeTabs {
             .defaultCreativeTab("material_item",
                     builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_item", REGISTRATE))
                             .icon(() -> ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Aluminium))
-                            .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_item"),
+                            .title(REGISTRATE.addLang("itemGroup", registrateLangId("material_item"),
                                     GTCEu.NAME + " Material Items"))
                             .build())
             .register();
@@ -44,7 +45,7 @@ public class GTCreativeModeTabs {
             .defaultCreativeTab("material_block",
                     builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_block", REGISTRATE))
                             .icon(() -> ChemicalHelper.get(TagPrefix.block, GTMaterials.Gold))
-                            .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_block"),
+                            .title(REGISTRATE.addLang("itemGroup", registrateLangId("material_block"),
                                     GTCEu.NAME + " Material Blocks"))
                             .build())
             .register();
@@ -52,7 +53,7 @@ public class GTCreativeModeTabs {
             .defaultCreativeTab("material_pipe",
                     builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_pipe", REGISTRATE))
                             .icon(() -> ChemicalHelper.get(Insulation.WIRE_DOUBLE.getTagPrefix(), GTMaterials.Copper))
-                            .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_pipe"),
+                            .title(REGISTRATE.addLang("itemGroup", registrateLangId("material_pipe"),
                                     GTCEu.NAME + " Material Pipes"))
                             .build())
             .register();
@@ -60,30 +61,34 @@ public class GTCreativeModeTabs {
             .defaultCreativeTab("decoration",
                     builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("decoration", REGISTRATE))
                             .icon(() -> GTBlocks.COIL_CUPRONICKEL.asStack())
-                            .title(REGISTRATE.addLang("itemGroup", GTCEu.id("decoration"),
+                            .title(REGISTRATE.addLang("itemGroup", registrateLangId("decoration"),
                                     GTCEu.NAME + " Decoration Blocks"))
                             .build())
             .register();
     public static RegistryEntry<CreativeModeTab, CreativeModeTab> TOOL = REGISTRATE.defaultCreativeTab("tool",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("tool", REGISTRATE))
                     .icon(() -> ToolHelper.get(GTToolType.WRENCH, GTMaterials.Steel))
-                    .title(REGISTRATE.addLang("itemGroup", GTCEu.id("tool"), GTCEu.NAME + " Tools"))
+                    .title(REGISTRATE.addLang("itemGroup", registrateLangId("tool"), GTCEu.NAME + " Tools"))
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab, CreativeModeTab> MACHINE = REGISTRATE.defaultCreativeTab("machine",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("machine", REGISTRATE))
                     .icon(() -> GTMachines.ELECTROLYZER[GTValues.LV].asStack())
-                    .title(REGISTRATE.addLang("itemGroup", GTCEu.id("machine"), GTCEu.NAME + " Machines"))
+                    .title(REGISTRATE.addLang("itemGroup", registrateLangId("machine"), GTCEu.NAME + " Machines"))
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab, CreativeModeTab> ITEM = REGISTRATE.defaultCreativeTab("item",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("item", REGISTRATE))
                     .icon(() -> GTItems.BASIC_TAPE.asStack())
-                    .title(REGISTRATE.addLang("itemGroup", GTCEu.id("item"), GTCEu.NAME + " Items"))
+                    .title(REGISTRATE.addLang("itemGroup", registrateLangId("item"), GTCEu.NAME + " Items"))
                     .build())
             .register();
 
     public static void init() {}
+
+    private static Identifier registrateLangId(String path) {
+        return GTCEu.id(path);
+    }
 
     public record RegistrateDisplayItemsGenerator(String name, GTRegistrate registrate)
             implements CreativeModeTab.DisplayItemsGenerator {

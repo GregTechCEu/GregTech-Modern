@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -61,11 +59,11 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
         return "gtceu.recipe.condition." + getType();
     }
 
-    public IGuiTexture getInValidTexture() {
+    public Object getInValidTexture() {
         return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0, 1, 0.5f);
     }
 
-    public IGuiTexture getValidTexture() {
+    public Object getValidTexture() {
         return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0.5f, 1,
                 0.5f);
     }
@@ -103,6 +101,6 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
 
     public static RecipeCondition<?> fromNetwork(RegistryFriendlyByteBuf buf) {
         var ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
-        return buf.readWithCodec(ops, CODEC, NbtAccounter.create(FriendlyByteBuf.DEFAULT_NBT_QUOTA));
+        return buf.readWithCodec(ops, CODEC, NbtAccounter.defaultQuota());
     }
 }

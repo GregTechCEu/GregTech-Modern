@@ -67,12 +67,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -81,17 +82,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddAttributeTooltipsEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -99,6 +99,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.NotNull;
@@ -116,7 +117,7 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void tickPlayerInventoryHazards(PlayerTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level().isClientSide()) {
             return;
         }
 
@@ -129,10 +130,7 @@ public class CommonEventListener {
             return;
         }
 
-        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
-        if (inventory == null) {
-            return;
-        }
+        IItemHandler inventory = new PlayerInvWrapper(player.getInventory());
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
@@ -172,7 +170,7 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockStartBreak(BreakBlockEvent event) {
         if (ToolHelper.IS_AOE_BREAKING_BLOCKS.get()) {
             return;
         }
@@ -193,7 +191,7 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onBreakEvent(BlockEvent.BreakEvent event) {
+    public static void onBreakEvent(BreakBlockEvent event) {
         var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
         if (machine != null) {
             if (!MachineOwner.canBreakOwnerMachine(event.getPlayer(), machine)) {
@@ -210,9 +208,9 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void registerReloadListeners(AddReloadListenerEvent event) {
+    public static void registerReloadListeners(AddServerReloadListenersEvent event) {
         GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
-        event.addListener(PostRegistryListener.INSTANCE);
+        event.addListener(GTCEu.id("post_registry"), PostRegistryListener.INSTANCE);
     }
 
     @SubscribeEvent
@@ -277,7 +275,7 @@ public class CommonEventListener {
         PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
 
         if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-            ServerLevel level = serverPlayer.serverLevel();
+            ServerLevel level = serverPlayer.level();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
         }
@@ -372,7 +370,7 @@ public class CommonEventListener {
             return;
         }
 
-        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
+        ServerLevel newLevel = event.getEntity().level().getServer().getLevel(event.getTo());
         var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
         PacketDistributor.sendToPlayer((ServerPlayer) event.getEntity(),
                 new SPacketSyncLevelHazards(data.getHazardZones()));
@@ -411,9 +409,10 @@ public class CommonEventListener {
     public static void onAttributeTooltipEvent(AddAttributeTooltipsEvent event) {
         ItemStack stack = event.getStack();
 
-        stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(),
+        stack.addToTooltip(GTDataComponents.BINDING_DATA, event.getContext(), event.getContext().tooltipDisplay(),
                 event::addTooltipLines, event.getContext().flag());
         stack.addToTooltip(GTDataComponents.COMPUTER_MONITOR_CONFIG, event.getContext(),
+                event.getContext().tooltipDisplay(),
                 event::addTooltipLines, event.getContext().flag());
 
         if (stack.has(GTDataComponents.MONITOR_TARGET)) {
@@ -426,7 +425,7 @@ public class CommonEventListener {
                     Component.literal("" + pos.getZ()).withStyle(ChatFormatting.GOLD),
                     Component.translatable("gtceu.direction.tooltip." + target.side().getName())
                             .withStyle(ChatFormatting.DARK_PURPLE),
-                    Component.translatable(target.dimension().location().toLanguageKey(Level.TRANSLATION_PREFIX))
+                    Component.translatable(target.dimension().identifier().toLanguageKey(Level.TRANSLATION_PREFIX))
                             .withStyle(ChatFormatting.DARK_PURPLE)));
         }
         if (!stack.has(GTDataComponents.RESEARCH_ITEM) && stack.has(GTDataComponents.DATA_COPY_POS)) {
@@ -442,7 +441,7 @@ public class CommonEventListener {
                     GTStringUtils.toCompactedComponent(list.lines())));
         }
         if (!stack.has(GTDataComponents.DATA_COPY_POS)) {
-            stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
+            stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(), event.getContext().tooltipDisplay(),
                     event::addTooltipLines, event.getContext().flag());
         }
     }
@@ -450,7 +449,8 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void breakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
-        for (ItemStack stack : player.getArmorSlots()) {
+        for (EquipmentSlot slot : EquipmentSlotGroup.ARMOR) {
+            ItemStack stack = player.getItemBySlot(slot);
             if (stack.getItem() instanceof ArmorComponentItem componentItem) {
                 if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
                     if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
@@ -462,7 +462,7 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void playerTickEvent(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
             var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);

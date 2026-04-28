@@ -41,7 +41,7 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
         if (guild == null) return Collections.emptySet();
         Set<UUID> members = new HashSet<>(guild.members().size());
         for (var member : guild.members().allMembers()) {
-            members.add(member.profile().getId());
+            members.add(member.profile().id());
         }
         return members;
     }

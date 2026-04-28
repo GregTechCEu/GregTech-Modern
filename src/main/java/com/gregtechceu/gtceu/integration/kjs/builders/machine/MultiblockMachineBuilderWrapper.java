@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -116,7 +117,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
+    public MultiblockMachineBuilderWrapper definition(Function<Identifier, MultiblockMachineDefinition> definition) {
         internal.definition(definition);
         return this;
     }
@@ -207,7 +208,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper simpleModel(ResourceLocation model) {
+    public MultiblockMachineBuilderWrapper simpleModel(Identifier model) {
         internal.simpleModel(model);
         return this;
     }
@@ -217,75 +218,75 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper tieredHullModel(ResourceLocation model) {
+    public MultiblockMachineBuilderWrapper tieredHullModel(Identifier model) {
         internal.tieredHullModel(model);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper overlayTieredHullModel(ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderWrapper overlayTieredHullModel(Identifier overlayModel) {
         internal.overlayTieredHullModel(overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(ResourceLocation overlay) {
+    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(Identifier overlay) {
         internal.colorOverlayTieredHullModel(overlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(ResourceLocation overlay,
-                                                                       @Nullable ResourceLocation pipeOverlay,
-                                                                       @Nullable ResourceLocation emissiveOverlay) {
+    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(Identifier overlay,
+                                                                       @Nullable Identifier pipeOverlay,
+                                                                       @Nullable Identifier emissiveOverlay) {
         internal.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper workableTieredHullModel(ResourceLocation workableModel) {
+    public MultiblockMachineBuilderWrapper workableTieredHullModel(Identifier workableModel) {
         internal.workableTieredHullModel(workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper simpleGeneratorModel(ResourceLocation workableModel) {
+    public MultiblockMachineBuilderWrapper simpleGeneratorModel(Identifier workableModel) {
         internal.simpleGeneratorModel(workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper workableCasingModel(ResourceLocation baseCasing,
-                                                               ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderWrapper workableCasingModel(Identifier baseCasing,
+                                                               Identifier overlayModel) {
         internal.workableCasingModel(baseCasing, overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper sidedOverlayCasingModel(ResourceLocation baseCasing,
-                                                                   ResourceLocation workableModel) {
+    public MultiblockMachineBuilderWrapper sidedOverlayCasingModel(Identifier baseCasing,
+                                                                   Identifier workableModel) {
         internal.sidedOverlayCasingModel(baseCasing, workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper sidedWorkableCasingModel(ResourceLocation baseCasing,
-                                                                    ResourceLocation workableModel) {
+    public MultiblockMachineBuilderWrapper sidedWorkableCasingModel(Identifier baseCasing,
+                                                                    Identifier workableModel) {
         internal.sidedWorkableCasingModel(baseCasing, workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper overlaySteamHullModel(ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderWrapper overlaySteamHullModel(Identifier overlayModel) {
         internal.overlaySteamHullModel(overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(ResourceLocation overlay,
-                                                                      @Nullable ResourceLocation pipeOverlay,
-                                                                      @Nullable ResourceLocation emissiveOverlay) {
+    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(Identifier overlay,
+                                                                      @Nullable Identifier pipeOverlay,
+                                                                      @Nullable Identifier emissiveOverlay) {
         internal.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(ResourceLocation overlay) {
+    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(Identifier overlay) {
         internal.colorOverlaySteamHullModel(overlay);
         return this;
     }
 
     public MultiblockMachineBuilderWrapper workableSteamHullModel(boolean isHighPressure,
-                                                                  ResourceLocation workableModel) {
+                                                                  Identifier workableModel) {
         internal.workableSteamHullModel(isHighPressure, workableModel);
         return this;
     }
@@ -430,8 +431,10 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
+        Identifier machineId = id.toIdentifier();
+        var baseBuilder = new MultiblockMachineBuilder<>(
+                GTRegistrate.createIgnoringListenerErrors(machineId.getNamespace()),
+                machineId.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
                 WorkableElectricMultiblockMachine::new);
@@ -440,8 +443,10 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
+        Identifier machineId = id.toIdentifier();
+        var baseBuilder = new MultiblockMachineBuilder<>(
+                GTRegistrate.createIgnoringListenerErrors(machineId.getNamespace()),
+                machineId.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
                 machine::create);

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -22,10 +23,14 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTFluids {
 
+    private static final Identifier POTION_TEXTURE = Identifier.fromNamespaceAndPath(GTCEu.MOD_ID,
+            "block/fluids/fluid.potion");
+
     @SuppressWarnings("UnstableApiUsage")
     public static final FluidEntry<PotionFluid> POTION = REGISTRATE
-            .fluid("potion", GTCEu.id("block/fluids/fluid.potion"), GTCEu.id("block/fluids/fluid.potion"),
-                    PotionFluid.PotionFluidType::new, PotionFluid::new)
+            .fluid("potion", POTION_TEXTURE, POTION_TEXTURE,
+                    properties -> new PotionFluid.PotionFluidType(properties, POTION_TEXTURE, POTION_TEXTURE),
+                    PotionFluid::new)
             .lang("Potion")
             .source(PotionFluid::new).noBlock().noBucket()
             .tag(CustomTags.POTION_FLUIDS)

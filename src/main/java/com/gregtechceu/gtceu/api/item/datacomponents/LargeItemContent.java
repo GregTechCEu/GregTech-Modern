@@ -5,23 +5,16 @@ import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 
-import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.With;
 
-import java.util.Optional;
-
 public record LargeItemContent(@With ItemStack stored, @With long amount) {
 
     // spotless:off
-    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC = ExtraCodecs
-            .optionalEmptyMap(ItemStack.SINGLE_ITEM_CODEC)
-            .xmap(stack -> stack.orElse(ItemStack.EMPTY),
-                    stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC = ItemStack.OPTIONAL_CODEC;
     public static final Codec<LargeItemContent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             OPTIONAL_SINGLE_ITEM_CODEC.fieldOf("stored").forGetter(LargeItemContent::stored),
             CodecUtils.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(LargeItemContent::amount)

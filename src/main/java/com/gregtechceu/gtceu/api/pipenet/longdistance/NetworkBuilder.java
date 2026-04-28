@@ -135,7 +135,7 @@ public class NetworkBuilder extends Thread {
             if (this.world instanceof ServerLevel serverLevel) {
                 serverLevel.setChunkForced(x, z, true);
                 // add loaded chunk to list to unload it later
-                this.loadedChunks.add(ChunkPos.asLong(x, z));
+                this.loadedChunks.add(ChunkPos.pack(x, z));
             }
             chunk = chunkProvider.getChunk(x, z, ChunkStatus.FULL, true);
         }

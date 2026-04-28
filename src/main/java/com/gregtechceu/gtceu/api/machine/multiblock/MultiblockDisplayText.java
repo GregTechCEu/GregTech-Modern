@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -66,7 +67,7 @@ public class MultiblockDisplayText {
                 Component hover = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                         .withStyle(ChatFormatting.GRAY);
                 textList.add(base
-                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover))));
+                        .withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(hover))));
             }
         }
 
@@ -121,7 +122,7 @@ public class MultiblockDisplayText {
                 Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
                         .withStyle(ChatFormatting.GRAY);
                 textList.add(bodyText.withStyle(
-                        style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
+                        style -> style.withHoverEvent(new HoverEvent.ShowText(hoverText))));
             }
             return this;
         }
@@ -145,7 +146,7 @@ public class MultiblockDisplayText {
             Component hoverText = Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
                     .withStyle(ChatFormatting.GRAY);
             textList.add(bodyText
-                    .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
+                    .withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(hoverText))));
             return this;
         }
 
@@ -425,7 +426,7 @@ public class MultiblockDisplayText {
             if (recipe != null) {
                 int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
                 int chanceTier = recipeTier + recipe.ocLevel;
-                var function = recipe.getType().getChanceFunction();
+                var function = recipe.recipeType.getChanceFunction();
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
@@ -444,15 +445,15 @@ public class MultiblockDisplayText {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue(),
-                                provider.getCountProvider().getMaxValue());
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()),
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()));
                         if (item.chance < item.maxChance) {
                             countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
                                     item.maxChance;
                         }
                         countD = countD * provider.getMidRoll();
                     } else {
-                        var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        var stacks = SizedIngredientExtensions.getItems(ItemRecipeCapability.CAP.of(item.content));
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         count = stack.getCount();
@@ -488,15 +489,15 @@ public class MultiblockDisplayText {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue(),
-                                provider.getCountProvider().getMaxValue());
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()),
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()));
                         if (fluid.chance < fluid.maxChance) {
                             amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
                                     fluid.maxChance;
                         }
                         amountD = amountD * provider.getMidRoll();
                     } else {
-                        var stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
+                        var stacks = SizedIngredientExtensions.getFluids(FluidRecipeCapability.CAP.of(fluid.content));
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         amount = stack.getAmount();

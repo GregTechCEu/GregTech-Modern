@@ -10,18 +10,18 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -40,7 +40,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        MetaMachine machine = ((MetaMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         MutableInt expected = new MutableInt();
         helper.runAtTickTime(40 - machine.getOffsetTimer() % 20, () -> {
@@ -61,7 +62,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithoutActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        SimpleTieredMachine machine = ((SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        SimpleTieredMachine machine = ((SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         int offset = (int) (machine.getOffsetTimer() % 20L);
         helper.runAtTickTime(20 - offset, () -> {
@@ -81,7 +83,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        MetaMachine machine = ((MetaMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 1)));
         AdvancedFluidDetectorCover cover = (AdvancedFluidDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_FLUID_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMaxValue(100000);
@@ -114,7 +117,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        MetaMachine machine = ((MetaMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setLatched(true);
@@ -128,7 +132,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        MetaMachine machine = ((MetaMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMinValue(1);
@@ -143,7 +148,8 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
+        MetaMachine machine = ((MetaMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 1)));
         machine.getItemHandlerCap(null, false).setStackInSlot(0, new ItemStack(Items.DIRT, 5));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);

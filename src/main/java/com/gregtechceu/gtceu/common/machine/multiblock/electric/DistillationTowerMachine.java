@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.VoidFluidHandler;
@@ -55,6 +57,13 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     public DistillationTowerMachine(BlockEntityCreationInfo info, int yOffset) {
         super(info, DistillationTowerLogic::new);
         this.yOffset = yOffset;
+    }
+
+    private static FluidStack firstFluid(SizedFluidIngredient ingredient) {
+        return ingredient.ingredient().fluids().stream()
+                .findFirst()
+                .map(fluid -> new FluidStack(fluid, ingredient.amount()))
+                .orElse(FluidStack.EMPTY);
     }
 
     @Override
@@ -128,7 +137,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         int maxAmount = contents.stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
-                .filter(i -> !i.ingredient().hasNoFluids())
+                .filter(i -> !i.ingredient().fluids().isEmpty())
                 .mapToInt(SizedFluidIngredient::amount)
                 .max()
                 .orElse(0);
@@ -271,7 +280,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
             // Distillery recipes should output to the first non-void handler
             if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
-                var fluid = fluids.getFirst().getFluids()[0];
+                var fluid = firstFluid(fluids.getFirst());
                 var handler = getMachine().getFirstValid();
                 if (handler == null) return false;
                 int filled = (handler instanceof NotifiableFluidTank nft) ?
@@ -284,7 +293,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var outputs = getMachine().getFluidOutputs();
             for (int i = 0; i < Math.min(fluids.size(), outputs.size()); ++i) {
                 var handler = outputs.get(i);
-                var fluid = fluids.get(i).getFluids()[0];
+                var fluid = firstFluid(fluids.get(i));
                 int filled = (handler instanceof NotifiableFluidTank nft) ?
                         nft.fillInternal(fluid, action) :
                         handler.fill(fluid, action);

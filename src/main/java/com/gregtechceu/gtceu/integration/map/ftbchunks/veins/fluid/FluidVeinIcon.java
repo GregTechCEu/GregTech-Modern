@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.integration.map.GTMapRendering;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 
@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import dev.ftb.mods.ftbchunks.FTBChunks;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
@@ -55,12 +54,7 @@ public class FluidVeinIcon implements MapIcon {
     }
 
     public int getColor() {
-        var color = IClientFluidTypeExtensions.of(fluidInfo.fluid()).getTintColor();
-        var material = ChemicalHelper.getMaterial(fluidInfo.fluid());
-        if (!material.isNull()) {
-            color = material.getMaterialARGB();
-        }
-        return color;
+        return GTMapRendering.getFluidColor(fluidInfo.fluid());
     }
 
     @Override
@@ -121,7 +115,7 @@ public class FluidVeinIcon implements MapIcon {
 
     public Icon getIcon(int alpha, boolean mouseOver) {
         var color = getColor();
-        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
+        var fluidIcon = Icon.getIcon(GTMapRendering.getFluidSpriteId(fluidInfo.fluid()))
                 .withColor(Color4I.rgba(color).withAlpha(alpha));
         if (mouseOver) {
             fluidIcon = fluidIcon.withBorder(Color4I.rgba(color), false);

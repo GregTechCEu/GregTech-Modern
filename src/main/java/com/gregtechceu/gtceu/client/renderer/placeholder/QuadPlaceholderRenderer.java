@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.placeholder;
 
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 
@@ -22,13 +22,17 @@ public class QuadPlaceholderRenderer implements IPlaceholderRenderer {
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
 
-        consumer.addVertex(pose, tag.getFloat("x1"), tag.getFloat("y1"), 0).setColor(tag.getInt("color1"))
+        consumer.addVertex(pose, tag.getFloatOr("x1", 0.0f), tag.getFloatOr("y1", 0.0f), 0)
+                .setColor(tag.getIntOr("color1", 0))
                 .setLight(LightTexture.FULL_BRIGHT);
-        consumer.addVertex(pose, tag.getFloat("x2"), tag.getFloat("y2"), 0).setColor(tag.getInt("color2"))
+        consumer.addVertex(pose, tag.getFloatOr("x2", 0.0f), tag.getFloatOr("y2", 0.0f), 0)
+                .setColor(tag.getIntOr("color2", 0))
                 .setLight(LightTexture.FULL_BRIGHT);
-        consumer.addVertex(pose, tag.getFloat("x3"), tag.getFloat("y3"), 0).setColor(tag.getInt("color3"))
+        consumer.addVertex(pose, tag.getFloatOr("x3", 0.0f), tag.getFloatOr("y3", 0.0f), 0)
+                .setColor(tag.getIntOr("color3", 0))
                 .setLight(LightTexture.FULL_BRIGHT);
-        consumer.addVertex(pose, tag.getFloat("x4"), tag.getFloat("y4"), 0).setColor(tag.getInt("color4"))
+        consumer.addVertex(pose, tag.getFloatOr("x4", 0.0f), tag.getFloatOr("y4", 0.0f), 0)
+                .setColor(tag.getIntOr("color4", 0))
                 .setLight(LightTexture.FULL_BRIGHT);
         poseStack.popPose();
     }

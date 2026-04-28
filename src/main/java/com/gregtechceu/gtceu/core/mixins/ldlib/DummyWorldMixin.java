@@ -5,12 +5,15 @@ import com.gregtechceu.gtceu.core.MixinHelpers;
 
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.CardinalLighting;
+import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelDataManager;
 import net.neoforged.neoforge.common.extensions.IBlockGetterExtension;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelDataManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +25,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.lang.ref.WeakReference;
 
 @Mixin(value = DummyWorld.class, remap = false)
-public abstract class DummyWorldMixin implements ILevelExtension, IBlockGetterExtension {
+public abstract class DummyWorldMixin implements ILevelExtension, IBlockGetterExtension, BlockAndTintGetter {
 
     @Shadow
     public WeakReference<Level> level;
@@ -43,6 +46,24 @@ public abstract class DummyWorldMixin implements ILevelExtension, IBlockGetterEx
         }
         assert level != null;
         return level;
+    }
+
+    @Override
+    public CardinalLighting cardinalLighting() {
+        Level level = getLevel();
+        if (level instanceof BlockAndTintGetter tintGetter) {
+            return tintGetter.cardinalLighting();
+        }
+        return CardinalLighting.DEFAULT;
+    }
+
+    @Override
+    public int getBlockTint(BlockPos pos, ColorResolver colorResolver) {
+        Level level = getLevel();
+        if (level instanceof BlockAndTintGetter tintGetter) {
+            return tintGetter.getBlockTint(pos, colorResolver);
+        }
+        return colorResolver.getColor(((Level) (Object) this).getBiome(pos).value(), pos.getX(), pos.getZ());
     }
 
     @Override

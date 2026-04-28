@@ -22,12 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.network.chat.Component;
 
@@ -168,14 +163,15 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
+        long euToStart = recipe.data.getLongOr("eu_to_start", 0L);
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
-                recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
+                euToStart > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
             return ModifierFunction
                     .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
         }
 
-        long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
+        long heatDiff = euToStart - fusionReactorMachine.heat;
 
         // if the stored heat is >= required energy, recipe is okay to run
         if (heatDiff <= 0) {
@@ -199,7 +195,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         GTRecipe recipe = recipeLogic.getLastRecipe();
         assert recipe != null;
         if (recipe.data.contains("eu_to_start")) {
-            long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
+            long heatDiff = recipe.data.getLongOr("eu_to_start", 0L) - this.heat;
             // if the remaining energy needed is more than stored, do not run
             if (heatDiff > 0) {
                 recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
@@ -217,12 +213,16 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         if (color == -1) {
             if (!recipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
-                var stack = FluidRecipeCapability.CAP
-                        .of(recipe.getOutputContents(FluidRecipeCapability.CAP).getFirst().getContent()).getFluids()[0];
-                int newColor = 0xFF000000 | GTUtil.getFluidColor(stack);
-                if (!Objects.equals(color, newColor)) {
-                    color = newColor;
-                    syncDataHolder.markClientSyncFieldDirty("color");
+                var ingredient = FluidRecipeCapability.CAP
+                        .of(recipe.getOutputContents(FluidRecipeCapability.CAP).getFirst().getContent());
+                var fluids = ingredient.ingredient().fluids();
+                if (!fluids.isEmpty()) {
+                    var stack = new net.neoforged.neoforge.fluids.FluidStack(fluids.getFirst(), ingredient.amount());
+                    int newColor = 0xFF000000 | GTUtil.getFluidColor(stack);
+                    if (!Objects.equals(color, newColor)) {
+                        color = newColor;
+                        syncDataHolder.markClientSyncFieldDirty("color");
+                    }
                 }
             }
         }
@@ -279,16 +279,13 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
-    public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
-        long euToStart = recipe.data.getLong("eu_to_start");
+    public static void addEUToStartLabel(GTRecipe recipe, Object group) {
+        long euToStart = recipe.data.getLongOr("eu_to_start", 0L);
         if (euToStart <= 0) return;
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
-        group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
-                LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                        FormattingUtil.formatNumberReadable2F(euToStart, false),
-                        FUSION_NAMES.get(tier))));
+        FusionReactorMachineUI.addEUToStartLabel(group, euToStart, FUSION_NAMES.get(tier));
     }
 
     //////////////////////////////////////

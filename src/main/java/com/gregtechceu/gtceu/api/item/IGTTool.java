@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.gui.factory.GTHeldItemUIHolder;
+import com.gregtechceu.gtceu.api.gui.factory.IGTHeldItemUI;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
@@ -15,6 +17,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
@@ -27,7 +30,6 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.core.*;
@@ -41,11 +43,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -67,7 +69,7 @@ import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+public interface IGTTool extends IGTHeldItemUI, ItemLike {
 
     GTToolType getToolType();
 
@@ -77,7 +79,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     int getElectricTier();
 
-    Tier getTier();
+    MaterialToolTier getTier();
 
     IGTToolDefinition getToolStats();
 
@@ -274,7 +276,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default boolean definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide) return false;
+        if (player.level().isClientSide()) return false;
         getBehaviorsComponent(stack).behaviors()
                 .forEach((type, behavior) -> behavior.onBlockStartBreak(stack, pos, player));
 
@@ -311,7 +313,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default boolean definition$mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos,
                                          LivingEntity entityLiving) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             getToolStats().getBehaviors()
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
@@ -534,15 +536,16 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
+    default InteractionResult definition$use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         // TODO: relocate to keybind action when keybind PR happens
         for (IToolBehavior<?> behavior : getBehaviorsComponent(stack).behaviors().values()) {
-            if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(stack);
+            InteractionResult result = behavior.onItemRightClick(world, player, hand);
+            if (result instanceof InteractionResult.Success) {
+                return result;
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {
@@ -650,7 +653,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             tooltip.add(CommonComponents.EMPTY);
 
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.innate_enchantments"));
-            stack.addToTooltip(GTDataComponents.INNATE_ENCHANTMENTS, context, tooltip::add, flag);
+            stack.addToTooltip(GTDataComponents.INNATE_ENCHANTMENTS, context, TooltipDisplay.DEFAULT, tooltip::add,
+                    flag);
         }
 
         tooltip.add(CommonComponents.EMPTY);
@@ -721,12 +725,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     @Override
-    default ModularUI createUI(Player player, HeldItemUIFactory.HeldItemHolder holder) {
+    default ModularUI createUI(Player player, GTHeldItemUIHolder holder) {
         for (var behavior : getToolStats().getBehaviors()) {
             if (!(behavior instanceof IToolUIBehavior<?> uiBehavior) || !uiBehavior.openUI(player, holder.getHand())) {
                 continue;
             }
-            return uiBehavior.createUI(player, holder);
+            if (uiBehavior.createUI(player, holder) instanceof ModularUI modularUI) {
+                return modularUI;
+            }
         }
         return new ModularUI(holder, player);
     }

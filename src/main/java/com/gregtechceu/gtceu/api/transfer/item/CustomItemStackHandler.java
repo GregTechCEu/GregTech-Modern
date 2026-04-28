@@ -1,13 +1,18 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import lombok.Getter;
@@ -51,6 +56,18 @@ public class CustomItemStackHandler extends ItemStackHandler
     @Override
     public void onContentsChanged(int slot) {
         onContentsChanged.run();
+    }
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        serialize(output);
+        return output.buildResult();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        deserialize(TagValueInput.create(ProblemReporter.DISCARDING, provider, nbt));
     }
 
     /**

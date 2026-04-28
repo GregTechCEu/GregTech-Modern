@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.Getter;
@@ -28,10 +28,10 @@ public class SimpleCoilType implements ICoilType, StringRepresentable {
     @NotNull
     private final Supplier<Material> material;
     @Getter
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public SimpleCoilType(String name, int coilTemperature, int level, int energyDiscount, int tier,
-                          @NotNull Supplier<Material> material, ResourceLocation texture) {
+                          @NotNull Supplier<Material> material, Identifier texture) {
         this.name = name;
         this.coilTemperature = coilTemperature;
         this.level = level;

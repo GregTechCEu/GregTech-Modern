@@ -7,9 +7,8 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
@@ -30,12 +29,12 @@ public class FluidCache {
     }
 
     public void fromNbt(CompoundTag nbt) {
-        var fluidList = nbt.getList("fluids", Tag.TAG_COMPOUND);
+        var fluidList = nbt.getListOrEmpty("fluids");
         for (var fluidTagRaw : fluidList) {
             if (fluidTagRaw instanceof CompoundTag fluidTag) {
                 ResourceKey<Level> dim = ResourceKey.create(Registries.DIMENSION,
-                        ResourceLocation.parse(fluidTag.getString("dim")));
-                ChunkPos pos = new ChunkPos(fluidTag.getLong("pos"));
+                        Identifier.parse(fluidTag.getStringOr("dim", "")));
+                ChunkPos pos = ChunkPos.unpack(fluidTag.getLongOr("pos", 0L));
                 var fluid = ProspectorMode.FluidInfo.fromNbt(fluidTag);
                 fluidCache.put(dim, pos, fluid);
 
@@ -51,8 +50,8 @@ public class FluidCache {
         for (var dimensions : fluidCache.rowMap().entrySet()) {
             for (var entry : dimensions.getValue().entrySet()) {
                 CompoundTag tag = entry.getValue().toNbt();
-                tag.putLong("pos", entry.getKey().toLong());
-                tag.putString("dim", dimensions.getKey().location().toString());
+                tag.putLong("pos", entry.getKey().pack());
+                tag.putString("dim", dimensions.getKey().identifier().toString());
                 fluidList.add(tag);
             }
         }

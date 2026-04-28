@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +20,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
@@ -60,19 +60,29 @@ public class AssemblyLineTests {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 3, 0));
         assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(ASSLINE_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 1));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
-        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 1));
-        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 1));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(4, 1, 1));
-        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 0));
-        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
-        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 0));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 1, 1));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
+        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(2, 1, 1));
+        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(3, 1, 1));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(4, 1, 1));
+        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 1, 0));
+        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 0));
+        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(2, 1, 0));
+        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(3, 1, 0));
         return new BusHolder(inputBus1, inputBus2, inputBus3, inputBus4,
                 inputHatch1, inputHatch2, inputHatch3, inputHatch4, outputBus1, controller);
     }

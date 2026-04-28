@@ -1,0 +1,14 @@
+{
+    "model": {
+        "type": "minecraft:condition",
+        "on_false": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/invar_lighter_closed"
+        },
+        "on_true": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/invar_lighter_open"
+        },
+        "property": "gtceu:lighter_open"
+    }
+}

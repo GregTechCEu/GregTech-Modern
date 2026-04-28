@@ -69,25 +69,23 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
         ItemStack slotStack;
         if (this.cacheSlotKey) {
             if (cachedTorchSlot < 0) {
-                slotStack = player.getInventory().offhand.getFirst();
+                slotStack = player.getOffhandItem();
             } else {
-                slotStack = player.getInventory().items.get(cachedTorchSlot);
+                slotStack = player.getInventory().getNonEquipmentItems().get(cachedTorchSlot);
             }
             if (checkAndPlaceTorch(context, slotStack)) {
                 return InteractionResult.SUCCESS;
             }
         }
-        for (int i = 0; i < player.getInventory().offhand.size(); i++) {
-            slotStack = player.getInventory().offhand.get(i);
-            if (checkAndPlaceTorch(context, slotStack)) {
-                final int finalI = i;
-                stack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
-                        val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
-                return InteractionResult.SUCCESS;
-            }
+        slotStack = player.getOffhandItem();
+        if (checkAndPlaceTorch(context, slotStack)) {
+            stack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
+                    val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -1)));
+            return InteractionResult.SUCCESS;
         }
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            slotStack = player.getInventory().items.get(i);
+        var nonEquipmentItems = player.getInventory().getNonEquipmentItems();
+        for (int i = 0; i < nonEquipmentItems.size(); i++) {
+            slotStack = nonEquipmentItems.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
                 stack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,

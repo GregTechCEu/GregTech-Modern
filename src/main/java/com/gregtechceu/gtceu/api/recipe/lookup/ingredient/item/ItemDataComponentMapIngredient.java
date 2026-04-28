@@ -28,7 +28,7 @@ public class ItemDataComponentMapIngredient extends ItemStackMapIngredient {
     public static List<AbstractMapIngredient> from(@NotNull DataComponentIngredient ingredient) {
         Ingredient vanilla = ingredient.toVanilla();
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (ItemStack s : vanilla.getItems()) {
+        for (ItemStack s : vanilla.items().map(holder -> new ItemStack(holder, 1)).toList()) {
             list.add(new ItemDataComponentMapIngredient(s, ingredient, vanilla));
         }
         return list;
@@ -64,24 +64,27 @@ public class ItemDataComponentMapIngredient extends ItemStackMapIngredient {
 
             if (this.componentIngredient != null) {
                 if (other.componentIngredient != null) {
-                    if (this.componentIngredient.isStrict() != other.componentIngredient.isStrict()) {
+                    if (this.componentIngredient.componentsExhaustive() !=
+                            other.componentIngredient.componentsExhaustive()) {
                         return false;
                     }
                     if (!this.componentIngredient.components().equals(other.componentIngredient.components())) {
                         return false;
                     }
 
-                    if (this.componentIngredient.isStrict()) {
-                        for (ItemStack tStack : this.ingredient.getItems()) {
-                            for (ItemStack oStack : other.ingredient.getItems()) {
+                    if (this.componentIngredient.componentsExhaustive()) {
+                        for (ItemStack tStack : this.ingredient.items().map(holder -> new ItemStack(holder, 1))
+                                .toList()) {
+                            for (ItemStack oStack : other.ingredient.items().map(holder -> new ItemStack(holder, 1))
+                                    .toList()) {
                                 if (ItemStack.isSameItemSameComponents(tStack, oStack)) return true;
                             }
                         }
                     } else {
-                        boolean thisContains = this.componentIngredient.items()
-                                .stream().allMatch(holder -> other.componentIngredient.items().contains(holder));
-                        boolean otherContains = other.componentIngredient.items()
-                                .stream().allMatch(holder -> this.componentIngredient.items().contains(holder));
+                        var otherItems = other.componentIngredient.items().toList();
+                        var thisItems = this.componentIngredient.items().toList();
+                        boolean thisContains = thisItems.stream().allMatch(otherItems::contains);
+                        boolean otherContains = otherItems.stream().allMatch(thisItems::contains);
                         return thisContains && otherContains;
                     }
                 } else {

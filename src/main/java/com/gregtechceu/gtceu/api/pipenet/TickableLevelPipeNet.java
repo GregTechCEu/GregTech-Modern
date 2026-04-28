@@ -29,7 +29,7 @@ public abstract class TickableLevelPipeNet<NodeDataType, T extends PipeNet<NodeD
     private boolean isChunkLoaded(ChunkPos chunkPos) {
         var worldServer = getWorld();
         if (worldServer == null) return false;
-        return worldServer.getChunkSource().hasChunk(chunkPos.x, chunkPos.z);
+        return worldServer.getChunkSource().hasChunk(chunkPos.x(), chunkPos.z());
     }
 
     protected abstract int getUpdateRate();

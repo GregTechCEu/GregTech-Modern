@@ -9,8 +9,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLPaths;
@@ -71,7 +71,7 @@ public class ClientCacheManager {
             for (String dimFilePrefix : cacheInfo.dimFilePrefixes) {
                 for (File dimFile : getDimFiles(cacheInfo.cacheFolder, dimFilePrefix)) {
                     ResourceKey<Level> dimId = ResourceKey.create(Registries.DIMENSION,
-                            ResourceLocation.bySeparator(
+                            Identifier.bySeparator(
                                     dimFile.getName().substring(dimFilePrefix.length() + filePrefix.length(),
                                             dimFile.getName().length() - fileEnding.length()),
                                     resourceLocationSeparator));
@@ -112,9 +112,10 @@ public class ClientCacheManager {
                 for (ResourceKey<Level> dim : cache.getExistingDimensions(dimFilePrefix)) {
                     CompoundTag data = cache.saveDimFile(dimFilePrefix, dim, provider);
                     if (data == null) continue;
+                    Identifier dimId = dim.identifier();
                     File dimFile = new File(cacheInfo.cacheFolder,
-                            dimFilePrefix + filePrefix + dim.location().getNamespace() + "=" +
-                                    dim.location().getPath() + fileEnding);
+                            dimFilePrefix + filePrefix + dimId.getNamespace() + "=" +
+                                    dimId.getPath() + fileEnding);
                     try {
                         NbtIo.writeCompressed(data, new FileOutputStream(dimFile));
                     } catch (IOException e) {

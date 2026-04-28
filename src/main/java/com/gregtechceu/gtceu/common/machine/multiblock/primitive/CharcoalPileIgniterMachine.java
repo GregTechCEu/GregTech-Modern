@@ -29,7 +29,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -200,7 +199,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             }
             return false;
             // copied from PredicateBlockTag to display the preview logs properly
-        }, () -> BuiltInRegistries.BLOCK.getTag(BlockTags.LOGS_THAT_BURN)
+        }, () -> BuiltInRegistries.BLOCK.get(BlockTags.LOGS_THAT_BURN)
                 .stream()
                 .flatMap(HolderSet.Named::stream)
                 .map(Holder::value)
@@ -322,7 +321,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             return InteractionResult.PASS;
         }
 
-        if (getLevel().isClientSide && !isActive()) {
+        if (getLevel().isClientSide() && !isActive()) {
             return InteractionResult.SUCCESS;
         } else if (!isActive()) {
             boolean shouldActivate = false;
@@ -334,7 +333,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     }
                 }
             } else if (stack.isDamageableItem()) {
-                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 shouldActivate = true;
             } else {
                 stack.shrink(1);

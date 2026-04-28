@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -18,8 +15,8 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
@@ -53,27 +50,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        int xOffset = inventorySize >= 90 ? 162 : 0;
-        int yOverflow = xOffset > 0 ? 18 : 9;
-        int yOffset = inventorySize > 3 * yOverflow ?
-                (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-        var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2,
-                        82 + yOffset, true));
-        int x = 0;
-        int y = 0;
-        for (int slot = 0; slot < inventorySize; slot++) {
-            modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
-                    .setBackgroundTexture(GuiTextures.SLOT));
-            x++;
-            if (x == yOverflow) {
-                x = 0;
-                y++;
-            }
-        }
-        return modularUI;
+        return CrateMachineUI.createUI(this, entityPlayer);
     }
 
     @Override
@@ -88,14 +65,14 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
                 isTaped = true;
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 syncDataHolder.markClientSyncFieldDirty("isTaped");
-                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return super.onUseWithItem(context);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput componentInput) {
+    protected void applyImplicitComponents(DataComponentGetter componentInput) {
         super.applyImplicitComponents(componentInput);
         if (componentInput.get(GTDataComponents.TAPED) != null &&
                 componentInput.get(DataComponents.CONTAINER) != null) {

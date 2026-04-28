@@ -7,21 +7,19 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +48,7 @@ public interface ICoverableRenderer {
                 if (thickness > 0 && cover.shouldRenderPlate()) {
                     double min = thickness + 0.01;
                     double max = 0.99 - thickness;
-                    var normal = face.getNormal();
+                    var normal = face.getUnitVec3i();
                     var cube = new AABB(
                             normal.getX() > 0 ? max : 0.01,
                             normal.getY() > 0 ? max : 0.01,
@@ -58,13 +56,6 @@ public interface ICoverableRenderer {
                             normal.getX() >= 0 ? 0.99 : min,
                             normal.getY() >= 0 ? 0.99 : min,
                             normal.getZ() >= 0 ? 0.99 : min);
-                    if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
-                    } else if (side != face.getOpposite()) { // render sides
-                        quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().bake());
-                    }
                 }
                 // it won't ever be null on the client
                 // noinspection DataFlowIssue

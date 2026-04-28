@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -30,13 +30,13 @@ public class GTStringUtils {
      */
     @NotNull
     public static String itemStackToString(@NotNull ItemStack stack) {
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return stack.getCount() + "x_" + itemId.toDebugFileName();
     }
 
     @NotNull
     public static String fluidStackToString(@NotNull FluidStack stack) {
-        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid());
+        Identifier fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid());
         return stack.getAmount() + "x_" + fluidId.getNamespace() + "_" + fluidId.getPath();
     }
 

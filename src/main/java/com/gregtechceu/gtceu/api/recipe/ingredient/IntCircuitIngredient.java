@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
@@ -22,7 +24,7 @@ import java.util.stream.Stream;
 
 public class IntCircuitIngredient implements ICustomIngredient {
 
-    public static final ResourceLocation ID = GTCEu.id("circuit");
+    public static final Identifier ID = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
     public static final int CIRCUIT_MAX = IntCircuitBehaviour.CIRCUIT_MAX;
@@ -63,9 +65,13 @@ public class IntCircuitIngredient implements ICustomIngredient {
                 IntCircuitBehaviour.getCircuitConfiguration(stack) == this.configuration;
     }
 
-    @Override
     public Stream<ItemStack> getItems() {
         return Stream.of(stack);
+    }
+
+    @Override
+    public Stream<Holder<Item>> items() {
+        return Stream.of(stack.getItem().builtInRegistryHolder());
     }
 
     @Override

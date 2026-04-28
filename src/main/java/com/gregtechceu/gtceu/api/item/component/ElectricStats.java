@@ -13,11 +13,11 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -78,17 +78,17 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         var electricItem = GTCapabilityHelper.getElectricItem(item);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 boolean isInDischargeMode = isInDischargeMode(item);
                 String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
-                player.displayClientMessage(Component.translatable(locale), true);
+                player.sendSystemMessage(Component.translatable(locale));
                 setInDischargeMode(item, !isInDischargeMode);
             }
-            return InteractionResultHolder.success(item);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(item);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
@@ -96,7 +96,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         var electricItem = GTCapabilityHelper.getElectricItem(stack);
-        if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
+        if (!level.isClientSide() && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
             long transferLimit = electricItem.getTransferLimit();
@@ -259,10 +259,11 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+    public boolean render(GuiGraphicsExtractor GuiGraphicsExtractor, Font font, ItemStack stack, int xOffset,
+                          int yOffset) {
         var electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null) {
-            return ToolChargeBarRenderer.renderElectricBar(guiGraphics, electricItem.getCharge(),
+            return ToolChargeBarRenderer.renderElectricBar(GuiGraphicsExtractor, electricItem.getCharge(),
                     electricItem.getMaxCharge(), xOffset, yOffset, stack.isBarVisible());
         }
         return false;

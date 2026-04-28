@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
@@ -19,11 +20,12 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
@@ -139,15 +141,15 @@ public final class ValueTransformers {
 
         //// Primitives
 
-        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, IntTag.class);
-        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, LongTag.class);
-        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FloatTag.class);
-        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::getAsDouble, DoubleTag.class);
-        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::getAsShort, ShortTag.class);
-        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::getAsByte, ByteTag.class);
-        registerSimpleClassTransformer(Character.class, (b) -> IntTag.valueOf(b), (t) -> (char) t.getAsInt(),
+        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::intValue, IntTag.class);
+        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::longValue, LongTag.class);
+        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::floatValue, FloatTag.class);
+        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::doubleValue, DoubleTag.class);
+        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::shortValue, ShortTag.class);
+        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::byteValue, ByteTag.class);
+        registerSimpleClassTransformer(Character.class, (b) -> IntTag.valueOf(b), (t) -> (char) t.intValue(),
                 IntTag.class);
-        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.getAsByte() != 0, ByteTag.class);
+        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.byteValue() != 0, ByteTag.class);
 
         // Primtive arrays
         registerSimpleClassTransformer(int[].class, IntArrayTag::new, IntArrayTag::getAsIntArray, IntArrayTag.class);
@@ -158,10 +160,11 @@ public final class ValueTransformers {
 
         //// Java classes and standard minecraft/forge classes
 
-        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class);
+        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::value, StringTag.class);
 
         // The default value supplier will never be called as NbtUtils::loadUUID will throw if the UUID is invalid.
-        registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class);
+        registerSimpleClassTransformer(UUID.class, uuid -> new IntArrayTag(UUIDUtil.uuidToIntArray(uuid)),
+                tag -> UUIDUtil.uuidFromIntArray(tag.getAsIntArray()), IntArrayTag.class);
 
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
@@ -183,7 +186,8 @@ public final class ValueTransformers {
         registerTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
                 GTRecipeType::getRegistryName,
-                (r) -> (GTRecipeType) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(r))));
+                (r) -> (GTRecipeType) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(r)
+                        .map(Holder::value).orElse(null))));
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());

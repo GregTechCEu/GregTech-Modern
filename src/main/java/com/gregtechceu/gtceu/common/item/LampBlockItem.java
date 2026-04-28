@@ -1,26 +1,18 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -70,39 +62,11 @@ public class LampBlockItem extends BlockItem {
         }
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return LampItemRenderer.getInstance();
-            }
-        });
-    }
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {}
 
     private static class ClientCallWrapper {
 
-        private static void registerEventListener(LampBlockItem item) {
-            ModelUtils.registerBakeEventListener(false, event -> {
-                ResourceLocation model = BuiltInRegistries.ITEM.getKey(item).withPrefix("item/");
-                BakedModel original = event.getModels().get(model);
-                ModelResourceLocation modelLoc;
-                if (original == null) {
-                    modelLoc = ModelResourceLocation.inventory(model);
-                    original = event.getModels().get(model);
-                } else {
-                    modelLoc = ModelResourceLocation.inventory(model);
-                }
-                event.getModels().put(modelLoc, new BakedModelWrapper<>(original) {
-
-                    @Override
-                    public boolean isCustomRenderer() {
-                        return true;
-                    }
-                });
-            });
-        }
+        private static void registerEventListener(LampBlockItem item) {}
     }
 
     public record LampData(boolean inverted, boolean bloom, boolean lit) {

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.color.BlockColor;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -64,7 +64,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(GTCapability.CAPABILITY_DATA_ACCESS, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof OpticalPipeBlockEntity opticalPipeBlockEntity) {
-                if (level.isClientSide) {
+                if (level.isClientSide()) {
                     return opticalPipeBlockEntity.getClientDataHandler();
                 }
                 if (opticalPipeBlockEntity.getHandlers().isEmpty()) {
@@ -78,7 +78,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
         }, this);
         event.registerBlock(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof OpticalPipeBlockEntity opticalPipeBlockEntity) {
-                if (level.isClientSide) {
+                if (level.isClientSide()) {
                     return opticalPipeBlockEntity.getClientComputationHandler();
                 }
                 if (opticalPipeBlockEntity.getHandlers().isEmpty()) {

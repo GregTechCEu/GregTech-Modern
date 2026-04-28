@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.item;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;
@@ -124,13 +124,12 @@ public class GTItemAbilities {
     public static final Set<ItemAbility> DEFAULT_HAMMER_ACTIONS = of(HAMMER_DIG, HAMMER_MUTE);
     public static final Set<ItemAbility> DEFAULT_CROWBAR_ACTIONS = of(CROWBAR_DIG, CROWBAR_ROTATE, CROWBAR_REMOVE_COVER);
     public static final Set<ItemAbility> DEFAULT_SCREWDRIVER_ACTIONS = of(SCREWDRIVER_CONFIGURE, INTERACT_WITH_COVER);
-    public static final Set<ItemAbility> DEFAULT_DRILL_ACTIONS = of(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, ItemAbilities.SHOVEL_DIG, ItemAbilities.HOE_DIG);
+    public static final Set<ItemAbility> DEFAULT_DRILL_ACTIONS = of(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, ItemAbilities.HOE_TILL);
 
     public static final Map<ItemAbility, GTToolType> DEFAULT_TYPE_ASSOCIATIONS = Util.make(new HashMap<>(), map -> {
         ItemAbilities.DEFAULT_AXE_ACTIONS.forEach(ability -> map.put(ability, GTToolType.AXE));
-        ItemAbilities.DEFAULT_PICKAXE_ACTIONS.forEach(ability -> map.put(ability, GTToolType.PICKAXE));
         ItemAbilities.DEFAULT_SHOVEL_ACTIONS.forEach(ability -> map.put(ability, GTToolType.SHOVEL));
-        ItemAbilities.DEFAULT_SWORD_ACTIONS.forEach(ability -> map.put(ability, GTToolType.SWORD));
+        map.put(ItemAbilities.SWORD_SWEEP, GTToolType.SWORD);
         ItemAbilities.DEFAULT_SHEARS_ACTIONS.forEach(ability -> map.put(ability, GTToolType.SHEARS));
         GTItemAbilities.DEFAULT_WRENCH_ACTIONS.forEach(ability -> map.put(ability, GTToolType.WRENCH));
         GTItemAbilities.DEFAULT_WIRE_CUTTER_ACTIONS.forEach(ability -> map.put(ability, GTToolType.WIRE_CUTTER));

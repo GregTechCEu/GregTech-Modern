@@ -174,7 +174,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
                 if (side == null || !(coverable.getCoverAtSide(side) instanceof IUICover iuiCover))
                     return group;
 
-                Widget coverConfigurator = iuiCover.createUIWidget();
+                Widget coverConfigurator = (Widget) iuiCover.createUIWidget();
                 coverConfigurator.addSelfPosition(-1, -20);
 
                 group.addWidget(coverConfigurator);

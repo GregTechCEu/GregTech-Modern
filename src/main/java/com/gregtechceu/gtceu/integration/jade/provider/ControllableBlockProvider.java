@@ -39,10 +39,10 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.contains("SuspendAfter") && capData.getBoolean("SuspendAfter")) {
+        if (capData.getBooleanOr("SuspendAfter", false)) {
             tooltip.add(
                     Component.translatable("behaviour.soft_hammer.disabled_cycle").withStyle(ChatFormatting.YELLOW));
-        } else if (capData.contains("WorkingEnabled") && !capData.getBoolean("WorkingEnabled")) {
+        } else if (capData.contains("WorkingEnabled") && !capData.getBooleanOr("WorkingEnabled", false)) {
             tooltip.add(Component.translatable("behaviour.soft_hammer.disabled").withStyle(ChatFormatting.YELLOW));
         }
     }

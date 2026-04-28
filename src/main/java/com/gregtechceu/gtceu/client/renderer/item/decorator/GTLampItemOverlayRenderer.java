@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.IItemDecorator;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,7 +22,7 @@ public class GTLampItemOverlayRenderer implements IItemDecorator {
     private GTLampItemOverlayRenderer() {}
 
     @Override
-    public boolean render(@NotNull GuiGraphics graphics, @NotNull Font font,
+    public boolean render(@NotNull GuiGraphicsExtractor graphics, @NotNull Font font,
                           ItemStack stack, int xPosition, int yPosition) {
         LampBlockItem.LampData lampData = stack.get(GTDataComponents.LAMP_DATA);
         if (lampData == null) {
@@ -32,12 +32,13 @@ public class GTLampItemOverlayRenderer implements IItemDecorator {
             return false;
         }
 
-        RenderSystem.disableDepthTest();
         if (!lampData.bloom()) {
-            GuiTextures.LAMP_NO_BLOOM.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_BLOOM.imageLocation.toIdentifier(),
+                    xPosition, yPosition, 0, 0, 16, 16, 16, 16);
         }
         if (!lampData.lit()) {
-            GuiTextures.LAMP_NO_LIGHT.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_LIGHT.imageLocation.toIdentifier(),
+                    xPosition, yPosition, 0, 0, 16, 16, 16, 16);
         }
         return true;
     }

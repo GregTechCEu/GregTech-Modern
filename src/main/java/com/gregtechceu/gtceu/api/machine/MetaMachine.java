@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
+import com.gregtechceu.gtceu.api.gui.misc.ToolGridIcons;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -43,18 +43,16 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import com.gregtechceu.gtceu.core.LDLibRuntimeHooks;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
@@ -66,7 +64,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -75,10 +72,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.AccessLevel;
@@ -140,9 +137,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    protected void beforeDeserializeSyncTag(CompoundTag tag) {
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
-        super.loadAdditional(tag, registries);
     }
 
     @MustBeInvokedByOverriders
@@ -199,7 +195,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * 
      * @param componentInput Component Input
      */
-    protected void applyImplicitComponents(DataComponentInput componentInput) {}
+    protected void applyImplicitComponents(DataComponentGetter componentInput) {}
 
     /**
      * Saves this machine's data to item stack components.
@@ -222,7 +218,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
             return subscription;
-        } else if (getLevel() instanceof DummyWorld) {
+        } else if (LDLibRuntimeHooks.isDummyWorld(getLevel())) {
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
             return subscription;
@@ -244,7 +240,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
-        if (getLevel() instanceof DummyWorld) {
+        if (LDLibRuntimeHooks.isDummyWorld(getLevel())) {
             if (isFirstDummyWorldTick) {
                 isFirstDummyWorldTick = false;
                 onLoad();
@@ -336,7 +332,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 context.getPlayer().sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
                         "gtceu.machine.muffle.on" : "gtceu.machine.muffle.off"));
             }
-            return InteractionResult.sidedSuccess(isRemote());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -351,14 +347,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             setUpwardsFacing(player.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
-            return InteractionResult.sidedSuccess(isRemote());
+            return InteractionResult.SUCCESS;
         }
         if (player.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
             setFrontFacing(gridSide);
-            return InteractionResult.sidedSuccess(isRemote());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -374,7 +370,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
@@ -460,7 +456,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Override
     public boolean triggerEvent(int id, int para) {
         if (id == 1) { // chunk re render
-            if (level != null && level.isClientSide) {
+            if (level != null && level.isClientSide()) {
                 scheduleRenderUpdate();
             }
             return true;
@@ -470,7 +466,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void setRenderState(MachineRenderState renderState) {
         this.renderState = renderState;
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             syncDataHolder.markClientSyncFieldDirty("renderState");
         }
         scheduleRenderUpdate();
@@ -513,8 +509,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
-                                              Set<GTToolType> toolTypes, ItemStack held, Direction side) {
+    public @Nullable Object sideTips(Player player, BlockPos pos, BlockState state,
+                                     Set<GTToolType> toolTypes, ItemStack held, Direction side) {
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
             var tips = cover.sideTips(player, pos, state, toolTypes, held, side);
@@ -524,16 +520,16 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (toolTypes.contains(GTToolType.WRENCH) || held.canPerformAction(GTItemAbilities.WRENCH_ROTATE)) {
             if (!player.isShiftKeyDown()) {
                 if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() && side == getFrontFacing())) {
-                    return GuiTextures.TOOL_FRONT_FACING_ROTATION;
+                    return ToolGridIcons.frontFacingRotation();
                 }
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET) || held.canPerformAction(GTItemAbilities.MALLET_PAUSE)) {
             if (this instanceof IControllable controllable) {
-                return controllable.isWorkingEnabled() ? GuiTextures.TOOL_START : GuiTextures.TOOL_PAUSE;
+                return controllable.isWorkingEnabled() ? ToolGridIcons.start() : ToolGridIcons.pause();
             }
         } else if (toolTypes.contains(GTToolType.HARD_HAMMER) || held.canPerformAction(GTItemAbilities.HAMMER_MUTE)) {
             if (this instanceof IMufflableMachine mufflableMachine) {
-                return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
+                return mufflableMachine.isMuffled() ? ToolGridIcons.sound() : ToolGridIcons.mute();
             }
         }
 
@@ -553,9 +549,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         // add render state info
         MachineRenderState renderState = this.getRenderState();
-        for (var property : renderState.getValues().entrySet()) {
+        renderState.getValues().forEach(property -> {
             lines.accept(ModelUtils.getPropertyValueString(property));
-        }
+        });
     }
 
     public MachineDefinition getDefinition() {
@@ -626,7 +622,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             getLevel().setBlockAndUpdate(getBlockPos(), blockState.setValue(getRotationState().property, facing));
         }
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
             notifyBlockUpdate();
         }
     }
@@ -656,7 +652,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (getLevel() != null && !getLevel().isClientSide()) {
                 notifyBlockUpdate();
             }
         }
@@ -852,8 +848,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ******** GUI *********//
     //////////////////////////////////////
     @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        return GuiTextures.INFO_ICON;
+    public Object getFancyTooltipIcon() {
+        return ToolGridIcons.info();
     }
 
     @Override

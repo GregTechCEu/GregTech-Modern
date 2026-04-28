@@ -6,18 +6,18 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
@@ -40,8 +40,10 @@ public class PumpCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpTransfersFluidsTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        BufferMachine crate1 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 2, 0));
         crate1.getFluidHandlerCap(Direction.NORTH, false).setFluidInTank(0, new FluidStack(Fluids.WATER, 1000));
         // LV Cover
         PumpCover cover = (PumpCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),
@@ -63,8 +65,10 @@ public class PumpCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpTransfersFluidsWrongDirectionTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        BufferMachine crate1 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 2, 0));
         crate1.getFluidHandlerCap(Direction.NORTH, false).setFluidInTank(0, new FluidStack(Fluids.WATER, 1000));
         // LV Cover
         PumpCover cover = (PumpCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),
@@ -88,8 +92,10 @@ public class PumpCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void pumpDoesntTransferItemsTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        BufferMachine crate1 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 2, 0));
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
         PumpCover cover = (PumpCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),

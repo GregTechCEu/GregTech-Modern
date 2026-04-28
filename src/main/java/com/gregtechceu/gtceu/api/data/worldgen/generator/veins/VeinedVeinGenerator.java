@@ -114,7 +114,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
         Registry<DensityFunction> densityFunctions = level.registryAccess()
-                .registryOrThrow(Registries.DENSITY_FUNCTION);
+                .lookupOrThrow(Registries.DENSITY_FUNCTION);
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
@@ -125,9 +125,9 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTWorldgen.NEW_ORE_VEIN_TOGGLE),
+        DensityFunction veinToggle = mapToNoise(densityFunctions.getValue(GTWorldgen.NEW_ORE_VEIN_TOGGLE),
                 randomState);
-        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTWorldgen.NEW_ORE_VEIN_RIDGED),
+        DensityFunction veinRidged = mapToNoise(densityFunctions.getValue(GTWorldgen.NEW_ORE_VEIN_RIDGED),
                 randomState);
 
         int size = entry.clusterSize().sample(random);

@@ -23,7 +23,6 @@ public class IndustrialTNTBlock extends GTExplosiveBlock {
         super(properties, true, true, 40);
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
                                 TooltipFlag flag) {
         tooltip.add(Component.translatable("block.gtceu.itnt.drops_tooltip"));

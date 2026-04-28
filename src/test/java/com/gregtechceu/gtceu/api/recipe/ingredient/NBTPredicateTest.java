@@ -11,16 +11,16 @@
 // import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 // import net.minecraft.core.BlockPos;
-// import net.minecraft.gametest.framework.BeforeBatch;
-// import net.minecraft.gametest.framework.GameTest;
+// import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+// import com.gregtechceu.gtceu.gametest.annotation.GameTest;
 // import net.minecraft.gametest.framework.GameTestHelper;
 // import net.minecraft.nbt.CompoundTag;
 // import net.minecraft.server.level.ServerLevel;
 // import net.minecraft.util.valueproviders.UniformInt;
 // import net.minecraft.world.item.ItemStack;
 // import net.minecraft.world.item.Items;
-// import net.neoforged.neoforge.gametest.GameTestHolder;
-// import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+// import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+// import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 
 // import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
 // import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
@@ -245,7 +245,7 @@
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
 // public static void NBTPredicateMachineCRTestSucceeds(GameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-// helper.getBlockEntity(new BlockPos(0, 1, 0)));
+// com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
 // machine.setRecipeType(CR_RECIPE_TYPE);
 // NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -266,7 +266,7 @@
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
 // public static void NBTPredicateMachineCRTestDoesntSucceed(GameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-// helper.getBlockEntity(new BlockPos(0, 1, 0)));
+// com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
 // machine.setRecipeType(CR_RECIPE_TYPE);
 // NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -287,7 +287,7 @@
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
 // public static void NBTPredicateMachineCRTestChanced(GameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-// helper.getBlockEntity(new BlockPos(0, 1, 0)));
+// com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
 // machine.setRecipeType(CR_RECIPE_TYPE);
 // NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -315,7 +315,7 @@
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
 // public static void NBTPredicateMachineCRTestRanged(GameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-// helper.getBlockEntity(new BlockPos(0, 1, 0)));
+// com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
 // machine.setRecipeType(CR_RECIPE_TYPE);
 // NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -343,7 +343,7 @@
 // @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
 // public static void NBTPredicateMachineCRTestChancedRanged(GameTestHelper helper) {
 // SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-// helper.getBlockEntity(new BlockPos(0, 1, 0)));
+// com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
 // machine.setRecipeType(CR_RECIPE_TYPE);
 // NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine

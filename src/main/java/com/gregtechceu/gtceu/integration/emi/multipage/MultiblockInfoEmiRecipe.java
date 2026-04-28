@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.emi.multipage;
 
 import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -44,7 +45,7 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return definition.getId().withPrefix("/");
+        return GTEmiIds.toResourceLocation(definition.getId().withPrefix("/"));
     }
 
     @Override

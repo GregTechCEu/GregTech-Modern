@@ -9,10 +9,10 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 
 import java.util.function.Function;

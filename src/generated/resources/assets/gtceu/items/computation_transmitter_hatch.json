@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "gtceu:block/computation_transmitter_hatch"
+    }
+}

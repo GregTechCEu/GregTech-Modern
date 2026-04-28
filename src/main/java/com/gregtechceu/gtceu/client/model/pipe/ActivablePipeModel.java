@@ -5,10 +5,15 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.random.WeightedList;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.IGeneratedBlockState;
 import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 
@@ -22,11 +27,11 @@ import java.util.Objects;
 public class ActivablePipeModel extends PipeModel {
 
     @Setter
-    public @Nullable ResourceLocation sideActive, endActive;
+    public @Nullable Identifier sideActive, endActive;
     @Setter
-    public @Nullable ResourceLocation sideSecondaryActive, endSecondaryActive;
+    public @Nullable Identifier sideSecondaryActive, endSecondaryActive;
     @Setter
-    public @Nullable ResourceLocation sideOverlayActive, endOverlayActive;
+    public @Nullable Identifier sideOverlayActive, endOverlayActive;
     @Setter
     public int activeEmissivity = 15;
 
@@ -37,7 +42,7 @@ public class ActivablePipeModel extends PipeModel {
     /// Use {@link #getOrCreateActiveConnectionElement()} instead of referencing this field directly.
     private BlockModelBuilder activeConnectionElement;
 
-    public ActivablePipeModel(PipeBlock<?, ?, ?> block, float thickness, ResourceLocation side, ResourceLocation end,
+    public ActivablePipeModel(PipeBlock<?, ?, ?> block, float thickness, Identifier side, Identifier end,
                               GTBlockstateProvider provider) {
         super(block, provider, thickness, side, end);
     }
@@ -133,7 +138,7 @@ public class ActivablePipeModel extends PipeModel {
      * @implNote The coordinates must be in the correct order or the resulting model's cubes will be inside out!
      * @see #makeElementModel
      */
-    protected BlockModelBuilder makeActiveElementModel(ResourceLocation name, @Nullable Direction endFace,
+    protected BlockModelBuilder makeActiveElementModel(Identifier name, @Nullable Direction endFace,
                                                        final float x1, final float y1, final float z1,
                                                        final float x2, final float y2, final float z2) {
         Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
@@ -143,13 +148,13 @@ public class ActivablePipeModel extends PipeModel {
                 .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))
                 .renderType(RENDERTYPE_CUTOUT_MIPPED);
 
-        ResourceLocation side = this.sideActive != null ? this.sideActive : this.side;
-        ResourceLocation end = this.endActive != null ? this.endActive : this.end;
-        ResourceLocation sideSecondary = this.sideSecondaryActive != null ? this.sideSecondaryActive :
+        Identifier side = this.sideActive != null ? this.sideActive : this.side;
+        Identifier end = this.endActive != null ? this.endActive : this.end;
+        Identifier sideSecondary = this.sideSecondaryActive != null ? this.sideSecondaryActive :
                 this.sideSecondary;
-        ResourceLocation endSecondary = this.endSecondaryActive != null ? this.endSecondaryActive : this.endSecondary;
-        ResourceLocation sideOverlay = this.sideOverlayActive != null ? this.sideOverlayActive : this.sideOverlay;
-        ResourceLocation endOverlay = this.endOverlayActive != null ? this.endOverlayActive : this.endOverlay;
+        Identifier endSecondary = this.endSecondaryActive != null ? this.endSecondaryActive : this.endSecondary;
+        Identifier sideOverlay = this.sideOverlayActive != null ? this.sideOverlayActive : this.sideOverlay;
+        Identifier endOverlay = this.endOverlayActive != null ? this.endOverlayActive : this.endOverlay;
 
         makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, side, end, SIDE_KEY, END_KEY,
@@ -172,8 +177,8 @@ public class ActivablePipeModel extends PipeModel {
                                                                     float offset, int sideTintIndex, int endTintIndex,
                                                                     final float x1, final float y1, final float z1,
                                                                     final float x2, final float y2, final float z2,
-                                                                    @Nullable ResourceLocation sideTexture,
-                                                                    @Nullable ResourceLocation endTexture,
+                                                                    @Nullable Identifier sideTexture,
+                                                                    @Nullable Identifier endTexture,
                                                                     String sideKey, String endKey,
                                                                     boolean sideEmissive, boolean endEmissive) {
         this.makePartModelElement(model, endFace, useEndWithFullCube, faceEndpoints, offset,
@@ -191,23 +196,11 @@ public class ActivablePipeModel extends PipeModel {
     }
 
     @Override
-    public IGeneratedBlockState createBlockState() {
-        if (!this.getBlock().defaultBlockState().hasProperty(GTBlockStateProperties.ACTIVE)) {
-            return super.createBlockState();
-        }
-        // spotless:off
-        return this.provider.getVariantBuilder(this.getBlock())
-                .partialState()
-                    .with(GTBlockStateProperties.ACTIVE, false)
-                    .modelForState()
-                        .modelFile(this.provider.models().getExistingFile(this.blockId))
-                    .addModel()
-                .partialState()
-                    .with(GTBlockStateProperties.ACTIVE, true)
-                    .modelForState()
-                        .modelFile(this.provider.models().getExistingFile(this.blockId.withSuffix("_active")))
-                    .addModel();
-        // spotless:on
+    public BlockModelDefinitionGenerator createBlockState() {
+        return MultiVariantGenerator.dispatch(block).with(PropertyDispatch.initial(GTBlockStateProperties.ACTIVE)
+                .generate(
+                        active -> new MultiVariant(WeightedList.of(new Variant((active ? getOrCreateActiveBlockModel() :
+                                getOrCreateBlockModel()).getLocation())))));
     }
 
     @Override

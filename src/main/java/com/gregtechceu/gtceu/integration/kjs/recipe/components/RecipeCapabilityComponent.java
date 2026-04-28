@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
@@ -11,7 +13,7 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 public class RecipeCapabilityComponent implements RecipeComponent<RecipeCapability<?>> {
 
     // spotless:off
-    public static final RecipeComponentType<RecipeCapability<?>> RECIPE_CAPABILITY = RecipeComponentType.unit(GTCEu.id("recipe_capability"), new RecipeCapabilityComponent());
+    public static final RecipeComponentType<RecipeCapability<?>> RECIPE_CAPABILITY = RecipeComponentType.unit(ResourceLocation.fromIdentifier(GTCEu.id("recipe_capability")), new RecipeCapabilityComponent());
     // spotless:on
 
     @Override

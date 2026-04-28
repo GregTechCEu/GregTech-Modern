@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.datacomponents;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -43,7 +44,8 @@ public record ComputerMonitorConfig(@With List<String> lines, @With List<String>
     }
 
     @Override
-    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag,
+                             DataComponentGetter componentGetter) {
         tooltipAdder.accept(Component.translatable("gtceu.tooltip.computer_monitor_config"));
     }
 }

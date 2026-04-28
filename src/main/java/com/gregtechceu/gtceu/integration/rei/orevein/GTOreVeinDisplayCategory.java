@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVeinDisplay> {
 
     public static final CategoryIdentifier<GTOreVeinDisplay> CATEGORY = CategoryIdentifier
-            .of(GTCEu.id("ore_vein_diagram"));
+            .of(GTReiIds.toResourceLocation("ore_vein_diagram"));
 
     private final Renderer icon;
 
@@ -60,8 +60,8 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
 
     public static void registerDisplays(DisplayRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        fluids.holders()
+                .lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        fluids.listElements()
                 .filter(ore -> ore.value().canGenerate())
                 .forEach(ore -> registry.add(new GTOreVeinDisplay(ore)));
     }

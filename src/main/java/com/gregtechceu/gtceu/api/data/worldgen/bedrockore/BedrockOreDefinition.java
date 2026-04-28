@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -35,7 +36,7 @@ public class BedrockOreDefinition {
     public static final Codec<BedrockOreDefinition> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("weight").forGetter(BedrockOreDefinition::weight),
             Codec.INT.fieldOf("size").forGetter(BedrockOreDefinition::size),
-            IntProvider.POSITIVE_CODEC.fieldOf("yield").forGetter(BedrockOreDefinition::yield),
+            IntProviders.POSITIVE_CODEC.fieldOf("yield").forGetter(BedrockOreDefinition::yield),
             Codec.INT.fieldOf("depletion_amount").forGetter(BedrockOreDefinition::depletionAmount),
             ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(BedrockOreDefinition::depletionChance),
             Codec.INT.fieldOf("depleted_yield").forGetter(BedrockOreDefinition::depletedYield),

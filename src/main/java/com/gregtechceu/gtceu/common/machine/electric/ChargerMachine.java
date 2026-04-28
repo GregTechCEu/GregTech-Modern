@@ -22,12 +22,12 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;

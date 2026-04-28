@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.client.util;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,13 +32,13 @@ public class FacadeBlockAndTintGetter implements BlockAndTintGetter {
     }
 
     @Override
-    public float getShade(Direction direction, boolean shade) {
-        return parent.getShade(direction, shade);
+    public LevelLightEngine getLightEngine() {
+        return parent.getLightEngine();
     }
 
     @Override
-    public LevelLightEngine getLightEngine() {
-        return parent.getLightEngine();
+    public CardinalLighting cardinalLighting() {
+        return parent.cardinalLighting();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FacadeBlockAndTintGetter implements BlockAndTintGetter {
     }
 
     @Override
-    public int getMinBuildHeight() {
-        return parent.getMinBuildHeight();
+    public int getMinY() {
+        return parent.getMinY();
     }
 }

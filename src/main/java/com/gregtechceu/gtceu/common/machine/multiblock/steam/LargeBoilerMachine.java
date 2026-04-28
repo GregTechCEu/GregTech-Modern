@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachineUI;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -19,22 +20,17 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +74,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     public void onStructureFormed() {
         super.onStructureFormed();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
+            serverLevel.getServer().executeIfPossible(this::updateSteamSubscription);
         }
     }
 
@@ -86,7 +82,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     public void onStructureInvalid() {
         super.onStructureInvalid();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
+            serverLevel.getServer().executeIfPossible(this::updateSteamSubscription);
         }
     }
 
@@ -143,7 +139,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
 
                 if (drained > 0) {
                     // fill steam
-                    var fillSteam = List.of(SizedFluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
+                    var steam = GTMaterials.Steam.getFluid(steamGenerated);
+                    var fillSteam = List.of(SizedFluidIngredient.of(steam.getFluid(), steam.getAmount()));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
                     outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
@@ -212,21 +209,21 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
 
             var throttleText = Component.translatable("gtceu.multiblock.large_boiler.throttle",
                     ChatFormatting.AQUA.toString() + getThrottle() + "%")
-                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(
                             Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
             textList.add(throttleText);
 
             var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
             buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
+            buttonText.append(IDisplayUIMachineUI.withButton(Component.literal("[-]"), "sub"));
             buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
+            buttonText.append(IDisplayUIMachineUI.withButton(Component.literal("[+]"), "add"));
             textList.add(buttonText);
         }
     }
 
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
+    public void handleDisplayClick(String componentData, Object clickData) {
+        if (!IDisplayUIMachineUI.isRemoteClick(clickData)) {
             int result = componentData.equals("add") ? 5 : -5;
             this.throttle = Mth.clamp(throttle + result, 25, 100);
             this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
@@ -234,8 +231,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     }
 
     @Override
-    public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+    public Object getScreenTexture() {
+        return IDisplayUIMachineUI.steamScreenTexture(maxTemperature > 800);
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {

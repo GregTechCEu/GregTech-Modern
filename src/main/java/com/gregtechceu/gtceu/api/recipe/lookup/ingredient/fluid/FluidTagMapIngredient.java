@@ -6,7 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +24,10 @@ public class FluidTagMapIngredient extends AbstractMapIngredient {
 
     @NotNull
     public static List<AbstractMapIngredient> from(@NotNull FluidIngredient ingredient) {
-        if (ingredient instanceof TagFluidIngredient tagIngredient) {
-            return Collections.singletonList(new FluidTagMapIngredient(tagIngredient.tag()));
+        if (ingredient instanceof SimpleFluidIngredient simpleIngredient) {
+            return simpleIngredient.fluidSet().unwrapKey()
+                    .map(tag -> Collections.<AbstractMapIngredient>singletonList(new FluidTagMapIngredient(tag)))
+                    .orElseGet(Collections::emptyList);
         } else {
             return Collections.emptyList();
         }

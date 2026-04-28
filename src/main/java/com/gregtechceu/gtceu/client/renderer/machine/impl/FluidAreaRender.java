@@ -8,14 +8,13 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
@@ -47,7 +46,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
     private final List<RelativeDirection> drawFaces;
 
     private @Nullable Fluid cachedFluid;
-    private @Nullable ResourceLocation cachedRecipe;
+    private @Nullable Identifier cachedRecipe;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public FluidAreaRender(FluidBlockRenderer fluidBlockRenderer,
@@ -98,8 +97,8 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             return;
         }
 
-        var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
-        var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
+        var consumer = buffer
+                .getBuffer(RenderTypes.translucentMovingBlock());
 
         for (RelativeDirection face : this.drawFaces) {
             poseStack.pushPose();

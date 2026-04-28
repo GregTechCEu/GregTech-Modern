@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -17,15 +16,12 @@ import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -82,15 +78,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         if (isRemote()) {
             sceneWidget.getRenderer().addRenderedBlocks(
                     List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
-                    new ISceneBlockRenderHook() {
-
-                        @Override
-                        @OnlyIn(Dist.CLIENT)
-                        public void apply(boolean isTESR, RenderType layer) {
-                            RenderSystem.enableBlend();
-                            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-                        }
-                    });
+                    null);
 
             sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
 

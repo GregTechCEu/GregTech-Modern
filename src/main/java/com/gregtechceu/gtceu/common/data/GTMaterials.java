@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -273,7 +273,7 @@ public class GTMaterials {
 
     @NotNull
     public static Material get(String name) {
-        var mat = GTCEuAPI.materialManager.getMaterial(ResourceLocation.parse(name));
+        var mat = GTCEuAPI.materialManager.getMaterial(Identifier.parse(name));
         // material could be null here due to the registry grabbing a material that isn't in the map
         if (mat == null || mat.isNull()) {
             GTCEu.LOGGER.warn("{} is not a known Material", name);

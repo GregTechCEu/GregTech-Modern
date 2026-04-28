@@ -7,11 +7,13 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.emi.GTEMIPlugin;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -29,7 +31,8 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     private final GTRecipeCategory category;
 
     private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.registryKey, IGui2Renderable.toDrawable(category.getIcon(), 16, 16));
+        super(GTEmiIds.toResourceLocation(category.registryKey),
+                IGui2Renderable.toDrawable((IGuiTexture) category.getIcon(), 16, 16));
         this.category = category;
     }
 

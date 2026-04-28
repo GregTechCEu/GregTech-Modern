@@ -24,9 +24,12 @@ public class ActiveBlockBuilder extends BlockBuilder {
     public static final UnaryOperator<String> ACTIVE = s -> s + "_active";
     public static final UnaryOperator<String> BLOOM = s -> s + "_bloom";
     public static final UnaryOperator<String> ACTIVE_BLOCK = ID.BLOCK.andThen(ACTIVE)::apply;
-    public static final ResourceLocation CUBE_2_LAYER_ALL_MODEL = GTCEu.id("block/cube_2_layer/all");
-    public static final ResourceLocation CUBE_BOTTOM_TOP_MODEL = ResourceLocation.withDefaultNamespace("block/cube_bottom_top");
-    public static final ResourceLocation FIRE_BOX_ACTIVE_MODEL = GTCEu.id("block/fire_box_active");
+    public static final ResourceLocation CUBE_2_LAYER_ALL_MODEL =
+            GTResourceLocation.toResourceLocation(GTCEu.id("block/cube_2_layer/all"));
+    public static final ResourceLocation CUBE_BOTTOM_TOP_MODEL =
+            ResourceLocation.withDefaultNamespace("block/cube_bottom_top");
+    public static final ResourceLocation FIRE_BOX_ACTIVE_MODEL =
+            GTResourceLocation.toResourceLocation(GTCEu.id("block/fire_box_active"));
     // spotless:on
 
     public enum Type {

@@ -13,7 +13,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
+import com.mojang.serialization.MapCodec;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -46,9 +49,10 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      * Saves BE data to world save.
      */
     @Override
-    protected final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.merge(getSyncDataHolder().serializeNBT(registries, false));
+    protected final void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        var registries = getLevel() == null ? net.minecraft.core.RegistryAccess.EMPTY : getLevel().registryAccess();
+        output.store(getSyncDataHolder().serializeNBT(registries, false));
     }
 
     /**
@@ -58,11 +62,15 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     @MustBeInvokedByOverriders
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        getSyncDataHolder().deserializeNBT(registries, tag,
-                (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        beforeDeserializeSyncTag(tag);
+        getSyncDataHolder().deserializeNBT(input.lookup(), tag,
+                (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide()));
     }
+
+    protected void beforeDeserializeSyncTag(CompoundTag tag) {}
 
     /**
      * Called to gather BE data to be sent when a client loads this BE.

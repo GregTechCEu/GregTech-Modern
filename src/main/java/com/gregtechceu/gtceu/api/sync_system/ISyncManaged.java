@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.sync_system;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
  * Represents a class with fields that have sync annotations.

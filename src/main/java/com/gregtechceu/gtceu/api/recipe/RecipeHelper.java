@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.ExDataComponentFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -31,6 +33,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ExtensionMethod(SizedIngredientExtensions.class)
 public class RecipeHelper {
 
     public static EnergyStack getRealEUt(@NotNull GTRecipe recipe) {
@@ -414,7 +418,7 @@ public class RecipeHelper {
     public static FluidIngredient makeFluidIngredient(FluidStack stack) {
         var tagKey = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath());
         if (stack.isComponentsPatchEmpty()) {
-            return FluidIngredient.tag(tagKey);
+            return FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(tagKey));
         } else {
             return ExDataComponentFluidIngredient.of(true, stack.getComponents(), tagKey);
         }
@@ -426,7 +430,7 @@ public class RecipeHelper {
 
     public static Ingredient makeItemIngredient(ItemStack stack) {
         if (stack.isComponentsPatchEmpty()) {
-            return Ingredient.of(stack);
+            return Ingredient.of(stack.getItem());
         } else {
             return DataComponentIngredient.of(true, stack);
         }

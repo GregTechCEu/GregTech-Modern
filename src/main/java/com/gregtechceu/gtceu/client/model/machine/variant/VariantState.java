@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.client.model.machine.variant;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.compat.ModelState;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.util.VariantRotationHelpers;
 
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.*;
@@ -21,7 +21,7 @@ import java.util.Objects;
 public class VariantState implements ModelState {
 
     @Getter
-    private final Either<ResourceLocation, UnbakedModel> model;
+    private final Either<Identifier, UnbakedModel> model;
     @Getter
     private final Transformation rotation;
     @Getter
@@ -32,7 +32,7 @@ public class VariantState implements ModelState {
     @Setter
     private UnbakedModel resolvedModel;
 
-    public VariantState(Either<ResourceLocation, UnbakedModel> model,
+    public VariantState(Either<Identifier, UnbakedModel> model,
                         Transformation rotation, boolean uvLocked, int weight) {
         this.model = model;
         this.rotation = rotation;

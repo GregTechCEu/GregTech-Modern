@@ -29,15 +29,12 @@ import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.*;
@@ -173,7 +170,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
             int count;
             if (ing.getContainedCustom() instanceof IntProviderIngredient provider) {
-                count = provider.getCountProvider().getMaxValue();
+                count = provider.getCountProvider().sample(net.minecraft.util.RandomSource.create());
             } else {
                 count = ing.count();
             }
@@ -228,17 +225,20 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
             int count;
             if (ing.getContainedCustom() instanceof IntProviderIngredient provider)
-                count = provider.getCountProvider().getMaxValue();
+                count = provider.getCountProvider().sample(net.minecraft.util.RandomSource.create());
             else count = ing.count();
+            if (count <= 0) continue;
 
             if (content.chance == 0) {
                 nonConsumables.addTo(ing, count);
             } else {
+                var stack = getGroupingItem(ing);
+                if (stack == null) continue;
+
                 boolean has = false;
                 for (var recipeIng : consumables.object2LongEntrySet()) {
-                    var stack = ing.getItems()[0];
                     if (recipeIng.getKey().test(stack)) {
-                        recipeIng.setValue(recipeIng.getLongValue() + stack.getCount());
+                        recipeIng.setValue(recipeIng.getLongValue() + count);
                         has = true;
                         break;
                     }
@@ -308,6 +308,18 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         }
 
         return maxMultiplier;
+    }
+
+    private static @Nullable ItemStack getGroupingItem(SizedIngredient ingredient) {
+        if (ingredient.getContainedCustom() instanceof IntProviderIngredient ranged) {
+            return ranged.getInner().items()
+                    .findFirst()
+                    .map(ItemStack::new)
+                    .orElse(null);
+        }
+
+        ItemStack[] items = ingredient.getItems();
+        return items.length == 0 ? null : items[0];
     }
 
     private static List<Object2LongMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
@@ -419,7 +431,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @NotNull
     @Override
-    public Widget createWidget() {
+    public Object createWidget() {
         SlotWidget slot = new SlotWidget();
         slot.initTemplate();
         return slot;
@@ -427,12 +439,12 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @NotNull
     @Override
-    public Class<? extends Widget> getWidgetClass() {
+    public Class<?> getWidgetClass() {
         return SlotWidget.class;
     }
 
     @Override
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull Object widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,
@@ -485,13 +497,13 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                     if (this.of(content.content).getContainedCustom() instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",
-                                        countProvider.getMinValue(), countProvider.getMaxValue())
+                                        countProvider.sample(net.minecraft.util.RandomSource.create()), countProvider.sample(net.minecraft.util.RandomSource.create()))
                                 .withStyle(ChatFormatting.GOLD));
                     } else if (this.of(content.content) instanceof SizedIngredient sizedIngredient &&
                             sizedIngredient.getContainedCustom() instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",
-                                        countProvider.getMinValue(), countProvider.getMaxValue())
+                                        countProvider.sample(net.minecraft.util.RandomSource.create()), countProvider.sample(net.minecraft.util.RandomSource.create()))
                                 .withStyle(ChatFormatting.GOLD));
                     }
                     // spotless:on
@@ -543,7 +555,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         boolean isIntProvider = inner.getCustomIngredient() instanceof IntProviderIngredient;
 
         UnaryOperator<ItemStack> setCount = (stack) -> isIntProvider ? stack.copyWithCount(1) : stack;
-        Arrays.stream(inner.getItems())
+        inner.items()
+                .map(item -> new ItemStack(item, count))
                 .map(setCount)
                 .forEach(stackList::add);
         return stackList;
@@ -571,9 +584,9 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             return null;
         }
 
-        var values = ingredient.getValues();
-        if (values.length > 0 && values[0] instanceof Ingredient.TagValue(TagKey<Item> tag)) {
-            return ItemTagList.of(tag, amount, DataComponentPatch.EMPTY);
+        var tag = ingredient.getValues().unwrapKey();
+        if (tag.isPresent()) {
+            return ItemTagList.of(tag.get(), amount, DataComponentPatch.EMPTY);
         }
         return null;
     }

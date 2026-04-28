@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
@@ -33,8 +34,9 @@ public class QuantumTankMachineItem extends MetaMachineItem {
         final long finalCapacity = capacity;
 
         event.registerItem(
-                Capabilities.FluidHandler.ITEM,
-                (stack, ignored) -> new QuantumFluidHandlerItemStack(stack, finalCapacity),
+                Capabilities.Fluid.ITEM,
+                (stack, ignored) -> FluidHandlerAdapters.toResourceHandler(
+                        new QuantumFluidHandlerItemStack(stack, finalCapacity)),
                 this);
     }
 }

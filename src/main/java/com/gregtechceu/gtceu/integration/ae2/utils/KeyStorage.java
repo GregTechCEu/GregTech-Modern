@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -81,10 +82,13 @@ public class KeyStorage implements INBTSerializable<ListTag>,
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, ListTag tags) {
         for (int i = 0; i < tags.size(); i++) {
-            var tag = tags.getCompound(i);
-            var key = AEKey.fromTagGeneric(provider, tag.getCompound("key"));
-            long value = tag.getLong("value");
-            storage.put(key, value);
+            var tag = tags.getCompoundOrEmpty(i);
+            var key = tag.getCompound("key")
+                    .map(keyTag -> AEKey.fromTagGeneric(provider, keyTag))
+                    .orElse(null);
+            if (key != null) {
+                storage.put(key, tag.getLongOr("value", 0L));
+            }
         }
     }
 

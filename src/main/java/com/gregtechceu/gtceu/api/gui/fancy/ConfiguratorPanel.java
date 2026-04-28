@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -99,8 +98,6 @@ public class ConfiguratorPanel extends WidgetGroup {
     protected void drawWidgetsBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
-                RenderSystem.setShaderColor(1, 1, 1, 1);
-                RenderSystem.enableBlend();
                 if (widget.inAnimate()) {
                     widget.getAnimation().drawInBackground(graphics, mouseX, mouseY, partialTicks);
                 } else {
@@ -109,16 +106,11 @@ public class ConfiguratorPanel extends WidgetGroup {
             }
         }
         if (expanded != null && expanded.isVisible()) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 300);
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
                 expanded.getAnimation().drawInBackground(graphics, mouseX, mouseY, partialTicks);
             } else {
                 expanded.drawInBackground(graphics, mouseX, mouseY, partialTicks);
             }
-            graphics.pose().popPose();
         }
     }
 
@@ -132,8 +124,6 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
-                RenderSystem.setShaderColor(1, 1, 1, 1);
-                RenderSystem.enableBlend();
                 if (widget.inAnimate()) {
                     widget.getAnimation().drawInForeground(graphics, mouseX, mouseY, partialTicks);
                 } else {
@@ -142,8 +132,6 @@ public class ConfiguratorPanel extends WidgetGroup {
             }
         }
         if (expanded != null && expanded.isVisible()) {
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
                 expanded.getAnimation().drawInForeground(graphics, mouseX, mouseY, partialTicks);
             } else {
@@ -202,7 +190,11 @@ public class ConfiguratorPanel extends WidgetGroup {
                 this.view = null;
                 this.addWidget(button);
             } else {
-                var widget = configurator.createConfigurator();
+                if (!(configurator.createConfigurator() instanceof Widget widget)) {
+                    this.view = null;
+                    this.addWidget(button);
+                    return;
+                }
                 widget.setSelfPosition(new Position(border, getTabSize()));
 
                 this.view = new WidgetGroup(0, 0, 0, 0) {
@@ -356,7 +348,9 @@ public class ConfiguratorPanel extends WidgetGroup {
             } else {
                 drawWidgetsBackground(graphics, mouseX, mouseY, partialTicks);
             }
-            configurator.getIcon().draw(graphics, mouseX, mouseY, position.x + size.width - 20, position.y + 4, 16, 16);
+            if (configurator.getIcon() instanceof IGuiTexture icon) {
+                icon.draw(graphics, mouseX, mouseY, position.x + size.width - 20, position.y + 4, 16, 16);
+            }
         }
 
         @Override

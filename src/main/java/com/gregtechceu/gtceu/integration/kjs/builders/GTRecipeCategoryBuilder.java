@@ -2,15 +2,13 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeCategoryIcons;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +25,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     private transient GTRecipeType recipeType;
     @Setter
     @Nullable
-    private transient IGuiTexture icon;
+    private transient Object icon;
     @Setter
     private transient boolean isXEIVisible;
     @Setter
@@ -51,18 +49,18 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     @Override
     public GTRecipeCategory createObject() {
-        return GTRecipeCategories.register(id, recipeType)
+        return GTRecipeCategories.register(id.toIdentifier(), recipeType)
                 .setIcon(icon)
                 .setXEIVisible(isXEIVisible);
     }
 
-    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
-        this.icon = new ResourceTexture(location.withPrefix("textures/").withSuffix(".png"));
+    public GTRecipeCategoryBuilder setCustomIcon(Identifier location) {
+        this.icon = GTRecipeCategoryIcons.resource(location);
         return this;
     }
 
     public GTRecipeCategoryBuilder setItemIcon(ItemStack... stacks) {
-        this.icon = new ItemStackTexture(stacks);
+        this.icon = GTRecipeCategoryIcons.itemStack(stacks);
         return this;
     }
 }

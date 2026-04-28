@@ -251,7 +251,9 @@ public class TabsWidget extends Widget {
             tabTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
         // render icon
-        tab.getTabIcon().draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
+        if (tab.getTabIcon() instanceof IGuiTexture icon) {
+            icon.draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
+        }
     }
 
     public void selectTab(IFancyUIProvider selectedTab) {

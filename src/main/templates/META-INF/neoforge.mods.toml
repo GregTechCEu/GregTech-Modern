@@ -37,16 +37,13 @@ enumExtensions = "META-INF/enum_extensions.json"
     side = "BOTH"
 
 [[dependencies.${mod_id}]]
-    modId = "ldlib"
-    type = "required"
-    embedded = true
-    versionRange = "[${ldlib_version},)"
+    modId = "ldlib2"
+    type = "optional"
+    versionRange = "[${ldlib2_version},)"
     ordering = "AFTER"
     side = "BOTH"
     [dependencies.${mod_id}.mc-publish]
-        ignore = false
-        modrinth = "ldlib"
-        curseforge = "ldlib"
+        ignore = true
 
 [[dependencies.${mod_id}]]
     modId = "configuration"

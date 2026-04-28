@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -21,9 +22,6 @@ import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -188,13 +186,13 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             textList.add(Component.translatable("gtceu.machine.miner.startz",
                     getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
             textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
+                    .append(IDisplayUIMachineUI.withButton(Component.literal("[")
                             .append(getRecipeLogic().isSilkTouchMode() ?
                                     Component.translatable("gtceu.creative.activity.on") :
                                     Component.translatable("gtceu.creative.activity.off"))
                             .append(Component.literal("]")), "silk_touch")));
             textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
+                    .append(IDisplayUIMachineUI.withButton(Component.literal("[")
                             .append(getRecipeLogic().isChunkMode() ?
                                     Component.translatable("gtceu.creative.activity.on") :
                                     Component.translatable("gtceu.creative.activity.off"))
@@ -213,8 +211,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
+    public void handleDisplayClick(String componentData, Object clickData) {
+        if (!IDisplayUIMachineUI.isRemoteClick(clickData)) {
             if (componentData.equals("chunk_mode")) {
                 getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
             }

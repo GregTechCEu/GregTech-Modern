@@ -12,11 +12,11 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.item.crafting.Recipe;
@@ -74,11 +74,11 @@ public class GTDynamicDataPack implements PackResources {
         CONTENTS.clearData();
     }
 
-    public static void addResource(ResourceLocation location, JsonElement obj) {
+    public static void addResource(Identifier location, JsonElement obj) {
         addResource(location, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    public static void addResource(ResourceLocation location, byte[] data) {
+    public static void addResource(Identifier location, byte[] data) {
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
             writeJson(location, parent, data);
@@ -86,7 +86,7 @@ public class GTDynamicDataPack implements PackResources {
         CONTENTS.addToData(location, data);
     }
 
-    public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
+    public static void addRecipe(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
                                  HolderLookup.Provider registries) {
         JsonElement recipeJson = Recipe.CODEC
                 .encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), recipe)
@@ -102,18 +102,18 @@ public class GTDynamicDataPack implements PackResources {
         addAdvancement(advancement.id(), advancement.value(), registries);
     }
 
-    public static void addAdvancement(ResourceLocation loc, Advancement advancement, HolderLookup.Provider registries) {
+    public static void addAdvancement(Identifier loc, Advancement advancement, HolderLookup.Provider registries) {
         JsonElement advancementJson = Advancement.CODEC
                 .encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), advancement)
                 .getOrThrow();
         addResource(ADVANCEMENT_ID_CONVERTER.idToFile(loc), advancementJson);
     }
 
-    public static void addLootTable(ResourceLocation lootTableId, LootTable table, HolderLookup.Provider registries) {
+    public static void addLootTable(Identifier lootTableId, LootTable table, HolderLookup.Provider registries) {
         JsonElement lootTableJson = LootTable.DIRECT_CODEC
                 .encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), table).getOrThrow();
 
-        ResourceLocation fileName = LOOT_TABLE_ID_CONVERTER.idToFile(lootTableId);
+        Identifier fileName = LOOT_TABLE_ID_CONVERTER.idToFile(lootTableId);
         if (CONTENTS.getResource(fileName) != null) {
             GTCEu.LOGGER.error("duplicate loot table: {}", lootTableId);
         }
@@ -122,8 +122,8 @@ public class GTDynamicDataPack implements PackResources {
 
     public static <T, R> void addDataMap(DataMapType<R, T> type, DataMapProvider.Builder<T, R> builder,
                                          HolderLookup.Provider provider) {
-        ResourceLocation dataMapId = type.id()
-                .withPrefix(DataMapLoader.getFolderLocation(type.registryKey().location()) + "/");
+        Identifier dataMapId = type.id()
+                .withPrefix(DataMapLoader.getFolderLocation(type.registryKey().identifier()) + "/");
 
         JsonElement dataMapJson = DataMapFile.codec(type.registryKey(), type)
                 .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), builder.build().carrier())
@@ -144,7 +144,7 @@ public class GTDynamicDataPack implements PackResources {
      * @param json   the json to write.
      */
     @ApiStatus.Internal
-    public static void writeJson(ResourceLocation id, Path parent, byte[] json) {
+    public static void writeJson(Identifier id, Path parent, byte[] json) {
         try {
             Path file = parent.resolve(id.getNamespace()).resolve(id.getPath());
 
@@ -167,7 +167,7 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     @Override
-    public @Nullable IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+    public @Nullable IoSupplier<InputStream> getResource(PackType type, Identifier location) {
         if (type == PackType.SERVER_DATA) {
             return CONTENTS.getResource(location);
         } else {
@@ -189,10 +189,11 @@ public class GTDynamicDataPack implements PackResources {
 
     @SuppressWarnings("unchecked")
     @Override
-    public @Nullable <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if (metaReader == PackMetadataSection.TYPE) {
+    public @Nullable <T> T getMetadataSection(MetadataSectionType<T> metaReader) throws IOException {
+        if (metaReader == PackMetadataSection.forPackType(PackType.SERVER_DATA) ||
+                metaReader == PackMetadataSection.FALLBACK_TYPE) {
             return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"),
-                    SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+                    SharedConstants.getCurrentVersion().packVersion(PackType.SERVER_DATA).minorRange());
         }
         return null;
     }

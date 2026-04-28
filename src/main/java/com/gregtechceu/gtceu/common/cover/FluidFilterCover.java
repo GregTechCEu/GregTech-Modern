@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
@@ -13,12 +12,9 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -75,14 +71,8 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getFluidFilter().openConfigurator(62, 25));
-        return group;
+    public Object createUIWidget() {
+        return FluidFilterCoverUI.createUIWidget(this);
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {
@@ -128,16 +118,22 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     public CompoundTag copyConfig(CompoundTag tag) {
         tag.putInt("manualIO", getAllowFlow().ordinal());
         tag.putInt("filterMode", getFilterMode().ordinal());
-        tag.put("filter", attachItem.save(coverHolder.getLevel().registryAccess()));
+        tag.put("filter", ItemStack.OPTIONAL_CODEC
+                .encodeStart(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        attachItem)
+                .getOrThrow());
         return super.copyConfig(tag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
-        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
-        fluidFilter = FluidFilter.loadFilter(
-                ItemStack.parseOptional(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")));
+        setAllowFlow(ManualIOMode.values()[tag.getIntOr("manualIO", 0)]);
+        setFilterMode(FilterMode.values()[tag.getIntOr("filterMode", 0)]);
+        fluidFilter = FluidFilter.loadFilter(ItemStack.OPTIONAL_CODEC
+                .parse(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        tag.getCompoundOrEmpty("filter"))
+                .result()
+                .orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }
 }

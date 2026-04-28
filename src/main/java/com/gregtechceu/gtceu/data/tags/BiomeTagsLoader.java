@@ -8,17 +8,13 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class BiomeTagsLoader extends BiomeTagsProvider {
 
-    public BiomeTagsLoader(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture,
-                           @Nullable ExistingFileHelper existingFileHelper) {
-        super(arg, completableFuture, GTCEu.MOD_ID, existingFileHelper);
+    public BiomeTagsLoader(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture) {
+        super(arg, completableFuture, GTCEu.MOD_ID);
     }
 
     @Override

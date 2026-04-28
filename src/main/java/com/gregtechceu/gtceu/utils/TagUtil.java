@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -21,8 +21,8 @@ public class TagUtil {
      */
     public static <T> TagKey<T> createTag(ResourceKey<? extends Registry<T>> registryKey, String path,
                                           boolean vanilla) {
-        if (vanilla) return TagKey.create(registryKey, ResourceLocation.withDefaultNamespace(path));
-        return TagKey.create(registryKey, ResourceLocation.fromNamespaceAndPath("c", path));
+        if (vanilla) return TagKey.create(registryKey, Identifier.withDefaultNamespace(path));
+        return TagKey.create(registryKey, Identifier.fromNamespaceAndPath("c", path));
     }
 
     /**
@@ -108,7 +108,7 @@ public class TagUtil {
         return createModTag(Registries.FLUID, path);
     }
 
-    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation path) {
+    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, Identifier path) {
         return TagKey.create(registryKey, path);
     }
 }

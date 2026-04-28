@@ -1,10 +1,7 @@
 {
     "variants": {
-        "active=false": {
+        "": {
             "model": "gtceu:block/variant/heat_vent"
-        },
-        "active=true": {
-            "model": "gtceu:block/variant/heat_vent_active"
         }
     }
 }

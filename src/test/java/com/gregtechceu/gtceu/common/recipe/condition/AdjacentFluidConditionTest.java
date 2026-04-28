@@ -6,19 +6,19 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 @PrefixGameTestTemplate(false)
@@ -59,7 +59,8 @@ public class AdjacentFluidConditionTest {
         // Machine is at 1,1,1 so 0,1,1 is next to it
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.WATER);
 
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -79,7 +80,8 @@ public class AdjacentFluidConditionTest {
     @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionNoFluidPresentTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -100,7 +102,8 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionWrongFluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 is next to it
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.LAVA);
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -120,10 +123,11 @@ public class AdjacentFluidConditionTest {
     @TestHolder()
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionTwoFluidCorrectFluidsPresentTest(GameTestHelper helper) {
-        // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
+        // Machine is at 1,1,1 so 0,1,1 and 2,1,1 are next to it.
         helper.setBlock(new BlockPos(0, 1, 1), Blocks.LAVA);
-        helper.setBlock(new BlockPos(1, 1, 0), Blocks.WATER);
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        helper.setBlock(new BlockPos(2, 1, 1), Blocks.WATER);
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -145,7 +149,8 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionTwoFluidNr1FluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
         helper.setBlock(new BlockPos(1, 1, 0), Blocks.WATER);
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -165,7 +170,8 @@ public class AdjacentFluidConditionTest {
     public static void adjacentFluidConditionTwoFluidNr2FluidPresentTest(GameTestHelper helper) {
         // Machine is at 1,1,1 so 0,1,1 and 1,1,0 are next to it
         helper.setBlock(new BlockPos(1, 1, 0), Blocks.LAVA);
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;
@@ -183,7 +189,8 @@ public class AdjacentFluidConditionTest {
     // Test for checking if the rock breaker works when one of the two fluids are present
     @GameTest(template = "charged_hv_rock_breaker", batch = "AdjacentFluidCondition")
     public static void adjacentFluidConditionTwoFluidNoFluidPresentTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        SimpleTieredMachine machine = (SimpleTieredMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 1, 1));
 
         machine.setRecipeType(ROCK_BREAKER_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = machine.importItems;

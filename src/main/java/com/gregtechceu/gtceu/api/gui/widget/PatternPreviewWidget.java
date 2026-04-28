@@ -123,7 +123,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 }
                 if (hoverPosFace != null) {
                     var state = getDummyWorld().getBlockState(hoverPosFace.pos());
-                    hoverItem = state.getBlock().getCloneItemStack(getDummyWorld(), hoverPosFace.pos(), state);
+                    hoverItem = state.getBlock().asItem().getDefaultInstance();
                 }
                 BlockPosFace tmp = dragging ? clickPosFace : hoverPosFace;
                 if (selectedPosFace != null || tmp != null) {
@@ -158,7 +158,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         if (ConfigHolder.INSTANCE.client.useVBO) {
             if (!RenderSystem.isOnRenderThread()) {
-                RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
+                sceneWidget.useCacheBuffer();
             } else {
                 sceneWidget.useCacheBuffer();
             }
@@ -371,7 +371,6 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     @Override
     public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.enableBlend();
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
     }
 
@@ -447,7 +446,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         for (Map.Entry<BlockPos, BlockInfo> entry : blocks.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState blockState = PatternPreviewWidget.LEVEL.getBlockState(pos);
-            ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewWidget.LEVEL, pos, blockState);
+            ItemStack itemStack = blockState.getBlock().asItem().getDefaultInstance();
 
             if (itemStack.isEmpty() && !blockState.getFluidState().isEmpty()) {
                 Fluid fluid = blockState.getFluidState().getType();

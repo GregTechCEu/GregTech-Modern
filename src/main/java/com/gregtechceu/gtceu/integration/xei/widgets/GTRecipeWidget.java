@@ -33,7 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
@@ -109,7 +109,7 @@ public class GTRecipeWidget extends WidgetGroup {
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
         yOffset += !EUt.isEmpty() ? 21 : 0;
-        if (recipe.data.getBoolean("duration_is_total_cwu")) {
+        if (recipe.data.getBooleanOr("duration_is_total_cwu", false)) {
             yOffset -= 10;
         }
 
@@ -131,8 +131,8 @@ public class GTRecipeWidget extends WidgetGroup {
         for (RecipeCondition<?> condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(dimCondition
-                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                addWidget(DimensionConditionWidget
+                        .create(dimCondition, recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
                                 recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
@@ -196,13 +196,13 @@ public class GTRecipeWidget extends WidgetGroup {
     private static List<Component> getRecipeParaText(GTRecipe recipe, int duration,
                                                      EnergyStack.WithIO eu) {
         List<Component> texts = new ArrayList<>();
-        if (!recipe.data.getBoolean("hide_duration")) {
+        if (!recipe.data.getBooleanOr("hide_duration", false)) {
             texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
         }
         if (eu.voltage() > 0) {
             long euTotal = eu.getTotalEU() * duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
-            if (recipe.data.getBoolean("duration_is_total_cwu") &&
+            if (recipe.data.getBooleanOr("duration_is_total_cwu", false) &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
@@ -223,7 +223,7 @@ public class GTRecipeWidget extends WidgetGroup {
         addWidget(
                 new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
                         cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
-                        () -> !FMLLoader.isProduction(), !FMLLoader.isProduction())
+                        () -> !FMLEnvironment.isProduction(), !FMLEnvironment.isProduction())
                         .setHoverTooltips("click to copy: " + recipe.id));
     }
 
@@ -433,18 +433,19 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                var widgetClass = cap.getWidgetClass();
+                @SuppressWarnings("unchecked")
+                var widgetClass = (Class<? extends Widget>) cap.getWidgetClass();
                 if (widgetClass != null) {
                     WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                             widget -> {
                                 var index = WidgetUtils.widgetIdIndex(widget);
                                 if (index >= 0 && index < contents.size()) {
                                     var content = contents.get(index);
-                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.recipeType, recipe,
                                             content,
                                             null, minTier, tier);
-                                    widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                            recipe.getType().getChanceFunction()));
+                                    widget.setOverlay((IGuiTexture) content.createOverlay(index >= nonTickCount,
+                                            minTier, tier, recipe.recipeType.getChanceFunction()));
                                 }
                             });
                 }

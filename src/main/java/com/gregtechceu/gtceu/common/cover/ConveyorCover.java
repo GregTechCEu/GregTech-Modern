@@ -11,9 +11,6 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -25,17 +22,10 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -82,7 +72,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
-    private Widget ioModeSwitch;
+    Object ioModeSwitch;
 
     @SaveField
     @SyncToClient
@@ -417,51 +407,11 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     // *********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
-
-        group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
-                .setMin(1).setMax(maxItemTransferRate));
-
-        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
-                DistributionMode.values(), distributionMode, this::setDistributionMode);
-
-        distributionSelector.setVisible(shouldRespectDistributionMode());
-        group.addWidget(distributionSelector);
-
-        ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
-                (clickData, value) -> {
-                    setIo(value ? IO.IN : IO.OUT);
-                    ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-                })
-                .setTexture(
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
-                .setPressed(io == IO.IN)
-                .setHoverTooltips(
-                        LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-        group.addWidget(ioModeSwitch);
-
-        if (shouldDisplayDistributionMode()) {
-            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
-                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
-        }
-
-        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
-                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
-
-        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
-
-        buildAdditionalUI(group);
-
-        return group;
+    public Object createUIWidget() {
+        return ConveyorCoverUI.createUIWidget(this);
     }
 
-    private boolean shouldDisplayDistributionMode() {
+    boolean shouldDisplayDistributionMode() {
         return coverHolder.getLevel().getBlockEntity(coverHolder.getBlockPos()) instanceof ItemPipeBlockEntity ||
                 coverHolder.getLevel()
                         .getBlockEntity(
@@ -471,10 +421,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     @NotNull
     protected String getUITitle() {
         return "cover.conveyor.title";
-    }
-
-    protected void buildAdditionalUI(WidgetGroup group) {
-        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
     protected void configureFilter() {
@@ -547,17 +493,24 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         tag.putInt("io", getIo().ordinal());
         tag.putInt("distributionMode", getDistributionMode().ordinal());
         tag.putInt("manualIO", getManualIOMode().ordinal());
-        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        tag.put("filter", ItemStack.CODEC
+                .encodeStart(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        filterHandler.getFilterItem())
+                .getOrThrow());
         return super.copyConfig(tag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setTransferRate(tag.getInt("transferRate"));
-        setIo(IO.values()[tag.getInt("io")]);
-        setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
-        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
-        filterHandler.setFilterItem(ItemStack.parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter"))
+        setTransferRate(tag.getIntOr("transferRate", getTransferRate()));
+        setIo(IO.values()[tag.getIntOr("io", getIo().ordinal())]);
+        setDistributionMode(
+                DistributionMode.values()[tag.getIntOr("distributionMode", getDistributionMode().ordinal())]);
+        setManualIOMode(ManualIOMode.values()[tag.getIntOr("manualIO", getManualIOMode().ordinal())]);
+        filterHandler.setFilterItem(ItemStack.CODEC
+                .parse(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        tag.getCompoundOrEmpty("filter"))
+                .result()
                 .orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }

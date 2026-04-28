@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;

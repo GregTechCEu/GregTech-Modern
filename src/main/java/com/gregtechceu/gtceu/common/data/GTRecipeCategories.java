@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,16 +22,16 @@ public class GTRecipeCategories {
     public static final GTRecipeCategory INGOT_MOLDING = register("ingot_molding", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
 
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = register("arc_furnace_recycling", GTRecipeTypes.ARC_FURNACE_RECIPES)
-            .setIcon(GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
+            .setIcon(() -> GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
 
     public static final GTRecipeCategory MACERATOR_RECYCLING = register("macerator_recycling", GTRecipeTypes.MACERATOR_RECIPES)
-            .setIcon(GuiTextures.MACERATOR_RECYCLING_CATEGORY);
+            .setIcon(() -> GuiTextures.MACERATOR_RECYCLING_CATEGORY);
 
     public static final GTRecipeCategory EXTRACTOR_RECYCLING = register("extractor_recycling", GTRecipeTypes.EXTRACTOR_RECIPES)
-            .setIcon(GuiTextures.EXTRACTOR_RECYCLING_CATEGORY);
+            .setIcon(() -> GuiTextures.EXTRACTOR_RECYCLING_CATEGORY);
     // spotless:on
 
-    public static GTRecipeCategory register(ResourceLocation id, @NotNull GTRecipeType recipeType) {
+    public static GTRecipeCategory register(Identifier id, @NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(id, recipeType);
         GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
@@ -43,6 +44,6 @@ public class GTRecipeCategories {
     public static void init() {}
 
     public static GTRecipeCategory get(String name) {
-        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name));
+        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name)).map(Holder::value).orElseThrow();
     }
 }

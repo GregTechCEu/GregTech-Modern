@@ -11,10 +11,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 public class PatternPreviewSlotWidget extends SlotWidget {
 
@@ -40,8 +38,9 @@ public class PatternPreviewSlotWidget extends SlotWidget {
                 if (!itemStack.isEmpty() && splitSize > 1 &&
                         AbstractContainerMenu.canItemQuickReplace(this.slotReference, itemStack, true)) {
                     itemStack = itemStack.copy();
-                    itemStack.grow(AbstractContainerMenu.getQuickCraftPlaceCount(modularUIGui.getQuickCraftSlots(),
-                            modularUIGui.dragSplittingLimit, itemStack));
+                    itemStack.grow(
+                            AbstractContainerMenu.getQuickCraftPlaceCount(modularUIGui.getQuickCraftSlots().size(),
+                                    modularUIGui.dragSplittingLimit, itemStack));
                     int k = Math.min(itemStack.getMaxStackSize(), this.slotReference.getMaxStackSize(itemStack));
                     if (itemStack.getCount() > k) {
                         itemStack.setCount(k);
@@ -57,10 +56,8 @@ public class PatternPreviewSlotWidget extends SlotWidget {
         this.drawOverlay(graphics, mouseX, mouseY, partialTicks);
         if (this.drawHoverOverlay && this.isMouseOverElement((double) mouseX, (double) mouseY) &&
                 this.getHoverElement((double) mouseX, (double) mouseY) == this) {
-            RenderSystem.colorMask(true, true, true, false);
             DrawerHelper.drawSolidRect(graphics, this.getPosition().x + 1, this.getPosition().y + 1, 16, 16,
                     -2130706433);
-            RenderSystem.colorMask(true, true, true, true);
         }
     }
 
@@ -70,20 +67,10 @@ public class PatternPreviewSlotWidget extends SlotWidget {
         var r = ColorUtils.red(color);
         var g = ColorUtils.green(color);
         var b = ColorUtils.blue(color);
-        RenderSystem.setShaderColor(r, g, b, a);
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(true);
 
         Minecraft mc = Minecraft.getInstance();
 
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 100);
-
         graphics.renderItem(itemStack, x, y);
-        graphics.pose().translate(0, 0, 100);
-
-        graphics.pose().pushPose();
 
         // actual offset bit that's important :3
         int xOffset = 0;
@@ -96,15 +83,5 @@ public class PatternPreviewSlotWidget extends SlotWidget {
         }
 
         graphics.renderItemDecorations(mc.font, itemStack, x + xOffset, y, altTxt);
-        graphics.pose().popPose();
-
-        graphics.pose().popPose();
-
-        // clear depth buffer,it may cause some rendering issues?
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
-        RenderSystem.depthMask(false);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
     }
 }

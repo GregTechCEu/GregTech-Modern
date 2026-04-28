@@ -6,12 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -26,14 +22,8 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +44,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Nullable
     protected ISubscription inventorySubs;
     @Getter(AccessLevel.PROTECTED)
-    private boolean hasCircuitSlot = true;
+    boolean hasCircuitSlot = true;
     @Getter
     @SaveField
     @SyncToClient
@@ -88,6 +78,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     protected int getInventorySize() {
         int sizeRoot = 1 + Math.min(9, getTier());
         return sizeRoot * sizeRoot;
+    }
+
+    IO getIo() {
+        return io;
     }
 
     protected NotifiableItemStackHandler createInventory() {
@@ -125,7 +119,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public void onLoad() {
         super.onLoad();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
+            serverLevel.getServer().executeIfPossible(this::updateInventorySubscription);
         }
         getHandlerList().setDistinct(isDistinct);
         getHandlerList().setColor(getPaintingColor());
@@ -248,7 +242,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         if (io == IO.BOTH) return InteractionResult.PASS;
         if (context.getPlayer().isShiftKeyDown()) {
             if (swapIO()) {
-                return InteractionResult.sidedSuccess(isRemote());
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -283,43 +277,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io.support(IO.OUT)) {
-            IDistinctPart.super.superAttachConfigurators(configuratorPanel);
-        } else if (this.io.support(IO.IN)) {
-            IDistinctPart.super.attachConfigurators(configuratorPanel);
-            if (hasCircuitSlot && isCircuitSlotEnabled()) {
-                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-            }
-        }
+    public void attachConfigurators(Object configuratorPanelObject) {
+        ItemBusPartMachineUI.attachConfigurators(this, configuratorPanelObject);
     }
 
     @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int colSize = rowSize;
-        if (getInventorySize() == 8) {
-            rowSize = 4;
-            colSize = 2;
-        }
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
-        int index = 0;
-        if (this.io == IO.OUT) {
-            group.addWidget(filterHandler.createFilterSlotUI(71 + (18 * rowSize) / 2, 35 + 9 * rowSize)
-                    .setHoverTooltips(Component.translatable("cover.item_filter.title")));
-        }
-        for (int y = 0; y < colSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                container.addWidget(
-                        new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                                .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io.support(IO.IN) ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-            }
-        }
-
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-        return group;
+    public Object createUIWidget() {
+        return ItemBusPartMachineUI.createUIWidget(this);
     }
 }

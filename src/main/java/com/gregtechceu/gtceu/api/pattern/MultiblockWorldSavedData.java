@@ -4,26 +4,29 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 public class MultiblockWorldSavedData extends SavedData {
 
+    public static final SavedDataType<MultiblockWorldSavedData> TYPE = new SavedDataType<>(
+            GTCEu.id("multiblock"),
+            serverLevel -> new MultiblockWorldSavedData(),
+            serverLevel -> Codec.INT.xmap(ignored -> new MultiblockWorldSavedData(), data -> 0));
+
     public static MultiblockWorldSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(MultiblockWorldSavedData::new, MultiblockWorldSavedData::new),
-                "gtceu_multiblock");
+        return serverLevel.getDataStorage().computeIfAbsent(TYPE);
     }
 
     /**
@@ -40,10 +43,6 @@ public class MultiblockWorldSavedData extends SavedData {
         this.chunkPosMapping = new HashMap<>();
     }
 
-    private MultiblockWorldSavedData(CompoundTag tag, HolderLookup.Provider provider) {
-        this();
-    }
-
     public Set<MultiblockState> getControllersInChunk(ChunkPos chunkPos) {
         return chunkPosMapping.getOrDefault(chunkPos, Collections.emptySet());
     }
@@ -51,7 +50,7 @@ public class MultiblockWorldSavedData extends SavedData {
     public void addMapping(MultiblockState state) {
         this.mapping.put(state.controllerPos, state);
         for (BlockPos blockPos : state.getCache()) {
-            chunkPosMapping.computeIfAbsent(new ChunkPos(blockPos), c -> new HashSet<>()).add(state);
+            chunkPosMapping.computeIfAbsent(ChunkPos.containing(blockPos), c -> new HashSet<>()).add(state);
         }
     }
 
@@ -62,9 +61,7 @@ public class MultiblockWorldSavedData extends SavedData {
         }
     }
 
-    @NotNull
-    @Override
-    public CompoundTag save(@NotNull CompoundTag compound, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag compound) {
         return compound;
     }
 

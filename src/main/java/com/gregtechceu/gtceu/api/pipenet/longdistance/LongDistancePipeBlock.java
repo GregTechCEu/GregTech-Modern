@@ -32,7 +32,7 @@ public class LongDistancePipeBlock extends Block implements ILDNetworkPart {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
                             ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         // first find all neighbouring networks
         List<LongDistanceNetwork> networks = findNetworks(level, pos);
         if (networks.isEmpty()) {

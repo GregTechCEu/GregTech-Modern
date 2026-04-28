@@ -87,8 +87,9 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
+                    var water = GTMaterials.Water.getFluid(getFluidProduction());
                     fluidTank.handleRecipe(IO.OUT, null,
-                            List.of(SizedFluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), false);
+                            List.of(SizedFluidIngredient.of(water.getFluid(), water.getAmount())), false);
                 }
             }
         }
@@ -100,7 +101,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     private Precipitation getBiomePrecipitation() {
-        return getLevel().getBiome(getBlockPos()).value().getPrecipitationAt(getBlockPos());
+        return getLevel().getBiome(getBlockPos()).value()
+                .getPrecipitationAt(getBlockPos(), getLevel().getSeaLevel());
     }
 
     public int getFluidProduction() {

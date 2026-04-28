@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
@@ -48,13 +47,8 @@ public class BlockableSlotWidget extends SlotWidget {
         if (isBlocked.getAsBoolean()) {
             Position pos = getPosition();
             Size size = getSize();
-            RenderSystem.disableDepthTest();
-            RenderSystem.colorMask(true, true, true, false);
             graphics.fill(pos.getX() + 1, pos.getY() + 1, pos.getX() + 1 + size.getWidth() - 2,
                     pos.getY() + 1 + size.getHeight() - 2, OVERLAY_COLOR);
-            RenderSystem.colorMask(true, true, true, true);
-            RenderSystem.enableDepthTest();
-            RenderSystem.enableBlend();
         }
     }
 

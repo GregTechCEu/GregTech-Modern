@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -71,7 +72,8 @@ public class AEFluidDisplayWidget extends Widget {
                 tooltips.add(Component.literal(String.format("%,d mB", fluid.amount())));
                 TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add,
                         TooltipFlag.NORMAL, Item.TooltipContext.of(Minecraft.getInstance().level));
-                graphics.renderTooltip(Minecraft.getInstance().font, tooltips, Optional.empty(), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltips,
+                        Optional.<TooltipComponent>empty(), mouseX, mouseY);
             }
         }
     }

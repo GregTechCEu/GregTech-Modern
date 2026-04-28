@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.item.decorator;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 
@@ -16,7 +16,7 @@ public final class GTComponentItemDecorator implements IItemDecorator {
     private GTComponentItemDecorator() {}
 
     @Override
-    public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font,
+    public boolean render(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, @NotNull Font font,
                           ItemStack stack, int xOffset, int yOffset) {
         if (!(stack.getItem() instanceof IComponentItem componentItem)) {
             return false;
@@ -25,7 +25,7 @@ public final class GTComponentItemDecorator implements IItemDecorator {
         boolean modified = false;
         for (var component : componentItem.getComponents()) {
             if (component instanceof IItemDecorator decorator) {
-                modified |= decorator.render(guiGraphics, font, stack, xOffset, yOffset);
+                modified |= decorator.render(GuiGraphicsExtractor, font, stack, xOffset, yOffset);
             }
         }
         return modified;

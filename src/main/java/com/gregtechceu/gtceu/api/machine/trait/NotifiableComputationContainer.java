@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -193,7 +194,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         if (io == IO.IN) {
             int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= sum) {
-                if (recipe.data.getBoolean("duration_is_total_cwu")) {
+                if (recipe.data.getBooleanOr("duration_is_total_cwu", false)) {
                     int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
                         if (machine instanceof IRecipeLogicMachine rlm) {

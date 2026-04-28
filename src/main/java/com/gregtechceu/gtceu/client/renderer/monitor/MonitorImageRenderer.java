@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.client.util.ClientImageCache;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -31,7 +31,7 @@ public class MonitorImageRenderer implements IMonitorRenderer {
 
         poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
 
-        ResourceLocation textureId = ClientImageCache.getOrLoadTexture(url);
+        Identifier textureId = ClientImageCache.getOrLoadTexture(url);
         if (textureId == null) return;
 
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.guiTexture(textureId));

@@ -18,10 +18,10 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -175,7 +175,7 @@ public class GTRecipeModifiers {
 
         int blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
                 (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
-        int recipeTemp = recipe.data.getInt("ebf_temp");
+        int recipeTemp = recipe.data.getIntOr("ebf_temp", 0);
         if (!recipe.data.contains("ebf_temp") || recipeTemp > blastFurnaceTemperature) {
             return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
         }

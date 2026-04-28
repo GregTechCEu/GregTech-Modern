@@ -35,16 +35,19 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     var neoVersion = libs.versions.neoForge.get()
     neoVersion = neoVersion.substring(0, neoVersion.lastIndexOf('.'))
     var configurationVersion = forge.versions.configuration.get()
-    configurationVersion = configurationVersion.substring(0, configurationVersion.lastIndexOf('-'))
+    var configurationVersionSuffix = configurationVersion.findIndexOf { it == '-' || it == '+' }
+    if (configurationVersionSuffix >= 0) {
+        configurationVersion = configurationVersion.substring(0, configurationVersionSuffix)
+    }
     var replaceProperties = [
             version             : version_toml,
             mod_id              : mod_id,
-            minecraft_version   : "[1.21, 1.21.1]",
+            minecraft_version   : "[26.1, 26.1.2]",
             loader_version      : libs.versions.loader.get(),
             neo_version         : neoVersion,
             configuration_version : configurationVersion,
             kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
-            ldlib_version       : forge.versions.ldlib.get(),
+            ldlib2_version      : forge.versions.ldlib2.get(),
             jei_version         : forge.versions.jei.get(),
             emi_version         : forge.versions.emi.get(),
             jade_version        : forge.versions.jade.get(),

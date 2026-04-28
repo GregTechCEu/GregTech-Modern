@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -9,11 +10,15 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
@@ -28,7 +33,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     public final GTRecipeType recipeType;
     @Getter
     @Setter
-    public ResourceLocation id;
+    public Identifier id;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
@@ -98,7 +103,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public GTRecipe(GTRecipeType recipeType,
-                    @Nullable ResourceLocation id,
+                    @Nullable Identifier id,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
                     Map<RecipeCapability<?>, List<Content>> tickInputs,
@@ -160,12 +165,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
         return recipeType.getSerializer();
     }
 
     @Override
-    public @NotNull GTRecipeType getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         return recipeType;
     }
 
@@ -175,18 +180,36 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull RecipeInput input, HolderLookup.@NotNull Provider registries) {
+    public @NotNull ItemStack assemble(@NotNull RecipeInput input) {
         return ItemStack.EMPTY;
     }
 
-    @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return false;
     }
 
-    @Override
     public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registries) {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public @NotNull String group() {
+        return recipeType.group;
+    }
+
+    @Override
+    public @NotNull PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public @NotNull RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public List<Content> getInputContents(RecipeCapability<?> capability) {

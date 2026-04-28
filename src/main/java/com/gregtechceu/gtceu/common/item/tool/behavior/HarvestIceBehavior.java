@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ import java.util.List;
 public class HarvestIceBehavior implements IToolBehavior<HarvestIceBehavior> {
 
     public static final HarvestIceBehavior INSTANCE = new HarvestIceBehavior();
-    public static final Codec<HarvestIceBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<HarvestIceBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, HarvestIceBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected HarvestIceBehavior() {/**/}

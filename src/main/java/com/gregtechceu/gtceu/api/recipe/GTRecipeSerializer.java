@@ -12,10 +12,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import com.mojang.serialization.Codec;
@@ -33,7 +32,7 @@ import java.util.function.Function;
 import static com.gregtechceu.gtceu.utils.codec.GTCodecUtils.quietExceptionCodec;
 
 @SuppressWarnings("DataFlowIssue")
-public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
+public class GTRecipeSerializer {
 
     // spotless:off
     public static final Codec<GTRecipeType> GT_RECIPE_TYPE_CODEC = BuiltInRegistries.RECIPE_TYPE.byNameCodec()
@@ -46,8 +45,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             }, Function.identity());
     public static final StreamCodec<ByteBuf, GTRecipeType> GT_RECIPE_TYPE_STREAM_CODEC = new StreamCodec<>() {
 
-        private static final StreamCodec<ByteBuf, RecipeType<?>> STREAM_CODEC = ResourceLocation.STREAM_CODEC
-                .map(BuiltInRegistries.RECIPE_TYPE::get, BuiltInRegistries.RECIPE_TYPE::getKey);
+        private static final StreamCodec<ByteBuf, RecipeType<?>> STREAM_CODEC = Identifier.STREAM_CODEC
+                .map(BuiltInRegistries.RECIPE_TYPE::getValue, BuiltInRegistries.RECIPE_TYPE::getKey);
 
         @Override
         public @NotNull GTRecipeType decode(@NotNull ByteBuf buffer) {
@@ -72,25 +71,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             .of(GTRecipeSerializer::toNetwork, GTRecipeSerializer::fromNetwork);
     // spotless:on
 
-    @Override
-    public @NotNull MapCodec<GTRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public @NotNull StreamCodec<RegistryFriendlyByteBuf, GTRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
-
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.getValue(buf.readIdentifier());
         List<Content> contents = readCollection(buf, capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
 
     public static Tuple<RecipeCapability<?>, ChanceLogic> changeLogicEntryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
-        ChanceLogic logic = GTRegistries.CHANCE_LOGICS.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.getValue(buf.readIdentifier());
+        ChanceLogic logic = GTRegistries.CHANCE_LOGICS.getValue(buf.readIdentifier());
         return new Tuple<>(capability, logic);
     }
 
@@ -98,7 +87,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                    Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
-        buf.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
+        buf.writeIdentifier(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
         writeCollection(contents, buf, capability.serializer::toNetworkContent);
     }
 
@@ -106,8 +95,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                               Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
         RecipeCapability<?> capability = entry.getKey();
         ChanceLogic logic = entry.getValue();
-        buf.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
-        buf.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic));
+        buf.writeIdentifier(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
+        buf.writeIdentifier(GTRegistries.CHANCE_LOGICS.getKey(logic));
     }
 
     public static Map<RecipeCapability<?>, List<Content>> tuplesToMap(List<Tuple<RecipeCapability<?>, List<Content>>> entries) {
@@ -124,8 +113,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     @NotNull
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
-        ResourceLocation recipeType = buf.readResourceLocation();
-        ResourceLocation id = buf.readResourceLocation();
+        Identifier recipeType = buf.readIdentifier();
+        Identifier id = buf.readIdentifier();
         int duration = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
@@ -156,10 +145,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             data = new CompoundTag();
         }
         int groupColor = buf.readInt();
-        ResourceLocation categoryLoc = buf.readResourceLocation();
+        Identifier categoryLoc = buf.readIdentifier();
 
-        GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
-        GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
+        GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.getValue(recipeType);
+        GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.getValue(categoryLoc);
 
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
@@ -181,8 +170,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
-        buf.writeResourceLocation(recipe.recipeType.registryName);
-        buf.writeResourceLocation(recipe.id);
+        buf.writeIdentifier(recipe.recipeType.registryName);
+        buf.writeIdentifier(recipe.id);
         buf.writeVarInt(recipe.duration);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
@@ -204,7 +193,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         buf.writeNbt(recipe.data);
         buf.writeInt(recipe.groupColor);
-        buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeIdentifier(recipe.recipeCategory.registryKey);
     }
 
     public static <T> ArrayList<T> readCollection(RegistryFriendlyByteBuf buf,

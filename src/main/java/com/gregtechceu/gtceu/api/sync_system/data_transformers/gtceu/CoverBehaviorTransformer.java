@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -53,23 +53,26 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
                                                boolean isSync, HolderLookup.Provider lookup) {
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
-            tag.putInt("side", tag.getCompound("uid").getInt("side"));
-            tag.putString("coverType", tag.getCompound("uid").getString("id"));
-            tag.put("data", tag.getCompound("payload").getCompound("d"));
+            CompoundTag uid = tag.getCompoundOrEmpty("uid");
+            CompoundTag payload = tag.getCompoundOrEmpty("payload");
+            tag.putInt("side", uid.getIntOr("side", 0));
+            tag.putString("coverType", uid.getStringOr("id", ""));
+            tag.put("data", payload.getCompoundOrEmpty("d"));
         }
 
-        Direction side = Direction.values()[tag.getInt("side")];
+        Direction side = Direction.values()[tag.getIntOr("side", 0)];
 
-        if (tag.isEmpty() || tag.getString("coverType").isEmpty()) {
+        String coverTypeName = tag.getStringOr("coverType", "");
+        if (tag.isEmpty() || coverTypeName.isEmpty()) {
             holder.setCoverAtSide(null, side);
             return null;
         }
-        ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
+        Identifier coverType = Identifier.tryParse(coverTypeName);
         if (cover == null || cover.coverDefinition.getId() != coverType) {
-            var coverReg = GTRegistries.COVERS.get(coverType);
+            var coverReg = GTRegistries.COVERS.get(coverType).map(reference -> reference.value()).orElse(null);
             if (coverReg == null) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
-                        tag.getString("coverType"));
+                        coverTypeName);
                 return null;
             }
             holder.setCoverAtSide(coverReg.createCoverBehavior(holder, side), side);
@@ -77,7 +80,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompound("data"),
+        newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompoundOrEmpty("data"),
                 isSync);
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {

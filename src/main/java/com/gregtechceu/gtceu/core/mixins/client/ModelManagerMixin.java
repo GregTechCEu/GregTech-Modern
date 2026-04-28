@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModLoader;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,10 +20,10 @@ import java.util.concurrent.Executor;
 public abstract class ModelManagerMixin {
 
     @Inject(method = "reload", at = @At(value = "HEAD"))
-    private void gtceu$loadDynamicModels(PreparableReloadListener.PreparationBarrier preparationBarrier,
-                                         ResourceManager resourceManager, ProfilerFiller preparationsProfiler,
-                                         ProfilerFiller reloadProfiler, Executor backgroundExecutor,
-                                         Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+    private void gtceu$loadDynamicModels(PreparableReloadListener.SharedState currentReload, Executor taskExecutor,
+                                         PreparableReloadListener.PreparationBarrier preparationBarrier,
+                                         Executor reloadExecutor,
+                                         CallbackInfoReturnable<CompletableFuture<Void>> cir) {
         if (ModLoader.hasErrors()) {
             GTCEu.LOGGER.warn("GregTech Model loading CANCELLED because loading errors have been encountered");
             return;

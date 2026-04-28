@@ -87,7 +87,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
         int length = (radius * 2) + 1;
         int height = (radius * 2) + 1;
 
-        if (origin.getY() >= level.getMaxBuildHeight())
+        if (origin.getY() >= level.getMaxY())
             return Map.of();
 
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();

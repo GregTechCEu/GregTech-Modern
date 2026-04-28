@@ -188,7 +188,7 @@ public interface ModifierFunction {
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;
                 copied.batchParallels = recipe.batchParallels * batchParallels;
-                if (recipe.data.getBoolean("duration_is_total_cwu")) {
+                if (recipe.data.getBooleanOr("duration_is_total_cwu", false)) {
                     copied.duration = (int) Math.max(1, (recipe.duration * (1f - 0.025f * addOCs)));
                 } else {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));

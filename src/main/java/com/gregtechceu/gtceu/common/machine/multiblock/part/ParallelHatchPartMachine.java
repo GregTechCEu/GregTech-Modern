@@ -2,15 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.util.Mth;
 
@@ -18,9 +14,9 @@ import lombok.Getter;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine {
 
-    private static final int MIN_PARALLEL = 1;
+    static final int MIN_PARALLEL = 1;
 
-    private final int maxParallel;
+    final int maxParallel;
 
     @SaveField
     @Getter
@@ -42,13 +38,8 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
     }
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup parallelAmountGroup = new WidgetGroup(0, 0, 100, 20);
-        parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
-                .setMin(MIN_PARALLEL)
-                .setMax(maxParallel));
-
-        return parallelAmountGroup;
+    public Object createUIWidget() {
+        return ParallelHatchPartMachineUI.createUIWidget(this);
     }
 
     @Override

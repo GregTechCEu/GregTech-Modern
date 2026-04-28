@@ -9,18 +9,19 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.api.registry.registrate.GTItemBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.client.color.GTBlockTintSources;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -79,11 +80,11 @@ public class FluidBuilder {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     @Nullable
-    private ResourceLocation still = null;
+    private Identifier still = null;
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     @Nullable
-    private ResourceLocation flowing = null;
+    private Identifier flowing = null;
     @Getter
     private boolean hasCustomStill = false;
     @Getter
@@ -289,27 +290,26 @@ public class FluidBuilder {
         final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
-                (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
+                p -> makeFluidType(registrate, p, material, key, langKey),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
             builder.block()
-                    .color(() -> () -> (state, level, pos, index) -> {
-                        return IClientFluidTypeExtensions.of(state.getFluidState())
-                                .getTintColor(state.getFluidState(), level, pos);
-                    })
+                    .color(() -> () -> GTBlockTintSources.fromBlockColor((state, level, pos, index) -> color))
                     .register();
         } else {
             // noinspection DataFlowIssue
             builder.noBlock().fluidProperties(p -> p.block(null));
         }
         if (this.hasBucket) {
-            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
+            var bucketBuilder = builder
+                    .bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                    .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-                    .color(() -> () -> GTBucketItem::color)
+                    .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop());
+            ((GTItemBuilder<?, ?>) bucketBuilder)
+                    .color(() -> GTBucketItem::color)
                     .register();
         } else {
             // noinspection DataFlowIssue
@@ -332,13 +332,13 @@ public class FluidBuilder {
     @ApiStatus.Internal
     public void determineTextures(Material material, FluidStorageKey key) {
         if (hasCustomStill || material.isNull()) {
-            still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
+            still = Identifier.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
         } else {
             still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
         }
 
         if (hasCustomFlowing) {
-            flowing = ResourceLocation.fromNamespaceAndPath(material.getModid(),
+            flowing = Identifier.fromNamespaceAndPath(material.getModid(),
                     "block/fluids/fluid." + name + "_flow");
         } else {
             // FIXME this is actually wrong, flowing fluids should have 32x32 textures (double the size of still ones).

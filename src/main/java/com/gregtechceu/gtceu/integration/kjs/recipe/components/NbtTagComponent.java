@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -12,7 +13,7 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 public class NbtTagComponent implements RecipeComponent<CompoundTag> {
 
     // spotless:off
-    public static final RecipeComponentType<CompoundTag> NBT_TAG = RecipeComponentType.unit(GTCEu.id("nbt_tag"), new NbtTagComponent());
+    public static final RecipeComponentType<CompoundTag> NBT_TAG = RecipeComponentType.unit(ResourceLocation.fromIdentifier(GTCEu.id("nbt_tag")), new NbtTagComponent());
     // spotless:on
 
     @Override

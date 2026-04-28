@@ -6,8 +6,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Axis;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.client.FTBChunksClient;
 import org.lwjgl.opengl.GL11;
@@ -41,11 +39,11 @@ public class FTBChunksClientMixin {
     private void gtceu$injectRenderHud(GuiGraphics graphics, DeltaTracker tickDelta, CallbackInfo ci,
                                        @Local MapIcon icon) {
         if (gtceu$iconCheck) {
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthFunc(GL11.GL_GEQUAL);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glDepthFunc(GL11.GL_GEQUAL);
             var poseStack = graphics.pose();
-            poseStack.rotateAround(Axis.ZP.rotationDegrees(gtceu$minimapRotation + 180f), 0.5f, 0.5f, 0);
-            poseStack.scale(1.143f, 1.143f, 0);
+            poseStack.rotateAbout((float) Math.toRadians(gtceu$minimapRotation + 180f), 0.5f, 0.5f);
+            poseStack.scale(1.143f, 1.143f);
         }
     }
 
@@ -86,8 +84,8 @@ public class FTBChunksClientMixin {
     private void gtceu$injectRenderHudPost(GuiGraphics graphics, DeltaTracker tickDelta, CallbackInfo ci,
                                            @Local MapIcon icon) {
         if (gtceu$iconCheck) {
-            RenderSystem.disableDepthTest();
-            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
         }
     }
 }

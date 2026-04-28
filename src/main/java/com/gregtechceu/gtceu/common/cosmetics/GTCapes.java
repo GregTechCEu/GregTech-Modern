@@ -3,30 +3,30 @@ package com.gregtechceu.gtceu.common.cosmetics;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
 public class GTCapes {
 
-    public static final ResourceLocation GREGTECH_CAPE = GTCEu.id("gregtech");
-    public static final ResourceLocation GREEN_CAPE = GTCEu.id("green");
-    public static final ResourceLocation YELLOW_CAPE = GTCEu.id("yellow");
-    public static final ResourceLocation RED_CAPE = GTCEu.id("red");
-    public static final ResourceLocation DEBUG_CAPE = GTCEu.id("debug");
+    public static final Identifier GREGTECH_CAPE = GTCEu.id("gregtech");
+    public static final Identifier GREEN_CAPE = GTCEu.id("green");
+    public static final Identifier YELLOW_CAPE = GTCEu.id("yellow");
+    public static final Identifier RED_CAPE = GTCEu.id("red");
+    public static final Identifier DEBUG_CAPE = GTCEu.id("debug");
 
-    public static final ResourceLocation RAINBOW_CAPE = GTCEu.id("rainbow");
-    public static final ResourceLocation ACE_CAPE = GTCEu.id("ace");
-    public static final ResourceLocation AGENDER_CAPE = GTCEu.id("agender");
-    public static final ResourceLocation AROMANTIC_CAPE = GTCEu.id("aromantic");
-    public static final ResourceLocation BI_CAPE = GTCEu.id("bi");
-    public static final ResourceLocation GENDERFLUID_CAPE = GTCEu.id("genderfluid");
-    public static final ResourceLocation GENDERQUEER_CAPE = GTCEu.id("genderqueer");
-    public static final ResourceLocation INTERSEX_CAPE = GTCEu.id("intersex");
-    public static final ResourceLocation LESBIAN_CAPE = GTCEu.id("lesbian");
-    public static final ResourceLocation NONBINARY_CAPE = GTCEu.id("nonbinary");
-    public static final ResourceLocation PAN_CAPE = GTCEu.id("pan");
-    public static final ResourceLocation TRANS_CAPE = GTCEu.id("trans");
+    public static final Identifier RAINBOW_CAPE = GTCEu.id("rainbow");
+    public static final Identifier ACE_CAPE = GTCEu.id("ace");
+    public static final Identifier AGENDER_CAPE = GTCEu.id("agender");
+    public static final Identifier AROMANTIC_CAPE = GTCEu.id("aromantic");
+    public static final Identifier BI_CAPE = GTCEu.id("bi");
+    public static final Identifier GENDERFLUID_CAPE = GTCEu.id("genderfluid");
+    public static final Identifier GENDERQUEER_CAPE = GTCEu.id("genderqueer");
+    public static final Identifier INTERSEX_CAPE = GTCEu.id("intersex");
+    public static final Identifier LESBIAN_CAPE = GTCEu.id("lesbian");
+    public static final Identifier NONBINARY_CAPE = GTCEu.id("nonbinary");
+    public static final Identifier PAN_CAPE = GTCEu.id("pan");
+    public static final Identifier TRANS_CAPE = GTCEu.id("trans");
 
     public static void registerGTCapes(RegisterGTCapesEvent event) {
         // TODO add the advancements to unlock these

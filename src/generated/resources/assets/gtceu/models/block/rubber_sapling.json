@@ -1,6 +1,6 @@
 {
-    "parent": "minecraft:block/cross",
+    "parent": "minecraft:block/cube_all",
     "textures": {
-        "cross": "gtceu:block/rubber_sapling"
+        "all": "gtceu:block/rubber_sapling"
     }
 }

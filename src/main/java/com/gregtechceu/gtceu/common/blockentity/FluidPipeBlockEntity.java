@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -125,7 +126,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     public void update() {
         timer++;
-        if (!level.isClientSide && getOffsetTimer() % FREQUENCY == 0) {
+        if (!level.isClientSide() && getOffsetTimer() % FREQUENCY == 0) {
             lastReceivedFrom &= 63;
             if (lastReceivedFrom == 63) {
                 lastReceivedFrom = 0;
@@ -170,8 +171,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 continue;
             }
 
-            IFluidHandler fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
-                    getBlockPos().relative(facing), facing.getOpposite());
+            IFluidHandler fluidHandler = FluidHandlerAdapters.toFluidHandler(getLevel().getCapability(
+                    Capabilities.Fluid.BLOCK, getBlockPos().relative(facing), facing.getOpposite()));
             if (fluidHandler == null) continue;
 
             IFluidHandlerModifiable pipeTank = tank;

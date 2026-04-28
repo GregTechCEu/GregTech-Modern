@@ -12,10 +12,13 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,8 +29,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import joptsimple.internal.Strings;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +70,25 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         return Component.literal(String.join(", ", dirStrings));
     }
 
+    private static Tag saveItemStack(HolderLookup.Provider provider, ItemStack stack) {
+        return ItemStack.OPTIONAL_CODEC
+                .encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), stack)
+                .getOrThrow();
+    }
+
+    private static ItemStack parseItemStack(HolderLookup.Provider provider, CompoundTag tag) {
+        return ItemStack.OPTIONAL_CODEC
+                .parse(provider.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result()
+                .orElse(ItemStack.EMPTY);
+    }
+
+    private static boolean hasShiftDown() {
+        var window = Minecraft.getInstance().getWindow();
+        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
+    }
+
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
@@ -86,7 +110,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
                 ListTag itemsTag = new ListTag();
                 metaMachine.getItemsRequiredToPaste()
-                        .forEach(v -> itemsTag.add(v.save(context.getLevel().registryAccess())));
+                        .forEach(v -> itemsTag.add(saveItemStack(context.getLevel().registryAccess(), v)));
                 configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
                 configTag.putString(COPY_SOURCE,
@@ -95,26 +119,25 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
                 ListTag itemsTag = new ListTag();
                 pipeBE.getItemsRequiredToPaste()
-                        .forEach(v -> itemsTag.add(v.save(context.getLevel().registryAccess())));
+                        .forEach(v -> itemsTag.add(saveItemStack(context.getLevel().registryAccess(), v)));
                 configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else {
                 stack.remove(GTDataComponents.DATA_COPY_TAG);
-                player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
+                player.sendOverlayMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"));
                 return InteractionResult.SUCCESS;
             }
 
-            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
+            player.sendOverlayMessage(Component.translatable("behaviour.memory_card.client_msg.copied"));
 
         } else {
             List<ItemStack> items = new ArrayList<>();
-            configTag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
+            configTag.getListOrEmpty(ITEMS_TO_PASTE).forEach(t -> {
                 if (t instanceof CompoundTag c)
-                    items.add(ItemStack.parse(context.getLevel().registryAccess(), c).orElse(ItemStack.EMPTY));
+                    items.add(parseItemStack(context.getLevel().registryAccess(), c));
             });
 
             if (!player.isCreative() && !GTTransferUtils.extractItemsFromPlayerInv(player, items, true)) {
-                player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.missing_items"),
-                        true);
+                player.sendOverlayMessage(Component.translatable("behaviour.memory_card.client_msg.missing_items"));
                 return InteractionResult.FAIL;
             }
             if (!player.isCreative()) GTTransferUtils.extractItemsFromPlayerInv(player, items, false);
@@ -124,7 +147,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE)
                 pastePipeConfig((ServerPlayer) player, pipeBE, configTag);
 
-            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
+            player.sendOverlayMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"));
 
         }
 
@@ -162,7 +185,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
     private static void pastePipeConfig(ServerPlayer player, PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
         if (tag.contains(PIPE_CONNECTIONS)) {
-            var connections = tag.getInt(PIPE_CONNECTIONS);
+            var connections = tag.getIntOr(PIPE_CONNECTIONS, 0);
 
             for (var dir : GTUtil.DIRECTIONS) {
                 if (PipeBlockEntity.isConnected(connections, dir)) pipe.setConnection(dir, true, false);
@@ -170,7 +193,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         }
         if (tag.contains(PIPE_BLOCKED_CONNECTIONS)) {
-            var blockedConnections = tag.getInt(PIPE_BLOCKED_CONNECTIONS);
+            var blockedConnections = tag.getIntOr(PIPE_BLOCKED_CONNECTIONS, 0);
 
             for (var dir : GTUtil.DIRECTIONS) {
                 if (PipeBlockEntity.isFaceBlocked(blockedConnections, dir)) pipe.setBlocked(dir, true);
@@ -178,7 +201,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         }
 
-        pipe.getCoverContainer().pasteConfig(player, tag.getCompound(COVER));
+        pipe.getCoverContainer().pasteConfig(player, tag.getCompoundOrEmpty(COVER));
     }
 
     private static CompoundTag gatherMachineConfig(MetaMachine machine) {
@@ -224,31 +247,35 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
-                outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
-            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+                outputTrait
+                        .setItemOutputDirection(stringToDirection(tag.getStringOr(ITEM_OUTPUT_SIDE, NONE_DIRECTION)));
+            if (tag.contains(ITEM_AUTO_OUTPUT))
+                outputTrait.setAllowAutoOutputItems(tag.getBooleanOr(ITEM_AUTO_OUTPUT, false));
             if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
-                outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
+                outputTrait.setAllowItemInputFromOutputSide(tag.getBooleanOr(ALLOW_ITEM_IN_FROM_OUT, false));
             if (tag.contains(FLUID_OUTPUT_SIDE))
-                outputTrait.setFluidOutputDirection(stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
+                outputTrait
+                        .setFluidOutputDirection(stringToDirection(tag.getStringOr(FLUID_OUTPUT_SIDE, NONE_DIRECTION)));
             if (tag.contains(FLUID_AUTO_OUTPUT))
-                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+                outputTrait.setAllowAutoOutputFluids(tag.getBooleanOr(FLUID_AUTO_OUTPUT, false));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
-                outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
+                outputTrait.setAllowFluidInputFromOutputSide(tag.getBooleanOr(ALLOW_FLUID_IN_FROM_OUT, false));
         }
 
-        Direction facingDir = Direction.byName(tag.getString(FACING_DIR));
+        Direction facingDir = Direction.byName(tag.getStringOr(FACING_DIR, NONE_DIRECTION));
         if (facingDir != null) machine.setFrontFacing(facingDir);
 
         if (machine instanceof IMufflableMachine mufflableMachine) {
-            if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBoolean(MUFFLED));
+            if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBooleanOr(MUFFLED, false));
         }
 
         if (machine instanceof IHasCircuitSlot circuitMachine) {
             if (tag.contains(CIRCUIT))
-                circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
+                circuitMachine.getCircuitInventory().setStackInSlot(0,
+                        IntCircuitBehaviour.stack(tag.getIntOr(CIRCUIT, 0)));
         }
 
-        machine.getCoverContainer().pasteConfig(player, tag.getCompound(COVER));
+        machine.getCoverContainer().pasteConfig(player, tag.getCompoundOrEmpty(COVER));
 
         machine.pasteConfig(player, tag);
     }
@@ -256,27 +283,27 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag, Item.TooltipContext context) {
         if (context.level() == null) return;
 
-        tooltip.add(Component.translatable("behaviour.memory_card.copy_target", tag.getString(COPY_SOURCE)));
+        tooltip.add(Component.translatable("behaviour.memory_card.copy_target", tag.getStringOr(COPY_SOURCE, "")));
         tooltip.add(Component.empty());
 
-        if (tag.contains(PIPE_CONNECTIONS) && tag.getInt(PIPE_CONNECTIONS) != 0)
+        if (tag.contains(PIPE_CONNECTIONS) && tag.getIntOr(PIPE_CONNECTIONS, 0) != 0)
             tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_connections",
-                    directionListComponent(tag.getInt(PIPE_CONNECTIONS))));
-        if (tag.contains(PIPE_BLOCKED_CONNECTIONS) && tag.getInt(PIPE_BLOCKED_CONNECTIONS) != 0)
+                    directionListComponent(tag.getIntOr(PIPE_CONNECTIONS, 0))));
+        if (tag.contains(PIPE_BLOCKED_CONNECTIONS) && tag.getIntOr(PIPE_BLOCKED_CONNECTIONS, 0) != 0)
             tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_blocked_connections",
-                    directionListComponent(tag.getInt(PIPE_BLOCKED_CONNECTIONS))));
+                    directionListComponent(tag.getIntOr(PIPE_BLOCKED_CONNECTIONS, 0))));
 
         if (tag.contains(ITEM_OUTPUT_SIDE) && tag.contains(ITEM_AUTO_OUTPUT) && tag.contains(ALLOW_ITEM_IN_FROM_OUT)) {
             Component outputMode;
-            if (tag.getBoolean(ITEM_AUTO_OUTPUT) && tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT))
+            if (tag.getBooleanOr(ITEM_AUTO_OUTPUT, false) && tag.getBooleanOr(ALLOW_ITEM_IN_FROM_OUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
-            else if (tag.getBoolean(ITEM_AUTO_OUTPUT))
+            else if (tag.getBooleanOr(ITEM_AUTO_OUTPUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
-            else if (tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT))
+            else if (tag.getBooleanOr(ALLOW_ITEM_IN_FROM_OUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
             else outputMode = Component.empty();
 
-            Direction dir = stringToDirection(tag.getString(ITEM_OUTPUT_SIDE));
+            Direction dir = stringToDirection(tag.getStringOr(ITEM_OUTPUT_SIDE, NONE_DIRECTION));
             if (dir == null) return;
 
             tooltip.add(Component.translatable("behaviour.setting.tooltip.item_io",
@@ -286,15 +313,15 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         if (tag.contains(FLUID_OUTPUT_SIDE) && tag.contains(FLUID_AUTO_OUTPUT) &&
                 tag.contains(ALLOW_FLUID_IN_FROM_OUT)) {
             Component outputMode;
-            if (tag.getBoolean(FLUID_AUTO_OUTPUT) && tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT))
+            if (tag.getBooleanOr(FLUID_AUTO_OUTPUT, false) && tag.getBooleanOr(ALLOW_FLUID_IN_FROM_OUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
-            else if (tag.getBoolean(FLUID_AUTO_OUTPUT))
+            else if (tag.getBooleanOr(FLUID_AUTO_OUTPUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
-            else if (tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT))
+            else if (tag.getBooleanOr(ALLOW_FLUID_IN_FROM_OUT, false))
                 outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
             else outputMode = Component.empty();
 
-            Direction dir = stringToDirection(tag.getString(FLUID_OUTPUT_SIDE));
+            Direction dir = stringToDirection(tag.getStringOr(FLUID_OUTPUT_SIDE, NONE_DIRECTION));
             if (dir == null) return;
 
             tooltip.add(Component.translatable("behaviour.setting.tooltip.fluid_io",
@@ -302,15 +329,16 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         }
 
         if (tag.contains(MUFFLED)) tooltip.add(Component.translatable("behaviour.setting.tooltip.muffled",
-                tag.getBoolean(MUFFLED) ? ENABLED : DISABLED));
+                tag.getBooleanOr(MUFFLED, false) ? ENABLED : DISABLED));
         if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config")
-                .append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
+                .append(Component.literal(Integer.toString(tag.getIntOr(CIRCUIT, 0)))
+                        .withStyle(ChatFormatting.YELLOW)));
 
         if (tag.contains(ITEMS_TO_PASTE)) {
             List<ItemStack> items = new ArrayList<>();
-            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getListOrEmpty(ITEMS_TO_PASTE).forEach(t -> {
                 if (t instanceof CompoundTag c)
-                    items.add(ItemStack.parse(context.level().registryAccess(), c).orElse(ItemStack.EMPTY));
+                    items.add(parseItemStack(context.level().registryAccess(), c));
             });
 
             if (items.isEmpty()) return;
@@ -332,7 +360,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.paste"));
         CustomData data = stack.get(GTDataComponents.DATA_COPY_TAG);
         if (data == null) return;
-        if (Screen.hasShiftDown()) {
+        if (hasShiftDown()) {
             tooltipComponents.add(CommonComponents.EMPTY);
             addConfigTooltips(tooltipComponents, data.copyTag(), context);
         } else {

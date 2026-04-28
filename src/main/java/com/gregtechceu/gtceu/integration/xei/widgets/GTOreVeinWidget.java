@@ -180,7 +180,7 @@ public class GTOreVeinWidget extends WidgetGroup {
             int rowSlots = (width - 10 + interval) / (16 + interval);
 
             DimensionMarker[] dimMarkers = dimensionFilter.stream()
-                    .map(dimension -> GTRegistries.DIMENSION_MARKERS.getOptional(dimension.location())
+                    .map(dimension -> GTRegistries.DIMENSION_MARKERS.getOptional(dimension.identifier())
                             .orElseGet(() -> new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
                                     DimensionCondition.getDimensionName(dimension))))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
@@ -236,14 +236,14 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public static String getOreName(Holder<GTOreDefinition> ore) {
-        return ore.getKey().location().toLanguageKey("ore_vein");
+        return ore.getKey().identifier().toLanguageKey("ore_vein");
     }
 
     public static String getFluidName(Holder<BedrockFluidDefinition> fluid) {
-        return fluid.getKey().location().toLanguageKey("bedrock_fluid");
+        return fluid.getKey().identifier().toLanguageKey("bedrock_fluid");
     }
 
     public static String getBedrockOreName(Holder<BedrockOreDefinition> bedrockOre) {
-        return bedrockOre.getKey().location().toLanguageKey("bedrock_ore");
+        return bedrockOre.getKey().identifier().toLanguageKey("bedrock_ore");
     }
 }

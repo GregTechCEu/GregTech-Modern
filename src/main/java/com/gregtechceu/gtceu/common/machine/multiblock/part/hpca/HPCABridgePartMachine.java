@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.misc.MonitorComponentIcons;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 public class HPCABridgePartMachine extends HPCAComponentPartMachine {
 
@@ -19,7 +17,7 @@ public class HPCABridgePartMachine extends HPCAComponentPartMachine {
     }
 
     @Override
-    public ResourceTexture getComponentIcon() {
-        return GuiTextures.HPCA_ICON_BRIDGE_COMPONENT;
+    public Object getComponentIcon() {
+        return MonitorComponentIcons.hpcaBridgeComponent();
     }
 }

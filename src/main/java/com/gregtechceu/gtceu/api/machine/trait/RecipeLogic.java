@@ -28,13 +28,11 @@ import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -609,11 +607,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     @Override
-    public IGuiTexture getFancyTooltipIcon() {
+    public Object getFancyTooltipIcon() {
         if (showFancyTooltip()) {
             return GuiTextures.INSUFFICIENT_INPUT;
         }
-        return IGuiTexture.EMPTY;
+        return null;
     }
 
     @Override
@@ -669,8 +667,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                                                            TransformerContext<ChanceCacheMap> context) {
                 CompoundTag chanceCache = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
                 if (context.currentValue() != null) {
-                    for (String key : chanceCache.getAllKeys()) {
-                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(ResourceLocation.parse(key));
+                    for (String key : chanceCache.keySet()) {
+                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.getValue(Identifier.parse(key));
                         // Necessary since a RecipeCapability was removed when removing Create support, and for future
                         // removals
                         if (cap == null) continue;
@@ -678,11 +676,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                         Object2IntMap map = context.currentValue().computeIfAbsent(cap,
                                 RecipeCapability::makeChanceCache);
 
-                        ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
+                        ListTag chanceTag = chanceCache.getListOrEmpty(key);
                         for (int i = 0; i < chanceTag.size(); ++i) {
-                            CompoundTag chanceKey = chanceTag.getCompound(i);
+                            CompoundTag chanceKey = chanceTag.getCompoundOrEmpty(i);
                             var entry = cap.fromNbt(chanceKey.get("entry"), GTRegistries.builtinRegistry());
-                            int value = chanceKey.getInt("cached_chance");
+                            int value = chanceKey.getIntOr("cached_chance", 0);
                             // noinspection unchecked
                             map.put(entry, value);
                         }

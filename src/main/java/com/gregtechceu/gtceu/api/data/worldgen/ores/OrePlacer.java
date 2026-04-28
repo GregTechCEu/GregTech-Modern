@@ -44,7 +44,7 @@ public class OrePlacer {
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         if (!ConfigHolder.INSTANCE.dev.doSuperflatOres && chunkGenerator instanceof FlatLevelSource) return;
 
-        var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().toLong());
+        var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().pack());
         var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
         var generatedIndicators = oreGenCache.consumeChunkIndicators(level, chunkGenerator, chunk);
 

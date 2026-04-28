@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -294,18 +294,18 @@ public class TagExprFilter {
      * @return if any of the item's tags matches the rules
      */
     public static boolean tagsMatch(@Nullable TagExprParser.MatchExpr expr, ItemStack stack) {
-        Set<String> tags = stack.getTags()
+        Set<String> tags = stack.getItem().builtInRegistryHolder().tags()
                 .map(TagKey::location)
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .collect(Collectors.toSet());
 
         return expr != null && expr.matches(tags);
     }
 
     public static boolean tagsMatch(@Nullable TagExprParser.MatchExpr expr, FluidStack stack) {
-        Set<String> tags = stack.getFluid().defaultFluidState().getTags()
+        Set<String> tags = stack.getFluid().builtInRegistryHolder().tags()
                 .map(TagKey::location)
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .collect(Collectors.toSet());
 
         return expr != null && expr.matches(tags);

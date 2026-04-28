@@ -3,19 +3,18 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.map.GTMapRendering;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.Identifier;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.map.element.MapElementReader;
 import xaero.map.element.MapElementRenderProvider;
 import xaero.map.element.MapElementRenderer;
@@ -24,7 +23,7 @@ import xaero.map.graphics.renderer.multitexture.MultiTextureRenderTypeRendererPr
 public class OreVeinElementRenderer extends
                                     MapElementRenderer<OreVeinElement, OreVeinElementContext, OreVeinElementRenderer> {
 
-    protected static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
+    protected static final Identifier STONE = Identifier.withDefaultNamespace("block/stone");
 
     protected OreVeinElementRenderer(OreVeinElementContext context,
                                      MapElementRenderProvider<OreVeinElement, OreVeinElementContext> provider,
@@ -38,7 +37,7 @@ public class OreVeinElementRenderer extends
     }
 
     @Override
-    public void beforeRender(int location, Minecraft mc, GuiGraphics guiGraphics,
+    public void beforeRender(int location, Minecraft mc, GuiGraphics GuiGraphics,
                              double cameraX, double cameraZ, double mouseX, double mouseZ,
                              float brightness, double scale, double screenSizeBasedScale, TextureManager textureManager,
                              Font fontRenderer,
@@ -47,7 +46,7 @@ public class OreVeinElementRenderer extends
                              boolean pre) {}
 
     @Override
-    public void afterRender(int location, Minecraft mc, GuiGraphics guiGraphics,
+    public void afterRender(int location, Minecraft mc, GuiGraphics GuiGraphics,
                             double cameraX, double cameraZ, double mouseX, double mouseZ,
                             float brightness, double scale, double screenSizeBasedScale,
                             TextureManager textureManager, Font fontRenderer,
@@ -57,7 +56,7 @@ public class OreVeinElementRenderer extends
 
     @Override
     public void renderElementPre(int location, OreVeinElement w, boolean hovered,
-                                 Minecraft mc, GuiGraphics guiGraphics,
+                                 Minecraft mc, GuiGraphics GuiGraphics,
                                  double cameraX, double cameraZ, double mouseX, double mouseZ,
                                  float brightness, double scale, double screenSizeBasedScale,
                                  TextureManager textureManager, Font fontRenderer,
@@ -84,30 +83,22 @@ public class OreVeinElementRenderer extends
 
         Material firstMaterial = vein.definition().value().veinGenerator().getAllMaterials().getFirst();
         int materialARGB = firstMaterial.getMaterialARGB();
-        float[] colors = DrawUtil.floats(materialARGB);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+        Identifier oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
                 true);
         if (oreTexture != null) {
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(oreTexture);
-            graphics.blit(-iconSize / 2, -iconSize / 2, 200, iconSize, iconSize,
-                    oreSprite, colors[0], colors[1], colors[2], 1);
+            var oreSprite = GTMapRendering.getBlockSprite(oreTexture);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, oreSprite, -iconSize / 2, -iconSize / 2, iconSize,
+                    iconSize, materialARGB);
         }
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary", true);
         if (oreTexture != null) {
             int materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
-            colors = DrawUtil.floats(materialSecondaryARGB);
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(oreTexture);
-            graphics.blit(-iconSize / 2, -iconSize / 2, 200, iconSize, iconSize,
-                    oreSprite, colors[0], colors[1], colors[2], 1);
+            var oreSprite = GTMapRendering.getBlockSprite(oreTexture);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, oreSprite, -iconSize / 2, -iconSize / 2, iconSize,
+                    iconSize, materialSecondaryARGB);
         }
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         int borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(materialARGB | 0xFF000000);
         if ((borderColor & 0xFF000000) != 0) {
             int thickness = iconSize / 16;

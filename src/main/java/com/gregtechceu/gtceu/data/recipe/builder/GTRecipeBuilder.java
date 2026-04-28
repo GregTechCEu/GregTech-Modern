@@ -30,14 +30,16 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
@@ -68,6 +70,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 @ExtensionMethod(SizedIngredientExtensions.class)
@@ -89,7 +92,7 @@ public class GTRecipeBuilder {
     @NotNull
     public CompoundTag data = new CompoundTag();
     @Setter
-    public ResourceLocation id;
+    public Identifier id;
     @Setter
     public GTRecipeType recipeType;
     public int duration = 100;
@@ -118,7 +121,7 @@ public class GTRecipeBuilder {
     // temporary buffer for unresolved item stacks where decomp is found post recipe addition
     private List<MaterialStack> tempFluidStacks = new ArrayList<>();
 
-    public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
+    public GTRecipeBuilder(Identifier id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
         this.recipeCategory = recipeType.getCategory();
@@ -141,7 +144,7 @@ public class GTRecipeBuilder {
         this.recipeCategory = toCopy.recipeCategory;
     }
 
-    public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
+    public static GTRecipeBuilder of(Identifier id, GTRecipeType recipeType) {
         return new GTRecipeBuilder(id, recipeType);
     }
 
@@ -153,7 +156,7 @@ public class GTRecipeBuilder {
         return copy(GTCEu.id(id));
     }
 
-    public GTRecipeBuilder copy(ResourceLocation id) {
+    public GTRecipeBuilder copy(Identifier id) {
         GTRecipeBuilder copy = new GTRecipeBuilder(id, this.recipeType);
         this.input.forEach((k, v) -> copy.input.put(k, new ArrayList<>(v)));
         this.output.forEach((k, v) -> copy.output.put(k, new ArrayList<>(v)));
@@ -308,8 +311,7 @@ public class GTRecipeBuilder {
             case MaterialEntry entry -> inputItems(entry);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag);
             case MachineDefinition machine -> inputItems(machine);
-            case IntProviderIngredient ingredient -> inputItems(
-                    new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
+            case IntProviderIngredient ingredient -> inputItems(new SizedIngredient(ingredient.toVanilla(), 1));
             default -> {
                 GTCEu.LOGGER.error(
                         """
@@ -332,8 +334,7 @@ public class GTRecipeBuilder {
             case MaterialEntry entry -> inputItems(entry, count);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag, count);
             case MachineDefinition machine -> inputItems(machine, count);
-            case IntProviderIngredient ingredient -> inputItems(
-                    new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
+            case IntProviderIngredient ingredient -> inputItems(new SizedIngredient(ingredient.toVanilla(), 1));
             default -> {
                 GTCEu.LOGGER.error(
                         """
@@ -416,7 +417,9 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag, int amount) {
-        return inputItems(SizedIngredient.of(tag, amount));
+        return inputItems(new SizedIngredient(Ingredient.of(StreamSupport
+                .stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false)
+                .map(Holder::value)), amount));
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag) {
@@ -528,8 +531,7 @@ public class GTRecipeBuilder {
             case ItemStack stack -> outputItems(stack);
             case MaterialEntry entry -> outputItems(entry);
             case MachineDefinition machine -> outputItems(machine);
-            case IntProviderIngredient ingredient -> outputItems(
-                    new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
+            case IntProviderIngredient ingredient -> outputItems(new SizedIngredient(ingredient.toVanilla(), 1));
             default -> {
                 GTCEu.LOGGER.error("""
                         Output item is not one of:
@@ -548,8 +550,7 @@ public class GTRecipeBuilder {
             case ItemStack stack -> outputItems(stack.copyWithCount(count));
             case MaterialEntry entry -> outputItems(entry, count);
             case MachineDefinition machine -> outputItems(machine, count);
-            case IntProviderIngredient ingredient -> outputItems(
-                    new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
+            case IntProviderIngredient ingredient -> outputItems(new SizedIngredient(ingredient.toVanilla(), 1));
             default -> {
                 GTCEu.LOGGER.error("""
                         Output item is not one of:
@@ -830,7 +831,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
-        return chancedInput(SizedFluidIngredient.of(stack), chance, tierChanceBoost);
+        return chancedInput(sizedFluid(stack), chance, tierChanceBoost);
     }
 
     public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
@@ -838,7 +839,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
-        return chancedOutput(SizedFluidIngredient.of(stack), chance, tierChanceBoost);
+        return chancedOutput(sizedFluid(stack), chance, tierChanceBoost);
     }
 
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
@@ -1067,17 +1068,17 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputFluids(IntProviderFluidIngredient... inputs) {
         return input(FluidRecipeCapability.CAP,
                 Arrays.stream(inputs).<SizedFluidIngredient>map(
-                        ingredient -> new SizedFluidIngredient(ingredient, ingredient.getCountProvider().getMaxValue()))
+                        ingredient -> new SizedFluidIngredient(ingredient, 1))
                         .toList().toArray(new SizedFluidIngredient[0]));
     }
 
     public GTRecipeBuilder outputFluids(FluidStack output) {
-        return output(FluidRecipeCapability.CAP, SizedFluidIngredient.of(output));
+        return output(FluidRecipeCapability.CAP, sizedFluid(output));
     }
 
     public GTRecipeBuilder outputFluids(FluidStack... outputs) {
         return output(FluidRecipeCapability.CAP,
-                Arrays.stream(outputs).map(SizedFluidIngredient::of).toArray(SizedFluidIngredient[]::new));
+                Arrays.stream(outputs).map(GTRecipeBuilder::sizedFluid).toArray(SizedFluidIngredient[]::new));
     }
 
     public GTRecipeBuilder outputFluids(SizedFluidIngredient... outputs) {
@@ -1087,7 +1088,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputFluids(IntProviderFluidIngredient... outputs) {
         return output(FluidRecipeCapability.CAP,
                 Arrays.stream(outputs).<SizedFluidIngredient>map(
-                        ingredient -> new SizedFluidIngredient(ingredient, ingredient.getCountProvider().getMaxValue()))
+                        ingredient -> new SizedFluidIngredient(ingredient, 1))
                         .toList().toArray(new SizedFluidIngredient[0]));
     }
 
@@ -1180,11 +1181,11 @@ public class GTRecipeBuilder {
         return addCondition(new CleanroomCondition(cleanroomType));
     }
 
-    public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
+    public GTRecipeBuilder dimension(Identifier dimension, boolean reverse) {
         return dimension(ResourceKey.create(Registries.DIMENSION, dimension), reverse);
     }
 
-    public GTRecipeBuilder dimension(ResourceLocation dimension) {
+    public GTRecipeBuilder dimension(Identifier dimension) {
         return dimension(dimension, false);
     }
 
@@ -1539,7 +1540,8 @@ public class GTRecipeBuilder {
         tempFluidStacks = null;
 
         assert recipeType != null;
-        output.accept(id.withPrefix(recipeType.registryName.getPath() + "/"), build(), null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id.withPrefix(recipeType.registryName.getPath() + "/")),
+                build(), null);
     }
 
     private void gatherMaterialInfoFromStack(ItemStack input) {
@@ -1569,14 +1571,14 @@ public class GTRecipeBuilder {
             int outputCount = 0;
 
             if (currOutput.getContainedCustom() instanceof IntProviderIngredient intProvider) {
-                ItemStack[] items = intProvider.getInner().getItems();
+                ItemStack[] items = stacksFor(intProvider.getInner(), 1);
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getCountProvider().sample(net.minecraft.util.RandomSource.create());
                 }
-            } else if (!currOutput.ingredient().hasNoItems()) {
-                ItemStack[] items = currOutput.getItems();
+            } else if (!currOutput.ingredient().isEmpty()) {
+                ItemStack[] items = stacksFor(currOutput);
                 if (items.length > 0) {
                     out = items[0].getItem();
                     outputCount = items[0].getCount();
@@ -1620,14 +1622,14 @@ public class GTRecipeBuilder {
             int outputCount = 0;
 
             if (currOutput.getContainedCustom() instanceof IntProviderIngredient intProvider) {
-                ItemStack[] items = intProvider.getInner().getItems();
+                ItemStack[] items = stacksFor(intProvider.getInner(), 1);
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getCountProvider().sample(net.minecraft.util.RandomSource.create());
                 }
-            } else if (!currOutput.ingredient().hasNoItems()) {
-                ItemStack[] items = currOutput.getItems();
+            } else if (!currOutput.ingredient().isEmpty()) {
+                ItemStack[] items = stacksFor(currOutput);
                 if (items.length > 0) {
                     out = items[0].getItem();
                     outputCount = items[0].getCount();
@@ -1705,9 +1707,24 @@ public class GTRecipeBuilder {
 
     public int getSolderMultiplier() {
         if (data.contains("solderMultiplier")) {
-            return Math.max(1, data.getInt("solderMultiplier"));
+            return Math.max(1, data.getInt("solderMultiplier").orElse(1));
         }
-        return Math.max(1, data.getInt("solder_multiplier"));
+        return Math.max(1, data.getInt("solder_multiplier").orElse(1));
+    }
+
+    private static SizedFluidIngredient sizedFluid(FluidStack stack) {
+        return new SizedFluidIngredient(FluidIngredient.of(stack), stack.getAmount());
+    }
+
+    private static ItemStack[] stacksFor(Ingredient ingredient, int count) {
+        return ingredient.items()
+                .map(ItemStack::new)
+                .map(stack -> stack.copyWithCount(count))
+                .toArray(ItemStack[]::new);
+    }
+
+    private static ItemStack[] stacksFor(SizedIngredient ingredient) {
+        return stacksFor(ingredient.ingredient(), ingredient.count());
     }
 
     /**

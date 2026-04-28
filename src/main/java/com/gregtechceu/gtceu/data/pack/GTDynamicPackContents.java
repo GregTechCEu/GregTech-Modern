@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.pack;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.IoSupplier;
 
@@ -58,7 +58,7 @@ public class GTDynamicPackContents {
         void outputResources(String namespace, String path, PackResources.ResourceOutput output) {
             if (isTerminalNode()) {
                 // This is a terminal node.
-                ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, path);
+                Identifier location = Identifier.fromNamespaceAndPath(namespace, path);
                 output.accept(location, this.createIoSupplier());
             } else {
                 for (var entry : getChildren().entrySet()) {
@@ -90,11 +90,11 @@ public class GTDynamicPackContents {
     private final Node root = new Node();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public void addToData(ResourceLocation location, byte[] bytes) {
+    public void addToData(Identifier location, byte[] bytes) {
         addToData(location, () -> new ByteArrayInputStream(bytes));
     }
 
-    public void addToData(ResourceLocation location, IoSupplier<InputStream> supplier) {
+    public void addToData(Identifier location, IoSupplier<InputStream> supplier) {
         String[] pathComponents = location.getPath().split("/");
         var lock = this.lock.writeLock();
         lock.lock();
@@ -119,7 +119,7 @@ public class GTDynamicPackContents {
         }
     }
 
-    public @Nullable IoSupplier<InputStream> getResource(ResourceLocation location) {
+    public @Nullable IoSupplier<InputStream> getResource(Identifier location) {
         var lock = this.lock.readLock();
         lock.lock();
         try {

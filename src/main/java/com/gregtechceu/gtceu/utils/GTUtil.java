@@ -7,26 +7,26 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,10 +36,10 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -341,27 +341,27 @@ public class GTUtil {
 
     public static boolean isShiftDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+            var window = Minecraft.getInstance().getWindow();
+            return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                    InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
         }
         return false;
     }
 
     public static boolean isCtrlDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
+            var window = Minecraft.getInstance().getWindow();
+            return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                    InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL);
         }
         return false;
     }
 
     public static boolean isAltDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
+            var window = Minecraft.getInstance().getWindow();
+            return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) ||
+                    InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT);
         }
         return false;
     }
@@ -411,7 +411,8 @@ public class GTUtil {
     }
 
     public static int getItemBurnTime(Item item) {
-        return item.getDefaultInstance().getBurnTime(RecipeType.SMELTING);
+        FuelValues fuelValues = FuelValues.vanillaBurnTimes(RegistryAccess.EMPTY, FeatureFlags.DEFAULT_FLAGS);
+        return item.getDefaultInstance().getBurnTime(RecipeType.SMELTING, fuelValues);
     }
 
     public static int getPumpBiomeModifier(Holder<Biome> biome) {
@@ -450,7 +451,7 @@ public class GTUtil {
      */
     public static MapColor determineMapColor(int rgbColor) {
         return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
-                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+                c -> c.calculateARGBColor(MapColor.Brightness.NORMAL));
     }
 
     private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
@@ -496,7 +497,7 @@ public class GTUtil {
     }
 
     public static int getFluidColor(FluidStack fluid) {
-        return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+        return RenderUtil.getFluidTint(fluid);
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {
@@ -506,7 +507,8 @@ public class GTUtil {
 
         Holder<Biome> biome = world.getBiome(blockPos.above());
         if (world.isRaining()) {
-            if (biome.value().warmEnoughToRain(blockPos.above()) || biome.value().coldEnoughToSnow(blockPos.above())) {
+            if (biome.value().warmEnoughToRain(blockPos.above(), world.getSeaLevel()) ||
+                    biome.value().coldEnoughToSnow(blockPos.above(), world.getSeaLevel())) {
                 return false;
             }
         }
@@ -515,10 +517,10 @@ public class GTUtil {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_JAVD, "void");
+        Identifier javdVoidBiome = Identifier.fromNamespaceAndPath(GTValues.MODID_JAVD, "void");
         if (GTCEu.isModLoaded(GTValues.MODID_JAVD) && biome.is(javdVoidBiome)) {
-            return !world.isDay();
-        } else return world.isDay();
+            return world.isDarkOutside();
+        } else return world.isBrightOutside();
     }
 
     /**
@@ -592,24 +594,7 @@ public class GTUtil {
         };
     }
 
-    public static void addPotionTooltip(List<FoodProperties.PossibleEffect> effects, List<Component> list) {
-        if (!effects.isEmpty()) {
-            list.add(Component.translatable("gtceu.tooltip.potion.header"));
-        }
-        effects.forEach(eff -> {
-            var effect = eff.effect();
-            float probability = eff.probability();
-            list.add(Component.translatable("gtceu.tooltip.potion.each",
-                    Component.translatable(effect.getDescriptionId())
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
-                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
-                    Component.literal(String.valueOf(effect.getDuration()))
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
-                    Component.literal(String.valueOf(100 * probability))
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
-        });
-    }
+    public static void addPotionTooltip(List<?> effects, List<Component> list) {}
 
     /**
      * Returns the slot type based on the slot group and the index inside that group.

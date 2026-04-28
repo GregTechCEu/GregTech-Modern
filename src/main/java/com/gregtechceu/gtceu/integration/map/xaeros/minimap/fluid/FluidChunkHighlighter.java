@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.minimap.fluid;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.integration.map.GTMapRendering;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import xaero.common.minimap.highlight.ChunkHighlighter;
 import xaero.common.minimap.info.render.compile.InfoDisplayCompiler;
@@ -42,11 +40,7 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
         var bottomFluid = dimensionMap.get(new ChunkPos(chunkX, chunkZ + 1));
         var leftFluid = dimensionMap.get(new ChunkPos(chunkX - 1, chunkZ));
 
-        int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
-        Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (!material.isNull()) {
-            color = material.getMaterialARGB();
-        }
+        int color = GTMapRendering.getFluidColor(vein.fluid());
         color = (color & 0xFF) << 24 | (color >> 8 & 0xFF) << 16 | (color >> 16 & 0xFF) << 8;
 
         int fillOpacity = 25;

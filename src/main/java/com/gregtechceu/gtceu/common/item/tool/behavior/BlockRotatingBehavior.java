@@ -34,6 +34,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ import java.util.List;
 public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavior> {
 
     public static final BlockRotatingBehavior INSTANCE = new BlockRotatingBehavior();
-    public static final Codec<BlockRotatingBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<BlockRotatingBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, BlockRotatingBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected BlockRotatingBehavior() {}
@@ -77,14 +78,14 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
             if (behavior != null) {
                 if (behavior.customRotate(state, level, pos, retraceBlock(level, player, pos))) {
                     ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             } else {
                 Rotation rot = player == null || player.getDirection().getClockWise() == context.getClickedFace() ?
                         Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
                 if (state.rotate(level, pos, rot) != state) {
                     ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

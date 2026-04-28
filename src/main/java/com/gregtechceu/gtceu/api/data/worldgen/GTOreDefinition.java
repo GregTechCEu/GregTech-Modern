@@ -15,12 +15,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -47,7 +48,7 @@ public class GTOreDefinition {
 
     // spotless:off
     public static final Codec<GTOreDefinition> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IntProvider.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(GTOreDefinition::clusterSize),
+            IntProviders.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(GTOreDefinition::clusterSize),
             Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(GTOreDefinition::density),
             Codec.INT.fieldOf("weight").forGetter(GTOreDefinition::weight),
             IWorldGenLayer.CODEC.fieldOf("layer").forGetter(GTOreDefinition::layer),
@@ -185,7 +186,7 @@ public class GTOreDefinition {
     @HideFromJS
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         if (biomeLookup == null) {
-            GTRegistries.builtinRegistry().registry(GTRegistries.ORE_VEIN_REGISTRY)
+            GTRegistries.builtinRegistry().lookup(GTRegistries.ORE_VEIN_REGISTRY)
                     .map(reg -> reg.getKey(this))
                     .ifPresentOrElse(id -> {
                         GTCEu.LOGGER.error("Tried to modify ore vein `{}`'s biomes after registry has been frozen!",
@@ -293,7 +294,7 @@ public class GTOreDefinition {
 
     @Tolerate
     @Nullable
-    public VeinGenerator veinGenerator(ResourceLocation id) {
+    public VeinGenerator veinGenerator(Identifier id) {
         if (veinGenerator == null) {
             // noinspection DataFlowIssue
             veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?

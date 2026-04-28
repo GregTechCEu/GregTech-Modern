@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import lombok.Getter;
@@ -29,13 +29,13 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
     @Getter
     final String groupName;
     @Getter
-    final ResourceLocation uiPath;
+    final Identifier uiPath;
     final Supplier<WidgetGroup> widgetSupplier;
     final BiConsumer<WidgetGroup, MetaMachine> binder;
     @Nullable
     private CompoundTag customUICache;
 
-    public EditableMachineUI(String groupName, ResourceLocation uiPath, Supplier<WidgetGroup> widgetSupplier,
+    public EditableMachineUI(String groupName, Identifier uiPath, Supplier<WidgetGroup> widgetSupplier,
                              BiConsumer<WidgetGroup, MetaMachine> binder) {
         this.groupName = groupName;
         this.uiPath = uiPath;
@@ -60,8 +60,9 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
         if (hasCustomUI()) {
             var nbt = getCustomUI();
             var group = new WidgetGroup();
-            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"),
-                    Resources.fromNBT(nbt.getCompound("resources")), false, GTRegistries.builtinRegistry());
+            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root").orElse(new CompoundTag()),
+                    Resources.fromNBT(nbt.getCompound("resources").orElse(new CompoundTag())), false,
+                    GTRegistries.builtinRegistry());
             group.setSelfPosition(new Position(0, 0));
             return group;
         }
@@ -81,7 +82,7 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
             } else {
                 try {
                     var resource = resourceManager
-                            .getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(uiPath.getNamespace(),
+                            .getResourceOrThrow(Identifier.fromNamespaceAndPath(uiPath.getNamespace(),
                                     "ui/machine/%s.mui".formatted(uiPath.getPath())));
                     try (InputStream inputStream = resource.open()) {
                         try (DataInputStream dataInputStream = new DataInputStream(inputStream);) {

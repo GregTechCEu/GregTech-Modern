@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -33,11 +32,12 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
         if (blockAccessor.getBlockEntity() instanceof ChargerMachine blockEntity ||
                 blockAccessor.getBlockEntity() instanceof BatteryBufferMachine) {
             CompoundTag serverData = blockAccessor.getServerData();
-            if (serverData.contains("batteries")) {
-                CompoundTag tag = serverData.getCompound("batteries");
-                CompoundTag container = tag.getCompound("energy");
-                long changed = container.getLong("changed"), stored = container.getLong("stored"),
-                        capacity = container.getLong("capacity");
+            var batteries = serverData.getCompound("batteries");
+            if (batteries.isPresent()) {
+                CompoundTag tag = batteries.get();
+                CompoundTag container = tag.getCompoundOrEmpty("energy");
+                long changed = container.getLongOr("changed", 0), stored = container.getLongOr("stored", 0),
+                        capacity = container.getLongOr("capacity", 0);
                 iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
                 if (changed > 0L) {
                     iTooltip.add(Component
@@ -49,7 +49,8 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                 }
                 if (Minecraft.getInstance().player.isShiftKeyDown()) {
                     CustomItemStackHandler handler = new CustomItemStackHandler();
-                    handler.deserializeNBT(blockAccessor.getLevel().registryAccess(), tag.getCompound("storage"));
+                    handler.deserializeNBT(blockAccessor.getLevel().registryAccess(),
+                            tag.getCompoundOrEmpty("storage"));
                     IElementHelper helper = IElementHelper.get();
                     for (int i = 0; i < handler.getSlots(); i++) {
                         if (handler.getStackInSlot(i).getCount() != 0) {
@@ -97,6 +98,6 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("battery_info");
+        return GTJadeIds.toResourceLocation("battery_info");
     }
 }

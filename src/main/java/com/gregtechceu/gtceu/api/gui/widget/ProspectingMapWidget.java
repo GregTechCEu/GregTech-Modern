@@ -83,8 +83,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @Override
     public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
-        buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
-        buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
+        buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x());
+        buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z());
         buffer.writeVarInt(gui.entityPlayer.getBlockX());
         buffer.writeVarInt(gui.entityPlayer.getBlockZ());
     }
@@ -116,7 +116,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             for (int z = 0; z < mode.cellSize; z++) {
                 for (var item : data[x][z]) {
                     newItems.add(item);
-                    addNewItem(mode.getUniqueID(item), mode.getDescription(item), mode.getItemIcon(item),
+                    addNewItem(mode.getUniqueID(item), mode.getDescription(item), (IGuiTexture) mode.getItemIcon(item),
                             mode.getItemColor(item));
                 }
             }
@@ -267,13 +267,12 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         if (!WaypointManager.isActive()) return true;
         MutableComponent veinName = Component.literal(clickedItem.name());
         veinName.setStyle(veinName.getStyle().withColor(clickedItem.color));
-        WaypointManager.setWaypoint(new ChunkPos(clickedItem.position).toString(),
+        WaypointManager.setWaypoint(ChunkPos.containing(clickedItem.position).toString(),
                 clickedItem.name,
                 clickedItem.color,
                 gui.entityPlayer.level().dimension(),
                 clickedItem.position.getX(), clickedItem.position.getY(), clickedItem.position.getZ());
-        gui.entityPlayer.displayClientMessage(
-                Component.translatable("behavior.prospector.added_waypoint", veinName), false);
+        gui.entityPlayer.sendSystemMessage(Component.translatable("behavior.prospector.added_waypoint", veinName));
         playButtonClickSound();
         return true;
     }
@@ -291,8 +290,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         int xDiff = cX - (chunkRadius - 1);
         int zDiff = cZ - (chunkRadius - 1);
 
-        int xPos = ((gui.entityPlayer.chunkPosition().x + xDiff) << 4) + offsetX;
-        int zPos = ((gui.entityPlayer.chunkPosition().z + zDiff) << 4) + offsetZ;
+        int xPos = ((gui.entityPlayer.chunkPosition().x() + xDiff) << 4) + offsetX;
+        int zPos = ((gui.entityPlayer.chunkPosition().z() + zDiff) << 4) + offsetZ;
 
         var blockPos = new BlockPos(xPos, gui.entityPlayer.level().getHeight(Heightmap.Types.WORLD_SURFACE, xPos, zPos),
                 zPos);

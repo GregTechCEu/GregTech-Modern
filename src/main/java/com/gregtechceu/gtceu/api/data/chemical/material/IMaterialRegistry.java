@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.IMappedRegistryAccess;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -38,27 +38,27 @@ public interface IMaterialRegistry extends Iterable<Material> {
      * <li>{@code "modid:registry_name"}</li>
      * <li>{@code "registry_name"} - where modid is inferred to be {@link GTCEu#MOD_ID}</li>
      * </ul>
-     * Generally, you should use {@linkplain IMaterialRegistry#getMaterial(ResourceLocation)} instead.
+     * Generally, you should use {@linkplain IMaterialRegistry#getMaterial(Identifier)} instead.
      *
      * @param name the name of the material in the above format
      * @return the material associated with the name
-     * @see IMaterialRegistry#getMaterial(ResourceLocation)
+     * @see IMaterialRegistry#getMaterial(Identifier)
      */
     default Material getMaterial(String name) {
         return getMaterial(GTCEu.id(name));
     }
 
     /**
-     * Get a material from a ResourceLocation<br>
+     * Get a material from a Identifier<br>
      * Intended for use in reading/writing materials from/to NBT tags.
      *
      * @param name the name of the material in the above format
      * @return the material associated with the name
      * @see IMaterialRegistry#getMaterial(String)
      */
-    Material getMaterial(ResourceLocation name);
+    Material getMaterial(Identifier name);
 
-    ResourceLocation getKey(Material material);
+    Identifier getKey(Material material);
 
     /**
      * Set the fallback material for a namespace.

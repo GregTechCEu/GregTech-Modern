@@ -1,16 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +22,7 @@ public class SmartItemFilter implements ItemFilter {
     protected Consumer<SmartItemFilter> itemWriter = filter -> {};
     protected Consumer<SmartItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
-    private SmartFilteringMode filterMode;
+    SmartFilteringMode filterMode;
 
     private SmartItemFilter(SmartFilteringMode filterMode) {
         this.filterMode = filterMode;
@@ -48,17 +44,14 @@ public class SmartItemFilter implements ItemFilter {
         };
     }
 
-    private void setFilterMode(SmartFilteringMode filterMode) {
+    void setFilterMode(SmartFilteringMode filterMode) {
         this.filterMode = filterMode;
         onUpdated.accept(this);
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
-                SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
-        return group;
+    public Object openConfigurator(int x, int y) {
+        return SmartItemFilterUI.openConfigurator(this, x, y);
     }
 
     @Override
@@ -79,7 +72,7 @@ public class SmartItemFilter implements ItemFilter {
             return 0;
         }
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
-            var stacks = ItemRecipeCapability.CAP.of(content.getContent()).getItems();
+            var stacks = SizedIngredientExtensions.getItems(ItemRecipeCapability.CAP.of(content.getContent()));
             for (var stack : stacks) {
                 if (ItemStack.isSameItem(stack, itemStack)) return stack.getCount();
             }
@@ -96,7 +89,7 @@ public class SmartItemFilter implements ItemFilter {
         }
     }
 
-    public enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum, StringRepresentable {
+    public enum SmartFilteringMode implements StringRepresentable {
 
         ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
         CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
@@ -114,14 +107,12 @@ public class SmartItemFilter implements ItemFilter {
             this.recipeType = type;
         }
 
-        @Override
         public String getTooltip() {
             return "cover.smart_item_filter.filtering_mode." + name;
         }
 
-        @Override
-        public IGuiTexture getIcon() {
-            return new ResourceTexture("gtceu:textures/block/machines/" + name + "/overlay_front.png");
+        public Object getIcon() {
+            return SmartItemFilterUI.icon(name);
         }
 
         @Override

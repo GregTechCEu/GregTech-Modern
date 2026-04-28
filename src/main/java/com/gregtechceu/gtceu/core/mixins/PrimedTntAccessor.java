@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 
@@ -10,5 +11,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface PrimedTntAccessor {
 
     @Accessor
-    void setOwner(LivingEntity owner);
+    void setOwner(EntityReference<LivingEntity> owner);
 }

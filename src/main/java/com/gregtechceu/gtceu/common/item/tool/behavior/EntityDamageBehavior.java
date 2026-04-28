@@ -117,8 +117,10 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
             tagBonusesLoaded = true;
             if (tempTagBonusList == null || tempTagBonusList.isEmpty()) return bonusList;
             for (var entry : Reference2FloatMaps.fastIterable(tempTagBonusList)) {
-                HolderSet.Named<EntityType<?>> tag = BuiltInRegistries.ENTITY_TYPE.getOrCreateTag(entry.getKey());
-                bonusList.put(tag, entry.getFloatValue());
+                BuiltInRegistries.ENTITY_TYPE.getTags()
+                        .filter(tag -> tag.key().equals(entry.getKey()))
+                        .findFirst()
+                        .ifPresent(tag -> bonusList.put(tag, entry.getFloatValue()));
             }
         }
         return bonusList;
@@ -146,7 +148,7 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
 
     private float getDamageBonus(@NotNull LivingEntity target) {
         for (var entry : Object2FloatMaps.fastIterable(getBonusList())) {
-            if (target.getType().is(entry.getKey())) {
+            if (entry.getKey().contains(target.getType().builtInRegistryHolder())) {
                 float f = entry.getFloatValue();
                 if (f > 0) return f;
             }

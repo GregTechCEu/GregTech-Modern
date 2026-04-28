@@ -21,7 +21,7 @@ public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap>
     public static final Codec<CapabilityMap> CODEC = RecipeCapability.CODEC
             .xmap(CapabilityMap::new, Function.identity());
     public static final CapabilityMapComponent INSTANCE = new CapabilityMapComponent();
-    public static final RecipeComponentType<CapabilityMap> CAPABILITY_MAP = RecipeComponentType.unit(ResourceLocation.parse("capability_map"), INSTANCE);
+    public static final RecipeComponentType<CapabilityMap> CAPABILITY_MAP = RecipeComponentType.unit(ResourceLocation.withDefaultNamespace("capability_map"), INSTANCE);
     // spotless:on
 
     @Override

@@ -24,12 +24,10 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.IdMappingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
@@ -43,7 +41,7 @@ import java.util.*;
 public final class GTRegistries {
 
     // spotless:off
-    private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
+    private static final LinkedHashMap<Identifier, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
 
     // server (datapack) registries' keys
     public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN_REGISTRY = makeRegistryKey(GTCEu.id("ore_vein"));
@@ -85,7 +83,7 @@ public final class GTRegistries {
     public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(DIMENSION_MARKER_REGISTRY, false);
     // spotless:on
 
-    public static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
+    public static <T> ResourceKey<Registry<T>> makeRegistryKey(Identifier registryId) {
         return ResourceKey.createRegistryKey(registryId);
     }
 
@@ -97,20 +95,20 @@ public final class GTRegistries {
         MappedRegistry<T> registry = (MappedRegistry<T>) new RegistryBuilder<>(key)
                 .sync(sync)
                 .create();
-        LOAD_ORDER.put(key.location(), registry);
+        LOAD_ORDER.put(key.identifier(), registry);
         return registry;
     }
 
     private static MaterialRegistry makeMaterialRegistry() {
         MaterialRegistry registry = new MaterialRegistry(MATERIAL_REGISTRY);
-        LOAD_ORDER.put(MATERIAL_REGISTRY.location(), registry);
+        LOAD_ORDER.put(MATERIAL_REGISTRY.identifier(), registry);
         return registry;
     }
 
-    private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
+    private static final Table<Registry<?>, Identifier, Object> TO_REGISTER = HashBasedTable.create();
     private static boolean isFrozen = true;
 
-    public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
+    public static <V, T extends V> T register(Registry<V> registry, Identifier name, T value) {
         if (!isFrozen) {
             Registry.register(registry, name, value);
         } else {
@@ -134,18 +132,13 @@ public final class GTRegistries {
         isFrozen = false;
     }
 
-    private static void onFreeze(IdMappingEvent event) {
-        isFrozen = event.isFrozen();
-    }
-
     public static void init(IEventBus eventBus) {
         eventBus.addListener(EventPriority.HIGHEST, GTRegistries::onUnfreeze);
         eventBus.addListener(EventPriority.LOW, GTRegistries::actuallyRegister);
-        NeoForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
 
     @UnmodifiableView
-    public static List<ResourceLocation> getRegistrationOrder() {
+    public static List<Identifier> getRegistrationOrder() {
         return List.copyOf(LOAD_ORDER.keySet());
     }
 

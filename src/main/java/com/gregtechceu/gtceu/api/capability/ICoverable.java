@@ -13,15 +13,15 @@ import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -208,7 +208,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide();
     }
 
     default VoxelShape[] addCoverCollisionBoundingBox() {
@@ -310,22 +310,23 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         if (cover == null) return new CompoundTag();
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
-        tag.put("item", cover.getAttachItem().save(getLevel().registryAccess()));
+        tag.put("item", new CompoundTag());
         tag.put("data", cover.copyConfig(new CompoundTag()));
         return tag;
     }
 
     private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
         if (tag.isEmpty()) return;
-        var def = GTRegistries.COVERS.get(ResourceLocation.parse(tag.getString("id")));
-        ItemStack stack = ItemStack.parseOptional(getLevel().registryAccess(), tag.getCompound("item"));
+        var def = GTRegistries.COVERS.getValue(Identifier.parse(tag.getString("id").orElse("")));
+        ItemStack stack = ItemStack.EMPTY;
         if (def == null) return;
 
         placeCoverOnSide(dir, stack, def, player);
 
         CoverBehavior placedCover = getCoverAtSide(dir);
-        if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
-            placedCover.pasteConfig(player, tag.getCompound("data"));
+        if (placedCover != null && tag.contains("data")) {
+            tag.getCompound("data").ifPresent(data -> placedCover.pasteConfig(player, data));
+        }
     }
 
     @Override
@@ -344,7 +345,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         }
 
         for (Direction dir : GTUtil.DIRECTIONS) {
-            applyCoverConfigTag(player, dir, tag.getCompound(dir.getName()));
+            applyCoverConfigTag(player, dir, tag.getCompound(dir.getName()).orElse(new CompoundTag()));
         }
     }
 

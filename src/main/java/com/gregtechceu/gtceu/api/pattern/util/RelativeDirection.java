@@ -84,7 +84,7 @@ public enum RelativeDirection implements StringRepresentable {
     }
 
     public Vec3i applyVec3i(Direction facing) {
-        return getActualDirection(facing).getNormal();
+        return getActualDirection(facing).getUnitVec3i();
     }
 
     /**

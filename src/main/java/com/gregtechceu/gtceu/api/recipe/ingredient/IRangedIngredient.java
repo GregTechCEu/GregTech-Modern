@@ -32,7 +32,8 @@ public interface IRangedIngredient {
      * @return the average roll of this ranged amount
      */
     default double getMidRoll() {
-        return ((getCountProvider().getMaxValue() + getCountProvider().getMinValue()) / 2.0);
+        return ((getCountProvider().sample(net.minecraft.util.RandomSource.create()) +
+                getCountProvider().sample(net.minecraft.util.RandomSource.create())) / 2.0);
     }
 
     default boolean isRolled() {

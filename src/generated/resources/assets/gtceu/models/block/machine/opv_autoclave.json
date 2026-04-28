@@ -9,6 +9,8 @@
                 "textures": {
                     "overlay_back": "gtceu:block/machines/autoclave/overlay_back",
                     "overlay_back_emissive": "gtceu:block/machines/autoclave/overlay_back_emissive",
+                    "overlay_bottom": "gtceu:block/machines/autoclave/overlay_bottom",
+                    "overlay_bottom_emissive": "gtceu:block/machines/autoclave/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/machines/autoclave/overlay_front",
                     "overlay_front_emissive": "gtceu:block/machines/autoclave/overlay_front_emissive",
                     "overlay_side": "gtceu:block/machines/autoclave/overlay_side",
@@ -22,12 +24,14 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/opv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/autoclave/overlay_back",
-                    "overlay_back_emissive": "gtceu:block/machines/autoclave/overlay_back_emissive",
-                    "overlay_front": "gtceu:block/machines/autoclave/overlay_front",
-                    "overlay_front_emissive": "gtceu:block/machines/autoclave/overlay_front_emissive",
-                    "overlay_side": "gtceu:block/machines/autoclave/overlay_side",
-                    "overlay_side_emissive": "gtceu:block/machines/autoclave/overlay_side_emissive",
+                    "overlay_back": "gtceu:block/machines/autoclave/overlay_back_paused",
+                    "overlay_back_emissive": "gtceu:block/machines/autoclave/overlay_back_paused_emissive",
+                    "overlay_bottom": "gtceu:block/machines/autoclave/overlay_bottom_paused",
+                    "overlay_bottom_emissive": "gtceu:block/machines/autoclave/overlay_bottom_paused_emissive",
+                    "overlay_front": "gtceu:block/machines/autoclave/overlay_front_paused",
+                    "overlay_front_emissive": "gtceu:block/machines/autoclave/overlay_front_paused_emissive",
+                    "overlay_side": "gtceu:block/machines/autoclave/overlay_side_paused",
+                    "overlay_side_emissive": "gtceu:block/machines/autoclave/overlay_side_paused_emissive",
                     "overlay_top": "gtceu:block/machines/autoclave/overlay_top_paused",
                     "overlay_top_emissive": "gtceu:block/machines/autoclave/overlay_top_paused_emissive"
                 }
@@ -39,6 +43,8 @@
                 "textures": {
                     "overlay_back": "gtceu:block/machines/autoclave/overlay_back_active",
                     "overlay_back_emissive": "gtceu:block/machines/autoclave/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/machines/autoclave/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/machines/autoclave/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/autoclave/overlay_front_active",
                     "overlay_front_emissive": "gtceu:block/machines/autoclave/overlay_front_active_emissive",
                     "overlay_side": "gtceu:block/machines/autoclave/overlay_side_active",
@@ -54,6 +60,8 @@
                 "textures": {
                     "overlay_back": "gtceu:block/machines/autoclave/overlay_back_active",
                     "overlay_back_emissive": "gtceu:block/machines/autoclave/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/machines/autoclave/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/machines/autoclave/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/autoclave/overlay_front_active",
                     "overlay_front_emissive": "gtceu:block/machines/autoclave/overlay_front_active_emissive",
                     "overlay_side": "gtceu:block/machines/autoclave/overlay_side_active",

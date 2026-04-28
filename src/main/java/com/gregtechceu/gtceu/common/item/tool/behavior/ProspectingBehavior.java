@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ import java.util.function.Function;
 public class ProspectingBehavior implements IToolBehavior<ProspectingBehavior> {
 
     public static final ProspectingBehavior INSTANCE = new ProspectingBehavior();
-    public static final Codec<ProspectingBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<ProspectingBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, ProspectingBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     @Override

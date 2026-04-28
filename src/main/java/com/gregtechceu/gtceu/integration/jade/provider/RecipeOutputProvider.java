@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
@@ -61,7 +62,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
         }
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
-        var function = recipe.getType().getChanceFunction();
+        var function = recipe.recipeType.getChanceFunction();
         var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
         var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
         int runs = recipe.getTotalRuns();
@@ -86,7 +87,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
                 itemTag = (CompoundTag) CodecUtils.encodeMap(chanced, chanced.getType().codec(), ops)
                         .result().orElse(new CompoundTag());
             } else {
-                ItemStack[] stacks = content.getItems();
+                ItemStack[] stacks = SizedIngredientExtensions.getItems(content);
                 if (stacks.length == 0 || stacks[0].isEmpty()) continue;
                 ItemStack stack = stacks[0];
                 itemTag = ItemStack.CODEC.encodeStart(ops, stack)
@@ -123,7 +124,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
                             ContentModifier.multiplier(countD));
                 }
             } else {
-                FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
+                FluidStack[] stacks = SizedIngredientExtensions.getFluids(FluidRecipeCapability.CAP.of(fluid.content));
                 if (stacks.length == 0) continue;
                 if (stacks[0].isEmpty()) continue;
                 var stack = stacks[0];
@@ -155,14 +156,14 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("Working")) {
+        if (!capData.getBooleanOr("Working", false)) {
             return;
         }
         var ops = block.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
 
         List<SizedIngredient> outputItems = new ArrayList<>();
-        if (capData.contains("OutputItems", Tag.TAG_LIST)) {
-            ListTag itemTags = capData.getList("OutputItems", Tag.TAG_COMPOUND);
+        if (capData.contains("OutputItems")) {
+            ListTag itemTags = capData.getListOrEmpty("OutputItems");
             if (!itemTags.isEmpty()) {
                 for (Tag tag : itemTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {
@@ -181,8 +182,8 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
             }
         }
         List<SizedFluidIngredient> outputFluids = new ArrayList<>();
-        if (capData.contains("OutputFluids", Tag.TAG_LIST)) {
-            ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
+        if (capData.contains("OutputFluids")) {
+            ListTag fluidTags = capData.getListOrEmpty("OutputFluids");
             for (Tag tag : fluidTags) {
                 if (tag instanceof CompoundTag tCompoundTag) {
                     if (tCompoundTag.contains("count_provider")) {
@@ -208,16 +209,16 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
     private void addItemTooltips(ITooltip iTooltip, List<SizedIngredient> outputItems) {
         IElementHelper helper = IElementHelper.get();
         for (SizedIngredient itemOutput : outputItems) {
-            if (itemOutput == null || itemOutput.ingredient().hasNoItems()) {
+            if (itemOutput == null || itemOutput.ingredient().isEmpty()) {
                 continue;
             }
-            ItemStack item = itemOutput.getItems()[0];
+            ItemStack item = SizedIngredientExtensions.getItems(itemOutput)[0];
             int count = item.getCount();
             item.setCount(1);
 
             iTooltip.add(helper.smallItem(item));
             MutableComponent text = CommonComponents.space();
-            item = itemOutput.getItems()[0];
+            item = SizedIngredientExtensions.getItems(itemOutput)[0];
             text.append(String.valueOf(item.getCount()));
             item.setCount(1);
             text.append(Component.translatable("gtceu.gui.content.times_item",
@@ -231,17 +232,19 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
 
     private void addFluidTooltips(ITooltip iTooltip, List<SizedFluidIngredient> outputFluids) {
         for (SizedFluidIngredient fluidOutput : outputFluids) {
-            if (fluidOutput == null || fluidOutput.ingredient().hasNoFluids()) {
+            if (fluidOutput == null || fluidOutput.ingredient().fluids().isEmpty()) {
                 continue;
             }
-            FluidStack fluid = fluidOutput.getFluids()[0];
+            FluidStack fluid = SizedIngredientExtensions.getFluids(fluidOutput)[0];
 
             iTooltip.add(GTElementHelper.smallFluid(getFluid(fluid)));
             MutableComponent text = CommonComponents.space();
             if (fluidOutput.ingredient() instanceof IntProviderFluidIngredient provider) {
                 text.append(Component.translatable("gtceu.gui.content.range",
-                        FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
-                        FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
+                        FluidTextHelper.getUnicodeMillibuckets(
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()), true),
+                        FluidTextHelper.getUnicodeMillibuckets(
+                                provider.getCountProvider().sample(net.minecraft.util.RandomSource.create()), true)));
             } else {
                 text.append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.amount(), true));
             }

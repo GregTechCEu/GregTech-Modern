@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.common.entity.*;
 
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import com.tterrag.registrate.util.entry.EntityEntry;
 
@@ -15,6 +16,7 @@ public class GTEntityTypes {
             .<DynamiteEntity>entity("dynamite", DynamiteEntity::new, MobCategory.MISC)
             .lang("Dynamite")
             .properties(builder -> builder.sized(0.25F, 0.25F).fireImmune().clientTrackingRange(4).updateInterval(10))
+            .loot((tables, type) -> tables.add(type, LootTable.lootTable()))
             .tag(EntityTypeTags.IMPACT_PROJECTILES)
             .register();
 
@@ -22,12 +24,14 @@ public class GTEntityTypes {
             .<PowderbarrelEntity>entity("powderbarrel", PowderbarrelEntity::new, MobCategory.MISC)
             .lang("Powderbarrel")
             .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
+            .loot((tables, type) -> tables.add(type, LootTable.lootTable()))
             .register();
 
     public static final EntityEntry<IndustrialTNTEntity> INDUSTRIAL_TNT = REGISTRATE
             .<IndustrialTNTEntity>entity("industrial_tnt", IndustrialTNTEntity::new, MobCategory.MISC)
             .lang("Industrial TNT")
             .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
+            .loot((tables, type) -> tables.add(type, LootTable.lootTable()))
             .register();
 
     public static void init() {}

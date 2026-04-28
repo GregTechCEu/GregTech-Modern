@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.MapCodec;
 
@@ -34,7 +34,7 @@ public class VeinGenerators {
             CuboidVeinGenerator::new);
 
     public static <
-            T extends VeinGenerator> MapCodec<T> register(ResourceLocation id, MapCodec<T> codec,
+            T extends VeinGenerator> MapCodec<T> register(Identifier id, MapCodec<T> codec,
                                                           Supplier<? extends VeinGenerator> function) {
         WorldGeneratorUtils.VEIN_GENERATORS.put(id, codec);
         WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.put(id, function);

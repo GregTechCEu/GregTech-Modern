@@ -22,17 +22,18 @@ import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -108,10 +109,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         return pipeType.createPipeModel(this, material, provider);
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
                                 TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
         WireProperties wireProperties = createProperties(defaultBlockState(), stack);
         int tier = GTUtil.getTierByVoltage(wireProperties.getVoltage());
         if (wireProperties.isSuperconductor())
@@ -125,7 +124,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                                InsideBlockEffectApplier effectApplier, boolean bypassInsideEffects) {
         // dont apply damage if there is a frame box
         var pipeNode = getPipeTile(level, pos);
         if (pipeNode == null) {
@@ -135,10 +135,10 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
-            frameState.entityInside(level, pos, entity);
+            frameState.entityInside(level, pos, entity, effectApplier, bypassInsideEffects);
             return;
         }
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {

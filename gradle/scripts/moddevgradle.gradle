@@ -8,11 +8,6 @@ neoForge {
     // Specify NeoForge version
     version = libs.versions.neoForge.get()
 
-    parchment {
-        minecraftVersion = libs.versions.minecraft.get()
-        mappingsVersion = libs.versions.parchment.get()
-    }
-
     // This line is optional. Access Transformers are automatically detected
     accessTransformers {
         var file = project.file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -116,7 +111,7 @@ neoForge {
         }
 
         data {
-            data()
+            type = "clientData"
             sourceSet = sourceSets.main
             ideName = "Data Generation"
 
@@ -150,6 +145,10 @@ neoForge {
 
         // applies to all the run configs above
         configureEach {
+            if (name != "data") {
+                getAdditionalRuntimeClasspathConfiguration().extendsFrom(project.configurations.localRuntime)
+            }
+
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.

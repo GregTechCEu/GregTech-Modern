@@ -28,8 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -314,7 +314,7 @@ public class BlockPattern {
                             IItemHandler handler = null;
                             if (!player.isCreative()) {
                                 var foundHandler = getMatchStackWithHandler(candidates,
-                                        player.getCapability(Capabilities.ItemHandler.ENTITY));
+                                        new PlayerInvWrapper(player.getInventory()));
                                 if (foundHandler != null) {
                                     foundSlot = foundHandler.firstInt();
                                     handler = foundHandler.second();
@@ -635,15 +635,8 @@ public class BlockPattern {
             ItemStack stack = handler.getStackInSlot(i);
             if (stack.isEmpty()) continue;
 
-            @Nullable
-            IItemHandler stackCap = stack.getCapability(Capabilities.ItemHandler.ITEM);
             // spotless:off
-            if (stackCap != null) {
-                var rt = getMatchStackWithHandler(candidates, stackCap);
-                if (rt != null) {
-                    return rt;
-                }
-            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
+            if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
                     !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                 return IntObjectPair.of(i, handler);
             }

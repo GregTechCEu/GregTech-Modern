@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemAttributes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -19,7 +19,7 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 
 public class NanoSaberBehavior extends ToggleEnergyConsumerBehavior implements IItemAttributes, IEnchantableItem {
 
-    public static final ResourceLocation OVERRIDE_KEY_LOCATION = GTCEu.id("nano_saber_active");
+    public static final Identifier OVERRIDE_KEY_LOCATION = GTCEu.id("nano_saber_active");
 
     private final double baseAttackDamage;
     private final double additionalAttackDamage;

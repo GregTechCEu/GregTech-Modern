@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.api.pattern.predicates;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.stream.StreamSupport;
 
 public class PredicateFluidTag extends SimplePredicate {
 
@@ -31,9 +32,7 @@ public class PredicateFluidTag extends SimplePredicate {
             return this;
         }
         predicate = state -> state.getBlockState().getFluidState().is(tag);
-        candidates = () -> BuiltInRegistries.FLUID.getTag(tag)
-                .stream()
-                .flatMap(HolderSet.Named::stream)
+        candidates = () -> StreamSupport.stream(BuiltInRegistries.FLUID.getTagOrEmpty(tag).spliterator(), false)
                 .map(Holder::value)
                 .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
                 .toArray(BlockInfo[]::new);

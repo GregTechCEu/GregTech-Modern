@@ -69,8 +69,8 @@ public class LargeMinerLogic extends MinerLogic {
             Direction dir = super.getDir();
             ServerLevel world = (ServerLevel) this.getMachine().getLevel();
             ChunkAccess origin = world.getChunk(pos);
-            ChunkPos startPos = (world.getChunk(origin.getPos().x - currentRadius / CHUNK_LENGTH,
-                    origin.getPos().z - currentRadius / CHUNK_LENGTH)).getPos();
+            ChunkPos startPos = (world.getChunk(origin.getPos().x() - currentRadius / CHUNK_LENGTH,
+                    origin.getPos().z() - currentRadius / CHUNK_LENGTH)).getPos();
             x = startPos.getMinBlockX();
             if (dir == Direction.UP) {
                 y = pos.getY() + 1;
@@ -133,8 +133,8 @@ public class LargeMinerLogic extends MinerLogic {
             return;
         }
         ItemStack fortunePick = this.pickaxeTool.copy();
-        var registry = builder.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-        var fortuneHolder = registry.getHolderOrThrow(Enchantments.FORTUNE);
+        var registry = builder.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var fortuneHolder = registry.getOrThrow(Enchantments.FORTUNE);
         if (dropMultiplier == null) {
             dropMultiplier = ApplyBonusCount.addOreBonusCount(fortuneHolder).build();
         }

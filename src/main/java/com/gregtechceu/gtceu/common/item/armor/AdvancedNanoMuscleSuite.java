@@ -9,19 +9,19 @@ import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -40,7 +40,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     private List<Pair<NonNullList<ItemStack>, IntList>> inventoryIndexMap;
 
     public AdvancedNanoMuscleSuite(int energyPerUse, long capacity, int tier) {
-        super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
+        super(ArmorType.CHESTPLATE, energyPerUse, capacity, tier);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
             if (messageKey != null) {
                 toggleTimer = 5;
-                if (!level.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!level.isClientSide()) player.sendOverlayMessage(Component.translatable(messageKey));
             }
         }
 
@@ -91,7 +91,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         performFlying(player, jetpackEnabled, hoverMode, stack);
 
         // Charging mechanics
-        if (canShare && !level.isClientSide) {
+        if (canShare && !level.isClientSide()) {
             // Check for new things to charge every 5 seconds
             if (timer % 100 == 0)
                 inventoryIndexMap = ArmorUtils.getChargeableItem(player, cont.getTier());
@@ -157,7 +157,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> onRightClick(Level world, @NotNull Player player, InteractionHand hand) {
+    public InteractionResult onRightClick(Level world, @NotNull Player player, InteractionHand hand) {
         ItemStack armor = player.getItemInHand(hand);
 
         if (armor.getItem() instanceof ArmorComponentItem && player.isShiftKeyDown()) {
@@ -165,11 +165,11 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             boolean canShare = data.canShare();
             IElectricItem cont = GTCapabilityHelper.getElectricItem(armor);
             if (cont == null) {
-                return InteractionResultHolder.fail(armor);
+                return InteractionResult.FAIL;
             }
 
             canShare = !canShare;
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 if (canShare && cont.getCharge() == 0) {
                     player.sendSystemMessage(Component.translatable("metaarmor.energy_share.error"));
                 } else if (canShare) {
@@ -183,7 +183,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             final boolean finalCanShare = canShare;
             armor.update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY,
                     data1 -> data1.setCanShare(finalCanShare));
-            return InteractionResultHolder.success(armor);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(armor);
         }
 
         return super.onRightClick(world, player, hand);
@@ -191,7 +191,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, GuiGraphicsExtractor guiGraphics) {
         addCapacityHUD(item, this.HUD);
         IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
         if (cont == null) return;
@@ -219,8 +219,8 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity,
-                                            EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public Identifier getArmorTexture(ItemStack stack, Entity entity,
+                                      EquipmentSlot slot, EquipmentClientInfo.Layer layer) {
         return GTCEu.id("textures/armor/advanced_nano_muscle_suite_1.png");
     }
 

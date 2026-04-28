@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FluidStackMapIngredient extends AbstractMapIngredient {
 
@@ -26,8 +27,10 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull SingleFluidIngredient ingredient) {
-        return Collections.singletonList(new FluidStackMapIngredient(ingredient.fluid()));
+    public static List<AbstractMapIngredient> from(@NotNull SimpleFluidIngredient ingredient) {
+        return ingredient.fluidSet().stream()
+                .map(FluidStackMapIngredient::new)
+                .collect(Collectors.toList());
     }
 
     @NotNull

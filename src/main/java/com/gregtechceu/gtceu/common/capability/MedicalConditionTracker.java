@@ -3,18 +3,21 @@ package com.gregtechceu.gtceu.common.capability;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -25,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSerializable<CompoundTag> {
+public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSerializable<CompoundTag>,
+                                     ValueIOSerializable {
 
     @Getter
     private final Object2FloatMap<MedicalCondition> medicalConditions = new Object2FloatOpenHashMap<>();
@@ -213,18 +217,56 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag arg) {
-        ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
+        medicalConditions.clear();
+        permanentConditions.clear();
+
+        ListTag medicalConditionsTag = arg.getListOrEmpty("medical_conditions");
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
-            CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(compoundTag.getString("condition"));
-            float progression = compoundTag.getFloat("progression");
+            CompoundTag compoundTag = medicalConditionsTag.getCompoundOrEmpty(i);
+            MedicalCondition condition = MedicalCondition.CONDITIONS.get(compoundTag.getStringOr("condition", ""));
+            float progression = compoundTag.getFloatOr("progression", 0);
 
             medicalConditions.put(condition, progression);
         }
 
-        ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
+        ListTag permanentConditionsTag = arg.getListOrEmpty("permanent_conditions");
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            permanentConditions.add(MedicalCondition.CONDITIONS.get(permanentConditionsTag.getString(i)));
+            permanentConditions.add(MedicalCondition.CONDITIONS.get(permanentConditionsTag.getStringOr(i, "")));
+        }
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        ValueOutput.ValueOutputList effects = output.childrenList("medical_conditions");
+        for (var entry : medicalConditions.object2FloatEntrySet()) {
+            ValueOutput effect = effects.addChild();
+            effect.putString("condition", entry.getKey().name);
+            effect.putFloat("progression", entry.getFloatValue());
+        }
+
+        ValueOutput.TypedOutputList<String> permanents = output.list("permanent_conditions", Codec.STRING);
+        for (MedicalCondition condition : permanentConditions) {
+            permanents.add(condition.name);
+        }
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        medicalConditions.clear();
+        permanentConditions.clear();
+
+        for (ValueInput effect : input.childrenListOrEmpty("medical_conditions")) {
+            MedicalCondition condition = MedicalCondition.CONDITIONS.get(effect.getStringOr("condition", ""));
+            if (condition != null) {
+                medicalConditions.put(condition, effect.getFloatOr("progression", 0));
+            }
+        }
+
+        for (String conditionName : input.listOrEmpty("permanent_conditions", Codec.STRING)) {
+            MedicalCondition condition = MedicalCondition.CONDITIONS.get(conditionName);
+            if (condition != null) {
+                permanentConditions.add(condition);
+            }
         }
     }
 }

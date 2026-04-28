@@ -60,11 +60,11 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.getBoolean("Working")) {
-            var recipeInfo = capData.getCompound("Recipe");
+        if (capData.getBooleanOr("Working", false)) {
+            var recipeInfo = capData.getCompoundOrEmpty("Recipe");
             if (!recipeInfo.isEmpty()) {
-                var EUt = recipeInfo.getLong("EUt");
-                var isInput = recipeInfo.getBoolean("isInput");
+                var EUt = recipeInfo.getLongOr("EUt", 0);
+                var isInput = recipeInfo.getBooleanOr("isInput", false);
                 boolean isSteam = false;
 
                 if (EUt > 0) {
@@ -82,7 +82,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                         text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
-                        var voltage = recipeInfo.getLong("voltage");
+                        var voltage = recipeInfo.getLongOr("voltage", GTValues.V[GTValues.LV]);
                         var tier = GTUtil.getTierByVoltage(voltage);
                         float minAmperage = (float) EUt / voltage;
 

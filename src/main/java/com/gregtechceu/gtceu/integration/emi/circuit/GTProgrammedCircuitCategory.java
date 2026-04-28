@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.emi.circuit;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -23,7 +23,7 @@ public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
     public static final GTProgrammedCircuitCategory CATEGORY = new GTProgrammedCircuitCategory();
 
     public GTProgrammedCircuitCategory() {
-        super(GTCEu.id("programmed_circuit"), EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asItem()));
+        super(GTEmiIds.toResourceLocation("programmed_circuit"), EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asItem()));
     }
 
     public static void registerDisplays(EmiRegistry registry) {
@@ -53,7 +53,7 @@ public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
 
         @Override
         public @Nullable ResourceLocation getId() {
-            return GTCEu.id("/programmed_circuit");
+            return GTEmiIds.toResourceLocation("/programmed_circuit");
         }
 
         @Override

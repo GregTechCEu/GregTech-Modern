@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.common.item.behavior;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
 
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,14 +40,14 @@ public class DynamiteBehaviour implements IInteractionItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         if (!player.isCreative()) {
             item.shrink(1);
         }
 
-        if (level.isClientSide) {
-            return InteractionResultHolder.success(item);
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS.heldItemTransformedTo(item);
         }
 
         DynamiteEntity entity = new DynamiteEntity(player, level);
@@ -55,6 +55,6 @@ public class DynamiteBehaviour implements IInteractionItem {
 
         level.addFreshEntity(entity);
 
-        return InteractionResultHolder.success(item);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(item);
     }
 }

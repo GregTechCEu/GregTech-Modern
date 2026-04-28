@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class SPacketSendWorldID implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("send_world_id");
+    public static final Identifier ID = GTCEu.id("send_world_id");
     public static final Type<SPacketSendWorldID> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SPacketSendWorldID> CODEC = StreamCodec
             .ofMember(SPacketSendWorldID::encode, SPacketSendWorldID::new);

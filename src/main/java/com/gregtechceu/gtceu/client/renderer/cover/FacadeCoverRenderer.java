@@ -5,37 +5,36 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
+import com.gregtechceu.gtceu.client.model.compat.ItemTransforms;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -52,7 +51,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             Direction.SOUTH, Direction.WEST, Direction.EAST);
     private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
-            var normal = dir.getNormal();
+            var normal = dir.getUnitVec3i();
             var cube = new AABB(
                     normal.getX() > 0 ? 1.01 : -0.01,
                     normal.getY() > 0 ? 1.01 : -0.01,
@@ -138,7 +137,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         List<BakedQuad> quads = new LinkedList<>();
-        BakedModel model = mc.getBlockRenderer().getBlockModel(state);
+        BakedModel model = ModelUtils.getModelForState(state);
 
         if (!model.isCustomRenderer()) {
             extraData = model.getModelData(level, BlockPos.ZERO, state, extraData);
@@ -150,15 +149,19 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             // offset all the cover quads by a small value and bake their tint color into the vertices
             BlockColors blockColors = Minecraft.getInstance().getBlockColors();
             for (BakedQuad quad : facadeQuads) {
-                if (quad.isTinted()) {
+                if (!shouldRenderQuad(quad, renderType)) {
+                    continue;
+                }
+                if (quad.materialInfo().isTinted()) {
                     // if the quad has a tint index set, bake the tint into the vertex
-                    int color = blockColors.getColor(state, level, BlockPos.ZERO, quad.getTintIndex());
+                    int color = getBlockTint(blockColors, state, level, BlockPos.ZERO,
+                            quad.materialInfo().tintIndex());
                     quad = GTQuadTransformers.setColor(quad, color, true);
                 } else {
                     // otherwise just copy the quad so we don't mutate the original model with the overlay offset
                     quad = GTQuadTransformers.copy(quad);
                 }
-                TextureOverrideModel.OVERLAY_OFFSET.processInPlace(quad);
+                quad = GTQuadTransformers.process(TextureOverrideModel.OVERLAY_OFFSET, quad);
 
                 quads.add(quad);
             }
@@ -185,7 +188,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
         Direction attachedSide = coverBehavior.attachedSide;
 
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+        BakedModel model = ModelUtils.getModelForState(state);
         ModelData extraData = model.getModelData(level, pos, state, modelData);
 
         List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
@@ -198,24 +201,26 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             AABB cube = COVER_BACK_CUBES.get(attachedSide);
 
             for (BakedQuad quad : facadeQuads) {
-                coverQuads.add(FaceQuad.bakeFace(cube, attachedSide.getOpposite(),
-                        quad.getSprite(), BlockModelRotation.X0_Y0,
-                        quad.getTintIndex(), 0, false, quad.isShade()));
+                coverQuads.add(StaticFaceBakery.bakeFace(cube, attachedSide.getOpposite(),
+                        quad.materialInfo().sprite(), quad.materialInfo().tintIndex(), 0, quad.materialInfo().shade()));
             }
         }
 
         // offset all the cover quads by a small value and bake their tint color into the vertices
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         for (BakedQuad quad : coverQuads) {
-            if (quad.isTinted()) {
+            if (!shouldRenderQuad(quad, renderType)) {
+                continue;
+            }
+            if (quad.materialInfo().isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
-                int color = blockColors.getColor(state, level, pos, quad.getTintIndex());
+                int color = getBlockTint(blockColors, state, level, pos, quad.materialInfo().tintIndex());
                 quad = GTQuadTransformers.setColor(quad, color, true);
             } else {
                 // otherwise just copy the quad so we don't mutate the original model with the overlay offset
                 quad = GTQuadTransformers.copy(quad);
             }
-            TextureOverrideModel.OVERLAY_OFFSET.processInPlace(quad);
+            quad = GTQuadTransformers.process(TextureOverrideModel.OVERLAY_OFFSET, quad);
 
             quads.add(quad);
         }
@@ -261,5 +266,16 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return defaultItemModel.getOverrides();
         }
         return super.getOverrides();
+    }
+
+    private static boolean shouldRenderQuad(BakedQuad quad, @Nullable RenderType renderType) {
+        return renderType == null || quad.materialInfo().itemRenderType() == renderType ||
+                quad.materialInfo().layer().pipeline() == renderType.pipeline();
+    }
+
+    private static int getBlockTint(BlockColors blockColors, BlockState state, BlockAndTintGetter level,
+                                    BlockPos pos, int tintIndex) {
+        BlockTintSource tintSource = blockColors.getTintSource(state, tintIndex);
+        return tintSource == null ? -1 : tintSource.colorInWorld(state, level, pos);
     }
 }

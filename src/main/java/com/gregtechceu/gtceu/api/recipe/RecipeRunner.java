@@ -73,7 +73,7 @@ public class RecipeRunner {
      * Populates the content match list to know if conditions are satisfied.
      */
     private void fillContentMatchList(Map<RecipeCapability<?>, List<Content>> entries) {
-        ChanceBoostFunction function = recipe.getType().getChanceFunction();
+        ChanceBoostFunction function = recipe.recipeType.getChanceFunction();
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {

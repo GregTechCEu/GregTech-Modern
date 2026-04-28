@@ -39,7 +39,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("custom_fluid_storage");
+        return GTJadeIds.toResourceLocation("custom_fluid_storage");
     }
 
     @Override

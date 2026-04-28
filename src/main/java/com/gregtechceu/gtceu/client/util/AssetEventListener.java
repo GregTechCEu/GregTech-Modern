@@ -32,13 +32,4 @@ public interface AssetEventListener<T extends Event> {
             return ModelEvent.ModifyBakingResult.class;
         }
     }
-
-    interface RegisterAdditional extends AssetEventListener<ModelEvent.RegisterAdditional> {
-
-        @Override
-        @Nullable
-        default Class<ModelEvent.RegisterAdditional> eventClass() {
-            return ModelEvent.RegisterAdditional.class;
-        }
-    }
 }

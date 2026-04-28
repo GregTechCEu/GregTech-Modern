@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -26,7 +27,7 @@ public class GTEmiOreProcessing extends ModularEmiRecipe<GTOreByProductWidget> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return material.getResourceLocation().withPrefix("/");
+        return GTEmiIds.toResourceLocation(material.getResourceLocation().withPrefix("/"));
     }
 
     @Override

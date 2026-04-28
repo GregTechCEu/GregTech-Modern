@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
-import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -32,26 +30,18 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -61,7 +51,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -80,14 +69,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private IFluidHandler coolantHandler;
     @SaveField
     @SyncToClient
-    private final HPCAGridHandler hpcaHandler;
+    final HPCAGridHandler hpcaHandler;
 
     private boolean hasNotEnoughEnergy;
 
     @SaveField
     private double temperature = IDLE_TEMPERATURE; // start at idle temperature
 
-    private final TimedProgressSupplier progressSupplier;
+    final TimedProgressSupplier progressSupplier;
 
     @Nullable
     protected TickableSubscription tickSubs;
@@ -135,7 +124,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.hpcaHandler.onStructureForm(componentTraits);
 
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
+            serverLevel.getServer().executeIfPossible(this::updateTickSubscription);
         }
     }
 
@@ -143,7 +132,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     public void onLoad() {
         super.onLoad();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
+            serverLevel.getServer().executeIfPossible(this::updateTickSubscription);
         }
     }
 
@@ -251,34 +240,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup builder = (WidgetGroup) super.createUIWidget();
-        // Create the hover grid
-        builder.addWidget(new ExtendedProgressWidget(
-                () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
-                74, 57, 47, 47, GuiTextures.HPCA_COMPONENT_OUTLINE)
-                .setServerTooltipSupplier(hpcaHandler::addInfo)
-                .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
-        int startX = 76;
-        int startY = 59;
-
-        // we need to know what components we have on the client
-        if (getLevel().isClientSide) {
-            if (isFormed) {
-                hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getBlockPos(), this.getFrontFacing(),
-                        this.getUpwardsFacing(), this.isFlipped);
-            } else {
-                hpcaHandler.clearClientComponents();
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
-                Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
-                builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
-            }
-        }
-        return builder;
+    public Object createUIWidget() {
+        return HPCAMachineUI.createUIWidget(this, super.createUIWidget());
     }
 
     @Override
@@ -712,13 +675,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        public ResourceTexture getComponentTexture(int index) {
+        public Object getComponentIcon(int index) {
             if (components.size() <= index) {
-                return GuiTextures.BLANK_TRANSPARENT;
+                return null;
             }
-            if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine)
+            if (components.get(index).getMachine() instanceof HPCAComponentPartMachine componentPartMachine) {
                 return componentPartMachine.getComponentIcon();
-            return GuiTextures.BLANK_TRANSPARENT;
+            }
+            return null;
         }
 
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -28,6 +29,6 @@ public class GTBedrockFluid extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return fluid.getKey().location().withPrefix("/bedrock_fluid_diagram/");
+        return GTEmiIds.toResourceLocation(fluid.getKey().identifier().withPrefix("/bedrock_fluid_diagram/"));
     }
 }

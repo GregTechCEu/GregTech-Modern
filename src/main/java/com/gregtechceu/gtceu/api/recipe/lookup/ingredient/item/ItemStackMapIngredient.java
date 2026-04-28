@@ -28,10 +28,8 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
     @NotNull
     public static List<AbstractMapIngredient> from(Ingredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        for (Ingredient.Value value : ingredient.getValues()) {
-            if (value instanceof Ingredient.ItemValue(ItemStack item)) {
-                ingredients.add(new ItemStackMapIngredient(item, ingredient));
-            }
+        for (ItemStack item : ingredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
+            ingredients.add(new ItemStackMapIngredient(item, ingredient));
         }
         return ingredients;
     }

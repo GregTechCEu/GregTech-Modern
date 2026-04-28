@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -40,7 +41,11 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
         super(GTResourceLocation.implicitAsGtceu(id));
     }
 
-    public static BedrockFluidBuilder from(BedrockFluidDefinition definition, ResourceLocation id) {
+    public BedrockFluidBuilder(Identifier id) {
+        this(GTResourceLocation.toResourceLocation(id));
+    }
+
+    public static BedrockFluidBuilder from(BedrockFluidDefinition definition, Identifier id) {
         var builder = new BedrockFluidBuilder(id);
         builder.weight(definition.getWeight());
         builder.minimumYield(definition.getMinimumYield()).maximumYield(definition.getMaximumYield());

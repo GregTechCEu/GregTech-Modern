@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.fluids.attribute;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,22 +9,22 @@ import java.util.function.Consumer;
 
 public final class FluidAttribute {
 
-    private final ResourceLocation resourceLocation;
+    private final Identifier Identifier;
     private final Consumer<Consumer<Component>> fluidTooltip;
     private final Consumer<Consumer<Component>> containerTooltip;
     private final int hashCode;
 
-    public FluidAttribute(@NotNull ResourceLocation resourceLocation,
+    public FluidAttribute(@NotNull Identifier Identifier,
                           @NotNull Consumer<Consumer<@NotNull Component>> fluidTooltip,
                           @NotNull Consumer<Consumer<@NotNull Component>> containerTooltip) {
-        this.resourceLocation = resourceLocation;
+        this.Identifier = Identifier;
         this.fluidTooltip = fluidTooltip;
         this.containerTooltip = containerTooltip;
-        this.hashCode = resourceLocation.hashCode();
+        this.hashCode = Identifier.hashCode();
     }
 
-    public @NotNull ResourceLocation getResourceLocation() {
-        return resourceLocation;
+    public @NotNull Identifier getResourceLocation() {
+        return Identifier;
     }
 
     public void appendFluidTooltips(@NotNull Consumer<@NotNull Component> tooltip) {
@@ -42,7 +42,7 @@ public final class FluidAttribute {
 
         FluidAttribute that = (FluidAttribute) o;
 
-        return resourceLocation.equals(that.getResourceLocation());
+        return Identifier.equals(that.getResourceLocation());
     }
 
     @Override
@@ -52,6 +52,6 @@ public final class FluidAttribute {
 
     @Override
     public @NotNull String toString() {
-        return "FluidAttribute{" + resourceLocation + '}';
+        return "FluidAttribute{" + Identifier + '}';
     }
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -15,7 +16,8 @@ public class SimpleClassTransformers {
         @Override
         public Tag serializeNBT(ItemStack value, TransformerContext<ItemStack> context) {
             if (value.isEmpty()) return new CompoundTag();
-            return value.save(context.lookup());
+            return ItemStack.CODEC.encodeStart(context.lookup().createSerializationContext(NbtOps.INSTANCE), value)
+                    .getOrThrow();
         }
 
         @Override
@@ -31,7 +33,8 @@ public class SimpleClassTransformers {
         @Override
         public Tag serializeNBT(FluidStack value, TransformerContext<FluidStack> context) {
             if (value.isEmpty()) return new CompoundTag();
-            return value.save(context.lookup());
+            return FluidStack.CODEC.encodeStart(context.lookup().createSerializationContext(NbtOps.INSTANCE), value)
+                    .getOrThrow();
         }
 
         @Override
@@ -46,7 +49,7 @@ public class SimpleClassTransformers {
 
         @Override
         public Tag serializeNBT(BlockPos value, TransformerContext<BlockPos> context) {
-            return NbtUtils.writeBlockPos(value);
+            return new IntArrayTag(new int[] { value.getX(), value.getY(), value.getZ() });
         }
 
         @Override
@@ -63,14 +66,16 @@ public class SimpleClassTransformers {
 
         @Override
         public Tag serializeNBT(Component value, TransformerContext<Component> context) {
-            return StringTag.valueOf(Component.Serializer.toJson(value, context.lookup()));
+            return ComponentSerialization.CODEC
+                    .encodeStart(context.lookup().createSerializationContext(NbtOps.INSTANCE), value)
+                    .getOrThrow();
         }
 
         @Override
         public @Nullable Component deserializeNBT(Tag tag, TransformerContext<Component> context) {
-            if (tag instanceof StringTag strTag)
-                return Component.Serializer.fromJson(strTag.getAsString(), context.lookup());
-            return Component.empty();
+            return ComponentSerialization.CODEC
+                    .parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), tag)
+                    .result().orElse(Component.empty());
         }
     }
 }

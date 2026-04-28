@@ -29,18 +29,18 @@
                 }
             },
             "from": [
-                1,
-                1,
-                1
+                1.0,
+                1.0,
+                1.0
             ],
             "to": [
-                15,
-                15,
-                15
+                15.0,
+                15.0,
+                15.0
             ]
         }
     ],
-    "render_type": "cutout_mipped",
+    "render_type": "minecraft:cutout_mipped",
     "textures": {
         "particle": "#side",
         "side": "gtceu:block/pipe/pipe_duct_side"

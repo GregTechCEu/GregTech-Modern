@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "gtceu:block/gregification_hazard_sign_block"
+    }
+}

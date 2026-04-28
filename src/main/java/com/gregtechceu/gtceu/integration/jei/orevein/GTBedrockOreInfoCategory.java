@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class GTBedrockOreInfoCategory extends ModularUIRecipeCategory<Holder<BedrockOreDefinition>> {
 
     public final static RecipeType<Holder<BedrockOreDefinition>> RECIPE_TYPE = new RecipeType(
-            GTCEu.id("bedrock_ore_diagram"), Holder.class);
+            GTJeiIds.id("bedrock_ore_diagram"), Holder.class);
     @Getter
     private final IDrawable background;
     @Getter
@@ -42,8 +42,8 @@ public class GTBedrockOreInfoCategory extends ModularUIRecipeCategory<Holder<Bed
 
     public static void registerRecipes(IRecipeRegistration registry) {
         var bedrockOres = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
-        registry.addRecipes(RECIPE_TYPE, bedrockOres.holders()
+                .lookupOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
+        registry.addRecipes(RECIPE_TYPE, bedrockOres.listElements()
                 .filter(ore -> ore.value().canGenerate())
                 .<Holder<BedrockOreDefinition>>map(Function.identity())
                 .toList());

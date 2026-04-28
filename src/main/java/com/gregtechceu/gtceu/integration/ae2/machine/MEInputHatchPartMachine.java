@@ -155,11 +155,12 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         }
 
         if (!isRemote()) {
-            readConfigFromTag(player.registryAccess(), tag.copyTag().getCompound("MEInputHatch"));
+            tag.copyTag().getCompound("MEInputHatch")
+                    .ifPresent(configTag -> readConfigFromTag(player.registryAccess(), configTag));
             this.updateTankSubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return InteractionResult.SUCCESS;
     }
 
     ////////////////////////////////
@@ -186,19 +187,20 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     protected void readConfigFromTag(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("ConfigStacks")) {
-            CompoundTag configStacks = tag.getCompound("ConfigStacks");
+            CompoundTag configStacks = tag.getCompoundOrEmpty("ConfigStacks");
             for (int i = 0; i < CONFIG_SIZE; i++) {
                 String key = Integer.toString(i);
                 if (configStacks.contains(key)) {
-                    CompoundTag configTag = configStacks.getCompound(key);
-                    this.aeFluidHandler.getInventory()[i].setConfig(GenericStack.readTag(provider, configTag));
+                    this.aeFluidHandler.getInventory()[i].setConfig(configStacks.getCompound(key)
+                            .map(configTag -> GenericStack.readTag(provider, configTag))
+                            .orElse(null));
                 } else {
                     this.aeFluidHandler.getInventory()[i].setConfig(null);
                 }
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByteOr("GhostCircuit", (byte) 0)));
         }
     }
 }

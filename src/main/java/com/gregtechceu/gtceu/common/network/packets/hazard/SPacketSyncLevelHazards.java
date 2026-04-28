@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class SPacketSyncLevelHazards implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("sync_level_hazards");
+    public static final Identifier ID = GTCEu.id("sync_level_hazards");
     public static final Type<SPacketSyncLevelHazards> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SPacketSyncLevelHazards> CODEC = StreamCodec
             .ofMember(SPacketSyncLevelHazards::encode, SPacketSyncLevelHazards::new);

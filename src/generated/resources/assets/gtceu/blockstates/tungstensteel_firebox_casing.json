@@ -1,10 +1,7 @@
 {
     "variants": {
-        "active=false": {
+        "": {
             "model": "gtceu:block/tungstensteel_firebox_casing"
-        },
-        "active=true": {
-            "model": "gtceu:block/tungstensteel_firebox_casing_active"
         }
     }
 }

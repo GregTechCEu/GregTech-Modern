@@ -2,25 +2,25 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.LargeFluidContent;
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
-import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -99,11 +99,13 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         FluidStack fluid = !stored.isEmpty() ? stored : locked;
         if (fluid.isEmpty()) return;
 
-        var ext = IClientFluidTypeExtensions.of(fluid.getFluid());
-        var fluidSprite = RenderUtil.FluidTextureType.STILL.map(ext, fluid);
+        FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(fluid.getFluid().defaultFluidState());
+        var fluidSprite = fluidModel.stillMaterial().sprite();
+        int fluidColor = fluidModel.fluidTintSource() == null ? -1 : fluidModel.fluidTintSource().colorAsStack(fluid);
 
         EnumSet<Direction> sidesToRender = EnumSet.of(frontFacing);
-        VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+        VertexConsumer builder = buffer.getBuffer(Sheets.translucentBlockSheet());
 
         var gas = fluid.getFluid().getFluidType().isLighterThanAir();
         var percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
@@ -135,7 +137,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
             sidesToRender.add(gas ? Direction.DOWN : Direction.UP);
         }
         RenderBufferHelper.renderCube(builder, poseStack.last(), sidesToRender,
-                ext.getTintColor(fluid) | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
+                fluidColor | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
                 MIN, minY, minZ, MAX, maxY, maxZ);
 
         drawAmountText(poseStack, buffer, frontFacing, storedAmount, isCreative);

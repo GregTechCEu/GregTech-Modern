@@ -28,7 +28,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     @Override
     public @Nullable Component getItemName(ItemStack stack) {
         BlockState facadeState = getFacadeState(stack);
-        return Component.translatable(stack.getDescriptionId(), facadeState.getBlock().getName());
+        return Component.translatable(stack.getItem().getDescriptionId(), facadeState.getBlock().getName());
     }
 
     public static final Supplier<List<BlockState>> DEFAULT_FACADES = GTMemoizer.memoize(() -> {

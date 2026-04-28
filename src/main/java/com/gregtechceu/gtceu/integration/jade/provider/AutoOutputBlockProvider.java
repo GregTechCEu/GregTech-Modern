@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -27,15 +26,10 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (data.contains("autoOutputItem", Tag.TAG_COMPOUND)) {
-            var tag = data.getCompound("autoOutputItem");
-            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.item_auto_output");
-        }
-
-        if (data.contains("autoOutputFluid", Tag.TAG_COMPOUND)) {
-            var tag = data.getCompound("autoOutputFluid");
-            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.fluid_auto_output");
-        }
+        data.getCompound("autoOutputItem")
+                .ifPresent(tag -> addAutoOutputInfo(tooltip, block, tag, "gtceu.top.item_auto_output"));
+        data.getCompound("autoOutputFluid")
+                .ifPresent(tag -> addAutoOutputInfo(tooltip, block, tag, "gtceu.top.fluid_auto_output"));
     }
 
     @Override
@@ -72,17 +66,18 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
 
     private void addAutoOutputInfo(ITooltip iTooltip, BlockAccessor blockAccessor, CompoundTag compoundTag,
                                    String text) {
-        var direction = Direction.byName(compoundTag.getString("direction"));
-        boolean allowInput = compoundTag.getBoolean("allowInput");
-        boolean auto = compoundTag.getBoolean("auto");
+        var direction = Direction.byName(compoundTag.getStringOr("direction", ""));
+        boolean allowInput = compoundTag.getBooleanOr("allowInput", false);
+        boolean auto = compoundTag.getBooleanOr("auto", false);
         if (direction != null) {
             iTooltip.add(Component.translatable(text, StringUtils.capitalize(direction.getName())));
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(compoundTag.getString("block"))).asItem()
-                        .getDefaultInstance();
-                if (!block.isEmpty()) {
-                    iTooltip.append(IElementHelper.get().smallItem(block));
-                }
+                compoundTag.getString("block")
+                        .map(Identifier::parse)
+                        .map(BuiltInRegistries.BLOCK::getValue)
+                        .map(block -> block.asItem().getDefaultInstance())
+                        .filter(stack -> !stack.isEmpty())
+                        .ifPresent(stack -> iTooltip.append(IElementHelper.get().smallItem(stack)));
             }
 
             if (allowInput || auto) {

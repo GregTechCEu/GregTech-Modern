@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.renderer.GTBlockRenderLayers;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -25,12 +26,12 @@ import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -79,7 +80,7 @@ public class TagPrefix {
     public static void init() {}
 
     public static TagPrefix get(String name) {
-        return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
+        return GTRegistries.TAG_PREFIXES.getValue(GTCEu.id(name));
     }
 
     public boolean isEmpty() {
@@ -93,28 +94,28 @@ public class TagPrefix {
             .registerOre(
                     Blocks.STONE::defaultBlockState, () -> GTMaterials.Stone, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    ResourceLocation.withDefaultNamespace("block/stone"), false, false, true);
+                    Identifier.withDefaultNamespace("block/stone"), false, false, true);
 
     public static final TagPrefix oreGranite = oreTagPrefix("granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Granite %s Ore")
             .registerOre(
                     Blocks.GRANITE::defaultBlockState, () -> GTMaterials.Granite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    ResourceLocation.withDefaultNamespace("block/granite"));
+                    Identifier.withDefaultNamespace("block/granite"));
 
     public static final TagPrefix oreDiorite = oreTagPrefix("diorite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Diorite %s Ore")
             .registerOre(
                     Blocks.DIORITE::defaultBlockState, () -> GTMaterials.Diorite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    ResourceLocation.withDefaultNamespace("block/diorite"));
+                    Identifier.withDefaultNamespace("block/diorite"));
 
     public static final TagPrefix oreAndesite = oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Andesite %s Ore")
             .registerOre(
                     Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    ResourceLocation.withDefaultNamespace("block/andesite"));
+                    Identifier.withDefaultNamespace("block/andesite"));
 
     public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
@@ -136,7 +137,7 @@ public class TagPrefix {
                     Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F)
                             .sound(SoundType.DEEPSLATE),
-                    ResourceLocation.withDefaultNamespace("block/deepslate"), false, false, true);
+                    Identifier.withDefaultNamespace("block/deepslate"), false, false, true);
 
     public static final TagPrefix oreTuff = oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
@@ -144,28 +145,28 @@ public class TagPrefix {
                     Blocks.TUFF::defaultBlockState, () -> GTMaterials.Tuff, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
                             .sound(SoundType.TUFF),
-                    ResourceLocation.withDefaultNamespace("block/tuff"));
+                    Identifier.withDefaultNamespace("block/tuff"));
 
     public static final TagPrefix oreSand = oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Sand %s Ore")
             .registerOre(Blocks.SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
-                    ResourceLocation.withDefaultNamespace("block/sand"), false, true, false);
+                    Identifier.withDefaultNamespace("block/sand"), false, true, false);
 
     public static final TagPrefix oreRedSand = oreTagPrefix("redSand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Red Sand %s Ore")
             .registerOre(Blocks.RED_SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
-                    ResourceLocation.withDefaultNamespace("block/red_sand"), false, true, false);
+                    Identifier.withDefaultNamespace("block/red_sand"), false, true, false);
 
     public static final TagPrefix oreGravel = oreTagPrefix("gravel", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Gravel %s Ore")
             .registerOre(Blocks.GRAVEL::defaultBlockState, () -> GTMaterials.Flint,
                     BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.6F).sound(SoundType.GRAVEL),
-                    ResourceLocation.withDefaultNamespace("block/gravel"), false, true, false);
+                    Identifier.withDefaultNamespace("block/gravel"), false, true, false);
 
     public static final TagPrefix oreBasalt = oreTagPrefix("basalt", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Basalt %s Ore")
@@ -173,14 +174,14 @@ public class TagPrefix {
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.5F, 4.2F)
                             .sound(SoundType.BASALT),
-                    ResourceLocation.withDefaultNamespace("block/basalt"), true);
+                    Identifier.withDefaultNamespace("block/basalt"), true);
 
     public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Nether %s Ore")
             .registerOre(Blocks.NETHERRACK::defaultBlockState, () -> GTMaterials.Netherrack,
                     BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
-                    ResourceLocation.withDefaultNamespace("block/netherrack"), true, false, true);
+                    Identifier.withDefaultNamespace("block/netherrack"), true, false, true);
 
     public static final TagPrefix oreBlackstone = oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Blackstone %s Ore")
@@ -188,14 +189,14 @@ public class TagPrefix {
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
-                    ResourceLocation.withDefaultNamespace("block/blackstone"), true, false, false);
+                    Identifier.withDefaultNamespace("block/blackstone"), true, false, false);
 
     public static final TagPrefix oreEndstone = oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("End %s Ore")
             .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
-                    ResourceLocation.withDefaultNamespace("block/end_stone"), true, false, true);
+                    Identifier.withDefaultNamespace("block/end_stone"), true, false, true);
 
     public static final TagPrefix rawOre = new TagPrefix("raw")
             .idPattern("raw_%s")
@@ -762,7 +763,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateBlock(true)
-            .blockProperties(() -> RenderType::translucent, BlockBehaviour.Properties::noOcclusion)
+            .blockProperties(() -> GTBlockRenderLayers::translucent, BlockBehaviour.Properties::noOcclusion)
             .generationCondition(material -> material.hasProperty(PropertyKey.DUST) &&
                     material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
@@ -966,10 +967,10 @@ public class TagPrefix {
     }
 
     public record OreType(Supplier<BlockState> stoneType, Supplier<Material> material,
-                          Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation,
+                          Supplier<BlockBehaviour.Properties> template, Identifier baseModelLocation,
                           boolean isDoubleDrops, boolean isSand, boolean shouldDropAsItem) {}
 
-    public record BlockProperties(Supplier<Supplier<RenderType>> renderType,
+    public record BlockProperties(Supplier<Supplier<ChunkSectionLayer>> renderType,
                                   UnaryOperator<BlockBehaviour.Properties> properties) {}
 
     @Getter
@@ -1008,7 +1009,7 @@ public class TagPrefix {
     private BlockItemConstructor blockItemConstructor = MaterialBlockItem::new;
     @Getter
     @Setter
-    private BlockProperties blockProperties = new BlockProperties(() -> RenderType::translucent,
+    private BlockProperties blockProperties = new BlockProperties(() -> GTBlockRenderLayers::translucent,
             UnaryOperator.identity());
 
     @Getter
@@ -1067,25 +1068,25 @@ public class TagPrefix {
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation) {
+                                 BlockBehaviour.Properties properties, Identifier baseModelLocation) {
         return registerOre(stoneType, material, properties, baseModelLocation, false);
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
+                                 BlockBehaviour.Properties properties, Identifier baseModelLocation,
                                  boolean doubleDrops) {
         return registerOre(stoneType, material, properties, baseModelLocation, doubleDrops, false, false);
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
+                                 BlockBehaviour.Properties properties, Identifier baseModelLocation,
                                  boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
         return registerOre(stoneType, material, () -> properties, baseModelLocation, doubleDrops, isSand,
                 shouldDropAsItem);
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation,
+                                 Supplier<BlockBehaviour.Properties> properties, Identifier baseModelLocation,
                                  boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
         ORES.put(this,
                 new OreType(stoneType, material, properties, baseModelLocation, doubleDrops, isSand, shouldDropAsItem));
@@ -1138,7 +1139,7 @@ public class TagPrefix {
         return this;
     }
 
-    public TagPrefix blockProperties(Supplier<Supplier<RenderType>> renderType,
+    public TagPrefix blockProperties(Supplier<Supplier<ChunkSectionLayer>> renderType,
                                      UnaryOperator<BlockBehaviour.Properties> properties) {
         return this.blockProperties(new BlockProperties(renderType, properties));
     }

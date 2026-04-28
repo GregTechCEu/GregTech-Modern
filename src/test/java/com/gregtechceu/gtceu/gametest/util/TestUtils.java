@@ -24,12 +24,14 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +42,11 @@ import java.util.Objects;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
 public class TestUtils {
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BlockEntity> T getBlockEntity(GameTestHelper helper, BlockPos pos) {
+        return (T) helper.getBlockEntity(pos, BlockEntity.class);
+    }
 
     /**
      * Compares two itemstacks' items and amounts
@@ -218,12 +225,13 @@ public class TestUtils {
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
         if (BuiltInRegistries.RECIPE_TYPE.containsKey(GTCEu.id(name)))
-            return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(GTCEu.id(name));
-        ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).unfreeze();
-        ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).unfreeze();
+            return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.getValue(GTCEu.id(name));
+        ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).unfreeze(false);
+        ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).unfreeze(false);
         GTRecipeType type = new GTRecipeType(GTCEu.id(name), ELECTRIC, RecipeType.SMELTING)
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
+        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
 
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
@@ -255,7 +263,7 @@ public class TestUtils {
 
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
+        return ((MetaMachine) Objects.requireNonNull(getBlockEntity(helper, pos)));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
@@ -312,8 +320,9 @@ public class TestUtils {
         int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
         if (strength > max || strength < min) {
             throw new GameTestAssertPosException(
-                    "Expected redstone signal between %d and %d, got %d".formatted(min, max, strength),
-                    absolutePos, pos, helper.getTick());
+                    Component.literal(
+                            "Expected redstone signal between %d and %d, got %d".formatted(min, max, strength)),
+                    absolutePos, pos, (int) helper.getTick());
         }
     }
 
@@ -329,8 +338,8 @@ public class TestUtils {
         }
         if (!pass) {
             throw new GameTestAssertPosException(
-                    "Expected redstone signal to be one of %s, got %d".formatted(values, strength),
-                    absolutePos, pos, helper.getTick());
+                    Component.literal("Expected redstone signal to be one of %s, got %d".formatted(values, strength)),
+                    absolutePos, pos, (int) helper.getTick());
         }
     }
 }

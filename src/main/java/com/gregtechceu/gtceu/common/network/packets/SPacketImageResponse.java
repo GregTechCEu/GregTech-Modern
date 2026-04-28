@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class SPacketImageResponse implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("packet_image_response");
+    public static final Identifier ID = GTCEu.id("packet_image_response");
     public static final Type<SPacketImageResponse> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SPacketImageResponse> CODEC = StreamCodec
             .ofMember(SPacketImageResponse::encode, SPacketImageResponse::new);

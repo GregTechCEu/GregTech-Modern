@@ -7,18 +7,18 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 @PrefixGameTestTemplate(false)
@@ -68,21 +68,26 @@ public class RecipeLogicTest {
      * @return the busses, in the BusHolder record.
      */
     private static RecipeLogicTest.BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(1, 2, 0));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 2, 0));
         assert controller != null;
         TestUtils.formMultiblock(controller);
 
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 2, 0));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(2, 1, 0));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(2, 2, 0));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 1, 0));
         return new RecipeLogicTest.BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
     @TestHolder
     @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
     public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
-        BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
+        BlockEntity holder = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 0));
 
         RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
 
@@ -161,7 +166,7 @@ public class RecipeLogicTest {
     @GameTest(template = "singleblock_charged_cr", batch = "RecipeLogic")
     public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
         WorkableTieredMachine machine = (WorkableTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+                com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler inputSlots = (NotifiableItemStackHandler) machine
@@ -190,7 +195,7 @@ public class RecipeLogicTest {
         helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s)".formatted(stackCount));
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        ResourceLocation prev = recipeLogic.getLastRecipe().getId();
+        Identifier prev = recipeLogic.getLastRecipe().getId();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         recipeLogic.serverTick();
@@ -232,7 +237,7 @@ public class RecipeLogicTest {
 
     // Test for putting both ingredients in the same bus in 2 stacks.
     @TestHolder
-    @GameTest(template = "lcr_input_separation", batch = "RecipeLogicTest")
+    @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
     public static void recipeLogicInTwoStacksTest(GameTestHelper helper) {
         RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 10));

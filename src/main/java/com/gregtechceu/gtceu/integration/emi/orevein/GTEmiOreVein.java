@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -31,7 +32,7 @@ public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return oreDefinition.getKey().location().withPrefix("/ore_vein_diagram/");
+        return GTEmiIds.toResourceLocation(oreDefinition.getKey().identifier().withPrefix("/ore_vein_diagram/"));
     }
 
     @Override

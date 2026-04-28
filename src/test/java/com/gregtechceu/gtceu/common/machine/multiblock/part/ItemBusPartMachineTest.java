@@ -3,18 +3,18 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
 
@@ -33,9 +33,10 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoImportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -53,9 +54,10 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoImportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_IMPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
@@ -75,9 +77,10 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoExportTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -95,9 +98,10 @@ public class ItemBusPartMachineTest {
     public static void ItemBusPartMachineAutoExportFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_EXPORT_BUS[1].getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         itemBus.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
@@ -118,10 +122,12 @@ public class ItemBusPartMachineTest {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
-        CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
+        CrateMachine crate2 = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 3, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
         helper.succeedWhen(() -> {
@@ -140,10 +146,12 @@ public class ItemBusPartMachineTest {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
-        CrateMachine crate = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        ItemBusPartMachine itemBus = (ItemBusPartMachine) helper
-                .getBlockEntity(new BlockPos(0, 2, 0));
-        CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
+        CrateMachine crate = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        ItemBusPartMachine itemBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 2, 0));
+        CrateMachine crate2 = (CrateMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 3, 0));
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));

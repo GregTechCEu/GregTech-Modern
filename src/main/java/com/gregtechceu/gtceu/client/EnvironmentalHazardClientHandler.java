@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.core.mixins.client.ClientLevelAccessor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -51,13 +51,13 @@ public class EnvironmentalHazardClientHandler {
         if (level == null) {
             return;
         }
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         Vec3 playerPosition = Minecraft.getInstance().player.getEyePosition();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (var entry : hazardZones.entrySet()) {
             ChunkPos chunkPos = entry.getKey();
-            if (!level.hasChunk(chunkPos.x, chunkPos.z)) {
+            if (!level.hasChunk(chunkPos.x(), chunkPos.z())) {
                 continue;
             }
             var zone = entry.getValue();
@@ -98,13 +98,14 @@ public class EnvironmentalHazardClientHandler {
         for (var entry : newZones.entrySet()) {
             if (entry.getValue().strength() > COLORING_LOW) {
                 ChunkPos pos = entry.getKey();
-                for (int y = Minecraft.getInstance().level.getMinSection(); y <
-                        Minecraft.getInstance().level.getMaxSection(); ++y) {
-                    Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
+                for (int y = Minecraft.getInstance().level.getMinSectionY(); y <
+                        Minecraft.getInstance().level.getMaxSectionY(); ++y) {
+                    Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x(), y, pos.z());
                 }
 
                 ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                        .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+                        .forEach(
+                                (colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x(), pos.z()));
             }
         }
     }
@@ -142,13 +143,13 @@ public class EnvironmentalHazardClientHandler {
     }
 
     private void updateChunks(ChunkPos pos) {
-        for (int y = Minecraft.getInstance().level.getMinSection(); y <
-                Minecraft.getInstance().level.getMaxSection(); ++y) {
-            Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
+        for (int y = Minecraft.getInstance().level.getMinSectionY(); y <
+                Minecraft.getInstance().level.getMaxSectionY(); ++y) {
+            Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x(), y, pos.z());
         }
 
         ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+                .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x(), pos.z()));
     }
 
     public int colorZone(int color, ChunkPos pos) {
@@ -184,10 +185,10 @@ public class EnvironmentalHazardClientHandler {
 
         float complement = 1 - ratio;
 
-        r = ((int) (r * complement + ratio * FastColor.ARGB32.red(newColor))) & 0xFF;
-        g = ((int) (g * complement + ratio * FastColor.ARGB32.green(newColor))) & 0xFF;
-        b = ((int) (b * complement + ratio * FastColor.ARGB32.blue(newColor))) & 0xFF;
+        r = ((int) (r * complement + ratio * ARGB.red(newColor))) & 0xFF;
+        g = ((int) (g * complement + ratio * ARGB.green(newColor))) & 0xFF;
+        b = ((int) (b * complement + ratio * ARGB.blue(newColor))) & 0xFF;
 
-        return FastColor.ARGB32.color(0xFF, r, g, b);
+        return ARGB.color(0xFF, r, g, b);
     }
 }

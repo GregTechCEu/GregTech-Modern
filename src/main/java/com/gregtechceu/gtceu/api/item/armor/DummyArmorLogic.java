@@ -1,20 +1,20 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import org.jetbrains.annotations.NotNull;
 
 public class DummyArmorLogic implements IArmorLogic {
 
     @Override
-    public ArmorItem.Type getArmorType() {
-        return ArmorItem.Type.HELMET;
+    public ArmorType getArmorType() {
+        return ArmorType.HELMET;
     }
 
     @Override
@@ -28,8 +28,8 @@ public class DummyArmorLogic implements IArmorLogic {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                            ArmorMaterial.Layer layer) {
-        return ResourceLocation.withDefaultNamespace("textures/armor/diamond_layer_0.png");
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                      EquipmentClientInfo.Layer layer) {
+        return Identifier.withDefaultNamespace("textures/armor/diamond_layer_0.png");
     }
 }

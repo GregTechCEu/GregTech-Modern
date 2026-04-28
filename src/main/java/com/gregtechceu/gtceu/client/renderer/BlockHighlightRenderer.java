@@ -19,9 +19,8 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -34,7 +33,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionfc;
@@ -62,7 +60,7 @@ public class BlockHighlightRenderer {
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
-            Vec3 cameraPos = camera.getPosition();
+            Vec3 cameraPos = camera.position();
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
                 IToolGridHighlight gridHighlight = null;
@@ -77,9 +75,9 @@ public class BlockHighlightRenderer {
                             gridHighlight = new IToolGridHighlight() {
 
                                 @Override
-                                public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
-                                                                          Set<GTToolType> toolTypes, ItemStack held,
-                                                                          Direction side) {
+                                public @Nullable Object sideTips(Player player, BlockPos pos, BlockState state,
+                                                                 Set<GTToolType> toolTypes, ItemStack held,
+                                                                 Direction side) {
                                     return behavior.showSideTip(state, side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION :
                                             null;
                                 }
@@ -97,12 +95,9 @@ public class BlockHighlightRenderer {
                             side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, held, side));
                 } else {
                     var facing = target.getDirection();
-                    var texture = gridHighlight.sideTips(player, blockPos, state, toolType, held, facing);
+                    var texture = asResourceTexture(
+                            gridHighlight.sideTips(player, blockPos, state, toolType, held, facing));
                     if (texture != null) {
-                        RenderSystem.disableDepthTest();
-                        RenderSystem.enableBlend();
-                        RenderSystem.defaultBlendFunc();
-
                         poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f,
                                 facing.getStepZ() * 0.01f);
                         poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
@@ -118,9 +113,6 @@ public class BlockHighlightRenderer {
 
                         drawResourceTexture(poseStack, multiBufferSource, texture, 0xffffffff,
                                 4, 4, 8, 8);
-
-                        RenderSystem.disableBlend();
-                        RenderSystem.enableDepthTest();
                     }
                 }
                 poseStack.popPose();
@@ -160,7 +152,7 @@ public class BlockHighlightRenderer {
     private static float bColour;
 
     private static void drawGridOverlays(PoseStack poseStack, MultiBufferSource bufferSource, Vec3 cameraPos,
-                                         BlockHitResult blockHitResult, Function<Direction, ResourceTexture> texture) {
+                                         BlockHitResult blockHitResult, Function<Direction, Object> texture) {
         rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         BlockPos blockPos = blockHitResult.getBlockPos();
@@ -199,12 +191,12 @@ public class BlockHighlightRenderer {
         shiftX.rotate(rotation);
         shiftY.rotate(rotation);
 
-        ResourceTexture leftBlocked = texture.apply(left);
-        ResourceTexture rightBlocked = texture.apply(right);
-        ResourceTexture topBlocked = texture.apply(top);
-        ResourceTexture bottomBlocked = texture.apply(bottom);
-        ResourceTexture frontBlocked = texture.apply(front);
-        ResourceTexture backBlocked = texture.apply(back);
+        ResourceTexture leftBlocked = asResourceTexture(texture.apply(left));
+        ResourceTexture rightBlocked = asResourceTexture(texture.apply(right));
+        ResourceTexture topBlocked = asResourceTexture(texture.apply(top));
+        ResourceTexture bottomBlocked = asResourceTexture(texture.apply(bottom));
+        ResourceTexture frontBlocked = asResourceTexture(texture.apply(front));
+        ResourceTexture backBlocked = asResourceTexture(texture.apply(back));
 
         topRight.add(cubeCenter);
         bottomRight.add(cubeCenter);
@@ -214,8 +206,7 @@ public class BlockHighlightRenderer {
         poseStack.pushPose();
         poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderType.lines());
-        RenderSystem.lineWidth(3);
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypes.lines());
         PoseStack.Pose pose = poseStack.last();
         // straight top bottom lines
         drawLine(pose, buffer, new Vector3f(topRight).sub(shiftX), new Vector3f(bottomRight).sub(shiftX));
@@ -223,10 +214,6 @@ public class BlockHighlightRenderer {
         // straight side to side lines
         drawLine(pose, buffer, new Vector3f(topLeft).sub(shiftY), new Vector3f(topRight).sub(shiftY));
         drawLine(pose, buffer, new Vector3f(bottomLeft).add(shiftY), new Vector3f(bottomRight).add(shiftY));
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
 
         poseStack.pushPose();
         poseStack.translate(front.getStepX() * 0.01f, front.getStepY() * 0.01f, front.getStepZ() * 0.01f);
@@ -264,9 +251,6 @@ public class BlockHighlightRenderer {
             drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 12, 4, 4);
             drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 12, 4, 4);
         }
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
-
         poseStack.popPose();
         poseStack.popPose();
     }
@@ -276,16 +260,23 @@ public class BlockHighlightRenderer {
 
         buffer.addVertex(pose.pose(), from.x(), from.y(), from.z())
                 .setColor(rColour, gColour, bColour, 1f)
-                .setNormal(normal.x(), normal.y(), normal.z());
+                .setNormal(normal.x(), normal.y(), normal.z())
+                .setLineWidth(3);
         buffer.addVertex(pose.pose(), to.x(), to.y(), to.z())
                 .setColor(rColour, gColour, bColour, 1f)
-                .setNormal(normal.x(), normal.y(), normal.z());
+                .setNormal(normal.x(), normal.y(), normal.z())
+                .setLineWidth(3);
+    }
+
+    private static @Nullable ResourceTexture asResourceTexture(@Nullable Object texture) {
+        return texture instanceof ResourceTexture resourceTexture ? resourceTexture : null;
     }
 
     private static void drawResourceTexture(PoseStack poseStack, MultiBufferSource bufferSource,
                                             ResourceTexture texture, int color,
                                             float x, float y, float w, float h) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.text(texture.imageLocation));
+        VertexConsumer consumer = bufferSource
+                .getBuffer(RenderTypes.textSeeThrough(texture.imageLocation.toIdentifier()));
         var pose = poseStack.last().pose();
         float u0 = texture.offsetX, v0 = texture.offsetY;
         float u1 = texture.imageWidth, v1 = texture.imageHeight;

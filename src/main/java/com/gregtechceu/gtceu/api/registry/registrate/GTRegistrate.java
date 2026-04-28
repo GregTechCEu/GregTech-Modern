@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -57,8 +57,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         super(modId);
     }
 
-    public ResourceLocation makeResourceLocation(String path) {
-        return ResourceLocation.fromNamespaceAndPath(this.getModid(), path);
+    public Identifier makeResourceLocation(String path) {
+        return Identifier.fromNamespaceAndPath(this.getModid(), path);
     }
 
     /**
@@ -148,7 +148,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
             OneTimeEventReceiver.unregister(this, onRegisterLate, RegisterEvent.class);
         });
         if (((AbstractRegistrateAccessor) this).getDoDatagen().get()) {
-            OneTimeEventReceiver.addModListener(this, GatherDataEvent.class, this::onData);
+            OneTimeEventReceiver.addModListener(this, GatherDataEvent.Client.class, this::onData);
         }
         return this;
     }
@@ -165,7 +165,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
+                                                                                        Function<Identifier, DEFINITION> definitionFactory,
                                                                                         BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                                                                                         BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                         Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
@@ -197,7 +197,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new SoundEntryBuilder(GTCEu.id(name));
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
+    public SoundEntryBuilder sound(Identifier name) {
         return new SoundEntryBuilder(name);
     }
 
@@ -224,6 +224,30 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    }
+
+    @Override
+    public <T extends Item> GTItemBuilder<T, GTRegistrate> item(NonNullFunction<Item.Properties, T> factory) {
+        return item(this, factory);
+    }
+
+    @Override
+    public <T extends Item> GTItemBuilder<T, GTRegistrate> item(String name,
+                                                                NonNullFunction<Item.Properties, T> factory) {
+        return item(this, name, factory);
+    }
+
+    @Override
+    public <T extends Item, P> GTItemBuilder<T, P> item(P parent,
+                                                        NonNullFunction<Item.Properties, T> factory) {
+        return item(parent, currentName(), factory);
+    }
+
+    @Override
+    public <T extends Item, P> GTItemBuilder<T, P> item(P parent, String name,
+                                                        NonNullFunction<Item.Properties, T> factory) {
+        return (GTItemBuilder<T, P>) entry(name,
+                callback -> GTItemBuilder.create(this, parent, name, callback, factory));
     }
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;

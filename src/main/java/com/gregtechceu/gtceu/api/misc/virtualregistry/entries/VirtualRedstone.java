@@ -57,9 +57,9 @@ public class VirtualRedstone extends VirtualEntry {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         super.deserializeNBT(provider, nbt);
-        CompoundTag tag = nbt.getCompound(MEMBERS_KEY);
-        for (String uuid : tag.getAllKeys()) {
-            members.put(UUID.fromString(uuid), tag.getShort(uuid));
+        CompoundTag tag = nbt.getCompoundOrEmpty(MEMBERS_KEY);
+        for (String uuid : tag.keySet()) {
+            members.put(UUID.fromString(uuid), tag.getShortOr(uuid, (short) 0));
         }
     }
 

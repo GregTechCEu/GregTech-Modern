@@ -2,19 +2,5 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "gtceu:item/invar_lighter"
-  },
-  "overrides": [
-    {
-      "predicate": {
-        "gtceu:lighter_open": 0.0
-      },
-      "model": "gtceu:item/invar_lighter_closed"
-    },
-    {
-      "predicate": {
-        "gtceu:lighter_open": 1.0
-      },
-      "model": "gtceu:item/invar_lighter_open"
-    }
-  ]
+  }
 }

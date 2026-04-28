@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -160,8 +161,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void onMachineLoad() {
         super.onMachineLoad();
         if (getMachine().getLevel() != null) {
-            var registry = getMachine().getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-            this.pickaxeTool.enchant(registry.getHolderOrThrow(Enchantments.FORTUNE), fortune);
+            var registry = getMachine().getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+            this.pickaxeTool.enchant(registry.getOrThrow(Enchantments.FORTUNE), fortune);
         }
     }
 
@@ -536,10 +537,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         int calculated = 0;
 
         if (this.minBuildHeight == Integer.MAX_VALUE)
-            this.minBuildHeight = level.getMinBuildHeight();
+            this.minBuildHeight = level.getMinY();
 
         if (this.maxBuildHeight == Integer.MAX_VALUE)
-            this.maxBuildHeight = level.getMaxBuildHeight();
+            this.maxBuildHeight = level.getMaxY();
 
         // keep getting blocks until the target amount is reached
         while (calculated < calcAmount) {

@@ -50,7 +50,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiIngredient;
 import lombok.Getter;
@@ -330,7 +329,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         Size size = getSize();
         var renderedFluid = lastFluidInTank;
         if (renderedFluid != null) {
-            RenderSystem.disableBlend();
             if (!renderedFluid.isEmpty()) {
                 double progress = renderedFluid.getAmount() * 1.0 /
                         Math.max(Math.max(renderedFluid.getAmount(), lastTankCapacity), 1);
@@ -348,25 +346,18 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             }
 
             if (showAmount && showAmountOverlay && !renderedFluid.isEmpty()) {
-                graphics.pose().pushPose();
-                graphics.pose().scale(0.5F, 0.5F, 1);
+                graphics.pose().scale(0.5F, 0.5F);
                 String s = TextFormattingUtil.formatLongToCompactStringBuckets(renderedFluid.getAmount(), 3) + "B";
                 Font fontRenderer = Minecraft.getInstance().font;
                 graphics.drawString(fontRenderer, s,
                         (int) ((pos.x + (size.width / 3f)) * 2 - fontRenderer.width(s) + 21),
                         (int) ((pos.y + (size.height / 3f) + 6) * 2), 0xFFFFFF, true);
-                graphics.pose().popPose();
             }
-
-            RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
         drawOverlay(graphics, mouseX, mouseY, partialTicks);
         if (drawHoverOverlay && isMouseOverElement(mouseX, mouseY) && getHoverElement(mouseX, mouseY) == this) {
-            RenderSystem.colorMask(true, true, true, false);
             DrawerHelper.drawSolidRect(graphics, getPosition().x + 1, getPosition().y + 1, getSize().width - 2,
                     getSize().height - 2, 0x80FFFFFF);
-            RenderSystem.colorMask(true, true, true, true);
         }
     }
 
@@ -377,7 +368,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             if (gui != null) {
                 gui.getModularUIGui().setHoverTooltip(getFullTooltipTexts(), ItemStack.EMPTY, null, null);
             }
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1f);
         } else {
             super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
         }
@@ -621,7 +611,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
         private static <T> Object _getJEIFluidClickable(IPlatformFluidHelper<T> helper,
                                                         FluidStack fluidStack, Position pos, Size size) {
-            T ingredient = helper.create(fluidStack.getFluidHolder(), fluidStack.getAmount(),
+            T ingredient = helper.create(fluidStack.typeHolder(), fluidStack.getAmount(),
                     fluidStack.getComponentsPatch());
             return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient, false)
                     .map(typedIngredient -> new ClickableIngredient<>(typedIngredient, pos.x, pos.y, size.width,

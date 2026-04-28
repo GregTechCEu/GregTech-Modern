@@ -5,42 +5,32 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Arrays;
-
 public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IUIMachine {
 
     @SaveField
-    private long voltage = 0;
+    long voltage = 0;
     @SaveField
-    private int amps = 1;
+    int amps = 1;
     @SaveField
-    private int setTier = 0;
+    int setTier = 0;
     @SaveField
-    private boolean active = false;
+    boolean active = false;
     @SaveField
-    private boolean source = true;
+    boolean source = true;
     @SaveField
     private long energyIOPerSec = 0;
-    private long lastAverageEnergyIOPerTick = 0;
+    long lastAverageEnergyIOPerTick = 0;
     private long ampsReceived = 0;
     private boolean doExplosion = false;
 
@@ -176,61 +166,6 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
-                        value -> {
-                            voltage = Long.parseLong(value);
-                            setTier = GTUtil.getTierByVoltage(voltage);
-                        }).setNumbersOnly(0L, Long.MAX_VALUE))
-                .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
-                .widget(new ButtonWidget(7, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> amps = --amps == -1 ? 0 : amps))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
-                        value -> amps = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new ButtonWidget(149, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
-                        cd -> {
-                            if (amps < Integer.MAX_VALUE) {
-                                amps++;
-                            }
-                        }))
-                .widget(new LabelWidget(7, 110,
-                        () -> "Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick))
-                .widget(new SwitchWidget(7, 139, 77, 20, (clickData, value) -> active = value)
-                        .setTexture(
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.on")))
-                        .setPressed(active))
-                .widget(new SwitchWidget(85, 139, 77, 20, (clickData, value) -> {
-                    source = value;
-                    if (source) {
-                        voltage = 0;
-                        amps = 0;
-                        setTier = 0;
-                    } else {
-                        voltage = GTValues.V[14];
-                        amps = Integer.MAX_VALUE;
-                        setTier = 14;
-                    }
-                }).setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.sink")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.source")))
-                        .setPressed(source))
-                .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
-                        .setOnChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            voltage = GTValues.VEX[setTier];
-                        })
-                        .setSupplier(() -> GTValues.VNF[setTier])
-                        .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
-                        .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(GTValues.VNF[setTier]));
+        return CreativeEnergyContainerMachineUI.create(this, entityPlayer);
     }
 }

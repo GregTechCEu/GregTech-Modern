@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
@@ -17,14 +17,14 @@ public class BlockstateModelLoader {
 
         // tiered hulls
         for (int tier : GTValues.ALL_TIERS) {
-            ResourceLocation modelName = TIERED_HULL_MODELS.get(tier);
+            Identifier modelName = TIERED_HULL_MODELS.get(tier);
 
             var model = models.withExistingParent(modelName.toString(), SIDED_SIDED_OVERLAY_MODEL);
             GTMachineModels.casingTextures(model, modelName);
         }
         // steam hulls
         {
-            ResourceLocation modelName = LP_STEAM_HULL_MODEL;
+            Identifier modelName = LP_STEAM_HULL_MODEL;
             var model = models.withExistingParent(modelName.toString(), SIDED_SIDED_OVERLAY_MODEL);
             GTMachineModels.casingTextures(model, modelName);
 
@@ -37,7 +37,7 @@ public class BlockstateModelLoader {
                 .texture("steam_vent", VENT_OVERLAY)
                 .element()
                 .from(0, 0, -0.002f).to(16, 16, -0.002f)
-                .face(Direction.NORTH).uvs(0, 0, 16, 16).texture("#steam_vent").cullface(Direction.NORTH).end()
+                .face(Direction.NORTH).texture("#steam_vent").cullface(Direction.NORTH).end()
                 .end();
     }
 }

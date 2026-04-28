@@ -5,23 +5,24 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentBlockCondition;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
 
@@ -47,22 +48,22 @@ public class GTRecipeSerializerTest {
         var ops = RegistryOps.create(JsonOps.INSTANCE, helper.getLevel().registryAccess());
 
         // Create Fluid Condition based on fluidSetIn
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
+        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
         HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
+                .lookupOrThrow(Registries.FLUID)
+                .getOrThrow(lavaTag);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
         AdjacentFluidCondition fluidCondition = new AdjacentFluidCondition(fluidSetIn);
 
         // Create Block Condition based on blockSetIn
-        TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
+        TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores"));
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
         HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.BLOCK)
-                .getOrCreateTag(oreTag);
+                .lookupOrThrow(Registries.BLOCK)
+                .getOrThrow(oreTag);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
         AdjacentBlockCondition blockCondition = new AdjacentBlockCondition(blockSetIn);
 
@@ -72,10 +73,10 @@ public class GTRecipeSerializerTest {
                 .addCondition(blockCondition)
                 .build();
         JsonElement recipeJson = Recipe.CODEC.encodeStart(ops, originalRecipe)
-                .getOrThrow(GameTestAssertException::new);
+                .getOrThrow(GTRecipeSerializerTest::assertion);
 
         Recipe<?> parsedRecipe = Recipe.CODEC.parse(ops, recipeJson)
-                .getOrThrow(GameTestAssertException::new);
+                .getOrThrow(GTRecipeSerializerTest::assertion);
         if (!(parsedRecipe instanceof GTRecipe recipe)) {
             helper.fail("Expected recipe to deserialize back to itself, but it didn't. Got %s instead"
                     .formatted(parsedRecipe));
@@ -111,12 +112,12 @@ public class GTRecipeSerializerTest {
     @EmptyTemplate("5")
     @GameTest(template = "empty_5x5")
     public static void testSerializingFluidCondition(GameTestHelper helper) {
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
+        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
         HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
+                .lookupOrThrow(Registries.FLUID)
+                .getOrThrow(lavaTag);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
         AdjacentFluidCondition condition = new AdjacentFluidCondition(fluidSetIn);
 
@@ -137,12 +138,12 @@ public class GTRecipeSerializerTest {
     @EmptyTemplate("5")
     @GameTest(template = "empty_5x5")
     public static void testSerializingBlockCondition(GameTestHelper helper) {
-        TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
+        TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores"));
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
         HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.BLOCK)
-                .getOrCreateTag(oreTag);
+                .lookupOrThrow(Registries.BLOCK)
+                .getOrThrow(oreTag);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
         AdjacentBlockCondition condition = new AdjacentBlockCondition(blockSetIn);
 
@@ -178,6 +179,10 @@ public class GTRecipeSerializerTest {
 
         // All matched
         return unmatched.isEmpty();
+    }
+
+    private static GameTestAssertException assertion(String message) {
+        return new GameTestAssertException(Component.literal(message), 0);
     }
 
     private static <T> boolean holderSetEquals(HolderSet<T> a, HolderSet<T> b) {

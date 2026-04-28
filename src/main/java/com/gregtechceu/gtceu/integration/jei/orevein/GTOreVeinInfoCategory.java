@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -31,7 +31,8 @@ import java.util.function.Function;
 
 public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<GTOreDefinition>> {
 
-    public final static RecipeType<Holder<GTOreDefinition>> RECIPE_TYPE = new RecipeType(GTCEu.id("ore_vein_diagram"),
+    public final static RecipeType<Holder<GTOreDefinition>> RECIPE_TYPE = new RecipeType(
+            GTJeiIds.id("ore_vein_diagram"),
             Holder.class);
     @Getter
     private final IDrawable background;
@@ -48,8 +49,8 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<GTOreD
 
     public static void registerRecipes(IRecipeRegistration registry) {
         var ores = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        registry.addRecipes(RECIPE_TYPE, ores.holders()
+                .lookupOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        registry.addRecipes(RECIPE_TYPE, ores.listElements()
                 .filter(ore -> ore.value().canGenerate())
                 .<Holder<GTOreDefinition>>map(Function.identity())
                 .toList());

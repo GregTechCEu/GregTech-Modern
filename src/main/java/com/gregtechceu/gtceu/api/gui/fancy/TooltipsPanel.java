@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -42,8 +43,10 @@ public class TooltipsPanel extends Widget {
         for (IFancyTooltip tooltip : this.tooltips) {
             if (tooltip.showFancyTooltip()) {
                 // draw icon
-                tooltip.getFancyTooltipIcon().draw(graphics, mouseX, mouseY, position.x, position.y + offsetY,
-                        size.width, size.width);
+                var icon = tooltip.getFancyTooltipIcon();
+                (icon instanceof IGuiTexture texture ? texture : IGuiTexture.EMPTY)
+                        .draw(graphics, mouseX, mouseY, position.x, position.y + offsetY,
+                                size.width, size.width);
                 offsetY += size.getWidth() + 2;
             }
         }

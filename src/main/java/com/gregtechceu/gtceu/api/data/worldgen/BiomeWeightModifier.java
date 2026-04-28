@@ -1,21 +1,27 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderOwner;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import java.util.stream.Stream;
 
 public class BiomeWeightModifier implements ToIntFunction<Holder<Biome>> {
 
@@ -88,7 +94,7 @@ public class BiomeWeightModifier implements ToIntFunction<Holder<Biome>> {
 
         private FromList(List<BiomeWeightModifier> originalModifiers) {
             super(
-                    new OrHolderSet<>(originalModifiers.stream().map(mod -> mod.biomes).toList()),
+                    new CombinedBiomeHolderSet(originalModifiers),
                     originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum());
             this.originalModifiers = originalModifiers;
         }
@@ -107,6 +113,66 @@ public class BiomeWeightModifier implements ToIntFunction<Holder<Biome>> {
         @Override
         public boolean isEmpty() {
             return originalModifiers.isEmpty();
+        }
+    }
+
+    private static final class CombinedBiomeHolderSet implements HolderSet<Biome> {
+
+        private final List<BiomeWeightModifier> modifiers;
+
+        private CombinedBiomeHolderSet(List<BiomeWeightModifier> modifiers) {
+            this.modifiers = List.copyOf(modifiers);
+        }
+
+        @Override
+        public Stream<Holder<Biome>> stream() {
+            return modifiers.stream().flatMap(modifier -> modifier.biomes.stream()).distinct();
+        }
+
+        @Override
+        public int size() {
+            return (int) stream().count();
+        }
+
+        @Override
+        public boolean isBound() {
+            return modifiers.stream().allMatch(modifier -> modifier.biomes.isBound());
+        }
+
+        @Override
+        public Either<TagKey<Biome>, List<Holder<Biome>>> unwrap() {
+            return Either.right(stream().toList());
+        }
+
+        @Override
+        public Optional<Holder<Biome>> getRandomElement(RandomSource random) {
+            List<Holder<Biome>> holders = stream().toList();
+            return holders.isEmpty() ? Optional.empty() : Optional.of(holders.get(random.nextInt(holders.size())));
+        }
+
+        @Override
+        public Holder<Biome> get(int index) {
+            return stream().toList().get(index);
+        }
+
+        @Override
+        public boolean contains(Holder<Biome> biome) {
+            return modifiers.stream().anyMatch(modifier -> modifier.biomes.contains(biome));
+        }
+
+        @Override
+        public boolean canSerializeIn(HolderOwner<Biome> owner) {
+            return modifiers.stream().allMatch(modifier -> modifier.biomes.canSerializeIn(owner));
+        }
+
+        @Override
+        public Optional<TagKey<Biome>> unwrapKey() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Iterator<Holder<Biome>> iterator() {
+            return stream().iterator();
         }
     }
 }

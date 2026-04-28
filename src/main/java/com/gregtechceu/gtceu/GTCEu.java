@@ -10,14 +10,13 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -35,9 +34,9 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
-    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
-    public static final Codec<ResourceLocation> GTCEU_ID = Codec.STRING.comapFlatMap(
-            str -> ResourceLocation.read(appendIdString(str)),
+    private static final Identifier TEMPLATE_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "");
+    public static final Codec<Identifier> GTCEU_ID = Codec.STRING.comapFlatMap(
+            str -> Identifier.read(appendIdString(str)),
             s -> s.getNamespace().equals(MOD_ID) ? s.getPath() : s.toString());
 
     public static final String NAME = "GTCEu";
@@ -63,16 +62,17 @@ public class GTCEu {
         CommonProxy.init(modBus);
 
         modBus.addListener(GTNetwork::registerPayloads);
+        registerGameTestBootstrap(modBus);
     }
 
-    public static ResourceLocation id(String path) {
+    public static Identifier id(String path) {
         if (path.isBlank()) {
             return TEMPLATE_LOCATION;
         }
 
         int i = path.indexOf(':');
         if (i > 0) {
-            return ResourceLocation.tryParse(path);
+            return Identifier.tryParse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
         }
@@ -94,11 +94,26 @@ public class GTCEu {
         }
     }
 
+    private static void registerGameTestBootstrap(IEventBus modBus) {
+        if (System.getenv("TEST") == null) {
+            return;
+        }
+        try {
+            Class.forName("com.gregtechceu.gtceu.gametest.GTGameTestBootstrap")
+                    .getMethod("init", IEventBus.class)
+                    .invoke(null, modBus);
+        } catch (ClassNotFoundException ignored) {
+            // Test sources are only present for GameTest runs.
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Failed to initialize GTCEu GameTests", e);
+        }
+    }
+
     /**
      * @return if we're running in a production environment
      */
     public static boolean isProd() {
-        return FMLLoader.isProduction();
+        return FMLEnvironment.isProduction();
     }
 
     /**
@@ -149,7 +164,7 @@ public class GTCEu {
      * @see #isClientThread()
      */
     public static boolean isClientSide() {
-        return FMLEnvironment.dist.isClient();
+        return FMLEnvironment.getDist().isClient();
     }
 
     /**
@@ -196,6 +211,10 @@ public class GTCEu {
 
         public static boolean isKubeJSLoaded() {
             return isModLoaded(GTValues.MODID_KUBEJS);
+        }
+
+        public static boolean isLDLibLoaded() {
+            return isModLoaded(GTValues.MODID_LDLIB);
         }
 
         public static boolean isIrisLoaded() {

@@ -4,17 +4,17 @@ import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.FloatProviders;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviderType;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public class FlooredInt extends IntProvider {
+public class FlooredInt implements IntProvider {
 
     public static final MapCodec<FlooredInt> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            FloatProvider.CODEC.fieldOf("source").forGetter(provider -> provider.source))
+            FloatProviders.CODEC.fieldOf("source").forGetter(provider -> provider.source))
             .apply(instance, FlooredInt::new));
 
     private final FloatProvider source;
@@ -33,17 +33,17 @@ public class FlooredInt extends IntProvider {
     }
 
     @Override
-    public int getMinValue() {
-        return (int) this.source.getMinValue();
+    public int minInclusive() {
+        return (int) this.source.min();
     }
 
     @Override
-    public int getMaxValue() {
-        return (int) this.source.getMaxValue();
+    public int maxInclusive() {
+        return (int) this.source.max();
     }
 
     @Override
-    public @NotNull IntProviderType<?> getType() {
+    public @NotNull MapCodec<? extends IntProvider> codec() {
         return GTValueProviderTypes.FLOORED.get();
     }
 }

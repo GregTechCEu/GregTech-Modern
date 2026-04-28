@@ -7,20 +7,20 @@ import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class HudGuiOverlay implements LayeredDraw.Layer {
+public class HudGuiOverlay implements GuiLayer {
 
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker tracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker tracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.isWindowActive() && mc.level != null &&
                 !mc.gui.getDebugOverlay().showDebugScreen() &&
@@ -34,7 +34,7 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphicsExtractor guiGraphics) {
         if (stack.getItem() instanceof ArmorComponentItem valueItem) {
             if (valueItem.getArmorLogic() instanceof IItemHUDProvider provider) {
                 IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
@@ -42,7 +42,7 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphicsExtractor guiGraphics) {
         if (stack.getItem() instanceof ComponentItem valueItem) {
             for (IItemComponent behaviour : valueItem.getComponents()) {
                 if (behaviour instanceof IItemHUDProvider provider) {

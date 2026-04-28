@@ -14,8 +14,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelDataManager;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelDataManager;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +128,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         var level = getLevel();
         if (level != null) {
             var state = level.getBlockState(pos);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 // simplified from requestModelDataUpdate
                 ModelDataManager manager = level.getModelDataManager();
                 if (manager != null) {
@@ -156,7 +156,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     @Override
     default @NotNull ModelData getModelData() {
         return ModelData.builder()
-                .with(GTModelProperties.LEVEL, self().getLevel())
+                .with(GTModelProperties.LEVEL, (net.minecraft.client.renderer.block.BlockAndTintGetter) (Object) self()
+                        .getLevel())
                 .with(GTModelProperties.POS, self().getBlockPos())
                 .with(GTModelProperties.PIPE_CONNECTION_MASK, this.getVisualConnections())
                 .with(GTModelProperties.PIPE_BLOCKED_MASK, this.getBlockedConnections())

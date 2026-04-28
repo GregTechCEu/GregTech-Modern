@@ -111,11 +111,11 @@ public class OreGenCache {
     }
 
     private Stream<ChunkPos> getSurroundingChunks(ChunkPos center, int searchDistance) {
-        final int minX = center.x - searchDistance;
-        final int minZ = center.z - searchDistance;
+        final int minX = center.x() - searchDistance;
+        final int minZ = center.z() - searchDistance;
 
-        final int maxX = center.x + searchDistance;
-        final int maxZ = center.z + searchDistance;
+        final int maxX = center.x() + searchDistance;
+        final int maxZ = center.z() + searchDistance;
 
         MutableInt x = new MutableInt(minX - 1);
         MutableInt z = new MutableInt(minZ);

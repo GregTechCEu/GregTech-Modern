@@ -10,11 +10,11 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -59,7 +59,8 @@ public class AEConfigSlotWidget extends Widget {
                     }
                     hoverStringList.add(Component.translatable("gtceu.gui.config_slot.remove"));
                 }
-                graphics.renderTooltip(Minecraft.getInstance().font, hoverStringList, Optional.empty(), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(Minecraft.getInstance().font, hoverStringList,
+                        Optional.<TooltipComponent>empty(), mouseX, mouseY);
             }
         } else {
             GenericStack item = null;
@@ -69,7 +70,8 @@ public class AEConfigSlotWidget extends Widget {
                 item = slot.getStock();
             }
             if (item != null) {
-                graphics.renderTooltip(Minecraft.getInstance().font, GenericStack.wrapInItemStack(item), mouseX,
+                graphics.setTooltipForNextFrame(Minecraft.getInstance().font, GenericStack.wrapInItemStack(item),
+                        mouseX,
                         mouseY);
             }
         }
@@ -91,12 +93,7 @@ public class AEConfigSlotWidget extends Widget {
 
     @OnlyIn(Dist.CLIENT)
     public static void drawSelectionOverlay(GuiGraphics graphics, int x, int y, int width, int height) {
-        RenderSystem.disableDepthTest();
-        RenderSystem.colorMask(true, true, true, false);
         drawGradientRect(graphics, x, y, width, height, -2130706433, -2130706433);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
     }
 
     // Method for server-side validation of an attempted new configured item

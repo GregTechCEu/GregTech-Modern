@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.common.data.GTFluids;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -61,14 +61,16 @@ public class PotionFluid extends BaseFlowingFluid {
          *
          * @param properties the general properties of the fluid type
          */
-        public PotionFluidType(Properties properties, ResourceLocation still, ResourceLocation flow) {
+        public PotionFluidType(Properties properties, Identifier still, Identifier flow) {
             super(properties);
         }
 
         @Override
         public @NotNull String getDescriptionId(FluidStack stack) {
-            return Potion.getName(stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion(),
-                    this.getDescriptionId() + ".effect.");
+            return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
+                    .potion()
+                    .map(potion -> this.getDescriptionId() + ".effect." + potion.value().name())
+                    .orElseGet(this::getDescriptionId);
         }
     }
 }

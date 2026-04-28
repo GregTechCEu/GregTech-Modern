@@ -9,17 +9,17 @@ import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -35,7 +35,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     protected ArmorUtils.ModularHUD HUD;
 
     public Jetpack(int energyPerUse, long capacity, int tier) {
-        super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
+        super(energyPerUse, capacity, tier, ArmorType.CHESTPLATE);
         if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
             // noinspection NewExpressionSideOnly
             HUD = new ArmorUtils.ModularHUD();
@@ -63,7 +63,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
             if (messageKey != null) {
                 toggleTimer = 5;
-                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide()) player.sendOverlayMessage(Component.translatable(messageKey));
             }
         }
 
@@ -104,22 +104,22 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity,
-                                            EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public Identifier getArmorTexture(ItemStack stack, Entity entity,
+                                      EquipmentSlot slot, EquipmentClientInfo.Layer layer) {
         return GTCEu.id("textures/armor/jetpack.png");
     }
 
     /*
      * @Override
      * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-     * double damage, ArmorItem.Type equipmentSlot) {
+     * double damage, ArmorType equipmentSlot) {
      * return new ArmorProperties(0, 0, 0);
      * }
      */
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, GuiGraphicsExtractor guiGraphics) {
         addCapacityHUD(item, this.HUD);
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {

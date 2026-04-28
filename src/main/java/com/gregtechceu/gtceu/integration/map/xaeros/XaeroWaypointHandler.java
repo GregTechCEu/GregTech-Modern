@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.map.GTMapIds;
 import com.gregtechceu.gtceu.integration.map.IWaypointHandler;
 
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +20,7 @@ public class XaeroWaypointHandler implements IWaypointHandler {
 
     private final Lazy<Int2ObjectMap<Waypoint>> waypoints = Lazy.of(() -> BuiltInHudModules.MINIMAP.getCurrentSession()
             .getWorldManager()
-            .getCustomWaypoints(GTCEu.id(GTCEu.MOD_ID)));
+            .getCustomWaypoints(GTMapIds.toResourceLocation(GTCEu.MOD_ID)));
     private final List<String> knownKeys = new ObjectArrayList<>();
 
     @Override
