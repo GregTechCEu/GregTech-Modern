@@ -44,7 +44,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Override
     protected List<Class<?>> validMachineClasses() {
-        return List.of(BedrockOreMinerLogic.class);
+        return List.of(BedrockOreMinerMachine.class);
     }
 
     @Override

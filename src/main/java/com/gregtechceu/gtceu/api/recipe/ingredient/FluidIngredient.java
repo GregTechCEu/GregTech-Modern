@@ -129,25 +129,23 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
         Value[] myValues = this.values.clone();
         Value[] otherValues = other.values.clone();
-        Arrays.parallelSort(myValues, VALUE_COMPARATOR);
-        Arrays.parallelSort(otherValues, VALUE_COMPARATOR);
+        Arrays.sort(myValues, VALUE_COMPARATOR);
+        Arrays.sort(otherValues, VALUE_COMPARATOR);
 
-        for (Value value1 : myValues) {
-            for (Value value2 : otherValues) {
-                if (value1 instanceof TagValue first) {
-                    if (!(value2 instanceof TagValue second)) {
-                        return false;
-                    }
-                    if (first.tag != second.tag) {
-                        return false;
-                    }
-                } else if (value1 instanceof FluidValue first) {
-                    if (!(value2 instanceof FluidValue second)) {
-                        return false;
-                    }
-                    if (first.fluid != second.fluid) {
-                        return false;
-                    }
+        for (int i = 0; i < myValues.length; i++) {
+            if (myValues[i] instanceof TagValue first) {
+                if (!(otherValues[i] instanceof TagValue second)) {
+                    return false;
+                }
+                if (first.compareTo(second) != 0) {
+                    return false;
+                }
+            } else if (myValues[i] instanceof FluidValue first) {
+                if (!(otherValues[i] instanceof FluidValue second)) {
+                    return false;
+                }
+                if (first.compareTo(second) != 0) {
+                    return false;
                 }
             }
         }
@@ -327,7 +325,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         JsonObject serialize();
     }
 
-    public record TagValue(TagKey<Fluid> tag) implements Value {
+    public record TagValue(TagKey<Fluid> tag) implements Value, Comparable<TagValue> {
 
         @Override
         public Collection<Fluid> getFluids() {
@@ -348,9 +346,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
             jsonObject.addProperty("tag", this.tag.location().toString());
             return jsonObject;
         }
+
+        @Override
+        public int compareTo(TagValue other) {
+            return this.tag.location().compareTo(other.tag.location());
+        }
     }
 
-    public record FluidValue(Fluid fluid) implements Value {
+    public record FluidValue(Fluid fluid) implements Value, Comparable<FluidValue> {
 
         @Override
         public Collection<Fluid> getFluids() {
@@ -363,28 +366,41 @@ public class FluidIngredient implements Predicate<FluidStack> {
             jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
             return jsonObject;
         }
+
+        @Override
+        public int compareTo(FluidValue other) {
+            return FLUID_COMPARATOR.compare(this.fluid, other.fluid);
+        }
     }
 
     public static final Comparator<Fluid> FLUID_COMPARATOR = Comparator.comparing(BuiltInRegistries.FLUID::getKey);
 
-    public static final Comparator<FluidIngredient.Value> VALUE_COMPARATOR = new Comparator<>() {
+    /**
+     * Comparator for Values. First sort types: TagValue, then FluidValue, then other Values.
+     * Within the type groups, sort by tag or key.
+     * For other Values we have no comparator to check against, so we don't sort them at all. This might be a problem
+     * if anyone ever tries to use multiple Values that are not TagValues or FluidValues in this.value.
+     */
+    public static final Comparator<FluidIngredient.Value> VALUE_COMPARATOR = (value1, value2) -> {
 
-        @Override
-        public int compare(FluidIngredient.Value value1, FluidIngredient.Value value2) {
-            if (value1 instanceof FluidIngredient.TagValue first) {
-                if (!(value2 instanceof FluidIngredient.TagValue second)) {
-                    return 1;
-                }
-                if (first.tag() != second.tag()) {
-                    return 1;
-                }
-            } else if (value1 instanceof FluidIngredient.FluidValue first) {
-                if (!(value2 instanceof FluidIngredient.FluidValue second)) {
-                    return 1;
-                }
-                return FLUID_COMPARATOR.compare(first.fluid, second.fluid);
+        if (value1 instanceof TagValue tagValue1) {
+            if (value2 instanceof TagValue tagValue2) {
+                return tagValue1.compareTo(tagValue2);
+            } else {
+                return 1;
             }
-            return 0;
         }
+
+        if (value1 instanceof FluidValue fluidValue1) {
+            if (value2 instanceof FluidValue fluidValue2) {
+                return fluidValue1.compareTo(fluidValue2);
+            } else if (value2 instanceof TagValue) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        return 0;
     };
 }

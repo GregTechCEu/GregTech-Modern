@@ -20,6 +20,9 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
+/**
+ * A tiered energy machine with recipe logic and item/fluid IO.
+ */
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
                                             IMufflableMachine, IOverclockMachine {
 

@@ -14,7 +14,6 @@
   "behavior.portable_scanner.debug_lag_count": "サーバーで %s 件のラグスパイク警告が発生 (%smsを超過した全てのオブジェクトが対象)",
   "behavior.portable_scanner.debug_machine": "メタ-ID: %s",
   "behavior.portable_scanner.debug_machine_invalid": " 無効",
-  "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null",
   "behavior.portable_scanner.debug_machine_valid": " 妥当",
   "behavior.portable_scanner.divider": "=========================",
   "behavior.portable_scanner.energy_container_in": "最大入力: %s (%s) EU at %s A",

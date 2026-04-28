@@ -57,6 +57,8 @@ public final class MachineTraitHolder {
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        trait.setTraitPriority(callbackPriority);
+
         var traitType = trait.getTraitType();
 
         var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
