@@ -98,6 +98,13 @@ public class BlockInfo {
 
     public void clearBlockEntityCache() {}
 
+    public com.lowdragmc.lowdraglib2.utils.data.BlockInfo toLDLib2() {
+        var info = new com.lowdragmc.lowdraglib2.utils.data.BlockInfo(blockState, hasBlockEntity, itemStack,
+                postCreate);
+        info.setTag(tag);
+        return info;
+    }
+
     public void setBlockState(BlockState blockState) {
         this.blockState = blockState;
     }

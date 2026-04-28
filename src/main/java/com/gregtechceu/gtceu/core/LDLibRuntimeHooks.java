@@ -59,7 +59,7 @@ public final class LDLibRuntimeHooks {
     private static @Nullable Class<?> findClass(String className) {
         try {
             return Class.forName(className, false, LDLibRuntimeHooks.class.getClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | LinkageError e) {
             return null;
         }
     }
@@ -70,7 +70,7 @@ public final class LDLibRuntimeHooks {
         }
         try {
             return type.getMethod(methodName);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | LinkageError e) {
             return null;
         }
     }

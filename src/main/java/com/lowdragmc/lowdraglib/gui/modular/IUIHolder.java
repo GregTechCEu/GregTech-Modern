@@ -32,4 +32,8 @@ public interface IUIHolder {
     boolean isRemote();
 
     void markAsDirty();
+
+    default boolean isStillValid(Player player) {
+        return !isInvalid();
+    }
 }
