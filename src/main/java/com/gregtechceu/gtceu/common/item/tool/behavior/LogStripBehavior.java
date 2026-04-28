@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ import java.util.List;
 public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
     public static final LogStripBehavior INSTANCE = new LogStripBehavior();
-    public static final Codec<LogStripBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<LogStripBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, LogStripBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 
@@ -79,7 +80,7 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
         if (stripped) {
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

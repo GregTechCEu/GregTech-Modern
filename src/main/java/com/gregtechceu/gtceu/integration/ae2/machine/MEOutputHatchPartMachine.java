@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
@@ -158,12 +159,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();
-                if (ingredient.ingredient().hasNoFluids()) {
+                if (ingredient.ingredient().fluids().isEmpty()) {
                     it.remove();
                     continue;
                 }
 
-                var fluids = ingredient.getFluids();
+                var fluids = SizedIngredientExtensions.getFluids(ingredient);
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;

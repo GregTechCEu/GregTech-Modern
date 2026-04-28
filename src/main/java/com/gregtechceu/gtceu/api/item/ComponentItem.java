@@ -2,32 +2,35 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.gui.factory.GTHeldItemUIHolder;
+import com.gregtechceu.gtceu.api.gui.factory.IGTHeldItemUI;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
@@ -40,9 +43,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+public class ComponentItem extends Item implements IGTHeldItemUI, IComponentItem {
 
     @Getter
     protected List<IItemComponent> components;
@@ -77,13 +80,16 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+                                Consumer<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
+        List<Component> componentTooltips = new ArrayList<>();
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
-                addInformation.appendHoverText(stack, context, tooltipComponents, isAdvanced);
+                addInformation.appendHoverText(stack, context, componentTooltips, isAdvanced);
             }
         }
+        componentTooltips.forEach(tooltipComponents);
     }
 
     @Override
@@ -129,24 +135,22 @@ public class ComponentItem extends Item
         return super.getDefaultAttributeModifiers(stack);
     }
 
-    @Override
     public boolean isEnchantable(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IEnchantableItem enchantableItem && enchantableItem.isEnchantable(stack)) {
                 return true;
             }
         }
-        return super.isEnchantable(stack);
+        return false;
     }
 
-    @Override
     public int getEnchantmentValue(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IEnchantableItem enchantableItem) {
                 return enchantableItem.getEnchantmentValue(stack);
             }
         }
-        return super.getEnchantmentValue(stack);
+        return 0;
     }
 
     @Override
@@ -161,9 +165,10 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
         for (IItemComponent component : components) {
-            if (component instanceof IAbilityItem abilityItem && abilityItem.canPerformAction(stack, action)) {
+            if (stack instanceof ItemStack itemStack &&
+                    component instanceof IAbilityItem abilityItem && abilityItem.canPerformAction(itemStack, action)) {
                 return true;
             }
         }
@@ -184,11 +189,11 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 var result = interactionItem.use(player.getItemInHand(usedHand), level, player, usedHand);
-                if (result.getResult() != InteractionResult.PASS) {
+                if (result != InteractionResult.PASS) {
                     return result;
                 }
             }
@@ -220,7 +225,7 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 return interactionItem.getUseAnimation(stack);
@@ -256,14 +261,12 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        boolean result = false;
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
-                result |= interactionItem.hurtEnemy(stack, target, attacker);
+                interactionItem.hurtEnemy(stack, target, attacker);
             }
         }
-        return result;
     }
 
     @Override
@@ -279,7 +282,6 @@ public class ComponentItem extends Item
         return super.getName(stack);
     }
 
-    @Override
     public String getDescriptionId(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof ICustomDescriptionId customDescriptionId) {
@@ -289,58 +291,48 @@ public class ComponentItem extends Item
                 }
             }
         }
-        return super.getDescriptionId(stack);
+        return super.getDescriptionId();
     }
 
     @Override
     @Nullable
-    public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
+    public ModularUI createUI(Player entityPlayer, GTHeldItemUIHolder holder) {
         for (IItemComponent component : components) {
             if (component instanceof IItemUIFactory uiFactory) {
-                return uiFactory.createUI(holder, entityPlayer);
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        for (IItemComponent component : components) {
-            if (component instanceof ICustomRenderer customRenderer) {
-                return customRenderer.getRenderer();
+                Object ui = uiFactory.createUI(holder, entityPlayer);
+                return ui instanceof ModularUI modularUI ? modularUI : null;
             }
         }
         return null;
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity,
+                              @Nullable net.minecraft.world.entity.EquipmentSlot slot) {
         for (IItemComponent component : components) {
             if (component instanceof IItemLifeCycle lifeCycle) {
-                lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
+                lifeCycle.inventoryTick(stack, level, entity, slot == null ? -1 : slot.ordinal(),
+                        slot == net.minecraft.world.entity.EquipmentSlot.MAINHAND);
             }
         }
     }
 
-    @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         for (IItemComponent component : components) {
             if (component instanceof IRecipeRemainder recipeRemainder) {
                 return recipeRemainder.getRecipeRemained(itemStack);
             }
         }
-        return super.getCraftingRemainingItem(itemStack);
+        return ItemStack.EMPTY;
     }
 
-    @Override
     public boolean hasCraftingRemainingItem(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IRecipeRemainder recipeRemainder) {
                 return recipeRemainder.getRecipeRemained(stack) != ItemStack.EMPTY;
             }
         }
-        return super.hasCraftingRemainingItem(stack);
+        return false;
     }
 
     @Override
@@ -354,34 +346,31 @@ public class ComponentItem extends Item
         return result;
     }
 
-    @Override
     public @Nullable FoodProperties getFoodProperties(ItemStack stack, @Nullable LivingEntity entity) {
         for (IItemComponent component : components) {
             if (component instanceof IEdibleItem foodBehavior) {
                 return foodBehavior.getFoodProperties(stack, entity);
             }
         }
-        return super.getFoodProperties(stack, entity);
+        return stack.get(DataComponents.FOOD);
     }
 
-    @Override
     public SoundEvent getEatingSound() {
         for (IItemComponent component : components) {
             if (component instanceof IEdibleItem foodBehavior) {
                 return foodBehavior.getEatingSound();
             }
         }
-        return super.getEatingSound();
+        return SoundEvents.GENERIC_EAT.value();
     }
 
-    @Override
     public SoundEvent getDrinkingSound() {
         for (IItemComponent component : components) {
             if (component instanceof IEdibleItem foodBehavior) {
                 return foodBehavior.getDrinkingSound();
             }
         }
-        return super.getDrinkingSound();
+        return SoundEvents.GENERIC_DRINK.value();
     }
 
     /**

@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.data.tag;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
-import net.minecraft.Util;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 
 import lombok.Getter;

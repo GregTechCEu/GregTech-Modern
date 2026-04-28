@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.misc.forge.ItemHandlerAdapters;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
@@ -40,13 +41,13 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, blockEntity, side) -> {
-            if (level.isClientSide) return null;
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, blockEntity, side) -> {
+            if (level.isClientSide()) return null;
             if (blockEntity instanceof ItemPipeBlockEntity itemPipeBlockEntity) {
-                if (side != null && itemPipeBlockEntity.isConnected(side)) {
+                if (side instanceof Direction direction && itemPipeBlockEntity.isConnected(direction)) {
                     itemPipeBlockEntity.ensureHandlersInitialized();
                     itemPipeBlockEntity.checkNetwork();
-                    return itemPipeBlockEntity.getHandler(side, true);
+                    return ItemHandlerAdapters.toResourceHandler(itemPipeBlockEntity.getHandler(direction, true));
                 }
             }
             return null;
@@ -79,10 +80,8 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
         return GTBlockEntities.ITEM_PIPE.get();
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
                                 TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
         ItemPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         if (properties.getTransferRate() % 1 != 0) {
@@ -105,6 +104,6 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     @Override
     public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
                                          Level level, BlockPos pos) {
-        return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side.getOpposite()) != null;
+        return level.getCapability(Capabilities.Item.BLOCK, pos, side.getOpposite()) != null;
     }
 }

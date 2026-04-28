@@ -8,6 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 
 import com.mojang.serialization.Codec;
@@ -24,7 +25,13 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     public ShapedFluidContainerRecipe(String group, CraftingBookCategory category,
                                       ShapedRecipePattern pattern, ItemStack result,
                                       boolean showNotification) {
-        super(group, category, pattern, result, showNotification);
+        this(new Recipe.CommonInfo(showNotification), new CraftingRecipe.CraftingBookInfo(category, group), pattern,
+                ItemStackTemplate.fromNonEmptyStack(result));
+    }
+
+    private ShapedFluidContainerRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
+                                       ShapedRecipePattern pattern, ItemStackTemplate result) {
+        super(commonInfo, bookInfo, pattern, result);
     }
 
     @Override
@@ -57,9 +64,6 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
                 continue;
             }
             ItemStack item = inv.getItem(i);
-            if (item.hasCraftingRemainingItem()) {
-                items.set(i, item.getCraftingRemainingItem());
-            }
         }
 
         return items;
@@ -74,17 +78,20 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
             for (int y = 0; y < inv.height(); ++y) {
                 int offsetX = x - width;
                 int offsetY = y - height;
-                Ingredient ingredient = Ingredient.EMPTY;
+                Ingredient ingredient = null;
                 if (offsetX >= 0 && offsetY >= 0 && offsetX < this.getWidth() && offsetY < this.getHeight()) {
                     if (mirrored) {
                         ingredient = this.getIngredients()
-                                .get(this.getWidth() - offsetX - 1 + offsetY * this.getWidth());
+                                .get(this.getWidth() - offsetX - 1 + offsetY * this.getWidth())
+                                .orElse(null);
                     } else {
-                        ingredient = this.getIngredients().get(offsetX + offsetY * this.getWidth());
+                        ingredient = this.getIngredients().get(offsetX + offsetY * this.getWidth())
+                                .orElse(null);
                     }
                 }
 
-                if (ingredient.getCustomIngredient() instanceof FluidContainerIngredient fluidContainerIngredient) {
+                if (ingredient != null &&
+                        ingredient.getCustomIngredient() instanceof FluidContainerIngredient fluidContainerIngredient) {
                     int slot = x + y * inv.width();
                     ItemStack stack = inv.getItem(slot);
                     if (fluidContainerIngredient.test(stack)) {
@@ -98,35 +105,26 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return GTRecipeSerializers.CRAFTING_SHAPED_FLUID_CONTAINER.get();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer) GTRecipeSerializers.CRAFTING_SHAPED_FLUID_CONTAINER.get();
     }
 
-    public static class Serializer implements RecipeSerializer<ShapedFluidContainerRecipe> {
+    public static class Serializer {
 
         // spotless:off
         public static final MapCodec<ShapedFluidContainerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
+                Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
                 ShapedRecipePattern.MAP_CODEC.forGetter(i -> i.pattern),
-                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor) val).getResult()),
-                Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(val -> ((ShapedRecipeAccessor) val).getShowNotification())
+                ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor) val).getResult().create()),
+                Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(ShapedRecipe::showNotification)
         ).apply(instance, ShapedFluidContainerRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ShapedFluidContainerRecipe> STREAM_CODEC = StreamCodec.of(
                 ShapedFluidContainerRecipe.Serializer::toNetwork, ShapedFluidContainerRecipe.Serializer::fromNetwork
         );
         // spotless:on
-
-        @Override
-        public MapCodec<ShapedFluidContainerRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ShapedFluidContainerRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
 
         private static ShapedFluidContainerRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             String group = buffer.readUtf();
@@ -138,11 +136,11 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, ShapedFluidContainerRecipe recipe) {
-            buffer.writeUtf(recipe.getGroup());
+            buffer.writeUtf(recipe.group());
             buffer.writeEnum(recipe.category());
             ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.pattern);
-            ItemStack.STREAM_CODEC.encode(buffer, ((ShapedRecipeAccessor) recipe).getResult());
-            buffer.writeBoolean(((ShapedRecipeAccessor) recipe).getShowNotification());
+            ItemStack.STREAM_CODEC.encode(buffer, ((ShapedRecipeAccessor) recipe).getResult().create());
+            buffer.writeBoolean(recipe.showNotification());
         }
     }
 }

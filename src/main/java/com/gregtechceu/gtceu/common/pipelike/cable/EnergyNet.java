@@ -64,9 +64,9 @@ public class EnergyNet extends PipeNet<WireProperties> {
 
     @Override
     protected WireProperties readNodeData(CompoundTag tagCompound) {
-        long voltage = tagCompound.getLong("voltage");
-        int amperage = tagCompound.getInt("amperage");
-        int lossPerBlock = tagCompound.getInt("loss");
+        long voltage = tagCompound.getLongOr("voltage", 0L);
+        int amperage = tagCompound.getIntOr("amperage", 0);
+        int lossPerBlock = tagCompound.getIntOr("loss", 0);
         return new WireProperties(voltage, amperage, lossPerBlock);
     }
 
@@ -76,7 +76,7 @@ public class EnergyNet extends PipeNet<WireProperties> {
 
     public long getEnergyFluxPerSec() {
         Level world = getLevel();
-        if (world != null && !world.isClientSide && (world.getGameTime() - lastTime) >= 20) {
+        if (world != null && !world.isClientSide() && (world.getGameTime() - lastTime) >= 20) {
             lastTime = world.getGameTime();
             clearCache();
         }

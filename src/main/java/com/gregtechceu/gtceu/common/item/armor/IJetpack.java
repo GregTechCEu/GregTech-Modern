@@ -75,7 +75,7 @@ public interface IJetpack {
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
         double deltaY = player.getDeltaMovement().y();
 
-        if ((!flightEnabled || !hover) && player.getY() < player.level().getMinBuildHeight() - 5) {
+        if ((!flightEnabled || !hover) && player.getY() < player.level().getMinY() - 5) {
             performEHover(stack, player);
         } else if (!flightEnabled) {
             return;
@@ -154,7 +154,7 @@ public interface IJetpack {
             }
 
             // ensure that the player is actually using the jetpack to cancel fall damage
-            if (!player.level().isClientSide && (hover || flyKeyDown)) {
+            if (!player.level().isClientSide() && (hover || flyKeyDown)) {
                 player.fallDistance = 0;
                 if (player instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.aboveGroundTickCount = 0;
@@ -173,10 +173,10 @@ public interface IJetpack {
         stack.update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, armor -> armor
                 .setEnabled(true)
                 .setHover(true));
-        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        player.sendOverlayMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"));
         player.fallDistance = 0;
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (player instanceof ServerPlayer) {
                 ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
             }

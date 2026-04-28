@@ -9,18 +9,15 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.tags.DamageTypeTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class DamageTypeTagsLoader extends DamageTypeTagsProvider {
 
-    public DamageTypeTagsLoader(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-                                @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, GTCEu.MOD_ID, existingFileHelper);
+    public DamageTypeTagsLoader(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, GTCEu.MOD_ID);
     }
 
     @Override

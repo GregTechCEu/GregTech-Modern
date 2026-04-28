@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import com.google.common.base.Preconditions;

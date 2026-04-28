@@ -5,7 +5,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.color.GTItemTintSource;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
+import com.gregtechceu.gtceu.client.model.item.GTItemModelProperties;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
@@ -34,6 +38,8 @@ import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
@@ -47,12 +53,19 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugScreenEntries;
+import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
+import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -60,9 +73,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
 
 public class ClientProxy {
 
@@ -111,6 +124,12 @@ public class ClientProxy {
     }
 
     @SubscribeEvent
+    public static void registerClientPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
+        event.register(SCPacketMonitorGroupNBTChange.TYPE, SCPacketMonitorGroupNBTChange::execute);
+        event.register(SCPacketShareProspection.TYPE, SCPacketShareProspection::execute);
+    }
+
+    @SubscribeEvent
     public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
         event.registerAboveAll(GTCEu.id("hud"), new HudGuiOverlay());
     }
@@ -143,7 +162,7 @@ public class ClientProxy {
     }
 
     @SubscribeEvent
-    public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+    public static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
         event.register(MachineModelLoader.ID, MachineModelLoader.INSTANCE);
         event.register(PipeModelLoader.ID, PipeModelLoader.INSTANCE);
         event.register(GTCEu.id("facade"), FacadeUnbakedModel.Loader.INSTANCE);
@@ -151,26 +170,46 @@ public class ClientProxy {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new IClientFluidTypeExtensions() {
+        event.registerFluidType(IClientFluidTypeExtensions.DEFAULT, GTFluids.POTION.getType());
+    }
 
-            private static final ResourceLocation TEXTURE = GTCEu.id("block/fluids/fluid.potion");
+    @SubscribeEvent
+    public static void registerDebugEntries(RegisterDebugEntriesEvent event) {
+        Identifier id = GTCEu.id("machine_debug");
+        event.register(id, (displayer, serverOrClientLevel, clientChunk, serverChunk) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.showOnlyReducedInfo()) return;
+            Entity cameraEntity = mc.getCameraEntity();
+            if (cameraEntity == null || mc.level == null) return;
 
-            @Override
-            public @NotNull ResourceLocation getStillTexture() {
-                return TEXTURE;
+            BlockHitResult hit = ToolHelper.entityPickBlock(cameraEntity, 20.0, 0, false);
+            if (hit.getType() == HitResult.Type.MISS) return;
+            BlockPos hitPos = hit.getBlockPos();
+            BlockEntity blockEntity = mc.level.getBlockEntity(hitPos);
+            if (!(blockEntity instanceof MetaMachine machine)) return;
+
+            var lines = new ArrayList<String>();
+            machine.addDebugOverlayText(lines::add);
+            if (!lines.isEmpty()) {
+                displayer.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, lines);
             }
+        });
+        event.includeInProfile(id, DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
+    }
 
-            @Override
-            public @NotNull ResourceLocation getFlowingTexture() {
-                return TEXTURE;
-            }
+    @SubscribeEvent
+    public static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(GTCEu.id("item_color"), GTItemTintSource.MAP_CODEC);
+    }
 
-            @Override
-            public int getTintColor(@NotNull FluidStack stack) {
-                return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
-                        .getColor() | 0xff000000;
-            }
-        }, GTFluids.POTION.getType());
+    @SubscribeEvent
+    public static void registerRangeItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
+        GTItemModelProperties.registerRangeProperties(event);
+    }
+
+    @SubscribeEvent
+    public static void registerConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
+        GTItemModelProperties.registerConditionalProperties(event);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

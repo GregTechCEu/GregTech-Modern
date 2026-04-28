@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
@@ -63,8 +63,8 @@ public interface IDurabilityBar extends IItemDecoratorComponent {
     }
 
     @Override
-    default boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font,
+    default boolean render(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, @NotNull Font font,
                            @NotNull ItemStack stack, int xOffset, int yOffset) {
-        return ToolChargeBarRenderer.renderDurabilityBar(guiGraphics, stack, this, xOffset, yOffset);
+        return ToolChargeBarRenderer.renderDurabilityBar(GuiGraphicsExtractor, stack, this, xOffset, yOffset);
     }
 }

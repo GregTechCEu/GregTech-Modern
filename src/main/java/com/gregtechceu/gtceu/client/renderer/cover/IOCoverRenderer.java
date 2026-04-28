@@ -7,21 +7,18 @@ import com.gregtechceu.gtceu.api.cover.IIOCover;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,11 +41,11 @@ public class IOCoverRenderer implements ICoverRenderer {
     @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite invertedEmissiveOverlaySprite = null;
 
-    public IOCoverRenderer(@Nullable ResourceLocation overlay,
-                           @Nullable ResourceLocation invertedOverlay,
-                           @Nullable ResourceLocation emissiveOverlay,
-                           @Nullable ResourceLocation invertedEmissiveOverlay) {
-        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
+    public IOCoverRenderer(@Nullable Identifier overlay,
+                           @Nullable Identifier invertedOverlay,
+                           @Nullable Identifier emissiveOverlay,
+                           @Nullable Identifier invertedEmissiveOverlay) {
+        ModelUtils.registerAtlasStitchedEventListener(false, TextureAtlas.LOCATION_BLOCKS, event -> {
             var atlas = event.getAtlas();
 
             if (overlay != null) {
@@ -82,11 +79,11 @@ public class IOCoverRenderer implements ICoverRenderer {
                         overlaySprite));
             }
             if (isInverted && invertedEmissiveOverlaySprite != null) {
-                quads.add(FaceQuad.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        invertedEmissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
+                        invertedEmissiveOverlaySprite, -101, 15, false));
             } else if (emissiveOverlaySprite != null) {
-                quads.add(FaceQuad.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        emissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
+                        emissiveOverlaySprite, -101, 15, false));
             }
         }
     }

@@ -19,16 +19,15 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -296,7 +295,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (getLevel() != null && !getLevel().isClientSide()) {
                 notifyBlockUpdate();
                 checkPattern();
             }
@@ -307,7 +306,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void setFrontFacing(Direction facing) {
         super.setFrontFacing(facing);
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
             checkPattern();
         }
     }
@@ -320,7 +319,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         if (!isFormed() && context.getPlayer().isShiftKeyDown()) {
             if (isRemote()) {
                 MultiblockInWorldPreviewRenderer.showPreview(getBlockPos(), this,
-                        ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
+                        ((MultiblockMachineDefinition) getDefinition()).getMatchingShapes());
             }
             return InteractionResult.SUCCESS;
         }

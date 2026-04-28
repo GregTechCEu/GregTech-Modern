@@ -46,11 +46,11 @@ public class SteamBoilerBlockProvider extends BlockInfoProvider<SteamBoilerMachi
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        boolean isBurning = capData.getBoolean("isBurning");
-        boolean hasWater = capData.getBoolean("hasWater");
-        long production = capData.getLong("steamProduction");
-        int temperature = capData.getInt("currentTemperature");
-        int maxTemperature = capData.getInt("maxTemperature");
+        boolean isBurning = capData.getBooleanOr("isBurning", false);
+        boolean hasWater = capData.getBooleanOr("hasWater", false);
+        long production = capData.getLongOr("steamProduction", 0);
+        int temperature = capData.getIntOr("currentTemperature", 0);
+        int maxTemperature = capData.getIntOr("maxTemperature", 0);
 
         boolean makingSteam = hasWater && temperature >= 100;
 

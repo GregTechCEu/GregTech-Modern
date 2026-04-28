@@ -7,13 +7,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.client.color.BlockColor;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -25,8 +24,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +36,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -49,6 +50,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 
 import java.util.Set;
 
@@ -63,7 +66,7 @@ public class MaterialBlock extends Block {
     public final Material material;
 
     public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
-        super(properties);
+        super(properties.overrideDescription(tagPrefix.getUnlocalizedName(material)));
         this.material = material;
         this.tagPrefix = tagPrefix;
         if (registerModel && GTCEu.isClientSide()) {
@@ -105,18 +108,20 @@ public class MaterialBlock extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
+                                     BlockPos currentPos, Direction direction, BlockPos neighborPos,
+                                     BlockState neighborState, RandomSource random) {
         if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() &&
                 ConfigHolder.INSTANCE.worldgen.sandOresFall) {
-            level.scheduleTick(currentPos, this, this.getDelayAfterPlace());
+            scheduledTickAccess.scheduleTick(currentPos, this, this.getDelayAfterPlace());
         }
-        return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, direction, neighborPos, neighborState,
+                random);
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!FallingBlock.isFree(level.getBlockState(pos.below())) || pos.getY() < level.getMinBuildHeight()) {
+        if (!FallingBlock.isFree(level.getBlockState(pos.below())) || pos.getY() < level.getMinY()) {
             return;
         }
         FallingBlockEntity.fall(level, pos, state);
@@ -145,37 +150,32 @@ public class MaterialBlock extends Block {
     /** End falling ore stuff */
 
     @Override
-    public String getDescriptionId() {
-        return tagPrefix.getUnlocalizedName(material);
-    }
-
-    @Override
     public MutableComponent getName() {
         return tagPrefix.getLocalizedName(material);
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-                                              Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hit) {
         if (this.tagPrefix != TagPrefix.frameGt) {
             return super.useItemOn(stack, state, level, pos, player, hand, hit);
         }
         if (stack.isEmpty())
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         if (stack.getItem() instanceof PipeBlockItem) {
-            return replaceWithFramedPipe(level, pos, state, player, stack, hit) ? ItemInteractionResult.SUCCESS :
-                    ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return replaceWithFramedPipe(level, pos, state, player, stack, hit) ? InteractionResult.SUCCESS :
+                    InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(stack);
         if (!types.isEmpty() && ToolHelper.canUse(stack) && types.contains(GTToolType.CROWBAR)) {
-            return removeFrame(level, pos, player, stack) ? ItemInteractionResult.SUCCESS :
-                    ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return removeFrame(level, pos, player, stack) ? InteractionResult.SUCCESS :
+                    InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         var frameBlock = getFrameboxFromItem(stack);
-        if (frameBlock == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (frameBlock == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         BlockPos.MutableBlockPos blockPos = pos.mutable();
         for (int i = 0; i < 32; i++) {
@@ -193,19 +193,19 @@ public class MaterialBlock extends Block {
                 level.setBlock(blockPos, frameBlock.defaultBlockState(), Block.UPDATE_ALL);
                 if (!player.isCreative())
                     stack.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
                     stack.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Nullable
@@ -274,7 +274,8 @@ public class MaterialBlock extends Block {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                                InsideBlockEffectApplier effectApplier, boolean bypassInsideEffects) {
         if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
             double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
             double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);

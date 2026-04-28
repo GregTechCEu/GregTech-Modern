@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -56,7 +56,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay;
 
-    public MultiblockMachineDefinition(ResourceLocation id) {
+    public MultiblockMachineDefinition(Identifier id) {
         super(id);
     }
 

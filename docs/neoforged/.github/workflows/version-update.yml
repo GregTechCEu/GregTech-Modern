@@ -1,0 +1,130 @@
+name: 'Start Version Update'
+run-name: Start ${{ inputs.update_type }} update to ${{ inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Minecraft Version'
+        required: true
+        type: string
+      update_type:
+        description: 'Update Type'
+        required: true
+        default: 'major'
+        type: choice
+        options:
+          - major
+          - minor
+      branch:
+        description: 'Branch'
+        required: true
+        default: 'main'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  major_update:
+    name: ${{ inputs.version }} ${{ inputs.update_type }} update
+    runs-on: ubuntu-latest
+    if: inputs.update_type == 'major'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: npm
+      
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create update branch
+        run: git checkout -b update/${{ inputs.version }}
+
+      - name: Extract previous version
+        id: previous_version
+        run: |
+          # Get the previous version label
+          PREVIOUS_VERSION_LABEL=$(jq '.current.label' ./version_labels.json)
+          # If the label is made up of multiple versions, get the last version
+          if [[ $PREVIOUS_VERSION_LABEL =~ '-' ]]; then
+            PREVIOUS_VERSION_ID=$(echo $PREVIOUS_VERSION_LABEL | sed 's/\([[:digit:]\+]\.[[:digit:]]\+\.[[:digit:]]\+\)[[:space:]]*\(-[[:space:]]*\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\)\)\?/\3/')
+          else
+            PREVIOUS_VERSION_ID=$PREVIOUS_VERSION_LABEL
+          fi
+
+          # Push to output
+          echo "PREVIOUS_VERSION_LABEL=$PREVIOUS_VERSION_LABEL" >> "$GITHUB_OUTPUT"
+          echo "PREVIOUS_VERSION_ID=$PREVIOUS_VERSION_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Run version migration
+        env:
+          PREVIOUS_VERSION_LABEL: ${{ steps.previous_version.outputs.PREVIOUS_VERSION_LABEL }}
+          PREVIOUS_VERSION_ID: ${{ steps.previous_version.outputs.PREVIOUS_VERSION_ID }}
+        run: |
+          # Run basic migration
+          npm run docusaurus docs:version $(echo $PREVIOUS_VERSION_ID | sed 's/"//g')
+          # Setup temporary file
+          tmp=$(mktemp)
+          # Modify version labels 
+          jq --indent 4 --argjson prev_id "$PREVIOUS_VERSION_ID" --argjson prev_label "$PREVIOUS_VERSION_LABEL" --arg ver "${{ inputs.version }}" 'del(.current) | {current: {label: $ver}} + {$prev_id: {label: $prev_label}} + .' ./version_labels.json > "$tmp" && mv "$tmp" ./version_labels.json
+          jq --indent 4 '.' ./versions.json > "$tmp" && mv "$tmp" ./versions.json
+
+      - name: Commit and push branch
+        run: |
+          # Setup user settings
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Add and commit files
+          git add .
+          git commit -a -m 'feat(cicd): Start  ${{ inputs.version }} ${{ inputs.update_type }} update'
+          git push -u origin update/${{ inputs.version }}
+  minor_update:
+    name: ${{ inputs.version }} ${{ inputs.update_type }} update
+    runs-on: ubuntu-latest
+    if: inputs.update_type == 'minor'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      
+      - name: Create update branch
+        run: git checkout -b update/${{ inputs.version }}
+      
+      - name: Extract previous version
+        id: previous_version
+        run: |
+          # Get the previous version label
+          PREVIOUS_VERSION_LABEL=$(jq '.current.label' ./version_labels.json)
+          # If the label is made up of multiple versions, get the first version
+          if [[ $PREVIOUS_VERSION_LABEL =~ '-' ]]; then
+            PREVIOUS_VERSION_ID=$(echo $PREVIOUS_VERSION_LABEL | sed 's/\([[:digit:]\+]\.[[:digit:]]\+\.[[:digit:]]\+\)[[:space:]]*\(-[[:space:]]*\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\)\)\?/\1/')
+          else
+            PREVIOUS_VERSION_ID=$PREVIOUS_VERSION_LABEL
+          fi
+
+          # Push to output
+          echo "PREVIOUS_VERSION_ID=$PREVIOUS_VERSION_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Run version migration
+        env:
+          PREVIOUS_VERSION_ID: ${{ steps.previous_version.outputs.PREVIOUS_VERSION_ID }}
+        run: |
+          # Setup temporary file
+          tmp=$(mktemp)
+          # Modify version labels 
+          jq --indent 4 --argjson prev_id "$PREVIOUS_VERSION_ID" --arg ver "${{ inputs.version }}" '.current.label = $prev_id + " - " + $ver' ./version_labels.json > "$tmp" && mv "$tmp" ./version_labels.json
+
+      - name: Commit and push branch
+        run: |
+          # Setup user settings
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Commit files
+          git commit -a -m 'feat(cicd): Start  ${{ inputs.version }} ${{ inputs.update_type }} update'
+          git push -u origin update/${{ inputs.version }}

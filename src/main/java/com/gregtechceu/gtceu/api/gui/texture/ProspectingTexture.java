@@ -11,30 +11,19 @@ import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.TextureUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
-import org.joml.Matrix4f;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
-
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @OnlyIn(Dist.CLIENT)
-public class ProspectingTexture extends AbstractTexture {
+public class ProspectingTexture {
 
     public static final String SELECTED_ALL = "[all]";
     private static final ResourceTexture ARROW = GuiTextures.UP.copy().setColor(ColorPattern.RED.color);
@@ -112,18 +101,18 @@ public class ProspectingTexture extends AbstractTexture {
             for (int j = 0; j < wh; j++) {
                 Object[] items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
                 // draw bg
-                image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
+                image.setPixelABGR(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
                 // draw items
                 for (Object item : items) {
                     if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
                     int color = mode.getItemColor(item);
-                    image.setPixelRGBA(i, j,
+                    image.setPixelABGR(i, j,
                             combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
                     break;
                 }
                 // draw grid
                 if ((i) % 16 == 0 || (j) % 16 == 0) {
-                    image.setPixelRGBA(i, j, ColorUtils.averageColor(image.getPixelRGBA(i, j), 0xff000000));
+                    image.setPixelABGR(i, j, ColorUtils.averageColor(image.getPixel(i, j), 0xff000000));
                 }
             }
         }
@@ -142,23 +131,17 @@ public class ProspectingTexture extends AbstractTexture {
     }
 
     private void doLoad(NativeImage image) {
-        TextureUtil.prepareImage(this.getId(), 0, image.getWidth(), image.getHeight());
-        image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false, true);
+        image.close();
     }
 
     public void draw(GuiGraphics graphics, int x, int y) {
-        if (this.getId() == -1) return;
-        Tesselator tesselator = Tesselator.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, this.getId());
-        Matrix4f matrix4f = graphics.pose().last().pose();
-
-        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
-        bufferbuilder.addVertex(matrix4f, x, y + imageHeight, 0).setUv(0, 1).setColor(-1);
-        bufferbuilder.addVertex(matrix4f, x + imageWidth, y + imageHeight, 0).setUv(1, 1).setColor(-1);
-        bufferbuilder.addVertex(matrix4f, x + imageWidth, y, 0).setUv(1, 0).setColor(-1);
-        bufferbuilder.addVertex(matrix4f, x, y, 0).setUv(0, 0).setColor(-1);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        try (NativeImage image = getImage()) {
+            for (int i = 0; i < imageWidth; i++) {
+                for (int j = 0; j < imageHeight; j++) {
+                    DrawerHelper.drawSolidRect(graphics, x + i, y + j, 1, 1, image.getPixel(i, j));
+                }
+            }
+        }
 
         // draw special grid (e.g. fluid)
         for (int cx = 0; cx < radius * 2 - 1; cx++) {
@@ -186,7 +169,6 @@ public class ProspectingTexture extends AbstractTexture {
         }
     }
 
-    @Override
     public void load(ResourceManager resourceManager) throws IOException {}
 
     public void setDarkMode(boolean darkMode) {

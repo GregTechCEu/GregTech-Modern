@@ -1,0 +1,24 @@
+name: 'Pull Request Previews'
+run-name: Upload previews from workflow run ${{ github.event.workflow_run.id }}
+on:
+  workflow_run:
+    workflows: [Build Pull Request]
+    types:
+      - completed
+
+concurrency:
+  group: preview-pr
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: matyrobbrt/cloudflare-pr-previews@v1
+        with:
+          gh_app_key: ${{ secrets.CLOUDFLARE_PAGES_DEPLOYMENTS_GH_APP_KEY }}
+          gh_app_name: ${{ secrets.CLOUDFLARE_PAGES_DEPLOYMENTS_GH_APP_NAME }}
+          project_name: 'neoforged-docs-previews'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}

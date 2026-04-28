@@ -1,10 +1,7 @@
 {
     "variants": {
-        "active=false": {
+        "": {
             "model": "gtceu:block/fusion_casing"
-        },
-        "active=true": {
-            "model": "gtceu:block/fusion_casing_active"
         }
     }
 }

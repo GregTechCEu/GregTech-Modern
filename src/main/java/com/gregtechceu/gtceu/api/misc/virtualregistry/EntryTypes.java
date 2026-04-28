@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public final class EntryTypes<T extends VirtualEntry> {
 
-    private static final Map<ResourceLocation, EntryTypes<?>> TYPES = new Object2ObjectOpenHashMap<>();
+    private static final Map<Identifier, EntryTypes<?>> TYPES = new Object2ObjectOpenHashMap<>();
 
     public static final EntryTypes<VirtualTank> ENDER_FLUID = addEntryType(GTCEu.id("ender_fluid"), VirtualTank::new);
     public static final EntryTypes<VirtualItemStorage> ENDER_ITEM = addEntryType(GTCEu.id("ender_item"),
@@ -30,10 +30,10 @@ public final class EntryTypes<T extends VirtualEntry> {
     // ENDER_REDSTONE("ender_redstone", null);
 
     @Getter
-    private final ResourceLocation id;
+    private final Identifier id;
     private final Supplier<T> factory;
 
-    private EntryTypes(ResourceLocation id, Supplier<T> supplier) {
+    private EntryTypes(Identifier id, Supplier<T> supplier) {
         this.id = id;
         this.factory = supplier;
     }
@@ -43,7 +43,7 @@ public final class EntryTypes<T extends VirtualEntry> {
         return TYPES.get(GTCEu.id(name));
     }
 
-    public static <E extends VirtualEntry> EntryTypes<E> addEntryType(ResourceLocation location, Supplier<E> supplier) {
+    public static <E extends VirtualEntry> EntryTypes<E> addEntryType(Identifier location, Supplier<E> supplier) {
         var type = new EntryTypes<>(location, supplier);
         if (!TYPES.containsKey(location)) {
             TYPES.put(location, type);

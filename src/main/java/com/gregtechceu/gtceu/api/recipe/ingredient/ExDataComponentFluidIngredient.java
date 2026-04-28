@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.HolderSetCodec;
@@ -36,15 +36,16 @@ public class ExDataComponentFluidIngredient extends DataComponentFluidIngredient
 
     // spotless:off
     public static final MapCodec<ExDataComponentFluidIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-            HolderSetCodec.create(Registries.FLUID, BuiltInRegistries.FLUID.holderByNameCodec(), false).fieldOf("fluids").forGetter(ExDataComponentFluidIngredient::fluids),
-            DataComponentPredicate.CODEC.fieldOf("components").forGetter(ExDataComponentFluidIngredient::components),
+            HolderSetCodec.create(Registries.FLUID, BuiltInRegistries.FLUID.holderByNameCodec(), false).fieldOf("fluids").forGetter(ExDataComponentFluidIngredient::fluidSet),
+            DataComponentExactPredicate.CODEC.fieldOf("components").forGetter(ExDataComponentFluidIngredient::components),
             Codec.BOOL.optionalFieldOf("strict", false).forGetter(ExDataComponentFluidIngredient::isStrict)
     ).apply(builder, ExDataComponentFluidIngredient::new));
     // spotless:on
 
     private final @NotNull List<FluidStack> stacks;
 
-    public ExDataComponentFluidIngredient(HolderSet<Fluid> fluids, DataComponentPredicate components, boolean strict) {
+    public ExDataComponentFluidIngredient(HolderSet<Fluid> fluids, DataComponentExactPredicate components,
+                                          boolean strict) {
         super(fluids, components, strict);
         this.stacks = fluids.stream()
                 .map(i -> new FluidStack(i, FluidType.BUCKET_VOLUME, components.asPatch()))
@@ -54,7 +55,7 @@ public class ExDataComponentFluidIngredient extends DataComponentFluidIngredient
 
     private List<FluidStack> regenerateStacksIfEmpty() {
         if (this.stacks.isEmpty()) {
-            this.fluids().stream()
+            this.generateFluids()
                     .map(i -> new FluidStack(i, FluidType.BUCKET_VOLUME, components().asPatch()))
                     .forEach(this.stacks::add);
         }
@@ -69,7 +70,7 @@ public class ExDataComponentFluidIngredient extends DataComponentFluidIngredient
             }
             return false;
         } else {
-            return this.fluids().contains(stack.getFluidHolder()) && this.components().test(stack);
+            return super.test(stack);
         }
     }
 
@@ -92,20 +93,20 @@ public class ExDataComponentFluidIngredient extends DataComponentFluidIngredient
      * Creates a new ingredient matching any fluid from the list, containing the given components
      */
     public static @NotNull FluidIngredient of(boolean strict, DataComponentMap map, TagKey<Fluid> tag) {
-        return of(strict, map, BuiltInRegistries.FLUID.getOrCreateTag(tag));
+        return of(strict, map, BuiltInRegistries.FLUID.getOrThrow(tag));
     }
 
     /**
      * Creates a new ingredient matching any fluid from the list, containing the given components
      */
     public static @NotNull FluidIngredient of(boolean strict, DataComponentMap map, HolderSet<Fluid> fluids) {
-        return of(strict, DataComponentPredicate.allOf(map), fluids);
+        return of(strict, DataComponentExactPredicate.allOf(map), fluids);
     }
 
     /**
      * Creates a new ingredient matching any fluid from the list, containing the given components
      */
-    public static @NotNull FluidIngredient of(boolean strict, DataComponentPredicate predicate,
+    public static @NotNull FluidIngredient of(boolean strict, DataComponentExactPredicate predicate,
                                               HolderSet<Fluid> fluids) {
         return new ExDataComponentFluidIngredient(fluids, predicate, strict);
     }

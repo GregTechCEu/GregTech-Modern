@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.HolderSetCodec;
@@ -35,26 +37,38 @@ public class ExDataComponentIngredient extends DataComponentIngredient {
 
     // spotless:off
     public static final MapCodec<ExDataComponentIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-            HolderSetCodec.create(Registries.ITEM, BuiltInRegistries.ITEM.holderByNameCodec(), false).fieldOf("items").forGetter(ExDataComponentIngredient::items),
-            DataComponentPredicate.CODEC.fieldOf("components").forGetter(ExDataComponentIngredient::components),
+            HolderSetCodec.create(Registries.ITEM, BuiltInRegistries.ITEM.holderByNameCodec(), false).fieldOf("items").forGetter(ExDataComponentIngredient::itemSet),
+            DataComponentPatch.CODEC.fieldOf("components").forGetter(ExDataComponentIngredient::components),
             Codec.BOOL.optionalFieldOf("strict", false).forGetter(ExDataComponentIngredient::isStrict)
     ).apply(builder, ExDataComponentIngredient::new));
     // spotless:on
 
+    private final HolderSet<Item> itemSet;
+    private final boolean strict;
     private final @NotNull List<ItemStack> stacks;
 
-    public ExDataComponentIngredient(HolderSet<Item> items, DataComponentPredicate components, boolean strict) {
+    public ExDataComponentIngredient(HolderSet<Item> items, DataComponentPatch components, boolean strict) {
         super(items, components, strict);
+        this.itemSet = items;
+        this.strict = strict;
         this.stacks = items.stream()
-                .map(i -> new ItemStack(i, 1, components.asPatch()))
+                .map(i -> new ItemStack(i, 1, components))
                 .collect(Collectors.toCollection(ArrayList::new));
         items.addInvalidationListener(this.stacks::clear);
     }
 
+    public HolderSet<Item> itemSet() {
+        return itemSet;
+    }
+
+    public boolean isStrict() {
+        return strict;
+    }
+
     private List<ItemStack> regenerateStacksIfEmpty() {
         if (this.stacks.isEmpty()) {
-            this.items().stream()
-                    .map(i -> new ItemStack(i, 1, components().asPatch()))
+            this.items()
+                    .map(i -> new ItemStack(i, 1, components()))
                     .forEach(this.stacks::add);
         }
         return this.stacks;
@@ -62,17 +76,16 @@ public class ExDataComponentIngredient extends DataComponentIngredient {
 
     @Override
     public boolean test(@NotNull ItemStack stack) {
-        if (this.isStrict()) {
+        if (this.strict) {
             for (ItemStack stack2 : this.regenerateStacksIfEmpty()) {
                 if (ItemStack.isSameItemSameComponents(stack, stack2)) return true;
             }
             return false;
         } else {
-            return this.items().contains(stack.getItemHolder()) && this.components().test(stack);
+            return super.test(stack);
         }
     }
 
-    @Override
     public @NotNull Stream<ItemStack> getItems() {
         return this.regenerateStacksIfEmpty().stream();
     }
@@ -92,20 +105,21 @@ public class ExDataComponentIngredient extends DataComponentIngredient {
      * Creates a new ingredient matching any item from the list, containing the given components
      */
     public static @NotNull Ingredient of(boolean strict, DataComponentMap map, HolderSet<Item> items) {
-        return of(strict, DataComponentPredicate.allOf(map), items);
+        return new ExDataComponentIngredient(items, DataComponentExactPredicate.allOf(map).asPatch(), strict)
+                .toVanilla();
     }
 
     /**
      * Creates a new ingredient matching any item in the tag, containing the given components
      */
     public static @NotNull Ingredient of(boolean strict, DataComponentPredicate predicate, TagKey<Item> tag) {
-        return of(strict, predicate, BuiltInRegistries.ITEM.getOrCreateTag(tag));
+        return Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag));
     }
 
     /**
      * Creates a new ingredient matching any item from the list, containing the given components
      */
     public static @NotNull Ingredient of(boolean strict, DataComponentPredicate predicate, HolderSet<Item> items) {
-        return new ExDataComponentIngredient(items, predicate, strict).toVanilla();
+        return new ExDataComponentIngredient(items, DataComponentPatch.EMPTY, strict).toVanilla();
     }
 }

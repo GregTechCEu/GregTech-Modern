@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.client.model.compat.IDynamicBakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 
 public abstract class BaseBakedModel implements IDynamicBakedModel {
 
@@ -42,7 +43,7 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
     @Override
     @OnlyIn(Dist.CLIENT)
     public TextureAtlasSprite getParticleIcon() {
-        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(MissingTextureAtlasSprite.getLocation());
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                .getSprite(MissingTextureAtlasSprite.getLocation());
     }
 }

@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SCPacketShareProspection implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("share_prospection");
+    public static final Identifier ID = GTCEu.id("share_prospection");
     public static final Type<SCPacketShareProspection> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SCPacketShareProspection> CODEC = StreamCodec
             .ofMember(SCPacketShareProspection::encode, SCPacketShareProspection::new);
@@ -74,7 +74,7 @@ public class SCPacketShareProspection implements CustomPacketPayload {
                 }
 
                 Component playerName = senderInfo.getTabListDisplayName() != null ? senderInfo.getTabListDisplayName() :
-                        Component.literal(senderInfo.getProfile().getName());
+                        Component.literal(senderInfo.getProfile().name());
 
                 assert Minecraft.getInstance().player != null;
                 Minecraft.getInstance().player.sendSystemMessage(Component

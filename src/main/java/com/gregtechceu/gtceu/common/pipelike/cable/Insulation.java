@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 
@@ -31,7 +31,7 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     CABLE_OCTAL("octal_cable", 0.625f, 8, 1, cableGtOctal, 3, true),
     CABLE_HEX("hex_cable", 0.875f, 16, 1, cableGtHex, 4, true);
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("insulation");
+    public static final Identifier TYPE_ID = GTCEu.id("insulation");
 
     public final String name;
     public final float thickness;
@@ -79,22 +79,22 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     }
 
     @Override
-    public ResourceLocation type() {
+    public Identifier type() {
         return TYPE_ID;
     }
 
     public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
-        ResourceLocation side = MaterialIconType.wire
+        Identifier side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
-        ResourceLocation end = MaterialIconType.wire
+        Identifier end = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "end", true);
 
         PipeModel model = new PipeModel(block, provider, thickness,
                 isCable ? GTCEu.id("block/cable/insulation_5") : side, end);
 
-        ResourceLocation sideSecondary = MaterialIconType.wire
+        Identifier sideSecondary = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side_overlay", true);
-        ResourceLocation endSecondary = MaterialIconType.wire
+        Identifier endSecondary = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "end_overlay", true);
 
         if (sideSecondary != null && !sideSecondary.equals(GTModels.BLANK_TEXTURE)) {

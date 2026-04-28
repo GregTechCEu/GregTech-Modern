@@ -1,0 +1,14 @@
+{
+    "model": {
+        "type": "minecraft:condition",
+        "on_false": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/nano_saber"
+        },
+        "on_true": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/nano_saber/active"
+        },
+        "property": "gtceu:nano_saber_active"
+    }
+}

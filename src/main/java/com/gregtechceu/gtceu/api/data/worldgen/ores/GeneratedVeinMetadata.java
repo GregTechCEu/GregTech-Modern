@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(fluent = true)
 public final class GeneratedVeinMetadata {
 
-    public static final Codec<ChunkPos> CHUNK_POS_CODEC = Codec.LONG.xmap(ChunkPos::new, ChunkPos::toLong);
+    public static final Codec<ChunkPos> CHUNK_POS_CODEC = Codec.LONG.xmap(ChunkPos::unpack, ChunkPos::pack);
     // spotless:off
     public static final Codec<GeneratedVeinMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                     CHUNK_POS_CODEC.fieldOf("origin_chunk").forGetter(GeneratedVeinMetadata::originChunk),
@@ -55,14 +55,14 @@ public final class GeneratedVeinMetadata {
     }
 
     public static GeneratedVeinMetadata readFromPacket(RegistryFriendlyByteBuf buf) {
-        ChunkPos origin = new ChunkPos(buf.readVarLong());
+        ChunkPos origin = ChunkPos.unpack(buf.readVarLong());
         BlockPos center = BlockPos.of(buf.readVarLong());
         Holder<GTOreDefinition> def = GTOreDefinition.STREAM_CODEC.decode(buf);
         return new GeneratedVeinMetadata(origin, center, def, false);
     }
 
     public void writeToPacket(RegistryFriendlyByteBuf buf) {
-        buf.writeVarLong(this.originChunk.toLong());
+        buf.writeVarLong(this.originChunk.pack());
         buf.writeVarLong(this.center.asLong());
         GTOreDefinition.STREAM_CODEC.encode(buf, this.definition);
     }

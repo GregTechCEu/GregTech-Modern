@@ -10,14 +10,16 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.RegistryLayer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -29,23 +31,31 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
 @Mixin(value = ReloadableServerResources.class, priority = 2000)
 public abstract class ReloadableServerResourcesMixin {
 
-    @Inject(method = "loadResources", at = @At("HEAD"))
-    private static void gtceu$init(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> access,
+    @Inject(method = "lambda$loadResources$2",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/neoforged/neoforge/event/EventHooks;onResourceReload(Lnet/minecraft/server/ReloadableServerResources;Lnet/minecraft/core/RegistryAccess;)Ljava/util/List;",
+                     shift = At.Shift.BEFORE))
+    private static void gtceu$init(ReloadableServerRegistries.LoadResult fullRegistries,
                                    FeatureFlagSet featureFlags, Commands.CommandSelection commands,
-                                   int functionCompilationLevel, Executor backgroundExecutor, Executor gameExecutor,
-                                   CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
+                                   List<Registry.PendingTags<?>> pendingTags, PermissionSet permissions,
+                                   ResourceManager resourceManager, Executor backgroundExecutor, Executor gameExecutor,
+                                   List<DataComponentInitializers.PendingComponents<?>> pendingComponents,
+                                   CallbackInfoReturnable<CompletionStage<ReloadableServerResources>> cir) {
         // load and loot tables recipes *before* other data so that we have the registries loaded
         // before saving recipes to JSON.
         // because it breaks if we don't do that.
 
         // this doesn't have dynamic registries available, by the way.
-        RegistryAccess.Frozen frozen = access.compositeAccess();
+        pendingTags.forEach(Registry.PendingTags::apply);
+        pendingComponents.forEach(DataComponentInitializers.PendingComponents::apply);
+        RegistryAccess.Frozen frozen = fullRegistries.layers().compositeAccess();
 
         // Register recipes & unification data again
         long startTime = System.currentTimeMillis();
@@ -59,10 +69,13 @@ public abstract class ReloadableServerResourcesMixin {
             }
 
             @Override
-            public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
+            public void accept(@NotNull ResourceKey<Recipe<?>> id, @NotNull Recipe<?> recipe,
                                @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
-                GTDynamicDataPack.addRecipe(id, recipe, advancement, frozen);
+                GTDynamicDataPack.addRecipe(id.identifier(), recipe, advancement, frozen);
             }
+
+            @Override
+            public void includeRootAdvancement() {}
         });
         MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable, frozen);
         // Initialize dungeon loot additions

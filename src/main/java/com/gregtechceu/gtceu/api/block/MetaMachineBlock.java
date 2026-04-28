@@ -17,13 +17,16 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
+import com.gregtechceu.gtceu.api.misc.forge.EnergyStorageAdapters;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
+import com.gregtechceu.gtceu.api.misc.forge.ItemHandlerAdapters;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
@@ -32,7 +35,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -40,7 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,6 +54,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -64,6 +67,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.IInWorldGridNodeHost;
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,7 +137,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity player,
                             ItemStack pStack) {
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
                 machine.onMachinePlaced(player, pStack);
@@ -184,7 +188,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return state;
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext level, List<Component> tooltip,
                                 TooltipFlag flag) {
         definition.getTooltipBuilder().accept(stack, tooltip);
@@ -233,7 +236,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.modifyDrops(drops);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                    machine.saveToItem(drop, be.getLevel().registryAccess());
                     // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                     break;
                 }
@@ -242,7 +244,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return drops;
     }
 
-    @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
@@ -267,10 +268,10 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-                                              Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = MetaMachine.getMachine(level, pos);
-        if (machine == null) return ItemInteractionResult.FAIL;
+        if (machine == null) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
 
@@ -288,7 +289,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
 
         if (stack.is(GTItems.PORTABLE_SCANNER.get())) {
-            return getFromInteractionResult(stack.getItem().use(level, player, hand).getResult());
+            return getFromInteractionResult(stack.getItem().use(level, player, hand));
         }
 
         if (stack.getItem() instanceof IGTTool gtToolItem) {
@@ -299,7 +300,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
-        return shouldOpenUi ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.CONSUME;
+        return shouldOpenUi ? InteractionResult.TRY_WITH_EMPTY_HAND : InteractionResult.CONSUME;
     }
 
     @Override
@@ -309,7 +310,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (machine == null) return InteractionResult.PASS;
         if (machine instanceof IUIMachine uiMachine &&
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
-            uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit).result();
+            uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit);
         }
         return machine.onUse(new ExtendedUseOnContext(player, InteractionHand.MAIN_HAND, hit));
     }
@@ -338,7 +339,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return machine.getOutputDirectSignal(direction);
     }
 
-    @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine == null) return 0;
@@ -348,13 +348,13 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     /////////
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-                                boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, Orientation orientation,
+                                   boolean isMoving) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine != null) {
-            machine.onNeighborChanged(block, fromPos, isMoving);
+            machine.onNeighborChanged(block, pos, isMoving);
         }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        super.neighborChanged(state, level, pos, block, orientation, isMoving);
     }
 
     public static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
@@ -368,24 +368,17 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return -1;
     }
 
-    @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var machine = MetaMachine.getMachine(level, pos);
-        if (machine != null) {
-            return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        if (machine != null && level instanceof BlockAndTintGetter tintGetter) {
+            return machine.getBlockAppearance(state, tintGetter, pos, side, sourceState, sourcePos);
         }
         return super.getAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
-    public static ItemInteractionResult getFromInteractionResult(InteractionResult result) {
-        return switch (result) {
-            case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
-            case CONSUME -> ItemInteractionResult.CONSUME;
-            case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-            case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-            case FAIL -> ItemInteractionResult.FAIL;
-        };
+    public static InteractionResult getFromInteractionResult(InteractionResult result) {
+        return result == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
     }
 
     public RotationState getRotationState() {
@@ -467,27 +460,30 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             }
             return null;
         }, this);
-        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, blockEntity, side) -> {
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
-                return machine.getItemHandlerCap(side, true);
+                var itemHandler = machine.getItemHandlerCap(side, true);
+                return itemHandler == null ? null : ItemHandlerAdapters.toResourceHandler(itemHandler);
             }
             return null;
         }, this);
-        event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, pos, state, blockEntity, side) -> {
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
-                return machine.getFluidHandlerCap(side, true);
+                var fluidHandler = machine.getFluidHandlerCap(side, true);
+                return fluidHandler == null ? null : FluidHandlerAdapters.toResourceHandler(fluidHandler);
             }
             return null;
         }, this);
-        event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, pos, state, blockEntity, side) -> {
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
                 if (machine instanceof IEnergyStorage energyStorage) {
-                    return energyStorage;
+                    return EnergyStorageAdapters.toEnergyHandler(energyStorage);
                 }
                 var list = getCapabilitiesFromTraits(machine.getTraitHolder().getAllTraits(), side,
                         IEnergyStorage.class);
                 if (!list.isEmpty()) {
-                    return list.size() == 1 ? list.getFirst() : new EnergyStorageList(list);
+                    return EnergyStorageAdapters.toEnergyHandler(list.size() == 1 ? list.getFirst() :
+                            new EnergyStorageList(list));
                 }
             }
             return null;
@@ -583,7 +579,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 return (pLevel, pPos, pState, pTile) -> {
                     pTile.setChanged();
                     if (pTile instanceof MetaMachine metaMachine) {

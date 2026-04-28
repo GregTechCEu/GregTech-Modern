@@ -1,8 +1,14 @@
-env/
-venv/
-.env
-.venv
-[Ii]nclude
-[Ll]ib
-[Ss]cripts
-site
+# Local Python environments
+/env/
+/venv/
+/.env
+/.env/
+/.venv/
+/Include/
+/Lib/
+/Scripts/
+/site/
+
+# Python cache output
+__pycache__/
+*.py[cod]

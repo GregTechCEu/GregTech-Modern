@@ -1,25 +1,25 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Range;
 
 /**
- * An Item Decorator to render contained fluid icons for items with {@link Capabilities.FluidHandler#ITEM}.
+ * An Item Decorator to render contained fluid icons for items with {@link Capabilities.Fluid#ITEM}.
  * <p>
  * The fluid type count can be up to 4, set by {@link #setMaxRenderCount(int)}, 1 by default.
  *
@@ -30,18 +30,18 @@ public class GTTankItemFluidPreview implements IItemDecorator {
     public static final GTTankItemFluidPreview DRUM = new GTTankItemFluidPreview() {
 
         @Override
-        public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
+        public boolean render(GuiGraphicsExtractor GuiGraphicsExtractor, Font font, ItemStack itemStack, int x, int y) {
             if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.drum) return false;
-            return super.render(guiGraphics, font, itemStack, x, y);
+            return super.render(GuiGraphicsExtractor, font, itemStack, x, y);
         }
     };
 
     public static final GTTankItemFluidPreview QUANTUM_TANK = new GTTankItemFluidPreview() {
 
         @Override
-        public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
+        public boolean render(GuiGraphicsExtractor GuiGraphicsExtractor, Font font, ItemStack itemStack, int x, int y) {
             if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.quantumTank) return false;
-            return super.render(guiGraphics, font, itemStack, x, y);
+            return super.render(GuiGraphicsExtractor, font, itemStack, x, y);
         }
     };
 
@@ -77,18 +77,14 @@ public class GTTankItemFluidPreview implements IItemDecorator {
     }
 
     @Override
-    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-        if (isRequireShiftKeyDown() && !Screen.hasShiftDown()) {
+    public boolean render(GuiGraphicsExtractor GuiGraphicsExtractor, Font font, ItemStack itemStack, int x, int y) {
+        if (isRequireShiftKeyDown() && !Minecraft.getInstance().hasShiftDown()) {
             return false;
         }
 
-        IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandler = FluidHandlerAdapters.toFluidHandlerItem(itemStack);
         if (fluidHandler == null) {
             return false;
-        }
-
-        if (isRenderOnTopOfItem()) {
-            RenderSystem.disableDepthTest();
         }
 
         for (int index = 0, renderedCount = 0; index < fluidHandler.getTanks() &&
@@ -97,8 +93,10 @@ public class GTTankItemFluidPreview implements IItemDecorator {
             if (fluidInTank.isEmpty()) {
                 continue;
             }
-            DrawerHelper.drawFluidForGui(guiGraphics, fluidInTank,
-                    x + OFFSET[renderedCount][0], y + OFFSET[renderedCount][1], 8.0F, 8.0F);
+            var sprite = RenderUtil.FluidTextureType.STILL.map(fluidInTank);
+            int color = RenderUtil.getFluidTint(fluidInTank);
+            GuiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, sprite,
+                    (int) (x + OFFSET[renderedCount][0]), (int) (y + OFFSET[renderedCount][1]), 8, 8, color);
             renderedCount++;
         }
 

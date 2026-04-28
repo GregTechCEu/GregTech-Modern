@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -33,7 +34,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     // spotless:off
     public static final MapCodec<IntProviderFluidIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             FluidIngredient.CODEC.fieldOf("inner").forGetter(IntProviderFluidIngredient::getInner),
-            IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderFluidIngredient::getCountProvider),
+            IntProviders.CODEC.fieldOf("count_provider").forGetter(IntProviderFluidIngredient::getCountProvider),
             Codec.INT.optionalFieldOf("sampled_count", -1).forGetter(IRangedIngredient::getSampledCount)
     ).apply(instance, IntProviderFluidIngredient::new));
     // spotless:on
@@ -92,18 +93,15 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      *
      * @return a {@link FluidStack FluidStack[]} with amount {@link IntProviderFluidIngredient#sampledCount}
      */
-    @Override
     public Stream<FluidStack> generateStacks() {
         if (fluidStacks == null) {
             int cachedAmount = rollSampledCount(GTValues.RNG);
             if (cachedAmount == 0) {
                 return Stream.of(EMPTY_STACK_ARRAY);
             }
-            var innerStacks = inner.getStacks();
-            this.fluidStacks = new FluidStack[innerStacks.length];
-            for (int i = 0; i < fluidStacks.length; i++) {
-                fluidStacks[i] = innerStacks[i].copyWithAmount(cachedAmount);
-            }
+            this.fluidStacks = inner.fluids().stream()
+                    .map(fluid -> new FluidStack(fluid, cachedAmount))
+                    .toArray(FluidStack[]::new);
         }
         return Stream.of(fluidStacks);
     }
@@ -120,11 +118,9 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
             if (cachedAmount == 0) {
                 return EMPTY_STACK_ARRAY;
             }
-            var innerStacks = inner.getStacks();
-            this.fluidStacks = new FluidStack[innerStacks.length];
-            for (int i = 0; i < fluidStacks.length; i++) {
-                fluidStacks[i] = innerStacks[i].copyWithAmount(cachedAmount);
-            }
+            this.fluidStacks = inner.fluids().stream()
+                    .map(fluid -> new FluidStack(fluid, cachedAmount))
+                    .toArray(FluidStack[]::new);
         }
         return fluidStacks;
     }
@@ -132,6 +128,11 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     @Override
     public boolean test(@NotNull FluidStack stack) {
         return inner.test(stack);
+    }
+
+    @Override
+    protected Stream<net.minecraft.core.Holder<net.minecraft.world.level.material.Fluid>> generateFluids() {
+        return inner.fluids().stream();
     }
 
     @Override
@@ -149,12 +150,14 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      * Mainly used for things like Recipe provider simulations to see if there is enough tank space to handle
      * the recipe output.
      *
-     * @return a {@link FluidStack} with amount {@link IntProvider#getMaxValue()}
+     * @return a {@link FluidStack} with amount {@link IntProvider#maxInclusive()}
      */
     public @NotNull FluidStack getMaxSizeStack() {
-        FluidStack[] in = inner.getStacks();
+        FluidStack[] in = inner.fluids().stream()
+                .map(fluid -> new FluidStack(fluid, countProvider.maxInclusive()))
+                .toArray(FluidStack[]::new);
         if (in.length == 0) return FluidStack.EMPTY;
-        return in[0].copyWithAmount(countProvider.getMaxValue());
+        return in[0];
     }
 
     /**
@@ -189,8 +192,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
 
     public static boolean intProviderEqual(IntProvider o1, IntProvider o2) {
         if (o1 == o2) return true;
-        if (o1.getType() != o2.getType()) return false;
-        return o1.getMinValue() == o2.getMinValue() && o1.getMaxValue() == o2.getMaxValue();
+        return o1.equals(o2);
     }
 
     /**

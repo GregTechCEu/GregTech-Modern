@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -33,8 +34,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -51,6 +52,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -104,12 +106,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
-                                  BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
+                                     BlockPos pos, Direction direction, BlockPos neighborPos,
+                                     BlockState neighborState, RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
@@ -141,7 +144,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
                                        IPipeNode<PipeType, NodeDataType> pipeTile) {
-        if (worldIn.isClientSide) return;
+        if (worldIn.isClientSide()) return;
 
         PipeNet<NodeDataType> pipeNet = getWorldPipeNet((ServerLevel) worldIn).getNetFromPos(pos);
         if (pipeNet != null && pipeTile != null) {
@@ -250,28 +253,28 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-                                boolean isMoving) {
-        if (level.isClientSide) return;
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, Orientation orientation,
+                                   boolean isMoving) {
+        if (level.isClientSide()) return;
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
         if (pipeTile != null) {
-            Direction facing = GTUtil.getFacingToNeighbor(pos, fromPos);
-            if (facing == null) return;
             if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
-                boolean open = pipeTile.isConnected(facing);
-                boolean canConnect = pipeTile.getCoverContainer().getCoverAtSide(facing) != null ||
-                        this.canConnect(pipeTile, facing);
-                if (!open && canConnect && state.getBlock() != block)
-                    pipeTile.setConnection(facing, true, false);
-                if (open && !canConnect)
-                    pipeTile.setConnection(facing, false, false);
+                for (Direction facing : GTUtil.DIRECTIONS) {
+                    boolean open = pipeTile.isConnected(facing);
+                    boolean canConnect = pipeTile.getCoverContainer().getCoverAtSide(facing) != null ||
+                            this.canConnect(pipeTile, facing);
+                    if (!open && canConnect && state.getBlock() != block)
+                        pipeTile.setConnection(facing, true, false);
+                    if (open && !canConnect)
+                        pipeTile.setConnection(facing, false, false);
+                }
                 updateActiveNodeStatus(level, pos, pipeTile);
             }
-            pipeTile.getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
+            pipeTile.getCoverContainer().onNeighborChanged(block, pos, isMoving);
         }
+        super.neighborChanged(state, level, pos, block, orientation, isMoving);
     }
 
-    @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.hasBlockEntity() && !pState.is(pNewState.getBlock())) {
             pLevel.removeBlockEntity(pPos);
@@ -304,8 +307,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
     }
 
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-                                              Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hit) {
         BlockEntity entity = level.getBlockEntity(pos);
 
         PipeBlockEntity<?, ?> pipeBlockEntity = null;
@@ -313,7 +316,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             pipeBlockEntity = pbe;
         }
         if (pipeBlockEntity == null) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
@@ -326,12 +329,12 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 level.playSound(player, pos,
                         type.getPlaceSound(), SoundSource.BLOCKS,
                         (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-                return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 
         if (stack.getItem() instanceof PipeBlockItem itemPipe) {
-            BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
+            BlockPos offsetPos = pos.offset(hit.getDirection().getUnitVec3i());
             BlockState stateAtSide = level.getBlockState(offsetPos);
             if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
                 if (itemPipe.getBlock().pipeType == pipeType) {
@@ -340,7 +343,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     if (wasPlaced) {
                         pipeBlockEntity.setConnection(hit.getDirection(), true, false);
                     }
-                    return wasPlaced ? ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
+                    return wasPlaced ? InteractionResult.CONSUME : InteractionResult.FAIL;
                 }
             }
         }
@@ -357,11 +360,12 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             }
             return MetaMachineBlock.getFromInteractionResult((result.getSecond()));
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                                InsideBlockEffectApplier effectApplier, boolean bypassInsideEffects) {
         var pipeNode = getPipeTile(level, pos);
         if (pipeNode == null) {
             GTCEu.LOGGER.error("Pipe was null");
@@ -371,9 +375,10 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
                     .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
-            ((MaterialBlock) frameState.getBlock()).entityInside(frameState, level, pos, entity);
+            ((MaterialBlock) frameState.getBlock()).entityInside(frameState, level, pos, entity, effectApplier,
+                    bypassInsideEffects);
         }
-        super.entityInside(state, level, pos, entity);
+        super.entityInside(state, level, pos, entity, effectApplier, bypassInsideEffects);
     }
 
     @Override
@@ -453,7 +458,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getBlockEntityType()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 return (pLevel, pPos, pState, pTile) -> {
                     if (pTile instanceof IPipeNode<?, ?> pipeNode) {
                         pipeNode.serverTick();
@@ -468,12 +473,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var pipe = getPipeTile(level, pos);
         if (pipe != null) {
-            var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState,
-                    sourcePos);
+            var appearance = level instanceof BlockAndTintGetter tintGetter ?
+                    pipe.getCoverContainer().getBlockAppearance(state, tintGetter, pos, side, sourceState, sourcePos) :
+                    null;
             if (appearance != null) return appearance;
         }
         return super.getAppearance(state, level, pos, side, sourceState, sourcePos);
@@ -482,7 +488,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        BlockEntity tileEntity = context.contextMap().getOptional(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
             if (!pipeTile.getFrameMaterial().isNull()) {

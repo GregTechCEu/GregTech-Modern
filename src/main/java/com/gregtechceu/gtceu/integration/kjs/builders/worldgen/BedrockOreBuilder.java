@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.HolderSet;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -44,7 +45,11 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
         super(GTResourceLocation.implicitAsGtceu(id));
     }
 
-    public static BedrockOreBuilder from(BedrockOreDefinition definition, ResourceLocation id) {
+    public BedrockOreBuilder(Identifier id) {
+        this(GTResourceLocation.toResourceLocation(id));
+    }
+
+    public static BedrockOreBuilder from(BedrockOreDefinition definition, Identifier id) {
         var builder = new BedrockOreBuilder(id);
         builder.weight(definition.weight());
         builder.yield(definition.yield());

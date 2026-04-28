@@ -88,7 +88,6 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
 
     public static boolean canOpenOwnerMachine(Player player, MetaMachine machine) {
         if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
         var owner = machine.getOwner();
         if (owner == null) return true;
         return owner.isPlayerInTeam(player) || owner.isPlayerFriendly(player);
@@ -96,7 +95,6 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
 
     public static boolean canBreakOwnerMachine(Player player, MetaMachine machine) {
         if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
         var owner = machine.getOwner();
         if (owner == null) return true;
         return owner.isPlayerInTeam(player);

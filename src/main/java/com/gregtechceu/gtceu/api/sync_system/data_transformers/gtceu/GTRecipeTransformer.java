@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -35,9 +35,9 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
                     .decode(NbtOps.INSTANCE, NbtOps.INSTANCE.getMap(Objects.requireNonNull(recipeTag)).getOrThrow())
                     .result().orElse(null);
             if (result != null) {
-                result.id = ResourceLocation.parse(compoundTag.getString("id"));
-                result.parallels = compoundTag.contains("parallels") ? compoundTag.getInt("parallels") : 1;
-                result.ocLevel = compoundTag.getInt("ocLevel");
+                result.id = Identifier.parse(compoundTag.getStringOr("id", ""));
+                result.parallels = compoundTag.getIntOr("parallels", 1);
+                result.ocLevel = compoundTag.getIntOr("ocLevel", 0);
             }
         }
         return result;

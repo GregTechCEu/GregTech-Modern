@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -7,27 +8,33 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class BedrockFluidVeinSavedData extends SavedData {
 
     public static final int VEIN_CHUNK_SIZE = 8; // veins are 8x8 chunk squares
     public static final int MAXIMUM_VEIN_OPERATIONS = 100_000;
+    public static final SavedDataType<BedrockFluidVeinSavedData> TYPE = new SavedDataType<>(
+            GTCEu.id("gtceu_bedrock_fluid"),
+            BedrockFluidVeinSavedData::new,
+            BedrockFluidVeinSavedData::codec);
     public final HashMap<ChunkPos, FluidVeinWorldEntry> veinFluids = new HashMap<>();
 
     // runtime
@@ -36,11 +43,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockFluidVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage()
-                .computeIfAbsent(
-                        new SavedData.Factory<>(() -> new BedrockFluidVeinSavedData(serverLevel),
-                                (tag, provider) -> new BedrockFluidVeinSavedData(serverLevel, tag)),
-                        "gtceu_bedrock_fluid");
+        return serverLevel.getDataStorage().computeIfAbsent(TYPE);
     }
 
     public BedrockFluidVeinSavedData(ServerLevel serverLevel) {
@@ -49,26 +52,53 @@ public class BedrockFluidVeinSavedData extends SavedData {
 
     public BedrockFluidVeinSavedData(ServerLevel serverLevel, CompoundTag nbt) {
         this(serverLevel);
-        var list = nbt.getList("veinInfo", Tag.TAG_COMPOUND);
+        var list = nbt.getListOrEmpty("veinInfo");
         for (int i = 0; i < list.size(); ++i) {
-            CompoundTag compoundTag = list.getCompound(i);
-            var chunkPos = new ChunkPos(compoundTag.getLong("p"));
-            veinFluids.put(chunkPos, FluidVeinWorldEntry.readFromNBT(compoundTag.getCompound("d"),
+            CompoundTag compoundTag = list.getCompoundOrEmpty(i);
+            var chunkPos = ChunkPos.unpack(compoundTag.getLongOr("p", ChunkPos.INVALID_CHUNK_POS));
+            veinFluids.put(chunkPos, FluidVeinWorldEntry.readFromNBT(compoundTag.getCompoundOrEmpty("d"),
                     serverLevel.registryAccess()));
         }
     }
 
-    @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
+    public CompoundTag save(CompoundTag nbt) {
         var oilList = new ListTag();
         for (var entry : veinFluids.entrySet()) {
             var tag = new CompoundTag();
-            tag.putLong("p", entry.getKey().toLong());
+            tag.putLong("p", entry.getKey().pack());
             tag.put("d", entry.getValue().writeToNBT());
             oilList.add(tag);
         }
         nbt.put("veinInfo", oilList);
         return nbt;
+    }
+
+    private static Codec<BedrockFluidVeinSavedData> codec(ServerLevel serverLevel) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                RecordCodecBuilder.point(serverLevel),
+                VeinInfo.CODEC.listOf().fieldOf("vein_info").forGetter(BedrockFluidVeinSavedData::veinInfo))
+                .apply(instance, BedrockFluidVeinSavedData::new));
+    }
+
+    private BedrockFluidVeinSavedData(ServerLevel serverLevel, List<VeinInfo> veinInfo) {
+        this(serverLevel);
+        for (VeinInfo info : veinInfo) {
+            this.veinFluids.put(info.pos(), info.entry());
+        }
+    }
+
+    private List<VeinInfo> veinInfo() {
+        return this.veinFluids.entrySet().stream()
+                .map(entry -> new VeinInfo(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private record VeinInfo(ChunkPos pos, FluidVeinWorldEntry entry) {
+
+        private static final Codec<VeinInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ChunkPos.CODEC.fieldOf("pos").forGetter(VeinInfo::pos),
+                FluidVeinWorldEntry.CODEC.fieldOf("data").forGetter(VeinInfo::entry))
+                .apply(instance, VeinInfo::new));
     }
 
     public static int getVeinCoord(int chunkCoord) {
@@ -94,7 +124,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 var registry = serverLevel.registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)
+                        .lookupOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var fluidDefinition = holder.value();
@@ -115,7 +145,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
                 }
             }
 
-            var random = RandomSource.create(serverLevel.getSeed() ^ ChunkPos.asLong(chunkX, chunkZ));
+            var random = RandomSource.create(serverLevel.getSeed() ^ ChunkPos.pack(chunkX, chunkZ));
 
             int maximumYield = 0;
             if (definition != null) {
@@ -143,7 +173,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().lookupOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
                 if (!definition.canGenerate()) {
                     continue;
                 }

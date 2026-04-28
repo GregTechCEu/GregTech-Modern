@@ -1,0 +1,243 @@
+{
+    "model": {
+        "type": "minecraft:range_dispatch",
+        "entries": [
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/0"
+                },
+                "threshold": 0.0
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/1"
+                },
+                "threshold": 0.01
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/2"
+                },
+                "threshold": 0.02
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/3"
+                },
+                "threshold": 0.03
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/4"
+                },
+                "threshold": 0.04
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/5"
+                },
+                "threshold": 0.05
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/6"
+                },
+                "threshold": 0.06
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/7"
+                },
+                "threshold": 0.07
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/8"
+                },
+                "threshold": 0.08
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/9"
+                },
+                "threshold": 0.09
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/10"
+                },
+                "threshold": 0.1
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/11"
+                },
+                "threshold": 0.11
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/12"
+                },
+                "threshold": 0.12
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/13"
+                },
+                "threshold": 0.13
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/14"
+                },
+                "threshold": 0.14
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/15"
+                },
+                "threshold": 0.15
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/16"
+                },
+                "threshold": 0.16
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/17"
+                },
+                "threshold": 0.17
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/18"
+                },
+                "threshold": 0.18
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/19"
+                },
+                "threshold": 0.19
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/20"
+                },
+                "threshold": 0.2
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/21"
+                },
+                "threshold": 0.21
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/22"
+                },
+                "threshold": 0.22
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/23"
+                },
+                "threshold": 0.23
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/24"
+                },
+                "threshold": 0.24
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/25"
+                },
+                "threshold": 0.25
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/26"
+                },
+                "threshold": 0.26
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/27"
+                },
+                "threshold": 0.27
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/28"
+                },
+                "threshold": 0.28
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/29"
+                },
+                "threshold": 0.29
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/30"
+                },
+                "threshold": 0.3
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/31"
+                },
+                "threshold": 0.31
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "gtceu:item/programmed_circuit/32"
+                },
+                "threshold": 0.32
+            }
+        ],
+        "fallback": {
+            "type": "minecraft:model",
+            "model": "gtceu:item/programmed_circuit/0"
+        },
+        "property": "gtceu:circuit"
+    }
+}

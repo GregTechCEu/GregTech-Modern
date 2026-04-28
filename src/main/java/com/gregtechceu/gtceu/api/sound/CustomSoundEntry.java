@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 
 public class CustomSoundEntry extends SoundEntry {
 
-    protected List<ResourceLocation> variants;
+    protected List<Identifier> variants;
     protected SoundEvent event;
 
-    public CustomSoundEntry(ResourceLocation id, List<ResourceLocation> variants, String subtitle,
+    public CustomSoundEntry(Identifier id, List<Identifier> variants, String subtitle,
                             SoundSource category, int attenuationDistance) {
         super(id, subtitle, category, attenuationDistance);
         this.variants = variants;
@@ -50,7 +50,7 @@ public class CustomSoundEntry extends SoundEntry {
             s.addProperty("attenuation_distance", attenuationDistance);
         list.add(s);
 
-        for (ResourceLocation variant : variants) {
+        for (Identifier variant : variants) {
             s = new JsonObject();
             s.addProperty("name", variant.toString());
             s.addProperty("type", "file");

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -16,7 +16,7 @@ public final class DynamicRenderManager {
 
     public static final UnaryOperator<String> MODEL_ID_FORMATTER = "/block/machine/%s/dynamic_render"::formatted;
 
-    public static final Codec<DynamicRenderType<?, ?>> TYPE_CODEC = ResourceLocation.CODEC.flatXmap(
+    public static final Codec<DynamicRenderType<?, ?>> TYPE_CODEC = Identifier.CODEC.flatXmap(
             id -> {
                 var type = DynamicRenderManager.getType(id);
                 if (type != null) {
@@ -25,7 +25,7 @@ public final class DynamicRenderManager {
                     return DataResult.error(() -> "Dynamic render type with ID " + id + " does not exist");
                 }
             }, type -> {
-                ResourceLocation id = getId(type);
+                Identifier id = getId(type);
                 if (id != null) {
                     return DataResult.success(id);
                 } else {
@@ -33,10 +33,10 @@ public final class DynamicRenderManager {
                 }
             });
 
-    private static final BiMap<ResourceLocation, DynamicRenderType<?, ?>> DYNAMIC_RENDERER_TYPES = HashBiMap.create(5);
+    private static final BiMap<Identifier, DynamicRenderType<?, ?>> DYNAMIC_RENDERER_TYPES = HashBiMap.create(5);
 
     // spotless:off
-    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> DynamicRenderType<T, S> register(ResourceLocation id,
+    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> DynamicRenderType<T, S> register(Identifier id,
                                                                                                               DynamicRenderType<T, S> type) {
         if (DYNAMIC_RENDERER_TYPES.containsKey(id)) {
             throw new IllegalArgumentException("Cannot register multiple dynamic render types with the same id! Tried " + id);
@@ -46,11 +46,11 @@ public final class DynamicRenderManager {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> @Nullable DynamicRenderType<T, S> getType(ResourceLocation id) {
+    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> @Nullable DynamicRenderType<T, S> getType(Identifier id) {
         return (DynamicRenderType<T, S>) DYNAMIC_RENDERER_TYPES.get(id);
     }
 
-    public static @Nullable ResourceLocation getId(DynamicRenderType<?, ?> type) {
+    public static @Nullable Identifier getId(DynamicRenderType<?, ?> type) {
         return DYNAMIC_RENDERER_TYPES.inverse().get(type);
     }
     // spotless:on

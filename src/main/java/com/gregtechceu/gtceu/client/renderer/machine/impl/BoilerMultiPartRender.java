@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -13,19 +14,18 @@ import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
@@ -104,6 +104,9 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         if (this.casingModel == null) {
             this.casingModel = ModelUtils.getModelForState(casing);
         }
+        if (!(controller.getLevel() instanceof BlockAndTintGetter level)) {
+            return;
+        }
 
         BlockPos partPos = part.self().getBlockPos();
 
@@ -118,15 +121,15 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         if (belowControllerY == partY) {
             // firebox
             if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
-                emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
+                emitQuads(quads, fireboxActiveModel, level, partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {
-                emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
+                emitQuads(quads, fireboxIdleModel, level, partPos, fireboxIdle,
                         side, rand, modelData, renderType);
             }
         } else {
             // Not exactly one below the controller, so not a firebox
-            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
+            emitQuads(quads, casingModel, level, partPos, casing,
                     side, rand, modelData, renderType);
         }
     }

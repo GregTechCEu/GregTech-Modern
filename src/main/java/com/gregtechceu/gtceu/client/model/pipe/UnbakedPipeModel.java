@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
+import com.gregtechceu.gtceu.client.model.compat.ModelState;
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
@@ -36,39 +40,27 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides) {
         Map<Direction, BakedModel> bakedParts = new IdentityHashMap<>();
-        this.parts.forEach((direction, unbaked) -> {
-            bakedParts.put(direction, unbaked.bake(baker, spriteGetter, modelState));
-        });
         Map<Direction, BakedModel> bakedRestrictors = new IdentityHashMap<>();
-        this.restrictors.forEach((direction, unbaked) -> {
-            bakedRestrictors.put(direction, unbaked.bake(baker, spriteGetter, modelState));
-        });
         return new BakedPipeModel(bakedParts, bakedRestrictors);
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver, IGeometryBakingContext context) {
-        UnbakedModel missingModel = resolver.apply(ModelBakery.MISSING_MODEL_LOCATION);
+    public void resolveParents(Function<Identifier, UnbakedModel> resolver, IGeometryBakingContext context) {
+        UnbakedModel missingModel = resolver.apply(Identifier.withDefaultNamespace("missing"));
 
         Map<Direction, UnbakedModel> copy = new IdentityHashMap<>(this.parts);
         copy.forEach((side, variant) -> {
             if (variant == null || variant == MISSING_MARKER) {
                 // replace null & markers with the actual missing model
                 this.parts.put(side, missingModel);
-            } else {
-                variant.resolveParents(resolver);
-                this.parts.put(side, variant);
-            }
+            } else this.parts.put(side, variant);
         });
         copy = new IdentityHashMap<>(this.restrictors);
         copy.forEach((side, variant) -> {
             if (variant == null || variant == MISSING_MARKER) {
                 // replace null & markers with the actual missing model
                 this.restrictors.put(side, missingModel);
-            } else {
-                variant.resolveParents(resolver);
-                this.restrictors.put(side, variant);
-            }
+            } else this.restrictors.put(side, variant);
         });
     }
 }

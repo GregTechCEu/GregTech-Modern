@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
@@ -12,20 +12,12 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
@@ -45,10 +37,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     @Getter
     @Setter(onMethod_ = { @ApiStatus.Internal })
-    public GTRecipeSerializer serializer;
+    public RecipeSerializer<GTRecipe> serializer;
 
     @Getter
-    public final ResourceLocation registryName;
+    public final Identifier registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
             RecipeCapability.COMPARATOR);
@@ -60,9 +52,25 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     @Setter
     private ChanceBoostFunction chanceFunction = ChanceBoostFunction.NONE;
+    @Nullable
+    private transient GTRecipeTypeUI recipeUI;
     @Getter
-    @Setter
-    private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);
+    private final Map<Byte, Supplier<?>> slotOverlays = new HashMap<>();
+    @Getter
+    @Nullable
+    private Supplier<?> progressBar;
+    @Getter
+    private ProgressBarDirection progressBarDirection = ProgressBarDirection.LEFT_TO_RIGHT;
+    @Getter
+    @Nullable
+    private Supplier<?> steamProgressBar;
+    @Getter
+    private ProgressBarDirection steamMoveType = ProgressBarDirection.LEFT_TO_RIGHT;
+    @Getter
+    @Nullable
+    protected RecipeUIBuilder uiBuilder;
+    @Getter
+    protected int maxTooltips = 3;
     @Setter
     @Getter
     private GTRecipeType smallRecipeMap;
@@ -105,7 +113,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     private int minRecipeConditions = 0;
 
-    public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
+    public GTRecipeType(Identifier registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
         this.group = group;
         this.category = GTRecipeCategory.registerDefault(this);
@@ -145,34 +153,91 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, slotOverlay);
+    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, Supplier<?> slotOverlay) {
+        return this.setSlotOverlay(isOutput, isFluid, false, slotOverlay).setSlotOverlay(isOutput, isFluid, true,
+                slotOverlay);
+    }
+
+    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, Object slotOverlay) {
+        return setSlotOverlay(isOutput, isFluid, () -> slotOverlay);
+    }
+
+    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, Supplier<?> slotOverlay) {
+        this.slotOverlays.put(overlayKey(isOutput, isFluid, isLast), slotOverlay);
+        this.recipeUI = null;
         return this;
     }
 
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, isLast, slotOverlay);
+    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, Object slotOverlay) {
+        return setSlotOverlay(isOutput, isFluid, isLast, () -> slotOverlay);
+    }
+
+    public GTRecipeType setSlotOverlay(byte overlayKey, Supplier<?> slotOverlay) {
+        this.slotOverlays.put(overlayKey, slotOverlay);
+        this.recipeUI = null;
         return this;
     }
 
-    public GTRecipeType setProgressBar(ResourceTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setProgressBar(progressBar, moveType);
+    public GTRecipeType setProgressBar(Supplier<?> progressBar, ProgressBarDirection moveType) {
+        this.progressBar = progressBar;
+        this.progressBarDirection = moveType;
+        this.recipeUI = null;
         return this;
     }
 
-    public GTRecipeType setSteamProgressBar(SteamTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setSteamProgressBarTexture(progressBar);
-        this.recipeUI.setSteamMoveType(moveType);
+    public GTRecipeType setProgressBar(Object progressBar, ProgressBarDirection moveType) {
+        return setProgressBar(() -> progressBar, moveType);
+    }
+
+    public GTRecipeType setSteamProgressBar(Supplier<?> progressBar, ProgressBarDirection moveType) {
+        this.steamProgressBar = progressBar;
+        this.steamMoveType = moveType;
+        this.recipeUI = null;
         return this;
     }
 
-    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
-        this.recipeUI.setUiBuilder(uiBuilder);
+    public GTRecipeType setSteamProgressBar(Object progressBar, ProgressBarDirection moveType) {
+        return setSteamProgressBar(() -> progressBar, moveType);
+    }
+
+    public GTRecipeType setUiBuilder(RecipeUIBuilder uiBuilder) {
+        this.uiBuilder = uiBuilder;
+        this.recipeUI = null;
         return this;
+    }
+
+    public GTRecipeTypeUI getRecipeUI() {
+        if (recipeUI == null) {
+            recipeUI = new GTRecipeTypeUI(this);
+        }
+        return recipeUI;
+    }
+
+    public void setRecipeUI(GTRecipeTypeUI recipeUI) {
+        this.recipeUI = recipeUI;
+    }
+
+    public static byte overlayKey(boolean isOutput, boolean isFluid, boolean isLast) {
+        return (byte) ((isOutput ? 2 : 0) + (isFluid ? 1 : 0) + (isLast ? 4 : 0));
+    }
+
+    public enum ProgressBarDirection {
+        LEFT_TO_RIGHT,
+        RIGHT_TO_LEFT,
+        UP_TO_DOWN,
+        DOWN_TO_UP,
+        ALWAYS_FULL
+    }
+
+    @FunctionalInterface
+    public interface RecipeUIBuilder {
+
+        void accept(GTRecipe recipe, Object widgetGroup);
     }
 
     public GTRecipeType setMaxTooltips(int maxTooltips) {
-        this.recipeUI.setMaxTooltips(maxTooltips);
+        this.maxTooltips = maxTooltips;
+        this.recipeUI = null;
         return this;
     }
 
@@ -248,11 +313,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipeBuilder recipeBuilder(ResourceLocation id) {
+    public GTRecipeBuilder recipeBuilder(Identifier id) {
         return recipeBuilder.copy(id);
     }
 
-    public GTRecipeBuilder recipeBuilder(ResourceLocation id, Object... append) {
+    public GTRecipeBuilder recipeBuilder(Identifier id, Object... append) {
         if (append.length > 0) {
             String toAppend = Arrays.stream(append)
                     .map(Object::toString)
@@ -303,17 +368,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public RecipeHolder<GTRecipe> toGTRecipe(RecipeHolder<?> holder) {
-        var builder = recipeBuilder(holder.id());
-        Recipe<?> recipe = holder.value();
-        for (var ingredient : recipe.getIngredients()) {
-            builder.inputItems(new SizedIngredient(ingredient, 1));
-        }
-        builder.outputItems(recipe.getResultItem(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
-        if (recipe instanceof SmeltingRecipe smeltingRecipe) {
-            builder.duration(smeltingRecipe.getCookingTime());
-        }
+        var builder = recipeBuilder(holder.id().identifier());
         GTRecipe built = builder.build();
-        return new RecipeHolder<>(built.id, built);
+        return new RecipeHolder<>(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+                        built.id),
+                built);
     }
 
     public void buildRepresentativeRecipes() {

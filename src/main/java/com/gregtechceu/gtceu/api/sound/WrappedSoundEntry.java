@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +18,7 @@ public class WrappedSoundEntry extends SoundEntry {
     private final List<ConfiguredSoundEvent> wrappedEvents;
     private final List<WrappedSoundEntry.CompiledSoundEvent> compiledEvents;
 
-    public WrappedSoundEntry(ResourceLocation id, String subtitle,
+    public WrappedSoundEntry(Identifier id, String subtitle,
                              List<ConfiguredSoundEvent> wrappedEvents, SoundSource category, int attenuationDistance) {
         super(id, subtitle, category, attenuationDistance);
         this.wrappedEvents = wrappedEvents;
@@ -29,7 +29,7 @@ public class WrappedSoundEntry extends SoundEntry {
     public void prepare() {
         for (int i = 0; i < wrappedEvents.size(); i++) {
             ConfiguredSoundEvent wrapped = wrappedEvents.get(i);
-            ResourceLocation location = getIdOf(i);
+            Identifier location = getIdOf(i);
             compiledEvents.add(new WrappedSoundEntry.CompiledSoundEvent(SoundEvent.createVariableRangeEvent(location),
                     wrapped.volume(), wrapped.pitch()));
         }
@@ -47,7 +47,7 @@ public class WrappedSoundEntry extends SoundEntry {
         return compiledEvents.getFirst().event();
     }
 
-    protected ResourceLocation getIdOf(int i) {
+    protected Identifier getIdOf(int i) {
         return id.withPath(path -> i == 0 ? path : path + "_compounded_" + i);
     }
 
@@ -60,7 +60,7 @@ public class WrappedSoundEntry extends SoundEntry {
             JsonObject s = new JsonObject();
             s.addProperty("name", event.event()
                     .get()
-                    .getLocation()
+                    .location()
                     .toString());
             s.addProperty("type", "event");
             if (attenuationDistance != 0)

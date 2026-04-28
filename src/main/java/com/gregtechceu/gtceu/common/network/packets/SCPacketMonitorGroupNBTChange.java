@@ -10,21 +10,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 public class SCPacketMonitorGroupNBTChange implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("spacket_monitor_group_nbt_change");
+    public static final Identifier ID = GTCEu.id("spacket_monitor_group_nbt_change");
     public static final Type<SCPacketMonitorGroupNBTChange> TYPE = new Type<>(ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, SCPacketMonitorGroupNBTChange> CODEC = StreamCodec
             .ofMember(SCPacketMonitorGroupNBTChange::encode, SCPacketMonitorGroupNBTChange::new);
@@ -53,14 +50,12 @@ public class SCPacketMonitorGroupNBTChange implements CustomPacketPayload {
     }
 
     public void execute(IPayloadContext context) {
-        Level level = LogicalSidedProvider.CLIENTWORLD.get(context.flow().getReceptionSide())
-                .or(() -> {
-                    if (context.player() instanceof ServerPlayer player) {
-                        return Optional.ofNullable(player).map(ServerPlayer::level);
-                    }
-                    return Optional.empty();
-                })
-                .orElse(null);
+        Level level = null;
+        if (context.player() instanceof ServerPlayer player) {
+            level = player.level();
+        } else if (context.flow().getReceptionSide().isClient()) {
+            level = ClientCallWrapper.getClientLevel();
+        }
         if (level == null) return;
 
         MetaMachine machine = MetaMachine.getMachine(level, pos);

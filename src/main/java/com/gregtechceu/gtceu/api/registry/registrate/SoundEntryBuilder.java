@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
@@ -55,15 +55,15 @@ public class SoundEntryBuilder {
         }
     }
 
-    protected ResourceLocation id;
+    protected Identifier id;
     @Nullable
     protected String subtitle = "unregistered";
     protected SoundSource category = SoundSource.BLOCKS;
     protected List<ConfiguredSoundEvent> wrappedEvents;
-    protected List<ResourceLocation> variants;
+    protected List<Identifier> variants;
     protected int attenuationDistance;
 
-    public SoundEntryBuilder(ResourceLocation id) {
+    public SoundEntryBuilder(Identifier id) {
         wrappedEvents = new ArrayList<>();
         variants = new ArrayList<>();
         this.id = id;
@@ -93,7 +93,7 @@ public class SoundEntryBuilder {
         return addVariant(GTCEu.id(name));
     }
 
-    public SoundEntryBuilder addVariant(ResourceLocation id) {
+    public SoundEntryBuilder addVariant(Identifier id) {
         variants.add(id);
         return this;
     }

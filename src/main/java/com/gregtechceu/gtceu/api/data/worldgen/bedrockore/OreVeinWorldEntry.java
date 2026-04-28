@@ -6,15 +6,27 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class OreVeinWorldEntry {
+
+    public static final Codec<OreVeinWorldEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BedrockOreDefinition.CODEC.optionalFieldOf("vein").forGetter(entry -> Optional.ofNullable(
+                    entry.getDefinition())),
+            Codec.INT.fieldOf("ore_yield").forGetter(OreVeinWorldEntry::getOreYield),
+            Codec.INT.fieldOf("operations_remaining").forGetter(OreVeinWorldEntry::getOperationsRemaining))
+            .apply(instance, (definition, oreYield, operationsRemaining) -> new OreVeinWorldEntry(
+                    definition.orElse(null), oreYield, operationsRemaining)));
 
     @Nullable
     @Getter
@@ -48,7 +60,7 @@ public class OreVeinWorldEntry {
         tag.putInt("oreYield", oreYield);
         tag.putInt("operationsRemaining", operationsRemaining);
         if (definition != null && definition.unwrapKey().isPresent()) {
-            tag.putString("vein", definition.unwrapKey().get().location().toString());
+            tag.putString("vein", definition.unwrapKey().get().identifier().toString());
         }
         return tag;
     }
@@ -56,13 +68,13 @@ public class OreVeinWorldEntry {
     @NotNull
     public static OreVeinWorldEntry readFromNBT(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
         OreVeinWorldEntry info = new OreVeinWorldEntry();
-        info.oreYield = tag.getInt("oreYield");
-        info.operationsRemaining = tag.getInt("operationsRemaining");
+        info.oreYield = tag.getIntOr("oreYield", 0);
+        info.operationsRemaining = tag.getIntOr("operationsRemaining", 0);
 
         if (tag.contains("vein")) {
-            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
-            var maybeDef = provider.lookup(GTRegistries.BEDROCK_ORE_REGISTRY).get()
-                    .get(ResourceKey.create(GTRegistries.BEDROCK_ORE_REGISTRY, id));
+            Identifier id = Identifier.parse(tag.getStringOr("vein", ""));
+            var maybeDef = provider.lookup(GTRegistries.BEDROCK_ORE_REGISTRY)
+                    .flatMap(registry -> registry.get(ResourceKey.create(GTRegistries.BEDROCK_ORE_REGISTRY, id)));
             maybeDef.ifPresent(info::setDefinition);
         }
         return info;

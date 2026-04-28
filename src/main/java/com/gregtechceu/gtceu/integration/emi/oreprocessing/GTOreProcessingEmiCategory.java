@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.integration.emi.GTEMIPlugin;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -26,7 +26,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static final GTOreProcessingEmiCategory CATEGORY = new GTOreProcessingEmiCategory();
 
     public GTOreProcessingEmiCategory() {
-        super(GTCEu.id("ore_processing_diagram"), EmiStack.of(Items.RAW_IRON));
+        super(GTEmiIds.toResourceLocation("ore_processing_diagram"), EmiStack.of(Items.RAW_IRON));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

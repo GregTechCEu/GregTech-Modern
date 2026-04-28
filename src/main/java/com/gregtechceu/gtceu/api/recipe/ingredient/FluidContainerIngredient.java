@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -13,6 +16,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.VoidFluidHandler;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.mojang.serialization.MapCodec;
@@ -20,13 +24,13 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class FluidContainerIngredient implements ICustomIngredient {
 
     // spotless:off
-    public static final MapCodec<FluidContainerIngredient> CODEC = SizedFluidIngredient.NESTED_CODEC.fieldOf("fluid")
+    public static final MapCodec<FluidContainerIngredient> CODEC = SizedFluidIngredient.CODEC.fieldOf("fluid")
             .xmap(FluidContainerIngredient::new, FluidContainerIngredient::getFluid);
     // spotless:on
     @Getter
@@ -37,19 +41,24 @@ public class FluidContainerIngredient implements ICustomIngredient {
     }
 
     public FluidContainerIngredient(TagKey<Fluid> tag, int amount) {
-        this(SizedFluidIngredient.of(tag, amount));
+        this(new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(tag)), amount));
     }
 
-    private Stream<ItemStack> cachedStacks;
+    private List<ItemStack> cachedStacks;
 
     @NotNull
-    @Override
     public Stream<ItemStack> getItems() {
         if (cachedStacks == null)
-            cachedStacks = Arrays.stream(this.fluid.getFluids())
-                    .map(stack -> stack.getFluid().getBucket().getDefaultInstance())
-                    .filter(s -> !s.isEmpty());
-        return this.cachedStacks;
+            cachedStacks = this.fluid.ingredient().fluids().stream()
+                    .map(holder -> holder.value().getBucket().getDefaultInstance())
+                    .filter(s -> !s.isEmpty())
+                    .toList();
+        return this.cachedStacks.stream();
+    }
+
+    @Override
+    public Stream<Holder<Item>> items() {
+        return getItems().map(stack -> stack.getItem().builtInRegistryHolder());
     }
 
     @Override

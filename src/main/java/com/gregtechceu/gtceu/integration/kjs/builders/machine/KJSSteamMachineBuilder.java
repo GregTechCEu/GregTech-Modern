@@ -51,7 +51,8 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .tier(0)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
-                    .workableSteamHullModel(false, id.withPrefix("block/machines/"));
+                    .workableSteamHullModel(false,
+                            id.toIdentifier().withPrefix("block/machines/"));
 
             definition.apply(false, lowPressureBuilder);
             this.lpObject = lowPressureBuilder.register();
@@ -66,7 +67,8 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
-                    .workableSteamHullModel(true, id.withPrefix("block/machines/"));
+                    .workableSteamHullModel(true,
+                            id.toIdentifier().withPrefix("block/machines/"));
 
             definition.apply(true, highPressureBuilder);
             this.hpObject = highPressureBuilder.register();

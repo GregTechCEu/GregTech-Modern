@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.item.datacomponents.LargeItemContent;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
@@ -14,9 +15,13 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -25,8 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.serialization.MapCodec;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +69,7 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
             ItemStack itemStack = content.stored();
             long storedAmount = content.amount();
             float totalTick = Minecraft.getInstance().player.tickCount +
-                    Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+                    Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
             // Don't need to handle locked items here since they don't get saved to the item
             renderChestItem(poseStack, buffer, totalTick, Direction.NORTH,
                     itemStack, storedAmount, ItemStack.EMPTY, stack.is(CREATIVE_CHEST_ITEM));
@@ -92,7 +97,6 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
                                 ItemStack stored, long storedAmount, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
-        var itemRenderer = Minecraft.getInstance().getItemRenderer();
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
@@ -103,13 +107,50 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         poseStack.mulPose(new Quaternionf().rotateY(totalTick * Mth.TWO_PI / 80));
         poseStack.scale(0.6f, 0.6f, 0.6f);
 
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-                poseStack, buffer, Minecraft.getInstance().level,
+        renderItemStack(itemStack, poseStack, buffer,
                 Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
         poseStack.popPose();
 
         drawAmountText(poseStack, buffer, frontFacing, storedAmount, isCreative);
+    }
+
+    private static void renderItemStack(ItemStack itemStack, PoseStack poseStack, MultiBufferSource buffer, int seed) {
+        ItemStackRenderState renderState = new ItemStackRenderState();
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.getItemModelResolver().updateForTopItem(renderState, itemStack, ItemDisplayContext.FIXED,
+                minecraft.level, null, seed);
+
+        SubmitNodeStorage submitStorage = new SubmitNodeStorage();
+        renderState.submit(poseStack, submitStorage, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+        for (SubmitNodeCollection submits : submitStorage.getSubmitsPerOrder().values()) {
+            for (SubmitNodeStorage.ItemSubmit submit : submits.getItemSubmits()) {
+                renderSubmittedItem(buffer, submit);
+            }
+        }
+    }
+
+    private static void renderSubmittedItem(MultiBufferSource buffer, SubmitNodeStorage.ItemSubmit submit) {
+        QuadInstance quadInstance = new QuadInstance();
+        quadInstance.setLightCoords(submit.lightCoords());
+        quadInstance.setOverlayCoords(submit.overlayCoords());
+
+        for (BakedQuad quad : submit.quads()) {
+            var material = quad.materialInfo();
+            var renderType = material.itemRenderType();
+            quadInstance.setColor(getLayerColorSafe(submit.tintLayers(), material));
+
+            if (submit.foilType() != ItemStackRenderState.FoilType.NONE) {
+                ItemFeatureRenderer.getFoilBuffer(buffer, renderType, true, true)
+                        .putBakedQuad(submit.pose(), quad, quadInstance);
+            }
+
+            buffer.getBuffer(renderType).putBakedQuad(submit.pose(), quad, quadInstance);
+        }
+    }
+
+    private static int getLayerColorSafe(int[] tintLayers, BakedQuad.MaterialInfo material) {
+        return material.isTinted() && material.tintIndex() >= 0 && material.tintIndex() < tintLayers.length ?
+                tintLayers[material.tintIndex()] : -1;
     }
 
     public static void setupModelRotation(MetaMachine machine, PoseStack poseStack) {
@@ -126,7 +167,6 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
     public static void drawAmountText(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing,
                                       long storedAmount, boolean isCreative) {
         poseStack.pushPose();
-        RenderSystem.disableDepthTest();
         poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f,
                 frontFacing.getStepZ() * -1 / 16f);
 
@@ -154,9 +194,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         Font font = Minecraft.getInstance().font;
         font.drawInBatch(text, textX - font.getSplitter().stringWidth(text) / 2.0f, textY - font.lineHeight / 2.0f,
                 0xffffffff, false,
-                poseStack.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+                poseStack.last().pose(), buffer, Font.DisplayMode.SEE_THROUGH, 0, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
-        RenderSystem.enableDepthTest();
         poseStack.popPose();
     }
 }

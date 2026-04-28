@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.oreprocessing;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -21,6 +22,6 @@ public class GTOreProcessingDisplay extends ModularDisplay<WidgetGroup> {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(material.getResourceLocation());
+        return Optional.of(GTReiIds.toResourceLocation(material.getResourceLocation()));
     }
 }

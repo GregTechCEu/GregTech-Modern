@@ -4,18 +4,18 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,19 +29,19 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite emissiveSprite = null;
 
-    public SimpleCoverRenderer(ResourceLocation texture) {
+    public SimpleCoverRenderer(Identifier texture) {
         this(texture, null);
     }
 
-    public SimpleCoverRenderer(ResourceLocation texture, ResourceLocation emissiveTexture) {
-        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
+    public SimpleCoverRenderer(Identifier texture, Identifier emissiveTexture) {
+        ModelUtils.registerAtlasStitchedEventListener(false, TextureAtlas.LOCATION_BLOCKS, event -> {
             var atlas = event.getAtlas();
 
             sprite = atlas.getSprite(texture);
             if (emissiveTexture != null) {
                 emissiveSprite = atlas.getSprite(emissiveTexture);
             } else {
-                ResourceLocation emissiveTex = texture.withSuffix("_emissive");
+                Identifier emissiveTex = texture.withSuffix("_emissive");
                 if (atlas.getTextures().containsKey(emissiveTex)) {
                     emissiveSprite = atlas.getSprite(emissiveTex);
                 }

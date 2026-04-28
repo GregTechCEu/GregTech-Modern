@@ -1289,6 +1289,7 @@ public class LangHandler {
         provider.add("monitor.gui.title.config", "Config");
         provider.add("fluid.tile.lava", "Lava");
         provider.add("fluid.tile.water", "Water");
+        provider.add("key.category.gtceu.key_mapping.gregtech_ceu", "GregTech CEu");
         provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
         provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
@@ -2052,20 +2053,20 @@ public class LangHandler {
             Field field = LanguageProvider.class.getDeclaredField("data");
             field.setAccessible(true);
             // noinspection unchecked
-            Map<String, String> map = (Map<String, String>) field.get(provider);
-            map.put(key, value);
+            Map<String, Component> map = (Map<String, Component>) field.get(provider);
+            map.put(key, Component.literal(value));
 
             // upside-down lang mappings
             Field upsideDownField = RegistrateLangProvider.class.getDeclaredField("upsideDown");
             upsideDownField.setAccessible(true);
             // noinspection unchecked
-            map = (Map<String, String>) field.get(upsideDownField.get(provider));
+            map = (Map<String, Component>) field.get(upsideDownField.get(provider));
 
             Method toUpsideDown = RegistrateLangProvider.class.getDeclaredMethod("toUpsideDown",
                     String.class);
             toUpsideDown.setAccessible(true);
 
-            map.put(key, (String) toUpsideDown.invoke(provider, value));
+            map.put(key, Component.literal((String) toUpsideDown.invoke(provider, value)));
         } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Error replacing entry in datagen.", e);
         }

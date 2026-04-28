@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
@@ -21,15 +20,17 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof MEPatternBufferProxyPartMachine) {
             CompoundTag serverData = blockAccessor.getServerData();
-            if (!serverData.getBoolean("formed")) return;
-            if (!serverData.getBoolean("bound")) {
+            if (!serverData.getBooleanOr("formed", false)) return;
+            if (!serverData.getBooleanOr("bound", false)) {
                 iTooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
                 return;
             }
 
-            int[] pos = serverData.getIntArray("pos");
-            iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
-                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+            int[] pos = serverData.getIntArray("pos").orElse(new int[] { 0, 0, 0 });
+            if (pos.length >= 3) {
+                iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+            }
 
             MEPatternBufferProvider.readBufferTag(iTooltip, serverData);
         }
@@ -58,6 +59,6 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("me_pattern_buffer_proxy");
+        return GTJadeIds.toResourceLocation("me_pattern_buffer_proxy");
     }
 }

@@ -11,6 +11,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_emissive"
                 }
@@ -21,8 +29,16 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-                    "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_emissive"
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_paused",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_paused_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_paused",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_paused_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_paused",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_paused_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_paused",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_paused_emissive",
+                    "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_paused",
+                    "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_paused_emissive"
                 }
             }
         },
@@ -31,6 +47,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active_emissive"
                 }
@@ -41,6 +65,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active_emissive"
                 }
@@ -51,6 +83,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_emissive"
                 }
@@ -61,8 +101,16 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-                    "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_emissive"
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_paused",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_paused_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_paused",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_paused_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_paused",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_paused_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_paused",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_paused_emissive",
+                    "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_paused",
+                    "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_paused_emissive"
                 }
             }
         },
@@ -71,6 +119,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active_emissive"
                 }
@@ -81,6 +137,14 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+                    "overlay_back": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active",
+                    "overlay_back_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_back_active_emissive",
+                    "overlay_bottom": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active",
+                    "overlay_bottom_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_bottom_active_emissive",
+                    "overlay_front": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active",
+                    "overlay_front_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_front_active_emissive",
+                    "overlay_side": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active",
+                    "overlay_side_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_side_active_emissive",
                     "overlay_top": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active",
                     "overlay_top_emissive": "gtceu:block/multiblock/charcoal_pile_igniter/overlay_top_active_emissive"
                 }

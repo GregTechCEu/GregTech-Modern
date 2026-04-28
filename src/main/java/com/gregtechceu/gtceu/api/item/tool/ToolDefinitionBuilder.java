@@ -28,7 +28,7 @@ public class ToolDefinitionBuilder {
 
     private final List<IToolBehavior<?>> behaviours = new ArrayList<>();
     @Setter
-    private Tool tool = new Tool(Collections.emptyList(), 1.0F, 1);
+    private Tool tool = new Tool(Collections.emptyList(), 1.0F, 1, true);
     @Setter
     private int damagePerCraftingAction = 1;
     private boolean suitableForBlockBreaking = false;

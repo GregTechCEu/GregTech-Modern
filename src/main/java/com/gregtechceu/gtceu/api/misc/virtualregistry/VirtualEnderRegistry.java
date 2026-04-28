@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +23,10 @@ public class VirtualEnderRegistry extends SavedData {
     private static final String DATA_ID = GTCEu.MOD_ID + ".virtual_entry_data";
     private static final String PUBLIC_KEY = "Public";
     private static final String PRIVATE_KEY = "Private";
+    public static final SavedDataType<VirtualEnderRegistry> TYPE = new SavedDataType<>(
+            GTCEu.id("virtual_entry_data"),
+            serverLevel -> new VirtualEnderRegistry(),
+            VirtualEnderRegistry::codec);
     private static volatile VirtualEnderRegistry data;
     private final Map<UUID, VirtualRegistryMap> VIRTUAL_REGISTRIES = new HashMap<>();
 
@@ -33,12 +40,17 @@ public class VirtualEnderRegistry extends SavedData {
         if (data == null) {
             var server = GTCEu.getMinecraftServer();
             if (server != null) {
-                data = server.overworld().getDataStorage().computeIfAbsent(
-                        new SavedData.Factory<>(VirtualEnderRegistry::new, VirtualEnderRegistry::new), DATA_ID);
+                data = server.overworld().getDataStorage().computeIfAbsent(TYPE);
             }
         }
 
         return data;
+    }
+
+    private static Codec<VirtualEnderRegistry> codec(ServerLevel serverLevel) {
+        return CompoundTag.CODEC.xmap(
+                tag -> new VirtualEnderRegistry(tag, serverLevel.registryAccess()),
+                data -> data.save(new CompoundTag(), serverLevel.registryAccess()));
     }
 
     /**
@@ -101,19 +113,18 @@ public class VirtualEnderRegistry extends SavedData {
 
     public final void readFromNBT(HolderLookup.@NotNull Provider registries, CompoundTag nbt) {
         if (nbt.contains(PUBLIC_KEY)) {
-            VIRTUAL_REGISTRIES.put(null, new VirtualRegistryMap(registries, nbt.getCompound(PUBLIC_KEY)));
+            VIRTUAL_REGISTRIES.put(null, new VirtualRegistryMap(registries, nbt.getCompoundOrEmpty(PUBLIC_KEY)));
         }
         if (nbt.contains(PRIVATE_KEY)) {
-            CompoundTag privateEntries = nbt.getCompound(PRIVATE_KEY);
-            for (String owner : privateEntries.getAllKeys()) {
-                var privateMap = privateEntries.getCompound(owner);
+            CompoundTag privateEntries = nbt.getCompoundOrEmpty(PRIVATE_KEY);
+            for (String owner : privateEntries.keySet()) {
+                var privateMap = privateEntries.getCompoundOrEmpty(owner);
                 VIRTUAL_REGISTRIES.put(UUID.fromString(owner), new VirtualRegistryMap(registries, privateMap));
             }
         }
     }
 
     @NotNull
-    @Override
     public final CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         var privateTag = new CompoundTag();
         for (var owner : VIRTUAL_REGISTRIES.keySet()) {

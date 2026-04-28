@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.forge.EnergyStorageAdapters;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
+import com.gregtechceu.gtceu.api.misc.forge.ItemHandlerAdapters;
 import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
 import net.minecraft.core.BlockPos;
@@ -13,6 +16,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,17 +30,18 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
-        return itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        ItemAccess access = ItemAccess.forStack(itemStack);
+        return EnergyStorageAdapters.toEnergyStorage(access.getCapability(Capabilities.Energy.ITEM));
     }
 
     @Nullable
     public static IItemHandler getItemHandler(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+        return ItemHandlerAdapters.toItemHandler(level.getCapability(Capabilities.Item.BLOCK, pos, side));
     }
 
     @Nullable
     public static IFluidHandler getFluidHandler(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
+        return FluidHandlerAdapters.toFluidHandler(level.getCapability(Capabilities.Fluid.BLOCK, pos, side));
     }
 
     @Nullable
@@ -71,7 +76,7 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
+        return EnergyStorageAdapters.toEnergyStorage(level.getCapability(Capabilities.Energy.BLOCK, pos, side));
     }
 
     @Nullable

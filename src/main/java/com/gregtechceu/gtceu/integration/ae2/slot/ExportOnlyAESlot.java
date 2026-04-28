@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import appeng.api.stacks.GenericStack;
 import lombok.Getter;
@@ -94,10 +95,14 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(CONFIG_TAG)) {
-            this.config = GenericStack.readTag(provider, tag.getCompound(CONFIG_TAG));
+            this.config = tag.getCompound(CONFIG_TAG)
+                    .map(configTag -> GenericStack.readTag(provider, configTag))
+                    .orElse(null);
         }
         if (tag.contains(STOCK_TAG)) {
-            this.stock = GenericStack.readTag(provider, tag.getCompound(STOCK_TAG));
+            this.stock = tag.getCompound(STOCK_TAG)
+                    .map(stockTag -> GenericStack.readTag(provider, stockTag))
+                    .orElse(null);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,7 +13,7 @@ public class GTPoisonEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         if (livingEntity.getHealth() > 1.0F) {
             livingEntity.hurt(livingEntity.damageSources().source(NeoForgeMod.POISON_DAMAGE), amplifier / 10.0F);
             return true;

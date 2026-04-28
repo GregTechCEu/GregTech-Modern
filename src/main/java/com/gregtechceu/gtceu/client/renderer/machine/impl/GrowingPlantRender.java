@@ -11,29 +11,27 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.GrowingPlantBlockAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntegerPropertyAccessor;
 import com.gregtechceu.gtceu.core.mixins.StemBlockAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
@@ -66,18 +64,19 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
     private static final float EPSILON = 1e-25f;
 
     @Getter
-    private final List<Vector3f> offsets;
+    private final List<Vector3fc> offsets;
     @Getter
     private final Optional<Block> growingBlock;
     @Getter
     private final Optional<GrowthMode> growthMode;
 
-    public GrowingPlantRender(List<Vector3f> offsets) {
+    public GrowingPlantRender(List<? extends Vector3fc> offsets) {
         this(offsets, Optional.empty(), Optional.empty());
     }
 
-    public GrowingPlantRender(List<Vector3f> offsets, Optional<Block> growingBlock, Optional<GrowthMode> growthMode) {
-        this.offsets = offsets;
+    public GrowingPlantRender(List<? extends Vector3fc> offsets, Optional<Block> growingBlock,
+                              Optional<GrowthMode> growthMode) {
+        this.offsets = List.copyOf(offsets);
         this.growingBlock = growingBlock;
         this.growthMode = growthMode;
     }
@@ -98,7 +97,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
         List<BlockPos> positions = new ArrayList<>();
         Collections.addAll(positions, pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
-        for (Vector3f offset : this.offsets) {
+        for (Vector3fc offset : this.offsets) {
             positions.add(BlockPos.containing(offset.x(), offset.y(), offset.z()));
         }
 
@@ -145,9 +144,10 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         MetaMachine machine = rlm.self();
         Level level = machine.getLevel();
         assert level != null;
+        if (!(level instanceof BlockAndTintGetter tintGetter)) return;
         BlockPos machinePos = machine.getBlockPos();
 
-        var statesToDraw = mode.renderFunction().configureState(level, state, progress);
+        var statesToDraw = mode.renderFunction().configureState(tintGetter, state, progress);
 
         for (Vector3fc offset : this.getOffsets()) {
             poseStack.pushPose();
@@ -163,7 +163,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                 Vector3fc translation = toDraw.offset;
                 poseStack.translate(translation.x(), translation.y(), translation.z());
 
-                mode.renderFunction().renderGrowingBlock(level, pos, rotated, toDraw.state,
+                mode.renderFunction().renderGrowingBlock(tintGetter, pos, rotated, toDraw.state,
                         progress, bufferSource, poseStack);
 
                 poseStack.popPose();
@@ -209,8 +209,8 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                 allItemContents.addAll(recipe.getTickOutputContents(ItemRecipeCapability.CAP));
                 return allItemContents.stream()
                         .map(Content::getContent).map(ItemRecipeCapability.CAP::of)
-                        .map(SizedIngredient::getItems).flatMap(Arrays::stream)
-                        .map(ItemStack::getItem)
+                        .flatMap(ingredient -> ingredient.ingredient().items())
+                        .map(Holder::value)
                         .filter(BlockItem.class::isInstance)
                         .findFirst()
                         .map(BlockItem.class::cast)
@@ -252,6 +252,14 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
             }
         }
         return null;
+    }
+
+    private static int getMinValue(IntegerProperty property) {
+        return Collections.min(property.getPossibleValues());
+    }
+
+    private static int getMaxValue(IntegerProperty property) {
+        return Collections.max(property.getPossibleValues());
     }
 
     public record GrowthMode(String name,
@@ -396,9 +404,8 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                     BlockState headState = accessor.gtceu$getHeadBlock().defaultBlockState();
                     IntegerProperty ageProp = findAgeProperty(headState.getProperties());
                     if (ageProp != null) {
-                        IntegerPropertyAccessor prop = (IntegerPropertyAccessor) ageProp;
-                        int minValue = prop.gtceu$getMin();
-                        int maxValue = prop.gtceu$getMax();
+                        int minValue = getMinValue(ageProp);
+                        int maxValue = getMaxValue(ageProp);
 
                         int stage = GTMath.lerpInt(progress, minValue, maxValue + 1);
                         headState = headState.trySetValue(ageProp, Math.min(stage, maxValue));
@@ -413,7 +420,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                     BlockState headState = accessor.gtceu$getHeadBlock().defaultBlockState();
                     IntegerProperty ageProp = findAgeProperty(headState.getProperties());
                     if (ageProp != null) {
-                        headState = headState.trySetValue(ageProp, ((IntegerPropertyAccessor) ageProp).gtceu$getMax());
+                        headState = headState.trySetValue(ageProp, getMaxValue(ageProp));
                     }
                     if (headState.hasProperty(BlockStateProperties.BERRIES)) {
                         headState = headState.trySetValue(CaveVines.BERRIES, true);
@@ -442,9 +449,8 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
         TriFunction<IntegerProperty, OptionalInt, OptionalInt, ConfigureOnly> PROPERTY_FUNCTION_CACHE = GTMemoizer
                 .memoize((property, setMin, setMax) -> {
-                    IntegerPropertyAccessor accessor = (IntegerPropertyAccessor) property;
-                    final int presumedMinValue = accessor.gtceu$getMin();
-                    final int presumedMaxValue = accessor.gtceu$getMax();
+                    final int presumedMinValue = getMinValue(property);
+                    final int presumedMaxValue = getMaxValue(property);
                     return (level, state, progress) -> {
                         final int min = setMin.orElse(presumedMinValue);
                         final int betterMaxValue = state.getBlock() instanceof CropBlock crop ?

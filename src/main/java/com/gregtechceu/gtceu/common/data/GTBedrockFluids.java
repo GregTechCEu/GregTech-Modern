@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
@@ -42,7 +42,7 @@ public class GTBedrockFluids {
     public static final ResourceKey<BedrockFluidDefinition> NETHER_NATURAL_GAS = create(
             GTCEu.id("nether_natural_gas_deposit"));
 
-    public static ResourceKey<BedrockFluidDefinition> create(ResourceLocation id) {
+    public static ResourceKey<BedrockFluidDefinition> create(Identifier id) {
         var key = ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id);
         ALL_KEYS.add(key);
         return key;

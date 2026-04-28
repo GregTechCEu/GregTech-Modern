@@ -3,6 +3,10 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.google.common.base.Supplier;
@@ -123,13 +127,13 @@ public class BlastProperty implements IMaterialProperty {
     public enum GasTier {
 
         // Tiers used by GTCEu
-        LOW(() -> SizedFluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000)),
-        MID(() -> SizedFluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100)),
-        HIGH(() -> SizedFluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50)),
+        LOW(() -> sizedFluidTag(GTMaterials.Nitrogen.getFluidTag(), 1000)),
+        MID(() -> sizedFluidTag(GTMaterials.Helium.getFluidTag(), 100)),
+        HIGH(() -> sizedFluidTag(GTMaterials.Argon.getFluidTag(), 50)),
 
         // Tiers reserved for addons
-        HIGHER(() -> SizedFluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
-        HIGHEST(() -> SizedFluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
+        HIGHER(() -> sizedFluidTag(GTMaterials.Neon.getFluidTag(), 25)),
+        HIGHEST(() -> sizedFluidTag(GTMaterials.Krypton.getFluidTag(), 10));
 
         public static final GasTier[] VALUES = values();
         private Supplier<SizedFluidIngredient> fluid;
@@ -144,6 +148,10 @@ public class BlastProperty implements IMaterialProperty {
 
         public SizedFluidIngredient getFluid() {
             return fluid.get().copy();
+        }
+
+        private static SizedFluidIngredient sizedFluidTag(TagKey<Fluid> tag, int amount) {
+            return new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(tag)), amount);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface IResourceLocationExtensions {
 
@@ -8,5 +8,5 @@ public interface IResourceLocationExtensions {
 
     public void gtm$setImplicit(boolean implicit);
 
-    public ResourceLocation gtm$asNonImplicit();
+    public Identifier gtm$asNonImplicit();
 }

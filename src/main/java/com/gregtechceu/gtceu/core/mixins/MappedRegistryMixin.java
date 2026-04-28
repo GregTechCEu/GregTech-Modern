@@ -6,8 +6,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.BaseMappedRegistry;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -33,7 +33,7 @@ public abstract class MappedRegistryMixin<T> extends BaseMappedRegistry<T>
     private Reference2IntMap<T> toId;
     @Shadow
     @Final
-    private Map<ResourceLocation, Holder.Reference<T>> byLocation;
+    private Map<Identifier, Holder.Reference<T>> byLocation;
     @Shadow
     @Final
     private Map<ResourceKey<T>, Holder.Reference<T>> byKey;
@@ -60,7 +60,7 @@ public abstract class MappedRegistryMixin<T> extends BaseMappedRegistry<T>
     }
 
     @Override
-    public Map<ResourceLocation, Holder.Reference<T>> gtceu$getByLocation() {
+    public Map<Identifier, Holder.Reference<T>> gtceu$getByLocation() {
         return this.byLocation;
     }
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.rei;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -91,7 +90,7 @@ public class GTREIPlugin implements REIClientPlugin {
     @SuppressWarnings("UnstableApiUsage")
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            registry.group(GTCEu.id("tool/" + toolType.name),
+            registry.group(GTReiIds.toResourceLocation("tool/" + toolType.name),
                     Component.translatable("gtceu.tool.class." + toolType.name),
                     EntryIngredients.ofItemTag(toolType.itemTags.getFirst()));
             // EntryIngredients.ofItemStacks(GTItems.TOOL_ITEMS.column(toolType).values().stream().filter(Objects::nonNull).map(ItemProviderEntry::get).map(IGTTool::get).collect(Collectors.toSet()))
@@ -115,18 +114,19 @@ public class GTREIPlugin implements REIClientPlugin {
 
             var name = material.getName();
             var label = toUpperAllWords(name.replace("_", " "));
-            registry.group(GTCEu.id("ore/" + name), Component.translatable("tagprefix.stone", label),
+            registry.group(GTReiIds.toResourceLocation("ore/" + name), Component.translatable("tagprefix.stone", label),
                     EntryIngredients.ofItems(items));
         }
 
         List<EntryStack<dev.architectury.fluid.FluidStack>> stacks = new ArrayList<>(BuiltInRegistries.POTION.size());
-        BuiltInRegistries.POTION.holders().forEach(potion -> {
+        BuiltInRegistries.POTION.listElements().forEach(potion -> {
             FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
             stacks.add(EntryStacks
                     .of(dev.architectury.fluid.FluidStack.create(stack.getFluid(), stack.getAmount(),
                             stack.getComponentsPatch())));
         });
-        registry.group(GTCEu.id("potion_fluids"), Component.translatable("gtceu.rei.group.potion_fluids"), stacks);
+        registry.group(GTReiIds.toResourceLocation("potion_fluids"),
+                Component.translatable("gtceu.rei.group.potion_fluids"), stacks);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class GTREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerEntries(EntryRegistry registry) {
-        BuiltInRegistries.POTION.holders().forEach(potion -> {
+        BuiltInRegistries.POTION.listElements().forEach(potion -> {
             FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
             registry.addEntry(EntryStacks.of(
                     dev.architectury.fluid.FluidStack.create(stack.getFluid(), stack.getAmount(),

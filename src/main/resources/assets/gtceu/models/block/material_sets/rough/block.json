@@ -1,27 +1,7 @@
 {
-  "parent": "block/block",
-  "loader": "neoforge:composite",
+  "parent": "gtceu:block/cube_2_layer/tinted_both/all",
   "textures": {
-    "particle": "gtceu:block/material_sets/rough/block"
-  },
-  "children": {
-    "base": {
-      "parent": "gtceu:block/cube/tinted/all_0",
-      "render_type": "solid",
-      "textures": {
-        "all": "gtceu:block/material_sets/rough/block"
-      }
-    },
-    "secondary": {
-      "parent": "gtceu:block/cube/tinted/all",
-      "render_type": "translucent",
-      "textures": {
-        "all": "gtceu:block/material_sets/rough/block_secondary"
-      }
-    }
-  },
-  "item_render_order": [
-    "base",
-    "secondary"
-  ]
+    "bot_all": "gtceu:block/material_sets/rough/block",
+    "top_all": "gtceu:block/material_sets/rough/block_secondary"
+  }
 }

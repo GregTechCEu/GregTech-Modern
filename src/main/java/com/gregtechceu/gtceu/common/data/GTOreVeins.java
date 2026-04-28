@@ -11,8 +11,8 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -113,19 +113,22 @@ public class GTOreVeins {
         // map to average of min & max values.
         GTOreVeins.largestVeinSize = registry.stream()
                 .map(GTOreDefinition::clusterSize)
-                .mapToInt(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2)
+                .mapToInt(intProvider -> (intProvider.sample(net.minecraft.util.RandomSource.create()) +
+                        intProvider.sample(net.minecraft.util.RandomSource.create())) / 2)
                 .max()
                 .orElse(0);
 
         GTOreVeins.largestIndicatorOffset = registry.stream()
                 .flatMapToInt(definition -> definition.indicatorGenerators().stream()
                         .mapToInt(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
-                                (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))
+                                (int) Math.ceil(
+                                        definition.clusterSize().sample(net.minecraft.util.RandomSource.create()) /
+                                                2.0))))
                 .max()
                 .orElse(0);
     }
 
-    public static ResourceKey<GTOreDefinition> create(ResourceLocation id) {
+    public static ResourceKey<GTOreDefinition> create(Identifier id) {
         var key = ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
         ALL_KEYS.add(key);
         return key;

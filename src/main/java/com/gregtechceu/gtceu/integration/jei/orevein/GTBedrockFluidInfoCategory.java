@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<Holder<BedrockFluidDefinition>> {
 
     public final static RecipeType<Holder<BedrockFluidDefinition>> RECIPE_TYPE = new RecipeType(
-            GTCEu.id("bedrock_fluid_diagram"), Holder.class);
+            GTJeiIds.id("bedrock_fluid_diagram"), Holder.class);
     @Getter
     private final IDrawable background;
     @Getter
@@ -43,8 +43,8 @@ public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<Holder<B
 
     public static void registerRecipes(IRecipeRegistration registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        registry.addRecipes(RECIPE_TYPE, fluids.holders()
+                .lookupOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
+        registry.addRecipes(RECIPE_TYPE, fluids.listElements()
                 .filter(fluid -> fluid.value().canGenerate())
                 .<Holder<BedrockFluidDefinition>>map(Function.identity())
                 .toList());

@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
+import com.gregtechceu.gtceu.client.model.compat.ItemTransforms;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -35,12 +36,13 @@ public interface ItemBakedModel extends BakedModel {
 
     @Override
     default TextureAtlasSprite getParticleIcon() {
-        return ModelFactory.getBlockSprite(MissingTextureAtlasSprite.getLocation());
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                .getSprite(MissingTextureAtlasSprite.getLocation());
     }
 
     @Override
     default ItemTransforms getTransforms() {
-        return ModelFactory.MODEL_TRANSFORM_BLOCK;
+        return ItemTransforms.BLOCK;
     }
 
     @Override

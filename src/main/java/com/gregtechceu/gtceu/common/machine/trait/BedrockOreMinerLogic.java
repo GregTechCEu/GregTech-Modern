@@ -69,7 +69,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
+            WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.getRandom(), veinMaterials);
             if (wm == null) return null;
             Material material = wm.material();
             if (material.isNull()) return null;

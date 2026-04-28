@@ -7,17 +7,28 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class FluidVeinWorldEntry {
+
+    public static final Codec<FluidVeinWorldEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BedrockFluidDefinition.CODEC.optionalFieldOf("vein").forGetter(entry -> Optional.ofNullable(
+                    entry.getDefinition())),
+            Codec.INT.fieldOf("fluid_yield").forGetter(FluidVeinWorldEntry::getFluidYield),
+            Codec.INT.fieldOf("operations_remaining").forGetter(FluidVeinWorldEntry::getOperationsRemaining))
+            .apply(instance, (definition, fluidYield, operationsRemaining) -> new FluidVeinWorldEntry(
+                    definition.orElse(null), fluidYield, operationsRemaining)));
 
     @Setter
     private Supplier<@Nullable Holder<BedrockFluidDefinition>> definition;
@@ -57,7 +68,7 @@ public class FluidVeinWorldEntry {
 
         Holder<BedrockFluidDefinition> def = getDefinition();
         if (def != null && def.unwrapKey().isPresent()) {
-            tag.putString("vein", def.unwrapKey().get().location().toString());
+            tag.putString("vein", def.unwrapKey().get().identifier().toString());
         }
         return tag;
     }
@@ -65,11 +76,11 @@ public class FluidVeinWorldEntry {
     @NotNull
     public static FluidVeinWorldEntry readFromNBT(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
         FluidVeinWorldEntry info = new FluidVeinWorldEntry();
-        info.fluidYield = tag.getInt("fluidYield");
-        info.operationsRemaining = tag.getInt("operationsRemaining");
+        info.fluidYield = tag.getIntOr("fluidYield", 0);
+        info.operationsRemaining = tag.getIntOr("operationsRemaining", 0);
 
         if (tag.contains("vein")) {
-            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
+            Identifier id = Identifier.parse(tag.getStringOr("vein", ""));
             info.setDefinition(GTMemoizer.memoize(() -> {
                 return provider.lookup(GTRegistries.BEDROCK_FLUID_REGISTRY)
                         .flatMap(reg -> reg.get(ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id)))

@@ -18,6 +18,16 @@
             "apply": {
                 "model": "gtceu:block/treated_wood_fence_side",
                 "uvlock": true,
+                "y": 90
+            },
+            "when": {
+                "east": "true"
+            }
+        },
+        {
+            "apply": {
+                "model": "gtceu:block/treated_wood_fence_side",
+                "uvlock": true,
                 "y": 180
             },
             "when": {
@@ -32,16 +42,6 @@
             },
             "when": {
                 "west": "true"
-            }
-        },
-        {
-            "apply": {
-                "model": "gtceu:block/treated_wood_fence_side",
-                "uvlock": true,
-                "y": 90
-            },
-            "when": {
-                "east": "true"
             }
         }
     ]

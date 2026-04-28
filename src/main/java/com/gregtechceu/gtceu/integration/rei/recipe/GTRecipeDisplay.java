@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -29,7 +30,7 @@ public class GTRecipeDisplay extends ModularDisplay<WidgetGroup> {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(recipe.id);
+        return Optional.of(GTReiIds.toResourceLocation(recipe.id));
     }
 
     @Override

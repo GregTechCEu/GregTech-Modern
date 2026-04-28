@@ -62,7 +62,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
             MachineDefinition definition = this.object[tier];
             if (definition == null) continue;
 
-            final ResourceLocation id = definition.getId();
+            final ResourceLocation id = GTResourceLocation.toResourceLocation(definition.getId());
             generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
         }
     }
@@ -98,7 +98,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier));
 
-            builder.workableTieredHullModel(id.withPrefix("block/machines/"))
+            builder.workableTieredHullModel(this.id.toIdentifier().withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
             this.builders[tier] = builder;

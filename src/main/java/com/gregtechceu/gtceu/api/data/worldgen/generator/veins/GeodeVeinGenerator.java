@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -19,8 +18,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -61,7 +62,7 @@ import java.util.function.Predicate;
 public class GeodeVeinGenerator extends VeinGenerator {
 
     public static final Codec<Double> CHANCE_RANGE = Codec.doubleRange(0.0, 1.0);
-    public static final Codec<IntProvider> SIZE_PROVIDER = IntProvider.codec(1, 20);
+    public static final Codec<IntProvider> SIZE_PROVIDER = IntProviders.codec(1, 20);
     // spotless:off
     public static final MapCodec<GeodeVeinGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                     GeodeBlockSettings.CODEC.fieldOf("blocks").forGetter((config) -> config.geodeBlockSettings),
@@ -111,15 +112,15 @@ public class GeodeVeinGenerator extends VeinGenerator {
         RandomSource source = new LegacyRandomSource(0);
         return List.of(
                 new VeinEntry(geodeBlockSettings.fillingProvider
-                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                        .mapLeft(provider -> provider.getState(null, source, BlockPos.ZERO)), 1),
                 new VeinEntry(geodeBlockSettings.innerLayerProvider
-                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                        .mapLeft(provider -> provider.getState(null, source, BlockPos.ZERO)), 1),
                 new VeinEntry(geodeBlockSettings.alternateInnerLayerProvider
-                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                        .mapLeft(provider -> provider.getState(null, source, BlockPos.ZERO)), 1),
                 new VeinEntry(geodeBlockSettings.middleLayerProvider
-                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                        .mapLeft(provider -> provider.getState(null, source, BlockPos.ZERO)), 1),
                 new VeinEntry(geodeBlockSettings.outerLayerProvider
-                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1));
+                        .mapLeft(provider -> provider.getState(null, source, BlockPos.ZERO)), 1));
     }
 
     @Override
@@ -140,7 +141,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -4, 1.0);
         List<BlockPos> list2 = new ArrayList<>(3);
-        double wallDistance = (double) distributionSample / (double) this.outerWallDistance.getMaxValue();
+        double wallDistance = (double) distributionSample /
+                (double) this.outerWallDistance.sample(net.minecraft.util.RandomSource.create());
         double fillingSize = 1.0 / Math.sqrt(geodeLayerSettings.filling);
         double innerSize = 1.0 / Math.sqrt(geodeLayerSettings.innerLayer + wallDistance);
         double middleSize = 1.0 / Math.sqrt(geodeLayerSettings.middleLayer + wallDistance);
@@ -212,7 +214,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
             }
             if (s >= fillingSize) {
                 this.safeSetBlock(access, section, pos,
-                        getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos),
+                        getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, level, random, pos),
                         placementPredicate);
                 continue;
             }
@@ -221,11 +223,12 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 if (useAltLayer) {
                     this.safeSetBlock(access, section, pos,
                             getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings,
-                                    random, pos),
+                                    level, random, pos),
                             placementPredicate);
                 } else {
                     this.safeSetBlock(access, section, pos,
-                            getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos),
+                            getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, level,
+                                    random, pos),
                             placementPredicate);
                 }
                 if (this.placementsRequireLayer0Alternate && !useAltLayer ||
@@ -236,13 +239,14 @@ public class GeodeVeinGenerator extends VeinGenerator {
             }
             if (s >= middleSize) {
                 this.safeSetBlock(access, section, pos,
-                        getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos),
+                        getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, level, random,
+                                pos),
                         placementPredicate);
                 continue;
             }
             if (!(s >= outerSize)) continue;
             this.safeSetBlock(access, section, pos,
-                    getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos),
+                    getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, level, random, pos),
                     placementPredicate);
         }
         List<BlockState> innerPlacements = geodeBlockSettings.innerPlacements;
@@ -285,8 +289,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     protected BlockState getStateFromEither(Either<BlockStateProvider, Material> either, GeodeBlockSettings settings,
-                                            RandomSource random, BlockPos pos) {
-        return either.map(provider -> provider.getState(random, pos),
+                                            WorldGenLevel level, RandomSource random, BlockPos pos) {
+        return either.map(provider -> provider.getState(level, random, pos),
                 material -> ChemicalHelper.getBlock(settings.providerMaterialPrefix, material).defaultBlockState());
     }
 

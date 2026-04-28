@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.circuit;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -23,8 +24,9 @@ import java.util.Optional;
 public class GTProgrammedCircuitCategory extends
                                          ModularUIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
 
-    private static final ResourceLocation ID = GTCEu.id("programmed_circuit");
-    public static final CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier.of(ID);
+    private static final Identifier ID = GTReiIds.id("programmed_circuit");
+    public static final CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier
+            .of(GTReiIds.toResourceLocation(ID));
 
     @Getter
     private final Renderer icon;
@@ -64,7 +66,7 @@ public class GTProgrammedCircuitCategory extends
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return Optional.of(ID);
+            return Optional.of(GTReiIds.toResourceLocation(ID));
         }
     }
 }

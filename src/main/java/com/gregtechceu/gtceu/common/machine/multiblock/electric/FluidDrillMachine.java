@@ -21,7 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluid;
 
@@ -88,7 +88,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
                     .withStyle(ChatFormatting.GRAY);
             textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
                     .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+                            .withHoverEvent(new HoverEvent.ShowText(tooltip))));
         }
     }
 
@@ -133,7 +133,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get();
     }
 
-    public static ResourceLocation getBaseTexture(int tier) {
+    public static Identifier getBaseTexture(int tier) {
         if (tier == GTValues.MV)
             return GTCEu.id("block/casings/solid/machine_casing_solid_steel");
         if (tier == GTValues.HV)

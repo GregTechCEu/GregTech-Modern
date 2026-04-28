@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.RecipeBuilderUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -284,7 +285,8 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Special //
         ///////////////////////////////////////////////////
-        SpecialRecipeBuilder.special(FacadeCoverRecipe::new).save(provider, FacadeCoverRecipe.ID);
+        SpecialRecipeBuilder.special(FacadeCoverRecipe::new).save(provider,
+                RecipeBuilderUtil.recipeKey(FacadeCoverRecipe.ID));
     }
 
     private static void addDuctRecipes(@NotNull RecipeOutput provider, @NotNull Material material,

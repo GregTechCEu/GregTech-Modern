@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -30,7 +30,7 @@ public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
 
     public final static BiomeTagCondition INSTANCE = new BiomeTagCondition();
     @Getter
-    private TagKey<Biome> biome = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("dummy", ""));
+    private TagKey<Biome> biome = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("dummy", ""));
 
     public BiomeTagCondition(boolean isReverse, TagKey<Biome> biome) {
         super(isReverse);

@@ -27,8 +27,7 @@ public class CustomItemMapIngredient extends AbstractMapIngredient {
 
     public static List<AbstractMapIngredient> from(Ingredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
-        ItemStack[] stacks = ingredient.getItems();
-        for (ItemStack stack : stacks) {
+        for (ItemStack stack : ingredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
             ingredients.add(new CustomItemMapIngredient(stack, ingredient));
         }
         return ingredients;
@@ -48,10 +47,10 @@ public class CustomItemMapIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    for (ItemStack stack : other.ingredient.getItems()) {
+                    for (ItemStack stack : other.ingredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
                         if (!this.ingredient.test(stack)) return false;
                     }
-                    for (ItemStack stack : this.ingredient.getItems()) {
+                    for (ItemStack stack : this.ingredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
                         if (!other.ingredient.test(stack)) return false;
                     }
                     return true;
@@ -67,7 +66,7 @@ public class CustomItemMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        return stack.getItemHolder().hashCode() * 31;
+        return stack.getItem().builtInRegistryHolder().hashCode() * 31;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.journeymap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ButtonState;
+import com.gregtechceu.gtceu.integration.map.GTMapIds;
 
 import journeymap.api.v2.client.event.FullscreenDisplayEvent;
 import journeymap.api.v2.client.fullscreen.IThemeButton;
@@ -33,7 +34,7 @@ public class JourneymapEventListener {
         var buttons = new ArrayList<IThemeButton>(ButtonState.getAllButtons().size());
         for (var state : ButtonState.getAllButtons()) {
             buttons.add(display.addThemeToggleButton("gtceu.button." + state.name,
-                    GTCEu.id("textures/gui/widget/button_" + state.name + ".png"),
+                    GTMapIds.toResourceLocation("textures/gui/widget/button_" + state.name + ".png"),
                     state.enabled,
                     b -> {
                         ButtonState.toggleButton(state);
@@ -57,7 +58,7 @@ public class JourneymapEventListener {
         for (int i = 0; i < allButtons.size(); i++) {
             var state = allButtons.get(i);
             buttons[i] = builder.getThemeToggleButton("gtceu.button." + state.name,
-                    GTCEu.id("textures/gui/widget/button_" + state.name + ".png"),
+                    GTMapIds.toResourceLocation("textures/gui/widget/button_" + state.name + ".png"),
                     b -> {
                         ButtonState.toggleButton(state);
                         Arrays.stream(buttons).filter(btn -> btn.getToggled() || btn == b)

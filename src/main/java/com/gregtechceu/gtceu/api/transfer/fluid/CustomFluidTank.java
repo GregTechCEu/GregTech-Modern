@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
@@ -49,11 +53,13 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return writeToNBT(provider, new CompoundTag());
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        serialize(output);
+        return output.buildResult();
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        readFromNBT(provider, nbt);
+        deserialize(TagValueInput.create(ProblemReporter.DISCARDING, provider, nbt));
     }
 }

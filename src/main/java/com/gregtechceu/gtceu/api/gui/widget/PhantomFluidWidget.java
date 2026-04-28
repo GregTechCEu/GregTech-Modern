@@ -30,7 +30,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.stack.EmiStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -92,7 +91,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
     public static FluidStack drainFrom(Object ingredient) {
         if (ingredient instanceof Ingredient ing) {
-            var items = ing.getItems();
+            var items = ing.items().map(item -> new ItemStack(item)).toArray(ItemStack[]::new);
             if (items.length > 0) {
                 ingredient = items[0];
             }
@@ -218,7 +217,6 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
         Size size = getSize();
         FluidStack stack = phantomFluidGetter.get();
         if (stack != null && !stack.isEmpty()) {
-            RenderSystem.disableBlend();
 
             double progress = stack.getAmount() * 1.0 / Math.max(Math.max(stack.getAmount(), lastTankCapacity), 1);
             float drawnU = (float) fillDirection.getDrawnU(progress);
@@ -233,18 +231,13 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
                     (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
                     ((int) (height * drawnHeight)));
             if (showAmount) {
-                graphics.pose().pushPose();
-                graphics.pose().scale(0.5F, 0.5F, 1);
+                graphics.pose().scale(0.5F, 0.5F);
                 String s = TextFormattingUtil.formatLongToCompactStringBuckets(stack.getAmount(), 3) + "B";
                 Font fontRenderer = Minecraft.getInstance().font;
                 graphics.drawString(fontRenderer, s,
                         (int) ((pos.x + (size.width / 3f)) * 2 - fontRenderer.width(s) + 21),
                         (int) ((pos.y + (size.height / 3f) + 6) * 2), 0xFFFFFF, true);
-                graphics.pose().popPose();
             }
-
-            RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -13,12 +14,16 @@ import java.util.function.Consumer;
 
 public class ExistingSoundEntry extends SoundEntry {
 
-    protected List<ResourceLocation> variants;
+    protected List<Identifier> variants;
     protected SoundEvent event;
 
     public ExistingSoundEntry(SoundEvent event, SoundSource category) {
-        super(event.getLocation(), "", category, 0);
+        super(event.location(), "", category, 0);
         this.event = event;
+    }
+
+    public ExistingSoundEntry(Holder<SoundEvent> event, SoundSource category) {
+        this(event.value(), category);
     }
 
     @Override

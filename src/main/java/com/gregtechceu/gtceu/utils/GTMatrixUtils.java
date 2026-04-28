@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;

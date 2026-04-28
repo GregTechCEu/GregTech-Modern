@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +37,7 @@ import java.util.List;
 public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, IComponentCapability, IInteractionItem {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
-    public static final Codec<PlungerBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<PlungerBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, PlungerBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected PlungerBehavior() {/**/}
@@ -72,7 +74,7 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
         if (!drained.isEmpty()) {
             fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -90,17 +92,19 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.FluidHandler.ITEM,
-                (stack, unused) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, Integer.MAX_VALUE) {
+        event.registerItem(Capabilities.Fluid.ITEM,
+                (stack, unused) -> FluidHandlerAdapters.toResourceHandler(
+                        new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, Integer.MAX_VALUE) {
 
-                    @Override
-                    public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
-                        int result = resource.getAmount();
-                        if (result > 0) {
-                            ToolHelper.damageItem(this.getContainer(), null);
-                        }
-                        return result;
-                    }
-                }, item);
+                            @Override
+                            public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
+                                int result = resource.getAmount();
+                                if (result > 0) {
+                                    ToolHelper.damageItem(this.getContainer(), null);
+                                }
+                                return result;
+                            }
+                        }),
+                item);
     }
 }

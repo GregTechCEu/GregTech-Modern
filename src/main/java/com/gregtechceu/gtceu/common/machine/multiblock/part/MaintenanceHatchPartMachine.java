@@ -162,8 +162,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 return;
             }
             // Then for every slot in the player's main inventory, try to duct tape fix
-            for (int i = 0; i < entityPlayer.getInventory().items.size(); i++) {
-                if (consumeDuctTape(new InvWrapper(entityPlayer.getInventory()), i)) {
+            IItemHandler playerInventory = new InvWrapper(entityPlayer.getInventory());
+            for (int i = 0; i < playerInventory.getSlots(); i++) {
+                if (consumeDuctTape(playerInventory, i)) {
                     fixAllMaintenanceProblems();
                     setTaped(true);
                     return;
@@ -242,7 +243,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 }
 
                 // Then try all the remaining inventory slots
-                for (ItemStack itemStack : entityPlayer.getInventory().items) {
+                for (ItemStack itemStack : entityPlayer.getInventory().getNonEquipmentItems()) {
                     if (ToolHelper.is(itemStack, toolToMatch)) {
                         fixProblemWithTool(i, itemStack, entityPlayer);
 
@@ -253,7 +254,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 }
 
                 if (entityPlayer instanceof ServerPlayer player) {
-                    for (ItemStack stack : entityPlayer.getInventory().items) {
+                    for (ItemStack stack : entityPlayer.getInventory().getNonEquipmentItems()) {
                         if (ToolHelper.is(stack, toolToMatch)) {
                             setMaintenanceFixed(i);
                             ToolHelper.damageItem(stack, player, 1);
@@ -378,6 +379,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return Component
                 .translatable("gtceu.maintenance.configurable_" + type,
                         FormattingUtil.formatNumber2Places(multiplier.getAsDouble()))
-                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(tooltip)));
     }
 }

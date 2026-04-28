@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "gtceu:block/hpca_heat_sink_component"
+    }
+}

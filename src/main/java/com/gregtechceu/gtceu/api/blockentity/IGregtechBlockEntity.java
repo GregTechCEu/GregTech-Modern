@@ -41,7 +41,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     void markAsChanged();
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide();
     }
 
     default void scheduleRenderUpdate() {
@@ -49,7 +49,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         var level = getLevel();
         if (level != null) {
             var state = getLevel().getBlockState(pos);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 requestModelDataUpdate();
             } else {

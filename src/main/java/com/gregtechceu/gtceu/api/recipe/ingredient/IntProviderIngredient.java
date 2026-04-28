@@ -4,9 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
@@ -38,11 +41,11 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
     // spotless:off
     public static final MapCodec<IntProviderIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.fieldOf("inner").forGetter(IntProviderIngredient::getInner),
-            IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderIngredient::getCountProvider),
+            IntProviders.CODEC.fieldOf("count_provider").forGetter(IntProviderIngredient::getCountProvider),
             Codec.INT.optionalFieldOf("sampled_count", -1).forGetter(IRangedIngredient::getSampledCount)
     ).apply(instance, IntProviderIngredient::new));
     // spotless:on
-    public static final ResourceLocation TYPE = GTCEu.id("int_provider");
+    public static final Identifier TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
 
     @Getter
@@ -77,7 +80,7 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      * @param countProvider usually as {@link net.minecraft.util.valueproviders.UniformInt#of(int, int)}
      */
     public static IntProviderIngredient of(Ingredient inner, IntProvider countProvider) {
-        Preconditions.checkArgument(countProvider.getMinValue() >= 0,
+        Preconditions.checkArgument(countProvider.sample(net.minecraft.util.RandomSource.create()) >= 0,
                 "IntProviderIngredient must have a min value of at least 0.");
         return new IntProviderIngredient(inner, countProvider);
     }
@@ -87,7 +90,7 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      * @param countProvider usually as {@link net.minecraft.util.valueproviders.UniformInt#of(int, int)}
      */
     public static IntProviderIngredient of(ItemStack stack, IntProvider countProvider) {
-        Ingredient inner = Ingredient.of(stack);
+        Ingredient inner = Ingredient.of(stack.getItem());
         return of(inner, countProvider);
     }
 
@@ -108,18 +111,21 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
             if (cachedCount == 0) {
                 return EMPTY_STACK_ARRAY;
             }
-            var innerStacks = inner.getItems();
-            this.itemStacks = new ItemStack[innerStacks.length];
-            for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = innerStacks[i].copyWithCount(cachedCount);
-            }
+            this.itemStacks = inner.items()
+                    .map(ItemStack::new)
+                    .map(stack -> stack.copyWithCount(cachedCount))
+                    .toArray(ItemStack[]::new);
         }
         return itemStacks;
     }
 
-    @Override
     public Stream<ItemStack> getItems() {
         return Arrays.stream(getItemStacks());
+    }
+
+    @Override
+    public Stream<Holder<Item>> items() {
+        return inner.items();
     }
 
     @Override
@@ -152,11 +158,14 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      * Mainly used for things like Recipe provider simulations to see if there is enough inventory space to handle
      * the recipe output.
      * 
-     * @return a {@link ItemStack} with count {@link IntProvider#getMaxValue()}
+     * @return a {@link ItemStack} with count {@link IntProvider#maxInclusive()}
      */
     public @NotNull ItemStack getMaxSizeStack() {
-        if (inner.getItems().length == 0) return ItemStack.EMPTY;
-        else return inner.getItems()[0].copyWithCount(countProvider.getMaxValue());
+        return inner.items()
+                .map(ItemStack::new)
+                .findFirst()
+                .map(stack -> stack.copyWithCount(countProvider.maxInclusive()))
+                .orElse(ItemStack.EMPTY);
     }
 
     /**

@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,14 +70,14 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider registries, CompoundTag nbt) {
-        for (String entryTypeString : nbt.getAllKeys()) {
+        for (String entryTypeString : nbt.keySet()) {
             EntryTypes<?> type = EntryTypes.fromString(entryTypeString);
 
             if (type == null) continue;
 
-            CompoundTag virtualEntries = nbt.getCompound(entryTypeString);
-            for (String name : virtualEntries.getAllKeys()) {
-                CompoundTag entryTag = virtualEntries.getCompound(name);
+            CompoundTag virtualEntries = nbt.getCompoundOrEmpty(entryTypeString);
+            for (String name : virtualEntries.keySet()) {
+                CompoundTag entryTag = virtualEntries.getCompoundOrEmpty(name);
                 addEntry(name, type.createInstance(registries, entryTag));
             }
         }

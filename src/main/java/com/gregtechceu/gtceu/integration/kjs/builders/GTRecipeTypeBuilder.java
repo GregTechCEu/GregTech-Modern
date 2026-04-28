@@ -1,31 +1,24 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
@@ -35,11 +28,13 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     public transient String name, category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
-    private ProgressTexture progressBarTexture;
     @Nullable
-    private SteamTexture steamProgressBarTexture;
-    private ProgressTexture.FillDirection steamMoveType;
-    private transient final Byte2ObjectMap<IGuiTexture> slotOverlays;
+    private Supplier<?> progressBarTexture;
+    @Nullable
+    private Supplier<?> steamProgressBarTexture;
+    private GTRecipeType.ProgressBarDirection progressBarMoveType;
+    private GTRecipeType.ProgressBarDirection steamMoveType;
+    private transient final Map<Byte, Supplier<?>> slotOverlays;
     @Setter
     @Nullable
     protected transient SoundEntry sound;
@@ -56,7 +51,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     private transient Supplier<ItemStack> iconSupplier;
     @Nullable
     @Setter
-    protected transient BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
+    protected transient GTRecipeType.RecipeUIBuilder uiBuilder;
 
     public GTRecipeTypeBuilder(ResourceLocation i) {
         super(GTResourceLocation.implicitAsGtceu(i));
@@ -64,10 +59,10 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         category = "custom";
         maxInputs = new Object2IntOpenHashMap<>();
         maxOutputs = new Object2IntOpenHashMap<>();
-        progressBarTexture = new ProgressTexture();
         steamProgressBarTexture = null;
-        steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
-        slotOverlays = new Byte2ObjectArrayMap<>();
+        progressBarMoveType = GTRecipeType.ProgressBarDirection.LEFT_TO_RIGHT;
+        steamMoveType = GTRecipeType.ProgressBarDirection.LEFT_TO_RIGHT;
+        slotOverlays = new HashMap<>();
         this.sound = null;
         this.hasResearchSlot = false;
         this.maxTooltips = 4;
@@ -108,26 +103,26 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
-    public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
+    public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, Object slotOverlay) {
         return this.setSlotOverlay(isOutput, isFluid, false, slotOverlay).setSlotOverlay(isOutput, isFluid, true,
                 slotOverlay);
     }
 
     public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast,
-                                              IGuiTexture slotOverlay) {
-        this.slotOverlays.put((byte) ((isOutput ? 2 : 0) + (isFluid ? 1 : 0) + (isLast ? 4 : 0)), slotOverlay);
+                                              Object slotOverlay) {
+        this.slotOverlays.put(GTRecipeType.overlayKey(isOutput, isFluid, isLast), () -> slotOverlay);
         return this;
     }
 
-    public GTRecipeTypeBuilder setProgressBar(ResourceTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.progressBarTexture = new ProgressTexture(progressBar.getSubTexture(0, 0, 1, 0.5),
-                progressBar.getSubTexture(0, 0.5, 1, 0.5)).setFillDirection(moveType);
+    public GTRecipeTypeBuilder setProgressBar(Object progressBar, Object moveType) {
+        this.progressBarTexture = () -> progressBar;
+        this.progressBarMoveType = parseDirection(moveType);
         return this;
     }
 
-    public GTRecipeTypeBuilder setSteamProgressBar(SteamTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.steamProgressBarTexture = progressBar;
-        this.steamMoveType = moveType;
+    public GTRecipeTypeBuilder setSteamProgressBar(Object progressBar, Object moveType) {
+        this.steamProgressBarTexture = () -> progressBar;
+        this.steamMoveType = parseDirection(moveType);
         return this;
     }
 
@@ -141,10 +136,13 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
-        type.getRecipeUI().getSlotOverlays().putAll(slotOverlays);
-        type.getRecipeUI().setProgressBarTexture(progressBarTexture);
-        type.getRecipeUI().setSteamProgressBarTexture(steamProgressBarTexture);
-        type.getRecipeUI().setSteamMoveType(steamMoveType);
+        slotOverlays.forEach(type::setSlotOverlay);
+        if (progressBarTexture != null) {
+            type.setProgressBar(progressBarTexture, progressBarMoveType);
+        }
+        if (steamProgressBarTexture != null) {
+            type.setSteamProgressBar(steamProgressBarTexture, steamMoveType);
+        }
         type.setSound(sound);
         type.setHasResearchSlot(hasResearchSlot);
         type.setMaxTooltips(maxTooltips);
@@ -152,5 +150,15 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setIconSupplier(iconSupplier);
         type.setUiBuilder(uiBuilder);
         return type;
+    }
+
+    private static GTRecipeType.ProgressBarDirection parseDirection(Object moveType) {
+        if (moveType instanceof GTRecipeType.ProgressBarDirection direction) {
+            return direction;
+        }
+        if (moveType instanceof Enum<?> direction) {
+            return GTRecipeType.ProgressBarDirection.valueOf(direction.name());
+        }
+        return GTRecipeType.ProgressBarDirection.valueOf(String.valueOf(moveType));
     }
 }

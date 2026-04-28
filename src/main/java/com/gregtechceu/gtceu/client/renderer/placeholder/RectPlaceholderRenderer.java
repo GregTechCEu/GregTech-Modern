@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.placeholder;
 
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.renderer.LightTexture;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 
@@ -21,9 +21,9 @@ public class RectPlaceholderRenderer implements IPlaceholderRenderer {
         poseStack.pushPose();
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
-        float minX = 0, maxX = tag.getFloat("width");
-        float minY = 0, maxY = tag.getFloat("height");
-        int color = tag.getInt("color");
+        float minX = 0, maxX = tag.getFloatOr("width", 0.0f);
+        float minY = 0, maxY = tag.getFloatOr("height", 0.0f);
+        int color = tag.getIntOr("color", 0);
 
         consumer.addVertex(pose, minX, maxY, 0).setColor(color).setLight(LightTexture.FULL_BRIGHT);
         consumer.addVertex(pose, maxX, maxY, 0).setColor(color).setLight(LightTexture.FULL_BRIGHT);

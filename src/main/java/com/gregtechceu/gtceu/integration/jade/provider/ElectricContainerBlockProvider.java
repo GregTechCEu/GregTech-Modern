@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,8 +47,8 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.contains("Energy") && !capData.contains("MaxEnergy")) return;
 
-        var energy = new BigInteger(capData.getByteArray("Energy"));
-        var maxEnergy = new BigInteger(capData.getByteArray("MaxEnergy"));
+        var energy = capData.getByteArray("Energy").map(BigInteger::new).orElse(BigInteger.ZERO);
+        var maxEnergy = capData.getByteArray("MaxEnergy").map(BigInteger::new).orElse(BigInteger.ZERO);
         if (maxEnergy.compareTo(BigInteger.ZERO) <= 0) return;
         var threshold = BigInteger.valueOf((long) 1e12);
         var energyStr = FormattingUtil.formatNumberOrSic(energy, threshold);

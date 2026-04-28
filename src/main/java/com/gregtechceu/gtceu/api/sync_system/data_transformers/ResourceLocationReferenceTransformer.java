@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -10,11 +10,11 @@ import java.util.function.Function;
 
 public class ResourceLocationReferenceTransformer<T> implements ValueTransformer<T> {
 
-    private final Function<T, ResourceLocation> getResourceLocation;
-    private final Function<ResourceLocation, T> loadFromLocation;
+    private final Function<T, Identifier> getResourceLocation;
+    private final Function<Identifier, T> loadFromLocation;
 
-    public ResourceLocationReferenceTransformer(Function<T, ResourceLocation> getResourceLocation,
-                                                Function<ResourceLocation, T> loadFromLocation) {
+    public ResourceLocationReferenceTransformer(Function<T, Identifier> getResourceLocation,
+                                                Function<Identifier, T> loadFromLocation) {
         this.getResourceLocation = getResourceLocation;
         this.loadFromLocation = loadFromLocation;
     }
@@ -26,8 +26,8 @@ public class ResourceLocationReferenceTransformer<T> implements ValueTransformer
 
     @Override
     public @Nullable T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
-        ResourceLocation location = ResourceLocation
-                .tryParse(ValueTransformer.assertTagType(StringTag.class, tag, context).getAsString());
+        Identifier location = Identifier
+                .tryParse(ValueTransformer.assertTagType(StringTag.class, tag, context).value());
         if (location == null) return null;
         return loadFromLocation.apply(location);
     }

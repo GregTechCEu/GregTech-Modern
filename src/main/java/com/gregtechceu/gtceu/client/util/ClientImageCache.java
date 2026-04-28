@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -45,16 +45,16 @@ public class ClientImageCache {
                 if (!downloading) {
                     downloading = true;
                     GTCEu.LOGGER.debug("Requesting image {}", url);
-                    PacketDistributor.sendToServer(new CPacketImageRequest(url));
+                    ClientPacketDistributor.sendToServer(new CPacketImageRequest(url));
                 }
                 return LOADING_TEXTURE_MARKER;
             }));
 
-    private static @NotNull ResourceLocation getUrlTextureId(String url) {
+    private static @NotNull Identifier getUrlTextureId(String url) {
         return GTCEu.id("textures/central_monitor/image_" + url.hashCode());
     }
 
-    public static @Nullable ResourceLocation getOrLoadTexture(String url) {
+    public static @Nullable Identifier getOrLoadTexture(String url) {
         AbstractTexture texture = null;
 
         try {
@@ -96,7 +96,7 @@ public class ClientImageCache {
     private static void saveTexture(String url, byte[] imageBytes) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocateDirect(imageBytes.length);
         buffer.put(imageBytes).flip();
-        DynamicTexture texture = new DynamicTexture(NativeImage.read(buffer));
+        DynamicTexture texture = new DynamicTexture(() -> "GTCEu central monitor image", NativeImage.read(buffer));
 
         Minecraft.getInstance().getTextureManager().register(getUrlTextureId(url), texture);
 

@@ -57,7 +57,7 @@ public final class ClassSyncData {
 
         Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
 
-        for (Method method : clazz.getDeclaredMethods()) {
+        for (Method method : getDeclaredMethods(clazz)) {
             ClientFieldChangeListener listener = method.getAnnotation(ClientFieldChangeListener.class);
             if (listener == null) continue;
 
@@ -112,6 +112,24 @@ public final class ClassSyncData {
             clientSyncFields.addAll(parentHandles.clientSyncFields);
             serverSaveFields.addAll(parentHandles.serverSaveFields);
         }
+    }
+
+    private static Method[] getDeclaredMethods(Class<?> clazz) {
+        try {
+            return clazz.getDeclaredMethods();
+        } catch (NoClassDefFoundError e) {
+            if (!isOptionalClassMissing(e)) {
+                throw e;
+            }
+            GTCEu.LOGGER.debug("Sync: Skipping change-listener scan for {} because optional class {} is absent",
+                    clazz.getName(), e.getMessage());
+            return new Method[0];
+        }
+    }
+
+    private static boolean isOptionalClassMissing(NoClassDefFoundError e) {
+        String missingClass = e.getMessage();
+        return missingClass != null && missingClass.startsWith("com/lowdragmc/lowdraglib/");
     }
 
     /**

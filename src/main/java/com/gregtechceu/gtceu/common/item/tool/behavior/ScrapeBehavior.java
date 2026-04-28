@@ -25,6 +25,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ import java.util.List;
 public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
 
     public static final ScrapeBehavior INSTANCE = new ScrapeBehavior();
-    public static final Codec<ScrapeBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<ScrapeBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, ScrapeBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected ScrapeBehavior() {/**/}
@@ -79,7 +80,7 @@ public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
 
         if (scraped) {
             level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

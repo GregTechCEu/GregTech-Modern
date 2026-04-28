@@ -14,12 +14,12 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.core.mixins.PotionBrewingAccessor;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -229,9 +229,9 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
         String name;
         PotionContents output = brew.getOutput().get(DataComponents.POTION_CONTENTS);
         if (output != PotionContents.EMPTY) {
-            name = Potion.getName(output.potion(), "");
+            name = getPotionName(output.potion());
         } else {
-            name = toFluid.getFluid().builtInRegistryHolder().key().location().getPath();
+            name = toFluid.getFluid().builtInRegistryHolder().key().identifier().getPath();
         }
 
         return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name)
@@ -246,7 +246,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
     private static @NotNull GTRecipe vanillaPotionRecipe(PotionBrewing.Mix<Potion> mix, FluidStack fromFluid) {
         FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to(), PotionFluidHelper.MB_PER_RECIPE);
         return GTRecipeTypes.BREWING_RECIPES
-                .recipeBuilder("potion_vanilla_" + Potion.getName(Optional.of(mix.to()), ""))
+                .recipeBuilder("potion_vanilla_" + getPotionName(Optional.of(mix.to())))
                 .inputItems(mix.ingredient())
                 .inputFluids(fromFluid)
                 .outputFluids(toFluid)
@@ -291,7 +291,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to(), PotionFluidHelper.MB_PER_RECIPE);
 
             GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES
-                    .recipeBuilder("potion_vanilla_" + Potion.getName(Optional.of(mix.to()), "") + "_" + index++)
+                    .recipeBuilder("potion_vanilla_" + getPotionName(Optional.of(mix.to())) + "_" + index++)
                     .inputItems(mix.ingredient())
                     .inputFluids(fromFluid)
                     .outputFluids(toFluid)
@@ -315,13 +315,13 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(impl.getOutput(),
                     PotionFluidHelper.MB_PER_RECIPE);
 
-            String name = toFluid.getFluid().builtInRegistryHolder().key().location().getPath();
+            String name = toFluid.getFluid().builtInRegistryHolder().key().identifier().getPath();
 
             Optional<Holder<Potion>> output = impl.getOutput()
                     .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
                     .potion();
             if (output.isPresent()) {
-                name = Potion.getName(output, "");
+                name = getPotionName(output);
             }
 
             GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name + "_" + index++)
@@ -343,5 +343,9 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
         } else {
             return GTCEu.getMinecraftServer().potionBrewing();
         }
+    }
+
+    private static String getPotionName(Optional<Holder<Potion>> potion) {
+        return potion.map(holder -> holder.value().name()).orElse("empty");
     }
 }

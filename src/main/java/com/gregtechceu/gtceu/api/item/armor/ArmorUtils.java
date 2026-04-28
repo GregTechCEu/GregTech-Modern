@@ -7,13 +7,15 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -62,8 +64,9 @@ public class ArmorUtils {
         List<Pair<NonNullList<ItemStack>, IntList>> inventorySlotMap = new ArrayList<>();
 
         IntList openMainSlots = new IntArrayList();
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            ItemStack current = player.getInventory().items.get(i);
+        NonNullList<ItemStack> mainItems = player.getInventory().getNonEquipmentItems();
+        for (int i = 0; i < mainItems.size(); i++) {
+            ItemStack current = mainItems.get(i);
             IElectricItem item = GTCapabilityHelper.getElectricItem(current);
             if (item == null) continue;
 
@@ -73,12 +76,17 @@ public class ArmorUtils {
         }
 
         if (!openMainSlots.isEmpty()) {
-            inventorySlotMap.add(Pair.of(player.getInventory().items, openMainSlots));
+            inventorySlotMap.add(Pair.of(mainItems, openMainSlots));
         }
 
+        NonNullList<ItemStack> armorItems = NonNullList.create();
+        armorItems.add(player.getItemBySlot(EquipmentSlot.FEET));
+        armorItems.add(player.getItemBySlot(EquipmentSlot.LEGS));
+        armorItems.add(player.getItemBySlot(EquipmentSlot.CHEST));
+        armorItems.add(player.getItemBySlot(EquipmentSlot.HEAD));
         IntList openArmorSlots = new IntArrayList();
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
-            ItemStack current = player.getInventory().armor.get(i);
+        for (int i = 0; i < armorItems.size(); i++) {
+            ItemStack current = armorItems.get(i);
             IElectricItem item = GTCapabilityHelper.getElectricItem(current);
             if (item == null) {
                 continue;
@@ -90,17 +98,19 @@ public class ArmorUtils {
         }
 
         if (!openArmorSlots.isEmpty()) {
-            inventorySlotMap.add(Pair.of(player.getInventory().armor, openArmorSlots));
+            inventorySlotMap.add(Pair.of(armorItems, openArmorSlots));
         }
 
-        ItemStack offHand = player.getInventory().offhand.get(0);
+        NonNullList<ItemStack> offhandItems = NonNullList.create();
+        offhandItems.add(player.getItemBySlot(EquipmentSlot.OFFHAND));
+        ItemStack offHand = offhandItems.get(0);
         IElectricItem offHandItem = GTCapabilityHelper.getElectricItem(offHand);
         if (offHandItem == null) {
             return inventorySlotMap;
         }
 
         if (isPossibleToCharge(offHand) && offHandItem.getTier() <= tier) {
-            inventorySlotMap.add(Pair.of(player.getInventory().offhand, new IntArrayList(new int[] { 0 })));
+            inventorySlotMap.add(Pair.of(offhandItems, new IntArrayList(new int[] { 0 })));
         }
 
         return inventorySlotMap;
@@ -149,18 +159,18 @@ public class ArmorUtils {
      *
      * @return result of eating food
      */
-    public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
-        if (food.getFoodProperties(player) == null) {
-            return InteractionResultHolder.fail(food);
+    public static InteractionResult eat(Player player, ItemStack food) {
+        if (food.get(DataComponents.FOOD) == null) {
+            return InteractionResult.FAIL;
         }
 
-        FoodProperties foodItem = food.getFoodProperties(player);
+        FoodProperties foodItem = food.get(DataComponents.FOOD);
         if (foodItem != null && player.getFoodData().needsFood()) {
             ItemStack result = EventHooks.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(),
                     food.finishUsingItem(player.level(), player));
-            return InteractionResultHolder.success(result);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(result);
         } else {
-            return InteractionResultHolder.fail(food);
+            return InteractionResult.FAIL;
         }
     }
 
@@ -185,10 +195,10 @@ public class ArmorUtils {
             this.stringList.add(string);
         }
 
-        public void draw(GuiGraphics poseStack) {
+        public void draw(GuiGraphicsExtractor poseStack) {
             for (int i = 0; i < stringAmount; i++) {
                 IntIntPair coords = this.getStringCoord(i);
-                poseStack.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
+                poseStack.text(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
                         false);
             }
         }

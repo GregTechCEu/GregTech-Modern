@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder
 
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.KubeEvent;
@@ -29,28 +29,28 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<BedrockOreBuilder> consumer) {
+    public void add(Context cx, Identifier id, Consumer<BedrockOreBuilder> consumer) {
         BedrockOreBuilder builder = new BedrockOreBuilder(id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
 
-    private void register(ResourceLocation id, BedrockOreDefinition def) {
+    private void register(Identifier id, BedrockOreDefinition def) {
         registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<BedrockOreBuilder> consumer) {
-        var vein = registry.get(id);
+    public void modify(Context cx, Identifier id, Consumer<BedrockOreBuilder> consumer) {
+        var vein = registry.getValue(id);
         if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
         var builder = BedrockOreBuilder.from(vein, id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockOreBuilder> consumer) {
-        Set<ResourceLocation> keys = registry.keySet();
+    public void modifyAll(Context cx, BiConsumer<Identifier, BedrockOreBuilder> consumer) {
+        Set<Identifier> keys = registry.keySet();
         keys.forEach(id -> {
-            var vein = registry.get(id);
+            var vein = registry.getValue(id);
             if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
             var builder = BedrockOreBuilder.from(vein, id);
             consumer.accept(id, builder);
@@ -59,30 +59,30 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
     }
 
     public void removeAll(Context cx) {
-        Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
+        Set<Identifier> keys = Set.copyOf(registry.keySet());
         keys.forEach(key -> remove(cx, key));
     }
 
-    public void removeAll(Context cx, BiPredicate<ResourceLocation, BedrockOreDefinition> predicate) {
-        Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
+    public void removeAll(Context cx, BiPredicate<Identifier, BedrockOreDefinition> predicate) {
+        Set<Identifier> keys = Set.copyOf(registry.keySet());
         keys.stream()
-                .filter(key -> predicate.test(key, registry.get(key)))
+                .filter(key -> predicate.test(key, registry.getValue(key)))
                 .forEach(key -> remove(cx, key));
     }
 
-    public void remove(Context cx, ResourceLocation id) {
+    public void remove(Context cx, Identifier id) {
         if (!registry.containsKey(id)) {
             ConsoleJS.SERVER.error("", new KubeRuntimeException("Trying to remove nonexistent bedrock ore vein " + id)
                     .source(SourceLine.of(cx)));
             return;
         }
         // blank out the vein info because we can't remove from the registry
-        var holder = registry.getHolderOrThrow(createKey(id));
-        holder.value().biomeWeightModifier(BiomeWeightModifier.EMPTY);
-        holder.value().weight(0);
+        var vein = registry.getValueOrThrow(createKey(id));
+        vein.biomeWeightModifier(BiomeWeightModifier.EMPTY);
+        vein.weight(0);
     }
 
-    public static ResourceKey<BedrockOreDefinition> createKey(ResourceLocation id) {
+    public static ResourceKey<BedrockOreDefinition> createKey(Identifier id) {
         return ResourceKey.create(GTRegistries.BEDROCK_ORE_REGISTRY, id);
     }
 }

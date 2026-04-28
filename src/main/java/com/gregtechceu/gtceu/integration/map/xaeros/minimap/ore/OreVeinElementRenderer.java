@@ -3,17 +3,15 @@ package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.map.GTMapRendering;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.common.graphics.renderer.multitexture.MultiTextureRenderTypeRendererProvider;
 import xaero.hud.minimap.element.render.MinimapElementRenderInfo;
 import xaero.hud.minimap.element.render.MinimapElementRenderLocation;
@@ -21,7 +19,7 @@ import xaero.hud.minimap.element.render.MinimapElementRenderer;
 
 public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElement, OreVeinElementContext> {
 
-    protected static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
+    protected static final Identifier STONE = Identifier.withDefaultNamespace("block/stone");
 
     private OreVeinElementRenderer(OreVeinElementReader elementReader,
                                    OreVeinElementRenderProvider provider,
@@ -45,17 +43,13 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
 
         Material firstMaterial = vein.definition().value().veinGenerator().getAllMaterials().getFirst();
         int materialARGB = firstMaterial.getMaterialARGB();
-        float[] colors = DrawUtil.floats(materialARGB);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+        Identifier oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
                 true);
         if (oreTexture != null) {
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(oreTexture);
-            graphics.blit(-iconSize / 2, -iconSize / 2, 0, iconSize, iconSize,
-                    oreSprite, colors[0], colors[1], colors[2], 1);
+            var oreSprite = GTMapRendering.getBlockSprite(oreTexture);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, oreSprite, -iconSize / 2, -iconSize / 2, iconSize,
+                    iconSize, materialARGB);
         }
         // FIXME drawing the 2nd layer makes xaero's minimap transparent. so we won't. for now.
         // oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary",
@@ -70,7 +64,6 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         // oreSprite, colors[0], colors[1], colors[2], 1);
         // }
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         int borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(materialARGB | 0xFF000000);
         if ((borderColor & 0xFF000000) != 0) {
             int thickness = iconSize / 16;

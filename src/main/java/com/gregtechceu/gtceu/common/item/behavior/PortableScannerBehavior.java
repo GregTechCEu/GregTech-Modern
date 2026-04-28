@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
@@ -33,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -116,16 +116,16 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 setNextMode(item);
                 var mode = getMode(item);
                 player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption",
                         Component.translatable(mode.getLangKey())));
             }
-            return InteractionResultHolder.success(item);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(item);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
@@ -168,7 +168,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                             .withStyle(ChatFormatting.AQUA),
                     Component.translatable(FormattingUtil.formatNumbers(pos.getZ()))
                             .withStyle(ChatFormatting.AQUA),
-                    Component.translatable(level.dimension().location().toString())
+                    Component.translatable(level.dimension().identifier().toString())
                             .withStyle(ChatFormatting.AQUA)));
 
             // Hardness and blast resistance
@@ -211,8 +211,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Fluid tanks
-                IFluidHandler fluidHandler = tileEntity.getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
-                        tileEntity.getBlockPos(), null);
+                IFluidHandler fluidHandler = FluidHandlerAdapters.toFluidHandler(tileEntity.getLevel()
+                        .getCapability(Capabilities.Fluid.BLOCK, tileEntity.getBlockPos(), null));
                 if (fluidHandler != null) {
                     list.add(Component.translatable("behavior.portable_scanner.divider"));
                     boolean allTanksEmpty = true;

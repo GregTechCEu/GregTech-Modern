@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -23,13 +25,11 @@ public class MaterialInfoLoader {
         for (DyeColor color : DyeColor.values()) {
             String dye = color.getName();
             ItemMaterialData.registerMaterialInfo(
-                    new ItemStack(
-                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dye + "_terracotta")))
+                    new ItemStack(vanillaItem(dye + "_terracotta"))
                             .getItem(),
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
             ItemMaterialData.registerMaterialInfo(
-                    new ItemStack(BuiltInRegistries.ITEM
-                            .get(ResourceLocation.withDefaultNamespace(dye + "_glazed_terracotta")))
+                    new ItemStack(vanillaItem(dye + "_glazed_terracotta"))
                             .getItem(),
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
         }
@@ -156,5 +156,9 @@ public class MaterialInfoLoader {
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
         ItemMaterialData.registerMaterialInfo(Items.WAXED_OXIDIZED_COPPER,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+    }
+
+    private static Item vanillaItem(String path) {
+        return BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(path)).map(Holder::value).orElseThrow();
     }
 }

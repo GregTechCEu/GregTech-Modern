@@ -9,13 +9,15 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Used for setting a "ghost" IC for a machine
@@ -49,7 +51,7 @@ public class GhostCircuitSlotWidget extends SlotWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOverElement(mouseX, mouseY) && gui != null) {
-            if (button == 0 && Screen.hasShiftDown()) {
+            if (button == 0 && isShiftKeyDown()) {
                 // open popup on shift-left-click
                 if (!isConfiguratorOpen()) {
                     this.gui.widget(configurator = createConfigurator());
@@ -61,7 +63,7 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                 // increment on left-click
                 int newValue = getNextValue(true);
                 setCircuitValue(newValue);
-            } else if (button == 1 && Screen.hasShiftDown()) {
+            } else if (button == 1 && isShiftKeyDown()) {
                 // clear on shift-right-click
                 this.circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
                 writeClientAction(SET_TO_EMPTY, buf -> {});
@@ -73,6 +75,12 @@ public class GhostCircuitSlotWidget extends SlotWidget {
             return true;
         }
         return false;
+    }
+
+    private static boolean isShiftKeyDown() {
+        var window = Minecraft.getInstance().getWindow();
+        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
     }
 
     private int getNextValue(boolean increment) {

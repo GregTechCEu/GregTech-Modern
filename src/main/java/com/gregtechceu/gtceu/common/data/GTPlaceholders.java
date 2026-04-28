@@ -39,11 +39,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -68,8 +71,7 @@ public class GTPlaceholders {
         int cnt = 0;
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             ItemStack itemStack = itemHandler.getStackInSlot(i);
-            String itemId = "%s:%s".formatted(itemStack.getItem().getCreatorModId(itemStack),
-                    itemStack.getItem().toString());
+            String itemId = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(itemStack.getItem())).toString();
             if (itemId.equals(id)) cnt += itemStack.getCount();
         }
         return cnt;
@@ -101,7 +103,9 @@ public class GTPlaceholders {
     }
 
     public static void initPlaceholders() {
-        RegistrateDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
+        if (!GTCEu.isDataGen()) {
+            RegistrateDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
+        }
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEPlaceholders.init();
         }
@@ -610,10 +614,10 @@ public class GTPlaceholders {
                 if (cur != null) codeBuilder.append(cnt).append(cur);
                 String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
-                if (!getData(ctx).getBoolean("completed")) {
-                    p = getData(ctx).getInt("pointer");
-                    start = getData(ctx).getInt("index");
-                    num = getData(ctx).getInt("num");
+                if (!getData(ctx).getBooleanOr("completed", false)) {
+                    p = getData(ctx).getIntOr("pointer", 0);
+                    start = getData(ctx).getIntOr("index", 0);
+                    num = getData(ctx).getIntOr("num", 0);
                 }
                 getData(ctx).putBoolean("completed", true);
                 for (int i = 0; i < code.length(); i++) {
@@ -720,7 +724,7 @@ public class GTPlaceholders {
                         ctx.pos() == null ? Vec3.ZERO : ctx.pos().getCenter(),
                         Vec2.ZERO,
                         serverLevel,
-                        bindingData.permissionLevel(),
+                        LevelBasedPermissionSet.forLevel(PermissionLevel.byId(bindingData.permissionLevel())),
                         displayName.getString(),
                         displayName,
                         server,
@@ -892,10 +896,13 @@ public class GTPlaceholders {
                         if (component instanceof IMonitorModuleItem module) module.tickInPlaceholder(stack, ctx);
                     }
                 }
+                Tag stackTag = ItemStack.CODEC
+                        .encodeStart(ctx.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), stack)
+                        .getOrThrow();
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                         x, y, x, y,
                         "module",
-                        (CompoundTag) stack.save(ctx.level().registryAccess())));
+                        stackTag instanceof CompoundTag compoundTag ? compoundTag : new CompoundTag()));
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("setImage") {
@@ -1004,10 +1011,11 @@ public class GTPlaceholders {
                 if (blockEntity == null) return MultiLineComponent.empty();
                 Tag tag = blockEntity.saveWithFullMetadata(ctx.level().registryAccess());
                 if (tag instanceof CompoundTag compoundTag && compoundTag.contains("cover")) {
-                    CompoundTag coverTag = compoundTag.getCompound("cover");
+                    CompoundTag coverTag = compoundTag.getCompoundOrEmpty("cover");
                     if (coverTag.contains(ctx.side().getName())) {
-                        CompoundTag cover = coverTag.getCompound(ctx.side().getName()).getCompound("payload")
-                                .getCompound("d");
+                        CompoundTag cover = coverTag.getCompoundOrEmpty(ctx.side().getName())
+                                .getCompoundOrEmpty("payload")
+                                .getCompoundOrEmpty("d");
                         cover.putString("text", "[REMOVED]");
                     }
                 }

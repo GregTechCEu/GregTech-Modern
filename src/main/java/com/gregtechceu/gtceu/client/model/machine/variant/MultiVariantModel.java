@@ -1,21 +1,15 @@
 package com.gregtechceu.gtceu.client.model.machine.variant;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.SimpleModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 
 import com.google.gson.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public record MultiVariantModel(List<VariantState> variants) implements UnbakedModel {
 
@@ -29,39 +23,15 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
         }
     }
 
-    public @NotNull Collection<ResourceLocation> getDependencies() {
-        return this.variants.stream()
-                .map(VariantState::getModel)
-                .flatMap(either -> either.map(Stream::of, model -> model.getDependencies().stream()))
-                .collect(Collectors.toSet());
+    public List<Identifier> getDependencies() {
+        return Collections.emptyList();
     }
 
-    public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> resolver) {
+    public void resolveParents(Function<Identifier, UnbakedModel> resolver) {
         this.variants.forEach((variant) -> {
             UnbakedModel model = variant.getModel().map(resolver, Function.identity());
             variant.setResolvedModel(model);
-            model.resolveParents(resolver);
         });
-    }
-
-    public @Nullable BakedModel bake(@NotNull ModelBaker baker,
-                                     @NotNull Function<Material, TextureAtlasSprite> spriteGetter,
-                                     @NotNull ModelState state) {
-        if (this.variants.isEmpty()) {
-            return null;
-        } else {
-            WeightedBakedModel.Builder weightedBuilder = new WeightedBakedModel.Builder();
-
-            for (VariantState variant : this.variants) {
-                // rotate the transform by both the variant and the original blockstate rotation
-                var actualRotation = state.getRotation().compose(variant.getRotation());
-                var actualState = new SimpleModelState(actualRotation, variant.isUvLocked());
-
-                BakedModel baked = variant.getResolvedModel().bake(baker, spriteGetter, actualState);
-                weightedBuilder.add(baked, variant.getWeight());
-            }
-            return weightedBuilder.build();
-        }
     }
 
     public static class Deserializer implements JsonDeserializer<MultiVariantModel> {

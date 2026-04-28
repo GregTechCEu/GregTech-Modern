@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
@@ -39,8 +40,9 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> {
-            return new FilteredFluidHandlerItemStack(stack, capacity, filter);
-        }, item);
+        event.registerItem(Capabilities.Fluid.ITEM,
+                (stack, ctx) -> FluidHandlerAdapters
+                        .toResourceHandler(new FilteredFluidHandlerItemStack(stack, capacity, filter)),
+                item);
     }
 }

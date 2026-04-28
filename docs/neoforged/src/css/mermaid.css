@@ -1,0 +1,57 @@
+/* LIGHT THEME */
+html[data-theme="light"] .docusaurus-mermaid-container {
+    --diagram-red:          hsl(10, 40%, 70%);
+    --diagram-red-stroke:   hsl(10, 40%, 60%);
+
+    --diagram-yellow:       hsl(60, 40%, 70%);
+    --diagram-yellow-stroke:hsl(60, 40%, 60%);
+
+    --diagram-green:        hsl(120, 40%, 70%);
+    --diagram-green-stroke: hsl(120, 40%, 60%);
+
+    --diagram-blue:         hsl(240, 40%, 70%);
+    --diagram-blue-stroke:  hsl(240, 40%, 60%);
+}
+
+/* DARK THEME */
+html[data-theme="dark"] .docusaurus-mermaid-container {
+    --diagram-red:          hsl(10, 40%, 20%);
+    --diagram-red-stroke:   hsl(10, 40%, 30%);
+
+    --diagram-yellow:       hsl(60, 40%, 20%);
+    --diagram-yellow-stroke:hsl(60, 40%, 30%);
+
+    --diagram-green:        hsl(120, 40%, 20%);
+    --diagram-green-stroke: hsl(120, 40%, 30%);
+
+    --diagram-blue:         hsl(240, 40%, 20%);
+    --diagram-blue-stroke:  hsl(240, 40%, 30%);
+}
+
+/* ==== DO NOT EDIT BELOW IF YOU ARE EDITING COLORS, USE THE VARIABLES ==== */
+
+/* Flowcharts / Graphs */
+.docusaurus-mermaid-container .red > rect {
+    fill: var(--diagram-red, #c99) !important;
+    stroke: var(--diagram-red-stroke, #a77) !important;
+    stroke-width: 2px !important;
+}
+
+.docusaurus-mermaid-container .green > rect {
+    fill: var(--diagram-green, #9c9) !important;
+    stroke: var(--diagram-green-stroke, #7a7) !important;
+    stroke-width: 2px !important;
+}
+
+.docusaurus-mermaid-container .blue > rect {
+    fill: var(--diagram-blue, #99c) !important;
+    stroke: var(--diagram-blue-stroke, #77a) !important;
+    stroke-width: 2px !important;
+}
+
+.docusaurus-mermaid-container .highlighted > rect,
+.docusaurus-mermaid-container .yellow > rect {
+    fill: var(--diagram-yellow, #cc9) !important;
+    stroke: var(--diagram-yellow-stroke, #aa7) !important;
+    stroke-width: 2px !important;
+}

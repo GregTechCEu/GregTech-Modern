@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -72,11 +72,11 @@ public class EnergyIOOverlay {
             });
 
     @Getter
-    private final ResourceLocation tintedPart;
+    private final Identifier tintedPart;
     @Getter
-    private final ResourceLocation ioPart;
+    private final Identifier ioPart;
     @Getter
-    private final ResourceLocation ioPartEmissive;
+    private final Identifier ioPartEmissive;
 
     public EnergyIOOverlay(String tintedPart, String ioPart, String ioPartEmissive) {
         this.tintedPart = GTCEu.id(tintedPart);

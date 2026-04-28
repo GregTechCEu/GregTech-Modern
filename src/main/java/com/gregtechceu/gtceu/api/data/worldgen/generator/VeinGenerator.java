@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 public abstract class VeinGenerator {
 
-    public static final Codec<MapCodec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
+    public static final Codec<MapCodec<? extends VeinGenerator>> REGISTRY_CODEC = Identifier.CODEC
             .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
                     .map(DataResult::success)
                     .orElseGet(() -> DataResult.error(() -> "No VeinGenerator with id " + rl + " registered")),

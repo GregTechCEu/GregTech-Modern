@@ -12,8 +12,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
@@ -24,6 +24,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
@@ -48,6 +51,8 @@ public final class SyncedKeyMapping {
     private final WeakHashMap<ServerPlayer, Boolean> serverMapping = new WeakHashMap<>();
     private final WeakHashMap<ServerPlayer, Set<IKeyPressedListener>> playerListeners = new WeakHashMap<>();
     private final Set<IKeyPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
+    @OnlyIn(Dist.CLIENT)
+    private static final Map<String, KeyMapping.Category> KEY_CATEGORIES = new HashMap<>();
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         if (GTCEu.isClientSide()) {
@@ -128,7 +133,13 @@ public final class SyncedKeyMapping {
     @OnlyIn(Dist.CLIENT)
     private @NotNull Object createKeyMapping(@NotNull String nameKey, @NotNull IKeyConflictContext ctx, int keyCode,
                                              String category) {
-        return new KeyMapping(nameKey, ctx, InputConstants.Type.KEYSYM, keyCode, category);
+        return new KeyMapping(nameKey, ctx, InputConstants.Type.KEYSYM, keyCode, getCategory(category));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static KeyMapping.Category getCategory(String category) {
+        return KEY_CATEGORIES.computeIfAbsent(category, key -> KeyMapping.Category.register(
+                GTCEu.id("key_mapping/" + key.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_"))));
     }
 
     /**
@@ -164,11 +175,20 @@ public final class SyncedKeyMapping {
      * @return if the key is down
      */
     private boolean isKeyDownClient() {
-        if (keyMapping != null) {
-            return keyMapping.isDown();
+        KeyMapping mapping = getKeyMapping();
+        if (mapping != null) {
+            return mapping.isDown();
         }
-        long id = Minecraft.getInstance().getWindow().getWindow();
-        return InputConstants.isKeyDown(id, keyCode);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keyCode);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private KeyMapping getKeyMapping() {
+        if (keyMapping == null && keyMappingGetter != null && Minecraft.getInstance().options != null) {
+            keyMapping = keyMappingGetter.get().get();
+            keyMappingGetter = null;
+        }
+        return keyMapping;
     }
 
     /**
@@ -189,10 +209,6 @@ public final class SyncedKeyMapping {
     @ApiStatus.Internal
     public static void onRegisterKeyBinds(@NotNull RegisterKeyMappingsEvent event) {
         for (SyncedKeyMapping value : KEYMAPPINGS.values()) {
-            if (value.keyMappingGetter != null) {
-                value.keyMapping = value.keyMappingGetter.get().get();
-                value.keyMappingGetter = null;
-            }
             if (value.keyMapping != null && value.needsRegister) {
                 event.register(value.keyMapping);
             }
@@ -241,11 +257,12 @@ public final class SyncedKeyMapping {
             SyncedKeyMapping keyMapping = entry.getValue();
             boolean previousKeyDown = keyMapping.isKeyDown;
 
-            if (keyMapping.keyMapping != null) {
-                keyMapping.isKeyDown = keyMapping.keyMapping.isDown();
+            KeyMapping mapping = keyMapping.getKeyMapping();
+            if (mapping != null) {
+                keyMapping.isKeyDown = mapping.isDown();
             } else {
-                long id = Minecraft.getInstance().getWindow().getWindow();
-                keyMapping.isKeyDown = InputConstants.isKeyDown(id, keyMapping.keyCode);
+                var window = Minecraft.getInstance().getWindow();
+                keyMapping.isKeyDown = InputConstants.isKeyDown(window, keyMapping.keyCode);
             }
 
             if (previousKeyDown != keyMapping.isKeyDown) {
@@ -253,7 +270,7 @@ public final class SyncedKeyMapping {
             }
         }
         if (!updatingKeyDown.isEmpty()) {
-            PacketDistributor.sendToServer(new CPacketKeyDown(updatingKeyDown));
+            ClientPacketDistributor.sendToServer(new CPacketKeyDown(updatingKeyDown));
         }
     }
 

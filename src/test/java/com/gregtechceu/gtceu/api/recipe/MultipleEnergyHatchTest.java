@@ -7,17 +7,17 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.annotation.BeforeBatch;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.BeforeBatch;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 
 import java.util.List;
@@ -83,16 +83,19 @@ public class MultipleEnergyHatchTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) helper
-                .getBlockEntity(new BlockPos(1, 2, 0));
+        WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 2, 0));
         assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
-        ItemBusPartMachine outputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        EnergyHatchPartMachine energyHatch = (EnergyHatchPartMachine) helper.getBlockEntity(new BlockPos(1, 3, 0));
+        ItemBusPartMachine inputBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(2, 1, 0));
+        ItemBusPartMachine outputBus = (ItemBusPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(0, 1, 0));
+        EnergyHatchPartMachine energyHatch = (EnergyHatchPartMachine) com.gregtechceu.gtceu.gametest.util.TestUtils
+                .getBlockEntity(helper, new BlockPos(1, 3, 0));
         // Some instances don't have a second energy hatch
-        var hatch2BE = helper.getBlockEntity(new BlockPos(1, 3, 0));
+        var hatch2BE = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper, new BlockPos(1, 3, 0));
         if (hatch2BE instanceof EnergyHatchPartMachine hatch2MMBE) {
             return new BusHolder(inputBus, outputBus, controller, energyHatch,
                     Optional.of(hatch2MMBE));

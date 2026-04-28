@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.component.IAbilityItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.common.block.explosive.GTExplosiveBlock;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
@@ -21,7 +22,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -83,13 +83,13 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         if (!canOpen || !player.isSecondaryUseActive()) {
             return IInteractionItem.super.use(item, level, player, usedHand);
         }
         item.update(GTDataComponents.LIGHTER_OPEN, false, isOpen -> !isOpen);
-        return InteractionResultHolder.sidedSuccess(item, level.isClientSide);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(item);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 state.onCaughtFire(level, pos, clickedFace, player);
                 FluidState fluidState = level.getFluidState(pos);
                 level.setBlock(pos, fluidState.createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
             if ((CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state))) {
                 if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
@@ -119,7 +119,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
                         1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
 
             BlockPos offset = pos.relative(clickedFace);
@@ -138,11 +138,13 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (level instanceof ServerLevel serverLevel) {
                     itemStack.hurtAndBreak(1, serverLevel, player, item -> {
                         if (player != null) {
-                            player.onEquippedItemBroken(item, LivingEntity.getSlotForHand(context.getHand()));
+                            EquipmentSlot slot = context.getHand() == InteractionHand.MAIN_HAND ?
+                                    EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+                            player.onEquippedItemBroken(item, slot);
                         }
                     });
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -159,10 +161,10 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (!consumeFuel(player, stack)) return InteractionResult.PASS;
                 level.playSound(player, creeper, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
                         1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     creeper.ignite();
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -183,7 +185,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     private int getUsesLeft(ItemStack stack) {
         if (usesFluid) {
-            IFluidHandlerItem handler = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
+            IFluidHandlerItem handler = FluidHandlerAdapters.toFluidHandlerItem(stack);
             if (handler == null) return 0;
 
             FluidStack fluid = handler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
@@ -197,7 +199,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     private void setUsesLeft(Player player, @NotNull ItemStack stack, final int usesLeft) {
         if (usesFluid) {
-            IFluidHandlerItem handler = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
+            IFluidHandlerItem handler = FluidHandlerAdapters.toFluidHandlerItem(stack);
             if (handler != null) {
                 FluidStack fluid = handler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
                 if (!fluid.isEmpty()) {
@@ -222,7 +224,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
         if (usesFluid) {
-            IFluidHandlerItem handler = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
+            IFluidHandlerItem handler = FluidHandlerAdapters.toFluidHandlerItem(stack);
             if (handler == null) return 0.0f;
 
             FluidStack fluid = handler.getFluidInTank(0);

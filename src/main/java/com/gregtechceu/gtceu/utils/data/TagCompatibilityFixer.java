@@ -31,10 +31,10 @@ public final class TagCompatibilityFixer {
     public static Tag stripLDLibPayloadWrapper(Tag t) {
         if (!(t instanceof CompoundTag tag)) return t;
         if (tag.contains("p") && tag.contains("t")) {
-            return tag.getCompound("p");
+            return tag.getCompoundOrEmpty("p");
         }
-        if (tag.contains("t", Tag.TAG_COMPOUND)) {
-            return tag.getCompound("t").getCompound("p");
+        if (tag.getCompound("t").isPresent()) {
+            return tag.getCompoundOrEmpty("t").getCompoundOrEmpty("p");
         }
         return tag;
     }

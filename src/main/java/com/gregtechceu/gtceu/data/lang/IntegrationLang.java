@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
@@ -32,12 +32,12 @@ public class IntegrationLang {
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
         provider.add("gtceu.jei.ore_vein_diagram.dimensions", "Dimensions:");
         for (ResourceKey<GTOreDefinition> key : GTOreVeins.ALL_KEYS) {
-            ResourceLocation id = key.location();
+            Identifier id = key.identifier();
             String name = id.getPath();
             provider.add(id.toLanguageKey("ore_vein"), RegistrateLangProvider.toEnglishName(name));
         }
         for (ResourceKey<BedrockFluidDefinition> key : GTBedrockFluids.ALL_KEYS) {
-            ResourceLocation id = key.location();
+            Identifier id = key.identifier();
             String name = id.getPath();
             provider.add(id.toLanguageKey("bedrock_fluid"), RegistrateLangProvider.toEnglishName(name));
         }

@@ -38,12 +38,12 @@ public class MedicalConditionCommands {
                                     return queryMedicalConditions(ctx.getSource().getPlayerOrException());
                                 })
                                 .then(argument("target", EntityArgument.player())
-                                        .requires(source -> source.hasPermission(LEVEL_GAMEMASTERS))
+                                        .requires(hasPermission(LEVEL_GAMEMASTERS))
                                         .executes(context -> {
                                             return queryMedicalConditions(EntityArgument.getPlayer(context, "target"));
                                         })))
                         .then(literal("clear")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
+                                .requires(hasPermission(LEVEL_ADMINS))
                                 .executes(ctx -> {
                                     return clearMedicalConditions(
                                             Collections.singleton(ctx.getSource().getPlayerOrException()), null);
@@ -62,7 +62,7 @@ public class MedicalConditionCommands {
                                                     return clearMedicalConditions(targets, condition);
                                                 }))))
                         .then(literal("apply")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
+                                .requires(hasPermission(LEVEL_GAMEMASTERS))
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                                 .executes(ctx -> {

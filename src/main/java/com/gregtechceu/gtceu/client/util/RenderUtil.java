@@ -8,29 +8,31 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,15 +40,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
@@ -56,44 +56,52 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
 
+    private static @Nullable ModelBlockRenderer blockModelRenderer;
+
     public enum FluidTextureType {
 
-        STILL((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getStillTexture(fluidStack);
-            else return fluidTypeExtensions.getStillTexture();
-        }),
-        FLOWING((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(fluidStack);
-            else return fluidTypeExtensions.getFlowingTexture();
-        }),
-        OVERLAY((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getOverlayTexture(fluidStack);
-            else return fluidTypeExtensions.getOverlayTexture();
-        });
+        STILL,
+        FLOWING,
+        OVERLAY;
 
-        private static final ResourceLocation WATER_STILL = ResourceLocation.withDefaultNamespace("block/water_still");
-
-        private final BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper;
-
-        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper) {
-            this.mapper = mapper;
-        }
+        private static final Identifier WATER_STILL = Identifier.withDefaultNamespace("block/water_still");
 
         public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions) {
-            return map(fluidTypeExtensions, FluidStack.EMPTY);
+            return atlasSprite(WATER_STILL);
         }
 
         public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack fluidStack) {
-            ResourceLocation texture = mapper.apply(fluidTypeExtensions, fluidStack);
-            if (texture == null) texture = STILL.mapper.apply(fluidTypeExtensions, fluidStack);
-            if (texture == null) texture = WATER_STILL;
+            return map(fluidStack);
+        }
 
-            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+        public TextureAtlasSprite map(Fluid fluid) {
+            return map(fluid.defaultFluidState(), FluidStack.EMPTY);
+        }
+
+        public TextureAtlasSprite map(FluidStack fluidStack) {
+            if (fluidStack.isEmpty()) {
+                return atlasSprite(WATER_STILL);
+            }
+            return map(fluidStack.getFluid().defaultFluidState(), fluidStack);
+        }
+
+        private TextureAtlasSprite map(net.minecraft.world.level.material.FluidState state, FluidStack stack) {
+            FluidModel model = fluidModel(state);
+            return switch (this) {
+                case STILL -> model.stillMaterial().sprite();
+                case FLOWING -> model.flowingMaterial().sprite();
+                case OVERLAY -> model.overlayMaterial() == null ? model.stillMaterial().sprite() :
+                        model.overlayMaterial().sprite();
+            };
+        }
+
+        private static TextureAtlasSprite atlasSprite(Identifier texture) {
+            return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                    .getSprite(texture);
         }
     }
 
@@ -137,8 +145,27 @@ public class RenderUtil {
 
     public static int getFluidLight(Fluid fluid, BlockPos pos) {
         if (Minecraft.getInstance().level == null) return 0;
-        return LevelRenderer.getLightColor(Minecraft.getInstance().level, fluid.defaultFluidState().createLegacyBlock(),
-                pos);
+        return LevelRenderer.getLightCoords(Minecraft.getInstance().level, pos);
+    }
+
+    public static FluidModel fluidModel(Fluid fluid) {
+        return fluidModel(fluid.defaultFluidState());
+    }
+
+    public static FluidModel fluidModel(net.minecraft.world.level.material.FluidState state) {
+        return Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
+    }
+
+    public static int getFluidTint(Fluid fluid) {
+        var state = fluid.defaultFluidState();
+        var tintSource = fluidModel(state).fluidTintSource();
+        return tintSource == null ? -1 : tintSource.color(state);
+    }
+
+    public static int getFluidTint(FluidStack fluidStack) {
+        if (fluidStack.isEmpty()) return -1;
+        var tintSource = fluidModel(fluidStack.getFluid()).fluidTintSource();
+        return tintSource == null ? -1 : tintSource.colorAsStack(fluidStack);
     }
 
     public static void vertex(Matrix4f pose, VertexConsumer vertexConsumer,
@@ -186,26 +213,19 @@ public class RenderUtil {
 
         var fluidContent = contents.stream()
                 .filter(content -> content.content instanceof SizedFluidIngredient ingredient &&
-                        !ingredient.ingredient().hasNoFluids())
+                        !ingredient.ingredient().fluids().isEmpty())
                 .findAny();
         if (fluidContent.isEmpty()) {
             return null;
         }
         var ingredient = (SizedFluidIngredient) fluidContent.get().content;
 
-        var stacks = ingredient.getFluids();
-        if (stacks.length == 0) {
+        var fluids = ingredient.ingredient().fluids();
+        if (fluids.isEmpty()) {
             return null;
         }
 
-        Fluid fluid = null;
-        for (int i = 0; i < stacks.length && fluid == null; i++) {
-            if (!stacks[i].isEmpty()) {
-                fluid = stacks[i].getFluid();
-            }
-        }
-
-        return fluid;
+        return fluids.getFirst().value();
     }
 
     public static void moveToFace(PoseStack poseStack, Vector3fc pos, Direction face) {
@@ -220,35 +240,69 @@ public class RenderUtil {
 
     public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                  MultiBufferSource bufferSource, PoseStack poseStack) {
-        int packedLight = LevelRenderer.getLightColor(level, state, pos);
-
         RenderShape renderShape = state.getRenderShape();
-        if (renderShape == RenderShape.INVISIBLE) {
-            return;
-        } else if (renderShape == RenderShape.ENTITYBLOCK_ANIMATED) {
-            // if it's a block entity, use the BEWLR to render it instead of the empty block model
-            ItemStack stack = new ItemStack(state.getBlock());
-            IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemDisplayContext.NONE,
-                    poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
+        if (renderShape != RenderShape.MODEL) {
             return;
         }
 
-        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = blockRenderer.getBlockModel(state);
-        ModelData modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
+        var model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
+        BlockQuadOutput output = (x, y, z, quad, quadInstance) -> {
+            poseStack.pushPose();
+            poseStack.translate(x, y, z);
+            bufferSource.getBuffer(quad.materialInfo().itemRenderType()).putBakedQuad(poseStack.last(), quad,
+                    quadInstance);
+            poseStack.popPose();
+        };
+        blockModelRenderer().tesselateBlock(output, 0, 0, 0, level, pos, state, model, state.getSeed(pos));
+    }
 
-        int blockColor = Minecraft.getInstance().getBlockColors().getColor(state, level, pos, 0);
-        float r = (float) (blockColor >> 16 & 0xFF) / 255.0F;
-        float g = (float) (blockColor >> 8 & 0xFF) / 255.0F;
-        float b = (float) (blockColor & 0xFF) / 255.0F;
-
-        for (RenderType renderType : model.getRenderTypes(state, RandomSource.create(42), modelData)) {
-            blockRenderer.getModelRenderer().renderModel(poseStack.last(),
-                    bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType, false)),
-                    state, model, r, g, b,
-                    packedLight, OverlayTexture.NO_OVERLAY,
-                    modelData, renderType);
+    private static ModelBlockRenderer blockModelRenderer() {
+        if (blockModelRenderer == null) {
+            blockModelRenderer = new ModelBlockRenderer(true, true, Minecraft.getInstance().getBlockColors());
         }
+        return blockModelRenderer;
+    }
+
+    private static void renderBlockItem(ItemStack stack, BlockAndTintGetter level, MultiBufferSource bufferSource,
+                                        PoseStack poseStack, int seed) {
+        ItemStackRenderState renderState = new ItemStackRenderState();
+        Minecraft minecraft = Minecraft.getInstance();
+        renderState.clear();
+        minecraft.getItemModelResolver().updateForTopItem(renderState, stack, ItemDisplayContext.NONE,
+                level instanceof Level realLevel ? realLevel : minecraft.level, null, seed);
+
+        SubmitNodeStorage submitStorage = new SubmitNodeStorage();
+        renderState.submit(poseStack, submitStorage, LevelRenderer.getLightCoords(level, BlockPos.ZERO),
+                OverlayTexture.NO_OVERLAY, 0);
+        for (SubmitNodeCollection submits : submitStorage.getSubmitsPerOrder().values()) {
+            for (SubmitNodeStorage.ItemSubmit submit : submits.getItemSubmits()) {
+                renderSubmittedItem(bufferSource, submit);
+            }
+        }
+    }
+
+    private static void renderSubmittedItem(MultiBufferSource bufferSource, SubmitNodeStorage.ItemSubmit submit) {
+        QuadInstance quadInstance = new QuadInstance();
+        quadInstance.setLightCoords(submit.lightCoords());
+        quadInstance.setOverlayCoords(submit.overlayCoords());
+
+        for (BakedQuad quad : submit.quads()) {
+            var material = quad.materialInfo();
+            var renderType = material.itemRenderType();
+            quadInstance.setColor(getLayerColorSafe(submit.tintLayers(), material));
+
+            if (submit.foilType() != ItemStackRenderState.FoilType.NONE) {
+                ItemFeatureRenderer.getFoilBuffer(bufferSource, renderType, true, true)
+                        .putBakedQuad(submit.pose(), quad, quadInstance);
+            }
+
+            bufferSource.getBuffer(renderType).putBakedQuad(submit.pose(), quad, quadInstance);
+        }
+    }
+
+    private static int getLayerColorSafe(int[] tintLayers, BakedQuad.MaterialInfo material) {
+        return material.isTinted() && material.tintIndex() >= 0 && material.tintIndex() < tintLayers.length ?
+                tintLayers[material.tintIndex()] : -1;
     }
 
     /**
@@ -283,10 +337,10 @@ public class RenderUtil {
         return GTMatrixUtils.upwardFacingAngle(spin);
     }
 
-    public static boolean renderResearchItemContent(GuiGraphics graphics, Operation<Void> originalMethod,
+    public static boolean renderResearchItemContent(GuiGraphicsExtractor graphics, Operation<Void> originalMethod,
                                                     @Nullable LivingEntity entity, @Nullable Level level,
                                                     ItemStack stack, int x, int y, int z, int seed) {
-        if (!Screen.hasShiftDown()) return false;
+        if (!Minecraft.getInstance().hasShiftDown()) return false;
 
         ResearchManager.ResearchItem researchData = stack.get(GTDataComponents.RESEARCH_ITEM);
         if (researchData == null) return false;
@@ -298,7 +352,10 @@ public class RenderUtil {
             // check item outputs first
             List<Content> outputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.getFirst().content).getItems();
+                var ingredient = ItemRecipeCapability.CAP.of(outputs.getFirst().content);
+                ItemStack[] items = ingredient.ingredient().items()
+                        .map(holder -> new ItemStack(holder, ingredient.count()))
+                        .toArray(ItemStack[]::new);
                 if (items.length > 0) {
                     ItemStack output = items[0];
                     if (!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, stack)) {
@@ -310,15 +367,17 @@ public class RenderUtil {
             // if there are no item outputs, try to find a fluid output
             outputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.getFirst().content).getFluids();
+                var ingredient = FluidRecipeCapability.CAP.of(outputs.getFirst().content);
+                FluidStack[] fluids = ingredient.ingredient().fluids().stream()
+                        .map(holder -> new FluidStack(holder, ingredient.amount()))
+                        .toArray(FluidStack[]::new);
                 if (fluids.length != 0) {
                     FluidStack output = fluids[0];
                     if (!output.isEmpty()) {
-                        var clientExt = IClientFluidTypeExtensions.of(output.getFluid());
-                        var texture = RenderUtil.FluidTextureType.STILL.map(clientExt, output);
-                        int color = clientExt.getTintColor(output);
+                        var texture = RenderUtil.FluidTextureType.STILL.map(output);
+                        int color = RenderUtil.getFluidTint(output);
 
-                        DrawerHelper.drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
+                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, 16, 16, color);
                         return true;
                     }
                 }

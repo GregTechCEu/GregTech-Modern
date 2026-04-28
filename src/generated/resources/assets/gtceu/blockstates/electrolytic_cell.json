@@ -1,10 +1,7 @@
 {
     "variants": {
-        "active=false": {
+        "": {
             "model": "gtceu:block/variant/electrolytic_cell"
-        },
-        "active=true": {
-            "model": "gtceu:block/variant/electrolytic_cell_active"
         }
     }
 }

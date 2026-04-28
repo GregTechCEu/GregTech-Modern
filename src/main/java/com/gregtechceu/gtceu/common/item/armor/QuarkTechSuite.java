@@ -12,13 +12,14 @@ import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,16 +27,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -56,14 +55,14 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     @OnlyIn(Dist.CLIENT)
     protected ArmorUtils.ModularHUD HUD;
 
-    public QuarkTechSuite(ArmorItem.Type slot, int energyPerUse, long capacity, int tier) {
+    public QuarkTechSuite(ArmorType slot, int energyPerUse, long capacity, int tier) {
         super(energyPerUse, capacity, tier, slot);
         potionRemovalCost.put(MobEffects.POISON, 10000);
         potionRemovalCost.put(MobEffects.WITHER, 25000);
-        potionRemovalCost.put(MobEffects.CONFUSION, 8000);
-        potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
+        potionRemovalCost.put(MobEffects.NAUSEA, 8000);
+        potionRemovalCost.put(MobEffects.MINING_FATIGUE, 12500);
         // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
-        potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
+        potionRemovalCost.put(MobEffects.SLOWNESS, 9000);
         potionRemovalCost.put(MobEffects.UNLUCK, 5000);
         if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
             HUD = new ArmorUtils.ModularHUD();
@@ -84,13 +83,13 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
-            if (!level.isClientSide) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
+            if (!level.isClientSide()) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
         }
 
         boolean ret = false;
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
 
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 ret = supplyAir(item, player) || supplyFood(item, player);
                 removeNegativeEffects(item, player);
             }
@@ -101,10 +100,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.nightvision.error"), true);
+                    player.sendOverlayMessage(Component.translatable("metaarmor.qts.nightvision.error"));
                 } else {
-                    player.displayClientMessage(Component
-                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                    player.sendOverlayMessage(Component
+                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")));
                 }
             }
 
@@ -128,10 +127,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             data.nightVisionTimer(nightVisionTimer);
             data.toggleTimer(toggleTimer);
-        } else if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
+        } else if (type == ArmorType.CHESTPLATE && !player.fireImmune()) {
             ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
             if (player.isOnFire()) player.extinguishFire();
-        } else if (type == ArmorItem.Type.LEGGINGS) {
+        } else if (type == ArmorType.LEGGINGS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
@@ -162,18 +161,18 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (runningTimer > 0) runningTimer--;
             data.runningTimer(runningTimer);
-        } else if (type == ArmorItem.Type.BOOTS) {
+        } else if (type == ArmorType.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
             boolean boostedJump = data.boostedJump();
             if (boostedJumpTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
                 boostedJump = !boostedJump;
                 boostedJumpTimer = JUMPING_TIMER;
-                player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                player.sendOverlayMessage(Component
+                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")));
             }
             if (boostedJump) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     boolean onGround = data.onGround();
                     if (onGround && !player.onGround() && jumping) {
                         item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
@@ -207,9 +206,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (data.boostedJumpTimer() == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 data.stepAssist(!data.stepAssist());
                 data.boostedJumpTimer((byte) 5);
-                if (level.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.step_assist." + (data.stepAssist() ? "enabled" : "disabled")),
-                        true);
+                if (level.isClientSide()) player.sendOverlayMessage(Component
+                        .translatable("metaarmor.qts.step_assist." + (data.stepAssist() ? "enabled" : "disabled")));
             }
 
             data.boostedJump(boostedJump);
@@ -239,28 +237,28 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     public boolean supplyFood(@NotNull IElectricItem item, Player player) {
         if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
             int slotId = -1;
-            IItemHandler playerInv = player.getCapability(Capabilities.ItemHandler.ENTITY);
-            if (playerInv instanceof IItemHandlerModifiable items) {
-                for (int i = 0; i < items.getSlots(); i++) {
-                    ItemStack current = items.getStackInSlot(i);
-                    if (current.getFoodProperties(player) != null) {
-                        slotId = i;
-                        break;
-                    }
+            IItemHandlerModifiable items = new PlayerInvWrapper(player.getInventory());
+            for (int i = 0; i < items.getSlots(); i++) {
+                ItemStack current = items.getStackInSlot(i);
+                if (current.has(DataComponents.FOOD)) {
+                    slotId = i;
+                    break;
                 }
+            }
 
-                if (slotId > -1) {
-                    ItemStack stack = items.getStackInSlot(slotId);
-                    InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
-                    stack = result.getObject();
-                    if (stack.isEmpty())
-                        items.setStackInSlot(slotId, ItemStack.EMPTY);
-
-                    if (result.getResult() == InteractionResult.SUCCESS)
-                        item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
-
-                    return true;
+            if (slotId > -1) {
+                ItemStack stack = items.getStackInSlot(slotId);
+                InteractionResult result = ArmorUtils.eat(player, stack);
+                if (result instanceof InteractionResult.Success success && success.heldItemTransformedTo() != null) {
+                    stack = success.heldItemTransformedTo();
                 }
+                if (stack.isEmpty())
+                    items.setStackInSlot(slotId, ItemStack.EMPTY);
+
+                if (result instanceof InteractionResult.Success)
+                    item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
+
+                return true;
             }
         }
         return false;
@@ -324,10 +322,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                            ArmorMaterial.Layer layer) {
-        ItemStack currentChest = Minecraft.getInstance().player.getInventory().armor
-                .get(EquipmentSlot.CHEST.getIndex());
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                      EquipmentClientInfo.Layer layer) {
+        Player clientPlayer = Minecraft.getInstance().player;
+        ItemStack currentChest = clientPlayer == null ? ItemStack.EMPTY :
+                clientPlayer.getItemBySlot(EquipmentSlot.CHEST);
         String armorTexture = "quark_tech_suite";
         if (currentChest.is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) armorTexture = "advanced_quark_tech_suite";
         return slot != EquipmentSlot.LEGS ?
@@ -337,7 +336,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     @Override
     public double getDamageAbsorption() {
-        return type == ArmorItem.Type.CHESTPLATE ? 1.2D : 1.0D;
+        return type == ArmorType.CHESTPLATE ? 1.2D : 1.0D;
     }
 
     @Override
@@ -347,7 +346,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, GuiGraphicsExtractor guiGraphics) {
         addCapacityHUD(item, this.HUD);
         this.HUD.draw(guiGraphics);
         this.HUD.reset();
@@ -356,7 +355,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
             GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY);
             boolean nv = data.nightVision();
             if (nv) {
@@ -367,12 +366,12 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.potions"));
             lines.add(Component.translatable("metaarmor.tooltip.breath"));
             lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
-        } else if (type == ArmorItem.Type.CHESTPLATE) {
+        } else if (type == ArmorType.CHESTPLATE) {
             lines.add(Component.translatable("metaarmor.tooltip.burning"));
             lines.add(Component.translatable("metaarmor.tooltip.freezing"));
-        } else if (type == ArmorItem.Type.LEGGINGS) {
+        } else if (type == ArmorType.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
-        } else if (type == ArmorItem.Type.BOOTS) {
+        } else if (type == ArmorType.BOOTS) {
             GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY);
             if (data.stepAssist())
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));

@@ -14,23 +14,25 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
-import net.minecraft.world.item.component.Unbreakable;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -68,14 +70,17 @@ public class GTMaterialItems {
 
     // Reference Tables
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
+    private static final List<ArmorType> HUMANOID_ARMOR_TYPES = Arrays.stream(ArmorType.values())
+            .filter(type -> type.getSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
+            .toList();
 
     public final static Table<Material, GTToolType, ItemProviderEntry<Item, ? extends IGTTool>> TOOL_ITEMS = ArrayTable.create(
             GTCEuAPI.materialManager.stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
             GTToolType.getTypes().values().stream().toList());
 
-    public static final Table<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS = ArrayTable.create(
+    public static final Table<Material, ArmorType, ItemEntry<? extends GTArmorItem>> ARMOR_ITEMS = ArrayTable.create(
             GTCEuAPI.materialManager.stream().filter(mat -> mat.hasProperty(PropertyKey.ARMOR)).toList(),
-            Arrays.asList(ArmorItem.Type.values()));
+            HUMANOID_ARMOR_TYPES);
 
     // spotless:on
 
@@ -102,11 +107,11 @@ public class GTMaterialItems {
                                 .create(material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() :
                                         properties, tagPrefix, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .transform(GTItems.unificationItem(tagPrefix, material))
                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
-                .model(NonNullBiConsumer.noop())
-                .color(() -> () -> TagPrefixItem.tintColor(material))
+                .color(() -> TagPrefixItem.tintColor(material))
+                .model(() -> NonNullBiConsumer.noop())
                 .onRegister(GTItems::cauldronInteraction)
+                .transform(GTItems.unificationItem(tagPrefix, material))
                 .register());
     }
 
@@ -136,7 +141,7 @@ public class GTMaterialItems {
                     if (!toolType.toolDefinition.getAoEDefinition().isZero()) {
                         p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
                     }
-                    return p.craftRemainder(Items.AIR);
+                    return p;
                 })
                 .properties(p -> {
                     IGTToolDefinition toolStats = toolType.toolDefinition;
@@ -145,13 +150,15 @@ public class GTMaterialItems {
 
                     Tool tool = toolStats.getTool();
                     List<Tool.Rule> rules = new ArrayList<>(tool.rules());
-                    rules.add(Tool.Rule.deniesDrops(tier.getIncorrectBlocksForDrops()));
+                    rules.add(Tool.Rule.deniesDrops(ToolHelper.holderSet(tier.getIncorrectBlocksForDrops())));
 
                     float harvestSpeed = toolStats.getEfficiencyMultiplier() * tier.getSpeed() + toolStats.getBaseEfficiency();
                     for (TagKey<Block> tag : toolType.harvestTags) {
-                        rules.add(Tool.Rule.minesAndDrops(tag, harvestSpeed));
+                        rules.add(Tool.Rule.minesAndDrops(ToolHelper.holderSet(tag), harvestSpeed));
                     }
-                    p.component(DataComponents.TOOL, new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock()));
+                    p.component(DataComponents.TOOL,
+                            new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock(),
+                                    tool.canDestroyBlocksInCreative()));
                     p.component(GTDataComponents.TOOL_BEHAVIORS, new ToolBehaviors(toolType.toolDefinition.getBehaviors()));
 
 
@@ -165,15 +172,14 @@ public class GTMaterialItems {
                     ItemAttributeModifiers modifiers = ItemAttributeModifiers.builder()
                             .add(Attributes.ATTACK_DAMAGE,
                                     new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE),
-                                    EquipmentSlotGroup.MAINHAND)
+                                    EquipmentSlotGroup.MAINHAND, ItemAttributeModifiers.Display.hidden())
                             .add(Attributes.ATTACK_SPEED,
                                     new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,
                                             toolStats.getEfficiencyMultiplier() * toolProperty.getAttackSpeed() + toolStats.getAttackSpeed(),
                                             AttributeModifier.Operation.ADD_VALUE),
-                                    EquipmentSlotGroup.MAINHAND)
-                            .build()
+                                    EquipmentSlotGroup.MAINHAND, ItemAttributeModifiers.Display.hidden())
                             // don't show the normal vanilla damage and attack speed tooltips, we handle those ourselves
-                            .withTooltip(false);
+                            .build();
                     p.attributes(modifiers);
 
                     // Durability formula we are working with:
@@ -196,7 +202,7 @@ public class GTMaterialItems {
 
                     p.durability(durability - 1);
                     if (toolProperty.isUnbreakable()) {
-                        p.component(DataComponents.UNBREAKABLE, new Unbreakable(true));
+                        p.component(DataComponents.UNBREAKABLE, Unit.INSTANCE);
                     }
 
                     // Set behaviours
@@ -207,8 +213,8 @@ public class GTMaterialItems {
                     return p;
                 })
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .model(NonNullBiConsumer.noop())
-                .color(() -> () -> IGTTool::tintColor)
+                .color(() -> IGTTool::tintColor)
+                .model(() -> NonNullBiConsumer.noop())
                 .register());
         // spotless:on
     }
@@ -216,9 +222,7 @@ public class GTMaterialItems {
     // Material Armors
     public static void generateArmors() {
         REGISTRATE.creativeModeTab(TOOL);
-        for (ArmorItem.Type type : ArmorItem.Type.values()) {
-            if (type.getSlot().getType() != EquipmentSlot.Type.HUMANOID_ARMOR) continue;
-
+        for (ArmorType type : HUMANOID_ARMOR_TYPES) {
             for (Material material : GTCEuAPI.materialManager) {
                 GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(material.getModid());
                 if (material.hasProperty(PropertyKey.ARMOR)) {
@@ -228,28 +232,35 @@ public class GTMaterialItems {
         }
     }
 
-    private static void generateArmor(final Material material, final ArmorItem.Type type, GTRegistrate registrate) {
+    private static void generateArmor(final Material material, final ArmorType type, GTRegistrate registrate) {
         final ArmorProperty property = material.getProperty(PropertyKey.ARMOR);
         String id = "%s_%s".formatted(material.getName(), type.getName());
         ARMOR_ITEMS.put(material, type, registrate
                 .item(id, p -> new GTArmorItem(type, p, material, property))
-                .properties(p -> p.durability(type.getDurability(property.getDurabilityMultiplier())))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .model(NonNullBiConsumer.noop())
+                .model(() -> NonNullBiConsumer.noop())
                 .clientExtension(() -> () -> new IClientItemExtensions() {
 
                     @Override
-                    public int getArmorLayerTintColor(ItemStack stack, LivingEntity entity,
-                                                      ArmorMaterial.Layer layer, int layerIdx, int fallbackColor) {
+                    public int getArmorLayerTintColor(ItemStack stack, EquipmentClientInfo.Layer layer, int layerIdx,
+                                                      int fallbackColor) {
                         int maxColors = material.getMaterialInfo().getColors().size();
                         if (layerIdx >= 0 && layerIdx < maxColors) {
                             return material.getLayerARGB(layerIdx);
                         }
-                        return IClientItemExtensions.super.getArmorLayerTintColor(stack, entity, layer, layerIdx,
+                        return IClientItemExtensions.super.getArmorLayerTintColor(stack, layer, layerIdx,
                                 fallbackColor);
                     }
+
+                    @Override
+                    public Identifier getArmorTexture(ItemStack stack, EquipmentClientInfo.LayerType layerType,
+                                                      EquipmentClientInfo.Layer layer, Identifier fallbackTexture) {
+                        Identifier texture = property.getCustomTextureGetter()
+                                .getCustomTexture(stack, null, type.getSlot(), layer);
+                        return texture == null ? fallbackTexture : texture;
+                    }
                 })
-                .color(() -> () -> TagPrefixItem.tintColor(material))
+                .color(() -> TagPrefixItem.tintColor(material))
                 .register());
     }
 }

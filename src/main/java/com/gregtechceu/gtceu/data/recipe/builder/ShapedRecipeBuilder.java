@@ -6,15 +6,17 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,7 +34,7 @@ public class ShapedRecipeBuilder {
     @Setter
     protected ItemStack output = ItemStack.EMPTY;
     @Setter
-    protected ResourceLocation id;
+    protected Identifier id;
     @Setter
     protected String group;
     @Setter
@@ -43,7 +45,7 @@ public class ShapedRecipeBuilder {
     @Setter
     protected boolean isStrict;
 
-    public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapedRecipeBuilder(@Nullable Identifier id) {
         this.id = id;
     }
 
@@ -57,16 +59,12 @@ public class ShapedRecipeBuilder {
     }
 
     public ShapedRecipeBuilder define(char cha, TagKey<Item> itemStack) {
-        key.put(cha, Ingredient.of(itemStack));
+        key.put(cha, RecipeBuilderUtil.ingredientOf(itemStack));
         return this;
     }
 
     public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (!itemStack.getComponentsPatch().isEmpty()) {
-            key.put(cha, DataComponentIngredient.of(true, itemStack));
-        } else {
-            key.put(cha, Ingredient.of(itemStack));
-        }
+        key.put(cha, RecipeBuilderUtil.ingredientOf(itemStack));
         return this;
     }
 
@@ -86,7 +84,7 @@ public class ShapedRecipeBuilder {
         return this;
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
@@ -96,18 +94,18 @@ public class ShapedRecipeBuilder {
         if (isStrict) {
             recipe = new StrictShapedRecipe(
                     Objects.requireNonNullElse(this.group, ""),
-                    RecipeBuilder.determineBookCategory(this.category),
+                    RecipeBuilder.determineCraftingBookCategory(this.category),
                     ShapedRecipePattern.of(key, rows),
                     this.output,
                     false);
         } else {
             recipe = new ShapedRecipe(
-                    Objects.requireNonNullElse(this.group, ""),
-                    RecipeBuilder.determineBookCategory(this.category),
+                    new Recipe.CommonInfo(false),
+                    new CraftingRecipe.CraftingBookInfo(RecipeBuilder.determineCraftingBookCategory(this.category),
+                            Objects.requireNonNullElse(this.group, "")),
                     ShapedRecipePattern.of(key, rows),
-                    this.output,
-                    false);
+                    ItemStackTemplate.fromNonEmptyStack(this.output));
         }
-        consumer.accept(recipeId.withPrefix("shaped/"), recipe, null);
+        consumer.accept(RecipeBuilderUtil.recipeKey(recipeId.withPrefix("shaped/")), recipe, null);
     }
 }

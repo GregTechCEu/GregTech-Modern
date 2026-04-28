@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.emi.GTEmiIds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -19,14 +19,14 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
     public static final GTBedrockOreEmiCategory CATEGORY = new GTBedrockOreEmiCategory();
 
     public GTBedrockOreEmiCategory() {
-        super(GTCEu.id("bedrock_ore_diagram"),
+        super(GTEmiIds.toResourceLocation("bedrock_ore_diagram"),
                 EmiStack.of(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Tungstate)));
     }
 
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
-        fluids.holders()
+                .lookupOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
+        fluids.listElements()
                 .filter(ore -> ore.value().canGenerate())
                 .forEach(ore -> registry.addRecipe(new GTBedrockOre(ore)));
     }

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.xei.entry.fluid;
 
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -48,7 +47,7 @@ public final class FluidTagList implements FluidEntryList {
     public record FluidTagEntry(@NotNull TagKey<Fluid> tag, int amount, @NotNull DataComponentPatch componentPatch) {
 
         public Stream<FluidStack> stacks() {
-            return BuiltInRegistries.FLUID.getTag(tag).map(HolderSet.ListBacked::stream).orElseGet(Stream::empty)
+            return BuiltInRegistries.FLUID.getOrThrow(tag).stream()
                     .map(holder -> new FluidStack(holder, amount, componentPatch));
         }
     }

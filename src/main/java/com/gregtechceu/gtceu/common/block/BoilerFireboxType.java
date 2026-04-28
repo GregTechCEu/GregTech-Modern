@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public record BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
+public record BoilerFireboxType(String name, Identifier bottom, Identifier top, Identifier side) {
 
     public static final Map<String, BoilerFireboxType> FIREBOX_TYPES = new HashMap<>();
     public static final Codec<BoilerFireboxType> CODEC = Codec.STRING.comapFlatMap(name -> {

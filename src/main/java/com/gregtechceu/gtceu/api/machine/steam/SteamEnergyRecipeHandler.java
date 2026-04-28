@@ -10,7 +10,9 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +42,11 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
             long totalEU = stack.getTotalEU();
             int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
             if (totalSteam > 0) {
-                var steam = io == IO.IN ? SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
-                        SizedFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
+                var steam = io == IO.IN ?
+                        new SizedFluidIngredient(
+                                FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(GTMaterials.Steam.getFluidTag())),
+                                totalSteam) :
+                        SizedFluidIngredient.of(GTMaterials.Steam.getFluid(), totalSteam);
                 List<SizedFluidIngredient> list = new ArrayList<>();
                 list.add(steam);
                 List<SizedFluidIngredient> leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);

@@ -16,7 +16,9 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.FloatProviders;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -50,8 +52,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
             .group(
                     Codec.either(BlockState.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("block")
                             .forGetter(ext -> ext.block),
-                    IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
-                    FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
+                    IntProviders.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
+                    FloatProviders.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
                     IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement))
             .apply(instance, SurfaceIndicatorGenerator::new));
 
@@ -173,7 +175,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     @Override
     public int getSearchRadiusModifier(int veinRadius) {
-        return Math.max(0, radius.getMaxValue() - veinRadius);
+        return Math.max(0, radius.sample(net.minecraft.util.RandomSource.create()) - veinRadius);
     }
 
     @Override
@@ -196,7 +198,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                         pos -> access.getBlockState(pos).isAir() &&
                                 access.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP),
                         pos -> pos.move(Direction.UP, 1),
-                        level.getMaxBuildHeight() - initialPos.getY()).orElse(initialPos),
+                        level.getMaxY() - initialPos.getY()).orElse(initialPos),
                 block -> getBlockState(block, Direction.DOWN)),
 
         BELOW(
@@ -205,7 +207,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                         pos -> access.getBlockState(pos).isAir() &&
                                 access.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN),
                         pos -> pos.move(Direction.DOWN, 1),
-                        initialPos.getY() - level.getMinBuildHeight()).orElse(initialPos),
+                        initialPos.getY() - level.getMinY()).orElse(initialPos),
                 block -> getBlockState(block, Direction.UP));
 
         public static final Codec<IndicatorPlacement> CODEC = StringRepresentable.fromEnum(IndicatorPlacement::values);

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -11,6 +10,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,12 +26,12 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         CompoundTag serverData = blockAccessor.getServerData();
         if (serverData.contains("RecipeTypes") && serverData.contains("CurrentRecipeType")) {
-            int currentRecipeTypeIndex = serverData.getInt("CurrentRecipeType");
-            ListTag recipeTypesTagList = serverData.getList("RecipeTypes", StringTag.TAG_STRING);
+            int currentRecipeTypeIndex = serverData.getIntOr("CurrentRecipeType", -1);
+            ListTag recipeTypesTagList = serverData.getListOrEmpty("RecipeTypes");
             if (blockAccessor.showDetails()) {
                 iTooltip.add(Component.translatable("gtceu.top.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
-                    ResourceLocation recipeType = ResourceLocation.parse(recipeTypesTagList.getString(i));
+                    Identifier recipeType = Identifier.parse(recipeTypesTagList.getStringOr(i, ""));
                     MutableComponent text;
                     if (currentRecipeTypeIndex == i) {
                         text = Component.literal(" > ").withStyle(ChatFormatting.BLUE);
@@ -43,10 +43,13 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
                     iTooltip.add(text);
                 }
             } else {
-                ResourceLocation recipeType = ResourceLocation.parse(
-                        recipeTypesTagList.getString(currentRecipeTypeIndex));
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(
-                        Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
+                if (currentRecipeTypeIndex >= 0 && currentRecipeTypeIndex < recipeTypesTagList.size()) {
+                    Identifier recipeType = Identifier.parse(
+                            recipeTypesTagList.getStringOr(currentRecipeTypeIndex, ""));
+                    iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(
+                            Component
+                                    .translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
+                }
             }
         }
     }
@@ -76,6 +79,6 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("machine_mode");
+        return GTJadeIds.toResourceLocation("machine_mode");
     }
 }

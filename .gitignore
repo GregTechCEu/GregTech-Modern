@@ -1,26 +1,60 @@
-build/
-*.ipr
-run*/
-*.iws
-out/
-*.iml
-.gradle/
-output/
-bin/
+# Gradle / Java build output
+/.gradle/
+/build/
+/out/
+/output/
+/bin/
+/classes/
+*.class
 
+# Minecraft development runtime output
+/run/
+/run*/
+/logs/
+/crash-reports/
+*.hprof
+*.jfr
+hs_err_pid*.log
+replay_pid*.log
+
+# Generated data cache; generated resources themselves are checked in.
+/src/generated/resources/.cache/
+
+# IDEs and editor metadata
+/.idea/
+/.run/
+/.vscode/
 .classpath
-*/.factorypath
+.factorypath
 .project
-.idea/
-.run/
-classes/
-.metadata
-.vscode
-.settings
+.settings/
+.metadata/
+*.iml
+*.ipr
+*.iws
 *.launch
-src/generated/resources/.cache/
+*.swp
+*.swo
+*~
 
+# Local environment and analysis output
+/.env
+/.env.*
+!/.env.example
+/local.properties
+/qodana.yaml
+/.qodana/
+/.scannerwork/
+
+# Nix build links
+/result
+/result-*
+
+# Local exchange files
 *.patch
-*.DS_Store
 
-qodana.yaml
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini

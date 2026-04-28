@@ -7,16 +7,16 @@ import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 
@@ -30,13 +30,17 @@ public class WirelessTransmitterCoverTest {
     @TestHolder()
     @GameTest(template = "central_monitor", batch = "coverTests")
     public static void wirelessTransmitterCoverTest(GameTestHelper helper) {
-        CentralMonitorMachine machine = helper.getBlockEntity(new BlockPos(1, 3, 2));
-        DataAccessHatchMachine dataHatch = helper.getBlockEntity(new BlockPos(1, 2, 2));
-        BatteryBufferMachine batteryBuffer = helper.getBlockEntity(new BlockPos(2, 2, 3));
+        CentralMonitorMachine machine = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 3, 2));
+        DataAccessHatchMachine dataHatch = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(1, 2, 2));
+        BatteryBufferMachine batteryBuffer = com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(2, 2, 3));
         WirelessTransmitterCover cover = (WirelessTransmitterCover) batteryBuffer.getCoverContainer()
                 .getCoverAtSide(Direction.UP);
         MonitorGroup group = machine.getMonitorGroups().getFirst();
         group.setTarget(dataHatch.getBlockPos());
+        group.setDataSlot(0);
         Supplier<ItemStack> module = () -> group.getItemStackHandler().getStackInSlot(0);
         ItemStack stack = GTItems.TOOL_DATA_STICK.asStack();
         // noinspection DataFlowIssue

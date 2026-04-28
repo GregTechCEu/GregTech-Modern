@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.custom.PlayerInventoryWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -188,7 +189,9 @@ public class FancyMachineUIWidget extends WidgetGroup {
                 !this.previousPages.isEmpty(),
                 this.allPages.size() > 1 && this.currentPage != this.pageSwitcher);
 
-        var page = fancyUI.createMainPage(this);
+        if (!(fancyUI.createMainPage(this) instanceof Widget page)) {
+            return;
+        }
 
         // layout
         var size = new Size(Math.max(172, page.getSize().width + border * 2),

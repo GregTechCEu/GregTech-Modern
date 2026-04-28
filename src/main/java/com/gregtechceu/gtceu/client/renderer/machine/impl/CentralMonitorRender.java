@@ -18,14 +18,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
 public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, CentralMonitorRender> {
 
     // spotless:off
-    public static final Codec<CentralMonitorRender> CODEC = Codec.unit(CentralMonitorRender::new);
-    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<CentralMonitorMachine, CentralMonitorRender>(MapCodec.unit(CentralMonitorRender::new));
+    public static final MapCodec<CentralMonitorRender> CODEC = MapCodec.unit(CentralMonitorRender::new);
+    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<>(CODEC);
     // spotless:on
     private static final float SCREEN_OFFSET_Z = 0.01f;
 

@@ -3,15 +3,17 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -30,22 +32,18 @@ public class ShapelessRecipeBuilder {
 
     private ItemStack output = ItemStack.EMPTY;
     @Setter
-    protected ResourceLocation id;
+    protected Identifier id;
 
-    public ShapelessRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapelessRecipeBuilder(@Nullable Identifier id) {
         this.id = id;
     }
 
     public ShapelessRecipeBuilder requires(TagKey<Item> itemStack) {
-        return requires(Ingredient.of(itemStack));
+        return requires(RecipeBuilderUtil.ingredientOf(itemStack));
     }
 
     public ShapelessRecipeBuilder requires(ItemStack itemStack) {
-        if (!itemStack.getComponentsPatch().isEmpty()) {
-            requires(DataComponentIngredient.of(true, itemStack));
-        } else {
-            requires(Ingredient.of(itemStack));
-        }
+        requires(RecipeBuilderUtil.ingredientOf(itemStack));
         return this;
     }
 
@@ -69,18 +67,19 @@ public class ShapelessRecipeBuilder {
         return this;
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
     public ShapelessRecipe build() {
-        return new ShapelessRecipe(Objects.requireNonNullElse(this.group, ""), this.category,
-                this.output, this.ingredients);
+        return new ShapelessRecipe(new Recipe.CommonInfo(true),
+                new CraftingRecipe.CraftingBookInfo(this.category, Objects.requireNonNullElse(this.group, "")),
+                ItemStackTemplate.fromNonEmptyStack(this.output), this.ingredients);
     }
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
 
-        consumer.accept(recipeId.withPrefix("shapeless/"), build(), null);
+        consumer.accept(RecipeBuilderUtil.recipeKey(recipeId.withPrefix("shapeless/")), build(), null);
     }
 }

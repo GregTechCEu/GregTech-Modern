@@ -7,7 +7,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import com.mojang.brigadier.CommandDispatcher;
 
@@ -47,8 +47,8 @@ public class GTClientCommands {
         public void run() {
             boolean first = true;
             for (ClientCacheManager.ProspectionInfo info : prospectionData) {
-                PacketDistributor.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
-                        info.isDimCache, info.dim, info.data, first));
+                ClientPacketDistributor.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName,
+                        info.key, info.isDimCache, info.dim, info.data, first));
                 first = false;
 
                 try {

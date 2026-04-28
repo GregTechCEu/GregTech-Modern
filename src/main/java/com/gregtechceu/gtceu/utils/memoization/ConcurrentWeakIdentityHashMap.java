@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.utils.memoization;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;

@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitter
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;

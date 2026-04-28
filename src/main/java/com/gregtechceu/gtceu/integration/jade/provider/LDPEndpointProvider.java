@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -20,9 +19,9 @@ public class LDPEndpointProvider implements IBlockComponentProvider, IServerData
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine machine) {
-            boolean isFormed = blockAccessor.getServerData().getBoolean("isFormed");
-            String ioType = blockAccessor.getServerData().getString("ioType");
-            String outputDirection = blockAccessor.getServerData().getString("outputDirection");
+            boolean isFormed = blockAccessor.getServerData().getBooleanOr("isFormed", false);
+            String ioType = blockAccessor.getServerData().getStringOr("ioType", "");
+            String outputDirection = blockAccessor.getServerData().getStringOr("outputDirection", "");
 
             iTooltip.add(Component.translatable(
                     isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));
@@ -36,7 +35,7 @@ public class LDPEndpointProvider implements IBlockComponentProvider, IServerData
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine ldpEndpoint) {
-            compoundTag.putBoolean("isFormed", ldpEndpoint.getLink() == null ? false : true);
+            compoundTag.putBoolean("isFormed", ldpEndpoint.getLink() != null);
             compoundTag.putString("ioType", ldpEndpoint.getIoType().getTooltip());
             compoundTag.putString("outputDirection", ldpEndpoint.getOutputFacing().getName());
         }
@@ -44,6 +43,6 @@ public class LDPEndpointProvider implements IBlockComponentProvider, IServerData
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("ldp_endpoint");
+        return GTJadeIds.toResourceLocation("ldp_endpoint");
     }
 }

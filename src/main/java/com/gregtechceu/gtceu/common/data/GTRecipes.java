@@ -16,7 +16,8 @@ import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
@@ -30,7 +31,7 @@ import java.util.function.Consumer;
 
 public class GTRecipes {
 
-    public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
+    public static final Set<Identifier> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.
@@ -50,9 +51,14 @@ public class GTRecipes {
             }
 
             @Override
-            public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
+            public void includeRootAdvancement() {
+                originalConsumer.includeRootAdvancement();
+            }
+
+            @Override
+            public void accept(@NotNull ResourceKey<Recipe<?>> id, @NotNull Recipe<?> recipe,
                                @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
-                if (!RECIPE_FILTERS.contains(id)) {
+                if (!RECIPE_FILTERS.contains(id.identifier())) {
                     originalConsumer.accept(id, recipe, advancement, conditions);
                 }
             }
@@ -121,8 +127,8 @@ public class GTRecipes {
      *
      * This is also where any recipe removals should happen.
      */
-    public static void recipeRemoval(Consumer<ResourceLocation> registry) {
-        final Consumer<ResourceLocation> actualConsumer = registry.andThen(RECIPE_FILTERS::add);
+    public static void recipeRemoval(Consumer<Identifier> registry) {
+        final Consumer<Identifier> actualConsumer = registry.andThen(RECIPE_FILTERS::add);
         RECIPE_FILTERS.clear();
 
         RecipeRemoval.init(actualConsumer);

@@ -26,6 +26,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ import java.util.List;
 public class GrassPathBehavior implements IToolBehavior<GrassPathBehavior> {
 
     public static final GrassPathBehavior INSTANCE = new GrassPathBehavior();
-    public static final Codec<GrassPathBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<GrassPathBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, GrassPathBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected GrassPathBehavior() {/**/}
@@ -84,7 +85,7 @@ public class GrassPathBehavior implements IToolBehavior<GrassPathBehavior> {
 
         if (pathed) {
             level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

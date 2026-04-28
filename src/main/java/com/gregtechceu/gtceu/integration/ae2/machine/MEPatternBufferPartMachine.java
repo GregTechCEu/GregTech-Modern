@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -40,13 +41,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -273,7 +274,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+    public void attachConfigurators(Object configuratorPanelObject) {
+        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
+            return;
+        }
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
@@ -412,7 +416,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             } else {
                 return new PatternContainerGroup(
                         AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
-                        GTAEMachines.ME_PATTERN_BUFFER.get().getDefinition().getItem().getDescription(),
+                        GTAEMachines.ME_PATTERN_BUFFER.asStack().getHoverName(),
                         Collections.emptyList());
             }
         }
@@ -559,7 +563,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             boolean changed = false;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();
-                if (ingredient.ingredient().hasNoItems()) {
+                if (ingredient.ingredient().isEmpty()) {
                     it.remove();
                     continue;
                 }
@@ -608,12 +612,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             boolean changed = false;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();
-                if (ingredient.ingredient().hasNoFluids()) {
+                if (ingredient.ingredient().fluids().isEmpty()) {
                     it.remove();
                     continue;
                 }
 
-                var fluids = ingredient.getFluids();
+                var fluids = SizedIngredientExtensions.getFluids(ingredient);
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;
@@ -659,7 +663,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
             ListTag itemsTag = new ListTag();
             for (var entry : itemInventory.object2LongEntrySet()) {
-                var ct = (CompoundTag) entry.getKey().save(provider);
+                var ct = (CompoundTag) ItemStack.OPTIONAL_CODEC
+                        .encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), entry.getKey())
+                        .getOrThrow();
                 ct.putLong("real", entry.getLongValue());
                 itemsTag.add(ct);
             }
@@ -667,7 +673,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
             ListTag fluidsTag = new ListTag();
             for (var entry : fluidInventory.object2LongEntrySet()) {
-                var ct = (CompoundTag) entry.getKey().save(provider);
+                var ct = (CompoundTag) FluidStack.OPTIONAL_CODEC
+                        .encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), entry.getKey())
+                        .getOrThrow();
                 ct.putLong("real", entry.getLongValue());
                 fluidsTag.add(ct);
             }
@@ -678,23 +686,29 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         @Override
         public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-            ListTag items = tag.getList("inventory", Tag.TAG_COMPOUND);
+            ListTag items = tag.getListOrEmpty("inventory");
             for (Tag t : items) {
                 if (!(t instanceof CompoundTag ct)) continue;
-                var stack = ItemStack.parse(provider, ct);
-                var count = ct.getLong("real");
-                if (stack.isPresent() && !stack.get().isEmpty() && count > 0) {
-                    itemInventory.put(stack.get(), count);
+                var stack = ItemStack.OPTIONAL_CODEC
+                        .parse(provider.createSerializationContext(NbtOps.INSTANCE), ct)
+                        .result()
+                        .orElse(ItemStack.EMPTY);
+                var count = ct.getLongOr("real", 0L);
+                if (!stack.isEmpty() && count > 0) {
+                    itemInventory.put(stack, count);
                 }
             }
 
-            ListTag fluids = tag.getList("fluidInventory", Tag.TAG_COMPOUND);
+            ListTag fluids = tag.getListOrEmpty("fluidInventory");
             for (Tag t : fluids) {
                 if (!(t instanceof CompoundTag ct)) continue;
-                var stack = FluidStack.parse(provider, ct);
-                var amount = ct.getLong("real");
-                if (stack.isPresent() && !stack.get().isEmpty() && amount > 0) {
-                    fluidInventory.put(stack.get(), amount);
+                var stack = FluidStack.OPTIONAL_CODEC
+                        .parse(provider.createSerializationContext(NbtOps.INSTANCE), ct)
+                        .result()
+                        .orElse(FluidStack.EMPTY);
+                var amount = ct.getLongOr("real", 0L);
+                if (!stack.isEmpty() && amount > 0) {
+                    fluidInventory.put(stack, amount);
                 }
             }
         }

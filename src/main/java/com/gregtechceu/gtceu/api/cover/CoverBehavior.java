@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.GTCoverUI;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.misc.ToolGridIcons;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -159,9 +157,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (this instanceof IUICover) {
             if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
-                CoverUIFactory.INSTANCE.openUI(this, serverPlayer);
+                GTCoverUI.open(this, serverPlayer);
             }
-            return InteractionResult.sidedSuccess(coverHolder.isRemote());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -201,13 +199,13 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              ItemStack held, Direction side) {
+    public @Nullable Object sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                     ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
-            return GuiTextures.TOOL_REMOVE_COVER;
+            return ToolGridIcons.removeCover();
         }
         if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover) {
-            return GuiTextures.TOOL_COVER_SETTINGS;
+            return ToolGridIcons.coverSettings();
         }
         return null;
     }

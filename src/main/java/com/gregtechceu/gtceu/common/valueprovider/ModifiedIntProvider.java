@@ -17,10 +17,10 @@ public class ModifiedIntProvider {
 
     public static IntProvider of(IntProvider source, ContentModifier modifier) {
         if (source instanceof UniformInt uniform) {
-            return UniformInt.of(modifier.apply(uniform.getMinValue()), modifier.apply(uniform.getMaxValue()));
+            return UniformInt.of(modifier.apply(uniform.minInclusive()), modifier.apply(uniform.maxInclusive()));
         }
         if (source instanceof BiasedToBottomInt biased) {
-            return BiasedToBottomInt.of(modifier.apply(biased.getMinValue()), modifier.apply(biased.getMaxValue()));
+            return BiasedToBottomInt.of(modifier.apply(biased.minInclusive()), modifier.apply(biased.maxInclusive()));
         }
         return new FlooredInt(
                 new AddedFloat(

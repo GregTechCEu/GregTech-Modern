@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 
@@ -147,7 +147,7 @@ public class GradientUtil {
         int g = (int) (Math.max(0, hueToRGB(p, q, h)) * 255);
         int b = (int) (Math.max(0, hueToRGB(p, q, h - (1.0F / 3.0F))) * 255);
 
-        return FastColor.ARGB32.color(255, r, g, b);
+        return ARGB.color(255, r, g, b);
     }
 
     private static float hueToRGB(float p, float q, float h) {

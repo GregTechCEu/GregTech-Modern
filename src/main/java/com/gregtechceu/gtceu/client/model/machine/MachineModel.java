@@ -10,42 +10,40 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemTransforms;
+import com.gregtechceu.gtceu.client.model.compat.ModelState;
+import com.gregtechceu.gtceu.client.model.compat.QuadTransformers;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
-
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.QuadTransformers;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.UnbakedGeometryHelper;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
@@ -63,9 +61,9 @@ import static com.gregtechceu.gtceu.api.machine.MetaMachine.*;
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
                                 IBlockEntityRendererBakedModel<BlockEntity> {
 
-    public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
-    public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
-    public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
+    public static final Identifier PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
+    public static final Identifier FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
+    public static final Identifier ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
 
     private static @Nullable TextureAtlasSprite pipeOverlaySprite;
     private static @Nullable TextureAtlasSprite fluidOutputOverlaySprite;
@@ -145,8 +143,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         } else if (!modelsByState.isEmpty()) {
             return modelsByState.get(getDefinition().defaultRenderState()).getParticleIcon();
         } else {
-            return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                    .apply(MissingTextureAtlasSprite.getLocation());
+            return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                    .getSprite(MissingTextureAtlasSprite.getLocation());
         }
     }
 
@@ -235,8 +233,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             if (itemFace != null && side == itemFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
                 if (outputTrait.isAutoOutputItems()) {
-                    quads.add(FaceQuad.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            itemOutputOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, true));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                            itemOutputOverlaySprite));
                 }
             }
         }
@@ -245,8 +243,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             if (fluidFace != null && side == fluidFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
                 if (outputTrait.isAutoOutputFluids()) {
-                    quads.add(FaceQuad.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            fluidOutputOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, true));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                            fluidOutputOverlaySprite));
                 }
             }
         }
@@ -277,9 +275,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         // we have to recalculate CTM ourselves.
         // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
-        if (level != null && pos != null && blockState != null) {
-            return CustomBakedModel.reBakeCustomQuads(quads, level, pos, blockState, side, 0.0f);
-        }
         return quads;
     }
 
@@ -300,18 +295,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (MultiblockControllerMachine controller : controllers) {
-            var state = controller.getBlockState();
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             List<BakedQuad> newQuads = null;
 
             // spotless:off
-            if (model instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(originalQuads, controller, part, frontFacing, side,
-                        rand, modelData, renderType);
-            } else if (model instanceof MachineModel controllerModel) {
-                newQuads = renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
-                        side, rand, modelData, renderType);
-            }
             if (newQuads != null) {
                 return newQuads;
             }
@@ -359,8 +345,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         // parse out valid overrides
         Map<String, String> remaps = new IdentityHashMap<>();
-        final TextureAtlasSprite missingno = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(MissingTextureAtlasSprite.getLocation());
+        final TextureAtlasSprite missingno = Minecraft.getInstance().getAtlasManager()
+                .getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS)
+                .getSprite(MissingTextureAtlasSprite.getLocation());
         final Map<String, TextureAtlasSprite> finalOverrides = overrides;
         overrides = finalOverrides.keySet().stream()
                 .flatMap(key -> {
@@ -397,7 +384,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 packedOverlay);
         if (dynamicRenders.isEmpty()) return;
 
-        Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().position();
         for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, cameraPos)) {
                 continue;
@@ -432,7 +419,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
     public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
         if (!(blockEntity instanceof MetaMachine machine)) return false;
         if (machine.getDefinition() != getDefinition()) return false;

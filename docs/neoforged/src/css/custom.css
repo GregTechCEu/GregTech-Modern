@@ -1,0 +1,89 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+ @import "mermaid";
+ 
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #3819d2;
+  --ifm-color-primary-dark: #3217bd;
+  --ifm-color-primary-darker: #3015b3;
+  --ifm-color-primary-darkest: #271193;
+  --ifm-color-primary-light: #3f1ee4;
+  --ifm-color-primary-lighter: #4829e5;
+  --ifm-color-primary-lightest: #1f0e73;
+  --ifm-code-font-size: 90%;
+
+  --context-divier: #e2e2e3;
+
+  --ifm-color-warning-contrast-background: rgb(254, 243, 213);
+  --ifm-code-border-radius: 0.55rem;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.125);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+html[data-theme="dark"] {
+  --ifm-color-primary: #0896d4;
+  --ifm-color-primary-dark: #0891ce;
+  --ifm-color-primary-darker: #088ec9;
+  --ifm-color-primary-darkest: #078ac3;
+  --ifm-color-primary-light: #09a5e9;
+  --ifm-color-primary-lighter: #09acf4;
+  --ifm-color-primary-lightest: #27b8f7;
+
+  --ifm-background-color: #121214;
+  --ifm-background-surface-color: #1b1b1b;
+
+  --ifm-color-secondary-contrast-background: rgba(72, 71, 71, 0.55);
+  --ifm-color-warning-contrast-background: rgba(77, 56, 0, 0.55);
+  
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.45);
+  --ifm-code-background: rgba(255, 255, 255, 0.08);
+
+  --content-divier: #2e2e32;
+}
+
+.menu__caret:before {
+  background: var(--ifm-menu-link-sublist-icon) 50%/1.65rem;
+}
+
+.menu__link--sublist-caret:after {
+  background: var(--ifm-menu-link-sublist-icon) 50%/1.65rem;
+}
+
+.hash-link:link {
+  text-decoration: none;
+}
+
+a.no-underline {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.link-card:hover {
+  transform: scale(1.05);
+  border-color: var(--ifm-color-primary-light);
+}
+
+.link-card {
+  transition: transform 450ms ease-in-out;
+  border: 1px solid transparent;
+}
+
+h2 {
+  margin: 48px 0 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--context-divier);
+}
+
+.category {
+  padding: 10px;
+}
+
+.footer__copyright > p {
+  margin: 0px;
+}

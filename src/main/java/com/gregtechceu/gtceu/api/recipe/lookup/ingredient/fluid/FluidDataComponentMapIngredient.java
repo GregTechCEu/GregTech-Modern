@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
@@ -17,14 +18,16 @@ public class FluidDataComponentMapIngredient extends FluidStackMapIngredient {
     protected DataComponentFluidIngredient componentIngredient;
 
     public FluidDataComponentMapIngredient(FluidStack s, DataComponentFluidIngredient componentIngredient) {
-        super(s.getFluidHolder());
+        super(s.getFluid().builtInRegistryHolder());
         this.componentIngredient = componentIngredient;
     }
 
     @NotNull
     public static List<AbstractMapIngredient> from(@NotNull DataComponentFluidIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (FluidStack s : r.getStacks()) {
+        for (FluidStack s : r.fluidSet().stream()
+                .map(holder -> new FluidStack(holder, FluidType.BUCKET_VOLUME, r.components().asPatch()))
+                .toList()) {
             list.add(new FluidDataComponentMapIngredient(s, r));
         }
         return list;
@@ -66,8 +69,14 @@ public class FluidDataComponentMapIngredient extends FluidStackMapIngredient {
                     }
 
                     if (this.componentIngredient.isStrict()) {
-                        for (FluidStack tStack : this.componentIngredient.getStacks()) {
-                            for (FluidStack oStack : other.componentIngredient.getStacks()) {
+                        for (FluidStack tStack : this.componentIngredient.fluidSet().stream()
+                                .map(holder -> new FluidStack(holder, FluidType.BUCKET_VOLUME,
+                                        this.componentIngredient.components().asPatch()))
+                                .toList()) {
+                            for (FluidStack oStack : other.componentIngredient.fluidSet().stream()
+                                    .map(holder -> new FluidStack(holder, FluidType.BUCKET_VOLUME,
+                                            other.componentIngredient.components().asPatch()))
+                                    .toList()) {
                                 if (FluidStack.isSameFluidSameComponents(tStack, oStack)) return true;
                             }
                         }

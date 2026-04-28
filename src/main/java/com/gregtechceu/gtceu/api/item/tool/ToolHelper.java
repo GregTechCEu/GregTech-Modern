@@ -32,8 +32,10 @@ import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -50,13 +52,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -89,6 +91,21 @@ public class ToolHelper {
     private static final Char2ReferenceMap<GTToolType> symbols = new Char2ReferenceOpenHashMap<>();
 
     private ToolHelper() {/**/}
+
+    public static HolderSet<Block> holderSet(TagKey<Block> tag) {
+        try {
+            return BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK).getOrThrow(tag);
+        } catch (IllegalStateException e) {
+            if (!"Registry is already frozen".equals(e.getMessage())) {
+                throw e;
+            }
+            return BuiltInRegistries.BLOCK.getOrThrow(tag);
+        }
+    }
+
+    public static HolderSet<Block> holderSet(Block... blocks) {
+        return HolderSet.direct(Block::builtInRegistryHolder, blocks);
+    }
 
     /**
      * @return finds the registered tool with the crafting symbol
@@ -128,7 +145,7 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
+    public static ItemStack getArmor(ArmorType armorType, Material material) {
         if (material.hasProperty(PropertyKey.ARMOR)) {
             var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
             if (entry != null) {
@@ -188,9 +205,9 @@ public class ToolHelper {
                     }
                     if (user != null) {
                         user.breakItem(stack);
+                        var hand = user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND;
                         user.onEquippedItemBroken(stack.getItem(),
-                                LivingEntity.getSlotForHand(
-                                        user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
+                                hand == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND);
                     }
                     stack.shrink(1);
                 }
@@ -214,11 +231,12 @@ public class ToolHelper {
 
         Tool tool = toolType.toolDefinition.getTool();
         List<Tool.Rule> rules = new ArrayList<>(tool.rules());
-        rules.add(Tool.Rule.deniesDrops(CustomTags.INCORRECT_TOOL_TIERS[harvestLevel]));
+        rules.add(Tool.Rule.deniesDrops(holderSet(CustomTags.INCORRECT_TOOL_TIERS[harvestLevel])));
         for (TagKey<Block> tag : toolType.harvestTags) {
-            rules.add(Tool.Rule.minesAndDrops(tag, toolSpeed));
+            rules.add(Tool.Rule.minesAndDrops(holderSet(tag), toolSpeed));
         }
-        stack.set(DataComponents.TOOL, new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock()));
+        stack.set(DataComponents.TOOL,
+                new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock(), tool.canDestroyBlocksInCreative()));
         if (!stack.has(GTDataComponents.TOOL_BEHAVIORS)) {
             stack.set(GTDataComponents.TOOL_BEHAVIORS, new ToolBehaviors(toolType.toolDefinition.getBehaviors()));
         }
@@ -227,14 +245,12 @@ public class ToolHelper {
                 .add(Attributes.ATTACK_DAMAGE,
                         new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, attackDamage,
                                 AttributeModifier.Operation.ADD_VALUE),
-                        EquipmentSlotGroup.MAINHAND)
+                        EquipmentSlotGroup.MAINHAND, ItemAttributeModifiers.Display.hidden())
                 .add(Attributes.ATTACK_SPEED,
                         new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, toolType.toolDefinition.getAttackSpeed(),
                                 AttributeModifier.Operation.ADD_VALUE),
-                        EquipmentSlotGroup.MAINHAND)
-                .build()
-                // don't show the normal vanilla damage and attack speed tooltips, we handle those ourselves
-                .withTooltip(false);
+                        EquipmentSlotGroup.MAINHAND, ItemAttributeModifiers.Display.hidden())
+                .build();
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
 
         return stack;
@@ -455,7 +471,8 @@ public class ToolHelper {
 
     public static boolean removeBlock(Level level, ServerPlayer player, BlockPos pos, BlockState state,
                                       boolean canDropLoot) {
-        boolean removed = state.onDestroyedByPlayer(level, pos, player, canDropLoot, level.getFluidState(pos));
+        boolean removed = state.onDestroyedByPlayer(level, pos, player, player.getMainHandItem(), canDropLoot,
+                level.getFluidState(pos));
         if (removed) {
             state.getBlock().destroy(level, pos, state);
         }
@@ -584,8 +601,9 @@ public class ToolHelper {
         if (stack.getItem() instanceof IGTTool) {
             damage = ((IGTTool) stack.getItem()).getToolStats().getToolDamagePerCraft(stack);
         } else {
-            if (stack.getTags().anyMatch(s -> s.location().getPath().startsWith("tool") ||
-                    s.location().getPath().startsWith("crafting_tool"))) {
+            if (stack.getItem().builtInRegistryHolder().tags()
+                    .anyMatch(s -> s.location().getPath().startsWith("tool") ||
+                            s.location().getPath().startsWith("crafting_tool"))) {
                 damage = 1;
             }
         }
@@ -627,7 +645,7 @@ public class ToolHelper {
      */
     public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
         if (!player.isCreative()) {
-            Level world = player.serverLevel();
+            Level world = player.level();
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(player, tool, world, pos)) {
@@ -640,9 +658,9 @@ public class ToolHelper {
                             iter.remove();
                         } else {
                             float f = 0.7F;
-                            double xo = world.random.nextFloat() * f + 0.15D;
-                            double yo = world.random.nextFloat() * f + 0.15D;
-                            double zo = world.random.nextFloat() * f + 0.15D;
+                            double xo = world.getRandom().nextFloat() * f + 0.15D;
+                            double yo = world.getRandom().nextFloat() * f + 0.15D;
+                            double zo = world.getRandom().nextFloat() * f + 0.15D;
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + xo, pos.getY() + yo,
                                     pos.getZ() + zo, stack);
                             entityItem.setDefaultPickUpDelay();

@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.core.mixins.neoforge.ConfiguredModelBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.neoforge.ConfiguredModelListAccessor;
+import com.gregtechceu.gtceu.utils.data.ExistingFileHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider.ConfiguredModelList;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
@@ -51,7 +51,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     @Getter
     private final List<String> replaceableTextures = new ArrayList<>();
     @Getter
-    private final SortedMap<String, ResourceLocation> textureOverrides = new TreeMap<>();
+    private final SortedMap<String, Identifier> textureOverrides = new TreeMap<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
         super(MachineModelLoader.ID, parent, existingFileHelper, true);
@@ -189,7 +189,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      * @param texture  The name of the texture in this model
      * @param material The texture to replace
      */
-    public MachineModelBuilder<T> addTextureOverride(String material, ResourceLocation texture) {
+    public MachineModelBuilder<T> addTextureOverride(String material, Identifier texture) {
         this.textureOverrides.put(material, texture);
         return this;
     }
@@ -282,7 +282,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      *
      * @param model the model to use
      * @return the model builder
-     * @see MachineModelBuilder#part(ResourceLocation)
+     * @see MachineModelBuilder#part(Identifier)
      */
     public PartBuilder part(ModelFile model) {
         return part().modelFile(model).addModel();
@@ -295,7 +295,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      * @return the model builder
      * @see MachineModelBuilder#part(ModelFile)
      */
-    public PartBuilder part(ResourceLocation model) {
+    public PartBuilder part(Identifier model) {
         return part(new ModelFile.ExistingModelFile(model, existingFileHelper));
     }
 
@@ -311,7 +311,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                                                      Property<?>... ignored) {
         Set<PartialState<T>> seen = new HashSet<>();
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
-            Map<Property<?>, Comparable<?>> propertyValues = Maps.newLinkedHashMap(fullState.getValues());
+            Map<Property<?>, Comparable<?>> propertyValues = propertyValueMap(fullState);
             for (Property<?> p : ignored) {
                 propertyValues.remove(p);
             }
@@ -332,7 +332,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                                                             Property<?>... ignored) {
         Set<PartialState<T>> seen = new HashSet<>();
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
-            Map<Property<?>, Comparable<?>> propertyValues = Maps.newLinkedHashMap(fullState.getValues());
+            Map<Property<?>, Comparable<?>> propertyValues = propertyValueMap(fullState);
             for (Property<?> p : ignored) {
                 propertyValues.remove(p);
             }
@@ -652,9 +652,9 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             boolean matched = !useOr;
 
             if (!conditions.isEmpty()) {
-                for (var entry : stateValues.entrySet()) {
-                    Property<?> property = entry.getKey();
-                    Comparable<?> value = entry.getValue();
+                for (var entry : stateValues.toList()) {
+                    Property<?> property = entry.property();
+                    Comparable<?> value = entry.value();
                     boolean contains = conditions.containsEntry(property, value);
 
                     if (useOr) {
@@ -798,5 +798,11 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 return new JsonObject();
             }
         }
+    }
+
+    private static Map<Property<?>, Comparable<?>> propertyValueMap(MachineRenderState state) {
+        Map<Property<?>, Comparable<?>> propertyValues = Maps.newLinkedHashMap();
+        state.getValues().forEach(entry -> propertyValues.put(entry.property(), entry.value()));
+        return propertyValues;
     }
 }

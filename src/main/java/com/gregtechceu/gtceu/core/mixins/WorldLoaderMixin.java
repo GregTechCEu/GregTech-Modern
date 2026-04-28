@@ -15,22 +15,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 // priority=1500 so this is after KubeJS has captured the registry access
 @Mixin(value = WorldLoader.class, priority = 1500)
 public class WorldLoaderMixin {
 
-    @Inject(method = "load",
+    @Inject(method = "lambda$load$2",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/LayeredRegistryAccess;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
+                     target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/LayeredRegistryAccess;Ljava/util/List;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;Lnet/minecraft/server/permissions/PermissionSet;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
                      shift = At.Shift.BEFORE))
-    private static <D, R> void gtceu$postKJSVeinEvents(CallbackInfoReturnable<CompletableFuture<R>> cir,
-                                                       // @Local(ordinal = 0) RegistryAccess.Frozen
-                                                       // registriesWithWorldgen,
-                                                       // @Local(ordinal = 1) RegistryAccess.Frozen
-                                                       // registriesWithDimensions,
-                                                       @Local(ordinal = 1) LayeredRegistryAccess<RegistryLayer> layered) {
+    private static void gtceu$postKJSVeinEvents(CallbackInfoReturnable<CompletionStage<?>> cir,
+                                                // @Local(ordinal = 0) RegistryAccess.Frozen
+                                                // registriesWithWorldgen,
+                                                // @Local(ordinal = 1) RegistryAccess.Frozen
+                                                // registriesWithDimensions,
+                                                @Local(ordinal = 1) LayeredRegistryAccess<RegistryLayer> layered) {
         RegistryAccess.Frozen registriesWithEverything = layered.compositeAccess();
         if (GTCEu.Mods.isKubeJSLoaded()) {
             if (RegistryAccessContainer.current.access().registries().count() <

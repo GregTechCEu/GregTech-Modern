@@ -126,7 +126,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
+    public void attachSideTabs(Object sideTabsObject) {
+        if (!(sideTabsObject instanceof TabsWidget sideTabs)) {
+            return;
+        }
         sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
@@ -236,9 +239,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ///////////////////////////////
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
+    public void attachConfigurators(Object configuratorPanelObject) {
+        IMEStockingPart.super.attachConfigurators(configuratorPanelObject);
+        super.attachConfigurators(configuratorPanelObject);
+        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
+            return;
+        }
         configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
@@ -258,7 +264,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
             }
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return InteractionResult.SUCCESS;
     }
 
     ////////////////////////////////
@@ -282,10 +288,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     protected void readConfigFromTag(HolderLookup.Provider provider, CompoundTag tag) {
-        if (tag.getBoolean("AutoPull")) {
+        if (tag.getBooleanOr("AutoPull", false)) {
             // if being set to auto-pull, no need to read the configured slots
             this.setAutoPull(true);
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByteOr("GhostCircuit", (byte) 0)));
             return;
         }
         // set auto pull first to avoid issues with clearing the config after reading from the data stick

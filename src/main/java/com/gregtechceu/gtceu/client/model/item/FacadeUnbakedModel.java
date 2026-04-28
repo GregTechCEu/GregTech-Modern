@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.client.model.item;
 
+import com.gregtechceu.gtceu.client.model.compat.BakedModel;
+import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
+import com.gregtechceu.gtceu.client.model.compat.ModelState;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
@@ -30,15 +33,12 @@ public class FacadeUnbakedModel implements IUnbakedGeometry<FacadeUnbakedModel> 
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides) {
-        BakedModel bakedParent = defaultModel.bake(baker, defaultModel, spriteGetter, modelState, true);
-        return new FacadeCoverRenderer(bakedParent);
+        return new FacadeCoverRenderer(null);
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter,
-                               IGeometryBakingContext context) {
-        defaultModel.resolveParents(modelGetter);
-    }
+    public void resolveParents(Function<Identifier, UnbakedModel> modelGetter,
+                               IGeometryBakingContext context) {}
 
     public static class Loader implements IGeometryLoader<FacadeUnbakedModel> {
 

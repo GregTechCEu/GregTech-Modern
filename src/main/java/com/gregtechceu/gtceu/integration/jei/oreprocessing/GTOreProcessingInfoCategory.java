@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.jei.oreprocessing;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
@@ -27,7 +27,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
 public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<Material> {
 
-    public final static RecipeType<Material> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_processing_diagram"),
+    public final static RecipeType<Material> RECIPE_TYPE = new RecipeType<>(GTJeiIds.id("ore_processing_diagram"),
             Material.class);
     @Getter
     private final IDrawable background;

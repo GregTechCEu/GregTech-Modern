@@ -24,13 +24,13 @@ public class DimensionMarkerBuilder extends BuilderBase<DimensionMarker> {
     private Component overrideName;
 
     public DimensionMarkerBuilder(ResourceLocation id) {
-        super(id);
+        super((id));
     }
 
     @Override
     public DimensionMarker createObject() {
         Validator.validate(
-                id,
+                id.toIdentifier(),
                 Validator.errorIfNull(iconSupplier, "icon"),
                 Validator.errorIfOutOfRange(tier, "tier", 0, DimensionMarker.MAX_TIER));
         return new DimensionMarker(tier, iconSupplier, overrideName);

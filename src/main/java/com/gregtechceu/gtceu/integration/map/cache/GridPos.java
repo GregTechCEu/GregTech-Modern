@@ -17,8 +17,8 @@ public class GridPos {
     }
 
     public GridPos(ChunkPos chunk) {
-        this.x = Math.floorDiv(chunk.x, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
-        this.z = Math.floorDiv(chunk.z, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+        this.x = Math.floorDiv(chunk.x(), ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+        this.z = Math.floorDiv(chunk.z(), ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
     }
 
     public GridPos(BlockPos block) {

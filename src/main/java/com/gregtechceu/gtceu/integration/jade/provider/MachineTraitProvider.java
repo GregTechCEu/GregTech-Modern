@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import lombok.Getter;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -22,21 +22,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class MachineTraitProvider<T extends MachineTrait>
                                           implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
-    @Getter
     private final ResourceLocation uid;
     public final MachineTraitType<T> traitType;
 
-    protected MachineTraitProvider(ResourceLocation uid, MachineTraitType<T> type) {
-        this.uid = uid;
+    protected MachineTraitProvider(Identifier uid, MachineTraitType<T> type) {
+        this.uid = GTJadeIds.from(uid);
         this.traitType = type;
+    }
+
+    @Override
+    public ResourceLocation getUid() {
+        return GTJadeIds.toResourceLocation(uid);
     }
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor block, IPluginConfig iPluginConfig) {
         var be = block.getBlockEntity();
-        if (be == null || !block.getServerData().contains(uid.toString(), CompoundTag.TAG_COMPOUND)) return;
+        var serverData = block.getServerData().getCompound(uid.toString()).orElse(null);
+        if (be == null || serverData == null) return;
 
-        var serverData = block.getServerData().getCompound(uid.toString());
         addTooltip(serverData, iTooltip, block.getPlayer(), block, be, iPluginConfig);
     }
 
@@ -45,7 +49,11 @@ public abstract class MachineTraitProvider<T extends MachineTrait>
         var be = blockAccessor.getBlockEntity();
         if (be instanceof MetaMachine machine) {
             T t = machine.getTraitHolder().getTrait(traitType);
-            if (t != null) write(compoundTag.getCompound(uid.toString()), blockAccessor, t);
+            if (t != null) {
+                var data = compoundTag.getCompoundOrEmpty(uid.toString());
+                write(data, blockAccessor, t);
+                compoundTag.put(uid.toString(), data);
+            }
         }
     }
 

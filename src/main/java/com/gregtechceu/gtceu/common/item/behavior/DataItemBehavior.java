@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.BindingData;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -24,15 +24,15 @@ public class DataItemBehavior implements IInteractionItem {
     protected DataItemBehavior() {}
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(usedHand);
-            int permissionLevel = 0;
-            while (player.hasPermissions(permissionLevel)) permissionLevel++;
+            int permissionLevel = player.permissions() instanceof LevelBasedPermissionSet levelBased ?
+                    levelBased.level().id() : 0;
 
             stack.set(GTDataComponents.BINDING_DATA, new BindingData(permissionLevel, player.getUUID()));
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
@@ -67,6 +67,6 @@ public class DataItemBehavior implements IInteractionItem {
                 return InteractionResult.PASS;
             }
         }
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.SUCCESS;
     }
 }

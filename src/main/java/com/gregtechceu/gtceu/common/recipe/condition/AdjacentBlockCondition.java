@@ -9,15 +9,17 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.MapCodec;
@@ -74,7 +76,7 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
 
     public static AdjacentBlockCondition fromTags(Collection<TagKey<Block>> tags) {
         return new AdjacentBlockCondition(tags.stream()
-                .<HolderSet<Block>>map(BuiltInRegistries.BLOCK::getOrCreateTag)
+                .<HolderSet<Block>>map(BuiltInRegistries.BLOCK::getOrThrow)
                 .toList());
     }
 
@@ -131,11 +133,17 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
         if (recipe != null && recipe.data.contains("blockA") && recipe.data.contains("blockB")) {
             this.resolvedBlocks.clear();
 
-            Block blockA = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(recipe.data.getString("blockA")));
+            Block blockA = BuiltInRegistries.BLOCK
+                    .get(Identifier.parse(recipe.data.getStringOr("blockA", "")))
+                    .map(Holder::value)
+                    .orElse(Blocks.AIR);
             if (!blockA.defaultBlockState().isAir()) {
                 this.resolvedBlocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
             }
-            Block blockB = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(recipe.data.getString("blockB")));
+            Block blockB = BuiltInRegistries.BLOCK
+                    .get(Identifier.parse(recipe.data.getStringOr("blockB", "")))
+                    .map(Holder::value)
+                    .orElse(Blocks.AIR);
             if (!blockB.defaultBlockState().isAir()) {
                 this.resolvedBlocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
             }

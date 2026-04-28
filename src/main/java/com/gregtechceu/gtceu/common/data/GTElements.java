@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.Holder;
+
 public class GTElements {
 
     public static final Element H = createAndRegister(1, 0, -1, null, "Hydrogen", "H", false);
@@ -151,6 +153,6 @@ public class GTElements {
     public static void init() {}
 
     public static Element get(String name) {
-        return GTRegistries.ELEMENTS.get(GTCEu.id(name));
+        return GTRegistries.ELEMENTS.get(GTCEu.id(name)).map(Holder::value).orElseThrow();
     }
 }

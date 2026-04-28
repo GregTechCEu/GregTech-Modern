@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,16 +63,16 @@ public class TreeFellingBehavior implements IToolBehavior<TreeFellingBehavior> {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level level,
-                                                                        Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult onItemRightClick(@NotNull Level level,
+                                                       Player player, @NotNull InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
-        if (level.isClientSide || !player.isShiftKeyDown()) {
-            return InteractionResultHolder.pass(held);
+        if (level.isClientSide() || !player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
         }
         ToolBehaviors component = ToolHelper.getBehaviorsComponent(held);
         component.withBehavior(new TreeFellingBehavior(!this.enabled));
         player.sendSystemMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
                 .append(Component.translatable("cover.voiding.label." + (!enabled ? "enabled" : "disabled"))));
-        return InteractionResultHolder.success(held);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(held);
     }
 }

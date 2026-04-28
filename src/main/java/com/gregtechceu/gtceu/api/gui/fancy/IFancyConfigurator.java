@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -14,9 +11,9 @@ public interface IFancyConfigurator {
 
     Component getTitle();
 
-    IGuiTexture getIcon();
+    Object getIcon();
 
-    Widget createConfigurator();
+    Object createConfigurator();
 
     default List<Component> getTooltips() {
         return List.of(getTitle());

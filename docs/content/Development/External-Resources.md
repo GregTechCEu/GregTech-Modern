@@ -12,9 +12,10 @@ as other resources you might find helpful.
 
 ## General Modding Docs
 
-!!! link "Official Forge / NeoForge Docs"
-    - [Forge-Wiki](https://docs.minecraftforge.net/en/1.20.x/)  
+!!! link "Official NeoForge Docs"
     - [NeoForge-Wiki](https://docs.neoforged.net/)
+
+    The local snapshot under `docs/neoforged` should be the first stop for 26.1/26.1.2 porting work.
 
 !!! link "Other Modding Docs"
     - [Forge Community-Wiki](https://forge.gemwire.uk/wiki/Main_Page)
@@ -53,12 +54,7 @@ LDLib is the main library we're using for GTCEu-Modern.
     Unofficial documentation for Mojang's DataFixerUpper library.
 
 
-## Registrate & Architectury
+## Registrate
 
 !!! link "Using Registrate"
     [:material-github: Registrate](https://github.com/tterrag1098/Registrate)
-
-!!! link "Architectury Gradle Plugin"
-    [Architectury-Wiki :material-arrow-right: Gradle Plugin](https://docs.architectury.dev/plugin/introduction)
-
-    Note that we're only using Architectury's build system, not the library itself.

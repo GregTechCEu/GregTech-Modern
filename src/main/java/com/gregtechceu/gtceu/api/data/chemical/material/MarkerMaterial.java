@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * MarkerMaterial is type of material used for generic things like material re-registration and use in recipes.
@@ -11,11 +11,11 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class MarkerMaterial extends Material {
 
-    private final ResourceLocation resourceLocation;
+    private final Identifier Identifier;
 
-    public MarkerMaterial(ResourceLocation resourceLocation) {
-        super(resourceLocation);
-        this.resourceLocation = resourceLocation;
+    public MarkerMaterial(Identifier Identifier) {
+        super(Identifier);
+        this.Identifier = Identifier;
         // TODO
         // OreDictUnifier.registerMarkerMaterial(this);
     }
@@ -29,6 +29,6 @@ public final class MarkerMaterial extends Material {
     @Override
     // since we're not registered, return overriden name
     public String toString() {
-        return resourceLocation.toString();
+        return Identifier.toString();
     }
 }

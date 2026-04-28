@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic.Status;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.utils.data.ExistingFileHelper;
 import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.resources.Identifier;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HPCAOverlay {
 
     // spotless:off
-    public static HPCAOverlay get(ResourceLocation normalSprite, ResourceLocation damagedSprite,
+    public static HPCAOverlay get(Identifier normalSprite, Identifier damagedSprite,
                                   ExistingFileHelper fileHelper) {
         if (fileHelper instanceof RuntimeExistingFileHelper runtimeFileHelper) {
             // if fileHelper is an instance of RuntimeExistingFileHelper, we have to enable its existence checking.
@@ -37,23 +37,23 @@ public class HPCAOverlay {
             if (!fileHelper.exists(normalSprite, GTBlockstateProvider.TEXTURE)) {
                 return HPCAOverlay.EMPTY;
             }
-            ResourceLocation activeSprite = normalSprite.withSuffix("_active");
+            Identifier activeSprite = normalSprite.withSuffix("_active");
             if (!fileHelper.exists(activeSprite, GTBlockstateProvider.TEXTURE)) activeSprite = normalSprite;
 
-            ResourceLocation damagedActiveSprite = damagedSprite.withSuffix("_active");
+            Identifier damagedActiveSprite = damagedSprite.withSuffix("_active");
             if (!fileHelper.exists(damagedActiveSprite, GTBlockstateProvider.TEXTURE)) damagedActiveSprite = damagedSprite;
 
             // emissive
-            ResourceLocation normalSpriteEmissive = normalSprite.withSuffix("_emissive");
+            Identifier normalSpriteEmissive = normalSprite.withSuffix("_emissive");
             if (!fileHelper.exists(normalSpriteEmissive, GTBlockstateProvider.TEXTURE)) normalSpriteEmissive = null;
 
-            ResourceLocation activeSpriteEmissive = activeSprite.withSuffix("_emissive");
+            Identifier activeSpriteEmissive = activeSprite.withSuffix("_emissive");
             if (!fileHelper.exists(activeSpriteEmissive, GTBlockstateProvider.TEXTURE)) activeSpriteEmissive = null;
 
-            ResourceLocation damagedSpriteEmissive = damagedSprite.withSuffix("_emissive");
+            Identifier damagedSpriteEmissive = damagedSprite.withSuffix("_emissive");
             if (!fileHelper.exists(damagedSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedSpriteEmissive = null;
 
-            ResourceLocation damagedActiveSpriteEmissive = damagedActiveSprite.withSuffix("_emissive");
+            Identifier damagedActiveSpriteEmissive = damagedActiveSprite.withSuffix("_emissive");
             if (!fileHelper.exists(damagedActiveSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedActiveSpriteEmissive = null;
 
             return new HPCAOverlay(normalSprite, activeSprite, damagedSprite, damagedActiveSprite,
@@ -70,17 +70,17 @@ public class HPCAOverlay {
 
     public static final HPCAOverlay EMPTY = new HPCAOverlay();
 
-    private final Map<Status, ResourceLocation> textures = new EnumMap<>(Status.class);
-    private final Map<Status, ResourceLocation> emissiveTextures = new EnumMap<>(Status.class);
+    private final Map<Status, Identifier> textures = new EnumMap<>(Status.class);
+    private final Map<Status, Identifier> emissiveTextures = new EnumMap<>(Status.class);
 
-    public HPCAOverlay(@Nullable ResourceLocation normalSprite,
-                       @Nullable ResourceLocation activeSprite,
-                       @Nullable ResourceLocation damagedSprite,
-                       @Nullable ResourceLocation damagedActiveSprite,
-                       @Nullable ResourceLocation normalSpriteEmissive,
-                       @Nullable ResourceLocation activeSpriteEmissive,
-                       @Nullable ResourceLocation damagedSpriteEmissive,
-                       @Nullable ResourceLocation damagedActiveSpriteEmissive) {
+    public HPCAOverlay(@Nullable Identifier normalSprite,
+                       @Nullable Identifier activeSprite,
+                       @Nullable Identifier damagedSprite,
+                       @Nullable Identifier damagedActiveSprite,
+                       @Nullable Identifier normalSpriteEmissive,
+                       @Nullable Identifier activeSpriteEmissive,
+                       @Nullable Identifier damagedSpriteEmissive,
+                       @Nullable Identifier damagedActiveSpriteEmissive) {
         textures.put(Status.IDLE, normalSprite);
         emissiveTextures.put(Status.IDLE, normalSpriteEmissive);
 
@@ -102,13 +102,13 @@ public class HPCAOverlay {
         else return Status.IDLE;
     }
 
-    public @NotNull ResourceLocation getTexture(boolean active, boolean damaged) {
-        ResourceLocation value = textures.get(getStatus(active, damaged));
+    public @NotNull Identifier getTexture(boolean active, boolean damaged) {
+        Identifier value = textures.get(getStatus(active, damaged));
         return value != null ? value : GTModels.BLANK_TEXTURE;
     }
 
-    public @NotNull ResourceLocation getEmissiveTexture(boolean active, boolean damaged) {
-        ResourceLocation value = emissiveTextures.get(getStatus(active, damaged));
+    public @NotNull Identifier getEmissiveTexture(boolean active, boolean damaged) {
+        Identifier value = emissiveTextures.get(getStatus(active, damaged));
         return value != null ? value : GTModels.BLANK_TEXTURE;
     }
 }

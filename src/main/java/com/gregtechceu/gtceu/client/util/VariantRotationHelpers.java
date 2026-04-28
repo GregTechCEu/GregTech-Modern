@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.client.util;
 
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.util.Mth;
 
 import com.google.common.base.Preconditions;
+import com.mojang.math.Quadrant;
 import com.mojang.math.Transformation;
 import org.joml.Quaternionf;
 
@@ -25,7 +26,9 @@ public class VariantRotationHelpers {
         for (var xRot = 0; xRot < 360; xRot += 90) {
             for (var yRot = 0; yRot < 360; yRot += 90) {
                 // Reuse existing transform from Vanilla
-                result[indexFromAngles(xRot, yRot, 0)] = BlockModelRotation.by(xRot, yRot).getRotation();
+                result[indexFromAngles(xRot, yRot, 0)] = BlockModelRotation
+                        .get(Quadrant.fromXYAngles(getQuadrant(xRot), getQuadrant(yRot)))
+                        .transformation();
 
                 for (var zRot = 90; zRot < 360; zRot += 90) {
                     var idx = indexFromAngles(xRot, yRot, zRot);
@@ -47,11 +50,9 @@ public class VariantRotationHelpers {
     private VariantRotationHelpers() {}
 
     public static Variant rotateVariant(Variant variant, int xRot, int yRot, int zRot) {
-        return new Variant(
-                variant.getModelLocation(),
-                getRotationTransform(xRot, yRot, zRot),
-                variant.isUvLocked(),
-                variant.getWeight());
+        return variant.withXRot(getQuadrant(xRot))
+                .withYRot(getQuadrant(yRot))
+                .withZRot(getQuadrant(zRot));
     }
 
     public static Transformation getRotationTransform(int xRot, int yRot, int zRot) {
@@ -63,5 +64,15 @@ public class VariantRotationHelpers {
         Preconditions.checkArgument(yRot >= 0 && yRot < 360 && yRot % 90 == 0);
         Preconditions.checkArgument(zRot >= 0 && zRot < 360 && zRot % 90 == 0);
         return xRot / 90 * 16 + yRot / 90 * 4 + zRot / 90;
+    }
+
+    private static Quadrant getQuadrant(int angle) {
+        return switch (angle) {
+            case 0 -> Quadrant.R0;
+            case 90 -> Quadrant.R90;
+            case 180 -> Quadrant.R180;
+            case 270 -> Quadrant.R270;
+            default -> throw new IllegalArgumentException("Invalid angle: " + angle);
+        };
     }
 }

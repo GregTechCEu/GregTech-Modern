@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -41,7 +42,7 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     @Override
     public void serverTick() {
         amps = 0;
-        if (getMachine().getLevel().isClientSide)
+        if (getMachine().getLevel().isClientSide())
             return;
         if (getEnergyStored() < getOutputVoltage() || getOutputVoltage() <= 0 || getOutputAmperage() <= 0)
             return;

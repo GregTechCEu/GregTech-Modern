@@ -5,17 +5,17 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
-import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.Context;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -144,8 +144,10 @@ public class CraftingComponentsEventJS implements KubeStartupEvent {
     @SuppressWarnings("unchecked")
     private static @Nullable TagKey<Item> parseTag(Object o) {
         if (o instanceof TagKey<?> key && key.isFor(Registries.ITEM)) return (TagKey<Item>) key;
-        ResourceLocation rl = ID.mc(o);
-        if (rl != null) return TagKey.create(Registries.ITEM, rl);
+        try {
+            Identifier id = GTResourceLocation.parseMinecraft(o);
+            if (id != null) return TagKey.create(Registries.ITEM, id);
+        } catch (RuntimeException ignored) {}
         return null;
     }
 
@@ -210,8 +212,14 @@ public class CraftingComponentsEventJS implements KubeStartupEvent {
             return add(tier, stack);
         }
 
-        public ComponentWrapper addTag(int tier, ResourceLocation tag) {
+        public ComponentWrapper addTag(int tier, Identifier tag) {
             return add(tier, TagKey.create(Registries.ITEM, tag));
+        }
+
+        public ComponentWrapper addTag(int tier, Object tag) {
+            Identifier id = GTResourceLocation.parseMinecraft(tag);
+            if (id == null) throw new IllegalArgumentException("Invalid item tag: " + tag);
+            return add(tier, TagKey.create(Registries.ITEM, id));
         }
 
         public ComponentWrapper addMaterialEntry(int tier, MaterialEntry entry) {

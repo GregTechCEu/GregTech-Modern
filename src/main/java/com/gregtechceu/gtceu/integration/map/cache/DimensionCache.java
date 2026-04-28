@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
 
 import lombok.Getter;
@@ -44,13 +43,13 @@ public class DimensionCache {
     }
 
     public void fromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        for (String gridPos : tag.getAllKeys()) {
+        for (String gridPos : tag.keySet()) {
             String[] split = gridPos.split(",");
             GridPos key = new GridPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
             if (!cache.containsKey(key)) {
                 cache.put(key, new GridCache());
             }
-            cache.get(key).fromNBT(tag.getList(gridPos, Tag.TAG_COMPOUND), provider);
+            cache.get(key).fromNBT(tag.getListOrEmpty(gridPos), provider);
         }
     }
 

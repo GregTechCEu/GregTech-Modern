@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +27,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient Supplier<Material> materialSupplier;
     @Setter
-    public transient ResourceLocation baseModelLocation;
+    public transient Identifier baseModelLocation;
     @Setter
     public transient Supplier<BlockBehaviour.Properties> templateProperties;
     @Setter
@@ -38,7 +38,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     public transient boolean shouldDropAsItem = false;
 
     public OreTagPrefixBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
 
     @Override
     public TagPrefix createObject() {
-        validate(this.id,
+        validate(this.id.toIdentifier(),
                 errorIfNull(stateSupplier, "stateSupplier"),
                 onlySetDefault(templateProperties, () -> {
                     templateProperties = () -> GTBlocks.copy(stateSupplier.get().getBlock().properties(),

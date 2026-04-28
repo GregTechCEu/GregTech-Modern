@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.kubejs;
 
 import com.gregtechceu.gtceu.core.IResourceLocationExtensions;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.util.KubeResourceLocation;
@@ -17,9 +18,10 @@ public abstract class KubeResourceLocationMixin {
     private static void wrap(Object args, CallbackInfoReturnable<KubeResourceLocation> cir) {
         if (args instanceof String stringArg) {
             if (!stringArg.contains(":")) {
-                var loc = ResourceLocation.fromNamespaceAndPath("kubejs", stringArg);
+                var loc = Identifier.fromNamespaceAndPath("kubejs", stringArg);
                 ((IResourceLocationExtensions) (Object) loc).gtm$setImplicit(true);
-                cir.setReturnValue(new KubeResourceLocation(loc));
+                cir.setReturnValue(new KubeResourceLocation(ResourceLocation.fromNamespaceAndPath(loc.getNamespace(),
+                        loc.getPath())));
             }
         }
     }

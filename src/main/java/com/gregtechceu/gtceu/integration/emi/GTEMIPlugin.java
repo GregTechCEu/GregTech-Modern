@@ -104,7 +104,7 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.setDefaultComparison(potionFluid.getSource(), potionComparison);
         registry.setDefaultComparison(potionFluid.getFlowing(), potionComparison);
 
-        BuiltInRegistries.POTION.holders().forEach(potion -> {
+        BuiltInRegistries.POTION.listElements().forEach(potion -> {
             FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
             registry.addEmiStack(EmiStack.of(stack.getFluid(), stack.getComponentsPatch()));
         });

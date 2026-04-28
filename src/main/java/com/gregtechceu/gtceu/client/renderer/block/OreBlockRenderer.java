@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.function.MemoizedBiFunction;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
@@ -68,11 +68,12 @@ public class OreBlockRenderer {
             MaterialIconSet iconSet = material.getMaterialIconSet();
             MaterialIconType iconType = tagPrefix.getMaterialIconType(material);
 
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = GTCEu.id(ORE_MODEL_NAME_FORMAT
+            Identifier blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            Identifier modelId = GTCEu.id(ORE_MODEL_NAME_FORMAT
                     .formatted(iconSet.name, tagPrefix.name, iconType.name()));
 
-            GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
+            GTDynamicResourcePack.addBlockState(
+                    BlockModelGenerators.createSimpleBlock(model.block, BlockModelGenerators.plainVariant(modelId)));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
                     new DelegatedModel(modelId));
         }
@@ -109,7 +110,7 @@ public class OreBlockRenderer {
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {
-        ResourceLocation baseModelPath = iconType.getBlockModelPath(iconSet, true);
+        Identifier baseModelPath = iconType.getBlockModelPath(iconSet, true);
         baseModelPath = GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(baseModelPath);
 
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
@@ -121,7 +122,7 @@ public class OreBlockRenderer {
         }
         // read & cache the base ore model JSON
         try (BufferedReader reader = modelResource.get().openAsReader()) {
-            return GsonHelper.parse(reader, true);
+            return GsonHelper.parse(reader);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

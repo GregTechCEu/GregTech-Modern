@@ -5,14 +5,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +36,7 @@ public class RobotArmCover extends ConveyorCover {
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
-    private IntInputWidget stackSizeInput;
+    Object stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                          int maxTransferRate) {
@@ -160,18 +156,6 @@ public class RobotArmCover extends ConveyorCover {
         return "cover.robotic_arm.title";
     }
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
-
-        this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
-                () -> globalTransferLimit, val -> globalTransferLimit = val);
-        configureStackSizeInput();
-
-        group.addWidget(this.stackSizeInput);
-    }
-
     public void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
@@ -192,16 +176,13 @@ public class RobotArmCover extends ConveyorCover {
         configureStackSizeInput();
     }
 
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeInput.setMin(1);
-        this.stackSizeInput.setMax(this.transferMode.maxStackSize);
+    void configureStackSizeInput() {
+        if (this.stackSizeInput != null) {
+            RobotArmCoverUI.configureStackSizeInput(this);
+        }
     }
 
-    private boolean shouldShowStackSize() {
+    boolean shouldShowStackSize() {
         if (this.transferMode == TransferMode.TRANSFER_ANY)
             return false;
 
@@ -220,8 +201,8 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
-        setGlobalTransferLimit(tag.getInt("transferLimit"));
+        setTransferMode(TransferMode.values()[tag.getIntOr("transferMode", 0)]);
+        setGlobalTransferLimit(tag.getIntOr("transferLimit", 0));
         super.pasteConfig(player, tag);
     }
 }

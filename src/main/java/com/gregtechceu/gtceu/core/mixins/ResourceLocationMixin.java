@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.IResourceLocationExtensions;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ResourceLocation.class)
+@Mixin(Identifier.class)
 public class ResourceLocationMixin implements IResourceLocationExtensions {
 
     @Unique
@@ -28,11 +28,11 @@ public class ResourceLocationMixin implements IResourceLocationExtensions {
     }
 
     @Override
-    public ResourceLocation gtm$asNonImplicit() {
+    public Identifier gtm$asNonImplicit() {
         if (this.gtm$getImplicit()) {
-            return GTCEu.id(((ResourceLocation) (Object) this).getPath());
+            return GTCEu.id(((Identifier) (Object) this).getPath());
         }
-        return (ResourceLocation) (Object) this;
+        return (Identifier) (Object) this;
     }
 
     @Inject(method = "<init>*", at = @At("TAIL"))

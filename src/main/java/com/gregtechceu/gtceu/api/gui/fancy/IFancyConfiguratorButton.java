@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -28,22 +26,22 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
     }
 
     @Override
-    default Widget createConfigurator() {
+    default Object createConfigurator() {
         throw new NotImplementedException();
     }
 
     @Accessors(chain = true)
     class Toggle implements IFancyConfiguratorButton {
 
-        IGuiTexture base;
-        IGuiTexture pressed;
+        Object base;
+        Object pressed;
         BiConsumer<ClickData, Boolean> onClick;
         BooleanSupplier booleanSupplier;
         boolean isPressed;
         @Setter
         Function<Boolean, List<Component>> tooltipsSupplier = isPressed -> Collections.emptyList();
 
-        public Toggle(IGuiTexture base, IGuiTexture pressed, BooleanSupplier booleanSupplier,
+        public Toggle(Object base, Object pressed, BooleanSupplier booleanSupplier,
                       BiConsumer<ClickData, Boolean> onClick) {
             this.base = base;
             this.pressed = pressed;
@@ -84,7 +82,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
         }
 
         @Override
-        public IGuiTexture getIcon() {
+        public Object getIcon() {
             return isPressed ? pressed : base;
         }
 

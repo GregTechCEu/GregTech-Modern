@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.api.pattern.predicates;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.stream.StreamSupport;
 
 public class PredicateBlockTag extends SimplePredicate {
 
@@ -31,9 +32,7 @@ public class PredicateBlockTag extends SimplePredicate {
             return this;
         }
         predicate = state -> state.getBlockState().is(tag);
-        candidates = () -> BuiltInRegistries.BLOCK.getTag(tag)
-                .stream()
-                .flatMap(HolderSet.Named::stream)
+        candidates = () -> StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(tag).spliterator(), false)
                 .map(Holder::value)
                 .map(BlockInfo::fromBlock)
                 .toArray(BlockInfo[]::new);

@@ -13,6 +13,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PipeBlockItem extends BlockItem {
 
@@ -34,15 +36,18 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+                                Consumer<Component> tooltip,
                                 TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, tooltip, isAdvanced);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltip, isAdvanced);
+        List<Component> extraTooltips = new java.util.ArrayList<>();
         if (GTUtil.isShiftDown()) {
             var tool = getBlock().getPipeTuneTool();
-            tooltip.add(Component.translatable("gtceu.tool_action." + tool.name + ".connect"));
+            extraTooltips.add(Component.translatable("gtceu.tool_action." + tool.name + ".connect"));
         } else {
-            tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
+            extraTooltips.add(Component.translatable("gtceu.tool_action.show_tooltips"));
         }
+        extraTooltips.forEach(tooltip);
     }
 
     @Override
@@ -66,7 +71,7 @@ public class PipeBlockItem extends BlockItem {
         }
 
         boolean superVal = super.placeBlock(context, state);
-        if (superVal && !level.isClientSide) {
+        if (superVal && !level.isClientSide()) {
             IPipeNode selfTile = getBlock().getPipeTile(level, pos);
             if (selfTile == null) return true;
             if (selfTile.getPipeBlock().canConnect(selfTile, side.getOpposite())) {

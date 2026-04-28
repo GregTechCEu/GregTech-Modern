@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTModelProvider;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccessor;
 import com.gregtechceu.gtceu.data.datamap.DataMapsHandler;
@@ -17,15 +18,14 @@ import com.tterrag.registrate.providers.ProviderType;
 
 public class GregTechDatagen {
 
-    // we only register this so the class gets loaded. the key gets overwritten in #initPre.
-    private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.registerProvider(
-            "ex_blockstate",
-            GTBlockstateProvider::new);
+    private static final ProviderType<GTModelProvider> MODEL_PROVIDER = ProviderType.registerProvider(
+            "ex_model",
+            context -> new GTModelProvider(context.parent(), context.output()));
 
     public static void initPre() {
         DataProvider.INDENT_WIDTH.set(4);
         // replace some default providers with ours
-        RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
+        RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("model", MODEL_PROVIDER);
 
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.BLOCKSTATE,
                 p -> BlockstateModelLoader.init((GTBlockstateProvider) p));

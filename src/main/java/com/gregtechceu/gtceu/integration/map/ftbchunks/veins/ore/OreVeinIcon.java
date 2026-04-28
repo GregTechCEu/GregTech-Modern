@@ -4,19 +4,17 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.map.GTMapRendering;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
@@ -157,29 +155,21 @@ public class OreVeinIcon implements MapIcon {
         var iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
         var material = getMaterial();
         var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
-        var colors = DrawUtil.floats(color);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         var iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
         var oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet,
                 true);
         if (oreTexture != null) {
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(oreTexture);
-            graphics.blit(x, y, 0, w, h, oreSprite, colors[0], colors[1], colors[2], 1);
+            var oreSprite = GTMapRendering.getBlockSprite(oreTexture);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, oreSprite, x, y, w, h, color);
         }
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, "secondary", true);
         if (oreTexture != null) {
             var materialSecondaryARGB = material.isNull() ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
-            colors = DrawUtil.floats(materialSecondaryARGB);
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(oreTexture);
-            graphics.blit(x, y, 0, w, h, oreSprite, colors[0], colors[1], colors[2], 1);
+            var oreSprite = GTMapRendering.getBlockSprite(oreTexture);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, oreSprite, x, y, w, h, materialSecondaryARGB);
         }
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         var borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(color | 0xFF000000);
         if ((borderColor & 0xFF000000) != 0) {
             var thickness = iconSize / 16;

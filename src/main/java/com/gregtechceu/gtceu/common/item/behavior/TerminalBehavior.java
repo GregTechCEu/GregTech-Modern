@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -23,10 +22,10 @@ public class TerminalBehavior implements IInteractionItem {
             if (context.getPlayer() != null &&
                     MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller) {
                 if (!controller.isFormed()) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         controller.getPattern().autoBuild(context.getPlayer(), controller.getMultiblockState());
                     }
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -34,8 +33,8 @@ public class TerminalBehavior implements IInteractionItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
-        return InteractionResultHolder.pass(item);
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
+        return InteractionResult.PASS;
     }
 }

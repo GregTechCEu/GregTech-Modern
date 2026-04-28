@@ -22,19 +22,13 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
 
     @NotNull
     public static List<AbstractMapIngredient> from(Ingredient ingredient) {
-        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        for (Ingredient.Value value : ingredient.getValues()) {
-            if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
-                ingredients.add(new ItemTagMapIngredient(tag));
-            }
-        }
-        return ingredients;
+        return new ObjectArrayList<>();
     }
 
     @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        stack.getTags().forEach(tag -> ingredients.add(new ItemTagMapIngredient(tag)));
+        stack.getItem().builtInRegistryHolder().tags().forEach(tag -> ingredients.add(new ItemTagMapIngredient(tag)));
         return ingredients;
     }
 

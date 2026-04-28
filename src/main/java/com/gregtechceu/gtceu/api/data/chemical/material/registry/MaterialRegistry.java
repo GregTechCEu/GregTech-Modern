@@ -9,8 +9,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.NotNull;
@@ -50,19 +50,19 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
         return register(material.getResourceLocation(), material);
     }
 
-    private Material register(ResourceLocation id, Material material) {
+    private Material register(Identifier id, Material material) {
         this.register(ResourceKey.create(this.key(), id), material, RegistrationInfo.BUILT_IN);
         return material;
     }
 
     @Override
-    public Material getMaterial(ResourceLocation name) {
-        Material value = get(name);
+    public Material getMaterial(Identifier name) {
+        Material value = getValue(name);
         return value != null ? value : GTMaterials.NULL;
     }
 
     @Override
-    public ResourceLocation getKey(Material material) {
+    public Identifier getKey(Material material) {
         return material.getResourceLocation();
     }
 
@@ -73,9 +73,9 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
         if (isRegistryClosed) {
             throw new IllegalStateException(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the RegisterEvent. Skipping material %s..."
-                            .formatted(key.location()));
+                            .formatted(key.identifier()));
         }
-        usedNamespaces.add(key.location().getNamespace());
+        usedNamespaces.add(key.identifier().getNamespace());
         return super.register(id, key, value, registrationInfo);
     }
 

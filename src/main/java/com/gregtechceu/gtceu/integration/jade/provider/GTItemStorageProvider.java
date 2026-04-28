@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
@@ -36,7 +35,7 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<ItemStack>
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("custom_item_storage");
+        return GTJadeIds.toResourceLocation("custom_item_storage");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.rei.multipage;
 
 import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.integration.rei.GTReiIds;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
@@ -21,6 +22,6 @@ public class MultiblockInfoDisplay extends ModularDisplay<WidgetGroup> {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(definition.getId());
+        return Optional.of(GTReiIds.toResourceLocation(definition.getId()));
     }
 }

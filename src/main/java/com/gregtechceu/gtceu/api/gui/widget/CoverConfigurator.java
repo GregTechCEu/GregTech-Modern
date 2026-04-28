@@ -45,7 +45,7 @@ public class CoverConfigurator implements IFancyConfigurator {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         if (side != null) {
             if (coverable.getCoverAtSide(side) instanceof IUICover iuiCover) {
-                Widget coverConfigurator = iuiCover.createUIWidget();
+                Widget coverConfigurator = (Widget) iuiCover.createUIWidget();
                 coverConfigurator.setBackground(GuiTextures.BACKGROUND);
                 coverConfigurator.setSelfPosition(new Position(4, -4));
                 group.addWidget(coverConfigurator);

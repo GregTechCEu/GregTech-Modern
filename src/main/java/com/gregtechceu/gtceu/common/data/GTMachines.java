@@ -38,6 +38,7 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -1109,6 +1110,6 @@ public class GTMachines {
     }
 
     public static MachineDefinition get(String name) {
-        return GTRegistries.MACHINES.get(GTCEu.id(name));
+        return GTRegistries.MACHINES.get(GTCEu.id(name)).map(Holder::value).orElseThrow();
     }
 }

@@ -19,7 +19,7 @@ public class FluidRenderLayer extends MapRenderLayer {
     }
 
     public static String getId(ProspectorMode.FluidInfo vein, ChunkPos pos) {
-        return "bedrock_fluids@[" + pos.x + "," + pos.z + "]";
+        return "bedrock_fluids@[" + pos.x() + "," + pos.z() + "]";
     }
 
     public static Component getName(ProspectorMode.FluidInfo entry) {

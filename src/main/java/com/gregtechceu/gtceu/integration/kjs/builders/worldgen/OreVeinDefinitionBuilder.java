@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -172,7 +173,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
 
     @Tolerate
     @Nullable
-    public VeinGenerator veinGenerator(ResourceLocation id) {
+    public VeinGenerator veinGenerator(Identifier id) {
         if (veinGenerator == null) {
             // noinspection DataFlowIssue
             veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?

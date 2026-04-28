@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class SPacketRemoveHazardZone implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("remove_hazard_zone");
+    public static final Identifier ID = GTCEu.id("remove_hazard_zone");
     public static final Type<SPacketRemoveHazardZone> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SPacketRemoveHazardZone> CODEC = StreamCodec
             .ofMember(SPacketRemoveHazardZone::encode, SPacketRemoveHazardZone::new);

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
@@ -14,7 +15,7 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 public class ChanceLogicComponent implements RecipeComponent<ChanceLogic> {
 
     // spotless:off
-    public static final RecipeComponentType<ChanceLogic> CHANCE_LOGIC = RecipeComponentType.unit(GTCEu.id("chance_logic"), new ChanceLogicComponent());
+    public static final RecipeComponentType<ChanceLogic> CHANCE_LOGIC = RecipeComponentType.unit(ResourceLocation.fromIdentifier(GTCEu.id("chance_logic")), new ChanceLogicComponent());
     // spotless:on
 
     @Override
@@ -25,7 +26,7 @@ public class ChanceLogicComponent implements RecipeComponent<ChanceLogic> {
     @Override
     public TypeInfo typeInfo() {
         return TypeInfo.of(ChanceLogic.class)
-                .or(TypeInfo.of(ResourceLocation.class))
+                .or(TypeInfo.of(Identifier.class))
                 .or(TypeInfo.of(String.class));
     }
 

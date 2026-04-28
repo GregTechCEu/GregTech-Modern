@@ -6,24 +6,21 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.client.color.ItemColor;
 
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MaterialBlockItem extends BlockItem implements IItemRendererProvider {
+public class MaterialBlockItem extends BlockItem {
 
     public final TagPrefix tagPrefix;
     public final Material material;
@@ -35,7 +32,7 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
     }
 
     @Override
-    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
         return getItemBurnTime();
     }
 
@@ -50,22 +47,6 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         return (itemStack, index) -> material.getLayerARGB(index);
     }
 
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(ItemStack stack) {
-        if (getBlock() instanceof IBlockRendererProvider provider) {
-            return provider.getRenderer(getBlock().defaultBlockState());
-        }
-        return null;
-    }
-
-    @Override
-    public String getDescriptionId() {
-        return getBlock().getDescriptionId();
-    }
-
-    @Override
     public Component getDescription() {
         return getBlock().getName();
     }

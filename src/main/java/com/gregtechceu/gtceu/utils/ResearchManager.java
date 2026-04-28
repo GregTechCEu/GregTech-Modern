@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
@@ -132,7 +134,7 @@ public final class ResearchManager {
 
         @Override
         public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder,
-                                 TooltipFlag tooltipFlag) {
+                                 TooltipFlag tooltipFlag, DataComponentGetter componentGetter) {
             Collection<GTRecipe> recipes = recipeType().getDataStickEntry(researchId());
             if (recipes == null || recipes.isEmpty()) {
                 return;
@@ -142,9 +144,8 @@ public final class ResearchManager {
             Collection<ItemStack> added = new ObjectOpenHashSet<>();
             outer:
             for (GTRecipe recipe : recipes) {
-                ItemStack output = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content)
-                        .getItems()[0];
+                ItemStack output = SizedIngredientExtensions.getItems(ItemRecipeCapability.CAP
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content))[0];
                 for (var item : added) {
                     if (output.is(item.getItem())) continue outer;
                 }

@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 
 import com.mojang.serialization.Codec;
@@ -34,18 +34,25 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public ShapedEnergyTransferRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
                                       Ingredient chargeIngredient, boolean overrideCharge, boolean transferMaxCharge,
                                       ItemStack result, boolean showNotification) {
-        super(group, category, pattern, result, showNotification);
+        this(new Recipe.CommonInfo(showNotification), new CraftingRecipe.CraftingBookInfo(category, group), pattern,
+                chargeIngredient, overrideCharge, transferMaxCharge, ItemStackTemplate.fromNonEmptyStack(result));
+    }
+
+    private ShapedEnergyTransferRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
+                                       ShapedRecipePattern pattern, Ingredient chargeIngredient, boolean overrideCharge,
+                                       boolean transferMaxCharge, ItemStackTemplate result) {
+        super(commonInfo, bookInfo, pattern, result);
         this.chargeIngredient = chargeIngredient;
         this.transferMaxCharge = transferMaxCharge;
         this.overrideCharge = overrideCharge;
     }
 
     @Override
-    public ItemStack assemble(CraftingInput craftingContainer, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput craftingContainer) {
         long maxCharge = 0L;
         long charge = 0L;
-        ItemStack resultStack = super.assemble(craftingContainer, provider);
-        for (ItemStack chargeStack : chargeIngredient.getItems()) {
+        ItemStack resultStack = super.assemble(craftingContainer);
+        for (ItemStack chargeStack : chargeIngredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
             for (int i = 0; i < craftingContainer.size(); i++) {
                 if (ItemStack.isSameItem(craftingContainer.getItem(i), chargeStack)) {
                     ItemStack stack = craftingContainer.getItem(i);
@@ -62,12 +69,11 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         return resultStack;
     }
 
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
+    public ItemStack getResultItem() {
         long maxCharge = 0L;
         long charge = 0L;
-        ItemStack resultStack = super.getResultItem(provider);
-        for (ItemStack chargeStack : chargeIngredient.getItems()) {
+        ItemStack resultStack = ((ShapedRecipeAccessor) this).getResult().create();
+        for (ItemStack chargeStack : chargeIngredient.items().map(holder -> new ItemStack(holder, 1)).toList()) {
             IElectricItem electricItem = GTCapabilityHelper.getElectricItem(chargeStack);
             if (electricItem != null) {
                 maxCharge += electricItem.getMaxCharge();
@@ -80,15 +86,16 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return GTRecipeSerializers.CRAFTING_SHAPED_ENERGY_TRANSFER.get();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer) GTRecipeSerializers.CRAFTING_SHAPED_ENERGY_TRANSFER.get();
     }
 
-    public static class Serializer implements RecipeSerializer<ShapedEnergyTransferRecipe> {
+    public static class Serializer {
 
         public static final MapCodec<ShapedEnergyTransferRecipe> CODEC = RecordCodecBuilder
                 .mapCodec(instance -> instance.group(
-                        Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
+                        Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC)
                                 .forGetter(ShapedRecipe::category),
                         ShapedRecipePattern.MAP_CODEC.forGetter(val -> val.pattern),
@@ -97,30 +104,21 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
                         Codec.BOOL.fieldOf("overrideCharge").forGetter(ShapedEnergyTransferRecipe::isOverrideCharge),
                         Codec.BOOL.fieldOf("transferMaxCharge")
                                 .forGetter(ShapedEnergyTransferRecipe::isTransferMaxCharge),
-                        ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor) val).getResult()),
+                        ItemStack.CODEC.fieldOf("result")
+                                .forGetter(val -> ((ShapedRecipeAccessor) val).getResult().create()),
                         Codec.BOOL.optionalFieldOf("show_notification", true)
-                                .forGetter(val -> ((ShapedRecipeAccessor) val).getShowNotification()))
+                                .forGetter(ShapedRecipe::showNotification))
                         .apply(instance, ShapedEnergyTransferRecipe::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> STREAM_CODEC = StreamCodecUtils
                 .composite(
-                        ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
+                        ByteBufCodecs.STRING_UTF8, ShapedRecipe::group,
                         CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
                         ShapedRecipePattern.STREAM_CODEC, val -> val.pattern,
                         Ingredient.CONTENTS_STREAM_CODEC, ShapedEnergyTransferRecipe::getChargeIngredient,
                         ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isOverrideCharge,
                         ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isTransferMaxCharge,
-                        ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getResult(),
+                        ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getResult().create(),
                         ByteBufCodecs.BOOL, ShapedRecipe::showNotification,
                         ShapedEnergyTransferRecipe::new);
-
-        @Override
-        public MapCodec<ShapedEnergyTransferRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     }
 }

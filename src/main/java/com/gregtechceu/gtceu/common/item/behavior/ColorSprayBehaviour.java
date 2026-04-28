@@ -13,13 +13,15 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +39,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriPredicate;
 
@@ -69,8 +72,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private static final ImmutableMap<DyeColor, Block> CANDLE_MAP;
 
     private static Block getBlock(DyeColor color, String postfix) {
-        ResourceLocation id = ResourceLocation.withDefaultNamespace(color.getSerializedName() + "_" + postfix);
-        return BuiltInRegistries.BLOCK.get(id);
+        Identifier id = Identifier.withDefaultNamespace(color.getSerializedName() + "_" + postfix);
+        return BuiltInRegistries.BLOCK.get(id).map(Holder::value).orElse(Blocks.AIR);
     }
 
     static {
@@ -147,11 +150,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         int r = 0, g = 0, b = 0;
         ratio = ratio * (1.0f / colors.length);
         for (int color : colors) {
-            r += FastColor.ARGB32.red(color) * ratio;
-            g += FastColor.ARGB32.green(color) * ratio;
-            b += FastColor.ARGB32.blue(color) * ratio;
+            r += ARGB.red(color) * ratio;
+            g += ARGB.green(color) * ratio;
+            b += ARGB.blue(color) * ratio;
         }
-        return FastColor.ARGB32.color(255, r, g, b);
+        return ARGB.color(255, r, g, b);
     }
 
     @Override
@@ -240,7 +243,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             BlockPos pos = first.getBlockPos();
             recolorBlockNoState(SHULKER_BOX_MAP, color, level, pos, Blocks.SHULKER_BOX);
             if (level.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity newShulker) {
-                newShulker.loadFromTag(tag, level.registryAccess());
+                newShulker.loadFromTag(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
             }
         } else {
             return false;

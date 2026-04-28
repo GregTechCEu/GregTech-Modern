@@ -32,8 +32,8 @@ public class MetaMachineItem extends BlockItem {
 
         boolean superVal = super.placeBlock(context, state);
 
-        if (!level.isClientSide) {
-            BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
+        if (!level.isClientSide()) {
+            BlockPos possiblePipe = pos.offset(side.getOpposite().getUnitVec3i());
             Block block = level.getBlockState(possiblePipe).getBlock();
             if (block instanceof PipeBlock<?, ?, ?>) {
                 IPipeNode pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);

@@ -84,7 +84,7 @@ public class TreeFellingHelper {
 
     @SubscribeEvent
     public static void onWorldTick(LevelTickEvent.Pre event) {
-        if (!event.getLevel().isClientSide && !helpers.isEmpty()) {
+        if (!event.getLevel().isClientSide() && !helpers.isEmpty()) {
             var iterator = helpers.iterator();
             while (iterator.hasNext()) {
                 var helper = iterator.next();

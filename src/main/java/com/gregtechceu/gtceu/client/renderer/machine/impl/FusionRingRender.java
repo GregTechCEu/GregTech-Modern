@@ -19,7 +19,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.MapCodec;
 
-import static net.minecraft.util.FastColor.ARGB32.*;
+import static net.minecraft.util.ARGB.*;
 
 public class FusionRingRender extends DynamicRender<FusionReactorMachine, FusionRingRender> {
 
@@ -72,7 +72,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         } else {
             alpha = delta / FADEOUT;
             lastColor = color(Mth.floor(alpha * 255), red(lastColor), green(lastColor), blue(lastColor));
-            delta -= Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+            delta -= Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         }
 
         final var lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;

@@ -9,16 +9,16 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
+import com.gregtechceu.gtceu.gametest.annotation.GameTest;
+import com.gregtechceu.gtceu.gametest.annotation.GameTestHolder;
+import com.gregtechceu.gtceu.gametest.annotation.PrefixGameTestTemplate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
@@ -48,8 +48,10 @@ public class ItemFilterCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorTransfersFilteredItemsTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        BufferMachine crate1 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 2, 0));
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 8));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover
@@ -76,8 +78,10 @@ public class ItemFilterCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorDoesntTransferFilteredItemsTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        BufferMachine crate1 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) com.gregtechceu.gtceu.gametest.util.TestUtils.getBlockEntity(helper,
+                new BlockPos(0, 2, 0));
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover

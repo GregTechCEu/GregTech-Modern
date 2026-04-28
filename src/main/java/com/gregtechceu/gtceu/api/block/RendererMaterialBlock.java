@@ -3,16 +3,14 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
 
-public class RendererMaterialBlock extends MaterialBlock implements IBlockRendererProvider {
+public class RendererMaterialBlock extends MaterialBlock {
 
     public final IRenderer renderer;
 
@@ -22,10 +20,8 @@ public class RendererMaterialBlock extends MaterialBlock implements IBlockRender
         this.renderer = renderer;
     }
 
-    @Nullable
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(BlockState state) {
+    public @Nullable IRenderer getRenderer() {
         return renderer;
     }
 }

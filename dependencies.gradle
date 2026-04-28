@@ -3,7 +3,7 @@ dependencies {
 
     testJarJar(testApi(libs.testframework.get()))
 
-    jarJar(api(forge.ldlib.get()))
+    compileOnly(forge.ldlib2.get())
 
     // Registrate
     jarJar(api(forge.registrate.get()))
@@ -62,6 +62,7 @@ dependencies {
 
     // Standard runtime mods //
     localRuntime(libs.testframework)
+    localRuntime(forge.ldlib2.get())
 
     localRuntime(forge.jade)
     localRuntime(forge.ae2)
@@ -79,27 +80,27 @@ dependencies {
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
-    clientLocalRuntime(forge.sodium)
-    clientLocalRuntime(forge.iris)
+//    clientLocalRuntime(forge.sodium)
+//    clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
     //////////////////////////////////////////////////////
-    extraLocalRuntime(forge.javd)
-    extraLocalRuntime(forge.trenzalore)
-    extraLocalRuntime(forge.curios)
+//    extraLocalRuntime(forge.javd)
+//    extraLocalRuntime(forge.trenzalore)
+//    extraLocalRuntime(forge.curios)
 //    extraLocalRuntime(forge.worldstripper)
     localRuntime(forge.cc.tweaked.forge.impl)
 
     localRuntime(forge.bundles.kjs)
 
-    extraLocalRuntime(forge.ftblibrary)
-    extraLocalRuntime(forge.ftbteams)
-    extraLocalRuntime(forge.ftbquests)
+//    extraLocalRuntime(forge.ftblibrary)
+//    extraLocalRuntime(forge.ftbteams)
+//    extraLocalRuntime(forge.ftbquests)
 
 //    extraLocalRuntime(forge.heracles)
-    extraLocalRuntime(forge.resourcefullib)
+//    extraLocalRuntime(forge.resourcefullib)
 
 //    extraLocalRuntime(forge.xaerosminimap)
 //    extraLocalRuntime(forge.xaerosworldmap)
@@ -107,14 +108,18 @@ dependencies {
 //    extraLocalRuntime(forge.ftbchunks)
 
 //    extraLocalRuntime(forge.gamestages)
-    extraLocalRuntime(forge.bookshelf) {
-        transitive = false
-    }
+//    extraLocalRuntime(forge.bookshelf) {
+//        transitive = false
+//    }
 
     extraLocalRuntime(forge.kotlinforforge) {
         transitive = false
     }
-    extraLocalRuntime(forge.observable)
+//    extraLocalRuntime(forge.observable)
     //////////////////////////
 
+}
+
+configurations.named("additionalRuntimeClasspath") {
+    extendsFrom(configurations.localRuntime)
 }

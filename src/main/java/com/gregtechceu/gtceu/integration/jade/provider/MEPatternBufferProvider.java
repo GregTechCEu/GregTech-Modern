@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
@@ -11,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,9 +31,9 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof MEPatternBufferPartMachine) {
             CompoundTag serverData = blockAccessor.getServerData();
-            if (!serverData.getBoolean("formed")) return;
+            if (!serverData.getBooleanOr("formed", false)) return;
 
-            iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
+            iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getIntOr("proxies", 0))
                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
             readBufferTag(iTooltip, serverData);
         }
@@ -54,7 +54,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("me_pattern_buffer");
+        return GTJadeIds.toResourceLocation("me_pattern_buffer");
     }
 
     public static void writeBufferTag(CompoundTag compoundTag, MEPatternBufferPartMachine buffer) {
@@ -63,9 +63,10 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
         var fluids = merged.fluids();
 
         HolderLookup.Provider provider = buffer.getLevel().registryAccess();
+        var ops = provider.createSerializationContext(NbtOps.INSTANCE);
         ListTag itemsTag = new ListTag();
         for (var entry : items.object2LongEntrySet()) {
-            var ct = (CompoundTag) entry.getKey().save(provider);
+            var ct = (CompoundTag) ItemStack.CODEC.encodeStart(ops, entry.getKey()).getOrThrow();
             ct.putLong("real", entry.getLongValue());
             itemsTag.add(ct);
         }
@@ -73,7 +74,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
 
         ListTag fluidsTag = new ListTag();
         for (var entry : fluids.object2LongEntrySet()) {
-            var ct = (CompoundTag) entry.getKey().save(provider);
+            var ct = (CompoundTag) FluidStack.CODEC.encodeStart(ops, entry.getKey()).getOrThrow();
             ct.putLong("real", entry.getLongValue());
             fluidsTag.add(ct);
         }
@@ -84,11 +85,12 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
         IElementHelper helper = IElementHelper.get();
 
         HolderLookup.Provider provider = Minecraft.getInstance().level.registryAccess();
-        ListTag itemsTag = serverData.getList("items", Tag.TAG_COMPOUND);
+        var ops = provider.createSerializationContext(NbtOps.INSTANCE);
+        ListTag itemsTag = serverData.getListOrEmpty("items");
         for (Tag t : itemsTag) {
             if (!(t instanceof CompoundTag ct)) continue;
-            var stack = ItemStack.parse(provider, ct);
-            var count = ct.getLong("real");
+            var stack = ItemStack.CODEC.parse(ops, ct).result();
+            var count = ct.getLongOr("real", 0);
             if (stack.isPresent() && !stack.get().isEmpty() && count > 0) {
                 iTooltip.add(helper.smallItem(stack.get()));
                 Component text = Component.literal(" ")
@@ -99,11 +101,11 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
                 iTooltip.append(text);
             }
         }
-        ListTag fluidsTag = serverData.getList("fluids", Tag.TAG_COMPOUND);
+        ListTag fluidsTag = serverData.getListOrEmpty("fluids");
         for (Tag t : fluidsTag) {
             if (!(t instanceof CompoundTag ct)) continue;
-            var stack = FluidStack.parse(provider, ct);
-            var amount = ct.getLong("real");
+            var stack = FluidStack.CODEC.parse(ops, ct).result();
+            var amount = ct.getLongOr("real", 0);
             if (stack.isPresent() && !stack.get().isEmpty() && amount > 0) {
                 iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.get().getFluid())));
                 Component text = Component.literal(" ")

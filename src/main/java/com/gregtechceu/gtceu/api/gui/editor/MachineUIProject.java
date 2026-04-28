@@ -22,7 +22,7 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -83,7 +83,7 @@ public class MachineUIProject extends UIProject {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.deserializeNBT(provider, tag);
         if (tag.contains("machine")) {
-            machineDefinition = GTRegistries.MACHINES.get(ResourceLocation.parse(tag.getString("machine")));
+            machineDefinition = GTRegistries.MACHINES.getValue(Identifier.parse(tag.getStringOr("machine", "")));
         }
     }
 
@@ -109,12 +109,13 @@ public class MachineUIProject extends UIProject {
     @Override
     public void attachMenu(Editor editor, String name, TreeBuilder.Menu menu) {
         if (name.equals("file")) {
-            if (machineDefinition == null || machineDefinition.getEditableUI() == null) {
+            if (machineDefinition == null || editableUI(machineDefinition) == null) {
                 menu.remove("ldlib.gui.editor.menu.save");
             } else {
                 menu.remove("ldlib.gui.editor.menu.save");
                 menu.leaf(Icons.SAVE, "ldlib.gui.editor.menu.save", () -> {
-                    var editableUI = machineDefinition.getEditableUI();
+                    var editableUI = editableUI(machineDefinition);
+                    if (editableUI == null) return;
                     var path = new File(LDLib.getLDLibDir(),
                             "assets/%s/ui/machine".formatted(editableUI.getUiPath().getNamespace()));
                     path.mkdirs();
@@ -125,7 +126,7 @@ public class MachineUIProject extends UIProject {
         } else if (name.equals("template_tab")) {
             Map<String, List<MachineDefinition>> categories = new LinkedHashMap<>();
             for (var definition : GTRegistries.MACHINES) {
-                final var editableUI = definition.getEditableUI();
+                final var editableUI = editableUI(definition);
                 if (editableUI != null) {
                     // has editable UI
                     categories.computeIfAbsent(editableUI.getGroupName(), group -> new ArrayList<>()).add(definition);
@@ -134,7 +135,7 @@ public class MachineUIProject extends UIProject {
             categories.forEach((groupName, definitions) -> menu.branch(groupName, m -> {
                 Set<EditableMachineUI> addedSet = new HashSet<>();
                 for (var definition : definitions) {
-                    var editableUI = definition.getEditableUI();
+                    var editableUI = editableUI(definition);
                     if (editableUI != null && addedSet.add(editableUI)) {
                         m.leaf(new ItemStackTexture(definition.asStack()), definition.getDescriptionId(), () -> {
                             root.clearAllWidgets();
@@ -153,5 +154,10 @@ public class MachineUIProject extends UIProject {
                 }
             }));
         }
+    }
+
+    private static @Nullable EditableMachineUI editableUI(MachineDefinition definition) {
+        Object editableUI = LazyEditableMachineUI.resolve(definition.getEditableUI());
+        return editableUI instanceof EditableMachineUI machineUI ? machineUI : null;
     }
 }

@@ -32,7 +32,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(GTResourceLocation.implicitAsGtceu(id));
-        this.internal = new Material.Builder(this.id);
+        this.internal = new Material.Builder(this.id.toIdentifier());
         this.dummyBuilder = true;
     }
 

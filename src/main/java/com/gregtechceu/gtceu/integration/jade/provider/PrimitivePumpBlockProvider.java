@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -19,7 +18,7 @@ public class PrimitivePumpBlockProvider implements IBlockComponentProvider, ISer
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof PrimitivePumpMachine pump) {
-            long water = blockAccessor.getServerData().getLong("waterProduced");
+            long water = blockAccessor.getServerData().getLongOr("waterProduced", 0);
             iTooltip.add(Component.translatable("gtceu.top.primitive_pump_production",
                     FormattingUtil.formatNumbers(water)));
         }
@@ -34,6 +33,6 @@ public class PrimitivePumpBlockProvider implements IBlockComponentProvider, ISer
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("primitive_pump");
+        return GTJadeIds.toResourceLocation("primitive_pump");
     }
 }

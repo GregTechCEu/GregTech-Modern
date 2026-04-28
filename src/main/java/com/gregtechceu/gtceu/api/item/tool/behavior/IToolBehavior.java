@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -123,9 +122,9 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param hand   the hand holding the item
      */
     @NotNull
-    default InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player,
-                                                                @NotNull InteractionHand hand) {
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+    default InteractionResult onItemRightClick(@NotNull Level world, @NotNull Player player,
+                                               @NotNull InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     /**

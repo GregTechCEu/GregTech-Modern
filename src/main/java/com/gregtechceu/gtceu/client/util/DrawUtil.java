@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
-import com.lowdragmc.lowdraglib.utils.ColorUtils;
-
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Matrix4f;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 public class DrawUtil {
 
@@ -25,43 +21,26 @@ public class DrawUtil {
      * @param colorTo    the ending color of the gradient.
      * @param colorFrom  the starting color of the gradient.
      */
-    public static void fillHorizontalGradient(GuiGraphics graphics, RenderType renderType, int x1, int y1, int x2,
+    public static void fillHorizontalGradient(GuiGraphicsExtractor graphics, RenderPipeline pipeline, int x1, int y1,
+                                              int x2,
                                               int y2, int colorFrom, int colorTo, int z) {
-        VertexConsumer vertexconsumer = graphics.bufferSource().getBuffer(renderType);
-        fillHorizontalGradient(graphics, vertexconsumer, x1, y1, x2, y2, z, colorFrom, colorTo);
-        ((GuiGraphicsAccessor) graphics).callFlushIfUnmanaged();
+        int width = x2 - x1;
+        if (width <= 0) {
+            return;
+        }
+
+        for (int x = x1; x < x2; x++) {
+            float delta = width == 1 ? 0.0f : (float) (x - x1) / (width - 1);
+            graphics.fill(pipeline, x, y1, x + 1, y2, lerpColor(delta, colorFrom, colorTo));
+        }
     }
 
-    /**
-     * The core `fillGradient` method.
-     * <p>
-     * Fills a rectangle with a gradient color from colorFrom to colorTo at the specified z-level using the given render
-     * type and coordinates as the boundaries.
-     *
-     * @param consumer  the {@linkplain VertexConsumer} object for drawing the vertices on screen.
-     * @param x1        the x-coordinate of the first corner of the rectangle.
-     * @param y1        the y-coordinate of the first corner of the rectangle.
-     * @param x2        the x-coordinate of the second corner of the rectangle.
-     * @param y2        the y-coordinate of the second corner of the rectangle.
-     * @param z         the z-level of the rectangle.
-     * @param colorFrom the starting color of the gradient.
-     * @param colorTo   the ending color of the gradient.
-     */
-    private static void fillHorizontalGradient(GuiGraphics graphics, VertexConsumer consumer, int x1, int y1, int x2,
-                                               int y2, int z, int colorFrom, int colorTo) {
-        float a1 = ColorUtils.alpha(colorFrom);
-        float r1 = ColorUtils.red(colorFrom);
-        float g1 = ColorUtils.green(colorFrom);
-        float b1 = ColorUtils.blue(colorFrom);
-        float a2 = ColorUtils.alpha(colorTo);
-        float r2 = ColorUtils.red(colorTo);
-        float g2 = ColorUtils.green(colorTo);
-        float b2 = ColorUtils.blue(colorTo);
-        Matrix4f matrix4f = graphics.pose().last().pose();
-        consumer.addVertex(matrix4f, (float) x1, (float) y1, (float) z).setColor(r1, g1, b1, a1);
-        consumer.addVertex(matrix4f, (float) x1, (float) y2, (float) z).setColor(r1, g1, b1, a1);
-        consumer.addVertex(matrix4f, (float) x2, (float) y2, (float) z).setColor(r2, g2, b2, a2);
-        consumer.addVertex(matrix4f, (float) x2, (float) y1, (float) z).setColor(r2, g2, b2, a2);
+    private static int lerpColor(float delta, int colorFrom, int colorTo) {
+        int alpha = Mth.lerpInt(delta, ARGB.alpha(colorFrom), ARGB.alpha(colorTo));
+        int red = Mth.lerpInt(delta, ARGB.red(colorFrom), ARGB.red(colorTo));
+        int green = Mth.lerpInt(delta, ARGB.green(colorFrom), ARGB.green(colorTo));
+        int blue = Mth.lerpInt(delta, ARGB.blue(colorFrom), ARGB.blue(colorTo));
+        return ARGB.color(alpha, red, green, blue);
     }
 
     /**

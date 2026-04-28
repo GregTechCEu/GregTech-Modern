@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.ChatFormatting;
@@ -18,14 +17,13 @@ public class MultiblockStructureProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getServerData().contains("hasError")) {
-            boolean hasError = blockAccessor.getServerData().getBoolean("hasError");
+        blockAccessor.getServerData().getBoolean("hasError").ifPresent(hasError -> {
             if (hasError) {
                 iTooltip.add(Component.translatable("gtceu.top.invalid_structure").withStyle(ChatFormatting.RED));
             } else {
                 iTooltip.add(Component.translatable("gtceu.top.valid_structure").withStyle(ChatFormatting.GREEN));
             }
-        }
+        });
     }
 
     @Override
@@ -37,6 +35,6 @@ public class MultiblockStructureProvider implements IBlockComponentProvider, ISe
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("multiblock_structure");
+        return GTJadeIds.toResourceLocation("multiblock_structure");
     }
 }

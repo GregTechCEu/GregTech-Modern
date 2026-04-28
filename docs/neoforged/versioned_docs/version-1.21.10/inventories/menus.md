@@ -1,0 +1,422 @@
+---
+sidebar_position: 2
+---
+# Menus
+
+Menus are one type of backend for Graphical User Interfaces, or GUIs; they handle the logic involved in interacting with some represented data holder. Menus themselves are not data holders. They are views which allow to user to indirectly modify the internal data holder state. As such, a data holder should not be directly coupled to any menu, instead passing in the data references to invoke and modify.
+
+## `MenuType`
+
+Menus are created and removed dynamically and as such are not registry objects. As such, another factory object is registered instead to easily create and refer to the *type* of the menu. For a menu, these are `MenuType`s.
+
+`MenuType`s must be [registered].
+
+### `MenuSupplier`
+
+A `MenuType` is created by passing in a `MenuSupplier` and a `FeatureFlagSet` to its constructor. A `MenuSupplier` represents a function which takes in the id of the container and the inventory of the player viewing the menu, and returns a newly created [`AbstractContainerMenu`][acm].
+
+```java
+// For some DeferredRegister<MenuType<?>> REGISTER
+public static final Supplier<MenuType<MyMenu>> MY_MENU = REGISTER.register("my_menu", () -> new MenuType<>(MyMenu::new, FeatureFlags.DEFAULT_FLAGS));
+
+// In MyMenu, an AbstractContainerMenu subclass
+public MyMenu(int containerId, Inventory playerInv) {
+    super(MY_MENU.get(), containerId);
+    // ...
+}
+```
+
+:::note
+The container identifier is unique for an individual player. This means that the same container id on two different players will represent two different menus, even if they are viewing the same data holder.
+:::
+
+The `MenuSupplier` is usually responsible for creating a menu on the client with dummy data references used to store and interact with the synced information from the server data holder.
+
+### `IContainerFactory`
+
+If additional information is needed on the client (e.g. the position of the data holder in the world), then the subclass `IContainerFactory` can be used instead. In addition to the container id and the player inventory, this also provides a `RegistryFriendlyByteBuf` which can store additional information that was sent from the server. A `MenuType` can be created using an `IContainerFactory` via `IMenuTypeExtension#create`.
+
+```java
+// For some DeferredRegister<MenuType<?>> REGISTER
+public static final Supplier<MenuType<MyMenuExtra>> MY_MENU_EXTRA = REGISTER.register("my_menu_extra", () -> IMenuTypeExtension.create(MyMenu::new));
+
+// In MyMenuExtra, an AbstractContainerMenu subclass
+public MyMenuExtra(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
+    super(MY_MENU_EXTRA.get(), containerId);
+    // Store extra data from buffer
+    // ...
+}
+```
+
+## `AbstractContainerMenu`
+
+All menus are extended from `AbstractContainerMenu`. A menu takes in two parameters, the [`MenuType`][mt], which represents the type of the menu itself, and the container id, which represents the unique identifier of the menu for the current accessor.
+
+:::note
+The menu identifier cycles through 0-99, incrementing whenever a player opens a menu.
+:::
+
+Each menu should contain two constructors: one used to initialize the menu on the server and one used to initialize the menu on the client. The constructor used to initialize the menu on the client is the one supplied to the `MenuType`. Any fields that the server menu constructor contains should have some default for the client menu constructor.
+
+```java
+// Client menu constructor
+public MyMenu(int containerId, Inventory playerInventory) { // optional FriendlyByteBuf parameter if reading data from server
+    this(containerId, playerInventory, /* Any default parameters here */);
+}
+
+// Server menu constructor
+public MyMenu(int containerId, Inventory playerInventory, /* Any additional parameters here. */) {
+    // ...
+}
+```
+
+:::note
+If no additional data needs to be displayed in the menu, then only one constructor is necessary.
+:::
+
+Each menu implementation must implement two methods: `#stillValid` and [`#quickMoveStack`][qms].
+
+### `#stillValid` and `ContainerLevelAccess`
+
+`#stillValid` determines whether the menu should remain open for a given player. This is typically directed to the static `#stillValid` which takes in a `ContainerLevelAccess`, the player, and the `Block` this menu is attached to. The client menu must always return `true` for this method, which the static `#stillValid` does default to. This implementation checks whether the player is within eight blocks of where the data storage object is located.
+
+A `ContainerLevelAccess` supplies the current level and block position within an enclosed scope. When constructing the menu on the server, a new access can be created by calling `ContainerLevelAccess#create`. The client menu constructor can pass in `ContainerLevelAccess#NULL`, which will do nothing.
+
+```java
+// Client menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory) {
+    this(containerId, playerInventory, ContainerLevelAccess.NULL);
+}
+
+// Server menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory, ContainerLevelAccess access) {
+    // ...
+}
+
+// Assume this menu is attached to Supplier<Block> MY_BLOCK
+@Override
+public boolean stillValid(Player player) {
+    return AbstractContainerMenu.stillValid(this.access, player, MY_BLOCK.get());
+}
+```
+
+### Data Synchronization
+
+Some data needs to be present on both the server and the client to display to the player. To do this, the menu implements a basic layer of data synchronization such that whenever the current data does not match the data last synced to the client. For players, this is checked every tick.
+
+Minecraft supports two forms of data synchronization by default: [`ItemStack`s][itemstack] via `Slot`s and integers via `DataSlot`s. `Slot`s and `DataSlot`s are views which hold references to data storages that can be be modified by the player in a screen, assuming the action is valid. Each method of data synchronization will add an argument to the server menu constructor, while the client will create a dummy instance used to write the data sent from the server.
+
+#### `DataSlot`
+
+A `DataSlot` is an abstract class which should implement a getter and setter to reference the data stored in the data storage object. The client menu constructor should always supply a new instance via `DataSlot#standalone`. The data slot can then be added to the menu using `#addDataSlot`.
+
+These, along with slots, should be recreated every time a new menu is initialized.
+
+:::note
+Although a `DataSlot` stores an integer, it is effectively limited to a **short** (-32768 to 32767) because of how it sends the value across the network. The 16 high-order bits of the integer are ignored.
+
+NeoForge patches the packet to provide the full integer to the client.
+:::
+
+```java
+// Assume we have a DataSlot constructed on each initialization of the server menu
+
+// Client menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory) {
+    this(
+        containerId, playerInventory,
+        // Pass in a dummy slot to hold the server-synced values
+        DataSlot.standalone()
+    );
+}
+
+// Server menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory, DataSlot dataSingle) {
+    // Add data slots for handled integers
+    this.addDataSlot(dataSingle);
+
+    // ...
+}
+```
+
+#### `ContainerData`
+
+If multiple integers need to be synced to the client, a `ContainerData` can be used to reference the integers instead. This interface functions as an index lookup such that each index represents a different integer. `ContainerData`s can also be constructed in the data object itself if the `ContainerData` is added to the menu through `#addDataSlots`. The method creates a new `DataSlot` for the amount of data specified by the interface. The client menu constructor should always supply a new instance via `SimpleContainerData`.
+
+```java
+// Assume we have a ContainerData of size 3
+
+// Client menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory) {
+    this(containerId, playerInventory, new SimpleContainerData(3));
+}
+
+// Server menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory, ContainerData dataMultiple) {
+    // Check if the ContainerData size is some fixed value
+    checkContainerDataCount(dataMultiple, 3);
+
+    // Add data slots for handled integers
+    this.addDataSlots(dataMultiple);
+
+    // ...
+}
+```
+
+#### `Slot`
+
+A `Slot` represents a reference to some [`ItemStack`][itemstack] in an inventory. Each `Slot` has at least four parameters: the inventory the stacks are within, the index of the stack this slot is specifically representing, and the x and y position of where the top-left position of the slot will render on the screen relative to `AbstractContainerScreen#leftPos` and `#topPos`. Any additional parameters usually provide context for the slot to handle unique behavior, such as taking in only items that are considered fuel or preventing items from being taken out. 
+
+The server menu constructor should take in the inventory instance or view. The client menu constructor, meanwhile, should always supply an empty instance of an inventory of the same size to write the server data to. The desired slot or one of its subtypes can then be added to the menu using `#addSlot`.
+
+For a [`Container`][container], the client menu will typically pass in a `SimpleContainer` and be added using regular `Slot`s. For the [`ResourceHandler<ItemResource>` capability][cap], the client menu will typically pass in a `ItemStacksResourceHandler` and be added using `ResourceHandlerSlot`s.
+
+In most cases, any slots the menu contains is first added, followed by the player's inventory, and finally concluded with the player's hotbar. To access any individual `Slot` from the menu, the index must be calculated based upon the order of which slots were added.
+
+```java
+// Assume we have an inventory from a data object of size 10
+
+// Client menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory) {
+    this(containerId, playerInventory, new ItemStacksResourceHandler(10));
+}
+
+// Server menu constructor
+public MyMenuAccess(int containerId, Inventory playerInventory, StacksResourceHandler<ItemStack, ItemResource> dataInventory) {
+    // Check if the data inventory size is some fixed value
+    int dataSize = dataInventory.getSlots();
+    if (dataSize < 10) {
+        throw new IllegalArgumentException("Container size " + dataSize + " is smaller than expected " + 5);
+    }
+
+    // Then, add slots for data inventory
+    // If you are using a subtype of slot, make sure any data
+    // used on the server is also available on the client.
+
+    // Create the inventory by looping through the positions and
+    // adding the slots.
+
+    // Two rows
+    for (int j = 0; j < 2; j++) {
+        // Five columns
+        for (int i = 0; i < 5; i++) {
+            // Add for each slot in the data inventory
+            this.addSlot(new ResourceHandlerSlot(
+                // The inventory
+                dataInventory,
+                // The index modifier to mutate the stored resources
+                dataInventory::set,
+                // The index of the data inventory this slot represents:
+                // rowIndex * columnCount + columnIndex
+                j * 5 + i,
+                // The x position relative to leftPos
+                // Vanilla slots are 18 units by default
+                // startX + columnIndex * slotRenderWidth
+                44 + i * 18,
+                // The y position relative to topPos
+                // Vanilla slots are 18 units by default
+                // startY + rowIndex * slotRenderHeight
+                20 + j * 18
+            ))
+        }
+    }
+
+    // Add slots for player inventory (all 27 + 9 hotbar slots)
+    // If you want to customize the 9x3 + 9 grid to something else,
+    // loop through like above
+    this.addStandardInventorySlots(
+        playerInventory,
+        // The starting x position relative to leftPos
+        8,
+        // The starting y position relative to topPos
+        84
+    );
+
+    // ...
+}
+```
+
+#### `#quickMoveStack`
+
+`#quickMoveStack` is the second method that must be implemented by any menu. This method is called whenever a stack has been shift-clicked, or quick moved, out of its current slot until the stack has been fully moved out of its previous slot or there is no other place for the stack to go. The method returns a copy of the stack in the slot being quick moved.
+
+Stacks are typically moved between slots using `#moveItemStackTo`, which moves the stack into the first available slot. It takes in the stack to be moved, the first slot index (inclusive) to try and move the stack to, the last slot index (exclusive), and whether to check the slots from first to last (when `false`) or from last to first (when `true`).
+
+Across Minecraft implementations, this method is fairly consistent in its logic:
+
+```java
+// Assume we have a data inventory of size 5
+// The inventory has 4 inputs (index 1 - 4) which outputs to a result slot (index 0)
+// We also have the 27 player inventory slots and the 9 hotbar slots
+// As such, the actual slots are indexed like so:
+//   - Data Inventory: Result (0), Inputs (1 - 4)
+//   - Player Inventory (5 - 31)
+//   - Player Hotbar (32 - 40)
+@Override
+public ItemStack quickMoveStack(Player player, int quickMovedSlotIndex) {
+    // The quick moved slot stack
+    ItemStack quickMovedStack = ItemStack.EMPTY;
+    // The quick moved slot
+    Slot quickMovedSlot = this.slots.get(quickMovedSlotIndex);
+  
+    // If the slot is in the valid range and the slot is not empty
+    if (quickMovedSlot != null && quickMovedSlot.hasItem()) {
+        // Get the raw stack to move
+        ItemStack rawStack = quickMovedSlot.getItem(); 
+        // Set the slot stack to a copy of the raw stack
+        quickMovedStack = rawStack.copy();
+
+        /*
+        The following quick move logic can be simplified to if in data inventory,
+        try to move to player inventory/hotbar and vice versa for containers
+        that cannot transform data (e.g. chests).
+        */
+
+        // If the quick move was performed on the data inventory result slot
+        if (quickMovedSlotIndex == 0) {
+            // Try to move the result slot into the player inventory/hotbar
+            if (!this.moveItemStackTo(rawStack, 5, 41, true)) {
+                // If cannot move, no longer quick move
+                return ItemStack.EMPTY;
+            }
+
+            // Perform logic on result slot quick move
+            quickMovedSlot.onQuickCraft(rawStack, quickMovedStack);
+        }
+        // Else if the quick move was performed on the player inventory or hotbar slot
+        else if (quickMovedSlotIndex >= 5 && quickMovedSlotIndex < 41) {
+            // Try to move the inventory/hotbar slot into the data inventory input slots
+            if (!this.moveItemStackTo(rawStack, 1, 5, false)) {
+                // If cannot move and in player inventory slot, try to move to hotbar
+                if (quickMovedSlotIndex < 32) {
+                    if (!this.moveItemStackTo(rawStack, 32, 41, false)) {
+                        // If cannot move, no longer quick move
+                        return ItemStack.EMPTY;
+                    }
+                }
+                // Else try to move hotbar into player inventory slot
+                else if (!this.moveItemStackTo(rawStack, 5, 32, false)) {
+                    // If cannot move, no longer quick move
+                    return ItemStack.EMPTY;
+                }
+            }
+        }
+        // Else if the quick move was performed on the data inventory input slots, try to move to player inventory/hotbar
+        else if (!this.moveItemStackTo(rawStack, 5, 41, false)) {
+            // If cannot move, no longer quick move
+            return ItemStack.EMPTY;
+        }
+
+        if (rawStack.isEmpty()) {
+            // If the raw stack has completely moved out of the slot, set the slot to the empty stack
+            quickMovedSlot.setByPlayer(ItemStack.EMPTY);
+        } else {
+            // Otherwise, notify the slot that that the stack count has changed
+            quickMovedSlot.setChanged();
+        }
+
+        /*
+        The following if statement and Slot#onTake call can be removed if the
+        menu does not represent a container that can transform stacks (e.g.
+        chests).
+        */
+        if (rawStack.getCount() == quickMovedStack.getCount()) {
+            // If the raw stack was not able to be moved to another slot, no longer quick move
+            return ItemStack.EMPTY;
+        }
+        // Execute logic on what to do post move with the remaining stack
+        quickMovedSlot.onTake(player, rawStack);
+    }
+
+    return quickMovedStack; // Return the slot stack
+}
+```
+
+## Opening a Menu
+
+Once a menu type has been registered, the menu itself has been finished, and a [screen] has been attached, a menu can then be opened by the player. Menus can be opened by calling `IPlayerExtension#openMenu` on the logical server. The method takes in the `MenuProvider` of the server side menu and optionally a `Consumer<RegistryFriendlyByteBuf>` if extra data needs to be synced to the client.
+
+:::note
+`IPlayerExtension#openMenu` with the `Consumer<RegistryFriendlyByteBuf>` parameter should only be used if a menu type was created using an [`IContainerFactory`][icf].
+:::
+
+#### `MenuProvider`
+
+A `MenuProvider` is an interface that contains two methods: `#createMenu`, which creates the server instance of the menu, and `#getDisplayName`, which returns a component containing the title of the menu to pass to the [screen]. The `#createMenu` method contains three parameter: the container id of the menu, the inventory of the player who opened the menu, and the player who opened the menu.
+
+A `MenuProvider` can easily be created using `SimpleMenuProvider`, which takes in a method reference to create the server menu and the title of the menu.
+
+```java
+// In some implementation with access to the Player on the logical server (e.g. ServerPlayer instance)
+// Assume we have ServerPlayer serverPlayer
+serverPlayer.openMenu(new SimpleMenuProvider(
+    (containerId, playerInventory, player) -> new MyMenu(containerId, playerInventory, /* server parameters */),
+    Component.translatable("menu.title.examplemod.mymenu")
+));
+```
+
+### Common Implementations
+
+Menus are typically opened on a player interaction of some kind (e.g. when a block or entity is right-clicked).
+
+#### Block Implementation
+
+Blocks typically implement a menu by overriding `BlockBehaviour#useWithoutItem`, returning `InteractionResult#SUCCESS` for the [interaction].
+
+The `MenuProvider` should be implemented by overriding `BlockBehaviour#getMenuProvider`. Vanilla methods use this to view the menu in spectator mode.
+
+```java
+// In some Block subclass
+@Override
+public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+    return new SimpleMenuProvider(/* ... */);
+}
+
+@Override
+public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
+    if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+        serverPlayer.openMenu(state.getMenuProvider(level, pos));
+    }
+
+    return InteractionResult.SUCCESS;
+}
+```
+
+:::note
+This is the simplest way to implement the logic, not the only way. If you want the block to only open the menu under certain conditions, then some data will need to be synced to the client beforehand to return `InteractionResult#PASS` or `#FAIL` if the conditions are not met.
+:::
+
+#### Mob Implementation
+
+Mobs typically implement a menu by overriding `Mob#mobInteract`. This is done similarly to the block implementation with the only difference being that the `Mob` itself should implement `MenuProvider` to support spectator mode viewing.
+
+```java
+public class MyMob extends Mob implements MenuProvider {
+    // ...
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (!this.level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(this);
+        }
+
+        return InteractionResult.SUCCESS;
+    }
+}
+```
+
+:::note
+Once again, this is the simplest way to implement the logic, not the only way.
+:::
+
+[registered]: ../concepts/registries.md#methods-for-registering
+[acm]: #abstractcontainermenu
+[mt]: #menutype
+[qms]: #quickmovestack
+[cap]: capabilities.md#neoforge-provided-capabilities
+[container]: container.md
+[screen]: ../rendering/screens.md
+[icf]: #icontainerfactory
+[side]: ../concepts/sides.md#the-logical-side
+[interaction]: ../items/interactions.md#right-clicking-an-item
+[itemstack]: ../items/index.md#itemstacks

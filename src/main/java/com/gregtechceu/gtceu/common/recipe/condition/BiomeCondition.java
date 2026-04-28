@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
@@ -29,7 +29,7 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     ).apply(instance, BiomeCondition::new));
 
     @Getter
-    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("dummy"));
     // spotless:on
 
     public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {
@@ -54,8 +54,8 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.biome.tooltip",
-                Component.translatableWithFallback(biome.location().toLanguageKey("biome"),
-                        biome.location().toString()));
+                Component.translatableWithFallback(biome.identifier().toLanguageKey("biome"),
+                        biome.identifier().toString()));
     }
 
     @Override

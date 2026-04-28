@@ -56,6 +56,6 @@ public class DuctPipeNet extends PipeNet<DuctPipeProperties> {
 
     @Override
     protected DuctPipeProperties readNodeData(CompoundTag tagCompound) {
-        return new DuctPipeProperties(tagCompound.getFloat("Rate"));
+        return new DuctPipeProperties(tagCompound.getFloatOr("Rate", 0));
     }
 }

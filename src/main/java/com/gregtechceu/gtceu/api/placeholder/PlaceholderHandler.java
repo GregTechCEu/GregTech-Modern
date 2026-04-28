@@ -6,27 +6,18 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -96,7 +87,7 @@ public class PlaceholderHandler {
     }
 
     public static MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
-        if (ctx.level().isClientSide)
+        if (ctx.level().isClientSide())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
         Object2IntOpenHashMap<String> indices = new Object2IntOpenHashMap<>();
@@ -189,35 +180,5 @@ public class PlaceholderHandler {
 
     public static Set<String> getAllPlaceholderNames() {
         return placeholders.keySet();
-    }
-
-    public static Widget getPlaceholderHandlerUI(String filter) {
-        DraggableScrollableWidgetGroup placeholderReference = new DraggableScrollableWidgetGroup(280, 15, 100, 200);
-        Consumer<String> onSearch = (newSearch) -> {
-            placeholderReference.clearAllWidgets();
-            int y = 2;
-            ArrayList<String> placeholders = new ArrayList<>(getAllPlaceholderNames());
-            placeholders.removeIf(s -> s == null || !s.contains(newSearch));
-            placeholders.sort(String::compareTo);
-            for (String placeholder : placeholders) {
-                TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
-                placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
-                placeholderName.setHoverTooltips(GTStringUtils
-                        .toImmutable(LangHandler.getSingleOrMultiLang("gtceu.placeholder_info." + placeholder)));
-                placeholderReference.addWidget(placeholderName);
-                y += 15;
-            }
-        };
-        onSearch.accept(filter);
-        TextTextureWidget placeholderReferenceLabel = new TextTextureWidget(
-                280, 0,
-                160, 15,
-                GTStringUtils.componentsToString(
-                        LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.placeholder_reference")));
-        placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
-        WidgetGroup out = new WidgetGroup();
-        out.addWidget(placeholderReferenceLabel);
-        out.addWidget(placeholderReference);
-        return out;
     }
 }

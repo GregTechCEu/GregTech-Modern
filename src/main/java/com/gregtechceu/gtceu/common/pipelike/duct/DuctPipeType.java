@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.Getter;
@@ -18,7 +18,7 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     HUGE("huge", 0.875f, 16f),
     ;
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("duct");
+    public static final Identifier TYPE_ID = GTCEu.id("duct");
     public static final DuctPipeType[] VALUES = values();
 
     @Getter
@@ -45,7 +45,7 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     }
 
     @Override
-    public ResourceLocation type() {
+    public Identifier type() {
         return TYPE_ID;
     }
 

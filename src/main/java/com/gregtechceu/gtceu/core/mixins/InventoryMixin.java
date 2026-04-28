@@ -24,7 +24,7 @@ public abstract class InventoryMixin {
     @Final
     public Player player;
 
-    @WrapOperation(method = "findSlotMatchingUnusedItem",
+    @WrapOperation(method = "findSlotMatchingCraftingIngredient",
                    at = @At(value = "INVOKE",
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameComponents(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private boolean gtceu$ignoreGTToolNbt(ItemStack stack, ItemStack other, Operation<Boolean> original) {
@@ -34,23 +34,13 @@ public abstract class InventoryMixin {
         return original.call(stack, other);
     }
 
-    @WrapOperation(method = "findSlotMatchingUnusedItem",
+    @WrapOperation(method = "findSlotMatchingCraftingIngredient",
                    at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z"))
-    private boolean gtceu$ignoreGTToolDamage(ItemStack instance, Operation<Boolean> original) {
-        if (instance.getItem() instanceof IGTTool) {
-            return false;
+                            target = "Lnet/minecraft/world/entity/player/Inventory;isUsableForCrafting(Lnet/minecraft/world/item/ItemStack;)Z"))
+    private boolean gtceu$allowGTToolCraftingIngredient(ItemStack stack, Operation<Boolean> original) {
+        if (stack.getItem() instanceof IGTTool) {
+            return true;
         }
-        return original.call(instance);
-    }
-
-    @WrapOperation(method = "findSlotMatchingUnusedItem",
-                   at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z"))
-    private boolean gtceu$ignoreGTToolEnchants(ItemStack instance, Operation<Boolean> original) {
-        if (instance.getItem() instanceof IGTTool) {
-            return false;
-        }
-        return original.call(instance);
+        return original.call(stack);
     }
 }

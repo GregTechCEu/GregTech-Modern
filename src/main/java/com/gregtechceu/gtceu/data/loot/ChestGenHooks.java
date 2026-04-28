@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -42,8 +41,8 @@ import java.util.function.Consumer;
 
 public final class ChestGenHooks {
 
-    private static final Map<ResourceLocation, List<GTLootEntryItem>> lootEntryItems = new Object2ObjectOpenHashMap<>();
-    private static final Map<ResourceLocation, NumberProvider> rollValues = new Object2ObjectOpenHashMap<>();
+    private static final Map<Identifier, List<GTLootEntryItem>> lootEntryItems = new Object2ObjectOpenHashMap<>();
+    private static final Map<Identifier, NumberProvider> rollValues = new Object2ObjectOpenHashMap<>();
 
     private static final List<LootItemCondition> NO_CONDITIONS = List.of();
 
@@ -59,7 +58,7 @@ public final class ChestGenHooks {
         LootPool mainPool = event.getTable().getPool("main");
         if (mainPool == null) return;
 
-        ResourceLocation name = event.getName();
+        Identifier name = event.getName();
         if (lootEntryItems.containsKey(name)) {
             List<GTLootEntryItem> entryItems = lootEntryItems.get(name);
             for (GTLootEntryItem entry : entryItems) {
@@ -91,11 +90,11 @@ public final class ChestGenHooks {
         String modid = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(stack.getItem())).getNamespace();
         String entryName = createEntryName(stack, modid, weight, lootFunction);
         GTLootEntryItem itemEntry = new GTLootEntryItem(stack, weight, lootFunction, entryName);
-        lootEntryItems.computeIfAbsent(lootTable.location(), $ -> new ArrayList<>()).add(itemEntry);
+        lootEntryItems.computeIfAbsent(lootTable.identifier(), $ -> new ArrayList<>()).add(itemEntry);
     }
 
     public static void addRolls(ResourceKey<LootTable> lootTable, int minAdd, int maxAdd) {
-        rollValues.put(lootTable.location(), UniformGenerator.between(minAdd, maxAdd));
+        rollValues.put(lootTable.identifier(), UniformGenerator.between(minAdd, maxAdd));
     }
 
     private static final ItemStackHashStrategy HASH_STRATEGY = ItemStackHashStrategy.comparingAllButCount();
@@ -114,7 +113,7 @@ public final class ChestGenHooks {
 
         public GTLootEntryItem(@NotNull ItemStack stack, int weight, LootItemFunction lootFunction,
                                @NotNull String entryName) {
-            super(stack.getItemHolder(), weight, 1, NO_CONDITIONS, List.of(lootFunction));
+            super(stack.typeHolder(), weight, 1, NO_CONDITIONS, List.of(lootFunction));
             this.stack = stack;
             this.entryName = entryName;
         }
@@ -138,8 +137,8 @@ public final class ChestGenHooks {
                         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount))
                 .apply(instance, RandomWeightLootFunction::new));
 
-        public static final LootItemFunctionType<RandomWeightLootFunction> TYPE = GTRegistries.register(
-                BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType<>(CODEC));
+        public static final MapCodec<RandomWeightLootFunction> TYPE = GTRegistries.register(
+                BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), CODEC);
 
         private final ItemStack stack;
         @Getter
@@ -158,7 +157,7 @@ public final class ChestGenHooks {
         public static void init() {}
 
         @Override
-        public @NotNull LootItemFunctionType<RandomWeightLootFunction> getType() {
+        public @NotNull MapCodec<? extends LootItemConditionalFunction> codec() {
             return TYPE;
         }
 

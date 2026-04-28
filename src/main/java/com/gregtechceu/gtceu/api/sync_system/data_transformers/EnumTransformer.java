@@ -19,7 +19,7 @@ public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
     @Override
     public E deserializeNBT(Tag tag, ValueTransformer.TransformerContext<E> context) {
-        var enumString = ValueTransformer.assertTagType(StringTag.class, tag, context).getAsString();
+        var enumString = ValueTransformer.assertTagType(StringTag.class, tag, context).value();
         E value = null;
         try {
             value = Enum.valueOf(enumClass, enumString);

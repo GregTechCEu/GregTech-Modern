@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.integration.jei.multipage;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.integration.jei.GTJeiIds;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
@@ -38,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockInfoWrapper> {
 
     public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("multiblock_info"),
+            GTJeiIds.id("multiblock_info"),
             MultiblockInfoWrapper.class);
     @Getter
     private final IDrawable background;
@@ -103,7 +103,7 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
 
     @Override
     public @Nullable ResourceLocation getRegistryName(@NotNull MultiblockInfoWrapper recipe) {
-        return recipe.definition.getId();
+        return GTJeiIds.from(recipe.definition.getId());
     }
 
     @Override

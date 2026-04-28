@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.core.IGTBakedQuad;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

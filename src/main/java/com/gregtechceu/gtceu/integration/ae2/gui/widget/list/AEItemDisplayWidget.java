@@ -58,7 +58,7 @@ public class AEItemDisplayWidget extends Widget {
             GenericStack item = this.gridWidget.getAt(this.index);
             if (item != null) {
                 ItemStack itemStack = AEUtil.toItemStack(item);
-                graphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
+                graphics.setTooltipForNextFrame(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
             }
         }
     }

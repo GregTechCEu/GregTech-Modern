@@ -2,16 +2,16 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.ExDataComponentIngredient;
 
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,7 +22,7 @@ import java.util.Objects;
 @Accessors(chain = true, fluent = true)
 public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
 
-    private final RecipeConstructor<T> constructor;
+    private final AbstractCookingRecipe.Factory<T> constructor;
     protected final String folder;
 
     protected Ingredient input;
@@ -37,33 +37,33 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     @Setter
     protected int cookingTime;
     @Setter
-    protected ResourceLocation id;
+    protected Identifier id;
 
-    protected SimpleCookingRecipeBuilder(@Nullable ResourceLocation id, String folder,
-                                         RecipeConstructor<T> constructor) {
+    protected SimpleCookingRecipeBuilder(@Nullable Identifier id, String folder,
+                                         AbstractCookingRecipe.Factory<T> constructor) {
         this.id = id;
         this.folder = folder;
         this.constructor = constructor;
     }
 
-    public static SimpleCookingRecipeBuilder<CampfireCookingRecipe> campfireCooking(@Nullable ResourceLocation id) {
+    public static SimpleCookingRecipeBuilder<CampfireCookingRecipe> campfireCooking(@Nullable Identifier id) {
         return new SimpleCookingRecipeBuilder<>(id, "campfire_cooking", CampfireCookingRecipe::new);
     }
 
-    public static SimpleCookingRecipeBuilder<SmeltingRecipe> smelting(@Nullable ResourceLocation id) {
+    public static SimpleCookingRecipeBuilder<SmeltingRecipe> smelting(@Nullable Identifier id) {
         return new SimpleCookingRecipeBuilder<>(id, "smelting", SmeltingRecipe::new);
     }
 
-    public static SimpleCookingRecipeBuilder<BlastingRecipe> blasting(@Nullable ResourceLocation id) {
+    public static SimpleCookingRecipeBuilder<BlastingRecipe> blasting(@Nullable Identifier id) {
         return new SimpleCookingRecipeBuilder<>(id, "blasting", BlastingRecipe::new);
     }
 
-    public static SimpleCookingRecipeBuilder<SmokingRecipe> smoking(@Nullable ResourceLocation id) {
+    public static SimpleCookingRecipeBuilder<SmokingRecipe> smoking(@Nullable Identifier id) {
         return new SimpleCookingRecipeBuilder<>(id, "smoking", SmokingRecipe::new);
     }
 
     public SimpleCookingRecipeBuilder<T> input(TagKey<Item> tag) {
-        return input(Ingredient.of(tag));
+        return input(RecipeBuilderUtil.ingredientOf(tag));
     }
 
     public SimpleCookingRecipeBuilder<T> input(TagKey<Item> tag, DataComponentPredicate components, boolean strict) {
@@ -71,11 +71,7 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     }
 
     public SimpleCookingRecipeBuilder<T> input(ItemStack itemStack) {
-        if (!itemStack.getComponentsPatch().isEmpty()) {
-            input = DataComponentIngredient.of(true, itemStack);
-        } else {
-            input = Ingredient.of(itemStack);
-        }
+        input = RecipeBuilderUtil.ingredientOf(itemStack);
         return this;
     }
 
@@ -98,24 +94,18 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
         return this;
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
     private T create() {
-        return constructor.create(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output,
-                this.experience, this.cookingTime);
+        return constructor.create(new Recipe.CommonInfo(true),
+                new AbstractCookingRecipe.CookingBookInfo(this.category, Objects.requireNonNullElse(this.group, "")),
+                this.input, ItemStackTemplate.fromNonEmptyStack(this.output), this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(recipeId.withPrefix(folder + "/"), create(), null);
-    }
-
-    @FunctionalInterface
-    public interface RecipeConstructor<T extends AbstractCookingRecipe> {
-
-        T create(String group, CookingBookCategory category,
-                 Ingredient ingredient, ItemStack result, float experience, int cookingTime);
+        consumer.accept(RecipeBuilderUtil.recipeKey(recipeId.withPrefix(folder + "/")), create(), null);
     }
 }

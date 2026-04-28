@@ -92,7 +92,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
             final ServerLevel serverLevel = (ServerLevel) getLevel();
             EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
 
-            final ChunkPos pos = new ChunkPos(getBlockPos());
+            final ChunkPos pos = ChunkPos.containing(getBlockPos());
             Object2FloatMap<ChunkPos> relativePositions = new Object2FloatOpenHashMap<>();
             if (cleaningRadius <= 0) {
                 // LV scrubber can only process the chunk it's in
@@ -100,7 +100,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
             } else {
                 for (int x = -cleaningRadius; x <= cleaningRadius; ++x) {
                     for (int z = -cleaningRadius; z <= cleaningRadius; ++z) {
-                        relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
+                        relativePositions.put(new ChunkPos(pos.x() + x, pos.z() + z), Mth.sqrt(Mth.abs(x * z)) + 1);
                     }
                 }
             }
@@ -115,7 +115,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
                     removedLastSecond += toClean;
                     zone.removeStrength(toClean);
                     if (zone.strength() <= 0) {
-                        if (serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
+                        if (serverLevel.hasChunk(chunkPos.x(), chunkPos.z())) {
                             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, chunkPos,
                                     new SPacketRemoveHazardZone(chunkPos));
                         }

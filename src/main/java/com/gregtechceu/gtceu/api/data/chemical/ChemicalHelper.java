@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -55,14 +56,10 @@ public class ChemicalHelper {
                 return ItemMaterialData.getMaterialInfo(items.get(0));
             }
         } else if (object instanceof Ingredient ing) {
-            if (!ing.isCustom()) {
-                for (Ingredient.Value value : ing.getValues()) {
-                    if (value instanceof Ingredient.TagValue) {
-                        return null;
-                    }
-                }
+            if (!ing.isCustom() && ing.getValues().unwrapKey().isPresent()) {
+                return null;
             }
-            for (var stack : ing.getItems()) {
+            for (var stack : ing.items().map(ItemStack::new).toList()) {
                 var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
                 if (ms != null) return ms;
             }
@@ -102,7 +99,9 @@ public class ChemicalHelper {
 
     public static Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
-            Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
+            Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTags()
+                    .map(HolderSet.Named::key)
+                    .collect(Collectors.toSet());
             for (final Material material : GTCEuAPI.materialManager) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
@@ -213,7 +212,9 @@ public class ChemicalHelper {
         if (TAG_MATERIAL_ENTRY.isEmpty()) {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
             // lookups.
-            Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
+            Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTags()
+                    .map(HolderSet.Named::key)
+                    .collect(Collectors.toSet());
             for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
                 for (Material material : GTCEuAPI.materialManager) {
                     prefix.getItemTags(material).stream()

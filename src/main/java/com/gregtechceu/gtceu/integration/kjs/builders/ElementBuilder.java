@@ -28,7 +28,7 @@ public class ElementBuilder extends BuilderBase<Element> {
     public ElementBuilder(ResourceLocation id) {
         super(GTResourceLocation.implicitAsGtceu(id));
         name = id.getPath();
-        translatableName = Component.translatable(id.toLanguageKey("element"));
+        translatableName = Component.translatable(id.toIdentifier().toLanguageKey("element"));
     }
 
     @Override

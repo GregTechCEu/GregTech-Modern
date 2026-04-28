@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
@@ -22,15 +21,15 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("parallel")) {
-            int parallel = blockAccessor.getServerData().getInt("parallel");
-            if (!blockAccessor.getServerData().getBoolean("exact") && parallel > 1) {
+            int parallel = blockAccessor.getServerData().getIntOr("parallel", 0);
+            if (!blockAccessor.getServerData().getBooleanOr("exact", false) && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";
                 iTooltip.add(Component.translatable(key, parallels));
             } else {
-                int batch = blockAccessor.getServerData().getInt("batch");
-                int subtickParallel = blockAccessor.getServerData().getInt("subtickParallel");
+                int batch = blockAccessor.getServerData().getIntOr("batch", 1);
+                int subtickParallel = blockAccessor.getServerData().getIntOr("subtickParallel", 1);
                 int totalRuns = parallel * batch * subtickParallel;
                 if (totalRuns == 1) return;
                 Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
@@ -82,6 +81,6 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
 
     @Override
     public ResourceLocation getUid() {
-        return GTCEu.id("parallel_info");
+        return GTJadeIds.toResourceLocation("parallel_info");
     }
 }

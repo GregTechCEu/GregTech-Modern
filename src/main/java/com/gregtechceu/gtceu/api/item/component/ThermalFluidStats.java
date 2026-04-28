@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.misc.forge.FluidHandlerAdapters;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -54,14 +55,13 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, unused) -> {
-            if (allowPartialFill) {
-                return new ThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof,
-                        cryoProof, plasmaProof);
-            }
-            return new SimpleThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof,
-                    cryoProof, plasmaProof);
-        }, item);
+        event.registerItem(Capabilities.Fluid.ITEM, (stack, unused) -> FluidHandlerAdapters.toResourceHandler(
+                allowPartialFill ?
+                        new ThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof,
+                                cryoProof, plasmaProof) :
+                        new SimpleThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof,
+                                acidProof, cryoProof, plasmaProof)),
+                item);
     }
 
     @Override

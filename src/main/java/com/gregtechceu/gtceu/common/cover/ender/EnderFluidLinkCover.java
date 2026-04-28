@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
@@ -16,10 +14,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -117,14 +114,20 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     @Override
     public CompoundTag copyConfig(CompoundTag tag) {
-        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        tag.put("filter", ItemStack.OPTIONAL_CODEC
+                .encodeStart(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        filterHandler.getFilterItem())
+                .getOrThrow());
         return super.copyConfig(tag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        filterHandler.setFilterItem(
-                ItemStack.parseOptional(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")));
+        filterHandler.setFilterItem(ItemStack.OPTIONAL_CODEC
+                .parse(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        tag.getCompoundOrEmpty("filter"))
+                .result()
+                .orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }
 
@@ -142,9 +145,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     //////////////////////////////////////
 
     @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        return new TankWidget(((VirtualTank) entry).getFluidTank(), 0, x, y, width, height, canClick, canClick)
-                .setBackground(GuiTextures.FLUID_SLOT);
+    protected Object addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
+        return EnderFluidLinkCoverUI.addVirtualEntryWidget(entry, x, y, width, height, canClick);
     }
 
     @NotNull

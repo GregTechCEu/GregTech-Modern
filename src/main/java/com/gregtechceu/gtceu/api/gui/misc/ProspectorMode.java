@@ -3,22 +3,14 @@ package com.gregtechceu.gtceu.api.gui.misc;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TagUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -27,9 +19,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
@@ -53,7 +44,7 @@ public abstract class ProspectorMode<T> {
     public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
 
         private final Map<BlockState, String> BLOCK_CACHE = new HashMap<>();
-        private final Map<String, IGuiTexture> ICON_CACHE = new HashMap<>();
+        private final Map<String, Object> ICON_CACHE = new HashMap<>();
 
         @Override
         public void scan(String[][][] storage, LevelChunk chunk) {
@@ -61,7 +52,7 @@ public abstract class ProspectorMode<T> {
             var oreTag = TagUtil.createBlockTag("ores");
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    for (int y = chunk.getMaxBuildHeight() - 1; y >= chunk.getMinBuildHeight(); y--) {
+                    for (int y = chunk.getMaxY() - 1; y >= chunk.getMinY(); y--) {
                         pos.set(x, y, z);
                         var state = chunk.getBlockState(pos);
                         if (state.is(oreTag)) {
@@ -88,27 +79,12 @@ public abstract class ProspectorMode<T> {
                     return mat.getMaterialRGB();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(ResourceLocation.parse(item)).defaultMapColor().col;
+            return BuiltInRegistries.BLOCK.getValue(Identifier.parse(item)).defaultMapColor().col;
         }
 
         @Override
-        public IGuiTexture getItemIcon(String item) {
-            return ICON_CACHE.computeIfAbsent(item, name -> {
-                if (name.startsWith("material_")) {
-                    var mat = GTMaterials.get(name.substring(9));
-                    if (!mat.isNull()) {
-                        var list = new ArrayList<ItemStack>();
-                        for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
-                            for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
-                                list.add(new ItemStack(block));
-                            }
-                        }
-                        return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
-                    }
-                }
-                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(name))))
-                        .scale(0.8f);
-            });
+        public Object getItemIcon(String item) {
+            return ICON_CACHE.computeIfAbsent(item, ProspectorModeUI::oreIcon);
         }
 
         @Override
@@ -119,7 +95,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getLocalizedName();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(ResourceLocation.parse(item)).getName();
+            return BuiltInRegistries.BLOCK.getValue(Identifier.parse(item)).getName();
         }
 
         @Override
@@ -169,9 +145,9 @@ public abstract class ProspectorMode<T> {
         private int left;
 
         public static FluidInfo fromNbt(CompoundTag tag) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
-            int left = tag.getInt("left");
-            int yield = tag.getInt("yield");
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(tag.getStringOr("fluid", "")));
+            int left = tag.getIntOr("left", 0);
+            int yield = tag.getIntOr("yield", 0);
             return new FluidInfo(fluid, yield, left);
         }
 
@@ -199,7 +175,7 @@ public abstract class ProspectorMode<T> {
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel)
-                        .getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                        .getFluidVeinWorldEntry(chunk.getPos().x(), chunk.getPos().z());
                 if (fluidVein.getDefinition() != null) {
                     storage[0][0] = new FluidInfo[] {
                             FluidInfo.fromVeinWorldEntry(fluidVein)
@@ -218,8 +194,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(FluidInfo item) {
-            return new ItemStackTexture(item.fluid.getBucket());
+        public Object getItemIcon(FluidInfo item) {
+            return ProspectorModeUI.fluidIcon(item);
         }
 
         @Override
@@ -241,7 +217,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public FluidInfo deserialize(FriendlyByteBuf buf) {
-            return new FluidInfo(BuiltInRegistries.FLUID.get(ResourceLocation.parse(buf.readUtf())), buf.readVarInt(),
+            return new FluidInfo(BuiltInRegistries.FLUID.getValue(Identifier.parse(buf.readUtf())), buf.readVarInt(),
                     buf.readVarInt());
         }
 
@@ -262,17 +238,7 @@ public abstract class ProspectorMode<T> {
         @Override
         @OnlyIn(Dist.CLIENT)
         public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
-            if (items.length > 0) {
-                var item = items[0];
-                double progress = item.left * 1.0 / Math.max(Math.min(item.left, 100), 1);
-                float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
-                float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
-                float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
-                float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
-                DrawerHelper.drawFluidForGui(graphics, new FluidStack(item.fluid(), item.left),
-                        (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
-                        ((int) (height * drawnHeight)));
-            }
+            ProspectorModeUI.drawFluidGrid(graphics, items, x, y, width, height);
         }
     };
 
@@ -286,8 +252,8 @@ public abstract class ProspectorMode<T> {
         @Override
         public void scan(OreInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
-                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x,
-                        chunk.getPos().z);
+                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x(),
+                        chunk.getPos().z());
                 if (oreVein.getDefinition() != null) {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().value().materials()) {
@@ -304,15 +270,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(OreInfo item) {
-            Material material = item.material;
-            ItemStack stack = GTUtil.getFirstNonEmpty(
-                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
-                    ChemicalHelper.get(TagPrefix.crushed, material),
-                    ChemicalHelper.get(TagPrefix.gem, material),
-                    ChemicalHelper.get(TagPrefix.ore, material),
-                    ChemicalHelper.get(TagPrefix.dust, material));
-            return new ItemStackTexture(stack).scale(0.8f);
+        public Object getItemIcon(OreInfo item) {
+            return ProspectorModeUI.bedrockOreIcon(item);
         }
 
         @Override
@@ -327,7 +286,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public void serialize(OreInfo item, FriendlyByteBuf buf) {
-            buf.writeResourceLocation(item.material.getResourceLocation());
+            buf.writeIdentifier(item.material.getResourceLocation());
             buf.writeVarInt(item.weight);
             buf.writeVarInt(item.left);
             buf.writeVarInt(item.yield);
@@ -335,7 +294,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public OreInfo deserialize(FriendlyByteBuf buf) {
-            ResourceLocation materialId = buf.readResourceLocation();
+            Identifier materialId = buf.readIdentifier();
             return new OreInfo(
                     GTCEuAPI.materialManager.getMaterial(materialId),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
@@ -373,7 +332,7 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract IGuiTexture getItemIcon(T item);
+    public abstract Object getItemIcon(T item);
 
     public abstract MutableComponent getDescription(T item);
 

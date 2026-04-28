@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.misc.ToolGridIcons;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -134,7 +132,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             setTemperature(temperature);
             if (temperature > getDefaultTemp()) {
                 subscribeHeat();
@@ -210,7 +208,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     public void applyHeat(int amount) {
         heatQueue += amount;
-        if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
+        if (!level.isClientSide() && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
             subscribeHeat();
         }
     }
@@ -274,7 +272,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
         level.getLightEngine().checkBlock(worldPosition);
-        if (!level.isClientSide && temperature >= meltTemp) {
+        if (!level.isClientSide() && temperature >= meltTemp) {
             var facing = Direction.UP;
             float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
             float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;
@@ -299,8 +297,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     //////////////////////////////////////
 
     @Override
-    public ResourceTexture getPipeTexture(boolean isBlock) {
-        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    public Object getPipeTexture(boolean isBlock) {
+        return isBlock ? ToolGridIcons.wireConnect() : ToolGridIcons.wireBlock();
     }
 
     @Override

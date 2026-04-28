@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import lombok.AllArgsConstructor;
@@ -18,24 +18,24 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SPacketNotifyCapeChange implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = GTCEu.id("cape_changed");
+    public static final Identifier ID = GTCEu.id("cape_changed");
     public static final Type<SPacketNotifyCapeChange> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SPacketNotifyCapeChange> CODEC = StreamCodec
             .ofMember(SPacketNotifyCapeChange::encode, SPacketNotifyCapeChange::new);
 
     private final UUID uuid;
-    private final ResourceLocation cape;
+    private final Identifier cape;
 
     public SPacketNotifyCapeChange(FriendlyByteBuf buf) {
         uuid = buf.readUUID();
-        cape = buf.readBoolean() ? buf.readResourceLocation() : null;
+        cape = buf.readBoolean() ? buf.readIdentifier() : null;
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeUUID(this.uuid);
         buf.writeBoolean(this.cape != null);
         if (this.cape != null) {
-            buf.writeResourceLocation(this.cape);
+            buf.writeIdentifier(this.cape);
         }
     }
 

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -33,8 +32,10 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
         TOOL_HEAD_TO_TOOL_MAP.computeIfAbsent(toolHead, p -> new GTToolType[GTValues.MAX])[tool.electricTier] = tool;
     }
 
+    public ToolHeadReplaceRecipe() {}
+
     public ToolHeadReplaceRecipe(CraftingBookCategory category) {
-        super(category);
+        this();
     }
 
     @Override
@@ -74,7 +75,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+    public @NotNull ItemStack assemble(CraftingInput inv) {
         List<ItemStack> list = new ArrayList<>();
 
         for (int i = 0; i < inv.size(); i++) {
@@ -124,13 +125,12 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
         return result;
     }
 
-    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 2;
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<ToolHeadReplaceRecipe> getSerializer() {
         return GTRecipeSerializers.CRAFTING_TOOL_HEAD_REPLACE.get();
     }
 }

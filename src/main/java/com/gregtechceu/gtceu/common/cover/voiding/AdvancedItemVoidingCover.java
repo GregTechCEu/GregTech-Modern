@@ -4,13 +4,9 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +30,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Getter
     protected int globalVoidingLimit = 1;
 
-    private IntInputWidget stackSizeInput;
+    Object stackSizeInput;
 
     public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -112,18 +108,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
-
-        this.stackSizeInput = new IntInputWidget(64, 20, 80, 20,
-                () -> globalVoidingLimit, val -> globalVoidingLimit = val);
-        configureStackSizeInput();
-
-        group.addWidget(this.stackSizeInput);
-    }
-
-    @Override
     protected void configureFilter() {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(this.voidingMode.maxStackSize);
@@ -132,16 +116,13 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         configureStackSizeInput();
     }
 
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeInput.setMin(1);
-        this.stackSizeInput.setMax(this.voidingMode.maxStackSize);
+    void configureStackSizeInput() {
+        if (this.stackSizeInput != null) {
+            AdvancedItemVoidingCoverUI.configureStackSizeInput(this);
+        }
     }
 
-    private boolean shouldShowStackSize() {
+    boolean shouldShowStackSize() {
         if (this.voidingMode == VoidingMode.VOID_ANY)
             return false;
 
@@ -160,8 +141,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
-        globalVoidingLimit = tag.getInt("voidSize");
+        setVoidingMode(VoidingMode.values()[tag.getIntOr("voidingMode", 0)]);
+        globalVoidingLimit = tag.getIntOr("voidSize", 0);
         super.pasteConfig(player, tag);
     }
 }

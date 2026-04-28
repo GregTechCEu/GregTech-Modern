@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
-
-import com.lowdragmc.lowdraglib.async.AsyncThreadData;
+import com.gregtechceu.gtceu.core.LDLibRuntimeHooks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -39,8 +38,8 @@ public abstract class LevelMixin implements LevelAccessor {
     @Inject(method = "getBlockEntity", at = @At(value = "HEAD"), cancellable = true)
     private void gtceu$getBlockEntityOffThread(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
         if (Thread.currentThread() == this.thread) return;
-        if (this.isClientSide) return;
-        if (!MultiblockWorldSavedData.isThreadService() && !AsyncThreadData.isThreadService()) return;
+        if (this.isClientSide()) return;
+        if (!MultiblockWorldSavedData.isThreadService() && !LDLibRuntimeHooks.isAsyncThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;
@@ -54,8 +53,8 @@ public abstract class LevelMixin implements LevelAccessor {
     @Inject(method = "getBlockState", at = @At(value = "HEAD"), cancellable = true)
     private void gtceu$getBlockStateOffThread(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (Thread.currentThread() == this.thread) return;
-        if (this.isClientSide) return;
-        if (!MultiblockWorldSavedData.isThreadService() && !AsyncThreadData.isThreadService()) return;
+        if (this.isClientSide()) return;
+        if (!MultiblockWorldSavedData.isThreadService() && !LDLibRuntimeHooks.isAsyncThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;

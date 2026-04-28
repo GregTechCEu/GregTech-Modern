@@ -2,25 +2,19 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.factory.GTHeldItemUIHolder;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -67,38 +61,26 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                  InteractionHand usedHand) {
+    public InteractionResult use(ItemStack item, Level level, Player player,
+                                 InteractionHand usedHand) {
         if (player.isShiftKeyDown() && modes.length > 1) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 setNextMode(item);
                 var mode = getMode(item);
                 player.sendSystemMessage(Component.translatable(mode.unlocalizedName));
             }
-            return InteractionResultHolder.success(item);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(item);
         }
         if (!player.isCreative() && !drainEnergy(item, true)) {
             player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
-            return InteractionResultHolder.success(item);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(item);
         }
         return IItemUIFactory.super.use(item, level, player, usedHand);
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var mode = getMode(holder.getHeld());
-        var map = new ProspectingMapWidget(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
-        return new ModularUI(332, 200, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(map)
-                .widget(new SwitchWidget(-20, 4, 18, 18, (cd, pressed) -> map.setDarkMode(pressed))
-                        .setSupplier(map::isDarkMode)
-                        .setTexture(
-                                new GuiTextureGroup(GuiTextures.BUTTON,
-                                        GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
-                                                .getSubTexture(0, 0.5, 1, 0.5).scale(0.8f)),
-                                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true)
-                                        .copy().getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
+    public Object createUI(GTHeldItemUIHolder holder, Player entityPlayer) {
+        return ProspectorScannerBehaviorUI.create(holder, entityPlayer, radius, getMode(holder.getHeld()));
     }
 
     @Override

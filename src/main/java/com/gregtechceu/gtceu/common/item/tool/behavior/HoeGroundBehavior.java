@@ -25,6 +25,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,7 @@ import java.util.List;
 public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {
 
     public static final HoeGroundBehavior INSTANCE = new HoeGroundBehavior();
-    public static final Codec<HoeGroundBehavior> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<HoeGroundBehavior> CODEC = MapCodec.unitCodec(INSTANCE);
     public static final StreamCodec<ByteBuf, HoeGroundBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected HoeGroundBehavior() {/**/}
@@ -80,7 +81,7 @@ public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {
 
         if (tilled) {
             level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

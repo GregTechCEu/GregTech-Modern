@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -12,7 +12,7 @@ public enum OpticalPipeType implements IPipeType<OpticalPipeProperties>, StringR
 
     NORMAL;
 
-    public static final ResourceLocation TYPE = GTCEu.id("optical");
+    public static final Identifier TYPE = GTCEu.id("optical");
 
     @Override
     public float getThickness() {
@@ -30,7 +30,7 @@ public enum OpticalPipeType implements IPipeType<OpticalPipeProperties>, StringR
     }
 
     @Override
-    public ResourceLocation type() {
+    public Identifier type() {
         return TYPE;
     }
 

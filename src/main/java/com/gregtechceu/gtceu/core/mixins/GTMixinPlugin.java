@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.LoadingModList;
 
 import org.objectweb.asm.tree.ClassNode;
@@ -37,12 +37,13 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
         addModCompatMixin("xaerominimap");
         addModCompatMixin("xaeroworldmap");
         addModCompatMixin("kubejs");
+        MOD_COMPAT_MIXINS.put("ldlib2", MIXIN_PACKAGE + "ldlib");
     }
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.startsWith(DEV_PACKAGE)) {
-            return !FMLLoader.isProduction();
+            return !FMLEnvironment.isProduction();
         }
         for (var compatMod : MOD_COMPAT_MIXINS.entrySet()) {
             if (mixinClassName.startsWith(compatMod.getValue())) {

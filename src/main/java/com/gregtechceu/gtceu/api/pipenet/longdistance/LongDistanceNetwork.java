@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -318,6 +320,12 @@ public class LongDistanceNetwork {
         // All existing networks in this world
         private final ObjectOpenHashSet<LongDistanceNetwork> networkList = new ObjectOpenHashSet<>();
         private WeakReference<LevelAccessor> worldRef = new WeakReference<>(null);
+        private static final SavedDataType<WorldData> TYPE = new SavedDataType<>(
+                GTCEu.id("long_dist_pipe"),
+                WorldData::create,
+                serverLevel -> CompoundTag.CODEC.xmap(
+                        tag -> WorldData.load(tag, serverLevel),
+                        data -> data.save(new CompoundTag(), serverLevel.registryAccess())));
 
         public WorldData() {
             super();
@@ -331,15 +339,13 @@ public class LongDistanceNetwork {
 
         public static WorldData get(LevelAccessor level) {
             if (level instanceof ServerLevel serverLevel) {
-                return serverLevel.getDataStorage()
-                        .computeIfAbsent(new SavedData.Factory<>(() -> WorldData.create(serverLevel),
-                                (tag, provider) -> WorldData.load(tag, serverLevel)), "gtceu_long_dist_pipe");
+                return serverLevel.getDataStorage().computeIfAbsent(TYPE);
             }
             return null;
         }
 
         private static long getChunkPos(BlockPos pos) {
-            return ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4);
+            return ChunkPos.pack(pos.getX() >> 4, pos.getZ() >> 4);
         }
 
         /**
@@ -395,23 +401,23 @@ public class LongDistanceNetwork {
             WorldData data = new WorldData();
             data.networks.clear();
             data.networkList.clear();
-            ListTag list = nbtTagCompound.getList("nets", Tag.TAG_COMPOUND);
+            ListTag list = nbtTagCompound.getListOrEmpty("nets");
             for (Tag nbt : list) {
                 CompoundTag tag = (CompoundTag) nbt;
-                LongDistancePipeType pipeType = LongDistancePipeType.getPipeType(tag.getString("class"));
+                LongDistancePipeType pipeType = LongDistancePipeType.getPipeType(tag.getStringOr("class", ""));
                 LongDistanceNetwork ld = pipeType.createNetwork(data);
-                ld.activeInputIndex = tag.getInt("in");
-                ld.activeOutputIndex = tag.getInt("out");
+                ld.activeInputIndex = tag.getIntOr("in", -1);
+                ld.activeOutputIndex = tag.getIntOr("out", -1);
                 data.networkList.add(ld);
-                ListTag posList = tag.getList("pipes", Tag.TAG_LONG);
+                ListTag posList = tag.getListOrEmpty("pipes");
                 for (Tag nbtPos : posList) {
-                    BlockPos pos = BlockPos.of(((LongTag) nbtPos).getAsLong());
+                    BlockPos pos = BlockPos.of(((LongTag) nbtPos).longValue());
                     data.putNetwork(pos, ld);
                     ld.longDistancePipeBlocks.add(pos);
                 }
-                ListTag endpoints = tag.getList("endpoints", Tag.TAG_LONG);
+                ListTag endpoints = tag.getListOrEmpty("endpoints");
                 for (Tag nbtPos : endpoints) {
-                    BlockPos pos = BlockPos.of(((LongTag) nbtPos).getAsLong());
+                    BlockPos pos = BlockPos.of(((LongTag) nbtPos).longValue());
                     if (!ld.endpointPoss.contains(pos)) {
                         ld.endpointPoss.add(pos);
                     }
@@ -422,7 +428,6 @@ public class LongDistanceNetwork {
         }
 
         @NotNull
-        @Override
         public CompoundTag save(@NotNull CompoundTag nbtTagCompound, HolderLookup.Provider provider) {
             ListTag list = new ListTag();
             for (LongDistanceNetwork network : this.networkList) {

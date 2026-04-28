@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -32,9 +34,9 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
-    protected final ArmorItem.Type type;
+    protected final ArmorType type;
 
-    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, ArmorItem.Type type) {
+    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, ArmorType type) {
         this.energyPerUse = energyPerUse;
         this.maxCapacity = maxCapacity;
         this.tier = tier;
@@ -59,7 +61,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     public List<ItemAttributeModifiers.Entry> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != this.type.getSlot()) return Collections.emptyList();
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
-        ResourceLocation id = ResourceLocation.withDefaultNamespace("armor." + type.getName());
+        Identifier id = Identifier.withDefaultNamespace("armor." + type.getName());
         if (item == null) return Collections.emptyList();
         if (item.getCharge() >= energyPerUse) {
             return ItemAttributeModifiers.builder().add(
@@ -83,8 +85,8 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
 
             @Override
-            public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
-                                                          InteractionHand usedHand) {
+            public InteractionResult use(ItemStack item, Level level, Player player,
+                                         InteractionHand usedHand) {
                 return onRightClick(level, player, usedHand);
             }
 
@@ -103,19 +105,19 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         }
     }
 
-    public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+    public InteractionResult onRightClick(Level Level, Player player, InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
+    public ArmorType getArmorType() {
         return type;
     }
 
     @Nullable
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity,
-                                            EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public Identifier getArmorTexture(ItemStack stack, Entity entity,
+                                      EquipmentSlot slot, EquipmentClientInfo.Layer layer) {
         return null;
     }
 
@@ -136,7 +138,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldDrawHUD() {
-        return this.type == ArmorItem.Type.CHESTPLATE;
+        return this.type == ArmorType.CHESTPLATE;
     }
 
     public int getEnergyPerUse() {

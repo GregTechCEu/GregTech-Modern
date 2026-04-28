@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
@@ -20,10 +20,10 @@ import java.util.function.Function;
 
 public final class FluidStorageKey {
 
-    private static final Map<ResourceLocation, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
+    private static final Map<Identifier, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
 
     @Getter
-    private final ResourceLocation resourceLocation;
+    private final Identifier Identifier;
     @Getter
     private final @Nullable TagKey<Fluid> extraTag;
     @Getter
@@ -36,45 +36,45 @@ public final class FluidStorageKey {
     @Getter
     private final int registrationPriority;
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @Nullable TagKey<Fluid> extraTag,
+    public FluidStorageKey(@NotNull Identifier Identifier, @Nullable TagKey<Fluid> extraTag,
                            @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
-        this.resourceLocation = resourceLocation;
+        this.Identifier = Identifier;
         this.extraTag = extraTag;
         this.iconType = iconType;
         this.registryNameFunction = registryNameFunction;
         this.translationKeyFunction = translationKeyFunction;
-        this.hashCode = resourceLocation.hashCode();
+        this.hashCode = Identifier.hashCode();
         this.defaultFluidState = defaultFluidState;
         this.registrationPriority = registrationPriority;
-        if (keys.containsKey(resourceLocation)) {
+        if (keys.containsKey(Identifier)) {
             throw new IllegalArgumentException("Cannot create duplicate keys");
         }
-        keys.put(resourceLocation, this);
+        keys.put(Identifier, this);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
+    public FluidStorageKey(@NotNull Identifier Identifier, @NotNull String tagKey,
                            @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
-        this(resourceLocation, TagUtil.createFluidTag(tagKey), iconType,
+        this(Identifier, TagUtil.createFluidTag(tagKey), iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
+    public FluidStorageKey(@NotNull Identifier Identifier, @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
-        this(resourceLocation, (TagKey<Fluid>) null, iconType,
+        this(Identifier, (TagKey<Fluid>) null, iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
     }
 
-    public static @Nullable FluidStorageKey getByName(@NotNull ResourceLocation location) {
+    public static @Nullable FluidStorageKey getByName(@NotNull Identifier location) {
         return keys.get(location);
     }
 
@@ -104,7 +104,7 @@ public final class FluidStorageKey {
 
         FluidStorageKey fluidKey = (FluidStorageKey) o;
 
-        return resourceLocation.equals(fluidKey.getResourceLocation());
+        return Identifier.equals(fluidKey.getIdentifier());
     }
 
     @Override
@@ -114,6 +114,6 @@ public final class FluidStorageKey {
 
     @Override
     public @NotNull String toString() {
-        return "FluidStorageKey{" + resourceLocation + '}';
+        return "FluidStorageKey{" + Identifier + '}';
     }
 }

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -25,16 +25,16 @@ public final class CoverDefinition {
     }
 
     @Getter
-    private final ResourceLocation id;
-    private final CoverBehaviourProvider behaviorCreator;
+    private final Identifier id;
+    private final Supplier<CoverBehaviourProvider> behaviorCreator;
     @Getter
     private final @Nullable Supplier<ICoverRenderer> coverRenderer;
 
-    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator,
+    public CoverDefinition(Identifier id, Supplier<CoverBehaviourProvider> behaviorCreator,
                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         this.behaviorCreator = behaviorCreator;
         this.id = id;
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.coverRenderer = ClientHelper.initRenderer(coverRenderer);
         } else {
             this.coverRenderer = null;
@@ -42,7 +42,7 @@ public final class CoverDefinition {
     }
 
     public CoverBehavior createCoverBehavior(ICoverable metaTileEntity, Direction side) {
-        return behaviorCreator.create(this, metaTileEntity, side);
+        return behaviorCreator.get().create(this, metaTileEntity, side);
     }
 
     private static class ClientHelper {

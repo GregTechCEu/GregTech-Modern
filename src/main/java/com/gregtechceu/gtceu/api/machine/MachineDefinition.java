@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -16,7 +15,7 @@ import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,7 +47,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
     @Getter
-    private final ResourceLocation id;
+    private final Identifier id;
     // This is only stored here for KJS use.
     @Getter
     @Setter
@@ -123,7 +122,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Nullable
     @Getter
     @Setter
-    private EditableMachineUI editableUI;
+    private Object editableUI;
     @Getter
     @Setter
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
@@ -135,7 +134,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     private MachineRenderState defaultRenderState;
 
-    public MachineDefinition(ResourceLocation id) {
+    public MachineDefinition(Identifier id) {
         this.id = id;
     }
 

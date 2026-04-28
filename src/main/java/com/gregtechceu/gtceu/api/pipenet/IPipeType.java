@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface IPipeType<NodeDataType> {
 
@@ -22,5 +22,5 @@ public interface IPipeType<NodeDataType> {
     /**
      * indicate a unique type id.
      */
-    ResourceLocation type();
+    Identifier type();
 }

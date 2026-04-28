@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
@@ -16,7 +18,7 @@ public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeCompone
         implements RecipeComponent<Map<K, V>> {
 
     // spotless:off
-    public static final RecipeComponentType<?> JAVA_MAP = RecipeComponentType.<JavaMapRecipeComponent<?, ?>>dynamic(GTCEu.id("java_map"), (type, ctx) -> {
+    public static final RecipeComponentType<?> JAVA_MAP = RecipeComponentType.<JavaMapRecipeComponent<?, ?>>dynamic(ResourceLocation.fromIdentifier(GTCEu.id("java_map")), (type, ctx) -> {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 ctx.recipeComponentCodec().fieldOf("key").forGetter(JavaMapRecipeComponent::key),
                 ctx.recipeComponentCodec().fieldOf("value").forGetter(JavaMapRecipeComponent::value)

@@ -6,20 +6,12 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -113,36 +105,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
-
-        group.addWidget(new TextBoxWidget(10, 55, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.min"))));
-
-        group.addWidget(new TextBoxWidget(10, 80, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.max"))));
-
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
-
-        // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_fluid_detector.invert"));
-
-        group.addWidget(
-                new ToggleButtonWidget(31, 21, 18, 18, GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
-                        .setShouldUseBaseBackground()
-                        .isMultiLang()
-                        .setTooltipText("cover.advanced_detector.latch"));
-
-        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
-
-        return group;
+    public Object createUIWidget() {
+        return AdvancedFluidDetectorCoverUI.createUIWidget(this);
     }
 
     @Override
@@ -150,16 +114,22 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         tag.putInt("min", minValue);
         tag.putInt("max", maxValue);
         tag.putBoolean("latched", isLatched);
-        tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
+        tag.put("filter", ItemStack.OPTIONAL_CODEC
+                .encodeStart(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        filterHandler.getFilterItem())
+                .getOrThrow());
         return super.copyConfig(tag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setMinValue(tag.getInt("min"));
-        setMaxValue(tag.getInt("max"));
-        setLatched(tag.getBoolean("latched"));
-        filterHandler.setFilterItem(ItemStack.parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter"))
+        setMinValue(tag.getIntOr("min", 0));
+        setMaxValue(tag.getIntOr("max", 0));
+        setLatched(tag.getBooleanOr("latched", false));
+        filterHandler.setFilterItem(ItemStack.OPTIONAL_CODEC
+                .parse(coverHolder.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        tag.getCompoundOrEmpty("filter"))
+                .result()
                 .orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -10,7 +9,6 @@ import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,12 +31,12 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
     }
 
     @Override
-    public IGuiTexture getTabIcon() {
+    public Object getTabIcon() {
         return new ItemStackTexture(GTItems.ROBOT_ARM_LV.get());
     }
 
     @Override
-    public Widget createMainPage(FancyMachineUIWidget widget) {
+    public Object createMainPage(Object widget) {
         var group = new MachineModeConfigurator(0, 0, 140, 20 * machine.getRecipeTypes().length + 4);
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {

@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,14 +48,14 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("Active")) return;
+        if (!capData.getBooleanOr("Active", false)) return;
 
-        int currentProgress = capData.getInt("Progress");
-        int maxProgress = capData.getInt("MaxProgress");
+        int currentProgress = capData.getIntOr("Progress", 0);
+        int maxProgress = capData.getIntOr("MaxProgress", 0);
         Component text;
 
         // show as total computation instead
-        if (capData.getBoolean("Research")) {
+        if (capData.getBooleanOr("Research", false)) {
             String current = FormattingUtil.formatNumberReadable(currentProgress);
             String max = FormattingUtil.formatNumberReadable(maxProgress);
             text = Component.translatable("gtceu.jade.progress_computation", current, max);
@@ -80,7 +80,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         }
 
         if (maxProgress > 0) {
-            int color = capData.getBoolean("WorkingEnabled") ? 0xFF4CBB17 : 0xFFBB1C28;
+            int color = capData.getBooleanOr("WorkingEnabled", false) ? 0xFF4CBB17 : 0xFFBB1C28;
             tooltip.add(
                     IElementHelper.get().progress(
                             getProgress(currentProgress, maxProgress),
