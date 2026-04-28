@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_fermenter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_fermenter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

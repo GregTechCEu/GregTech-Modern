@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/mv_canner"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/mv_canner",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

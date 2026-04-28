@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/mv_electrolyzer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/mv_electrolyzer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

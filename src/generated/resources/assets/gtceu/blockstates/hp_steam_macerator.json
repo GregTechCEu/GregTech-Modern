@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hp_steam_macerator"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hp_steam_macerator",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

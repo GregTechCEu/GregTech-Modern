@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/large_assembler"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/large_assembler",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

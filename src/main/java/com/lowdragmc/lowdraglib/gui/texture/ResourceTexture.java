@@ -1,14 +1,14 @@
 package com.lowdragmc.lowdraglib.gui.texture;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceLocation;
 
 public class ResourceTexture extends TransformTexture {
 
-    public ResourceLocation imageLocation;
+    public Identifier imageLocation;
     public float offsetX;
     public float offsetY;
     public float imageWidth = 1;
@@ -16,26 +16,22 @@ public class ResourceTexture extends TransformTexture {
 
     public ResourceTexture() {}
 
-    public ResourceTexture(ResourceLocation imageLocation, float offsetX, float offsetY, float imageWidth,
+    public ResourceTexture(Identifier imageLocation, float offsetX, float offsetY, float imageWidth,
                            float imageHeight) {
         this.imageLocation = imageLocation;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
-        setImageLocation(imageLocation.toIdentifier());
+        setImageLocation(imageLocation);
     }
 
     public ResourceTexture(String imageLocation) {
-        this(ResourceLocation.parse(imageLocation));
-    }
-
-    public ResourceTexture(ResourceLocation imageLocation) {
-        this(imageLocation, 0, 0, 1, 1);
+        this(Identifier.parse(imageLocation));
     }
 
     public ResourceTexture(Identifier imageLocation) {
-        this(ResourceLocation.fromIdentifier(imageLocation));
+        this(imageLocation, 0, 0, 1, 1);
     }
 
     public ResourceTexture getSubTexture(float offsetX, float offsetY, float imageWidth, float imageHeight) {
@@ -57,7 +53,7 @@ public class ResourceTexture extends TransformTexture {
     @Override
     public ResourceTexture setImageLocation(Identifier imageLocation) {
         super.setImageLocation(imageLocation);
-        this.imageLocation = ResourceLocation.fromIdentifier(imageLocation);
+        this.imageLocation = imageLocation;
         return this;
     }
 
@@ -101,7 +97,7 @@ public class ResourceTexture extends TransformTexture {
         GUIContext.of(graphics, mouseX, mouseY, 0).drawTexture(this, x, y, width, height);
     }
 
-    public static ResourceTexture fromSpirit(ResourceLocation location) {
+    public static ResourceTexture fromSpirit(Identifier location) {
         return new ResourceTexture(location);
     }
 }

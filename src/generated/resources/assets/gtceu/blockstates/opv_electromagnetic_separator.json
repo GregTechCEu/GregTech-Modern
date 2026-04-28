@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/opv_electromagnetic_separator"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/opv_electromagnetic_separator",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

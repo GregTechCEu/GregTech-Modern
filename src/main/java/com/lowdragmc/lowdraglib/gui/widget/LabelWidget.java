@@ -1,7 +1,8 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 

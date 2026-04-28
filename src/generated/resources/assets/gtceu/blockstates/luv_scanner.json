@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/luv_scanner"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/luv_scanner",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

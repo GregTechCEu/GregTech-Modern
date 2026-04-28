@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_autoclave"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_autoclave",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

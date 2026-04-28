@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/zpm_compressor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/zpm_compressor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

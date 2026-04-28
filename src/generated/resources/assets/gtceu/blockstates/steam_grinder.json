@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/steam_grinder"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/steam_grinder",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

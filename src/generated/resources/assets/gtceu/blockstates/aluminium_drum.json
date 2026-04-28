@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/aluminium_drum"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/aluminium_drum",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -8,6 +8,6 @@ public final class LayeredDraw {
 
     public interface Layer {
 
-        void render(GuiGraphics guiGraphics, DeltaTracker tracker);
+        void render(GuiGraphicsExtractor guiGraphics, DeltaTracker tracker);
     }
 }

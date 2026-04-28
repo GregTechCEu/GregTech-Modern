@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lp_steam_extractor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lp_steam_extractor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

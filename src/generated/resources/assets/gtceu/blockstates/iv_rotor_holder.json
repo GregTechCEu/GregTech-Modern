@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_rotor_holder"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_rotor_holder",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

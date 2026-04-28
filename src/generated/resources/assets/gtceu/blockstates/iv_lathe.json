@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_lathe"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_lathe",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

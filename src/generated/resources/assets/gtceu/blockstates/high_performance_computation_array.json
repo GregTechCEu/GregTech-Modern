@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/high_performance_computation_array"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/high_performance_computation_array",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

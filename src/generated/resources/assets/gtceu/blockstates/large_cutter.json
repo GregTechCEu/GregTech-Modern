@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/large_cutter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/large_cutter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,11 +1,11 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.texture.ColorRectTexture;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-
-import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.function.Consumer;
 

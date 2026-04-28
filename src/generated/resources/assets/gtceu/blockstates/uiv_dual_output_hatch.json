@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uiv_dual_output_hatch"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uiv_dual_output_hatch",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/zpm_brewery"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/zpm_brewery",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

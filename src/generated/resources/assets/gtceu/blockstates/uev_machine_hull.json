@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uev_machine_hull"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uev_machine_hull",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 

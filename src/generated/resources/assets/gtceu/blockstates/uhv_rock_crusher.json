@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uhv_rock_crusher"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uhv_rock_crusher",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

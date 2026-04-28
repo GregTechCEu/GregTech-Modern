@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_extruder"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_extruder",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

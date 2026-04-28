@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/luv_energy_output_hatch_4a"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/luv_energy_output_hatch_4a",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

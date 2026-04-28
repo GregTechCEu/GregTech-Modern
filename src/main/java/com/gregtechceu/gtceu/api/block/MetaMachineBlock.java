@@ -26,6 +26,8 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib2.gui.factory.BlockUIMenuType;
+
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -79,7 +81,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends Block implements EntityBlock {
+public class MetaMachineBlock extends Block implements EntityBlock, BlockUIMenuType.BlockUI {
 
     @Getter
     public final MachineDefinition definition;
@@ -308,11 +310,15 @@ public class MetaMachineBlock extends Block implements EntityBlock {
                                                Player player, BlockHitResult hit) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine == null) return InteractionResult.PASS;
+        InteractionResult machineInteractResult = machine
+                .onUse(new ExtendedUseOnContext(player, InteractionHand.MAIN_HAND,
+                        hit));
+        if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
         if (machine instanceof IUIMachine uiMachine &&
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
-            uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit);
+            return uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit);
         }
-        return machine.onUse(new ExtendedUseOnContext(player, InteractionHand.MAIN_HAND, hit));
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     //////////////////////////////////////
@@ -383,6 +389,16 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     public RotationState getRotationState() {
         return getDefinition().getRotationState();
+    }
+
+    @Override
+    public com.lowdragmc.lowdraglib2.gui.ui.ModularUI createUI(BlockUIMenuType.BlockUIHolder holder) {
+        MetaMachine machine = MetaMachine.getMachine(holder.player.level(), holder.pos);
+        if (machine instanceof IUIMachine uiMachine) {
+            return uiMachine.createUI(holder.player).toLDLib2();
+        }
+        return com.lowdragmc.lowdraglib2.gui.ui.ModularUI.of(com.lowdragmc.lowdraglib2.gui.ui.UI.of(
+                new com.lowdragmc.lowdraglib2.gui.ui.UIElement()), holder.player);
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {

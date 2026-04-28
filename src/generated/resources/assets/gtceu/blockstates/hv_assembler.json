@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hv_assembler"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hv_assembler",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

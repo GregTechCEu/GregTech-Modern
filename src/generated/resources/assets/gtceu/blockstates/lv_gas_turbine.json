@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_gas_turbine"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_gas_turbine",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hv_fluid_drilling_rig"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hv_fluid_drilling_rig",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

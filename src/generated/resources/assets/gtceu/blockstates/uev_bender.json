@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uev_bender"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uev_bender",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

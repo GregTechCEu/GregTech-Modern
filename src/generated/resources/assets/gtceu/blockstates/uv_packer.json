@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uv_packer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uv_packer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

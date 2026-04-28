@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.LegacyCustomBlockStateModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlay;
@@ -18,8 +19,8 @@ import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.*;
-import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -656,7 +657,8 @@ public class GTMachineModels {
             final BlockModelBuilder model = builder.end();
             model.parent(prov.models().getExistingFile(prov.mcLoc("block/block")));
 
-            var generator = prov.multiVariantGenerator(block, new Variant(model.getLocation()));
+            var generator = prov.addVanillaGenerator(block, MultiVariantGenerator.dispatch(block,
+                    MultiVariant.of(LegacyCustomBlockStateModel.builder(model.getLocation()))));
             PropertyDispatch<VariantMutator> dispatch = GTBlockstateProvider.createFacingDispatch(definition);
             if (dispatch != null) {
                 generator.with(dispatch);

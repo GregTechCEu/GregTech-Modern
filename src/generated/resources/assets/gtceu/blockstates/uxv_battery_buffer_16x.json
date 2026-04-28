@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uxv_battery_buffer_16x"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uxv_battery_buffer_16x",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

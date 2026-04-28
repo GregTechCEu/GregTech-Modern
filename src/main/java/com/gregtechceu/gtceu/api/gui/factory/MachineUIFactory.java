@@ -9,7 +9,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -20,7 +20,7 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     public static final MachineUIFactory INSTANCE = new MachineUIFactory();
 
     public MachineUIFactory() {
-        super(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID, "machine"));
+        super(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID, "machine"));
     }
 
     @Override

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/opv_input_bus"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/opv_input_bus",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

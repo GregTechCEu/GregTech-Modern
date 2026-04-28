@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uhv_extractor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uhv_extractor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -26,7 +26,8 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
     default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         if (this.shouldOpenUI(player, hand, hit)) {
             if (player instanceof ServerPlayer serverPlayer) {
-                GTMachineUI.open(self(), serverPlayer);
+                return GTMachineUI.open(self(), serverPlayer) ? InteractionResult.SUCCESS :
+                        InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         } else {
             return InteractionResult.TRY_WITH_EMPTY_HAND;

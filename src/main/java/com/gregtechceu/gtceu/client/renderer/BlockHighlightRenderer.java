@@ -275,8 +275,7 @@ public class BlockHighlightRenderer {
     private static void drawResourceTexture(PoseStack poseStack, MultiBufferSource bufferSource,
                                             ResourceTexture texture, int color,
                                             float x, float y, float w, float h) {
-        VertexConsumer consumer = bufferSource
-                .getBuffer(RenderTypes.textSeeThrough(texture.imageLocation.toIdentifier()));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.textSeeThrough(texture.imageLocation));
         var pose = poseStack.last().pose();
         float u0 = texture.offsetX, v0 = texture.offsetY;
         float u1 = texture.imageWidth, v1 = texture.imageHeight;

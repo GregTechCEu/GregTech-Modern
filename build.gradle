@@ -92,7 +92,8 @@ configurations {
 
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
-    extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
+    clientExtraRuntimeClasspath.extendsFrom extraLocalRuntime
+    clientExtraRuntimeClasspath.extendsFrom clientExtraLocalRuntime
 
     renderNurseCfg {
         canBeConsumed = false

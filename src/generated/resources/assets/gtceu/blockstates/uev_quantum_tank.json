@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uev_quantum_tank"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uev_quantum_tank",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

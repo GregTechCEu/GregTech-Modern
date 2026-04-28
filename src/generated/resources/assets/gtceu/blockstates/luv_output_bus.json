@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/luv_output_bus"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/luv_output_bus",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

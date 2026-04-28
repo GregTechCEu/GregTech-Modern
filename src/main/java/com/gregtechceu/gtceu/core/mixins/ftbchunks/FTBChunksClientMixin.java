@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins.ftbchunks;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;

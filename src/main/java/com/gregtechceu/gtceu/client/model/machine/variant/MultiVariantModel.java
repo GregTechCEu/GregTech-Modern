@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.model.machine.variant;
 
+import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 
@@ -34,25 +35,43 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
         });
     }
 
+    @Override
+    public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        this.variants.forEach(variant -> variant.getModel()
+                .ifLeft(resolver::markDependency)
+                .ifRight(model -> {
+                    Identifier parent = model.parent();
+                    if (parent != null) {
+                        resolver.markDependency(parent);
+                    }
+                    model.resolveDependencies(resolver);
+                }));
+    }
+
+    public static MultiVariantModel deserialize(JsonElement json,
+                                                JsonDeserializationContext context) throws JsonParseException {
+        List<VariantState> variants = new ArrayList<>();
+        if (json.isJsonArray()) {
+            JsonArray array = json.getAsJsonArray();
+            if (array.isEmpty()) {
+                throw new JsonParseException("Empty variant array");
+            }
+
+            for (JsonElement v : array) {
+                variants.add(VariantState.deserialize(v, context));
+            }
+        } else {
+            variants.add(VariantState.deserialize(json, context));
+        }
+
+        return new MultiVariantModel(variants);
+    }
+
     public static class Deserializer implements JsonDeserializer<MultiVariantModel> {
 
         public MultiVariantModel deserialize(JsonElement json, Type type,
                                              JsonDeserializationContext context) throws JsonParseException {
-            List<VariantState> variants = new ArrayList<>();
-            if (json.isJsonArray()) {
-                JsonArray array = json.getAsJsonArray();
-                if (array.isEmpty()) {
-                    throw new JsonParseException("Empty variant array");
-                }
-
-                for (JsonElement v : array) {
-                    variants.add(context.deserialize(v, VariantState.class));
-                }
-            } else {
-                variants.add(context.deserialize(json, VariantState.class));
-            }
-
-            return new MultiVariantModel(variants);
+            return MultiVariantModel.deserialize(json, context);
         }
     }
 }

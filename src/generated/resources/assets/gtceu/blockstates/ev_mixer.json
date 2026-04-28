@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/ev_mixer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/ev_mixer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_polarizer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_polarizer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

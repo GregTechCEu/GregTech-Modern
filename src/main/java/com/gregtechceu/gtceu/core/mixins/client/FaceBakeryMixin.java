@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
+import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.core.IGTBakedQuad;
 
 import net.minecraft.client.renderer.block.dispatch.ModelState;
@@ -25,6 +26,7 @@ public class FaceBakeryMixin {
                                                      Vector3fc posTo, CuboidFace face, Material.Baked material,
                                                      Direction direction, ModelState modelState,
                                                      CuboidRotation rotation, boolean shade, int lightEmission) {
+        quad = GTQuadTransformers.normalizeLegacyTintIndex(quad);
         return ((IGTBakedQuad) (Object) quad).gtceu$setTextureKey(face.texture());
     }
 }

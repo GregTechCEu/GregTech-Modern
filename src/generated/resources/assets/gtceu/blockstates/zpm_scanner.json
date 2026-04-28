@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/zpm_scanner"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/zpm_scanner",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

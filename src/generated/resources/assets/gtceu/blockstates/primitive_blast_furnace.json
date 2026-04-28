@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/primitive_blast_furnace"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/primitive_blast_furnace",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

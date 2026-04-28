@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/long_distance_fluid_pipeline_endpoint"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/long_distance_fluid_pipeline_endpoint",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_sifter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_sifter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

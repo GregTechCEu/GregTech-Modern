@@ -2,7 +2,7 @@ package com.lowdragmc.lowdraglib.gui.widget.codeeditor;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public class CodeEditorWidget extends WidgetGroup {
 
-    public static final ResourceLocation MONO_BOLD = ResourceLocation.fromNamespaceAndPath("ldlib", "mono_bold");
+    public static final Identifier MONO_BOLD = Identifier.fromNamespaceAndPath("ldlib", "mono_bold");
     public final CodeEditor codeEditor = new CodeEditor();
     private List<String> lines = new ArrayList<>();
     private Consumer<List<String>> onTextChanged = ignored -> {};

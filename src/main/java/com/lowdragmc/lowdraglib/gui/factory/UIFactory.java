@@ -3,7 +3,7 @@ package com.lowdragmc.lowdraglib.gui.factory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -12,10 +12,10 @@ import java.util.Map;
 
 public abstract class UIFactory<T> {
 
-    public static final Map<ResourceLocation, UIFactory<?>> FACTORIES = new HashMap<>();
-    public final ResourceLocation uiFactoryId;
+    public static final Map<Identifier, UIFactory<?>> FACTORIES = new HashMap<>();
+    public final Identifier uiFactoryId;
 
-    public UIFactory(ResourceLocation uiFactoryId) {
+    public UIFactory(Identifier uiFactoryId) {
         this.uiFactoryId = uiFactoryId;
     }
 

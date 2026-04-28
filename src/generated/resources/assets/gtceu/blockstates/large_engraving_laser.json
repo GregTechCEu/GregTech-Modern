@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/large_engraving_laser"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/large_engraving_laser",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

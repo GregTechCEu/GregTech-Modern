@@ -33,11 +33,11 @@ public class GTLampItemOverlayRenderer implements IItemDecorator {
         }
 
         if (!lampData.bloom()) {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_BLOOM.imageLocation.toIdentifier(),
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_BLOOM.imageLocation,
                     xPosition, yPosition, 0, 0, 16, 16, 16, 16);
         }
         if (!lampData.lit()) {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_LIGHT.imageLocation.toIdentifier(),
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GuiTextures.LAMP_NO_LIGHT.imageLocation,
                     xPosition, yPosition, 0, 0, 16, 16, 16, 16);
         }
         return true;

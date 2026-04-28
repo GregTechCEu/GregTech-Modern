@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/titanium_crate"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/titanium_crate",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

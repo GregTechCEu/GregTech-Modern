@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -41,7 +40,7 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
                     throw new JsonParseException("Cannot specify more than one 'center' model for a pipe model");
                 }
 
-                parts.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
+                parts.put(direction, MultiVariantModel.deserialize(entry.getValue(), context));
             }
         }
         // and the restrictors
@@ -53,7 +52,7 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
                 if (direction == null) {
                     throw new JsonParseException("Invalid pipe model part specifier " + entry.getKey());
                 }
-                restrictors.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
+                restrictors.put(direction, MultiVariantModel.deserialize(entry.getValue(), context));
             }
         }
 

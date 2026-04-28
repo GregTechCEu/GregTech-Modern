@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/stainless_steel_drum"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/stainless_steel_drum",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

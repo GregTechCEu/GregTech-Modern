@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/titanium_drum"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/titanium_drum",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/steam_oven"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/steam_oven",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

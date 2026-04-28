@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -8,7 +9,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -240,8 +240,12 @@ public class TabsWidget extends Widget {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTab(IFancyUIProvider tab, @NotNull GuiGraphics graphics, int mouseX, int mouseY, int x, int y,
+    public void drawTab(@Nullable IFancyUIProvider tab, @NotNull GuiGraphics graphics, int mouseX, int mouseY, int x,
+                        int y,
                         int width, int height, IFancyUIProvider hoveredTab) {
+        if (tab == null) {
+            return;
+        }
         // render background
         if (tab == selectedTab) {
             tabPressedTexture.draw(graphics, mouseX, mouseY, x, y, width, height);

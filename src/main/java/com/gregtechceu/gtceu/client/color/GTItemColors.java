@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.color;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,7 +21,7 @@ public final class GTItemColors {
 
     public static int getColor(ItemStack stack, int tintIndex) {
         ItemColor color = COLORS.get(stack.getItem());
-        return color == null ? -1 : color.getColor(stack, tintIndex);
+        return color == null ? -1 : GTUtil.convertRGBtoARGB(color.getColor(stack, tintIndex));
     }
 
     public static ItemColor adapt(Object value) {

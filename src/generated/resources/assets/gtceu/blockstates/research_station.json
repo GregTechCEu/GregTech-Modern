@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/research_station"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/research_station",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

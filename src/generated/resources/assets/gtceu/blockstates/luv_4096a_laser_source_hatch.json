@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/luv_4096a_laser_source_hatch"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/luv_4096a_laser_source_hatch",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

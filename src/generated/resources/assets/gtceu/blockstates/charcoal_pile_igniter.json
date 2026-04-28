@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/charcoal_pile_igniter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/charcoal_pile_igniter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/ev_large_miner"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/ev_large_miner",
+      "type": "gtceu:legacy_model"
     }
+  }
 }
