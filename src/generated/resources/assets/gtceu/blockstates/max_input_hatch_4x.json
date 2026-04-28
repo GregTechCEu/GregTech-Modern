@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/max_input_hatch_4x"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/max_input_hatch_4x",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,10 +1,11 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

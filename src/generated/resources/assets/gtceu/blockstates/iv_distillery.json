@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_distillery"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_distillery",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

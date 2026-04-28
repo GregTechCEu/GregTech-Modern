@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/multi_smelter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/multi_smelter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

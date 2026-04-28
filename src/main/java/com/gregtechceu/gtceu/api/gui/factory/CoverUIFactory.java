@@ -16,7 +16,7 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -27,7 +27,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
     public static final CoverUIFactory INSTANCE = new CoverUIFactory();
 
     public CoverUIFactory() {
-        super(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID, "cover"));
+        super(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID, "cover"));
     }
 
     @Override

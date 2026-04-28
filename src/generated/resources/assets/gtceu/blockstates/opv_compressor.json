@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/opv_compressor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/opv_compressor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

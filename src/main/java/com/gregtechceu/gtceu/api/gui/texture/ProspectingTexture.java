@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.gui.texture;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -10,7 +11,6 @@ import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

@@ -45,7 +45,7 @@ public class MultiPartSelector implements ModelState {
                                                  JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonobject = json.getAsJsonObject();
             return new MultiPartSelector(getSelector(jsonobject),
-                    context.deserialize(jsonobject.get("apply"), MultiVariantModel.class));
+                    MultiVariantModel.deserialize(jsonobject.get("apply"), context));
         }
 
         private static PartCondition getSelector(JsonObject json) {

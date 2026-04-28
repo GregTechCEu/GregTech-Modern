@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.model.compat;
 
+import com.gregtechceu.gtceu.client.color.GTItemColors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -24,6 +26,7 @@ import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -115,7 +118,7 @@ public interface BakedModel extends DynamicBlockStateModel, net.minecraft.client
     @Override
     default int materialFlags() {
         int flags = 0;
-        for (BakedQuad quad : getQuads(null, null, RandomSource.create(42L), ModelData.EMPTY, null)) {
+        for (BakedQuad quad : getAllQuads(null, 42L, ModelData.EMPTY, null)) {
             flags |= quad.materialInfo().flags();
         }
         return flags;
@@ -125,13 +128,63 @@ public interface BakedModel extends DynamicBlockStateModel, net.minecraft.client
     default void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver resolver,
                         ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner,
                         int seed) {
-        List<BakedQuad> quads = new ArrayList<>(getQuads(null, null, RandomSource.create(seed), ModelData.EMPTY, null));
+        renderState.appendModelIdentityElement(this);
+        List<BakedQuad> quads = getAllQuads(null, seed, ModelData.EMPTY, null);
         ItemStackRenderState.LayerRenderState layer = renderState.newLayer();
+        if (stack.hasFoil()) {
+            layer.setFoilType(ItemStackRenderState.FoilType.STANDARD);
+            renderState.setAnimated();
+            renderState.appendModelIdentityElement(ItemStackRenderState.FoilType.STANDARD);
+        }
+        applyItemTints(renderState, layer, stack, quads);
         layer.prepareQuadList().addAll(quads);
         layer.setUsesBlockLight(usesBlockLight());
         layer.setParticleMaterial(new Material.Baked(getParticleIcon(), false));
         layer.setItemTransform(getTransforms().unwrap().getTransform(displayContext));
         layer.setExtents(() -> CuboidItemModelWrapper.computeExtents(quads));
+        if (hasMaterialFlag(quads, 2)) {
+            renderState.setAnimated();
+        }
+    }
+
+    private List<BakedQuad> getAllQuads(@Nullable BlockState state, long seed, ModelData modelData,
+                                        @Nullable RenderType renderType) {
+        List<BakedQuad> quads = new ArrayList<>(getQuads(state, null, RandomSource.create(seed), modelData,
+                renderType));
+        for (Direction direction : Direction.values()) {
+            quads.addAll(getQuads(state, direction, RandomSource.create(seed), modelData, renderType));
+        }
+        return quads;
+    }
+
+    private static void applyItemTints(ItemStackRenderState renderState, ItemStackRenderState.LayerRenderState layer,
+                                       ItemStack stack, List<BakedQuad> quads) {
+        int maxTintIndex = -1;
+        for (BakedQuad quad : quads) {
+            var material = quad.materialInfo();
+            if (material.isTinted()) {
+                maxTintIndex = Math.max(maxTintIndex, material.tintIndex());
+            }
+        }
+        if (maxTintIndex < 0) {
+            return;
+        }
+
+        IntList tintLayers = layer.tintLayers();
+        for (int tintIndex = 0; tintIndex <= maxTintIndex; tintIndex++) {
+            int tint = GTItemColors.getColor(stack, tintIndex);
+            tintLayers.add(tint);
+            renderState.appendModelIdentityElement(tint);
+        }
+    }
+
+    private static boolean hasMaterialFlag(List<BakedQuad> quads, int flag) {
+        for (BakedQuad quad : quads) {
+            if ((quad.materialInfo().flags() & flag) != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     record CompatPart(BakedModel model, @Nullable BlockState state, long seed, ModelData modelData,
@@ -156,7 +209,7 @@ public interface BakedModel extends DynamicBlockStateModel, net.minecraft.client
         @Override
         public int materialFlags() {
             int flags = 0;
-            for (BakedQuad quad : model.getQuads(state, null, RandomSource.create(seed), modelData, renderType)) {
+            for (BakedQuad quad : model.getAllQuads(state, seed, modelData, renderType)) {
                 flags |= quad.materialInfo().flags();
             }
             return flags;

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/power_substation"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/power_substation",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

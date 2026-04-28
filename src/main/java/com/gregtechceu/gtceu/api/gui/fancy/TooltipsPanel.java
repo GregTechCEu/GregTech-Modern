@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uv_16a_energy_converter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uv_16a_energy_converter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

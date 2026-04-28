@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/distillation_tower"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/distillation_tower",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

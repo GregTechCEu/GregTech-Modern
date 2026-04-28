@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/ev_input_hatch_9x"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/ev_input_hatch_9x",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

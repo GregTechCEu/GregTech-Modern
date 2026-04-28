@@ -1,5 +1,7 @@
 package com.lowdragmc.lowdraglib.jei;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIGuiContainer;
@@ -7,7 +9,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
@@ -59,6 +60,10 @@ public class ModularWrapper<T extends Widget> extends ModularUIGuiContainer {
         render(graphics, mouseX, mouseY, partialTicks);
     }
 
+    public void draw(net.minecraft.client.gui.GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        render((GuiGraphics) (Object) graphics, mouseX, mouseY, partialTicks);
+    }
+
     public void updateScreen() {
         modularUI.mainGroup.updateScreen();
     }
@@ -69,6 +74,10 @@ public class ModularWrapper<T extends Widget> extends ModularUIGuiContainer {
         modularUI.toLDLib2().ui.rootElement.drawInBackground(
                 com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext.of(graphics, mouseX, mouseY, partialTicks));
         modularUI.mainGroup.drawInForeground(graphics, mouseX, mouseY, partialTicks);
+    }
+
+    public void render(net.minecraft.client.gui.GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        render((GuiGraphics) (Object) graphics, mouseX, mouseY, partialTicks);
     }
 
     public T getWidget() {

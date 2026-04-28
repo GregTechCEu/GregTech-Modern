@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/ev_wiremill"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/ev_wiremill",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.ldlib;
 
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.lowdragmc.lowdraglib2.utils.virtuallevel.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 public abstract class TrackedDummyWorldMixin extends DummyWorldMixin implements ILevelExtension, IBlockGetterExtension {
 
     @Shadow
-    private Predicate<BlockPos> renderFilter;
+    private Predicate<BlockPos> blockFilter;
 
     @Shadow
     @Final
@@ -28,7 +28,7 @@ public abstract class TrackedDummyWorldMixin extends DummyWorldMixin implements 
 
     @Override
     public @NotNull ModelData getModelData(@NotNull BlockPos pos) {
-        if (renderFilter != null && !renderFilter.test(pos)) {
+        if (blockFilter != null && !blockFilter.test(pos)) {
             return ModelData.EMPTY;
         }
         Level proxy = proxyWorld.get();

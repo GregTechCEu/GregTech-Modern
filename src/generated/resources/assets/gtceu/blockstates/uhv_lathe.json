@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uhv_lathe"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uhv_lathe",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

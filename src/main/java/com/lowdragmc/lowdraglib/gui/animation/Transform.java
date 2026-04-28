@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib.gui.animation;
 
-import com.lowdragmc.lowdraglib.utils.interpolate.IEase;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.lowdragmc.lowdraglib.utils.interpolate.IEase;
 
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_quantum_chest"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_quantum_chest",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

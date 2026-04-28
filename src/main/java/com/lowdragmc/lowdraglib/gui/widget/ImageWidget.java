@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import java.util.function.Supplier;
 

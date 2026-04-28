@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hp_steam_solar_boiler"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hp_steam_solar_boiler",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

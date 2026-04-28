@@ -1,11 +1,11 @@
 package com.lowdragmc.lowdraglib.gui.animation;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.lowdragmc.lowdraglib.utils.interpolate.IEase;
-
-import net.minecraft.client.gui.GuiGraphics;
 
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 

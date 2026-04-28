@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/luv_cutter"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/luv_cutter",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

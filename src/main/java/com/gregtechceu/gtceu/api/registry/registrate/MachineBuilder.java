@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTItemModelGenerator;
 import com.gregtechceu.gtceu.client.color.BlockColor;
+import com.gregtechceu.gtceu.client.model.LegacyCustomItemModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -749,9 +750,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
                     .model(() -> (ctx, prov) -> {
-                        GTItemModelGenerator.withExistingParent(prov, ctx.getName(),
-                                Identifier.fromNamespaceAndPath(builder.registrate.getModid(),
-                                        "block/machine/" + ctx.getName()));
+                        Identifier model = Identifier.fromNamespaceAndPath(builder.registrate.getModid(),
+                                "block/machine/" + ctx.getName());
+                        GTItemModelGenerator.withExistingParent(prov, ctx.getName(), model);
+                        prov.itemModelOutput.accept(ctx.get(), new LegacyCustomItemModel(model));
                     })
                     .color(() -> builder.itemColor::apply)
                     .properties(builder.itemProp);

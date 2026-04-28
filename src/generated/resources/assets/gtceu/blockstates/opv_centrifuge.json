@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/opv_centrifuge"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/opv_centrifuge",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

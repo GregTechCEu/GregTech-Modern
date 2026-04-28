@@ -1,6 +1,6 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "gtceu:block/max_4a_energy_converter"
-    }
+  "model": {
+    "type": "gtceu:legacy_item_model",
+    "model": "gtceu:block/machine/max_4a_energy_converter"
+  }
 }

@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

@@ -6,13 +6,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Compatibility name for libraries that still refer to the pre-26 GUI drawing
- * facade.
+ * Compile-only compatibility name for APIs that still expose the pre-26 GUI
+ * drawing facade.
  */
 public class GuiGraphics extends GuiGraphicsExtractor {
 
-    public GuiGraphics(Minecraft minecraft, GuiRenderState renderState, int guiWidth, int guiHeight) {
-        super(minecraft, renderState, guiWidth, guiHeight);
+    public GuiGraphics(Minecraft minecraft, GuiRenderState renderState, int mouseX, int mouseY) {
+        super(minecraft, renderState, mouseX, mouseY);
     }
 
     public void drawString(Font font, String text, int x, int y, int color, boolean shadow) {

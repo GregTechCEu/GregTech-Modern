@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hp_steam_compressor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hp_steam_compressor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

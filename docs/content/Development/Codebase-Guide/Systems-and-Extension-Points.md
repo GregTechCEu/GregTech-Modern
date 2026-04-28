@@ -99,8 +99,11 @@ Use item data components for item stack state.
 
 ## GUI and UI
 
-GTCEu still uses LDLib for most modular UI work, but the port separates more UI construction into companion `*UI.java`
-classes.
+GTCEu still uses LDLib-style modular UI code for most screens, but the 26.1.2 port is migrating that surface through
+LDLib2 compatibility shims. The current migration state is tracked in
+[LDLib2 Migration State](LDLib2-Migration-State.md). The important rule is that most old
+`com.lowdragmc.lowdraglib` call sites should keep going through the bundled shim until a local, reviewable direct
+LDLib2 replacement exists.
 
 | Area | Main paths | Notes |
 | --- | --- | --- |
@@ -129,6 +132,10 @@ Client rendering is split between generated model data, dynamic runtime resource
 
 The 26.x item model system uses item definitions, tint sources, and range/conditional item model properties. Do not add
 new legacy item property predicates in `GTItems.modelPredicate`; those methods are intentionally no-ops in this port.
+During the LDLib2 migration, machines and pipes also use GTCEu's `gtceu:legacy_model` and
+`gtceu:legacy_item_model` bridge codecs so existing legacy machine models can bake through the 26.1.2 model system.
+See [LDLib2 Migration State](LDLib2-Migration-State.md) before changing those codecs, the generated machine JSON, or
+the dynamic client resource generation path.
 
 
 ## Integrations

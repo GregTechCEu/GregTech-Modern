@@ -16,6 +16,8 @@ The pages here describe the codebase from the inside out:
   common setup, client setup, dynamic packs, and data generation.
 - [Systems and Extension Points](Systems-and-Extension-Points.md) points to the machine, recipe, material, UI,
   integration, storage, capability, and mixin systems most contributors touch.
+- [LDLib2 Migration State](LDLib2-Migration-State.md) records the current compatibility-shim baseline, working diff,
+  model bridge, verification status, and known LDLib2 migration gaps.
 - [NeoForge 26 Porting Notes](NeoForge-26-Porting-Notes.md) calls out the port-specific patterns that differ from older
   Forge or NeoForge branches.
 - [Testing and Datagen](Testing-and-Datagen.md) describes the Gradle tasks, generated resources, and NeoForge 26.1.2

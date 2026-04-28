@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/zpm_fusion_reactor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/zpm_fusion_reactor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

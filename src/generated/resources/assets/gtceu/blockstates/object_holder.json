@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/object_holder"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/object_holder",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

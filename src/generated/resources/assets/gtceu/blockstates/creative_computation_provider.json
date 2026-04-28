@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/creative_computation_provider"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/creative_computation_provider",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

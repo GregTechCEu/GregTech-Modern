@@ -23,7 +23,8 @@ public interface IGui2IDrawable {
 
             @Override
             public void draw(GuiGraphics graphics, int xOffset, int yOffset) {
-                texture.draw(graphics, 0, 0, xOffset, yOffset, width, height);
+                texture.draw((com.gregtechceu.gtceu.core.compat.GuiGraphics) (Object) graphics, 0, 0, xOffset,
+                        yOffset, width, height);
             }
         };
     }

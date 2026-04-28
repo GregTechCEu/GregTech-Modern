@@ -1,6 +1,6 @@
 package com.lowdragmc.lowdraglib.gui.texture;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
 public class ColorBorderTexture extends ColorRectTexture {
 

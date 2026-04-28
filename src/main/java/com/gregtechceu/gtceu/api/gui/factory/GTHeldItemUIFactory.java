@@ -7,7 +7,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +20,7 @@ public class GTHeldItemUIFactory extends UIFactory<GTHeldItemUIHolder> {
     public static final GTHeldItemUIFactory INSTANCE = new GTHeldItemUIFactory();
 
     public GTHeldItemUIFactory() {
-        super(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID, "held_item"));
+        super(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID, "held_item"));
     }
 
     public boolean openUI(ServerPlayer player, InteractionHand hand) {

@@ -1,6 +1,6 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "gtceu:block/uev_energy_output_hatch_4a"
-    }
+  "model": {
+    "type": "gtceu:legacy_item_model",
+    "model": "gtceu:block/machine/uev_energy_output_hatch_4a"
+  }
 }

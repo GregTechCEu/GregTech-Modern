@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
@@ -8,7 +9,6 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.neoforged.api.distmarker.Dist;

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/zpm_wiremill"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/zpm_wiremill",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

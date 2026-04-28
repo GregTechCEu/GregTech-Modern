@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/active_transformer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/active_transformer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

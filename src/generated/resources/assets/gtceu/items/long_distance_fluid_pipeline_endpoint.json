@@ -1,6 +1,6 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "gtceu:block/long_distance_fluid_pipeline_endpoint"
-    }
+  "model": {
+    "type": "gtceu:legacy_item_model",
+    "model": "gtceu:block/machine/long_distance_fluid_pipeline_endpoint"
+  }
 }

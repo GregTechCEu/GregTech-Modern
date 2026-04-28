@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/cracker"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/cracker",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

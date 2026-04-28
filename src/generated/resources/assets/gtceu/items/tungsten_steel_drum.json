@@ -1,6 +1,6 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "gtceu:block/tungsten_steel_drum"
-    }
+  "model": {
+    "type": "gtceu:legacy_item_model",
+    "model": "gtceu:block/machine/tungsten_steel_drum"
+  }
 }

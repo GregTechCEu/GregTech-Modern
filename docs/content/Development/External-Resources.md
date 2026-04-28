@@ -24,7 +24,13 @@ as other resources you might find helpful.
 
 ## LDLib
 
-LDLib is the main library we're using for GTCEu-Modern.
+GTCEu's 26.1.2 port is moving old LDLib-based UI and rendering code onto LDLib2. The current branch uses a tracked
+patched LDLib2 artifact, `libs/ldlib2/ldlib2-neoforge-26.1.2-gtceu.1.jar`, plus bundled
+`com.lowdragmc.lowdraglib` compatibility shims so existing UI code can keep working while the direct LDLib2 migration
+continues.
+
+For the current repository state, known gaps, and verification status, start with
+[LDLib2 Migration State](Codebase-Guide/LDLib2-Migration-State.md).
 
 !!! link "LDLib Docs"
     [:material-github: LDLib-Architectury :material-arrow-right: Wiki](https://github.com/Low-Drag-MC/LDLib-Architectury/wiki)

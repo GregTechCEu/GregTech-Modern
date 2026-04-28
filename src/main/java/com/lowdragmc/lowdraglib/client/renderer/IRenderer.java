@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ public interface IRenderer {
         return List.of();
     }
 
-    default void onPrepareTextureAtlas(ResourceLocation atlas, Consumer<ResourceLocation> register) {}
+    default void onPrepareTextureAtlas(Identifier atlas, Consumer<Identifier> register) {}
 
     default void onAdditionalModel(Consumer<ModelResourceLocation> registry) {}
 

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class MonitorComponentIcons {
 
@@ -16,17 +16,17 @@ public final class MonitorComponentIcons {
     }
 
     public static Object monitorCover() {
-        return ResourceTexture.fromSpirit(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID,
+        return ResourceTexture.fromSpirit(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID,
                 "item/computer_monitor_cover"));
     }
 
     public static Object networkSwitch() {
-        return ResourceTexture.fromSpirit(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID,
+        return ResourceTexture.fromSpirit(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID,
                 "block/multiblock/network_switch/overlay_front_active"));
     }
 
     public static Object dataModule() {
-        return new ResourceTexture(ResourceLocation.fromNamespaceAndPath(GTCEu.MOD_ID,
+        return new ResourceTexture(Identifier.fromNamespaceAndPath(GTCEu.MOD_ID,
                 "textures/item/data_module.png")).getSubTexture(0, 0, 1, 1 / 13f);
     }
 

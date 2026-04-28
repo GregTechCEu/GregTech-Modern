@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/mv_packer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/mv_packer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

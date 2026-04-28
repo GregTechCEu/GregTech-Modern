@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
@@ -26,7 +27,6 @@ import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

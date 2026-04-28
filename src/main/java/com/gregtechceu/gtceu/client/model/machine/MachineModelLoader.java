@@ -68,13 +68,13 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         if (json.has("variants")) {
             JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "variants");
             for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
-                variants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariantModel.class));
+                variants.put(entry.getKey(), MultiVariantModel.deserialize(entry.getValue(), context));
             }
         }
         final @Nullable MultiPartUnbakedModel multiPart;
         if (json.has("multipart")) {
             JsonArray multipartJson = GsonHelper.getAsJsonArray(json, "multipart");
-            multiPart = MultiPartUnbakedModel.deserialize(definition, multipartJson);
+            multiPart = MultiPartUnbakedModel.deserialize(definition, multipartJson, context);
         } else {
             multiPart = null;
         }

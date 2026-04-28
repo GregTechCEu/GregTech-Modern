@@ -1,5 +1,7 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.gui.animation.Animation;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -15,7 +17,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.IGUIContext;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -478,10 +479,10 @@ public class Widget {
         @Override
         protected void drawBackgroundAdditional(IGUIContext context) {
             if (context instanceof GUIContext guiContext && visible) {
-                Widget.this.drawInBackground(guiContext.graphics, guiContext.mouseX, guiContext.mouseY,
-                        guiContext.partialTick);
-                Widget.this.drawOverlay(guiContext.graphics, guiContext.mouseX, guiContext.mouseY,
-                        guiContext.partialTick);
+                GuiGraphics graphics = GuiGraphics.from(guiContext.graphics, guiContext.getRenderState(),
+                        guiContext.mouseX, guiContext.mouseY);
+                Widget.this.drawInBackground(graphics, guiContext.mouseX, guiContext.mouseY, guiContext.partialTick);
+                Widget.this.drawOverlay(graphics, guiContext.mouseX, guiContext.mouseY, guiContext.partialTick);
             }
         }
     }

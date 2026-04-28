@@ -1,6 +1,6 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "gtceu:block/uv_bender"
-    }
+  "model": {
+    "type": "gtceu:legacy_item_model",
+    "model": "gtceu:block/machine/uv_bender"
+  }
 }

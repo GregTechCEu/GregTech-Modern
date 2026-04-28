@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/extreme_combustion_engine"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/extreme_combustion_engine",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

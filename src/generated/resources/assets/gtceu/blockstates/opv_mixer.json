@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/opv_mixer"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/opv_mixer",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

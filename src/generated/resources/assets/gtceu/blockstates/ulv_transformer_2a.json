@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/ulv_transformer_2a"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/ulv_transformer_2a",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/network_switch"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/network_switch",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

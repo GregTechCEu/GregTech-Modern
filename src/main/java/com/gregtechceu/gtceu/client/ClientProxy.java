@@ -2,12 +2,17 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.color.GTItemTintSource;
+import com.gregtechceu.gtceu.client.model.LegacyCustomBlockStateModel;
+import com.gregtechceu.gtceu.client.model.LegacyCustomItemModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.item.GTItemModelProperties;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
@@ -30,6 +35,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
 import com.gregtechceu.gtceu.common.CommonEventListener;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -42,6 +48,7 @@ import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChang
 import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
@@ -169,6 +176,16 @@ public class ClientProxy {
     }
 
     @SubscribeEvent
+    public static void registerBlockStateModels(RegisterBlockStateModels event) {
+        event.registerModel(LegacyCustomBlockStateModel.ID, LegacyCustomBlockStateModel.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(LegacyCustomItemModel.ID, LegacyCustomItemModel.MAP_CODEC);
+    }
+
+    @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerFluidType(IClientFluidTypeExtensions.DEFAULT, GTFluids.POTION.getType());
     }
@@ -252,6 +269,55 @@ public class ClientProxy {
             GregTechKubeJSPlugin.generateMachineBlockModels();
         }
         RuntimeBlockstateProvider.INSTANCE.run();
+        registerLegacyModelBlockStates();
         PipeModelBuilder.clearRestrictorModelCache();
+    }
+
+    private static void registerLegacyModelBlockStates() {
+        for (MachineDefinition definition : GTRegistries.MACHINES) {
+            Identifier blockId = BuiltInRegistries.BLOCK.getKey(definition.getBlock());
+            Identifier modelId = definition.getId().withPrefix("block/machine/");
+            GTDynamicResourcePack.addBlockState(blockId, LegacyCustomBlockStateModel.singleVariantJson(modelId));
+            GTDynamicResourcePack.addItemDefinition(blockId, LegacyCustomItemModel.itemDefinitionJson(modelId));
+        }
+
+        if (GTMaterialBlocks.CABLE_BLOCKS != null) {
+            GTMaterialBlocks.CABLE_BLOCKS.values().forEach(block -> {
+                if (block != null) registerLegacyPipeBlockState(block.get());
+            });
+        }
+        if (GTMaterialBlocks.FLUID_PIPE_BLOCKS != null) {
+            GTMaterialBlocks.FLUID_PIPE_BLOCKS.values().forEach(block -> {
+                if (block != null) registerLegacyPipeBlockState(block.get());
+            });
+        }
+        if (GTMaterialBlocks.ITEM_PIPE_BLOCKS != null) {
+            GTMaterialBlocks.ITEM_PIPE_BLOCKS.values().forEach(block -> {
+                if (block != null) registerLegacyPipeBlockState(block.get());
+            });
+        }
+
+        for (var block : GTBlocks.DUCT_PIPES) {
+            if (block != null) registerLegacyPipeBlockState(block.get());
+        }
+        for (var block : GTBlocks.LASER_PIPES) {
+            if (block != null) registerLegacyActivePipeBlockState(block.get());
+        }
+        for (var block : GTBlocks.OPTICAL_PIPES) {
+            if (block != null) registerLegacyActivePipeBlockState(block.get());
+        }
+    }
+
+    private static void registerLegacyPipeBlockState(PipeBlock<?, ?, ?> block) {
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
+        GTDynamicResourcePack.addBlockState(blockId,
+                LegacyCustomBlockStateModel.singleVariantJson(blockId.withPrefix("block/")));
+    }
+
+    private static void registerLegacyActivePipeBlockState(PipeBlock<?, ?, ?> block) {
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier inactiveModel = blockId.withPrefix("block/");
+        GTDynamicResourcePack.addBlockState(blockId,
+                LegacyCustomBlockStateModel.activeVariantJson(inactiveModel, inactiveModel.withSuffix("_active")));
     }
 }

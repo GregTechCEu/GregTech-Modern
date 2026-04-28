@@ -6,7 +6,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -22,8 +21,7 @@ public final class GTRecipeCategoryIcons {
     }
 
     public static Object resource(Identifier location) {
-        return new ResourceTexture(ResourceLocation.fromIdentifier(
-                location.withPrefix("textures/").withSuffix(".png")));
+        return new ResourceTexture(location.withPrefix("textures/").withSuffix(".png"));
     }
 
     public static Object itemStack(ItemStack... stacks) {

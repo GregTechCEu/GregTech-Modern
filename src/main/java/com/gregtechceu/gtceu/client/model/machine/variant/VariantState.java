@@ -60,19 +60,24 @@ public class VariantState implements ModelState {
         return 31 * i + this.weight;
     }
 
+    @Override
+    public Transformation transformation() {
+        return rotation;
+    }
+
+    @Override
+    public boolean mayApplyArbitraryRotation() {
+        return true;
+    }
+
     public static class Deserializer implements JsonDeserializer<VariantState> {
 
         public VariantState deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                                                                                                          throws JsonParseException {
-            JsonObject obj = json.getAsJsonObject();
-            var model = MachineModelLoader.parseVariant(obj.get("model"), context);
-            var rot = this.getBlockRotation(obj);
-            boolean isUvLock = GsonHelper.getAsBoolean(obj, "uvlock", false);
-            int weight = this.getWeight(obj);
-            return new VariantState(model, rot, isUvLock, weight);
+            return VariantState.deserialize(json, context);
         }
 
-        protected Transformation getBlockRotation(JsonObject json) {
+        protected static Transformation getBlockRotation(JsonObject json) {
             int x = GsonHelper.getAsInt(json, "x", 0);
             int y = GsonHelper.getAsInt(json, "y", 0);
             int z = GsonHelper.getAsInt(json, GTBlockstateProvider.Z_ROT_PROPERTY_NAME, 0);
@@ -81,7 +86,7 @@ public class VariantState implements ModelState {
             else throw new JsonParseException("Invalid ExtendedBlockModelRotation x: " + x + ", y: " + y + ", z: " + z);
         }
 
-        protected int getWeight(JsonObject json) {
+        protected static int getWeight(JsonObject json) {
             int i = GsonHelper.getAsInt(json, "weight", 1);
             if (i < 1) {
                 throw new JsonParseException("Invalid weight " + i + " found, expected integer >= 1");
@@ -89,5 +94,15 @@ public class VariantState implements ModelState {
                 return i;
             }
         }
+    }
+
+    public static VariantState deserialize(JsonElement json,
+                                           JsonDeserializationContext context) throws JsonParseException {
+        JsonObject obj = json.getAsJsonObject();
+        var model = MachineModelLoader.parseVariant(obj.get("model"), context);
+        var rot = Deserializer.getBlockRotation(obj);
+        boolean isUvLock = GsonHelper.getAsBoolean(obj, "uvlock", false);
+        int weight = Deserializer.getWeight(obj);
+        return new VariantState(model, rot, isUvLock, weight);
     }
 }

@@ -10,7 +10,6 @@
         "client.BiomeColorsMixin",
         "client.ClientLevelAccessor",
         "client.FaceBakeryMixin",
-        "client.GuiGraphicsAccessor",
         "client.GuiGraphicsMixin",
         "client.ItemEntityMixin",
         "client.LevelRendererMixin",

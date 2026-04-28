@@ -3,5 +3,6 @@ nav:
   - Repository-Map.md
   - Lifecycle-and-Registration.md
   - Systems-and-Extension-Points.md
+  - LDLib2-Migration-State.md
   - NeoForge-26-Porting-Notes.md
   - Testing-and-Datagen.md

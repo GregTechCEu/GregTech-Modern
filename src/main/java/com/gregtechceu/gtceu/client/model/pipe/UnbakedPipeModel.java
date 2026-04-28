@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
+import com.gregtechceu.gtceu.client.model.ModelBakingUtil;
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
 import com.gregtechceu.gtceu.client.model.compat.ModelState;
@@ -40,7 +41,11 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides) {
         Map<Direction, BakedModel> bakedParts = new IdentityHashMap<>();
+        this.parts.forEach((side, unbakedModel) -> bakedParts.put(side,
+                ModelBakingUtil.bake(unbakedModel, context, baker, spriteGetter, modelState, overrides)));
         Map<Direction, BakedModel> bakedRestrictors = new IdentityHashMap<>();
+        this.restrictors.forEach((side, unbakedModel) -> bakedRestrictors.put(side,
+                ModelBakingUtil.bake(unbakedModel, context, baker, spriteGetter, modelState, overrides)));
         return new BakedPipeModel(bakedParts, bakedRestrictors);
     }
 
@@ -62,5 +67,23 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
                 this.restrictors.put(side, missingModel);
             } else this.restrictors.put(side, variant);
         });
+    }
+
+    @Override
+    public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        resolver.markDependency(Identifier.withDefaultNamespace("missing"));
+        this.parts.values().forEach(model -> resolveDependency(model, resolver));
+        this.restrictors.values().forEach(model -> resolveDependency(model, resolver));
+    }
+
+    private static void resolveDependency(@Nullable UnbakedModel model, ResolvableModel.Resolver resolver) {
+        if (model == null || model == MISSING_MARKER) {
+            return;
+        }
+        Identifier parent = model.parent();
+        if (parent != null) {
+            resolver.markDependency(parent);
+        }
+        model.resolveDependencies(resolver);
     }
 }

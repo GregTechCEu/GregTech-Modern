@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_steam_turbine"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_steam_turbine",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

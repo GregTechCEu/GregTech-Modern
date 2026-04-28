@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/iv_gas_collector"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/iv_gas_collector",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

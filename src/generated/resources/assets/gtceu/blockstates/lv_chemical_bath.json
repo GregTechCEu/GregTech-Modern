@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_chemical_bath"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_chemical_bath",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

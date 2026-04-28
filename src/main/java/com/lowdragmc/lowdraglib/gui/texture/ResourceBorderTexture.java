@@ -2,7 +2,7 @@ package com.lowdragmc.lowdraglib.gui.texture;
 
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ResourceBorderTexture extends ResourceTexture {
 
@@ -26,7 +26,7 @@ public class ResourceBorderTexture extends ResourceTexture {
 
     public ResourceBorderTexture(String imageLocation, int borderWidth, int borderHeight, int imageWidth,
                                  int imageHeight) {
-        super(ResourceLocation.parse(imageLocation));
+        super(Identifier.parse(imageLocation));
         setBorderSize(borderWidth, borderHeight);
         setImageSize(imageWidth, imageHeight);
         setBorder(borderWidth, borderHeight, borderWidth, borderHeight);
@@ -58,7 +58,7 @@ public class ResourceBorderTexture extends ResourceTexture {
         copy.imageHeight = imageHeight;
         copy.borderSize = borderSize;
         copy.imageSize = imageSize;
-        copy.setImageLocation(imageLocation.toIdentifier());
+        copy.setImageLocation(imageLocation);
         copy.setBorder(borderSize.width, borderSize.height, borderSize.width, borderSize.height);
         copy.setColor(color);
         return copy;

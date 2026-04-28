@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib.gui.texture;
 
-import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 
 public interface IGuiTexture extends com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture {
 

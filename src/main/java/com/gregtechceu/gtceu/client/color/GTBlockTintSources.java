@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.color;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.client.color.block.BlockTintSource;
 
 import java.util.ArrayList;
@@ -42,21 +44,21 @@ public final class GTBlockTintSources {
 
             @Override
             public int color(net.minecraft.world.level.block.state.BlockState state) {
-                return blockColor.getColor(state, null, null, tintIndex);
+                return GTUtil.convertRGBtoARGB(blockColor.getColor(state, null, null, tintIndex));
             }
 
             @Override
             public int colorInWorld(net.minecraft.world.level.block.state.BlockState state,
                                     net.minecraft.client.renderer.block.BlockAndTintGetter level,
                                     net.minecraft.core.BlockPos pos) {
-                return blockColor.getColor(state, level, pos, tintIndex);
+                return GTUtil.convertRGBtoARGB(blockColor.getColor(state, level, pos, tintIndex));
             }
 
             @Override
             public int colorAsTerrainParticle(net.minecraft.world.level.block.state.BlockState state,
                                               net.minecraft.client.renderer.block.BlockAndTintGetter level,
                                               net.minecraft.core.BlockPos pos) {
-                return blockColor.getColor(state, level, pos, tintIndex);
+                return GTUtil.convertRGBtoARGB(blockColor.getColor(state, level, pos, tintIndex));
             }
         };
     }

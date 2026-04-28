@@ -30,6 +30,13 @@ On non-Windows systems, replace `.\gradlew.bat` with `./gradlew`.
 Generated resources are checked in under `src/generated/resources`. Prefer updating the generator and running
 `runData` instead of editing generated JSON by hand.
 
+!!! warning "Current LDLib2 migration caveat"
+
+    The 2026-04-29 LDLib2 migration snapshot currently fails `.\gradlew.bat runData` during bootstrap with
+    `NoClassDefFoundError: com/lowdragmc/lowdraglib2/gui/factory/BlockUIMenuType$BlockUI`. The data run did not load
+    LDLib2, so treat this as a datagen classpath gap. The generated machine blockstate and item-definition changes in
+    the working tree are migration output that should be regenerated once the classpath issue is fixed.
+
 The important code paths are:
 
 - `gradle/scripts/moddevgradle.gradle`, which defines the `data` run configuration;

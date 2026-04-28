@@ -65,15 +65,16 @@ public final class GTQuadTransformers {
         }
         BakedQuad.MaterialInfo oldInfo = quad.materialInfo();
         BakedQuad.MaterialInfo newInfo = new BakedQuad.MaterialInfo(sprite, oldInfo.layer(), oldInfo.itemRenderType(),
-                oldInfo.tintIndex(), oldInfo.shade(), oldInfo.lightEmission(), oldInfo.ambientOcclusion());
+                normalizeLegacyTintIndex(oldInfo.tintIndex()), oldInfo.shade(), oldInfo.lightEmission(),
+                oldInfo.ambientOcclusion());
         return copyWith(quad, positions(quad), uvs, newInfo, quad.bakedColors());
     }
 
     public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
         BakedQuad.MaterialInfo oldInfo = quad.materialInfo();
         BakedQuad.MaterialInfo newInfo = new BakedQuad.MaterialInfo(oldInfo.sprite(), oldInfo.layer(),
-                oldInfo.itemRenderType(), clearTintIndex ? -1 : oldInfo.tintIndex(), oldInfo.shade(),
-                oldInfo.lightEmission(), oldInfo.ambientOcclusion());
+                oldInfo.itemRenderType(), clearTintIndex ? -1 : normalizeLegacyTintIndex(oldInfo.tintIndex()),
+                oldInfo.shade(), oldInfo.lightEmission(), oldInfo.ambientOcclusion());
         BakedColors colors = BakedColors.of(
                 ARGB.multiply(argbColor, quad.bakedColors().color(0)),
                 ARGB.multiply(argbColor, quad.bakedColors().color(1)),
@@ -84,6 +85,26 @@ public final class GTQuadTransformers {
 
     public static BakedQuad copy(BakedQuad quad) {
         return copyWith(quad, positions(quad), uvs(quad), quad.materialInfo(), quad.bakedColors());
+    }
+
+    public static BakedQuad normalizeLegacyTintIndex(BakedQuad quad) {
+        BakedQuad.MaterialInfo oldInfo = quad.materialInfo();
+        int tintIndex = normalizeLegacyTintIndex(oldInfo.tintIndex());
+        if (tintIndex == oldInfo.tintIndex()) {
+            return quad;
+        }
+        BakedQuad.MaterialInfo newInfo = new BakedQuad.MaterialInfo(oldInfo.sprite(), oldInfo.layer(),
+                oldInfo.itemRenderType(), tintIndex, oldInfo.shade(), oldInfo.lightEmission(),
+                oldInfo.ambientOcclusion());
+        return copyWith(quad, positions(quad), uvs(quad), newInfo, quad.bakedColors());
+    }
+
+    public static int normalizeLegacyTintIndex(int tintIndex) {
+        // Legacy GT models used values below -100 to mark emissive
+        // variants of normal tint layers. Vanilla 26.1 caches block
+        // tint sources by raw index, so keep the layer and drop only
+        // the old emissive marker.
+        return tintIndex < -100 ? -tintIndex - 101 : tintIndex;
     }
 
     public static BakedQuad process(IQuadTransformer transformer, BakedQuad quad) {

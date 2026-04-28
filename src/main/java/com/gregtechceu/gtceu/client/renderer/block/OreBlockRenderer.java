@@ -19,6 +19,8 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -84,29 +86,115 @@ public class OreBlockRenderer {
     /// This is called for every combination of tag prefix + icon type + icon set
     protected static void copyOreModelWithBaseStone(TagPrefix tagPrefix, TagPrefix.OreType oreType,
                                                     MaterialIconType iconType, MaterialIconSet iconSet) {
-        // read the base ore model JSON
-        JsonObject original;
+        JsonObject newJson;
         try {
-            original = TEMPLATE_MODEL_CACHE.apply(iconType, iconSet);
+            JsonObject original = TEMPLATE_MODEL_CACHE.apply(iconType, iconSet);
+            if (original == NULL_ELEMENT_MARKER) {
+                // if the icon set doesn't have an ore model (somehow...), skip it
+                return;
+            }
+            newJson = createOreModelWithBaseStone(oreType.baseModelLocation(), original);
         } catch (RuntimeException e) {
-            GTCEu.LOGGER.error("Could not load template block model for ore type {}, icon type '{}', icon set '{}'",
+            GTCEu.LOGGER.error("Could not build ore block model for ore type {}, icon type '{}', icon set '{}'",
                     tagPrefix.name, iconType.name(), iconSet.name, e);
             return;
         }
-        if (original == NULL_ELEMENT_MARKER) {
-            // if the icon set doesn't have an ore model (somehow...), skip it
-            return;
-        }
-
-        // copy it
-        JsonObject newJson = original.deepCopy();
-        // add the base stone model.
-        newJson.getAsJsonObject("children")
-                .getAsJsonObject("base_stone")
-                .addProperty("parent", oreType.baseModelLocation().toString());
 
         GTDynamicResourcePack.addBlockModel(
                 GTCEu.id(ORE_MODEL_NAME_FORMAT.formatted(iconSet.name, tagPrefix.name, iconType.name())), newJson);
+    }
+
+    private static JsonObject createOreModelWithBaseStone(Identifier baseModelLocation, JsonObject template) {
+        JsonObject oreModel = unwrapOreModel(template);
+        JsonObject baseModel = flattenModel(baseModelLocation, new HashSet<>());
+
+        JsonObject model = new JsonObject();
+        JsonObject textures = new JsonObject();
+        JsonArray elements = new JsonArray();
+
+        model.addProperty("parent", "block/block");
+        copyTextures(textures, baseModel);
+        copyTextures(textures, oreModel);
+        copyElements(elements, baseModel);
+        copyElements(elements, oreModel);
+
+        model.add("textures", textures);
+        model.add("elements", elements);
+        return model;
+    }
+
+    private static JsonObject unwrapOreModel(JsonObject template) {
+        if (template.has("children")) {
+            JsonObject children = template.getAsJsonObject("children");
+            if (children.has("ore_texture")) {
+                return children.getAsJsonObject("ore_texture");
+            }
+        }
+        return template;
+    }
+
+    private static JsonObject flattenModel(Identifier modelLocation, Set<Identifier> seen) {
+        if (!seen.add(modelLocation)) {
+            throw new RuntimeException("Circular parent chain while loading model " + modelLocation);
+        }
+
+        JsonObject model = loadRequiredModel(modelLocation);
+        JsonObject flattened = new JsonObject();
+        JsonObject textures = new JsonObject();
+        JsonArray elements = null;
+
+        if (model.has("parent")) {
+            JsonObject parent = flattenModel(Identifier.parse(model.get("parent").getAsString()), seen);
+            copyTextures(textures, parent);
+            if (parent.has("elements")) {
+                elements = parent.getAsJsonArray("elements").deepCopy();
+            }
+        }
+
+        copyTextures(textures, model);
+        if (model.has("elements")) {
+            elements = model.getAsJsonArray("elements").deepCopy();
+        }
+
+        flattened.add("textures", textures);
+        if (elements != null) {
+            flattened.add("elements", elements);
+        }
+        seen.remove(modelLocation);
+        return flattened;
+    }
+
+    private static JsonObject loadRequiredModel(Identifier modelLocation) {
+        Identifier modelPath = GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(modelLocation);
+        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        Optional<Resource> modelResource = resourceManager.getResource(modelPath);
+
+        if (modelResource.isEmpty()) {
+            throw new RuntimeException("Missing block model " + modelLocation + " at " + modelPath);
+        }
+        try (BufferedReader reader = modelResource.get().openAsReader()) {
+            return GsonHelper.parse(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void copyTextures(JsonObject target, JsonObject model) {
+        if (!model.has("textures")) {
+            return;
+        }
+        for (var entry : model.getAsJsonObject("textures").entrySet()) {
+            target.add(entry.getKey(), entry.getValue().deepCopy());
+        }
+    }
+
+    private static void copyElements(JsonArray target, JsonObject model) {
+        if (!model.has("elements")) {
+            return;
+        }
+        for (JsonElement element : model.getAsJsonArray("elements")) {
+            target.add(element.deepCopy());
+        }
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {

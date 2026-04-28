@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/hv_compressor"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/hv_compressor",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

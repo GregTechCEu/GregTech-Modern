@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lv_item_collector"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lv_item_collector",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

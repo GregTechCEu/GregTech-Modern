@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/uv_extruder"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uv_extruder",
+      "type": "gtceu:legacy_model"
     }
+  }
 }

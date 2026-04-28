@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.client.model.ModelBakingUtil;
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
 import com.gregtechceu.gtceu.client.model.compat.ModelState;
@@ -61,7 +62,17 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
         }
 
         Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
+        this.models.forEach((state, unbakedModel) -> baseModels.put(state,
+                ModelBakingUtil.bake(unbakedModel, context, baker, spriteGetter, modelState, overrides)));
+
         MultiPartBakedModel multiPart = null;
+        if (this.multiPart != null) {
+            MultiPartBakedModel.Builder builder = new MultiPartBakedModel.Builder();
+            this.multiPart.selectors().forEach(selector -> builder.add(
+                    selector.getPredicate(this.multiPart.definition()),
+                    ModelBakingUtil.bakeMultiVariant(selector.getVariant(), context, baker, spriteGetter, overrides)));
+            multiPart = builder.build();
+        }
 
         MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart, this.dynamicRenders,
                 context.getTransforms(), context.getRootTransform(), modelState,
@@ -78,5 +89,19 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Override
     public void resolveParents(Function<Identifier, UnbakedModel> resolver, IGeometryBakingContext context) {
         MachineModelLoader.resolveStateModels(this, resolver);
+    }
+
+    @Override
+    public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        this.models.values().forEach(model -> {
+            Identifier parent = model.parent();
+            if (parent != null) {
+                resolver.markDependency(parent);
+            }
+            model.resolveDependencies(resolver);
+        });
+        if (this.multiPart != null) {
+            this.multiPart.resolveDependencies(resolver);
+        }
     }
 }

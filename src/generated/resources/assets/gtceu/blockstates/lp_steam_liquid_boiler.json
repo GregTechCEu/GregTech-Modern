@@ -1,7 +1,8 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/machine/lp_steam_liquid_boiler"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
+      "type": "gtceu:legacy_model"
     }
+  }
 }
