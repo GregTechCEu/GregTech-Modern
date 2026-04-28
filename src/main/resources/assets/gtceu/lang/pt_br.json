@@ -14,7 +14,6 @@
   "behavior.portable_scanner.debug_lag_count": "Causou %s Avisos de Pico de Lag (qualquer coisa demorando mais que %sms) no Servidor.",
   "behavior.portable_scanner.debug_machine": "Meta-ID: %s",
   "behavior.portable_scanner.debug_machine_invalid": " inválido!",
-  "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " nulo!",
   "behavior.portable_scanner.debug_machine_valid": " válido",
   "behavior.portable_scanner.divider": "=========================",
   "behavior.portable_scanner.energy_container_in": "ENTRADA Máx: %s (%s) EU a %s A",

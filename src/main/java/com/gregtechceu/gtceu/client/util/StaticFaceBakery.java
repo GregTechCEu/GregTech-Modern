@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -72,7 +70,7 @@ public class StaticFaceBakery {
 
     public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,
                                      int emissivity, boolean cull, boolean shade) {
-        return bakeFace(FaceQuad.BLOCK, face, sprite, rotation, tintIndex, emissivity, cull, shade);
+        return bakeFace(BLOCK, face, sprite, rotation, tintIndex, emissivity, cull, shade);
     }
 
     public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,

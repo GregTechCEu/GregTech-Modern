@@ -34,8 +34,8 @@ public class MultiblockState {
 
     private BlockPos pos;
     private BlockState blockState;
-    private BlockEntity tileEntity;
-    private boolean tileEntityInitialized;
+    private BlockEntity blockEntity;
+    private boolean blockEntityInitialized;
     @Getter
     private final PatternMatchContext matchContext;
     @Getter
@@ -72,8 +72,8 @@ public class MultiblockState {
     public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
         this.pos = posIn;
         this.blockState = null;
-        this.tileEntity = null;
-        this.tileEntityInitialized = false;
+        this.blockEntity = null;
+        this.blockEntityInitialized = false;
         this.predicate = predicate;
         this.error = null;
         if (!world.isLoaded(posIn)) {
@@ -116,16 +116,16 @@ public class MultiblockState {
     }
 
     @Nullable
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         if (!getBlockState().hasBlockEntity()) {
             return null;
         }
-        if (this.tileEntity == null && !this.tileEntityInitialized) {
-            this.tileEntity = this.world.getBlockEntity(this.pos);
-            this.tileEntityInitialized = true;
+        if (this.blockEntity == null && !this.blockEntityInitialized) {
+            this.blockEntity = this.world.getBlockEntity(this.pos);
+            this.blockEntityInitialized = true;
         }
 
-        return this.tileEntity;
+        return this.blockEntity;
     }
 
     public BlockPos getPos() {

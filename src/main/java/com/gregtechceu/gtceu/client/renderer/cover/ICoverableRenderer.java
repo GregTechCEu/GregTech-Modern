@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -43,9 +43,9 @@ public interface ICoverableRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, ICoverable coverable,
-                              BlockPos pos, BlockAndTintGetter level, @Nullable Direction side,
-                              RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+    default void renderCovers(List<BakedQuad> quads, ICoverable coverable, BlockPos pos, BlockAndTintGetter level,
+                              @Nullable Direction side, RandomSource rand, ModelData modelData,
+                              @Nullable RenderType renderType) {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
         double thickness = coverable.getCoverPlateThickness();
 
@@ -67,13 +67,12 @@ public interface ICoverableRenderer {
                             normal.getX() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
                             normal.getY() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
                             normal.getZ() >= 0 ? 1.0 - LESS_THIN_OFFSET : min);
+
                     if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                         if (side == null) { // render back
-                            quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
-                                    .cube(cube).cubeUV().bake());
+                            quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
                         } else if (side != face.getOpposite()) { // render sides
-                            quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
-                                    .cube(cube).cubeUV().bake());
+                            quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
                         }
                     }
                 }
