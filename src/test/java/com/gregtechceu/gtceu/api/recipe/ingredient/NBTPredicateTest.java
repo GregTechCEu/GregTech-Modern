@@ -19,8 +19,8 @@
 // import net.minecraft.util.valueproviders.UniformInt;
 // import net.minecraft.world.item.ItemStack;
 // import net.minecraft.world.item.Items;
-// import net.minecraftforge.gametest.GameTestHolder;
-// import net.minecraftforge.gametest.PrefixGameTestTemplate;
+// import net.neoforged.neoforge.gametest.GameTestHolder;
+// import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 // import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
 // import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
@@ -74,7 +74,9 @@
 // .buildRawRecipe());
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateEqualsTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putString("foo", "bar");
@@ -104,7 +106,9 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateComparisonTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putDouble("num", 10);
@@ -140,7 +144,9 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// batch = "NBTPredicateTest")
 // public static void NBTPredicateAnyTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putInt("a", 5);
@@ -164,7 +170,9 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
 // public static void NBTPredicateAllTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putInt("x", 3);
@@ -187,7 +195,9 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
 // public static void NBTPredicateNotTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 // tag.putBoolean("enabled", true);
@@ -203,7 +213,9 @@
 // helper.succeed();
 // }
 
-// @GameTest(template = "empty", batch = "NBTPredicateTest")
+// // TODO this should use JUnit
+// @EmptyTemplate
+// @GameTest(batch = "NBTPredicateTest")
 // public static void NBTPredicateEmptyTest(GameTestHelper helper) {
 // CompoundTag tag = new CompoundTag();
 

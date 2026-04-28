@@ -17,9 +17,12 @@ import java.util.function.Function;
 
 public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap> {
 
+    // spotless:off
     public static final Codec<CapabilityMap> CODEC = RecipeCapability.CODEC
             .xmap(CapabilityMap::new, Function.identity());
     public static final CapabilityMapComponent INSTANCE = new CapabilityMapComponent();
+    public static final RecipeComponentType<CapabilityMap> CAPABILITY_MAP = RecipeComponentType.unit(ResourceLocation.parse("capability_map"), INSTANCE);
+    // spotless:on
 
     @Override
     public Codec<CapabilityMap> codec() {
@@ -28,7 +31,10 @@ public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap>
 
     @Override
     public TypeInfo typeInfo() {
-        return TypeInfo.of(CapabilityMap.class);
+        return TypeInfo.of(CapabilityMap.class)
+                .or(TypeInfo.RAW_MAP.withParams(
+                        GTRecipeComponents.RECIPE_CAPABILITY.typeInfo(),
+                        TypeInfo.RAW_LIST.withParams(TypeInfo.of(Content.class))));
     }
 
     @Override
@@ -55,6 +61,6 @@ public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap>
     }
 
     public @Override RecipeComponentType<CapabilityMap> type() {
-        return RecipeComponentType.<CapabilityMap>unit(ResourceLocation.parse("capability_map"), this);
+        return CAPABILITY_MAP;
     }
 }

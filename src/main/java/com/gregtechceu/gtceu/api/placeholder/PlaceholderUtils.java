@@ -29,6 +29,10 @@ public class PlaceholderUtils {
         }
     }
 
+    public static float toFloat(MultiLineComponent component) throws InvalidNumberException {
+        return (float) toDouble(component);
+    }
+
     public static void checkArgs(List<MultiLineComponent> args, int args_num) throws WrongNumberOfArgsException {
         if (args.size() != args_num) throw new WrongNumberOfArgsException(args_num, args.size());
     }

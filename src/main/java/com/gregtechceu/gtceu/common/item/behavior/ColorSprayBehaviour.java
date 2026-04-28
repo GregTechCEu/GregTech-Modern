@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
@@ -40,9 +40,13 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriPredicate;
 
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllTags;
+import com.simibubi.create.foundation.utility.BlockHelper;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.Nullable;
 
@@ -203,8 +207,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
-            var collected = AE2CallWrapper.collect(first, limit);
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
+            Set<? extends IColorableBlockEntity> collected;
+            if (first instanceof CableBusBlockEntity) {
+                collected = AE2CallWrapper.collect(first, limit);
+            } else {
+                collected = Set.of((IColorableBlockEntity) first);
+            }
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
@@ -217,7 +226,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             }
         } else if (first instanceof IPipeNode pipe) {
             var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
-                    first.getLevel(), IPipeNode::getPipePos,
+                    first.getLevel(), IPipeNode::getBlockPos,
                     gtPipePredicate, limit, limit * 6);
             paintPaintables(collected, context);
         } else if (first instanceof IPaintable paintable) {
@@ -294,7 +303,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return false;
     }
 
-    @SuppressWarnings("RedundantIfStatement")
     private boolean tryPaintSpecialBlock(Level world, BlockPos pos, Block block) {
         if (block.defaultBlockState().is(Tags.Blocks.GLASS_BLOCKS)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
@@ -335,6 +343,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             if (recolorBlockNoState(CANDLE_MAP, this.color, world, pos)) {
                 return true;
             }
+        }
+        if (GTCEu.Mods.isCreateLoaded() && block.defaultBlockState().is(AllTags.AllBlockTags.WINDMILL_SAILS.tag)) {
+            return recolorCreateSail(world, pos, color);
         }
         return false;
     }
@@ -396,6 +407,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (block.defaultBlockState().is(BlockTags.CANDLES) && block != Blocks.WHITE_CANDLE) {
             recolorBlockNoState(CANDLE_MAP, DyeColor.WHITE, world, pos);
             return true;
+        }
+        if (GTCEu.Mods.isCreateLoaded() && block.defaultBlockState().is(AllTags.AllBlockTags.WINDMILL_SAILS.tag)) {
+            return recolorCreateSail(world, pos, DyeColor.WHITE);
         }
 
         // General case
@@ -473,8 +487,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     limit, limit * 6);
         }
 
-        static boolean isAE2Cable(BlockEntity be) {
-            return be instanceof CableBusBlockEntity;
+        static boolean isColorable(BlockEntity be) {
+            return be instanceof IColorableBlockEntity;
         }
 
         static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {
@@ -484,5 +498,18 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     child.getPart(childDirection) == null && child.getCableConnectionType(childDirection).isValid() &&
                     parent.getColor() == child.getColor();
         }
+    }
+
+    private static boolean recolorCreateSail(Level world, BlockPos pos, @Nullable DyeColor color) {
+        // logic copied from Create (SailBlock#applyDye).
+        // skip null color, because we're not shears.
+        if (color == null) return false;
+        BlockState oldState = world.getBlockState(pos);
+        BlockState newState = BlockHelper.copyProperties(oldState, AllBlocks.DYED_SAILS.get(color).getDefaultState());
+        if (oldState != newState) {
+            world.setBlockAndUpdate(pos, newState);
+            return true;
+        }
+        return false;
     }
 }

@@ -3,37 +3,36 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTEnchantmentProviders;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.enchantment.GTEnchantmentProviders;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTItemAbilities;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
-import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
-import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -102,7 +101,7 @@ public class ToolHelper {
 
     /**
      * Registers the tool against a crafting symbol, this is used in
-     * {@link com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper}
+     * {@link VanillaRecipeHelper}
      */
     public static void registerToolSymbol(char symbol, GTToolType tool) {
         symbols.put(symbol, tool);
@@ -346,10 +345,11 @@ public class ToolHelper {
     /**
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
+
+    @SuppressWarnings("DataFlowIssue")
     public static void applyHammerDropConversion(ServerLevel world, BlockPos pos, ItemStack tool, BlockState state,
                                                  List<ItemStack> drops, int fortune, float dropChance,
                                                  RandomSource random) {
-        // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
         if (is(tool, GTToolType.HARD_HAMMER)) {
             List<ItemStack> silkTouchDrops = getSilkTouchDrop(world, pos, state);
             for (ItemStack silkTouchDrop : silkTouchDrops) {
@@ -357,24 +357,21 @@ public class ToolHelper {
                 // Stack lists can be immutable going into Recipe#matches barring no rewrites
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
-                        Collections.emptyList());
                 RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
-                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silkTouchDrop)));
+                        new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
+                        new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silkTouchDrop)));
 
                 RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
-                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+                        new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
+                DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
+                        dummyInputs, dummyOutputs);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
-                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+                        r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
-                        be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
+                if (hammerRecipe != null &&
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances())
+                                .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silkTouchDrop.getItem());
                     if (prefix.isEmpty()) {
@@ -474,7 +471,6 @@ public class ToolHelper {
             return Collections.emptyList();
         }
 
-        InteractionHand hand = InteractionHand.MAIN_HAND;
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
         UseOnContext context = new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);

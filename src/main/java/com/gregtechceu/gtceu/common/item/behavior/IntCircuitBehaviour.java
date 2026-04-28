@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -126,8 +126,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         var stack = context.getItemInHand();
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (entity instanceof MetaMachineBlockEntity machineEntity && context.isSecondaryUseActive()) {
-            if (machineEntity.metaMachine instanceof IHasCircuitSlot circuitMachine &&
+        if (entity instanceof MetaMachine machine && context.isSecondaryUseActive()) {
+            if (machine instanceof IHasCircuitSlot circuitMachine &&
                     circuitMachine.getCircuitInventory().getSlots() > 0) {
                 setCircuitConfig(circuitMachine.getCircuitInventory(), circuitSetting);
             }

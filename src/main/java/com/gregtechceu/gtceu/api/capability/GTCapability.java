@@ -16,8 +16,6 @@ public class GTCapability {
             .createSided(GTCEu.id("energy_info_provider"), IEnergyInfoProvider.class);
     public static final BlockCapability<ICoverable, Direction> CAPABILITY_COVERABLE = BlockCapability
             .createSided(GTCEu.id("coverable"), ICoverable.class);
-    public static final BlockCapability<IToolable, Direction> CAPABILITY_TOOLABLE = BlockCapability
-            .createSided(GTCEu.id("toolable"), IToolable.class);
     public static final BlockCapability<IWorkable, Direction> CAPABILITY_WORKABLE = BlockCapability
             .createSided(GTCEu.id("workable"), IWorkable.class);
     public static final BlockCapability<IControllable, Direction> CAPABILITY_CONTROLLABLE = BlockCapability
@@ -26,8 +24,6 @@ public class GTCapability {
             .createSided(GTCEu.id("recipe_logic"), RecipeLogic.class);
     public static final ItemCapability<IElectricItem, Void> CAPABILITY_ELECTRIC_ITEM = ItemCapability
             .createVoid(GTCEu.id("electric_item"), IElectricItem.class);
-    public static final BlockCapability<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER = BlockCapability
-            .createSided(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class);
     public static final BlockCapability<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE = BlockCapability
             .createSided(GTCEu.id("maintenance"), IMaintenanceMachine.class);
     public static final BlockCapability<ILaserContainer, Direction> CAPABILITY_LASER = BlockCapability
@@ -40,8 +36,4 @@ public class GTCapability {
             .createSided(GTCEu.id("hazard_particle_container"), IHazardParticleContainer.class);
     public static final BlockCapability<IMonitorComponent, Direction> CAPABILITY_MONITOR_COMPONENT = BlockCapability
             .createSided(GTCEu.id("monitor_component"), IMonitorComponent.class);
-    public static final BlockCapability<ITurbineMachine, Direction> CAPABILITY_TURBINE_MACHINE = BlockCapability
-            .createSided(GTCEu.id("turbine_machine"), ITurbineMachine.class);
-    public static final BlockCapability<ICentralMonitor, Direction> CAPABILITY_CENTRAL_MONITOR = BlockCapability
-            .createSided(GTCEu.id("central_monitor"), ICentralMonitor.class);
 }

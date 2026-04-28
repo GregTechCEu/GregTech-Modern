@@ -2,14 +2,12 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
+import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredientType;
 
@@ -26,19 +24,19 @@ import java.util.stream.Stream;
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
  * recipe start (input) / completion (output).
- * Instantiated using {@link IntProviderFluidIngredient#of()}, with a {@link FluidIngredient}
+ * Instantiated using {@link IntProviderFluidIngredient#of}, with a {@link FluidIngredient}
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
 public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
 
-    public static final MapCodec<IntProviderFluidIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(
-                    FluidIngredient.CODEC.fieldOf("inner").forGetter(IntProviderFluidIngredient::getInner),
-                    IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderFluidIngredient::getCountProvider),
-                    NeoForgeExtraCodecs.optionalFieldAlwaysWrite(Codec.INT, "sampledCount", FluidType.BUCKET_VOLUME)
-                            .forGetter(IRangedIngredient::getSampledCount))
-            .apply(instance, IntProviderFluidIngredient::new));
+    // spotless:off
+    public static final MapCodec<IntProviderFluidIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            FluidIngredient.CODEC.fieldOf("inner").forGetter(IntProviderFluidIngredient::getInner),
+            IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderFluidIngredient::getCountProvider),
+            Codec.INT.optionalFieldOf("sampled_count", -1).forGetter(IRangedIngredient::getSampledCount)
+    ).apply(instance, IntProviderFluidIngredient::new));
+    // spotless:on
     public static final FluidStack[] EMPTY_STACK_ARRAY = new FluidStack[0];
 
     @Getter

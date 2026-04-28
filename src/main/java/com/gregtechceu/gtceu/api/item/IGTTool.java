@@ -1,9 +1,16 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -11,26 +18,18 @@ import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.*;
 import net.minecraft.core.component.*;
 import net.minecraft.locale.Language;
@@ -54,8 +53,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -141,12 +138,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return GTMaterials.Iron;
     }
 
-    @Nullable
-    default ToolProperty getToolProperty() {
+    default @Nullable ToolProperty getToolProperty() {
         return getMaterial().getProperty(PropertyKey.TOOL);
     }
 
-    default DustProperty getDustProperty(ItemStack stack) {
+    default @Nullable DustProperty getDustProperty(ItemStack stack) {
         return getToolMaterial(stack).getProperty(PropertyKey.DUST);
     }
 
@@ -340,12 +336,12 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
                                                            HolderLookup.RegistryLookup<Enchantment> lookup) {
-        var existing = stack.get(GTDataComponents.INNATE_ENCHANTMENTS);
-        if (existing != null) {
+        ItemEnchantments existing = stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ItemEnchantments.EMPTY);
+        if (!existing.isEmpty()) {
             return IGTTool.joinEnchants(stack, existing);
         }
 
-        var enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
 
         // Set tool and material enchantments
@@ -364,13 +360,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return IGTTool.joinEnchants(stack, existing);
     }
 
-    private static ItemEnchantments joinEnchants(ItemStack stack, @NotNull ItemEnchantments enchants) {
-        if (enchants.isEmpty()) {
-            return ItemEnchantments.EMPTY;
+    private static ItemEnchantments joinEnchants(ItemStack stackWithEnchants, ItemEnchantments additional) {
+        ItemEnchantments original = stackWithEnchants.getTagEnchantments();
+        if (additional.isEmpty()) {
+            return original;
         }
-        var original = stack.getTagEnchantments();
-        var joined = new ItemEnchantments.Mutable(original);
-        for (var entry : enchants.entrySet()) {
+        ItemEnchantments.Mutable joined = new ItemEnchantments.Mutable(original);
+        for (var entry : additional.entrySet()) {
             joined.upgrade(entry.getKey(), entry.getIntValue());
         }
         return joined.toImmutable();
@@ -606,22 +602,31 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
             if (!addedBehaviorNewLine) {
-                addedBehaviorNewLine = true;
-                tooltip.add(CommonComponents.EMPTY);
+                addedBehaviorNewLine = tooltip.add(CommonComponents.EMPTY);
             }
             tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining"));
         }
 
-        if (!addedBehaviorNewLine && !toolStats.getBehaviors().isEmpty()) {
-            tooltip.add(CommonComponents.EMPTY);
+        if (!toolStats.getBehaviors().isEmpty()) {
+            if (!addedBehaviorNewLine) {
+                tooltip.add(CommonComponents.EMPTY);
+            }
+            toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, context, tooltip, flag));
         }
-        toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, context, tooltip, flag));
 
         // unique tooltip
         String uniqueTooltip = this.getToolType().getUnlocalizedName() + ".tooltip";
         if (Language.getInstance().has(uniqueTooltip)) {
             tooltip.add(CommonComponents.EMPTY);
             tooltip.add(Component.translatable(uniqueTooltip));
+        }
+
+        // innate enchantments
+        if (stack.has(GTDataComponents.INNATE_ENCHANTMENTS)) {
+            tooltip.add(CommonComponents.EMPTY);
+
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.innate_enchantments"));
+            stack.addToTooltip(GTDataComponents.INNATE_ENCHANTMENTS, context, tooltip::add, flag);
         }
 
         tooltip.add(CommonComponents.EMPTY);
@@ -662,11 +667,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    default int getColor(ItemStack stack, int tintIndex) {
-        return tintIndex % 2 == 1 ? getToolMaterial(stack).getMaterialRGB() : 0xFFFFFF;
     }
 
     // Sound Playing
@@ -727,34 +727,31 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    static ItemColor tintColor() {
-        return (itemStack, index) -> {
-            if (itemStack.getItem() instanceof IGTTool item) {
-                Material material = item.getMaterial();
-                // TODO switch around main and secondary color once new textures are added
-                return switch (index) {
-                    case 0, -101 -> {
-                        if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
-                            if (itemStack.has(DataComponents.DYED_COLOR)) {
-                                // noinspection DataFlowIssue
-                                yield itemStack.get(DataComponents.DYED_COLOR).rgb();
-                            }
-                        }
-                        yield -1;
-                    }
-                    case 1, -111 -> material.getMaterialARGB();
-                    case 2, -121 -> {
-                        if (material.getMaterialSecondaryARGB() != -1) {
-                            yield material.getMaterialSecondaryARGB();
-                        } else {
-                            yield material.getMaterialARGB();
+    static int tintColor(ItemStack stack, int index) {
+        if (stack.getItem() instanceof IGTTool item) {
+            Material material = item.getMaterial();
+            // TODO switch around main and secondary color once new textures are added
+            return switch (index) {
+                case 0, -101 -> {
+                    if (item.getToolClasses(stack).contains(GTToolType.CROWBAR)) {
+                        if (stack.has(DataComponents.DYED_COLOR)) {
+                            // noinspection DataFlowIssue
+                            yield stack.get(DataComponents.DYED_COLOR).rgb();
                         }
                     }
-                    default -> -1;
-                };
-            }
-            return -1;
-        };
+                    yield -1;
+                }
+                case 1, -111 -> material.getMaterialARGB();
+                case 2, -121 -> {
+                    if (material.getMaterialSecondaryARGB() != -1) {
+                        yield material.getMaterialSecondaryARGB();
+                    } else {
+                        yield material.getMaterialARGB();
+                    }
+                }
+                default -> -1;
+            };
+        }
+        return -1;
     }
 }

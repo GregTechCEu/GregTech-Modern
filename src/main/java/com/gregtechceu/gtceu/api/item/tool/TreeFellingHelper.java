@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

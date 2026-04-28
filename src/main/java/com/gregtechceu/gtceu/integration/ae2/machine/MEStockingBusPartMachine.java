@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
@@ -15,21 +17,13 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -48,30 +42,25 @@ import java.util.function.Predicate;
 
 public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @DescSynced
-    @Persisted
+    @SyncToClient
+    @SaveField
     @Getter
     private boolean autoPull;
 
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int minStackSize = 1;
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingBusPartMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.autoPullTest = $ -> false;
     }
 
@@ -80,26 +69,21 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     /////////////////////////////////
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         super.addedToController(controller);
         IMEStockingPart.super.addedToController(controller);
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -172,7 +156,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         // Otherwise, we need to test for if the item is configured
         // in any stocking bus in the multi (besides ourselves).
-        for (IMultiController controller : getControllers()) {
+        for (MultiblockControllerMachine controller : getControllers()) {
             for (IMultiPart part : controller.getParts()) {
                 if (part instanceof MEStockingBusPartMachine bus) {
                     // We don't need to check for ourselves, as this case is handled elsewhere.
@@ -190,6 +174,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("autoPull");
             if (!this.autoPull) {
                 this.aeItemHandler.clearInventory(0);
             } else if (updateMEStatus()) {
@@ -275,20 +260,18 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     }
 
     @Override
-    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, ItemStack held,
-                                                       Direction gridSide,
-                                                       BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             setAutoPull(!autoPull);
             if (autoPull) {
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_enabled"));
             } else {
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
             }
         }
-        return ItemInteractionResult.sidedSuccess(isRemote());
+        return InteractionResult.sidedSuccess(isRemote());
     }
 
     ////////////////////////////////

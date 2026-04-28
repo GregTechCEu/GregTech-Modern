@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.biome.Biome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +24,9 @@ import org.jetbrains.annotations.NotNull;
 public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
     // spotless:off
-    public static final StreamCodec<ByteBuf, ResourceKey<Biome>> RESOURCE_KEY_STREAM_CODEC = ResourceKey.streamCodec(Registries.BIOME);
-    public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-            .and(ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
-            ).apply(instance, BiomeCondition::new));
+    public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
+    ).apply(instance, BiomeCondition::new));
 
     @Getter
     private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
@@ -65,7 +62,7 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
         if (level == null) return false;
-        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
+        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getBlockPos());
         return biome.is(this.biome);
     }
 

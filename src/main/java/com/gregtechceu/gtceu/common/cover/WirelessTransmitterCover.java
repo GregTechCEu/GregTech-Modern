@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -29,9 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class WirelessTransmitterCover extends CoverBehavior
                                       implements IDataStickInteractable, IPlaceholderInfoProviderCover {
 
-    private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WirelessTransmitterCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
-
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
     @Getter
@@ -47,9 +43,8 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     @Override
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
-        dataStick.set(GTDataComponents.MONITOR_TARGET, coverHolder.getPos());
-        dataStick.set(GTDataComponents.MONITOR_TARGET_FACE, attachedSide);
-        dataStick.set(GTDataComponents.MONITOR_TARGET_DIMENSION, coverHolder.getLevel().dimension());
+        dataStick.set(GTDataComponents.MONITOR_TARGET,
+                new GlobalPosWithRot(coverHolder.getBlockPos(), attachedSide, coverHolder.getLevel().dimension()));
         return InteractionResult.SUCCESS;
     }
 
@@ -66,10 +61,5 @@ public class WirelessTransmitterCover extends CoverBehavior
     @Override
     public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
         computerCraftTextBuffer.set(line, component);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

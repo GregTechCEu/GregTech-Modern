@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -489,7 +488,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (filledResult.isEmpty()) {
                     filledResult = remainingStack.copy();
-                } else if (GTUtil.isSameItemSameTags(filledResult, remainingStack)) {
+                } else if (ItemStack.isSameItemSameComponents(filledResult, remainingStack)) {
                     if (filledResult.getCount() < filledResult.getMaxStackSize())
                         filledResult.grow(1);
                     else
@@ -534,7 +533,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (drainedResult.isEmpty()) {
                     drainedResult = remainingStack.copy();
-                } else if (GTUtil.isSameItemSameTags(drainedResult, remainingStack)) {
+                } else if (ItemStack.isSameItemSameComponents(drainedResult, remainingStack)) {
                     if (drainedResult.getCount() < drainedResult.getMaxStackSize())
                         drainedResult.grow(1);
                     else
@@ -624,7 +623,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                                                         FluidStack fluidStack, Position pos, Size size) {
             T ingredient = helper.create(fluidStack.getFluidHolder(), fluidStack.getAmount(),
                     fluidStack.getComponentsPatch());
-            return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient)
+            return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient, false)
                     .map(typedIngredient -> new ClickableIngredient<>(typedIngredient, pos.x, pos.y, size.width,
                             size.height))
                     .orElse(null);

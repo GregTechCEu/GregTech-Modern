@@ -12,6 +12,7 @@ bin/
 */.factorypath
 .project
 .idea/
+.run/
 classes/
 .metadata
 .vscode

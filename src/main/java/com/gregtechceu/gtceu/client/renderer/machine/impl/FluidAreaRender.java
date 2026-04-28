@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -77,7 +77,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
-        if (!machine.isFormed() || machine.getFluidOffsets() == null) {
+        if (!machine.self().isFormed() || machine.getFluidOffsets() == null) {
             return;
         }
         if (!fixedFluid) {
@@ -110,7 +110,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
-                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getBlockPos());
             poseStack.popPose();
         }
     }

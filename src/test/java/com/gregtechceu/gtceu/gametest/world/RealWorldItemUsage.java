@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 import net.neoforged.testframework.gametest.GameTestPlayer;
 
@@ -31,9 +31,12 @@ public class RealWorldItemUsage {
         });
     }
 
-    @GameTest(template = "empty_5x5")
-    public static void testPickaxeInstantPickup(GameTestHelper _helper) {
-        var helper = new ExtendedGameTestHelper(_helper.testInfo);
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
+    // TODO disabled until we implement the NeoForge test framework
+    // @GameTest(template = "empty_5x5")
+    public static void testPickaxeInstantPickup(ExtendedGameTestHelper helper) {
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(new Vec3(2.5, 2.0, 2.5)));
         player.setItemSlot(EquipmentSlot.MAINHAND,

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -79,7 +78,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         });
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                    FormattingUtil.formatNumbers(maxFluidTemperature)));
+                    FormattingUtil.formatTemperature(maxFluidTemperature)));
             if (gasProof) tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (plasmaProof) tooltipComponents.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));

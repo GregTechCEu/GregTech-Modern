@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncHazardZoneStrength;
@@ -294,7 +294,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition.CONDITIONS
+            MedicalCondition condition = MedicalCondition.CONDITIONS
                     .get(zoneTag.getString("condition"));
 
             return new HazardZone(source, strength, canSpread, trigger, condition);
