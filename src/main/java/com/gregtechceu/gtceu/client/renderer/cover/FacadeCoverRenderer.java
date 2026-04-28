@@ -290,7 +290,6 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 return quads;
             }
 
-
             ModelData facadeData = modelData.get(GTModelProperties.CHILD_MODEL_DATA);
             if (facadeData == null) facadeData = ModelData.EMPTY;
 
