@@ -825,20 +825,16 @@ public class ConfigHolder {
         public static class BloomOptions {
 
             @Configurable
-            @Configurable.Comment({ "Whether to use custom shaders for bloom", "Default: true" })
-            public boolean enableBloom = true;
-
-            @Configurable
-            @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
-            public boolean emissiveTexturesHaveBloom = true;
-
-            @Configurable
             @Configurable.Comment({ "Bloom Algorithm",
                     "UNITY - Unity-like Bloom (rescale)",
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
-            public BloomAlgorithm bloomAlgorithm = BloomAlgorithm.UNREAL;
+            public BloomAlgorithm bloomType = BloomAlgorithm.UNREAL;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
+            public boolean emissiveTexturesHaveBloom = true;
 
             @Configurable
             @Configurable.Comment({
