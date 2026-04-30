@@ -37,13 +37,12 @@ enumExtensions = "META-INF/enum_extensions.json"
     side = "BOTH"
 
 [[dependencies.${mod_id}]]
-    # Functionally required at end-user runtime: the bundled `lowdraglib` shim's utility
-    # classes delegate to the patched `ldlib2-neoforge-26.1.2-gtceu.1.jar`. Declared
-    # `optional` here so dev-time tasks like `runData` (which don't actually invoke ldlib2
-    # code) don't hit FML's mod-presence check; release notes must document that end users
-    # need to install the patched ldlib2 jar alongside gtceu.
+    # The patched `ldlib2-neoforge-26.1.2-gtceu.1.jar` is a hard runtime dependency: the
+    # bundled `lowdraglib` compat layer delegates to it, and gtceu's registry init paths
+    # call into it (e.g. BlockUIMenuType). End users must install the patched jar
+    # alongside gtceu — see README's "Required dependencies" section.
     modId = "ldlib2"
-    type = "optional"
+    type = "required"
     versionRange = "[${ldlib2_version},)"
     ordering = "AFTER"
     side = "BOTH"

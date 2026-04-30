@@ -13,6 +13,10 @@
 
 ### [Wiki](https://gregtechceu.github.io/GregTech-Modern/)
 
+## Required dependencies (NeoForge 26.1.2)
+
+The 26.1.2 build of GTCEu: Modern requires a patched build of [LowDragLib2](https://github.com/Low-Drag-MC/LDLib2). The patched jar (`ldlib2-neoforge-26.1.2-gtceu.1.jar`) ships in `libs/ldlib2/` of this repository and is also attached to GTCEu releases. End users must install it alongside `gtceu-*.jar` in their `mods/` folder; the mod will refuse to load otherwise.
+
 ## Developers
 
 To add GTCEu: Modern (GTM) to your project as a dependency, add the following to your `build.gradle`:
