@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
 import net.irisshaders.iris.api.v0.IrisApi;
@@ -21,14 +21,15 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
 public class BloomShaderManager {
 
-    public static @Nullable PostChain BLOOM_CHAIN = null;
-    public static @Nullable RenderTarget BLOOM_TARGET = null;
+    public static @UnknownNullability PostChain BLOOM_CHAIN = null;
+    public static @UnknownNullability RenderTarget BLOOM_TARGET = null;
 
     @Getter
     private static @Nullable ShaderInstance rendertypeBloomShader;
@@ -125,7 +126,7 @@ public class BloomShaderManager {
     }
 
     private static boolean updateBloomShaderAvailability() {
-        return !GTMixinPlugin.OPTIFINE_PRESENT &&
+        return !GTEarlyConfig.OPTIFINE_PRESENT &&
                 !(GTCEu.Mods.isIrisOculusLoaded() && IrisCallWrapper.isShaderActive());
     }
 

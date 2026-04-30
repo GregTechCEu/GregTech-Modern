@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
+import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.SectionPos;
@@ -80,7 +83,8 @@ public class BloomEventListeners {
         @SubscribeEvent
         public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
             RenderType block, entity;
-            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !BloomShaderManager.isBloomShaderAvailable()) {
+            if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME) ||
+                    !BloomShaderManager.isBloomShaderAvailable()) {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
                 block = RenderType.cutout();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
+import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
+
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
@@ -30,7 +32,7 @@ public class GTEmbeddiumCompat {
 
     @SubscribeEvent
     public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) return;
         if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         event.addMeshAppender(context -> {

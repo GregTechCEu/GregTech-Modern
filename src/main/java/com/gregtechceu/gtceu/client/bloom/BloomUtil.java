@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
+import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.LevelRendererAccessor;
@@ -183,7 +185,7 @@ public class BloomUtil {
         BloomUtil.setupBloomShaderUniforms();
 
         // if safe mode is enabled, don't draw block bloom the 'normal' way
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) {
+        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
             BloomUtil.setFilterToggleUniform(true);
             ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
                     camPos.x, camPos.y, camPos.z, projectionMatrix);
@@ -194,7 +196,7 @@ public class BloomUtil {
         GTRenderTypes.bloom().setupRenderState();
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
             BloomUtil.setFilterToggleUniform(true);
             BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
             BloomUtil.setFilterToggleUniform(false);
@@ -334,13 +336,13 @@ public class BloomUtil {
             BLOOM_RENDER_LOCK.readLock().lock();
         }
 
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
             BloomSafeMode.invalidateLevelData();
         }
     }
 
     public static void invalidateSectionData(SectionPos sectionPos) {
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
             BloomSafeMode.invalidateSectionData(sectionPos);
         }
     }
