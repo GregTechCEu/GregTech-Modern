@@ -33,7 +33,7 @@ public class WorldRenderingPhaseMixin {
     }
 
     static {
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode && GTShaders.canUseBloomShader()) {
+        if (!ConfigHolder.getInstance().client.bloom.safeMode && GTShaders.canUseBloomShader()) {
             GTIrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("GTCEU:BLOOM", $VALUES.length);
             $VALUES = ArrayUtils.add($VALUES, GTIrisHooks.BLOOM_RENDERING_PHASE);
         }

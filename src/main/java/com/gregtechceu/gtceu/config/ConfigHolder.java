@@ -25,6 +25,11 @@ public class ConfigHolder {
         }
     }
 
+    public static ConfigHolder getInstance() {
+        init();
+        return INSTANCE;
+    }
+
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();
     @Configurable
