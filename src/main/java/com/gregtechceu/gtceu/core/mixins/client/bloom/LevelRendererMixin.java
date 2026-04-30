@@ -64,12 +64,10 @@ public abstract class LevelRendererMixin {
 
         BloomUtil.setupBloomShaderUniforms();
 
-        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
-            BloomUtil.setFilterToggleUniform(true);
-            this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
-        } else {
-            BloomUtil.setFilterToggleUniform(false);
-        }
+
+        BloomUtil.setFilterToggleUniform(true);
+        this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
+        BloomUtil.setFilterToggleUniform(false);
 
         // have to re-setup here. so sad. very aw.
         GTRenderTypes.bloom().setupRenderState();
