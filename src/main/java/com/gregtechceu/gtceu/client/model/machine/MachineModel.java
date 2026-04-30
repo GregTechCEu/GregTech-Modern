@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
@@ -41,6 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -185,13 +188,56 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 builder.with(key, data.get(key));
             }
         }
+
+        if (machine != null) {
+            Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
+            for (Direction side : GTUtil.DIRECTIONS) {
+                CoverBehavior coverBehavior = machine.getCoverContainer().getCoverAtSide(side);
+                if (coverBehavior == null) continue;
+
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                ModelData data = coverBehavior.getCoverRenderer().get()
+                        .getModelData(coverBehavior, pos, level, modelData);
+
+                coverModelData.put(side, data);
+            }
+            builder.with(GTModelProperties.COVER_MODEL_DATA, coverModelData);
+        }
+
         return builder.build();
     }
 
     @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
+
+        MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
+
+        Set<ChunkRenderTypeSet> renderTypeSets = new HashSet<>();
+        renderTypeSets.add(super.getRenderTypes(state, rand, modelData));
+
+        if (multiPart != null) {
+            renderTypeSets.add(multiPart.getRenderTypes(state, rand, modelData));
+        }
+        if (modelsByState.containsKey(renderState)) {
+            renderTypeSets.add(modelsByState.get(renderState).getRenderTypes(state, rand, modelData));
+        }
+
+        if (machine != null) {
+            var coverRenderTypes = ICoverableRenderer.super.getCoverRenderTypes(machine.getCoverContainer(),
+                    pos, level, rand, modelData);
+            renderTypeSets.add(coverRenderTypes);
+        }
+
+        return ChunkRenderTypeSet.union(renderTypeSets);
+    }
+
+    @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                    RandomSource rand,
-                                    ModelData modelData, @Nullable RenderType renderType) {
+                                    RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         // If there is a root transform, undo the ModelState transform, apply it,
         // then re-apply the ModelState transform.
         // This is necessary because of things like UV locking, which should only respond to the ModelState,
@@ -213,8 +259,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     public List<BakedQuad> getMachineQuads(@Nullable BlockState blockState, @Nullable Direction side,
-                                           RandomSource rand, ModelData modelData,
-                                           @Nullable RenderType renderType) {
+                                           RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
         BlockPos pos = modelData.get(GTModelProperties.POS);
 
