@@ -8,9 +8,11 @@ import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.LevelRendererAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
+import lombok.experimental.UtilityClass;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -22,6 +24,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -33,6 +36,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 
 import java.util.*;
@@ -41,14 +45,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.*;
 
 @OnlyIn(Dist.CLIENT)
+@UtilityClass
 public class BloomUtil {
 
     public static RenderLevelStageEvent.@UnknownNullability Stage AFTER_BLOOM_RENDER_STAGE;
 
-    private static final Map<@Nullable IRenderSetup, BloomRenderList> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
-    private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
+    static final Map<@Nullable IRenderSetup, BloomRenderList> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
+    static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
-    private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
+    static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
 
     public static void init() {}
 
@@ -168,35 +173,42 @@ public class BloomUtil {
         return ticket;
     }
 
-    /**
-     * Invalidate tickets associated with given level.
-     *
-     * @param level the level that was unloaded
-     */
-    public static void invalidateLevelData(LevelAccessor level) {
-        Objects.requireNonNull(level, "level == null");
-        BLOOM_RENDER_LOCK.readLock().lock();
-        try {
-            for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
-                if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
-                    ticket.invalidate();
-                }
-            }
+    @ApiStatus.Internal
+    public static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
+                                   float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
+        if (!GTShaders.canUseBloomShader()) return;
 
-            for (var e : BLOOM_RENDERS.entrySet()) {
-                for (BloomRenderTicket ticket : e.getValue()) {
-                    if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
-                        ticket.invalidate();
-                    }
-                }
-            }
-        } finally {
-            BLOOM_RENDER_LOCK.readLock().lock();
+        Vec3 camPos = camera.getPosition();
+
+        profilerFiller.popPush("gtceu:bloom");
+        BloomUtil.setupBloomShaderUniforms();
+
+        // if safe mode is enabled, don't draw block bloom the 'normal' way
+        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) {
+            BloomUtil.setFilterToggleUniform(true);
+            ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
+                    camPos.x, camPos.y, camPos.z, projectionMatrix);
+            BloomUtil.setFilterToggleUniform(false);
         }
+
+        // have to re-setup here. so sad. very aw.
+        GTRenderTypes.bloom().setupRenderState();
+
+        renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+            BloomUtil.setFilterToggleUniform(true);
+            BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
+            BloomUtil.setFilterToggleUniform(false);
+        }
+        BloomUtil.processPostEffect(partialTicks, profilerFiller);
+
+        GTRenderTypes.bloom().clearRenderState();
+
+        // profiler section is popped by popPush() in the calling function; don't pop it here
     }
 
-    public static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
-                                          ProfilerFiller profilerFiller) {
+    private static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
+                                           ProfilerFiller profilerFiller) {
         profilerFiller.push("special");
 
         // render state is set up & cleared in calling function
@@ -233,7 +245,7 @@ public class BloomUtil {
         profilerFiller.pop();
     }
 
-    private static void preDraw() {
+    static void preDraw() {
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
@@ -246,7 +258,7 @@ public class BloomUtil {
         }
     }
 
-    private static void postDraw() {
+    static void postDraw() {
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             BLOOM_RENDERS.values().removeIf(BloomRenderList::postDraw);
@@ -294,6 +306,43 @@ public class BloomUtil {
         for (int i = 0; i < passes.size(); i++) {
             PostPass pass = passes.get(i);
             consumer.accept(i, pass.getEffect());
+        }
+    }
+
+    /**
+     * Invalidate tickets associated with given level.
+     *
+     * @param level the level that was unloaded
+     */
+    public static void invalidateLevelData(LevelAccessor level) {
+        Objects.requireNonNull(level, "level == null");
+        BLOOM_RENDER_LOCK.readLock().lock();
+        try {
+            for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
+                if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
+                    ticket.invalidate();
+                }
+            }
+
+            for (var e : BLOOM_RENDERS.entrySet()) {
+                for (BloomRenderTicket ticket : e.getValue()) {
+                    if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
+                        ticket.invalidate();
+                    }
+                }
+            }
+        } finally {
+            BLOOM_RENDER_LOCK.readLock().lock();
+        }
+
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+            BloomSafeMode.invalidateLevelData();
+        }
+    }
+
+    public static void invalidateSectionData(SectionPos sectionPos) {
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) {
+            BloomSafeMode.invalidateSectionData(sectionPos);
         }
     }
 

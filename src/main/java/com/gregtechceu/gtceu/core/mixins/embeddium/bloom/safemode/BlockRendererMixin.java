@@ -1,0 +1,84 @@
+package com.gregtechceu.gtceu.core.mixins.embeddium.bloom.safemode;
+
+import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.caffeinemc.mods.sodium.api.util.ColorARGB;
+import net.caffeinemc.mods.sodium.api.util.NormI8;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.phys.Vec3;
+
+import me.jellysquid.mods.sodium.client.model.light.data.QuadLightData;
+import me.jellysquid.mods.sodium.client.model.quad.BakedQuadView;
+import me.jellysquid.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuilder;
+import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderContext;
+import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
+import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
+import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+/**
+ * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.embeddium.bloom.BlockRendererMixin}
+ *
+ * @see com.gregtechceu.gtceu.core.mixins.embeddium.bloom.BlockRendererMixin
+ */
+@Mixin(value = BlockRenderer.class, remap = false)
+public class BlockRendererMixin {
+
+    @Inject(method = "writeGeometry", at = @At(value = "HEAD"))
+    private void gtceu$captureBloomQuads$initLocals(BlockRenderContext ctx, ChunkModelBuilder builder,
+                                                    Vec3 offset, Material material, BakedQuadView quad,
+                                                    int[] colors, QuadLightData light,
+                                                    CallbackInfo ci,
+                                                    @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilder) {
+        // TODO add a way to conditionally load mixins based on configs
+        //  so this doesn't need to be injected at all if the config isn't enabled
+        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        // Check if quad is full brightness OR we have bloom enabled for the quad
+        if (!GTShaders.canUseBloomShader() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
+            return;
+        }
+
+        SectionPos sectionPos = SectionPos.of(ctx.pos());
+        bufferBuilder.set(BloomSafeMode.getOrStartBloomBuffer(sectionPos));
+    }
+
+    @Inject(method = "writeGeometry",
+            at = @At(value = "FIELD",
+                    target = "Lme/jellysquid/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;light:I",
+                    opcode = Opcodes.PUTFIELD,
+                    shift = At.Shift.AFTER))
+    private void gtceu$captureBloomQuads2(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
+                                          Material material, BakedQuadView quad, int[] colors, QuadLightData light,
+                                          CallbackInfo ci,
+                                          @Local(name = "srcIndex") int srcIndex,
+                                          @Local(name = "out") ChunkVertexEncoder.Vertex v,
+                                          @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilder) {
+        // TODO add a way to conditionally load mixins based on configs
+        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        // Check if quad is full brightness OR we have bloom enabled for the quad
+        if (!GTShaders.canUseBloomShader() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
+            return;
+        }
+
+        int normal = quad.getForgeNormal(srcIndex);
+        if (normal == 0) normal = quad.getComputedFaceNormal();
+
+        bufferBuilder.get().vertex(v.x, v.y, v.z)
+                .color(ColorARGB.toABGR(v.color))
+                .uv(v.u, v.v)
+                .uv2(v.light)
+                .normal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
+    }
+}

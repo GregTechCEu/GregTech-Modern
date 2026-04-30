@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @UtilityClass
-public class IrisHooks {
+public class GTIrisHooks {
 
     /// Do not access directly, use {@link #getBloomRenderingPhase()}
     @ApiStatus.Internal

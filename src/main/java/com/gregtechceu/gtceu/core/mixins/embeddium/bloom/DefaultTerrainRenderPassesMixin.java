@@ -1,6 +1,8 @@
-package com.gregtechceu.gtceu.core.mixins.embeddium;
+package com.gregtechceu.gtceu.core.mixins.embeddium.bloom;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.RenderType;
@@ -22,24 +24,31 @@ import java.util.Map;
 public class DefaultTerrainRenderPassesMixin {
 
     // spotless:off
+
     @Definition(id = "ALL", field = "Lme/jellysquid/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses;ALL:[Lme/jellysquid/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;")
-    // @Definition(id = "TerrainRenderPass", type = TerrainRenderPass.class)
     @Expression("ALL = @(?)") // technically quite brittle. I don't think it matters much here, though.
     @ModifyExpressionValue(method = "<clinit>", at = @At("MIXINEXTRAS:EXPRESSION"))
-    private static TerrainRenderPass[] gtceu$forceAddBloomToTerrainRenderPasses(TerrainRenderPass[] original) {
+    private static TerrainRenderPass[] gtceu$forceAddBloomToTerrainRenderPasses$1(TerrainRenderPass[] original) {
+        // TODO add a way to conditionally load mixins based on configs
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return original;
+        if (!GTShaders.canUseBloomShader()) return original;
+
         return ArrayUtils.add(original, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
     }
 
     @Definition(id = "RENDER_PASS_MAPPINGS", field = "Lme/jellysquid/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses;RENDER_PASS_MAPPINGS:Ljava/util/Map;")
-    // @Definition(id = "Map", type = Map.class)
-    // @Definition(id = "of", method = "Ljava/util/Map;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;")
     @Expression("RENDER_PASS_MAPPINGS = @(?)") // technically quite brittle. I don't think it matters much here, though.
     @ModifyExpressionValue(method = "<clinit>", at = @At("MIXINEXTRAS:EXPRESSION"))
-    private static Map<RenderType, List<TerrainRenderPass>> gtceu$forceAddBloomToTerrainRenderPasses(Map<RenderType, List<TerrainRenderPass>> original) {
+    private static Map<RenderType, List<TerrainRenderPass>> gtceu$forceAddBloomToTerrainRenderPasses$2(Map<RenderType, List<TerrainRenderPass>> original) {
+        // TODO add a way to conditionally load mixins based on configs
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return original;
+        if (!GTShaders.canUseBloomShader()) return original;
+
         return ImmutableMap.<RenderType, List<TerrainRenderPass>>builder()
                 .putAll(original)
                 .put(GTRenderTypes.bloom(), List.of(GTEmbeddiumCompat.BLOOM_RENDER_PASS))
                 .build();
     }
+
     // spotless:on
 }

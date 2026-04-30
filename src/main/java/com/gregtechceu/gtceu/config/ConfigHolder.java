@@ -837,6 +837,14 @@ public class ConfigHolder {
             public boolean emissiveTexturesHaveBloom = true;
 
             @Configurable
+            @Configurable.Comment({ "Whether or not to use a 'safe mode' for bloom rendering",
+                    "NOTE: considerably slower than the normal process, but likely fixes compatibility issues with other mods.",
+                    "Requires restarting the client to take effect.",
+                    "Default: false" })
+            // @Configurable.RequiresRestart
+            public boolean safeMode = false;
+
+            @Configurable
             @Configurable.Comment({
                     "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights (e.g., daytime)",
                     "This value should be greater than minBrightness.",

@@ -28,16 +28,16 @@ public class ForgeModelBlockRendererMixin {
     @Inject(method = "render",
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraftforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
-    private static void gtceu$skipBloomyQuadsFromModel(VertexConsumer vertexConsumer, QuadLighter lighter,
+    private static void gtceu$setQuadLighterRenderType(VertexConsumer vertexConsumer, QuadLighter lighter,
                                                        BlockAndTintGetter level, BakedModel model, BlockState state,
                                                        BlockPos pos, PoseStack poseStack, boolean checkSides,
                                                        RandomSource rand, long seed, int packedOverlay,
                                                        ModelData modelData, RenderType renderType,
                                                        CallbackInfoReturnable<Boolean> cir,
                                                        @Local(name = "flatLighter") QuadLighter flatLighter) {
-        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
-            return;
-        }
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
+
         if (flatLighter != null) {
             // this is always in the flatLighter init block
             ((IGTQuadLighter) flatLighter).gtceu$setRenderType(renderType);

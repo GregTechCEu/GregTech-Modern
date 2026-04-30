@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.embeddium;
+package com.gregtechceu.gtceu.core.mixins.embeddium.bloom;
 
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
@@ -37,9 +37,8 @@ public class BlockRendererMixin {
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(instance, ctx, originalBuilder, offset, material, quad, vertexColors, lightData);
 
-        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
-            return;
-        }
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
 
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
         if (chunkContext != null && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
@@ -58,6 +57,9 @@ public class BlockRendererMixin {
                                            Operation<Void> original,
                                            @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(originalBuilder, sprite);
+
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
 
         // set by the above inject; value is only non-null when all appropriate conditions/requirements apply.
         // thus no need to check them here.

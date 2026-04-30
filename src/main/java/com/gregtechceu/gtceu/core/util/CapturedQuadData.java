@@ -15,9 +15,14 @@ public class CapturedQuadData implements AutoCloseable {
     @Getter
     private BlockPos pos;
 
+    @Getter
+    private boolean isSet = false;
+
     public CapturedQuadData with(RenderType renderType, BlockPos pos) {
         this.renderType = renderType;
         this.pos = pos;
+
+        this.isSet = true;
         return this;
     }
 
@@ -25,5 +30,7 @@ public class CapturedQuadData implements AutoCloseable {
     public void close() {
         this.renderType = null;
         this.pos = null;
+
+        this.isSet = false;
     }
 }

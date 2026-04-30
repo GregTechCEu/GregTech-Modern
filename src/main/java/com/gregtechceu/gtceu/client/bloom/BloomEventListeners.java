@@ -4,11 +4,19 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -44,6 +52,24 @@ public class BloomEventListeners {
         BloomUtil.invalidateLevelData(event.getLevel());
     }
 
+    @SubscribeEvent
+    public static void onChunkUnload(ChunkEvent.Unload event) {
+        if (!GTShaders.canUseBloomShader()) {
+            return;
+        }
+        ChunkAccess chunk = event.getChunk();
+        LevelAccessor level = chunk.getWorldForge();
+        if (level == null) {
+            return;
+        }
+
+        ChunkPos chunkPos = chunk.getPos();
+        int minSection = level.getMinSection(), maxSection = level.getMaxSection();
+        for (int y = minSection; y < maxSection; y++) {
+            BloomUtil.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
+        }
+    }
+
     // Merge into parent class in 1.21, event listener discovery is smarter there
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     @UtilityClass
@@ -61,7 +87,16 @@ public class BloomEventListeners {
 
         @SubscribeEvent
         public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-            event.register("bloom", GTRenderTypes.bloom(), GTRenderTypes.entityBloomBlockSheet());
+            RenderType block, entity;
+            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.canUseBloomShader()) {
+                // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
+                block = RenderType.cutout();
+                entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
+            } else {
+                block = GTRenderTypes.bloom();
+                entity = GTRenderTypes.entityBloomBlockSheet();
+            }
+            event.register("gtceu:bloom", block, entity);
         }
     }
 }

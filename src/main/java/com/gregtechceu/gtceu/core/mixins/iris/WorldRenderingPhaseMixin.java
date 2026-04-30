@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins.iris;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.integration.iris.IrisHooks;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.iris.GTIrisHooks;
 
 import net.irisshaders.iris.pipeline.WorldRenderingPhase;
 import net.minecraft.client.renderer.RenderType;
@@ -31,17 +33,20 @@ public class WorldRenderingPhaseMixin {
     }
 
     static {
-        IrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("BLOOM", $VALUES.length);
-        $VALUES = ArrayUtils.add($VALUES, IrisHooks.BLOOM_RENDERING_PHASE);
+        if (!ConfigHolder.INSTANCE.client.bloom.safeMode && GTShaders.canUseBloomShader()) {
+            GTIrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("GTCEU:BLOOM", $VALUES.length);
+            $VALUES = ArrayUtils.add($VALUES, GTIrisHooks.BLOOM_RENDERING_PHASE);
+        }
     }
 
-    @Inject(method = "fromTerrainRenderType",
-            at = @At(value = "NEW", target = "java/lang/IllegalStateException"),
-            cancellable = true)
-    private static void gtceu$checkForBloomLayer(RenderType renderType,
+    @Inject(method = "fromTerrainRenderType", at = @At(value = "HEAD"), cancellable = true)
+    private static void gtceu$fixBloomLayerError(RenderType renderType,
                                                  CallbackInfoReturnable<WorldRenderingPhase> cir) {
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
+
         if (renderType == GTRenderTypes.bloom()) {
-            cir.setReturnValue(IrisHooks.BLOOM_RENDERING_PHASE);
+            cir.setReturnValue(GTIrisHooks.getBloomRenderingPhase());
         }
     }
 }

@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
@@ -20,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Set;
 
 @Mixin(targets = "net.minecraft.client.renderer.chunk.ChunkRenderDispatcher$RenderChunk$RebuildTask")
-abstract class RebuildTaskMixin {
+public abstract class RebuildTaskMixin {
 
     @Shadow(aliases = { "this$1", "f_290687_", "f" })
     @Final
@@ -33,10 +35,11 @@ abstract class RebuildTaskMixin {
                                          CallbackInfoReturnable<Object> cir,
                                          @Local(ordinal = 0) BlockPos sectionOrigin,
                                          @Local Set<RenderType> usedRenderTypes) {
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
+
         long sectionPos = SectionPos.asLong(sectionOrigin);
-        if (!BloomUtil.chunkSectionHasBloomQuads(sectionPos)) {
-            return;
-        }
+        if (!BloomUtil.chunkSectionHasBloomQuads(sectionPos)) return;
 
         BloomUtil.drawBlockBloomForChunk(sectionPos, renderType -> {
             BufferBuilder buffer = chunkBufferBuilders.builder(renderType);

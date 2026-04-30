@@ -1,10 +1,19 @@
 package com.gregtechceu.gtceu.integration.embeddium;
 
+import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.embeddedt.embeddium.api.ChunkMeshEvent;
 
 public class GTEmbeddiumCompat {
 
@@ -15,5 +24,24 @@ public class GTEmbeddiumCompat {
     public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS,
             AlphaCutoffParameter.ONE_TENTH, false);
 
-    public static void init() {}
+    public static void init() {
+        MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
+    }
+
+    @SubscribeEvent
+    public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
+        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+        if (!GTShaders.canUseBloomShader()) return;
+
+        event.addMeshAppender(context -> {
+            SectionPos sectionOrigin = context.sectionOrigin();
+            if (!BloomSafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
+                return;
+            }
+
+            Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+            BloomSafeMode.CURRENT_RENDERING_SECTION.set(sectionOrigin);
+            BloomSafeMode.bakeBloomChunkBuffers(sectionOrigin, camPos);
+        });
+    }
 }

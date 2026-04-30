@@ -36,9 +36,8 @@ public class QuadLighterMixin implements IGTQuadLighter {
                                                    float red, float green, float blue,
                                                    int[] packedLights, int packedOverlay,
                                                    boolean mulColor) {
-        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
-            return true;
-        }
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return true;
+        if (!GTShaders.canUseBloomShader()) return true;
 
         BloomUtil.captureBloomQuad(quad, this.gtceu$renderType, this.pos, poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);

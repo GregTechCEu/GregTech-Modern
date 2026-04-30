@@ -40,12 +40,7 @@ public class ModelBlockRendererMixin {
                                            RandomSource random, long seed, int packedOverlay,
                                            ModelData modelData, RenderType renderType,
                                            Operation<Void> original) {
-        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom && GTShaders.canUseBloomShader()) {
-            try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
-                original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
-                        modelData, renderType);
-            }
-        } else {
+        try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
             original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                     modelData, renderType);
         }
@@ -57,11 +52,12 @@ public class ModelBlockRendererMixin {
     private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                               float[] brightness, float red, float green, float blue,
                                               int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
-            return true;
-        }
+        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return true;
+        if (!GTShaders.canUseBloomShader()) return true;
 
         CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
+        if (!currentData.isSet()) return true;
+
         BloomUtil.captureBloomQuad(quad, currentData.renderType(), currentData.pos(), poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);
         return true;
