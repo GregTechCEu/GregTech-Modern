@@ -19,7 +19,7 @@ public class DefaultMaterialsMixin {
     @Inject(method = "forRenderLayer", at = @At(value = "HEAD"), cancellable = true)
     private static void gtceu$fixBloomLayerError(RenderType renderType,
                                                  CallbackInfoReturnable<Material> cir) {
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
             cir.setReturnValue(GTEmbeddiumCompat.BLOOM_MATERIAL);

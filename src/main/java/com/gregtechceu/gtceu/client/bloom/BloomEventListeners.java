@@ -88,7 +88,7 @@ public class BloomEventListeners {
         @SubscribeEvent
         public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
             RenderType block, entity;
-            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.canUseBloomShader()) {
+            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.isBloomShaderAvailable()) {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
                 block = RenderType.cutout();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

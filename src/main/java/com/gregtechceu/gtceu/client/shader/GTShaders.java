@@ -38,16 +38,10 @@ public class GTShaders {
 
     @ApiStatus.Internal
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        // forcefully update availability on reload
-        bloomShaderAvailable = updateBloomShaderAvailability();
 
-        if (!canLoadBloomShader()) {
-            return;
-        }
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
                 GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
                 shader -> rendertypeBloomShader = shader);
-
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
                 GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
                 shader -> rendertypeEntityBloomShader = shader);
@@ -57,6 +51,11 @@ public class GTShaders {
 
     private static void initPostShaders() {
         deinitPostShaders();
+
+        // forcefully update availability on (re-)load
+        bloomShaderAvailable = updateBloomShaderAvailability();
+
+        if (!isBloomShaderAvailable()) return;
 
         ResourceLocation id = null;
 
@@ -107,13 +106,11 @@ public class GTShaders {
     }
 
     public static boolean canUseBloomShader() {
-        return BLOOM_CHAIN != null && BLOOM_TARGET != null && canLoadBloomShader();
+        return BLOOM_CHAIN != null && BLOOM_TARGET != null &&
+                ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && isBloomShaderAvailable();
     }
 
-    public static boolean canLoadBloomShader() {
-        return ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && bloomShaderAvailable;
-    }
-
+    @Getter
     private static boolean bloomShaderAvailable = updateBloomShaderAvailability();
 
     @ApiStatus.Internal

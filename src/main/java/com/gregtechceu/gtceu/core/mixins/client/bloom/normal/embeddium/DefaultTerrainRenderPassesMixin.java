@@ -32,7 +32,7 @@ public class DefaultTerrainRenderPassesMixin {
     public static Map<RenderType, List<TerrainRenderPass>> RENDER_PASS_MAPPINGS;
 
     static {
-        if (GTShaders.canUseBloomShader()) {
+        if (GTShaders.isBloomShaderAvailable()) {
             ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
 
             RENDER_PASS_MAPPINGS = ImmutableMap.<RenderType, List<TerrainRenderPass>>builder()

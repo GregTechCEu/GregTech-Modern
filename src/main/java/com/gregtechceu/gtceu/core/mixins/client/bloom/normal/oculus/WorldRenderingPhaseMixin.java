@@ -32,7 +32,7 @@ public class WorldRenderingPhaseMixin {
     }
 
     static {
-        if (GTShaders.canUseBloomShader()) {
+        if (GTShaders.isBloomShaderAvailable()) {
             GTIrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("GTCEU:BLOOM", $VALUES.length);
             $VALUES = ArrayUtils.add($VALUES, GTIrisHooks.BLOOM_RENDERING_PHASE);
         }
@@ -41,7 +41,7 @@ public class WorldRenderingPhaseMixin {
     @Inject(method = "fromTerrainRenderType", at = @At(value = "HEAD"), cancellable = true)
     private static void gtceu$fixBloomLayerError(RenderType renderType,
                                                  CallbackInfoReturnable<WorldRenderingPhase> cir) {
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
             cir.setReturnValue(GTIrisHooks.getBloomRenderingPhase());
