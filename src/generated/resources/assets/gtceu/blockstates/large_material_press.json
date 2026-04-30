@@ -1,8 +1,138 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/large_material_press",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=down,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 90,
+            "z": 90
+        },
+        "facing=down,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 90
+        },
+        "facing=down,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 90,
+            "z": 180
+        },
+        "facing=down,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 90,
+            "z": 270
+        },
+        "facing=east,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 90,
+            "z": 270
+        },
+        "facing=east,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 90
+        },
+        "facing=east,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 90,
+            "z": 180
+        },
+        "facing=east,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 90,
+            "z": 90
+        },
+        "facing=north,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "z": 270
+        },
+        "facing=north,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press"
+        },
+        "facing=north,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "z": 180
+        },
+        "facing=north,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "z": 90
+        },
+        "facing=south,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 180,
+            "z": 270
+        },
+        "facing=south,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 180
+        },
+        "facing=south,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 180,
+            "z": 180
+        },
+        "facing=south,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 180,
+            "z": 90
+        },
+        "facing=up,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 270,
+            "z": 90
+        },
+        "facing=up,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 270,
+            "z": 180
+        },
+        "facing=up,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 270
+        },
+        "facing=up,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "x": 270,
+            "z": 270
+        },
+        "facing=west,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 270,
+            "z": 270
+        },
+        "facing=west,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 270
+        },
+        "facing=west,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 270,
+            "z": 180
+        },
+        "facing=west,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/large_material_press",
+            "y": 270,
+            "z": 90
+        }
     }
-  }
 }

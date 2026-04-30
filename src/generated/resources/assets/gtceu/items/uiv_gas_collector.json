@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "gtceu:legacy_item_model",
-    "model": "gtceu:block/machine/uiv_gas_collector"
-  }
+    "model": {
+        "type": "gtceu:legacy_item_model",
+        "model": "gtceu:block/machine/uiv_gas_collector"
+    }
 }

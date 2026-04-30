@@ -1,8 +1,34 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/uiv_muffler_hatch",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=down": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch",
+            "x": 90
+        },
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch",
+            "y": 180
+        },
+        "facing=up": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch",
+            "x": 270,
+            "z": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uiv_muffler_hatch",
+            "y": 270
+        }
     }
-  }
 }

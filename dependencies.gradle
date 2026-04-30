@@ -66,21 +66,32 @@ dependencies {
 
     // Standard runtime mods //
     localRuntime(libs.testframework)
-    extraLocalRuntime(ldlib2PatchedJar)
+    // ldlib2 patched jar — wired through `runtimeOnly` so it lands on `main.runtimeClasspath`,
+    // which is what every dev run config (including `data`) actually launches with. MDG does
+    // NOT propagate localRuntime/extraLocalRuntime to the `data` run's launch classpath, so
+    // gtceu's registry init paths that call into ldlib2 (e.g. BlockUIMenuType) would
+    // NoClassDefFound during datagen otherwise. The patched jar is `local file` only — it
+    // has no Maven coordinates, so maven-publish will skip it; end users still need to install
+    // ldlib2 separately as documented in release notes.
+    runtimeOnly(ldlib2PatchedJar)
 
-    localRuntime(forge.jade)
+    // Jade integration not migrated to 26.x API yet; see forge.versions.toml.
+//    localRuntime(forge.jade)
     localRuntime(forge.ae2)
     localRuntime(forge.spark)
     localRuntime(forge.modernfix)
-    localRuntime(forge.create) {
-        // Needed to prevent game-test crashes
-        exclude group: "maven.modrinth", module: "journeymap"
-        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
-    }
+    // Create/Ponder/Flywheel have no 26.1.2 build yet; integration code stays compileOnly.
+//    localRuntime(forge.create) {
+//        // Needed to prevent game-test crashes
+//        exclude group: "maven.modrinth", module: "journeymap"
+//        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
+//    }
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
-    localRuntime(forge.emi)
-    localRuntime(forge.jei.neoforge.impl)
+    // EMI has no 26.1.2 build yet; integration code stays compileOnly.
+//    localRuntime(forge.emi)
+    // JEI integration not migrated to 26.x API yet; see forge.versions.toml.
+//    localRuntime(forge.jei.neoforge.impl)
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
@@ -95,9 +106,11 @@ dependencies {
 //    extraLocalRuntime(forge.trenzalore)
 //    extraLocalRuntime(forge.curios)
 //    extraLocalRuntime(forge.worldstripper)
-    localRuntime(forge.cc.tweaked.forge.impl)
+    // CC: Tweaked has no 26.1.2 build yet; integration code stays compileOnly.
+//    localRuntime(forge.cc.tweaked.forge.impl)
 
-    localRuntime(forge.bundles.kjs)
+    // KubeJS/Rhino have no 26.1.2 build yet; integration code stays compileOnly.
+//    localRuntime(forge.bundles.kjs)
 
 //    extraLocalRuntime(forge.ftblibrary)
 //    extraLocalRuntime(forge.ftbteams)
@@ -125,5 +138,5 @@ dependencies {
 }
 
 configurations.named("additionalRuntimeClasspath") {
-    extendsFrom(configurations.localRuntime)
+    extendsFrom(configurations.localRuntime, configurations.extraLocalRuntime)
 }

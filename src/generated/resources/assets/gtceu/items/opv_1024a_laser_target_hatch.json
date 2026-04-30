@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "gtceu:legacy_item_model",
-    "model": "gtceu:block/machine/opv_1024a_laser_target_hatch"
-  }
+    "model": {
+        "type": "gtceu:legacy_item_model",
+        "model": "gtceu:block/machine/opv_1024a_laser_target_hatch"
+    }
 }

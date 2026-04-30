@@ -657,12 +657,15 @@ public class GTMachineModels {
             final BlockModelBuilder model = builder.end();
             model.parent(prov.models().getExistingFile(prov.mcLoc("block/block")));
 
-            var generator = prov.addVanillaGenerator(block, MultiVariantGenerator.dispatch(block,
-                    MultiVariant.of(LegacyCustomBlockStateModel.builder(model.getLocation()))));
+            // MultiVariantGenerator is immutable — `.with(dispatch)` returns a NEW generator.
+            // Build the final generator (with FACING dispatch applied) before registering it.
+            MultiVariantGenerator generator = MultiVariantGenerator.dispatch(block,
+                    MultiVariant.of(LegacyCustomBlockStateModel.builder(model.getLocation())));
             PropertyDispatch<VariantMutator> dispatch = GTBlockstateProvider.createFacingDispatch(definition);
             if (dispatch != null) {
-                generator.with(dispatch);
+                generator = generator.with(dispatch);
             }
+            prov.addVanillaGenerator(block, generator);
         };
     }
     // spotless:on

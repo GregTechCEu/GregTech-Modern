@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "gtceu:legacy_item_model",
-    "model": "gtceu:block/machine/iv_rock_crusher"
-  }
+    "model": {
+        "type": "gtceu:legacy_item_model",
+        "model": "gtceu:block/machine/iv_rock_crusher"
+    }
 }

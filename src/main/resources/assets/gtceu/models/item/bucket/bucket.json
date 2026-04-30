@@ -1,7 +1,0 @@
-{
-  "parent": "neoforge:item/bucket_drip",
-  "loader": "neoforge:fluid_container",
-  "fluid": "minecraft:water",
-  "flip_gas": false,
-  "apply_fluid_luminosity": false
-}

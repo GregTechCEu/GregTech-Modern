@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -141,7 +141,7 @@ public class SlotWidget extends Widget implements IRecipeIngredientSlot {
     }
 
     public SlotWidget setBackgroundTexture(IGuiTexture backgroundTexture) {
-        this.backgroundTexture = backgroundTexture;
+        this.backgroundTexture = backgroundTexture == null ? IGuiTexture.EMPTY : backgroundTexture;
         setBackground(backgroundTexture);
         return this;
     }
@@ -166,7 +166,7 @@ public class SlotWidget extends Widget implements IRecipeIngredientSlot {
         if (changeListener != null) changeListener.run();
     }
 
-    public ItemStack slotClick(int mouseButton, ClickType clickType, Player player) {
+    public ItemStack slotClick(int mouseButton, ContainerInput clickType, Player player) {
         return ItemStack.EMPTY;
     }
 

@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "gtceu:legacy_item_model",
-    "model": "gtceu:block/machine/mv_steam_turbine"
-  }
+    "model": {
+        "type": "gtceu:legacy_item_model",
+        "model": "gtceu:block/machine/mv_steam_turbine"
+    }
 }

@@ -756,6 +756,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                         prov.itemModelOutput.accept(ctx.get(), new LegacyCustomItemModel(model));
                     })
                     .color(() -> builder.itemColor::apply)
+                    // Force block.<ns>.<id> description ID — vanilla's BlockItem no longer
+                    // overrides getDescriptionId(), and Item.Properties defaults to
+                    // item.<ns>.<id>, which doesn't match the lang keys gtceu emits.
+                    .properties(Item.Properties::useBlockDescriptionPrefix)
                     .properties(builder.itemProp);
         }
     }

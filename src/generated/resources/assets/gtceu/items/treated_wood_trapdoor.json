@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/treated_wood_trapdoor"
+        "model": "gtceu:item/treated_wood_trapdoor"
     }
 }

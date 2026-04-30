@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "gtceu:legacy_item_model",
-    "model": "gtceu:block/machine/hpca_heat_sink_component"
-  }
+    "model": {
+        "type": "gtceu:legacy_item_model",
+        "model": "gtceu:block/machine/hpca_heat_sink_component"
+    }
 }

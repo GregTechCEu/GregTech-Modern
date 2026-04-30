@@ -207,6 +207,7 @@ public class CommonProxy {
 
         GregTechDatagen.initPost();
         GTValueProviderTypes.init(modBus);
+        GTLootModifiers.init(modBus);
         GTFeatures.register(modBus);
         WorldGenLayers.registerAll();
         VeinGenerators.registerAddonGenerators();

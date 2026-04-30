@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
 import com.gregtechceu.gtceu.client.model.compat.ModelState;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -17,17 +16,12 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public class FacadeUnbakedModel implements IUnbakedGeometry<FacadeUnbakedModel> {
 
-    private final @NotNull BlockModel defaultModel;
-
-    private FacadeUnbakedModel(@NotNull BlockModel defaultModel) {
-        this.defaultModel = defaultModel;
-    }
+    private FacadeUnbakedModel() {}
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
@@ -48,7 +42,10 @@ public class FacadeUnbakedModel implements IUnbakedGeometry<FacadeUnbakedModel> 
 
         @Override
         public FacadeUnbakedModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
-            return new FacadeUnbakedModel(context.deserialize(json.get("default_model"), BlockModel.class));
+            // The legacy `default_model` field is intentionally ignored — FacadeCoverRenderer
+            // builds its own quads at runtime, so the inline default model JSON was never used
+            // (and 26.1.2 dropped the BlockModel class that the deserializer relied on).
+            return new FacadeUnbakedModel();
         }
     }
 }

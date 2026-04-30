@@ -2,7 +2,7 @@
     "required": true,
     "minVersion": "0.8",
     "package": "com.gregtechceu.gtceu.core.mixins",
-    "compatibilityLevel": "JAVA_21",
+    "compatibilityLevel": "JAVA_25",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
         "client.AbstractClientPlayerAccessor",
@@ -58,6 +58,7 @@
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",
+        "StemBlockAccessor",
         "TagLoaderMixin",
         "WorldLoaderMixin",
         "emi.FillRecipePacketMixin",

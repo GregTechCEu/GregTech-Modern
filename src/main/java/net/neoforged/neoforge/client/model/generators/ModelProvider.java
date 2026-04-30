@@ -1,3 +1,15 @@
+/*
+ * Vendored copy of NeoForge's pre-26.1 model-generator API. NeoForge 26.1.x dropped this
+ * package upstream; the GTCEU datagen layer (GTBlockstateProvider, GTItemModelGenerator,
+ * Registrate's RegistrateBlockModelGenerator) was written against this surface and a full
+ * migration to vanilla {@code net.minecraft.client.data.models.*} is a non-trivial follow-up.
+ *
+ * <p>Until that migration lands, this package is shipped as-source under the {@code main}
+ * source set so the datagen layer compiles. Treat it as accepted technical debt: any
+ * NeoForge 26.1.x point release that touches the underlying vanilla generators may require
+ * patching these classes by hand. Eventual migration target:
+ * {@code net.minecraft.client.data.models.{BlockModelGenerators, ItemModelGenerators}}.
+ */
 package net.neoforged.neoforge.client.model.generators;
 
 import com.gregtechceu.gtceu.utils.data.ExistingFileHelper;

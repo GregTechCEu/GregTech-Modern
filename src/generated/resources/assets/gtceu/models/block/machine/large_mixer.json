@@ -20,16 +20,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_emissive"
                 }
             }
         },
@@ -38,16 +30,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_paused",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_paused_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_paused",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_paused_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_paused",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_paused_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_paused",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_paused_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused_emissive"
                 }
             }
         },
@@ -56,16 +40,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive"
                 }
             }
         },
@@ -74,16 +50,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive"
                 }
             }
         },
@@ -92,16 +60,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_emissive"
                 }
             }
         },
@@ -110,16 +70,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_paused",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_paused_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_paused",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_paused_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_paused",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_paused_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_paused",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_paused_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_paused_emissive"
                 }
             }
         },
@@ -128,16 +80,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive"
                 }
             }
         },
@@ -146,16 +90,8 @@
                 "parent": "gtceu:block/machine/template/cube_all/sided",
                 "textures": {
                     "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing",
-                    "overlay_back": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/multiblock/gcym/large_mixer/overlay_front_active_emissive"
                 }
             }
         }

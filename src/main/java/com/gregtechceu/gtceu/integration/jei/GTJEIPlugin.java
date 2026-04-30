@@ -27,7 +27,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.neoforge.NeoForgeTypes;
@@ -38,7 +37,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@JeiPlugin
+// TODO: migrate to JEI 26.x API (Identifier-typed getPluginUid, IRecipeCategory.getHeight,
+// IDrawable.draw(GuiGraphicsExtractor)) and re-enable @JeiPlugin. JEI is pinned to its
+// last 1.21.1 build for compileOnly so the rest of the project still builds.
+// @JeiPlugin
 public class GTJEIPlugin implements IModPlugin {
 
     @Override

@@ -23,10 +23,11 @@ public class TagPrefixItemRenderer {
     public static void reinitModels() {
         for (TagPrefixItemRenderer model : MODELS) {
             Identifier itemId = BuiltInRegistries.ITEM.getKey(model.item);
-            GTDynamicResourcePack.addItemModel(itemId,
-                    new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
-            // ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId),
-            // TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
+            // 4 tints covers layer0..layer3 (max layer count in material item models).
+            // GTItemColors handler returns -1 (white) for unused indexes, so over-allocating is safe.
+            GTDynamicResourcePack.addTintedItemModel(itemId,
+                    new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)).get(),
+                    4);
         }
     }
 

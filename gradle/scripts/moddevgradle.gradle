@@ -146,7 +146,13 @@ neoForge {
         // applies to all the run configs above
         configureEach {
             if (name != "data") {
-                getAdditionalRuntimeClasspathConfiguration().extendsFrom(project.configurations.localRuntime)
+                // Add localRuntime / extraLocalRuntime / clientExtraLocalRuntime to every dev
+                // run except `data` (which only needs gtceu's own source-set output to run
+                // generators, and per MDG behavior doesn't apply this configuration anyway).
+                getAdditionalRuntimeClasspathConfiguration().extendsFrom(
+                        project.configurations.localRuntime,
+                        project.configurations.extraLocalRuntime,
+                        project.configurations.clientExtraLocalRuntime)
             }
 
             // Recommended logging data for a userdev environment

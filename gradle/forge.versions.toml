@@ -4,6 +4,11 @@ taffy = "1.1.4"
 registrate = "MC26.1-1.3.0+9"
 configuration = "4.1.2+26.1.2"
 
+# JEI 29.x for MC 26.1.2 redesigned IRecipeCategory/IModPlugin/IDrawable. The
+# GTCEU JEI integration in integration/jei/ + the bundled lowdraglib/jei/ helpers
+# still expect the 1.21.1 API surface, so JEI is pinned to its last 1.21.1 build
+# for compileOnly. localRuntime is disabled and @JeiPlugin entry points are gated.
+# TODO: migrate JEI integration to the 26.x API, then bump.
 jei = "19.25.1.328"
 rei = "16.0.799"
 emi = "1.1.22+1.21.1"
@@ -32,10 +37,15 @@ argonauts = "1.2.4"
 heracles = "1.1.10"
 
 ## modrinth maven ##
+# Jade is pinned to its last 1.21.1 build for compileOnly only; the 26.x API
+# (Element/JadeUI/ProgressView) is a redesign and the GTCEU integration in
+# integration/jade/ has not yet been migrated. localRuntime is disabled and
+# the @WailaPlugin entry point is gated off so Jade 26.x users see no
+# integration crash. TODO: migrate to the new Jade API, then bump to 26.0.10+neoforge.
 jade = "15.10.0+neoforge"
-sodium = "mc1.21.1-0.6.13-neoforge"
-iris = "1.8.8+1.21.1-neoforge"
-modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
+sodium = "mc26.1.2-0.8.10-neoforge"
+iris = "1.10.9+26.1-neoforge"
+modernfix = "5.27.7+mc26.1.2"
 
 ## cursemaven ##
 worldStripper = "5592921"

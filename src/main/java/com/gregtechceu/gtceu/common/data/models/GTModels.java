@@ -15,14 +15,12 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -37,8 +35,6 @@ import com.tterrag.registrate.providers.generators.RegistrateItemModelGenerator;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -352,28 +348,31 @@ public class GTModels {
                     MixinHelpers.addFluidTexture(material, fluidEntry);
                 }
 
-                // bucket models.
+                // bucket item definitions (NeoForge 26.1.2 DynamicFluidContainerModel).
+                // The codec at DynamicFluidContainerModel.Unbaked.MAP_CODEC requires a "fluid" entry —
+                // the model bakes one cached variant per fluid using that key, not per-stack capability.
                 Fluid fluid = storage.get(key);
                 if (fluid instanceof GTFluid gtFluid) {
-                    // read the base bucket model JSON
-                    JsonObject original;
-                    try (BufferedReader reader = Minecraft.getInstance().getResourceManager()
-                            .openAsReader(GTCEu.id("models/item/bucket/bucket.json"))) {
-                        original = GsonHelper.parse(reader);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    JsonObject textures = new JsonObject();
+                    textures.addProperty("particle", "minecraft:item/bucket");
+                    textures.addProperty("base", "minecraft:item/bucket");
+                    textures.addProperty("fluid", "neoforge:item/mask/bucket_fluid");
+                    textures.addProperty("cover", "neoforge:item/mask/bucket_fluid_cover");
 
-                    JsonObject newJson = original.deepCopy();
-                    newJson.addProperty("fluid", BuiltInRegistries.FLUID.getKey(gtFluid).toString());
+                    JsonObject model = new JsonObject();
+                    model.addProperty("type", "neoforge:fluid_container");
+                    model.add("textures", textures);
+                    model.addProperty("fluid", BuiltInRegistries.FLUID.getKey(gtFluid).toString());
                     if (gtFluid.getFluidType().isLighterThanAir()) {
-                        newJson.addProperty("flip_gas", true);
+                        model.addProperty("flip_gas", true);
                     }
-                    if (gtFluid.getFluidType().getLightLevel() > 0) {
-                        newJson.addProperty("apply_fluid_luminosity", true);
-                    }
+                    model.addProperty("apply_fluid_luminosity",
+                            gtFluid.getFluidType().getLightLevel() > 0);
 
-                    GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()), newJson);
+                    JsonObject definition = new JsonObject();
+                    definition.add("model", model);
+                    GTDynamicResourcePack.addItemDefinition(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()),
+                            definition);
                 }
             }
         }

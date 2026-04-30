@@ -1,8 +1,34 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=down": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
+            "x": 90
+        },
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
+            "y": 180
+        },
+        "facing=up": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
+            "x": 270,
+            "z": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uev_energy_output_hatch_16a",
+            "y": 270
+        }
     }
-  }
 }

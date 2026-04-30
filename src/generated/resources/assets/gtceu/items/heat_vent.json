@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/heat_vent"
+        "model": "gtceu:item/heat_vent"
     }
 }

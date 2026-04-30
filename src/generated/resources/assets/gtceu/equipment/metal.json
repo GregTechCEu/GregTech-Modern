@@ -1,0 +1,19 @@
+{
+    "layers": {
+        "humanoid": [
+            {
+                "texture": "gtceu:metal"
+            }
+        ],
+        "humanoid_baby": [
+            {
+                "texture": "gtceu:metal"
+            }
+        ],
+        "humanoid_leggings": [
+            {
+                "texture": "gtceu:metal"
+            }
+        ]
+    }
+}

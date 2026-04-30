@@ -1,8 +1,23 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/hp_steam_macerator",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_macerator",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_macerator"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_macerator",
+            "y": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_macerator",
+            "y": 270
+        }
     }
-  }
 }

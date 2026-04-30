@@ -66,7 +66,16 @@ public class ExistingFileHelper {
     }
 
     public boolean exists(Identifier loc, PackType packType) {
-        return true;
+        if (generated.get(packType).contains(loc)) return true;
+        // Datagen has no ResourceManager, so check the classpath. The build pulls
+        // src/main/resources onto the runtime classpath under assets/<ns>/... and
+        // data/<ns>/..., so a getResource() against the context loader resolves
+        // to the source assets.
+        String root = packType == PackType.CLIENT_RESOURCES ? "assets" : "data";
+        String fullPath = root + "/" + loc.getNamespace() + "/" + loc.getPath();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) loader = ExistingFileHelper.class.getClassLoader();
+        return loader.getResource(fullPath) != null;
     }
 
     public boolean exists(Identifier loc, IResourceType type) {

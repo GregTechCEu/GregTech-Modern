@@ -1,9 +1,7 @@
 {
-  "loader": "neoforge:fluid_container",
-  "parent": "neoforge:item/default",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "base": "gtceu:item/aluminium_fluid_cell/base",
-    "fluid": "gtceu:item/aluminium_fluid_cell/overlay"
-  },
-  "fluid": "minecraft:empty"
+    "layer0": "gtceu:item/aluminium_fluid_cell/base",
+    "layer1": "gtceu:item/aluminium_fluid_cell/overlay"
+  }
 }

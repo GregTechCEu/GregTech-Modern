@@ -35,6 +35,8 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     private final List<DynamicRender<?, ?>> dynamicRenders;
     private final Set<String> replaceableTextures;
     private final Map<String, Identifier> textureOverrides;
+    @Nullable
+    private final Identifier parent;
 
     public UnbakedMachineModel(MachineDefinition definition,
                                Map<MachineRenderState, UnbakedModel> models,
@@ -42,13 +44,21 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
                                List<DynamicRender<?, ?>> dynamicRenders,
 
                                Set<String> replaceableTextures,
-                               Map<String, Identifier> textureOverrides) {
+                               Map<String, Identifier> textureOverrides,
+                               @Nullable Identifier parent) {
         this.definition = definition;
         this.models = models;
         this.multiPart = multiPart;
         this.dynamicRenders = dynamicRenders;
         this.replaceableTextures = replaceableTextures;
         this.textureOverrides = textureOverrides;
+        this.parent = parent;
+    }
+
+    @Override
+    @Nullable
+    public Identifier parent() {
+        return this.parent;
     }
 
     @Override
@@ -70,7 +80,8 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
             MultiPartBakedModel.Builder builder = new MultiPartBakedModel.Builder();
             this.multiPart.selectors().forEach(selector -> builder.add(
                     selector.getPredicate(this.multiPart.definition()),
-                    ModelBakingUtil.bakeMultiVariant(selector.getVariant(), context, baker, spriteGetter, overrides)));
+                    ModelBakingUtil.bakeMultiVariant(selector.getVariant(), context, baker, spriteGetter,
+                            modelState, overrides)));
             multiPart = builder.build();
         }
 
@@ -93,6 +104,9 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
 
     @Override
     public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        if (this.parent != null) {
+            resolver.markDependency(this.parent);
+        }
         this.models.values().forEach(model -> {
             Identifier parent = model.parent();
             if (parent != null) {

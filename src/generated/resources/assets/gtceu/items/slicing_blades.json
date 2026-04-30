@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/slicing_blades"
+        "model": "gtceu:item/slicing_blades"
     }
 }

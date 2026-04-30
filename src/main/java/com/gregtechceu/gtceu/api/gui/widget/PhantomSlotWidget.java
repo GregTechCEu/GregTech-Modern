@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -100,7 +100,7 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
     }
 
     @Override
-    public ItemStack slotClick(int dragType, ClickType clickTypeIn, Player player) {
+    public ItemStack slotClick(int dragType, ContainerInput clickTypeIn, Player player) {
         if (slotReference != null && gui != null) {
             ItemStack stackHeld = gui.getModularUIContainer().getCarried();
             return slotClickPhantom(slotReference, dragType, clickTypeIn, stackHeld);
@@ -160,7 +160,7 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
                 if (slotReference != null && ingredient instanceof ItemStack stack) {
                     boolean shiftDown = InputConstants.isKeyDown(Minecraft.getInstance().getWindow(),
                             GLFW.GLFW_KEY_LEFT_SHIFT);
-                    ClickType clickType = shiftDown ? ClickType.QUICK_MOVE : ClickType.PICKUP;
+                    ContainerInput clickType = shiftDown ? ContainerInput.QUICK_MOVE : ContainerInput.PICKUP;
                     slotClickPhantom(slotReference, 0, clickType, stack);
                     writeClientAction(1, buffer -> {
                         ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, stack);
@@ -178,14 +178,14 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
             ItemStack stackHeld = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             int mouseButton = buffer.readVarInt();
             boolean shiftKeyDown = buffer.readBoolean();
-            ClickType clickType = shiftKeyDown ? ClickType.QUICK_MOVE : ClickType.PICKUP;
+            ContainerInput clickType = shiftKeyDown ? ContainerInput.QUICK_MOVE : ContainerInput.PICKUP;
             slotClickPhantom(slotReference, mouseButton, clickType, stackHeld);
         } else if (slotReference != null && id == 2) {
             slotReference.set(ItemStack.EMPTY);
         }
     }
 
-    public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
+    public ItemStack slotClickPhantom(Slot slot, int mouseButton, ContainerInput clickTypeIn, ItemStack stackHeld) {
         ItemStack stack = ItemStack.EMPTY;
 
         ItemStack stackSlot = slot.getItem();
@@ -217,10 +217,10 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
         return stack;
     }
 
-    private void adjustPhantomSlot(Slot slot, int mouseButton, ClickType clickTypeIn) {
+    private void adjustPhantomSlot(Slot slot, int mouseButton, ContainerInput clickTypeIn) {
         ItemStack stackSlot = slot.getItem();
         int stackSize;
-        if (clickTypeIn == ClickType.QUICK_MOVE) {
+        if (clickTypeIn == ContainerInput.QUICK_MOVE) {
             stackSize = mouseButton == 0 ? (stackSlot.getCount() + 1) / 2 : stackSlot.getCount() * 2;
         } else {
             stackSize = mouseButton == 0 ? stackSlot.getCount() - 1 : stackSlot.getCount() + 1;

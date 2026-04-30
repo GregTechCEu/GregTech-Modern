@@ -634,8 +634,8 @@ public class GTBlocks {
                 .gtBlockstate(GTModels.createActiveModel(GTCEu.id(baseModelPath)))
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .item(BlockItem::new)
-                .model(() -> (ctx, prov) -> GTItemModelGenerator.withExistingParent(prov,
-                        GTItemModelGenerator.name(ctx), GTCEu.id(baseModelPath)))
+                .model(() -> (ctx, prov) -> GTItemModelGenerator.withExistingParent(prov, ctx,
+                        GTCEu.id(baseModelPath)))
                 .build()
                 .register();
     }
@@ -828,7 +828,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.fenceBlock(ctx.getEntry(), prov.blockTexture(RUBBER_PLANK.get())))
             .tag(BlockTags.WOODEN_FENCES, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.fenceInventory(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.fenceInventory(prov, ctx,
                     GTBlocks.RUBBER_PLANK.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_FENCES)
             .build()
@@ -911,7 +911,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.trapdoorBlock(ctx.get(), prov.blockTexture(ctx.get()), true))
             .tag(BlockTags.WOODEN_TRAPDOORS, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.trapdoorOrientableBottom(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.trapdoorOrientableBottom(prov, ctx,
                     ctx.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_TRAPDOORS)
             .build()
@@ -934,7 +934,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.buttonBlock(ctx.getEntry(), prov.blockTexture(RUBBER_PLANK.get())))
             .tag(BlockTags.WOODEN_BUTTONS, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.buttonInventory(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.buttonInventory(prov, ctx,
                     GTBlocks.RUBBER_PLANK.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_BUTTONS)
             .build()
@@ -1002,7 +1002,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.fenceBlock(ctx.getEntry(), prov.blockTexture(TREATED_WOOD_PLANK.get())))
             .tag(BlockTags.WOODEN_FENCES, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.fenceInventory(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.fenceInventory(prov, ctx,
                     GTBlocks.TREATED_WOOD_PLANK.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_FENCES)
             .build()
@@ -1083,7 +1083,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.trapdoorBlock(ctx.get(), prov.blockTexture(ctx.get()), true))
             .tag(BlockTags.WOODEN_TRAPDOORS, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.trapdoorOrientableBottom(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.trapdoorOrientableBottom(prov, ctx,
                     ctx.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_TRAPDOORS)
             .build()
@@ -1106,7 +1106,7 @@ public class GTBlocks {
             .gtBlockstate((ctx, prov) -> prov.buttonBlock(ctx.getEntry(), prov.blockTexture(TREATED_WOOD_PLANK.get())))
             .tag(BlockTags.WOODEN_BUTTONS)
             .item()
-            .model(() -> (ctx, prov) -> GTItemModelGenerator.buttonInventory(prov, ctx.getName(),
+            .model(() -> (ctx, prov) -> GTItemModelGenerator.buttonInventory(prov, ctx,
                     GTBlocks.TREATED_WOOD_PLANK.getId().withPrefix("block/")))
             .tag(ItemTags.WOODEN_BUTTONS)
             .build()

@@ -42,6 +42,21 @@ public final class GTItemModelGenerator {
         return emit(provider, getBuilder(provider, name).parent(new ModelFile.UncheckedModelFile(parent)));
     }
 
+    /**
+     * Like {@link #withExistingParent(RegistrateItemModelGenerator, String, Identifier)} but also
+     * emits the new-format item definition file (assets/{@code ns}/items/{@code name}.json) pointing
+     * at the legacy item model. Without this, the auto-generated item definition would reference
+     * {@code <ns>:block/<name>} (a path that does not exist for blocks whose models live elsewhere
+     * — e.g. {@code <ns>:block/variant/<name>}).
+     */
+    public static ItemModelBuilder withExistingParent(RegistrateItemModelGenerator provider,
+                                                      DataGenContext<Item, ? extends Item> context,
+                                                      Identifier parent) {
+        ItemModelBuilder builder = withExistingParent(provider, name(context), parent);
+        provider.itemModelOutput.accept(context.getEntry(), ItemModelUtils.plainModel(builder.getLocation()));
+        return builder;
+    }
+
     public static ItemModelBuilder singleTexture(RegistrateItemModelGenerator provider, String name, Identifier parent,
                                                  String textureKey, Identifier texture) {
         return withExistingParent(provider, name, parent).texture(textureKey, texture);
@@ -71,15 +86,39 @@ public final class GTItemModelGenerator {
         return singleTexture(provider, name, provider.mcLoc("block/button_inventory"), "texture", texture);
     }
 
+    public static ItemModelBuilder buttonInventory(RegistrateItemModelGenerator provider,
+                                                   DataGenContext<Item, ? extends Item> context,
+                                                   Identifier texture) {
+        ItemModelBuilder builder = buttonInventory(provider, name(context), texture);
+        provider.itemModelOutput.accept(context.getEntry(), ItemModelUtils.plainModel(builder.getLocation()));
+        return builder;
+    }
+
     public static ItemModelBuilder fenceInventory(RegistrateItemModelGenerator provider, String name,
                                                   Identifier texture) {
         return singleTexture(provider, name, provider.mcLoc("block/fence_inventory"), "texture", texture);
+    }
+
+    public static ItemModelBuilder fenceInventory(RegistrateItemModelGenerator provider,
+                                                  DataGenContext<Item, ? extends Item> context,
+                                                  Identifier texture) {
+        ItemModelBuilder builder = fenceInventory(provider, name(context), texture);
+        provider.itemModelOutput.accept(context.getEntry(), ItemModelUtils.plainModel(builder.getLocation()));
+        return builder;
     }
 
     public static ItemModelBuilder trapdoorOrientableBottom(RegistrateItemModelGenerator provider, String name,
                                                             Identifier texture) {
         return singleTexture(provider, name, provider.mcLoc("block/template_orientable_trapdoor_bottom"), "texture",
                 texture);
+    }
+
+    public static ItemModelBuilder trapdoorOrientableBottom(RegistrateItemModelGenerator provider,
+                                                            DataGenContext<Item, ? extends Item> context,
+                                                            Identifier texture) {
+        ItemModelBuilder builder = trapdoorOrientableBottom(provider, name(context), texture);
+        provider.itemModelOutput.accept(context.getEntry(), ItemModelUtils.plainModel(builder.getLocation()));
+        return builder;
     }
 
     public static ItemModelBuilder emit(RegistrateItemModelGenerator provider, ItemModelBuilder builder) {

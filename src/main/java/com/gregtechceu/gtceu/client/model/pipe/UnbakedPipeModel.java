@@ -29,11 +29,21 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
     private final Map<@Nullable Direction, UnbakedModel> parts;
     @Getter
     private final Map<@NotNull Direction, UnbakedModel> restrictors;
+    @Nullable
+    private final Identifier parent;
 
     public UnbakedPipeModel(Map<@Nullable Direction, UnbakedModel> parts,
-                            Map<@NotNull Direction, UnbakedModel> restrictors) {
+                            Map<@NotNull Direction, UnbakedModel> restrictors,
+                            @Nullable Identifier parent) {
         this.parts = parts;
         this.restrictors = restrictors;
+        this.parent = parent;
+    }
+
+    @Override
+    @Nullable
+    public Identifier parent() {
+        return this.parent;
     }
 
     @Override
@@ -72,6 +82,9 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
     @Override
     public void resolveDependencies(ResolvableModel.Resolver resolver) {
         resolver.markDependency(Identifier.withDefaultNamespace("missing"));
+        if (this.parent != null) {
+            resolver.markDependency(this.parent);
+        }
         this.parts.values().forEach(model -> resolveDependency(model, resolver));
         this.restrictors.values().forEach(model -> resolveDependency(model, resolver));
     }

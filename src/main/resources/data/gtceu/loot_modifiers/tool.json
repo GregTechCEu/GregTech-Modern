@@ -1,3 +1,4 @@
 {
-  "type": "gtceu:tool"
+  "type": "gtceu:tool",
+  "conditions": []
 }

@@ -3,7 +3,7 @@
 // Can be locally toggled via spotless:off/spotless:on comments
 spotless {
     encoding 'UTF-8'
-    ratchetFrom 'origin/1.21'
+    ratchetFrom 'upstream/gregtech-26-1-port'
 
     format 'misc', {
         target '.gitignore'

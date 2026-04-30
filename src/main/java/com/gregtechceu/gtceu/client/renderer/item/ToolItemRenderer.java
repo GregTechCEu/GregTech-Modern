@@ -16,8 +16,10 @@ public class ToolItemRenderer {
 
     public static void reinitModels() {
         for (ToolItemRenderer model : MODELS) {
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.item),
-                    new DelegatedModel(model.toolType.modelLocation));
+            // Tool models have up to layer2 (handle, head, overlay) — emit 3 gtceu:item_color
+            // tints so IGTTool.tintColor is invoked per layer when the tool is rendered.
+            GTDynamicResourcePack.addTintedItemModel(BuiltInRegistries.ITEM.getKey(model.item),
+                    new DelegatedModel(model.toolType.modelLocation).get(), 3);
         }
     }
 

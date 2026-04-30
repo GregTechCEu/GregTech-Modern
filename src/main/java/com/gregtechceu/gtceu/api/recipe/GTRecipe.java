@@ -274,16 +274,17 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.
-    // If this doesn't work, fix.
+    // The id is null-safe: codec deserialization may leave it null until RecipeManagerLateMixin
+    // populates it post-load.
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof GTRecipe recipe)) return false;
-        return this.id.equals(recipe.id);
+        return Objects.equals(this.id, recipe.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 
     @Override

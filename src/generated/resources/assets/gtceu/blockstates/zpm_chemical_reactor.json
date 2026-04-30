@@ -1,8 +1,23 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/zpm_chemical_reactor",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/zpm_chemical_reactor",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/zpm_chemical_reactor"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/zpm_chemical_reactor",
+            "y": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/zpm_chemical_reactor",
+            "y": 270
+        }
     }
-  }
 }

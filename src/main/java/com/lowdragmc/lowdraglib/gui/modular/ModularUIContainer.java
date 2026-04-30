@@ -5,7 +5,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public class ModularUIContainer extends AbstractContainerMenu implements WidgetU
         return ItemStack.EMPTY;
     }
 
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         // Old LDLib exposed the pre-1.21 click signature. NeoForge now routes
         // through ContainerInput, so this shim keeps old callers source-compatible.
     }

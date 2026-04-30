@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/assembly_line_unit"
+        "model": "gtceu:item/assembly_line_unit"
     }
 }

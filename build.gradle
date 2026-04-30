@@ -25,8 +25,7 @@ java {
 
 kotlin {
     compilerOptions {
-        // Kotlin 2.0 does not expose a JVM_25 bytecode target yet.
-        jvmTarget = JvmTarget.JVM_22
+        jvmTarget = JvmTarget.JVM_25
     }
 }
 
@@ -132,7 +131,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 lombok {
-    version = "1.18.44"
+    version = "1.18.46"
 }
 
 jacoco {

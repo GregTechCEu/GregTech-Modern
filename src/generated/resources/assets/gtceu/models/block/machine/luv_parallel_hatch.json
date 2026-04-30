@@ -12,16 +12,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive"
                 }
             }
         },
@@ -29,16 +21,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_paused",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_paused_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_paused",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_paused_emissive",
-                    "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_paused",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_paused_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_paused",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_paused_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_paused",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_paused_emissive"
+                    "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front",
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive"
                 }
             }
         },
@@ -46,16 +30,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive"
                 }
             }
         },
@@ -63,16 +39,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive"
                 }
             }
         },
@@ -80,16 +48,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive"
                 }
             }
         },
@@ -97,16 +57,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_paused",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_paused_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_paused",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_paused_emissive",
-                    "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_paused",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_paused_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_paused",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_paused_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_paused",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_paused_emissive"
+                    "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front",
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_emissive"
                 }
             }
         },
@@ -114,16 +66,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive"
                 }
             }
         },
@@ -131,16 +75,8 @@
             "model": {
                 "parent": "gtceu:block/casings/voltage/luv",
                 "textures": {
-                    "overlay_back": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active",
-                    "overlay_back_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_back_active_emissive",
-                    "overlay_bottom": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active",
-                    "overlay_bottom_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_bottom_active_emissive",
                     "overlay_front": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active",
-                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive",
-                    "overlay_side": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active",
-                    "overlay_side_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_side_active_emissive",
-                    "overlay_top": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active",
-                    "overlay_top_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_top_active_emissive"
+                    "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk2/overlay_front_active_emissive"
                 }
             }
         }

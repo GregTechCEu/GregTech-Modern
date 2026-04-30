@@ -28,8 +28,11 @@ public class MaterialBlockRenderer {
 
             GTDynamicResourcePack.addBlockState(
                     BlockModelGenerators.createSimpleBlock(model.block, BlockModelGenerators.plainVariant(modelId)));
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
-                    new DelegatedModel(modelId));
+            // Material block models (block, frame_gt, raw_ore_block, ...) use tintindex 0 (primary)
+            // and tintindex 1 (secondary) on faces. Emit matching gtceu:item_color tints so the
+            // runtime GTItemColors handler is invoked when the block's item form is rendered.
+            GTDynamicResourcePack.addTintedItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
+                    new DelegatedModel(modelId).get(), 2);
         }
     }
 

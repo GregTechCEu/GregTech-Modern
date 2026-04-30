@@ -102,10 +102,54 @@ public record LegacyCustomBlockStateModel(Identifier modelLocation, Variant.Simp
         return root;
     }
 
+    /**
+     * Build a blockstate variants JSON keyed by the machine's facing (and upwards-facing if extended).
+     * Mirrors {@code GTBlockstateProvider.createFacingDispatch} so dynamically-registered machine blocks
+     * get the same per-FACING rotation as datagen produces.
+     */
+    public static JsonObject facingVariantsJson(Identifier modelLocation,
+                                                com.gregtechceu.gtceu.api.data.RotationState rotationState,
+                                                boolean allowExtendedFacing) {
+        if (rotationState == com.gregtechceu.gtceu.api.data.RotationState.NONE) {
+            return singleVariantJson(modelLocation);
+        }
+
+        JsonObject variants = new JsonObject();
+        String facingKey = rotationState.property.getName();
+        for (net.minecraft.core.Direction front : rotationState.property.getPossibleValues()) {
+            if (allowExtendedFacing) {
+                for (net.minecraft.core.Direction up : com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.UPWARDS_FACING
+                        .getPossibleValues()) {
+                    var orient = com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation.get(front, up);
+                    String key = facingKey + "=" + front.getName() + ",upwards_facing=" + up.getName();
+                    variants.add(key, variantJsonWithRotation(modelLocation,
+                            orient.getAngleX(), orient.getAngleY(), orient.getAngleZ()));
+                }
+            } else {
+                var orient = com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation.get(front,
+                        net.minecraft.core.Direction.NORTH);
+                String key = facingKey + "=" + front.getName();
+                variants.add(key, variantJsonWithRotation(modelLocation,
+                        orient.getAngleX(), orient.getAngleY(), orient.getAngleZ()));
+            }
+        }
+        JsonObject root = new JsonObject();
+        root.add("variants", variants);
+        return root;
+    }
+
     private static JsonObject variantJson(Identifier modelLocation) {
         JsonObject variant = new JsonObject();
         variant.addProperty("type", ID.toString());
         variant.addProperty("model", modelLocation.toString());
+        return variant;
+    }
+
+    private static JsonObject variantJsonWithRotation(Identifier modelLocation, int x, int y, int z) {
+        JsonObject variant = variantJson(modelLocation);
+        if (x != 0) variant.addProperty("x", x);
+        if (y != 0) variant.addProperty("y", y);
+        if (z != 0) variant.addProperty("z", z);
         return variant;
     }
 

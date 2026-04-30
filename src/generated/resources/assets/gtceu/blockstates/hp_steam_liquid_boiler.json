@@ -1,8 +1,34 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/hp_steam_liquid_boiler",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=down": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler",
+            "x": 90
+        },
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler",
+            "y": 180
+        },
+        "facing=up": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler",
+            "x": 270,
+            "z": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/hp_steam_liquid_boiler",
+            "y": 270
+        }
     }
-  }
 }

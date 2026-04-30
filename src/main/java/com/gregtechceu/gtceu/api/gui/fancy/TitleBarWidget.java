@@ -47,6 +47,7 @@ public class TitleBarWidget extends WidgetGroup {
     private final ImageWidget tabIcon;
     private final ImageWidget tabTitle;
     private TextTexture titleText;
+    private IFancyUIProvider currentPage;
 
     public TitleBarWidget(int parentWidth, Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
         super(HORIZONTAL_MARGIN, -HEIGHT, parentWidth, HEIGHT);
@@ -76,8 +77,14 @@ public class TitleBarWidget extends WidgetGroup {
     public void updateState(IFancyUIProvider currentPage, boolean showBackButton, boolean showMenuButton) {
         this.showBackButton = showBackButton;
         this.showMenuButton = showMenuButton;
+        this.currentPage = currentPage;
 
-        titleText = new TextTexture(ChatFormatting.BLACK + currentPage.getTitle().copy().getString())
+        // Use a supplier so translation is resolved at render time, after the language
+        // manager has finished its initial load.
+        titleText = new TextTexture(() -> {
+            IFancyUIProvider page = this.currentPage;
+            return page == null ? "" : ChatFormatting.BLACK + page.getTitle().copy().getString();
+        })
                 .setDropShadow(false)
                 .setType(TextTexture.TextType.ROLL);
         titleText.setRollSpeed(ROLL_SPEED);

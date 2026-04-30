@@ -116,7 +116,9 @@ public class Widget {
     }
 
     public Widget setBackground(IGuiTexture... textures) {
-        backgroundTexture = textures.length == 0 ? IGuiTexture.EMPTY : new GuiTextureGroup(textures);
+        // Legacy callers pass `(IGuiTexture) null` to mean "no background." LDLib2's renderer
+        // crashes on null elements, so collapse null/empty to EMPTY before constructing the group.
+        backgroundTexture = nonNullTextureGroup(textures);
         element.style(style -> style.backgroundTexture(backgroundTexture));
         return this;
     }
@@ -126,8 +128,18 @@ public class Widget {
     }
 
     public Widget setHoverTexture(IGuiTexture... textures) {
-        hoverTexture = textures.length == 0 ? IGuiTexture.EMPTY : new GuiTextureGroup(textures);
+        hoverTexture = nonNullTextureGroup(textures);
         return this;
+    }
+
+    private static IGuiTexture nonNullTextureGroup(IGuiTexture... textures) {
+        if (textures == null || textures.length == 0) return IGuiTexture.EMPTY;
+        IGuiTexture[] filtered = java.util.Arrays.stream(textures)
+                .filter(java.util.Objects::nonNull)
+                .toArray(IGuiTexture[]::new);
+        if (filtered.length == 0) return IGuiTexture.EMPTY;
+        if (filtered.length == 1) return filtered[0];
+        return new GuiTextureGroup(filtered);
     }
 
     public <T> Widget setDraggingProvider(Supplier<T> draggingProvider,

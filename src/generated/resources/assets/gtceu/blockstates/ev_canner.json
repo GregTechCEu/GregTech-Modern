@@ -1,8 +1,23 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/ev_canner",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_canner",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_canner"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_canner",
+            "y": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_canner",
+            "y": 270
+        }
     }
-  }
 }

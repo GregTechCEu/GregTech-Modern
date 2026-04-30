@@ -359,8 +359,8 @@ public class PipeModel {
                 (x2 == y2 && x2 == z2 && x2 >= 16.0f);
 
         ModelBuilder<T>.ElementBuilder element = model.element()
-                .from(x1 - offset, y1 - offset, z1 - offset)
-                .to(x2 + offset, y2 + offset, z2 + offset);
+                .from(Math.max(0.0f, x1 - offset), Math.max(0.0f, y1 - offset), Math.max(0.0f, z1 - offset))
+                .to(Math.min(16.0f, x2 + offset), Math.min(16.0f, y2 + offset), Math.min(16.0f, z2 + offset));
 
         for (Direction dir : GTUtil.DIRECTIONS) {
             ModelBuilder<T>.ElementBuilder.FaceBuilder face = null;

@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -12,7 +11,8 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
-@JeiPlugin
+// TODO: migrate to JEI 26.x API and re-enable @JeiPlugin (paired with GTJEIPlugin).
+// @JeiPlugin
 public class JEIPlugin implements IModPlugin {
 
     public static IJeiRuntime jeiRuntime;

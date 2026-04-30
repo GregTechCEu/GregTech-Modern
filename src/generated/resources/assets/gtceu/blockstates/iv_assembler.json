@@ -1,8 +1,23 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/iv_assembler",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/iv_assembler",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/iv_assembler"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/iv_assembler",
+            "y": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/iv_assembler",
+            "y": 270
+        }
     }
-  }
 }

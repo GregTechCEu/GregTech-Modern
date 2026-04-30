@@ -9,6 +9,13 @@ java {
     withSourcesJar()
 }
 
+// The minecraftCompat source set provides compile-only shims for vanilla classes
+// that have been renamed/moved in 26.1; it must not ship as a published artifact.
+afterEvaluate {
+    tasks.matching { it.name in ['minecraftCompatJar', 'minecraftCompatSourcesJar'] }
+            .configureEach { enabled = false }
+}
+
 // Use delombok'd files for sources
 sourcesJar {
     exclude {

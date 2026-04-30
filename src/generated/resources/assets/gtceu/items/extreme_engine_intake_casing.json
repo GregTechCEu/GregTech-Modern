@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/extreme_engine_intake_casing"
+        "model": "gtceu:item/extreme_engine_intake_casing"
     }
 }

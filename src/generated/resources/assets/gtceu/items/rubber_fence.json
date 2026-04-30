@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/rubber_fence"
+        "model": "gtceu:item/rubber_fence"
     }
 }

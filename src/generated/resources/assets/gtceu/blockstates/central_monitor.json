@@ -1,8 +1,138 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/central_monitor",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=down,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 90,
+            "z": 90
+        },
+        "facing=down,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 90
+        },
+        "facing=down,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 90,
+            "z": 180
+        },
+        "facing=down,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 90,
+            "z": 270
+        },
+        "facing=east,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 90,
+            "z": 270
+        },
+        "facing=east,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 90
+        },
+        "facing=east,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 90,
+            "z": 180
+        },
+        "facing=east,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 90,
+            "z": 90
+        },
+        "facing=north,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "z": 270
+        },
+        "facing=north,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor"
+        },
+        "facing=north,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "z": 180
+        },
+        "facing=north,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "z": 90
+        },
+        "facing=south,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 180,
+            "z": 270
+        },
+        "facing=south,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 180
+        },
+        "facing=south,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 180,
+            "z": 180
+        },
+        "facing=south,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 180,
+            "z": 90
+        },
+        "facing=up,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 270,
+            "z": 90
+        },
+        "facing=up,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 270,
+            "z": 180
+        },
+        "facing=up,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 270
+        },
+        "facing=up,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "x": 270,
+            "z": 270
+        },
+        "facing=west,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 270,
+            "z": 270
+        },
+        "facing=west,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 270
+        },
+        "facing=west,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 270,
+            "z": 180
+        },
+        "facing=west,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/central_monitor",
+            "y": 270,
+            "z": 90
+        }
     }
-  }
 }

@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/electrolytic_cell"
+        "model": "gtceu:item/electrolytic_cell"
     }
 }

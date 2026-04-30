@@ -2,6 +2,19 @@ package net.minecraft.resources;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * Compile-time shim for {@code net.minecraft.resources.ResourceLocation}, which was renamed to
+ * {@link Identifier} in NeoForge 26.1.x. The shim is required because third-party mod APIs
+ * (EMI 1.1.22, KubeJS, Jade) still expose this exact FQN in their public types — code compiled
+ * against those APIs needs the symbol to resolve at this name.
+ *
+ * <p><b>Do not import this class in core gtceu code.</b> Use {@link Identifier} directly. Boundary
+ * call sites that need to convert between the two should use {@link #unwrap()} /
+ * {@link #fromIdentifier(Identifier)}.
+ *
+ * <p>The {@code minecraftCompat} source set holding this shim is on main's compile classpath only;
+ * it is excluded from the published jar so it cannot conflict with vanilla classes at runtime.
+ */
 public final class ResourceLocation implements Comparable<ResourceLocation> {
 
     private final Identifier delegate;

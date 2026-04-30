@@ -1,8 +1,92 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/ev_large_miner",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 90,
+            "z": 270
+        },
+        "facing=east,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 90
+        },
+        "facing=east,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 90,
+            "z": 180
+        },
+        "facing=east,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 90,
+            "z": 90
+        },
+        "facing=north,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "z": 270
+        },
+        "facing=north,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner"
+        },
+        "facing=north,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "z": 180
+        },
+        "facing=north,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "z": 90
+        },
+        "facing=south,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 180,
+            "z": 270
+        },
+        "facing=south,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 180
+        },
+        "facing=south,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 180,
+            "z": 180
+        },
+        "facing=south,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 180,
+            "z": 90
+        },
+        "facing=west,upwards_facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 270,
+            "z": 270
+        },
+        "facing=west,upwards_facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 270
+        },
+        "facing=west,upwards_facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 270,
+            "z": 180
+        },
+        "facing=west,upwards_facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/ev_large_miner",
+            "y": 270,
+            "z": 90
+        }
     }
-  }
 }

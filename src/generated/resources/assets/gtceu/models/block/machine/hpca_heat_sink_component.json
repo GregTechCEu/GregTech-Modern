@@ -8,7 +8,7 @@
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
                     "overlay": "gtceu:block/overlay/machine/hpca/heat_sink",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/heat_sink_emissive"
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },
@@ -17,7 +17,7 @@
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
                     "overlay": "gtceu:block/overlay/machine/hpca/heat_sink",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/heat_sink_emissive"
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },
@@ -26,7 +26,7 @@
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
                     "overlay": "gtceu:block/overlay/machine/hpca/damaged",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_emissive"
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },
@@ -35,7 +35,7 @@
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
                     "overlay": "gtceu:block/overlay/machine/hpca/damaged",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_emissive"
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },
@@ -43,8 +43,8 @@
             "model": {
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
-                    "overlay": "gtceu:block/overlay/machine/hpca/heat_sink_active",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/heat_sink_active_emissive"
+                    "overlay": "gtceu:block/overlay/machine/hpca/heat_sink",
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },
@@ -52,8 +52,8 @@
             "model": {
                 "parent": "gtceu:block/hpca_heat_sink_component_base",
                 "textures": {
-                    "overlay": "gtceu:block/overlay/machine/hpca/heat_sink_active",
-                    "overlay_emissive": "gtceu:block/overlay/machine/hpca/heat_sink_active_emissive"
+                    "overlay": "gtceu:block/overlay/machine/hpca/heat_sink",
+                    "overlay_emissive": "gtceu:block/void"
                 }
             }
         },

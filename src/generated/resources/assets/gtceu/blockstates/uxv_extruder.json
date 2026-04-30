@@ -1,8 +1,23 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/uxv_extruder",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "facing=east": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uxv_extruder",
+            "y": 90
+        },
+        "facing=north": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uxv_extruder"
+        },
+        "facing=south": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uxv_extruder",
+            "y": 180
+        },
+        "facing=west": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/uxv_extruder",
+            "y": 270
+        }
     }
-  }
 }

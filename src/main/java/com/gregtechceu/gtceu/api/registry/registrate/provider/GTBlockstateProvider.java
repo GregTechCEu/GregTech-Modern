@@ -32,6 +32,22 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * GregTech datagen emits blockstates through two paths:
+ * <ul>
+ * <li><b>Static datagen (this provider).</b> Plain vanilla {@code "variants": {"": {"model": ...}}}
+ * JSON for blocks whose state is fully described by a vanilla model — written to
+ * {@code src/generated/resources/} via the regular {@code runData} task.</li>
+ * <li><b>Runtime dynamic pack.</b> Blocks whose state needs gtceu's custom rotation/active-state
+ * behavior are emitted at client load by {@code LegacyCustomBlockStateModel}, written into
+ * {@code GTDynamicResourcePack}, with a {@code "type": "gtceu:legacy_model"} tag in the
+ * variant JSON. These never appear in {@code src/generated/resources/}.</li>
+ * </ul>
+ * The mixed schema is intentional. If a {@code "type": "gtceu:legacy_model"} blockstate ever shows
+ * up in {@code src/generated/}, it indicates that a runtime emission accidentally ran during
+ * datagen — investigate and move it back to {@link com.gregtechceu.gtceu.client.ClientProxy}'s
+ * dynamic-pack registration.
+ */
 public class GTBlockstateProvider extends RegistrateBlockModelGenerator {
 
     public static final String Z_ROT_PROPERTY_NAME = "gtceu:z";

@@ -16,12 +16,15 @@ import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
 
 import java.util.List;
 import java.util.Objects;
 
-@WailaPlugin
+// TODO: migrate this integration to the Jade 26.x API (Element/JadeUI/ProgressView)
+// and re-enable the @WailaPlugin annotation. The 15.10.0+neoforge dep on the compile
+// classpath keeps the IElement/IElementHelper imports resolving so the rest of the
+// project still builds.
+// @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {
 
     @Override

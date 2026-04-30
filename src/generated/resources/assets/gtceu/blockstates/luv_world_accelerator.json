@@ -1,8 +1,8 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/luv_world_accelerator",
-      "type": "gtceu:legacy_model"
+    "variants": {
+        "": {
+            "type": "gtceu:legacy_model",
+            "model": "gtceu:block/machine/luv_world_accelerator"
+        }
     }
-  }
 }

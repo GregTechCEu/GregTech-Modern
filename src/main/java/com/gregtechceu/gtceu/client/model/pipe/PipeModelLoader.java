@@ -27,6 +27,12 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
     @Override
     public @Nullable UnbakedPipeModel read(JsonObject json,
                                            JsonDeserializationContext context) throws JsonParseException {
+        // capture the JSON's parent so display transforms (block/block GUI rotation, etc.) propagate
+        // to legacy item bake — without this, ResolvedModel.findTopTransforms() walks off our
+        // UnbakedPipeModel.parent()=null and returns NO_TRANSFORM, rendering the item head-on
+        Identifier parent = json.has("parent") ?
+                Identifier.parse(GsonHelper.getAsString(json, "parent")) : null;
+
         // load the inner models
         final Map<Direction, UnbakedModel> parts = new HashMap<>();
         if (json.has("parts")) {
@@ -56,6 +62,6 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
             }
         }
 
-        return new UnbakedPipeModel(parts, restrictors);
+        return new UnbakedPipeModel(parts, restrictors, parent);
     }
 }

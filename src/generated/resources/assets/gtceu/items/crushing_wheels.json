@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/crushing_wheels"
+        "model": "gtceu:item/crushing_wheels"
     }
 }

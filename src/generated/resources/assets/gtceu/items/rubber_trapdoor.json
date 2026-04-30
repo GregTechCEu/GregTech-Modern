@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "gtceu:block/rubber_trapdoor"
+        "model": "gtceu:item/rubber_trapdoor"
     }
 }

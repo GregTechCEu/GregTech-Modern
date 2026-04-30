@@ -63,6 +63,12 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         MachineDefinition definition = GTRegistries.MACHINES.get(machineId).map(holder -> holder.value()).orElse(null);
         if (definition == null) return null;
 
+        // capture the JSON's parent so display transforms (block/block GUI rotation, etc.) propagate
+        // to legacy item bake — without this, ResolvedModel.findTopTransforms() walks off our
+        // UnbakedMachineModel.parent()=null and returns NO_TRANSFORM, rendering the item head-on
+        Identifier parent = json.has("parent") ?
+                Identifier.parse(GsonHelper.getAsString(json, "parent")) : null;
+
         // load the inner models
         final Map<String, UnbakedModel> variants = new HashMap<>();
         if (json.has("variants")) {
@@ -156,7 +162,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         }
 
         return new UnbakedMachineModel(definition, statesToModels, multiPart, dynamicRenders,
-                replaceableTextures, textureOverrides);
+                replaceableTextures, textureOverrides, parent);
     }
 
     protected static void resolveStateModels(UnbakedMachineModel model,

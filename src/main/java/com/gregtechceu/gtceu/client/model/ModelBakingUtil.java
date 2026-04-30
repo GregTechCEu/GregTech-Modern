@@ -37,7 +37,7 @@ public final class ModelBakingUtil {
                                   Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                                   ItemOverrides overrides) {
         if (unbakedModel instanceof MultiVariantModel multiVariantModel) {
-            return bakeMultiVariant(multiVariantModel, context, baker, spriteGetter, overrides);
+            return bakeMultiVariant(multiVariantModel, context, baker, spriteGetter, modelState, overrides);
         }
         if (unbakedModel instanceof IUnbakedGeometry geometry) {
             return geometry.bake(context, baker, spriteGetter, modelState, overrides);
@@ -46,16 +46,37 @@ public final class ModelBakingUtil {
         return new PartBakedModel(SimpleModelWrapper.bake(baker, resolvedModel, modelState));
     }
 
+    /**
+     * @deprecated prefer the overload that takes an outer {@code ModelState}; without it, the FACING
+     *             rotation supplied by the blockstate variant is dropped and the model bakes unrotated.
+     */
+    @Deprecated
     public static BakedModel bakeMultiVariant(MultiVariantModel multiVariantModel, IGeometryBakingContext context,
                                               ModelBaker baker,
                                               Function<Material, TextureAtlasSprite> spriteGetter,
                                               ItemOverrides overrides) {
+        return bakeMultiVariant(multiVariantModel, context, baker, spriteGetter,
+                IdentityModelState.INSTANCE, overrides);
+    }
+
+    public static BakedModel bakeMultiVariant(MultiVariantModel multiVariantModel, IGeometryBakingContext context,
+                                              ModelBaker baker,
+                                              Function<Material, TextureAtlasSprite> spriteGetter,
+                                              ModelState outerState,
+                                              ItemOverrides overrides) {
         List<WeightedBakedModel.Entry> entries = new ArrayList<>();
         for (VariantState variant : multiVariantModel.variants()) {
+            // Compose the blockstate variant's rotation (e.g. y=90 from facing=east) with the
+            // per-status variant's own rotation (typically identity for machine models). Without
+            // this, the outer FACING rotation is lost and the model bakes unrotated — base hull
+            // uses the same #side texture on all 4 horizontal faces so it looks correct, but the
+            // overlay's per-direction textures (overlay_front/back/top/bottom) end up on the wrong
+            // physical faces.
+            ModelState composed = ComposedModelState.compose(outerState, variant);
             BakedModel bakedModel = variant.getModel()
-                    .map(modelId -> new PartBakedModel(SimpleModelWrapper.bake(baker, modelId, variant)),
+                    .map(modelId -> new PartBakedModel(SimpleModelWrapper.bake(baker, modelId, composed)),
                             inlineModel -> bake(variant.getResolvedModel() == null ? inlineModel :
-                                    variant.getResolvedModel(), context, baker, spriteGetter, variant, overrides));
+                                    variant.getResolvedModel(), context, baker, spriteGetter, composed, overrides));
             entries.add(new WeightedBakedModel.Entry(bakedModel, variant.getWeight()));
         }
         if (entries.isEmpty()) {
@@ -65,6 +86,42 @@ public final class ModelBakingUtil {
             return entries.getFirst().model();
         }
         return new WeightedBakedModel(entries);
+    }
+
+    private enum IdentityModelState implements ModelState {
+
+        INSTANCE;
+
+        @Override
+        public com.mojang.math.Transformation transformation() {
+            return com.mojang.math.Transformation.IDENTITY;
+        }
+
+        @Override
+        public boolean mayApplyArbitraryRotation() {
+            return false;
+        }
+    }
+
+    private record ComposedModelState(com.mojang.math.Transformation transformation, boolean uvLocked,
+                                      boolean mayApplyArbitraryRotation)
+            implements ModelState {
+
+        static ModelState compose(ModelState outer, VariantState inner) {
+            com.mojang.math.Transformation o = outer.transformation();
+            com.mojang.math.Transformation i = inner.transformation();
+            if (i.isIdentity()) return outer;
+            if (o.isIdentity()) return inner;
+            // outer (blockstate variant rotation) is applied AFTER the inner (per-status) rotation;
+            // matrix composition reads right-to-left so put outer on the left.
+            return new ComposedModelState(o.compose(i), inner.isUvLocked(),
+                    outer.mayApplyArbitraryRotation() || inner.mayApplyArbitraryRotation());
+        }
+
+        @Override
+        public boolean mayApplyArbitraryRotation() {
+            return mayApplyArbitraryRotation;
+        }
     }
 
     private record PartBakedModel(BlockStateModelPart part) implements BakedModel {

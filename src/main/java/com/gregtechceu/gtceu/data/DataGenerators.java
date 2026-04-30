@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.data.model.GTEquipmentAssetProvider;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
 
@@ -38,5 +39,6 @@ public class DataGenerators {
                 .add(GTRegistries.ORE_VEIN_REGISTRY, GTOreVeins::bootstrap), set);
         event.addProvider(new BiomeTagsLoader(packOutput, event.getLookupProvider()));
         event.addProvider(new DamageTypeTagsLoader(packOutput, event.getLookupProvider()));
+        event.addProvider(new GTEquipmentAssetProvider(packOutput));
     }
 }

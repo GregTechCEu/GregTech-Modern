@@ -15,7 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -52,7 +52,8 @@ final class MachineControllerCoverUI {
         group.addWidget(new PhantomSlotWidget(cover.sideCoverSlot, 0, 147, 46) {
 
             @Override
-            public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
+            public ItemStack slotClickPhantom(Slot slot, int mouseButton, ContainerInput clickTypeIn,
+                                              ItemStack stackHeld) {
                 return cover.sideCoverSlot.getStackInSlot(0);
             }
         });

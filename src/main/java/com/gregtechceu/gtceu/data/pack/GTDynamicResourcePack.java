@@ -25,6 +25,7 @@ import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
@@ -120,6 +121,19 @@ public class GTDynamicResourcePack implements PackResources {
         addItemDefinition(itemId, loc);
     }
 
+    /// Like {@link #addItemModel(Identifier, JsonElement)} but emits an item definition
+    /// whose model carries a {@code tints} array of {@code gtceu:item_color} entries
+    /// (indices 0..tintCount-1). Required for items whose model layers / face tintindexes
+    /// must pick up the {@link com.gregtechceu.gtceu.client.color.GTItemColors} handler.
+    public static void addTintedItemModel(Identifier loc, JsonElement obj, int tintCount) {
+        Identifier itemId = loc.getPath().startsWith("item/") ?
+                loc.withPath(path -> path.substring("item/".length())) :
+                loc;
+        Identifier modelId = loc.getPath().startsWith("item/") ? loc : loc.withPrefix("item/");
+        addModel(modelId, obj);
+        addTintedItemDefinition(itemId, modelId, tintCount);
+    }
+
     public static void addItemModel(ItemModelBuilder builder) {
         addItemModel(builder.getLocation(), builder.toJson());
     }
@@ -145,6 +159,30 @@ public class GTDynamicResourcePack implements PackResources {
         JsonObject model = new JsonObject();
         model.addProperty("type", "minecraft:model");
         model.addProperty("model", modelId.toString());
+
+        JsonObject definition = new JsonObject();
+        definition.add("model", model);
+
+        addResource(ITEM_DEFINITION_ID_CONVERTER.idToFile(itemId), definition);
+    }
+
+    /// Emits an item definition whose model has a {@code tints} array of
+    /// {@code gtceu:item_color} entries at indices {@code 0..tintCount-1}.
+    /// Used for material items / material block items whose model layers
+    /// or face tintindexes must pick up GT's runtime color handler.
+    public static void addTintedItemDefinition(Identifier itemId, Identifier modelId, int tintCount) {
+        JsonObject model = new JsonObject();
+        model.addProperty("type", "minecraft:model");
+        model.addProperty("model", modelId.toString());
+
+        JsonArray tints = new JsonArray(tintCount);
+        for (int i = 0; i < tintCount; i++) {
+            JsonObject tint = new JsonObject();
+            tint.addProperty("type", GTCEu.id("item_color").toString());
+            tint.addProperty("index", i);
+            tints.add(tint);
+        }
+        model.add("tints", tints);
 
         JsonObject definition = new JsonObject();
         definition.add("model", model);

@@ -76,8 +76,11 @@ public class OreBlockRenderer {
 
             GTDynamicResourcePack.addBlockState(
                     BlockModelGenerators.createSimpleBlock(model.block, BlockModelGenerators.plainVariant(modelId)));
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
-                    new DelegatedModel(modelId));
+            // Ore block models use tintindex 0 (primary) and tintindex 1 (secondary) on faces.
+            // The item definition must carry matching gtceu:item_color tints so the runtime
+            // GTItemColors handler is invoked when the block's item form is rendered.
+            GTDynamicResourcePack.addTintedItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
+                    new DelegatedModel(modelId).get(), 2);
         }
 
         TEMPLATE_MODEL_CACHE.getCache().clear();
@@ -116,7 +119,13 @@ public class OreBlockRenderer {
         copyTextures(textures, baseModel);
         copyTextures(textures, oreModel);
         copyElements(elements, baseModel);
-        copyElements(elements, oreModel);
+        // Ore template elements (#layer0, #layer1) are full coplanar cubes that would
+        // z-fight with the base stone cube — and the ore textures are mostly transparent,
+        // so the base stone bleeds through. Push each overlay slightly outward by a
+        // progressive offset so they stack outside the stone and outside each other.
+        // We also pin explicit UVs to [0, 0, 16, 16]: auto-UV would otherwise compute
+        // from the offset coordinates and exceed [0, 16], failing the bake atlas check.
+        copyOreOverlayElements(elements, oreModel);
 
         model.add("textures", textures);
         model.add("elements", elements);
@@ -194,6 +203,63 @@ public class OreBlockRenderer {
         }
         for (JsonElement element : model.getAsJsonArray("elements")) {
             target.add(element.deepCopy());
+        }
+    }
+
+    private static void copyOreOverlayElements(JsonArray target, JsonObject model) {
+        if (!model.has("elements")) {
+            return;
+        }
+        JsonArray src = model.getAsJsonArray("elements");
+        for (int i = 0; i < src.size(); i++) {
+            JsonObject element = src.get(i).getAsJsonObject().deepCopy();
+            // Progressive outward offset: first overlay sits 0.005 units outside the
+            // base stone, second sits another 0.005 outside that. Far enough to
+            // resolve depth precision against the base cube.
+            float offset = 0.005f * (i + 1);
+            offsetElementBounds(element, offset);
+            // Pin explicit UVs so auto-UV doesn't compute from the offset coords and
+            // exceed [0, 16], which would fail the bake atlas check.
+            pinFaceUVs(element);
+            // Strip cullface — the bounds now lie outside [0, 16], so the neighbor-
+            // facing cull check against the inner face position would still cull the
+            // overlay even though it actually pokes out past the block boundary.
+            stripCullface(element);
+            target.add(element);
+        }
+    }
+
+    private static void offsetElementBounds(JsonObject element, float offset) {
+        JsonArray from = element.getAsJsonArray("from");
+        JsonArray to = element.getAsJsonArray("to");
+        for (int i = 0; i < 3; i++) {
+            from.set(i, new com.google.gson.JsonPrimitive(from.get(i).getAsFloat() - offset));
+            to.set(i, new com.google.gson.JsonPrimitive(to.get(i).getAsFloat() + offset));
+        }
+    }
+
+    private static void pinFaceUVs(JsonObject element) {
+        if (!element.has("faces")) return;
+        JsonObject faces = element.getAsJsonObject("faces");
+        for (var entry : faces.entrySet()) {
+            JsonObject face = entry.getValue().getAsJsonObject();
+            if (!face.has("uv")) {
+                JsonArray uv = new JsonArray(4);
+                uv.add(0);
+                uv.add(0);
+                uv.add(16);
+                uv.add(16);
+                face.add("uv", uv);
+            }
+        }
+    }
+
+    private static void stripCullface(JsonObject element) {
+        if (!element.has("faces")) return;
+        JsonObject faces = element.getAsJsonObject("faces");
+        for (var entry : faces.entrySet()) {
+            JsonObject face = entry.getValue().getAsJsonObject();
+            face.remove("cullface");
         }
     }
 

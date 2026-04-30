@@ -277,7 +277,11 @@ public class ClientProxy {
         for (MachineDefinition definition : GTRegistries.MACHINES) {
             Identifier blockId = BuiltInRegistries.BLOCK.getKey(definition.getBlock());
             Identifier modelId = definition.getId().withPrefix("block/machine/");
-            GTDynamicResourcePack.addBlockState(blockId, LegacyCustomBlockStateModel.singleVariantJson(modelId));
+            // Emit per-FACING variants so the placed block rotates with the machine's
+            // front-facing direction. Mirrors what GTBlockstateProvider.createFacingDispatch
+            // produces at datagen — dynamic pack overrides the static gen, so we must match it.
+            GTDynamicResourcePack.addBlockState(blockId, LegacyCustomBlockStateModel.facingVariantsJson(modelId,
+                    definition.getRotationState(), definition.isAllowExtendedFacing()));
             GTDynamicResourcePack.addItemDefinition(blockId, LegacyCustomItemModel.itemDefinitionJson(modelId));
         }
 
@@ -310,8 +314,10 @@ public class ClientProxy {
 
     private static void registerLegacyPipeBlockState(PipeBlock<?, ?, ?> block) {
         Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier modelId = blockId.withPrefix("block/");
         GTDynamicResourcePack.addBlockState(blockId,
-                LegacyCustomBlockStateModel.singleVariantJson(blockId.withPrefix("block/")));
+                LegacyCustomBlockStateModel.singleVariantJson(modelId));
+        GTDynamicResourcePack.addItemDefinition(blockId, LegacyCustomItemModel.itemDefinitionJson(modelId));
     }
 
     private static void registerLegacyActivePipeBlockState(PipeBlock<?, ?, ?> block) {
@@ -319,5 +325,6 @@ public class ClientProxy {
         Identifier inactiveModel = blockId.withPrefix("block/");
         GTDynamicResourcePack.addBlockState(blockId,
                 LegacyCustomBlockStateModel.activeVariantJson(inactiveModel, inactiveModel.withSuffix("_active")));
+        GTDynamicResourcePack.addItemDefinition(blockId, LegacyCustomItemModel.itemDefinitionJson(inactiveModel));
     }
 }

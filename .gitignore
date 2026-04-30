@@ -53,6 +53,9 @@ replay_pid*.log
 # Local exchange files
 *.patch
 
+# Vendored NeoForge documentation tree (kept locally as reference, excluded from PRs)
+/docs/neoforged/
+
 # OS files
 .DS_Store
 Thumbs.db
