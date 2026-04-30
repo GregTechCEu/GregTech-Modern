@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
-import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IGTQuadLighter;
 
 import net.minecraft.client.renderer.RenderType;
@@ -35,9 +33,6 @@ public class ForgeModelBlockRendererMixin {
                                                        ModelData modelData, RenderType renderType,
                                                        CallbackInfoReturnable<Boolean> cir,
                                                        @Local(name = "flatLighter") QuadLighter flatLighter) {
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
-        if (!GTShaders.canUseBloomShader()) return;
-
         if (flatLighter != null) {
             // this is always in the flatLighter init block
             ((IGTQuadLighter) flatLighter).gtceu$setRenderType(renderType);

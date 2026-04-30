@@ -89,13 +89,8 @@ public class BloomSafeMode {
                 levelRenderer.getTicks(), camera, frustum);
     }
 
-    public static void copyToBloomBuffer(VertexConsumer originalVertexConsumer, BakedQuad quad, int[] combinedLights,
-                                         Consumer<VertexConsumer> draw) {
-        draw.accept(originalVertexConsumer);
-
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.canUseBloomShader()) {
-            return;
-        }
+    public static void copyToBloomBuffer(BakedQuad quad, int[] combinedLights, Consumer<VertexConsumer> draw) {
+        if (!GTShaders.canUseBloomShader()) return;
 
         SectionPos sectionOrigin = CURRENT_RENDERING_SECTION.get();
         if (sectionOrigin != null && TextureMetadataHelper.hasBloom(quad, combinedLights)) {
@@ -147,9 +142,7 @@ public class BloomSafeMode {
     }
 
     public static void bakeBloomChunkBuffers(SectionPos sectionPos, Vec3 camPos) {
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.canUseBloomShader()) {
-            return;
-        }
+        if (!GTShaders.canUseBloomShader()) return;
 
         BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
         if (builder == null || !builder.building()) {

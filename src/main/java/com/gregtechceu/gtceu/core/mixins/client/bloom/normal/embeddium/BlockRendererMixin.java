@@ -37,7 +37,6 @@ public class BlockRendererMixin {
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(instance, ctx, originalBuilder, offset, material, quad, vertexColors, lightData);
 
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
         if (!GTShaders.canUseBloomShader()) return;
 
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
@@ -47,6 +46,8 @@ public class BlockRendererMixin {
 
             // call the same method again, this time with the bloom chunk model builder
             original.call(instance, ctx, bloomBuilder, offset, material, quad, vertexColors, lightData);
+        } else {
+            bloomBuilderRef.set(null);
         }
     }
 
@@ -57,9 +58,6 @@ public class BlockRendererMixin {
                                            Operation<Void> original,
                                            @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(originalBuilder, sprite);
-
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
-        if (!GTShaders.canUseBloomShader()) return;
 
         // set by the above inject; value is only non-null when all appropriate conditions/requirements apply.
         // thus no need to check them here.

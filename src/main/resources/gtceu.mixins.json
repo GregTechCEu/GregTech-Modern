@@ -45,7 +45,6 @@
         "client.bloom.safemode.LevelRendererMixin",
         "client.bloom.safemode.ModelBlockRendererMixin",
         "client.bloom.safemode.QuadLighterMixin",
-        "client.bloom.safemode.RebuildTaskMixin",
         "client.bloom.safemode.embeddium.BlockRendererMixin",
         "dev.client.KeyboardHandlerMixin",
         "ftbchunks.FTBChunksClientMixin",

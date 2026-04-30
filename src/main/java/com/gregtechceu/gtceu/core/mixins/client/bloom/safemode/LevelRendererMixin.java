@@ -21,9 +21,6 @@ public class LevelRendererMixin {
                     target = "Lnet/minecraft/world/level/lighting/LevelLightEngine;lightOnInSection(Lnet/minecraft/core/SectionPos;)Z"))
     private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
                                            @Local SectionPos sectionPos) {
-        if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
-        if (!GTShaders.canUseBloomShader()) return;
-
         BloomSafeMode.CURRENT_RENDERING_SECTION.set(sectionPos);
         BloomSafeMode.bakeBloomChunkBuffers(sectionPos, camera.getPosition());
     }

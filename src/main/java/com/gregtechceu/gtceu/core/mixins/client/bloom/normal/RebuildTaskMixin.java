@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-
 import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
@@ -31,11 +30,10 @@ public abstract class RebuildTaskMixin {
     @SuppressWarnings("NameDoesntMatchTargetClass")
     @Inject(method = "compile",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false))
-    private void gtceu$tryAddBlockEntity(float x, float y, float z, ChunkBufferBuilderPack chunkBufferBuilders,
-                                         CallbackInfoReturnable<Object> cir,
-                                         @Local(ordinal = 0) BlockPos sectionOrigin,
-                                         @Local Set<RenderType> usedRenderTypes) {
-        if (ConfigHolder.INSTANCE.client.bloom.safeMode) return;
+    private void gtceu$drawCachedBlockBloom(float x, float y, float z, ChunkBufferBuilderPack chunkBufferBuilders,
+                                            CallbackInfoReturnable<Object> cir,
+                                            @Local(ordinal = 0) BlockPos sectionOrigin,
+                                            @Local Set<RenderType> usedRenderTypes) {
         if (!GTShaders.canUseBloomShader()) return;
 
         long sectionPos = SectionPos.asLong(sectionOrigin);

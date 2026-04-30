@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-
 import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.client.renderer.RenderType;
 
 import com.google.common.collect.ImmutableList;
@@ -19,7 +18,6 @@ public class RenderTypeMixin {
                                     target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;",
                                     remap = false))
     private static ImmutableList<RenderType> gtceu$forceAddBloomToChunkBufferLayers(ImmutableList<RenderType> original) {
-        if (ConfigHolder.getInstance().client.bloom.safeMode) return original;
         if (!GTShaders.canUseBloomShader()) return original;
 
         return ImmutableList.<RenderType>builder()
