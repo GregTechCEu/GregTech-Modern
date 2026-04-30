@@ -105,9 +105,10 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public RecipeSerializer<ShapedRecipe> getSerializer() {
-        return (RecipeSerializer) GTRecipeSerializers.CRAFTING_SHAPED_FLUID_CONTAINER.get();
+        return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) GTRecipeSerializers.CRAFTING_SHAPED_FLUID_CONTAINER
+                .get();
     }
 
     public static class Serializer {

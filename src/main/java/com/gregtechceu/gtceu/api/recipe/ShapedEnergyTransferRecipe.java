@@ -86,9 +86,10 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public RecipeSerializer<ShapedRecipe> getSerializer() {
-        return (RecipeSerializer) GTRecipeSerializers.CRAFTING_SHAPED_ENERGY_TRANSFER.get();
+        return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) GTRecipeSerializers.CRAFTING_SHAPED_ENERGY_TRANSFER
+                .get();
     }
 
     public static class Serializer {

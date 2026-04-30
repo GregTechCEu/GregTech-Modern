@@ -64,9 +64,9 @@ public class StrictShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public @NotNull RecipeSerializer<ShapedRecipe> getSerializer() {
-        return (RecipeSerializer) GTRecipeSerializers.CRAFTING_SHAPED_STRICT.get();
+        return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) GTRecipeSerializers.CRAFTING_SHAPED_STRICT.get();
     }
 
     public static class Serializer {
