@@ -31,7 +31,6 @@ final class TextModuleBehaviourUI {
     static Object create(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
-        // editor.codeEditor.setLanguageDefinition(PlaceholderHandler.LANG_DEFINITION);
         TextFieldWidget scaleInput = new TextFieldWidget(
                 -50, 47,
                 40, 10,

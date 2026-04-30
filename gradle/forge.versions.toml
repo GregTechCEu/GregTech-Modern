@@ -1,4 +1,7 @@
 [versions]
+# `ldlib2` version is consumed via `${ldlib2_version}` in the mods.toml dependency block
+# (see `gradle/scripts/resources.gradle`); the jar itself is wired directly from
+# `libs/ldlib2/` because no Maven coordinate exists for the patched build.
 ldlib2 = "26.1.2-gtceu.1"
 taffy = "1.1.4"
 registrate = "MC26.1-1.3.0+9"
@@ -59,7 +62,6 @@ observable = "5733591"
 
 
 [libraries]
-ldlib2             = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge", version.ref = "ldlib2" }
 taffy              = { module = "dev.vfyjxf:taffy", version.ref = "taffy" }
 registrate          = { module = "com.tterrag.registrate:Registrate-LT", version.ref = "registrate" }
 configuration       = { module = "maven.modrinth:configuration", version.ref = "configuration" }
