@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.QuadLighterMixin}
+ * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.QuadLighterMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.QuadLighterMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.QuadLighterMixin
  */
 @Mixin(value = QuadLighter.class, remap = false)
 public class QuadLighterMixin {

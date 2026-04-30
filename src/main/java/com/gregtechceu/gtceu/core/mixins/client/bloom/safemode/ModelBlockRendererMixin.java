@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.ModelBlockRendererMixin}
+ * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.ModelBlockRendererMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.ModelBlockRendererMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.ModelBlockRendererMixin
  */
 @Mixin(ModelBlockRenderer.class)
 public class ModelBlockRendererMixin {

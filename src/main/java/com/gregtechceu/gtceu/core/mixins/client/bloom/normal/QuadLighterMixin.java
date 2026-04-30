@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom;
+package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.shader.GTShaders;

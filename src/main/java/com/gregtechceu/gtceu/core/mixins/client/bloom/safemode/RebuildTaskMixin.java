@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.RebuildTaskMixin}
+ * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.RebuildTaskMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.RebuildTaskMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.RebuildTaskMixin
  */
 @Mixin(targets = "net.minecraft.client.renderer.chunk.ChunkRenderDispatcher$RenderChunk$RebuildTask")
 public class RebuildTaskMixin {

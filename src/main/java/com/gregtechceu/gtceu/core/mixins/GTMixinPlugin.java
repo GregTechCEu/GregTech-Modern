@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.LoadingModList;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLLoader;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -14,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class GTMixinPlugin implements IMixinConfigPlugin {
+
+    public static final Logger LOGGER = LogManager.getLogger("GregTechCEu");
 
     @Override
     public void onLoad(String mixinPackage) {}
@@ -29,13 +34,20 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     private static final String DEV_PACKAGE = "dev.";
     private static final String DATAGEN_PACKAGE = "datagen.";
 
+    private static final String CLIENT_PACKAGE = "client.";
+    private static final String BLOOM_PACKAGE = "bloom.",
+            BLOOM_NORMAL_PACKAGE = "normal.",
+            BLOOM_SAFEMODE_PACKAGE = "safemode.";
+
     static {
         MOD_COMPAT_MIXINS.put("roughlyenoughitems", "rei.");
         addModCompatMixin("emi");
         addModCompatMixin("jei");
         addModCompatMixin("top");
         addModCompatMixin("embeddium");
-        // MOD_COMPAT_MIXINS.put("sodium", MIXIN_PACKAGE + "embeddium");
+        // MOD_COMPAT_MIXINS.put("sodium", "embeddium.");
+        addModCompatMixin("oculus");
+        // MOD_COMPAT_MIXINS.put("iris", "oculus.");
         addModCompatMixin("ftbchunks");
         addModCompatMixin("xaerominimap");
         addModCompatMixin("xaeroworldmap");
@@ -43,7 +55,7 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (!LoadingModList.get().getErrors().isEmpty()) {
+        if (!FMLLoader.getLoadingModList().getErrors().isEmpty()) {
             return false;
         }
 
@@ -66,11 +78,50 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
             }
             return true;
         }
+        if (mixinClassName.startsWith(CLIENT_PACKAGE)) {
+            mixinClassName = mixinClassName.substring(CLIENT_PACKAGE.length());
+
+            if (FMLLoader.getDist() != Dist.CLIENT) {
+                // make extra sure client mixins are only loaded on clients
+                return false;
+            }
+
+            if (mixinClassName.startsWith(BLOOM_PACKAGE)) {
+                mixinClassName = mixinClassName.substring(BLOOM_PACKAGE.length());
+
+                String[] mutable = temp;
+                mutable[0] = mixinClassName;
+
+                if (!filterBloomMixins(mutable)) return false;
+
+                mixinClassName = mutable[0];
+            }
+        }
+
         for (var compatMod : MOD_COMPAT_MIXINS.entrySet()) {
             if (mixinClassName.startsWith(compatMod.getValue())) {
                 return isModLoaded(compatMod.getKey());
             }
         }
+        return true;
+    }
+
+    /// ensure only the appropriate set of bloom-related mixins are loaded
+    private static boolean filterBloomMixins(String[] mixinClassName) {
+        boolean safeModeConfigEnabled = ConfigHolder.getInstance().client.bloom.safeMode;
+
+        if (mixinClassName[0].startsWith(BLOOM_NORMAL_PACKAGE)) {
+            if (safeModeConfigEnabled) return false;
+
+            // trim off the load type package so mod loaded checks also function
+            mixinClassName[0] = mixinClassName[0].substring(BLOOM_NORMAL_PACKAGE.length());
+        } else if (mixinClassName[0].startsWith(BLOOM_SAFEMODE_PACKAGE)) {
+            if (!safeModeConfigEnabled) return false;
+
+            // trim off the load type package so mod loaded checks also function
+            mixinClassName[0] = mixinClassName[0].substring(BLOOM_SAFEMODE_PACKAGE.length());
+        }
+
         return true;
     }
 
@@ -93,9 +144,24 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     }
 
     private static boolean isModLoaded(String modId) {
-        if (ModList.get() == null) {
-            return LoadingModList.get().getModFileById(modId) != null;
+        if (modId.equals("optifine")) {
+            return OPTIFINE_PRESENT;
+        } else {
+            return FMLLoader.getLoadingModList().getModFileById(modId) != null;
         }
-        return ModList.get().isLoaded(modId);
     }
+
+    public static final boolean OPTIFINE_PRESENT;
+
+    static {
+        boolean hasOfClass = false;
+        try {
+            Class.forName("optifine.OptiFineTransformationService");
+            hasOfClass = true;
+        } catch (Throwable ignored) {}
+
+        OPTIFINE_PRESENT = hasOfClass;
+    }
+
+    private static final String[] temp = new String[1];
 }

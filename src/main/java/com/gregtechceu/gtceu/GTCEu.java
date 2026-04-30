@@ -108,7 +108,9 @@ public class GTCEu {
      * @return if the mod whose id is {@code modId} is loaded or not
      */
     public static boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        ModList modList = ModList.get();
+        if (modList != null) return modList.isLoaded(modId);
+        else return FMLLoader.getLoadingModList().getModFileById(modId) != null;
     }
 
     /**

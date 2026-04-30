@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.iris;
+package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.oculus;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;

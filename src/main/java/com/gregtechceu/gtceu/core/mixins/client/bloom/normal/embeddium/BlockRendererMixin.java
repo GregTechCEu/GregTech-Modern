@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.embeddium.bloom;
+package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
 
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;

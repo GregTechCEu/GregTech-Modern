@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client.shader;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.bloom.BloomAlgorithm;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
 import net.irisshaders.iris.api.v0.IrisApi;
@@ -110,11 +110,11 @@ public class GTShaders {
         return BLOOM_CHAIN != null && BLOOM_TARGET != null && canLoadBloomShader();
     }
 
-    private static boolean canLoadBloomShader() {
+    public static boolean canLoadBloomShader() {
         return ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && bloomShaderAvailable;
     }
 
-    private static boolean bloomShaderAvailable;
+    private static boolean bloomShaderAvailable = updateBloomShaderAvailability();
 
     @ApiStatus.Internal
     public static void updateShaderAvailability(TickEvent.ClientTickEvent event) {
@@ -128,7 +128,7 @@ public class GTShaders {
     }
 
     private static boolean updateBloomShaderAvailability() {
-        return !GTCEu.isModLoaded(GTValues.MODID_OPTIFINE) &&
+        return !GTMixinPlugin.OPTIFINE_PRESENT &&
                 !(GTCEu.Mods.isIrisOculusLoaded() && IrisCallWrapper.isShaderActive());
     }
 
