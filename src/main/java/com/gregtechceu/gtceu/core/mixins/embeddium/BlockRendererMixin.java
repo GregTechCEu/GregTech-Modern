@@ -37,7 +37,7 @@ public class BlockRendererMixin {
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(instance, ctx, originalBuilder, offset, material, quad, vertexColors, lightData);
 
-        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
+        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return;
         }
 

@@ -72,7 +72,7 @@ public class TextureMetadataHelper {
         var metadata = getMetadata(quad.getSprite());
         if (metadata.isPresent() && metadata.get().bloom()) {
             return true;
-        } else if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+        } else if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
             return isEmissive(quad, ambientPackedLights);
         }
 

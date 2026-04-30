@@ -64,7 +64,7 @@ public abstract class LevelRendererMixin {
 
         BloomUtil.setupBloomShaderUniforms();
 
-        if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
             BloomUtil.setFilterToggleUniform(true);
             this.renderChunkLayer(GTRenderTypes.bloom(), poseStack, camPos.x, camPos.y, camPos.z, projectionMatrix);
         } else {

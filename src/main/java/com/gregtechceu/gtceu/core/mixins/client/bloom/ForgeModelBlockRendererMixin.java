@@ -35,7 +35,7 @@ public class ForgeModelBlockRendererMixin {
                                                        ModelData modelData, RenderType renderType,
                                                        CallbackInfoReturnable<Boolean> cir,
                                                        @Local(name = "flatLighter") QuadLighter flatLighter) {
-        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
+        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return;
         }
         if (flatLighter != null) {

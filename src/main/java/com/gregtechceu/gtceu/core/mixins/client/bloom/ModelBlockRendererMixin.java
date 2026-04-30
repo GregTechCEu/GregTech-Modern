@@ -40,7 +40,7 @@ public class ModelBlockRendererMixin {
                                            RandomSource random, long seed, int packedOverlay,
                                            ModelData modelData, RenderType renderType,
                                            Operation<Void> original) {
-        if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom && GTShaders.canUseBloomShader()) {
+        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom && GTShaders.canUseBloomShader()) {
             try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
                 original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                         modelData, renderType);
@@ -57,7 +57,7 @@ public class ModelBlockRendererMixin {
     private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                               float[] brightness, float red, float green, float blue,
                                               int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
+        if (!ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom || !GTShaders.canUseBloomShader()) {
             return true;
         }
 

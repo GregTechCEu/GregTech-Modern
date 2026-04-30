@@ -794,8 +794,8 @@ public class ConfigHolder {
         @Configurable
         public RendererOptions renderer = new RendererOptions();
         @Configurable
-        @Configurable.Comment("Config options for Shaders and Post-processing Effects")
-        public ShaderOptions shader = new ShaderOptions();
+        @Configurable.Comment("Config options for bloom and other post-processing effects")
+        public BloomOptions bloom = new BloomOptions();
 
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
@@ -822,7 +822,7 @@ public class ConfigHolder {
             public int hudOffsetY = 0;
         }
 
-        public static class ShaderOptions {
+        public static class BloomOptions {
 
             @Configurable
             @Configurable.Comment({ "Whether to use custom shaders for bloom", "Default: true" })

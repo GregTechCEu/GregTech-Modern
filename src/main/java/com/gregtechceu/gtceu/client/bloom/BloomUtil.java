@@ -257,7 +257,7 @@ public class BloomUtil {
 
     @ApiStatus.Internal
     public static void setupBloomShaderUniforms() {
-        final var config = ConfigHolder.INSTANCE.client.shader;
+        final var config = ConfigHolder.INSTANCE.client.bloom;
 
         // Forcefully insert config values to shader
         modifyBloomPostShaders((index, shader) -> {
