@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.client.Minecraft;
@@ -32,15 +31,15 @@ public class BloomEventListeners {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null) return;
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
-        GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+        BloomShaderManager.BLOOM_TARGET.clear(Minecraft.ON_OSX);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        GTShaders.updateShaderAvailability(event);
+        BloomShaderManager.updateShaderAvailability(event);
     }
 
     @SubscribeEvent
@@ -50,7 +49,7 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         ChunkAccess chunk = event.getChunk();
         LevelAccessor level = chunk.getWorldForge();
@@ -70,7 +69,7 @@ public class BloomEventListeners {
 
         @SubscribeEvent
         public void registerShaders(RegisterShadersEvent event) throws IOException {
-            GTShaders.onRegisterShaders(event);
+            BloomShaderManager.onRegisterShaders(event);
         }
 
         @SubscribeEvent
@@ -81,7 +80,7 @@ public class BloomEventListeners {
         @SubscribeEvent
         public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
             RenderType block, entity;
-            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !GTShaders.isBloomShaderAvailable()) {
+            if (ConfigHolder.INSTANCE.client.bloom.safeMode || !BloomShaderManager.isBloomShaderAvailable()) {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
                 block = RenderType.cutout();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

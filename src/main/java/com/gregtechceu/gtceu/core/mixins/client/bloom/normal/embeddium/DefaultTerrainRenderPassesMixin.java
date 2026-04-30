@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +32,7 @@ public class DefaultTerrainRenderPassesMixin {
     public static Map<RenderType, List<TerrainRenderPass>> RENDER_PASS_MAPPINGS;
 
     static {
-        if (GTShaders.isBloomShaderAvailable()) {
+        if (BloomShaderManager.isBloomShaderAvailable()) {
             ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
 
             RENDER_PASS_MAPPINGS = ImmutableMap.<RenderType, List<TerrainRenderPass>>builder()

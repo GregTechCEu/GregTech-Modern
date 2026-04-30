@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.safemode;
 
 import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LevelRenderer;

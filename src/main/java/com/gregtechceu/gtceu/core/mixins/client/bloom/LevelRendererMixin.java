@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
@@ -25,14 +25,14 @@ public abstract class LevelRendererMixin {
 
     @Inject(method = "resize", at = @At("TAIL"))
     private void gtceu$resizeBloomChain(int width, int height, CallbackInfo ci) {
-        if (GTShaders.BLOOM_CHAIN != null) {
-            GTShaders.BLOOM_CHAIN.resize(width, height);
+        if (BloomShaderManager.BLOOM_CHAIN != null) {
+            BloomShaderManager.BLOOM_CHAIN.resize(width, height);
         }
     }
 
     @Inject(method = "deinitTransparency", at = @At("TAIL"))
     private void gtceu$deinitBloomEffect(CallbackInfo ci) {
-        GTShaders.deinitPostShaders();
+        BloomShaderManager.deinitPostShaders();
     }
 
     @Definition(id = "renderBuffers",

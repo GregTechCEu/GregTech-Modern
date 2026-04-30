@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.bloom;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
@@ -161,7 +160,7 @@ public class BloomUtil {
     public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
                                                         @Nullable Supplier<@Nullable Level> worldContext) {
-        if (!GTShaders.isBloomShaderInUse()) return BloomRenderTicket.INVALID;
+        if (!BloomShaderManager.isBloomShaderInUse()) return BloomRenderTicket.INVALID;
 
         BloomRenderTicket ticket = new BloomRenderTicket(setup, render, validityChecker, worldContext);
         BLOOM_RENDER_LOCK.writeLock().lock();
@@ -176,7 +175,7 @@ public class BloomUtil {
     @ApiStatus.Internal
     public static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
                                    float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         Vec3 camPos = camera.getPosition();
 
@@ -238,7 +237,7 @@ public class BloomUtil {
 
         // render state is set up & cleared in calling function
 
-        GTShaders.BLOOM_CHAIN.process(partialTicks);
+        BloomShaderManager.BLOOM_CHAIN.process(partialTicks);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         VertexBuffer.unbind();
 
@@ -302,7 +301,7 @@ public class BloomUtil {
 
     private static void modifyBloomPostShaders(IntObjectConsumer<EffectInstance> consumer) {
         // Forcefully insert config values to shader
-        List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
+        List<PostPass> passes = ((PostChainAccessor) BloomShaderManager.BLOOM_CHAIN).getPasses();
         for (int i = 0; i < passes.size(); i++) {
             PostPass pass = passes.get(i);
             consumer.accept(i, pass.getEffect());

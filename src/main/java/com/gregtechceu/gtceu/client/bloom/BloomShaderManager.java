@@ -1,7 +1,6 @@
-package com.gregtechceu.gtceu.client.shader;
+package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.bloom.BloomAlgorithm;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
@@ -26,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
-public class GTShaders {
+public class BloomShaderManager {
 
-    public static PostChain BLOOM_CHAIN = null;
-    public static RenderTarget BLOOM_TARGET = null;
+    public static @Nullable PostChain BLOOM_CHAIN = null;
+    public static @Nullable RenderTarget BLOOM_TARGET = null;
 
     @Getter
     private static @Nullable ShaderInstance rendertypeBloomShader;
@@ -98,6 +97,7 @@ public class GTShaders {
     public static void deinitPostShaders() {
         if (BLOOM_CHAIN != null) {
             BLOOM_CHAIN.close();
+            // noinspection DataFlowIssue // they should always be null or not together
             BLOOM_TARGET.destroyBuffers();
 
             BLOOM_CHAIN = null;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.core.util.CapturedQuadData;
 
 import net.minecraft.client.renderer.RenderType;
@@ -51,7 +51,7 @@ public class ModelBlockRendererMixin {
     private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                               float[] brightness, float red, float green, float blue,
                                               int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!GTShaders.isBloomShaderInUse()) return true;
+        if (!BloomShaderManager.isBloomShaderInUse()) return true;
 
         CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
         if (!currentData.isSet()) return true;

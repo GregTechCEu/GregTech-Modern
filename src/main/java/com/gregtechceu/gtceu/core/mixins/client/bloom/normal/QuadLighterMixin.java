@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.core.IGTQuadLighter;
 
 import net.minecraft.client.renderer.RenderType;
@@ -35,7 +35,7 @@ public class QuadLighterMixin implements IGTQuadLighter {
                                                    float red, float green, float blue,
                                                    int[] packedLights, int packedOverlay,
                                                    boolean mulColor) {
-        if (!GTShaders.isBloomShaderInUse()) return true;
+        if (!BloomShaderManager.isBloomShaderInUse()) return true;
 
         BloomUtil.captureBloomQuad(quad, this.gtceu$renderType, this.pos, poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);

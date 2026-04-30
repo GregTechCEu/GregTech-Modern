@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
@@ -90,7 +89,7 @@ public class BloomSafeMode {
     }
 
     public static void copyToBloomBuffer(BakedQuad quad, int[] combinedLights, Consumer<VertexConsumer> draw) {
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         SectionPos sectionOrigin = CURRENT_RENDERING_SECTION.get();
         if (sectionOrigin != null && TextureMetadataHelper.hasBloom(quad, combinedLights)) {
@@ -142,7 +141,7 @@ public class BloomSafeMode {
     }
 
     public static void bakeBloomChunkBuffers(SectionPos sectionPos, Vec3 camPos) {
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
         if (builder == null || !builder.building()) {

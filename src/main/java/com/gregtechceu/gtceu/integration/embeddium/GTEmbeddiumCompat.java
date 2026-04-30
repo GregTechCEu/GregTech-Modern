@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.embeddium;
 import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
@@ -31,7 +31,7 @@ public class GTEmbeddiumCompat {
     @SubscribeEvent
     public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
         if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         event.addMeshAppender(context -> {
             SectionPos sectionOrigin = context.sectionOrigin();

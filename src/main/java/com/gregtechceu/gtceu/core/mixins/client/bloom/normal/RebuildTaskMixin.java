@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
@@ -34,7 +34,7 @@ public abstract class RebuildTaskMixin {
                                             CallbackInfoReturnable<Object> cir,
                                             @Local(ordinal = 0) BlockPos sectionOrigin,
                                             @Local Set<RenderType> usedRenderTypes) {
-        if (!GTShaders.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomShaderInUse()) return;
 
         long sectionPos = SectionPos.asLong(sectionOrigin);
         if (!BloomUtil.chunkSectionHasBloomQuads(sectionPos)) return;

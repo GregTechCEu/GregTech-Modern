@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.embeddium;
 
 import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
 import com.llamalad7.mixinextras.sugar.Local;
@@ -42,7 +42,7 @@ public class BlockRendererMixin {
                                                     CallbackInfo ci,
                                                     @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
-        if (!GTShaders.isBloomShaderInUse() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
+        if (!BloomShaderManager.isBloomShaderInUse() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
             bufferBuilderRef.set(null);
             return;
         }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -22,19 +22,19 @@ public class GTRenderTypes extends RenderType {
     public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard(
             "bloom_target",
             () -> {
-                if (GTShaders.isBloomShaderInUse()) {
-                    GTShaders.BLOOM_TARGET.bindWrite(false);
+                if (BloomShaderManager.isBloomShaderInUse()) {
+                    BloomShaderManager.BLOOM_TARGET.bindWrite(false);
                 }
             },
             () -> {
-                if (GTShaders.isBloomShaderInUse()) {
+                if (BloomShaderManager.isBloomShaderInUse()) {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
-            GTShaders::getRendertypeBloomShader);
+            BloomShaderManager::getRendertypeBloomShader);
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
-            GTShaders::getRendertypeEntityBloomShader);
+            BloomShaderManager::getRendertypeEntityBloomShader);
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring", DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.TRIANGLE_STRIP, RenderType.SMALL_BUFFER_SIZE, false, false,

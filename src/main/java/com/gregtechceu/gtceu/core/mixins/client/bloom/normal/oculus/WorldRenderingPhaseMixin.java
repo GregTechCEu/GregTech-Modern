@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.oculus;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.integration.iris.GTIrisHooks;
 
 import net.irisshaders.iris.pipeline.WorldRenderingPhase;
@@ -32,7 +32,7 @@ public class WorldRenderingPhaseMixin {
     }
 
     static {
-        if (GTShaders.isBloomShaderAvailable()) {
+        if (BloomShaderManager.isBloomShaderAvailable()) {
             GTIrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("GTCEU:BLOOM", $VALUES.length);
             $VALUES = ArrayUtils.add($VALUES, GTIrisHooks.BLOOM_RENDERING_PHASE);
         }
@@ -41,7 +41,7 @@ public class WorldRenderingPhaseMixin {
     @Inject(method = "fromTerrainRenderType", at = @At(value = "HEAD"), cancellable = true)
     private static void gtceu$fixBloomLayerError(RenderType renderType,
                                                  CallbackInfoReturnable<WorldRenderingPhase> cir) {
-        if (!GTShaders.isBloomShaderAvailable()) return;
+        if (!BloomShaderManager.isBloomShaderAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
             cir.setReturnValue(GTIrisHooks.getBloomRenderingPhase());
