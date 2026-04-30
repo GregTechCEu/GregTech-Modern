@@ -6,6 +6,15 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
+import com.gregtechceu.gtceu.common.cover.*;
+import com.gregtechceu.gtceu.common.cover.detector.*;
+import com.gregtechceu.gtceu.common.cover.ender.EnderFluidLinkCover;
+import com.gregtechceu.gtceu.common.cover.ender.EnderItemLinkCover;
+import com.gregtechceu.gtceu.common.cover.ender.EnderRedstoneLinkCover;
+import com.gregtechceu.gtceu.common.cover.voiding.AdvancedFluidVoidingCover;
+import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
+import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
+import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 
 import net.minecraft.resources.Identifier;
 
@@ -22,37 +31,23 @@ public class GTCovers {
     public static final int[] ALL_TIERS_WITH_ULV = GTValues.tiersBetween(GTValues.ULV,
             GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
-    private static final String COVER_PACKAGE = "com.gregtechceu.gtceu.common.cover.";
-    private static final String DETECTOR_PACKAGE = COVER_PACKAGE + "detector.";
-    private static final String ENDER_PACKAGE = COVER_PACKAGE + "ender.";
-    private static final String VOIDING_PACKAGE = COVER_PACKAGE + "voiding.";
-
-    public final static CoverDefinition FACADE = register("facade",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "FacadeCover"),
+    public final static CoverDefinition FACADE = register("facade", () -> FacadeCover::new,
             () -> () -> FacadeCoverRenderer.INSTANCE);
 
-    public final static CoverDefinition ITEM_FILTER = register("item_filter",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "ItemFilterCover"));
-    public final static CoverDefinition FLUID_FILTER = register("fluid_filter",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "FluidFilterCover"));
+    public final static CoverDefinition ITEM_FILTER = register("item_filter", () -> ItemFilterCover::new);
+    public final static CoverDefinition FLUID_FILTER = register("fluid_filter", () -> FluidFilterCover::new);
 
-    public final static CoverDefinition INFINITE_WATER = register("infinite_water",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "InfiniteWaterCover"));
-    public final static CoverDefinition ENDER_FLUID_LINK = register("ender_fluid_link",
-            CoverBehaviourProviders.of(ENDER_PACKAGE + "EnderFluidLinkCover"));
-    public final static CoverDefinition ENDER_ITEM_LINK = register("ender_item_link",
-            CoverBehaviourProviders.of(ENDER_PACKAGE + "EnderItemLinkCover"));
+    public final static CoverDefinition INFINITE_WATER = register("infinite_water", () -> InfiniteWaterCover::new);
+    public final static CoverDefinition ENDER_FLUID_LINK = register("ender_fluid_link", () -> EnderFluidLinkCover::new);
+    public final static CoverDefinition ENDER_ITEM_LINK = register("ender_item_link", () -> EnderItemLinkCover::new);
     public final static CoverDefinition ENDER_REDSTONE_LINK = register("ender_redstone_link",
-            CoverBehaviourProviders.of(ENDER_PACKAGE + "EnderRedstoneLinkCover"));
-    public final static CoverDefinition SHUTTER = register("shutter",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "ShutterCover"));
-    public final static CoverDefinition COVER_STORAGE = register("storage",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "StorageCover"));
+            () -> EnderRedstoneLinkCover::new);
+    public final static CoverDefinition SHUTTER = register("shutter", () -> ShutterCover::new);
+    public final static CoverDefinition COVER_STORAGE = register("storage", () -> StorageCover::new);
     public final static CoverDefinition WIRELESS_TRANSMITTER = register("wireless_transmitter",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "WirelessTransmitterCover"));
+            () -> WirelessTransmitterCover::new);
 
-    public final static CoverDefinition[] CONVEYORS = registerTiered("conveyor",
-            CoverBehaviourProviders.tiered(COVER_PACKAGE + "ConveyorCover"),
+    public final static CoverDefinition[] CONVEYORS = registerTiered("conveyor", () -> ConveyorCover::new,
             () -> tier -> new IOCoverRenderer(
                     GTCEu.id("block/cover/conveyor"),
                     null,
@@ -60,8 +55,7 @@ public class GTCovers {
                     GTCEu.id("block/cover/conveyor_inverted_emissive")),
             ALL_TIERS);
 
-    public final static CoverDefinition[] ROBOT_ARMS = registerTiered("robot_arm",
-            CoverBehaviourProviders.tiered(COVER_PACKAGE + "RobotArmCover"),
+    public final static CoverDefinition[] ROBOT_ARMS = registerTiered("robot_arm", () -> RobotArmCover::new,
             () -> tier -> new IOCoverRenderer(
                     GTCEu.id("block/cover/arm"),
                     null,
@@ -69,55 +63,47 @@ public class GTCovers {
                     GTCEu.id("block/cover/arm_inverted_emissive")),
             ALL_TIERS);
 
-    public final static CoverDefinition[] PUMPS = registerTiered("pump",
-            CoverBehaviourProviders.tiered(COVER_PACKAGE + "PumpCover"),
+    public final static CoverDefinition[] PUMPS = registerTiered("pump", () -> PumpCover::new,
             () -> tier -> IOCoverRenderer.PUMP_LIKE_COVER_RENDERER, ALL_TIERS);
 
     public final static CoverDefinition[] FLUID_REGULATORS = registerTiered("fluid_regulator",
-            CoverBehaviourProviders.tiered(COVER_PACKAGE + "FluidRegulatorCover"),
+            () -> FluidRegulatorCover::new,
             () -> tier -> IOCoverRenderer.PUMP_LIKE_COVER_RENDERER, ALL_TIERS);
 
     public final static CoverDefinition COMPUTER_MONITOR = register("computer_monitor",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "ComputerMonitorCover"));
+            () -> ComputerMonitorCover::new);
 
     public final static CoverDefinition MACHINE_CONTROLLER = register("machine_controller",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "MachineControllerCover"));
+            () -> MachineControllerCover::new);
 
     // Voiding
-    public final static CoverDefinition ITEM_VOIDING = register("item_voiding",
-            CoverBehaviourProviders.of(VOIDING_PACKAGE + "ItemVoidingCover"));
+    public final static CoverDefinition ITEM_VOIDING = register("item_voiding", () -> ItemVoidingCover::new);
     public final static CoverDefinition ITEM_VOIDING_ADVANCED = register("item_voiding_advanced",
-            CoverBehaviourProviders.of(VOIDING_PACKAGE + "AdvancedItemVoidingCover"));
-    public final static CoverDefinition FLUID_VOIDING = register("fluid_voiding",
-            CoverBehaviourProviders.of(VOIDING_PACKAGE + "FluidVoidingCover"));
+            () -> AdvancedItemVoidingCover::new);
+    public final static CoverDefinition FLUID_VOIDING = register("fluid_voiding", () -> FluidVoidingCover::new);
     public final static CoverDefinition FLUID_VOIDING_ADVANCED = register("fluid_voiding_advanced",
-            CoverBehaviourProviders.of(VOIDING_PACKAGE + "AdvancedFluidVoidingCover"));
+            () -> AdvancedFluidVoidingCover::new);
 
     // Detectors
     public final static CoverDefinition ACTIVITY_DETECTOR = register("activity_detector",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "ActivityDetectorCover"));
+            () -> ActivityDetectorCover::new);
     public final static CoverDefinition ACTIVITY_DETECTOR_ADVANCED = register("activity_detector_advanced",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "AdvancedActivityDetectorCover"));
-    public final static CoverDefinition FLUID_DETECTOR = register("fluid_detector",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "FluidDetectorCover"));
+            () -> AdvancedActivityDetectorCover::new);
+    public final static CoverDefinition FLUID_DETECTOR = register("fluid_detector", () -> FluidDetectorCover::new);
     public final static CoverDefinition FLUID_DETECTOR_ADVANCED = register("fluid_detector_advanced",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "AdvancedFluidDetectorCover"));
-    public final static CoverDefinition ITEM_DETECTOR = register("item_detector",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "ItemDetectorCover"));
+            () -> AdvancedFluidDetectorCover::new);
+    public final static CoverDefinition ITEM_DETECTOR = register("item_detector", () -> ItemDetectorCover::new);
     public final static CoverDefinition ITEM_DETECTOR_ADVANCED = register("item_detector_advanced",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "AdvancedItemDetectorCover"));
-    public final static CoverDefinition ENERGY_DETECTOR = register("energy_detector",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "EnergyDetectorCover"));
+            () -> AdvancedItemDetectorCover::new);
+    public final static CoverDefinition ENERGY_DETECTOR = register("energy_detector", () -> EnergyDetectorCover::new);
     public final static CoverDefinition ENERGY_DETECTOR_ADVANCED = register("energy_detector_advanced",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "AdvancedEnergyDetectorCover"));
+            () -> AdvancedEnergyDetectorCover::new);
     public final static CoverDefinition MAINTENANCE_DETECTOR = register("maintenance_detector",
-            CoverBehaviourProviders.of(DETECTOR_PACKAGE + "MaintenanceDetectorCover"));
+            () -> MaintenanceDetectorCover::new);
 
     // Solar Panels
-    public final static CoverDefinition SOLAR_PANEL_BASIC = register("solar_panel",
-            CoverBehaviourProviders.of(COVER_PACKAGE + "CoverSolarPanel"));
-    public final static CoverDefinition[] SOLAR_PANEL = registerTiered("solar_panel",
-            CoverBehaviourProviders.tiered(COVER_PACKAGE + "CoverSolarPanel"),
+    public final static CoverDefinition SOLAR_PANEL_BASIC = register("solar_panel", () -> CoverSolarPanel::new);
+    public final static CoverDefinition[] SOLAR_PANEL = registerTiered("solar_panel", () -> CoverSolarPanel::new,
             () -> tier -> new SimpleCoverRenderer(GTCEu.id("block/cover/solar_panel")), ALL_TIERS_WITH_ULV);
 
     ///////////////////////////////////////////////
