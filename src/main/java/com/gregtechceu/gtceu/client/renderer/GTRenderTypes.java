@@ -22,12 +22,12 @@ public class GTRenderTypes extends RenderType {
     public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard(
             "bloom_target",
             () -> {
-                if (GTShaders.canUseBloomShader()) {
+                if (GTShaders.isBloomShaderInUse()) {
                     GTShaders.BLOOM_TARGET.bindWrite(false);
                 }
             },
             () -> {
-                if (GTShaders.canUseBloomShader()) {
+                if (GTShaders.isBloomShaderInUse()) {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });

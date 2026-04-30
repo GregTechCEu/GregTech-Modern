@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
 
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,7 +36,7 @@ public class BlockRendererMixin {
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(instance, ctx, originalBuilder, offset, material, quad, vertexColors, lightData);
 
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderInUse()) return;
 
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
         if (chunkContext != null && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {

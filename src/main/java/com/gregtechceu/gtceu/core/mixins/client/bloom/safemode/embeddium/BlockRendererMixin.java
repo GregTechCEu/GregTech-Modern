@@ -42,7 +42,7 @@ public class BlockRendererMixin {
                                                     CallbackInfo ci,
                                                     @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
-        if (!GTShaders.canUseBloomShader() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
+        if (!GTShaders.isBloomShaderInUse() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
             bufferBuilderRef.set(null);
             return;
         }

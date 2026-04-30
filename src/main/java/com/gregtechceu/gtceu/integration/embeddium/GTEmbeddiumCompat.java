@@ -31,7 +31,7 @@ public class GTEmbeddiumCompat {
     @SubscribeEvent
     public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
         if (!ConfigHolder.INSTANCE.client.bloom.safeMode) return;
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderInUse()) return;
 
         event.addMeshAppender(context -> {
             SectionPos sectionOrigin = context.sectionOrigin();

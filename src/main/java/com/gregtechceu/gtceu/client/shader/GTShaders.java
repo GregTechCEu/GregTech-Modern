@@ -105,7 +105,7 @@ public class GTShaders {
         }
     }
 
-    public static boolean canUseBloomShader() {
+    public static boolean isBloomShaderInUse() {
         return BLOOM_CHAIN != null && BLOOM_TARGET != null &&
                 ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && isBloomShaderAvailable();
     }

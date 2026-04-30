@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.bloom;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.mojang.blaze3d.pipeline.RenderCall;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -90,7 +90,7 @@ public class BloomSafeMode {
     }
 
     public static void copyToBloomBuffer(BakedQuad quad, int[] combinedLights, Consumer<VertexConsumer> draw) {
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderInUse()) return;
 
         SectionPos sectionOrigin = CURRENT_RENDERING_SECTION.get();
         if (sectionOrigin != null && TextureMetadataHelper.hasBloom(quad, combinedLights)) {
@@ -142,7 +142,7 @@ public class BloomSafeMode {
     }
 
     public static void bakeBloomChunkBuffers(SectionPos sectionPos, Vec3 camPos) {
-        if (!GTShaders.canUseBloomShader()) return;
+        if (!GTShaders.isBloomShaderInUse()) return;
 
         BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
         if (builder == null || !builder.building()) {

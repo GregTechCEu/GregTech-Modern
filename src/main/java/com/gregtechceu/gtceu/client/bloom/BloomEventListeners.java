@@ -31,12 +31,8 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null) {
-            return;
-        }
-        if (!GTShaders.canUseBloomShader()) {
-            return;
-        }
+        if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null) return;
+        if (!GTShaders.isBloomShaderInUse()) return;
 
         GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
@@ -54,14 +50,11 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
-        if (!GTShaders.canUseBloomShader()) {
-            return;
-        }
+        if (!GTShaders.isBloomShaderInUse()) return;
+
         ChunkAccess chunk = event.getChunk();
         LevelAccessor level = chunk.getWorldForge();
-        if (level == null) {
-            return;
-        }
+        if (level == null) return;
 
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
