@@ -3,7 +3,11 @@ package com.gregtechceu.gtceu.client.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.ctm.GTTextureMetadata;
 
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
@@ -11,14 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @UtilityClass
 public class TextureMetadataHelper {
 
-    private static final Map<ResourceLocation, @Nullable GTTextureMetadata> metadataCache = new HashMap<>();
+    private static final Map<ResourceLocation, @Nullable GTTextureMetadata> metadataCache = new ConcurrentHashMap<>();
 
     public static Optional<GTTextureMetadata> getMetadata(ResourceLocation res) {
         // Note, semantically different from computeIfAbsent, as we DO care about keys mapped to null values
@@ -59,6 +63,37 @@ public class TextureMetadataHelper {
             sprite = sprite.withSuffix(".png");
         }
         return sprite;
+    }
+
+    public static boolean hasBloom(BakedQuad quad, int[] ambientPackedLights) {
+        if (!quad.isShade() || !quad.hasAmbientOcclusion()) {
+            return true;
+        }
+        var metadata = getMetadata(quad.getSprite());
+        if (metadata.isPresent() && metadata.get().bloom()) {
+            return true;
+        } else if (ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+            return isEmissive(quad, ambientPackedLights);
+        }
+
+        return false;
+    }
+
+    public static boolean isEmissive(BakedQuad quad, int[] ambientPackedLights) {
+        int[] quadPackedLights = GTQuadTransformers.getPackedLights(quad);
+
+        for (int i = 0; i < 4; i++) {
+            int quadLight = quadPackedLights[i];
+            int qBlock = LightTexture.block(quadLight), qSky = LightTexture.sky(quadLight);
+
+            int ambientLight = ambientPackedLights[i];
+            int aBlock = LightTexture.block(ambientLight), aSky = LightTexture.sky(ambientLight);
+
+            if (qBlock > aBlock || qSky > aSky) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static void invalidateCaches() {

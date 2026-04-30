@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.embeddium;
 
-import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
@@ -42,7 +42,7 @@ public class BlockRendererMixin {
         }
 
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
-        if (chunkContext != null && BloomMetadataSection.hasBloom((BakedQuad) quad, lightData.lm)) {
+        if (chunkContext != null && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
             var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.BLOOM_RENDER_PASS);
             bloomBuilderRef.set(bloomBuilder);
 

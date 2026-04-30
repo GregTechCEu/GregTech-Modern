@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
@@ -390,7 +390,7 @@ public class BloomUtil {
             return;
         }
 
-        if (BloomMetadataSection.hasBloom(quad, packedLights)) {
+        if (TextureMetadataHelper.hasBloom(quad, packedLights)) {
             QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation,
                     packedLights, packedOverlay, brightness, tintR, tintG, tintB);
 
