@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -180,17 +181,22 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         if (!(coverBehavior instanceof FacadeCover facadeCover)) {
             return;
         }
-        BlockState state = facadeCover.getFacadeState();
-        if (state.getRenderShape() != RenderShape.MODEL) {
+        BlockState facadeSate = facadeCover.getFacadeState();
+        if (facadeSate.getRenderShape() != RenderShape.MODEL) {
             return;
         }
 
         Direction attachedSide = coverBehavior.attachedSide;
 
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-        ModelData extraData = model.getModelData(level, pos, state, modelData);
+        BakedModel facadeModel = RenderUtil.getModelForState(facadeSate);
+        ModelData facadeModelData = facadeModel.getModelData(level, pos, facadeSate, modelData);
 
-        List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
+        if (renderType != null &&
+                !facadeModel.getRenderTypes(facadeSate, rand, facadeModelData).contains(renderType)) {
+            return;
+        }
+
+        List<BakedQuad> facadeQuads = facadeModel.getQuads(facadeSate, attachedSide, rand, facadeModelData, renderType);
         facadeQuads = new LinkedList<>(facadeQuads);
 
         List<BakedQuad> coverQuads = new ArrayList<>();
@@ -211,7 +217,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         for (BakedQuad quad : coverQuads) {
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
-                int color = blockColors.getColor(state, level, pos, quad.getTintIndex());
+                int color = blockColors.getColor(facadeSate, level, pos, quad.getTintIndex());
                 quad = GTQuadTransformers.setColor(quad, color, true);
             } else {
                 // otherwise just copy the quad so we don't mutate the original model with the overlay offset

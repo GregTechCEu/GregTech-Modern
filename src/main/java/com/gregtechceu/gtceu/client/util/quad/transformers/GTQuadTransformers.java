@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util;
+package com.gregtechceu.gtceu.client.util.quad.transformers;
 
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -7,6 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.QuadTransformers;
+
+import java.lang.reflect.Array;
 
 public final class GTQuadTransformers {
 
@@ -60,9 +62,9 @@ public final class GTQuadTransformers {
             vertices[offset] = Float.floatToRawIntBits(u);
             vertices[offset + 1] = Float.floatToRawIntBits(v);
         }
-        BakedQuad newQuad = new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
-                sprite, quad.isShade(), quad.hasAmbientOcclusion());
-        return newQuad.gtceu$setTextureKey(quad.gtceu$getTextureKey());
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
+                sprite, quad.isShade(), quad.hasAmbientOcclusion())
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
     }
 
     public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
@@ -72,6 +74,33 @@ public final class GTQuadTransformers {
 
         QuadTransformers.applyingColor(argbColor).processInPlace(copy);
         return copy.gtceu$setTextureKey(quad.gtceu$getTextureKey());
+    }
+
+    public static IQuadTransformer derotate() {
+        return quad -> {
+            int[] vertices = quad.getVertices();
+
+            int start = 0;
+            float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
+            int[][] uvs = (int[][]) Array.newInstance(int.class, 4, 2);
+
+            for (int i = 0; i < 4; i++) {
+                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+                System.arraycopy(vertices, offset, uvs[i], 0, 2);
+
+                float u = Float.intBitsToFloat(uvs[i][0]);
+                float v = Float.intBitsToFloat(uvs[i][1]);
+                if (u <= minU && v <= minV) {
+                    minU = Math.min(minU, u);
+                    minV = Math.min(minV, v);
+                    start = i;
+                }
+            }
+            for (int i = 0; i < 4; i++) {
+                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+                System.arraycopy(uvs[(i + start) % 4], 0, vertices, offset, 2);
+            }
+        };
     }
 
     public static BakedQuad copy(BakedQuad quad) {

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
@@ -1420,6 +1421,11 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+
+        // Dev-only test blocks
+        if (GTCEu.isDev()) {
+            GTDevBlocks.init();
+        }
     }
 
     private static void initializeCobbleReplacements() {

@@ -2,26 +2,29 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
 
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -84,21 +87,49 @@ public class LampBlockItem extends BlockItem {
 
     private static class ClientCallWrapper {
 
-        private static void registerEventListener(LampBlockItem item) {
-            ModelUtils.registerBakeEventListener(false, event -> {
-                ResourceLocation model = BuiltInRegistries.ITEM.getKey(item).withPrefix("item/");
-                BakedModel original = event.getModels().get(model);
-                if (original == null) {
-                    model = new ModelResourceLocation(model, "inventory");
-                    original = event.getModels().get(model);
-                }
-                event.getModels().put(model, new BakedModelWrapper<>(original) {
+        private static boolean registeredListener = false;
+        private static final Set<Item> trackedItems = new ReferenceLinkedOpenHashSet<>();
+        private static final Set<ResourceLocation> trackedItemIds = new ObjectLinkedOpenHashSet<>();
 
-                    @Override
-                    public boolean isCustomRenderer() {
-                        return true;
+        private static void registerEventListener(LampBlockItem toWrap) {
+            trackedItems.add(toWrap);
+
+            if (registeredListener) return;
+            registeredListener = true;
+            ModelEventHelper.registerBakeEventListener(false, (modelLocation, model, unbakedModel, modelBakery) -> {
+                if (trackedItemIds.isEmpty()) {
+                    for (Item item : trackedItems) {
+                        trackedItemIds.add(BuiltInRegistries.ITEM.getKey(item));
                     }
-                });
+                }
+
+                // handle both cases 1.20 can have passed here. 1.21 *only* has the ModelResourceLocation case.
+                ResourceLocation possibleItemId;
+                if (modelLocation instanceof ModelResourceLocation modelResLoc &&
+                        Objects.equals(modelResLoc.getVariant(), "inventory")) {
+                    // unwrap ModelResourceLocations
+                    // 1.21 needs different code here as ModelResourceLocation is a wrapper record instead of a subclass
+                    possibleItemId = modelResLoc.withPrefix("");
+                } else if (modelLocation.getPath().startsWith("item/")) {
+                    // remove the "item/" prefix from the model path
+                    possibleItemId = modelLocation.withPath(path -> path.substring("item/".length()));
+                } else {
+                    return model;
+                }
+
+                if (trackedItemIds.contains(possibleItemId)) {
+                    // if the current model is a lamp item, replace it with one that has isCustomRenderer()==true
+                    // so the custom renderer in `LampBlockItem#initializeClient` works
+                    return new BakedModelWrapper<>(model) {
+
+                        @Override
+                        public boolean isCustomRenderer() {
+                            return true;
+                        }
+                    };
+                } else {
+                    return model;
+                }
             });
         }
     }
