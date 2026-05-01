@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_borderless_off",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "inactive": "gtceu:block/lamps/pink_off_borderless"
+    "all": "gtceu:block/lamps/pink_borderless_off"
   }
 }

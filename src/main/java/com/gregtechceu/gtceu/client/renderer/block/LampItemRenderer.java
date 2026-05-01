@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -32,11 +32,13 @@ public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     protected final ItemRenderer itemRenderer;
+    protected final BlockRenderDispatcher blockRenderer;
 
     protected LampItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
                 Minecraft.getInstance().getEntityModels());
         this.itemRenderer = Minecraft.getInstance().getItemRenderer();
+        this.blockRenderer = Minecraft.getInstance().getBlockRenderer();
     }
 
     @Override
@@ -46,8 +48,8 @@ public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
         if (!(stack.getItem() instanceof LampBlockItem item)) {
             return;
         }
-        BlockState state = item.getStateFromStack(stack, null);
-        BakedModel p_model = RenderUtil.getModelForState(state);
+        BlockState state = item.getStateFromStack(stack, item.getBlock().defaultBlockState());
+        BakedModel p_model = blockRenderer.getBlockModel(state);
 
         for (var model : p_model.getRenderPasses(stack, true)) {
             for (var rendertype : model.getRenderTypes(stack, true)) {

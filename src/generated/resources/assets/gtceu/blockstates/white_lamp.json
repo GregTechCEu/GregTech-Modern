@@ -1,19 +1,10 @@
 {
   "variants": {
-    "bloom=false,inverted=false,powered=false": {
-      "model": "gtceu:block/white_lamp_off"
-    },
     "bloom=false,inverted=false,powered=true": {
-      "model": "gtceu:block/white_lamp"
+      "model": "gtceu:block/white_lamp_on"
     },
     "bloom=false,inverted=true,powered=false": {
-      "model": "gtceu:block/white_lamp"
-    },
-    "bloom=false,inverted=true,powered=true": {
-      "model": "gtceu:block/white_lamp_off"
-    },
-    "bloom=true,inverted=false,powered=false": {
-      "model": "gtceu:block/white_lamp_off"
+      "model": "gtceu:block/white_lamp_on"
     },
     "bloom=true,inverted=false,powered=true": {
       "model": "gtceu:block/white_lamp_bloom"
@@ -21,7 +12,10 @@
     "bloom=true,inverted=true,powered=false": {
       "model": "gtceu:block/white_lamp_bloom"
     },
-    "bloom=true,inverted=true,powered=true": {
+    "inverted=false,powered=false": {
+      "model": "gtceu:block/white_lamp_off"
+    },
+    "inverted=true,powered=true": {
       "model": "gtceu:block/white_lamp_off"
     }
   }
