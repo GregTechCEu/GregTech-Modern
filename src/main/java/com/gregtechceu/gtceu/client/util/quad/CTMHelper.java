@@ -40,21 +40,6 @@ public class CTMHelper {
         return new Vector2f[] { new Vector2f(minU, minV), new Vector2f(maxU, maxV) };
     }
 
-    public static int findMinUVIndex(Vector2f[] uvs) {
-        int minIndex = 0;
-        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
-
-        for (int v = 0; v < 4; v++) {
-            Vector2f uv = uvs[v];
-            if (uv.x() <= minU && uv.y() <= minV) {
-                minIndex = v;
-                minU = uv.x();
-                minV = uv.y();
-            }
-        }
-        return minIndex;
-    }
-
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                                 List<BakedQuad> quads, Direction cullFace) {
         CTMCache ctmCache = CTMCache.getInstance();
@@ -90,6 +75,7 @@ public class CTMHelper {
                     TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
 
                     // slice quad into the current quadrant
+                    derotateUVs(emitter);
                     subsect(emitter, Submap.X2[x][y]);
                     transformUVs(emitter, CTMCache.getSubmapFor(ctm[x][y]));
 
@@ -132,6 +118,28 @@ public class CTMHelper {
         return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
     });
 
+    public static void derotateUVs(MutableQuadView quad) {
+        int minIndex = 0;
+        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
+
+        // cache UVs
+        Vector2f[] uvs = CTMHelper.uvs.get();
+        for (int i = 0; i < 4; i++) {
+            uvs[i] = quad.copyUv(i, uvs[i]);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (uvs[i].x <= minU && uvs[i].y <= minV) {
+                minIndex = i;
+                minU = uvs[i].x;
+                minV = uvs[i].y;
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            quad.uv(i, uvs[(i + minIndex) % 4]);
+        }
+    }
+
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
 
@@ -166,22 +174,15 @@ public class CTMHelper {
     }
 
     // TODO simplify, this is quite long
-    public static MutableQuadView subsect(MutableQuadView quad, ISubmap submap) {
+    public static MutableQuadView subsect(final MutableQuadView quad, ISubmap submap) {
         Direction normal = quad.nominalFace();
-
-        Vector2f[] uvs = CTMHelper.uvs.get();
-        for (int i = 0; i < 4; i++) {
-            uvs[i] = quad.copyUv(i, uvs[i]);
-        }
-        int firstIndex = findMinUVIndex(uvs);
 
         Vector2f[] xy = CTMHelper.xy.get();
         Vector2f[] newXy = CTMHelper.newXy.get();
         Vector3f position = CTMHelper.position.get();
         for (int i = 0; i < 4; i++) {
-            int idx = (firstIndex + i) % 4;
             // updates position
-            quad.copyPos(idx, position);
+            quad.copyPos(i, position);
 
             switch (normal.getAxis()) {
                 case X -> xy[i].set(position.z, position.y);
@@ -235,10 +236,10 @@ public class CTMHelper {
         float u3 = normalize(newXy[3].x, xy[3].x, xy[0].x),
                 v3 = normalize(newXy[3].y, xy[3].y, xy[2].y);
 
-        quad.uv(0, Mth.lerp(u0, uvs[0].x, uvs[3].x), Mth.lerp(v0, uvs[0].y, uvs[1].y));
-        quad.uv(1, Mth.lerp(u1, uvs[1].x, uvs[2].x), Mth.lerp(v1, uvs[1].y, uvs[0].y));
-        quad.uv(2, Mth.lerp(u2, uvs[2].x, uvs[1].x), Mth.lerp(v2, uvs[2].y, uvs[3].y));
-        quad.uv(3, Mth.lerp(u3, uvs[3].x, uvs[0].x), Mth.lerp(v3, uvs[3].y, uvs[2].y));
+        quad.uv(0, Mth.lerp(u0, quad.u(0), quad.u(3)), Mth.lerp(v0, quad.v(0), quad.v(1)));
+        quad.uv(1, Mth.lerp(u1, quad.u(1), quad.u(2)), Mth.lerp(v1, quad.v(1), quad.v(0)));
+        quad.uv(2, Mth.lerp(u2, quad.u(2), quad.u(1)), Mth.lerp(v2, quad.v(2), quad.v(3)));
+        quad.uv(3, Mth.lerp(u3, quad.u(3), quad.u(0)), Mth.lerp(v3, quad.v(3), quad.v(2)));
 
         // spotless:off
         for (int i = 0; i < 4; i++) {
@@ -262,6 +263,6 @@ public class CTMHelper {
     /// scale {@code delta} to a 0-1 range based on {@code min} and {@code max}
     public static float normalize(float delta, float min, float max) {
         if (min == max) return 0.5f;
-        return Mth.inverseLerp(delta, min, max);
+        return Mth.clamp(Mth.inverseLerp(delta, min, max), 0.0f, 1.0f);
     }
 }

@@ -27,6 +27,7 @@ import net.minecraftforge.client.model.QuadTransformers;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
+import org.joml.Vector2fc;
 import org.joml.Vector3f;
 
 import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
@@ -219,13 +220,13 @@ public abstract class MutableQuadView extends QuadView {
      * Set texture coordinates.
      *
      * <p>
-     * Only use this function if you already have a {@link Vector2f}.
+     * Only use this function if you already have a {@link Vector2fc}.
      * Otherwise, see {@link MutableQuadView#uv(int, float, float)}.
      *
      * @see MutableQuadView#uv(int, float, float)
      */
-    public MutableQuadView uv(int vertexIndex, Vector2f uv) {
-        return uv(vertexIndex, uv.x, uv.y);
+    public MutableQuadView uv(int vertexIndex, Vector2fc uv) {
+        return uv(vertexIndex, uv.x(), uv.y());
     }
 
     /**
