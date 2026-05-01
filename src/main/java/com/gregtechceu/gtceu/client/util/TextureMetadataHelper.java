@@ -62,9 +62,6 @@ public class TextureMetadataHelper {
     }
 
     public static boolean hasBloom(BakedQuad quad, int[] ambientPackedLights) {
-        if (!quad.isShade() || !quad.hasAmbientOcclusion()) {
-            return true;
-        }
         var metadata = getMetadata(quad.getSprite());
         if (metadata.isPresent()) {
             TriState bloomValue = metadata.get().bloom();
