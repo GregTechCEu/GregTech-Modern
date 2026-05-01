@@ -30,6 +30,14 @@ import java.io.IOException;
 public class BloomEventListeners {
 
     @SubscribeEvent
+    public static void afterParticlesRendered(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+
+        BloomUtil.renderBloom(event.getCamera(), event.getPoseStack(), event.getFrustum(), event.getProjectionMatrix(),
+                event.getPartialTick(), event.getLevelRenderer(), Minecraft.getInstance().getProfiler());
+    }
+
+    @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null) return;
         if (!BloomShaderManager.isBloomShaderInUse()) return;
