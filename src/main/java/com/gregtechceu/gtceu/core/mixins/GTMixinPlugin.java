@@ -36,21 +36,6 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
             throw new RuntimeException("Could not load mixin configuration file for GTCEu", e);
         }
 
-        CONFIG.getOptionMap().values().forEach(option -> {
-            if (option.isOverridden()) {
-                String source = "[unknown]";
-
-                if (option.isUserDefined()) {
-                    source = "user configuration";
-                } else if (!FMLLoader.getLoadingModList().getErrors().isEmpty()) {
-                    source = "load error";
-                } else if (option.isModDefined()) {
-                    source = "mods [" + String.join(", ", option.getDefiningMods()) + "]";
-                }
-                LOGGER.warn("Option '{}' overridden (by {}) to '{}'", option.getName(), source, option.isEnabled());
-            }
-        });
-
         if (OPTIFINE_PRESENT) {
             LOGGER.fatal(
                     "OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of Forge features.");
