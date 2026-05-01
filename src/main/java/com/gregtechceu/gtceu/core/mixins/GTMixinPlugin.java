@@ -77,16 +77,9 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     public static boolean isOptionEnabled(String mixin) {
         Option option = CONFIG.getEffectiveOptionForMixin(mixin);
-
         if (option == null) {
-            String msg = "No rules matched mixin '{}', treating as foreign and disabling!";
-            if (!FMLLoader.isProduction()) {
-                LOGGER.error(msg, mixin);
-            } else {
-                LOGGER.debug(msg, mixin);
-            }
-
-            return false;
+            // if the mixin doesn't have an option, it's always enabled
+            return true;
         }
 
         return option.isEnabled();
