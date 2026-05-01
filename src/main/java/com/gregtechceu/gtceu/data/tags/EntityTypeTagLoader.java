@@ -24,6 +24,6 @@ public class EntityTypeTagLoader {
     private static TagAppender<EntityType<?>, EntityType<?>> tag(
                                                                  RegistrateTagsProvider.IntrinsicImpl<EntityType<?>> provider,
                                                                  TagKey<EntityType<?>> tagKey) {
-        return TagProviderCompat.tag(provider, tagKey);
+        return provider.tag(tagKey);
     }
 }

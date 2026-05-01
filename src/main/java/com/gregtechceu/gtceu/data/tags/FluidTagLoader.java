@@ -18,6 +18,6 @@ public class FluidTagLoader {
 
     private static TagAppender<Fluid, Fluid> tag(RegistrateTagsProvider.IntrinsicImpl<Fluid> provider,
                                                  TagKey<Fluid> tagKey) {
-        return TagProviderCompat.tag(provider, tagKey);
+        return provider.tag(tagKey);
     }
 }

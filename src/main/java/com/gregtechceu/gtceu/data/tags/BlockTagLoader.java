@@ -73,18 +73,13 @@ public class BlockTagLoader {
                 .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
 
         tag(provider, CustomTags.CLEANROOM_FLOORS);
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("elevatorid", "elevators"));
-        TagProviderCompat.addOptional(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("enderio", "travel_anchor"));
-        TagProviderCompat.addOptional(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("rftoolsutility", "matter_transmitter"));
-        TagProviderCompat.addOptional(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("rftoolsutility", "matter_receiver"));
-        TagProviderCompat.addOptional(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("rftoolsutility", "dialing_device"));
-        TagProviderCompat.addOptional(provider, CustomTags.CLEANROOM_FLOORS,
-                Identifier.fromNamespaceAndPath("travelanchors", "travel_anchor"));
+        var cleanroomFloors = provider.rawBuilder(CustomTags.CLEANROOM_FLOORS);
+        cleanroomFloors.addOptionalTag(Identifier.fromNamespaceAndPath("elevatorid", "elevators"));
+        cleanroomFloors.addOptionalElement(Identifier.fromNamespaceAndPath("enderio", "travel_anchor"));
+        cleanroomFloors.addOptionalElement(Identifier.fromNamespaceAndPath("rftoolsutility", "matter_transmitter"));
+        cleanroomFloors.addOptionalElement(Identifier.fromNamespaceAndPath("rftoolsutility", "matter_receiver"));
+        cleanroomFloors.addOptionalElement(Identifier.fromNamespaceAndPath("rftoolsutility", "dialing_device"));
+        cleanroomFloors.addOptionalElement(Identifier.fromNamespaceAndPath("travelanchors", "travel_anchor"));
 
         tag(provider, CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
                 .addTag(BlockTags.DIRT) // any dirt blocks
@@ -99,6 +94,6 @@ public class BlockTagLoader {
     private static net.minecraft.data.tags.TagAppender<Block, Block> tag(
                                                                          RegistrateTagsProvider.IntrinsicImpl<Block> provider,
                                                                          TagKey<Block> tagKey) {
-        return TagProviderCompat.tag(provider, tagKey);
+        return provider.tag(tagKey);
     }
 }

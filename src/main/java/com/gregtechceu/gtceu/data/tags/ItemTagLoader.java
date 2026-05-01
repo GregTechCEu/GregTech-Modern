@@ -111,11 +111,12 @@ public class ItemTagLoader {
                 .addTag(CustomTags.ZPM_CIRCUITS)
                 .addTag(CustomTags.UV_CIRCUITS)
                 .addTag(CustomTags.UHV_CIRCUITS);
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CIRCUITS, CustomTags.UEV_CIRCUITS.location());
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CIRCUITS, CustomTags.UIV_CIRCUITS.location());
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CIRCUITS, CustomTags.UXV_CIRCUITS.location());
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CIRCUITS, CustomTags.OpV_CIRCUITS.location());
-        TagProviderCompat.addOptionalTag(provider, CustomTags.CIRCUITS, CustomTags.MAX_CIRCUITS.location());
+        var circuits = provider.rawBuilder(CustomTags.CIRCUITS);
+        circuits.addOptionalTag(CustomTags.UEV_CIRCUITS.location());
+        circuits.addOptionalTag(CustomTags.UIV_CIRCUITS.location());
+        circuits.addOptionalTag(CustomTags.UXV_CIRCUITS.location());
+        circuits.addOptionalTag(CustomTags.OpV_CIRCUITS.location());
+        circuits.addOptionalTag(CustomTags.MAX_CIRCUITS.location());
         createOptionalEmptyTag(provider, CustomTags.UEV_CIRCUITS);
         createOptionalEmptyTag(provider, CustomTags.UIV_CIRCUITS);
         createOptionalEmptyTag(provider, CustomTags.UXV_CIRCUITS);
@@ -208,13 +209,14 @@ public class ItemTagLoader {
     }
 
     private static TagAppender<Item, Item> tag(RegistrateItemTagsProvider provider, TagKey<Item> tagKey) {
-        return TagProviderCompat.tag(provider, tagKey);
+        return provider.tag(tagKey);
     }
 
     private static void createOptionalEmptyTag(RegistrateItemTagsProvider provider, TagKey<Item> tagKey) {
         Identifier tagId = tagKey.location();
-        TagProviderCompat.addOptional(provider, tagKey,
-                Identifier.fromNamespaceAndPath(tagId.getNamespace(), "_empty_tag/" + tagId.getPath()));
+        provider.rawBuilder(tagKey)
+                .addOptionalElement(Identifier.fromNamespaceAndPath(tagId.getNamespace(),
+                        "_empty_tag/" + tagId.getPath()));
     }
 
     private static TagAppender<Item, Item> addTag(RegistrateItemTagsProvider provider, TagPrefix prefix,
@@ -226,8 +228,9 @@ public class ItemTagLoader {
     private static void addOptionalItems(RegistrateItemTagsProvider provider, TagKey<Item> tagKey,
                                          net.minecraft.resources.Identifier... ids) {
         tag(provider, tagKey);
+        var builder = provider.rawBuilder(tagKey);
         for (var id : ids) {
-            TagProviderCompat.addOptional(provider, tagKey, id);
+            builder.addOptionalElement(id);
         }
     }
 }
