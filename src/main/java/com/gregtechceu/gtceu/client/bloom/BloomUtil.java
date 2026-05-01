@@ -333,7 +333,7 @@ public class BloomUtil {
                 }
             }
         } finally {
-            BLOOM_RENDER_LOCK.readLock().lock();
+            BLOOM_RENDER_LOCK.readLock().unlock();
         }
 
         if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
