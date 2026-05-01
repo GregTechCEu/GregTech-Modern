@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
@@ -72,7 +74,7 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     }
 
     @Override
-    protected Object addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
+    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
         return AbstractEnderLinkCoverUI.createEmptyVirtualEntryWidget(x, y, width, height);
     }
 
