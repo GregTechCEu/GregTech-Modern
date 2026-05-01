@@ -24,6 +24,8 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, Tr
     public static final String SECTION_NAME = GTCEu.MOD_ID;
     public static final MetadataSectionSerializer<GTTextureMetadata> SERIALIZER = new Serializer();
 
+    public static final GTTextureMetadata EMPTY = new GTTextureMetadata(null, TriState.DEFAULT);
+
     /**
      * @apiNote This method throws {@link IOException} even though it isn't specified in the method definition.
      */
