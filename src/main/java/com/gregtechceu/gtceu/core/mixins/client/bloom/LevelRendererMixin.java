@@ -30,9 +30,9 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Inject(method = "deinitTransparency", at = @At("TAIL"))
-    private void gtceu$deinitBloomEffect(CallbackInfo ci) {
-        BloomShaderManager.deinitPostShaders();
+    @Inject(method = "graphicsChanged", at = @At(value = "HEAD"))
+    private void gtceu$reinitBloomEffect(CallbackInfo ci) {
+        BloomShaderManager.initPostShaders();
     }
 
     @Definition(id = "renderBuffers",

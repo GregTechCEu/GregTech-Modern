@@ -44,11 +44,10 @@ public class BloomShaderManager {
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
                 GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
                 shader -> rendertypeEntityBloomShader = shader);
-
-        initPostShaders();
     }
 
-    private static void initPostShaders() {
+    @ApiStatus.Internal
+    public static void initPostShaders() {
         deinitPostShaders();
 
         // forcefully update availability on (re-)load
@@ -93,11 +92,9 @@ public class BloomShaderManager {
         }
     }
 
-    @ApiStatus.Internal
-    public static void deinitPostShaders() {
+    private static void deinitPostShaders() {
         if (BLOOM_CHAIN != null) {
             BLOOM_CHAIN.close();
-            // noinspection DataFlowIssue // they should always be null or not together
             BLOOM_TARGET.destroyBuffers();
 
             BLOOM_CHAIN = null;
