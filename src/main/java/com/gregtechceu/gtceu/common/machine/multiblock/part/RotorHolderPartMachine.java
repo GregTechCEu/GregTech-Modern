@@ -4,7 +4,10 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
@@ -22,8 +25,12 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,6 +38,8 @@ import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -232,7 +241,14 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-        return RotorHolderPartMachineUI.createUIWidget(this);
+        var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
+        var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
+        container.addWidget(new BlockableSlotWidget(inventory.storage, 0, 4, 4)
+                .setIsBlocked(() -> rotorSpeed != 0)
+                .setBackground(GuiTextures.SLOT, GuiTextures.TURBINE_OVERLAY));
+        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(container);
+        return group;
     }
 
     //////////////////////////////////////
@@ -256,7 +272,12 @@ public class RotorHolderPartMachine extends TieredPartMachine {
 
     @Override
     public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        RotorHolderPartMachineUI.attachTooltips(this, tooltipsPanel);
+        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
+                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                () -> !isFrontFaceFree(),
+                () -> null));
     }
 
     /**

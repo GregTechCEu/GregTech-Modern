@@ -3,9 +3,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -20,10 +25,14 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -257,12 +266,105 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         super.attachConfigurators(configuratorPanel);
-        FluidHatchPartMachineUI.attachConfigurators(this, configuratorPanel);
+        if (isCircuitSlotEnabled() && getIo().support(IO.IN)) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
     }
 
     @Override
     public Widget createUIWidget() {
-        return FluidHatchPartMachineUI.createUIWidget(this);
+        if (slots == 1) {
+            return createSingleSlotGUI();
+        }
+        return createMultiSlotGUI();
+    }
+
+    private Widget createSingleSlotGUI() {
+        var group = new WidgetGroup(0, 0, 89, 63);
+        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY));
+        TankWidget tankWidget;
+
+        if (getIo().support(IO.OUT)) {
+            tankWidget = new PhantomFluidWidget(tank.getLockedFluid(), 0, 67, 40, 18, 18,
+                    () -> tank.getLockedFluid().getFluid(), f -> {
+                        if (!tank.getFluidInTank(0).isEmpty()) {
+                            return;
+                        }
+                        if (f == null || f.isEmpty()) {
+                            tank.setLocked(false);
+                        } else {
+                            FluidStack newFluid = f.copy();
+                            newFluid.setAmount(1);
+                            tank.setLocked(true, newFluid);
+                        }
+                    }).setShowAmount(false).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT);
+            group.addWidget(tankWidget);
+
+            group.addWidget(new ToggleButtonWidget(7, 40, 18, 18,
+                    GuiTextures.BUTTON_LOCK, tank::isLocked, tank::setLocked)
+                    .setTooltipText("gtceu.gui.fluid_lock.tooltip")
+                    .setShouldUseBaseBackground())
+                    .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true,
+                            getIo().support(IO.IN))
+                            .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
+        } else {
+            tankWidget = new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true,
+                    getIo().support(IO.IN))
+                    .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT);
+            group.addWidget(tankWidget);
+        }
+
+        TankWidget displayedTank = tankWidget;
+        group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
+                .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(displayedTank)))
+                .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(displayedTank).getString()));
+
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
+    }
+
+    private Component getFluidNameText(TankWidget tankWidget) {
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            return tank.getFluidInTank(tankWidget.getTank()).getHoverName();
+        }
+        return tank.getLockedFluid().getFluid().getHoverName();
+    }
+
+    private String getFluidAmountText(TankWidget tankWidget) {
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            return getFormattedFluidAmount(tank.getFluidInTank(tankWidget.getTank()));
+        }
+        if (!tank.getLockedFluid().getFluid().isEmpty()) {
+            return "0";
+        }
+        return "";
+    }
+
+    private Widget createMultiSlotGUI() {
+        int rowSize = (int) Math.sqrt(slots);
+        int colSize = rowSize;
+        if (slots == 8) {
+            rowSize = 4;
+            colSize = 2;
+        }
+
+        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
+
+        int index = 0;
+        for (int y = 0; y < colSize; y++) {
+            for (int x = 0; x < rowSize; x++) {
+                container.addWidget(
+                        new TankWidget(tank.getStorages()[index++], 4 + x * 18, 4 + y * 18, true,
+                                getIo().support(IO.IN))
+                                .setBackground(GuiTextures.FLUID_SLOT));
+            }
+        }
+
+        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(container);
+
+        return group;
     }
 
     public String getFormattedFluidAmount(FluidStack fluidStack) {
