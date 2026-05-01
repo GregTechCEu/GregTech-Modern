@@ -19,11 +19,10 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
+// spotless:off
 /**
  * Custom model type that simply overrides {@link BakedModel#isCustomRenderer()} to always return true so
  * {@link IClientItemExtensions#getCustomRenderer()} can work. Does nothing on blocks.
@@ -31,14 +30,15 @@ import java.util.function.Function;
  * <p>
  * Use it on an item model builder like this:
  * <pre>{@code
- *      prov.getBuilder(ctx.getId())
- *              .customLoader(CustomItemRendererModel.Builder::begin).end()
- *              // ...
+ * prov.getBuilder(ctx.getId())
+ *         .customLoader(CustomItemRendererModel.Builder::begin).end()
+ *         // ...
  * }</pre>
  */
+// spotless:on
 public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomItemRendererWrapperModel> {
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("custom_item_renderer_wrapper");
+    public static final ResourceLocation ID = GTCEu.id("custom_item_renderer_wrapper");
 
     private final BlockModel parent;
 
@@ -53,7 +53,8 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
         BlockModel owner = parent;
         if (context instanceof BlockGeometryBakingContext blockContext) owner = blockContext.owner;
 
-        BakedModel originalModel = parent.bake(baker, owner, spriteGetter, modelState, modelLocation, context.isGui3d());
+        BakedModel originalModel = parent.bake(baker, owner, spriteGetter, modelState, modelLocation,
+                context.isGui3d());
         return new Baked(originalModel);
     }
 
@@ -72,47 +73,26 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
     public static final class Loader implements IGeometryLoader<CustomItemRendererWrapperModel> {
 
         public static final CustomItemRendererWrapperModel.Loader INSTANCE = new CustomItemRendererWrapperModel.Loader();
-//         private static final ThreadLocal<Boolean> currentlyParsing = new ThreadLocal<>();
 
         private Loader() {}
 
         @Override
-        public @Nullable CustomItemRendererWrapperModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
-//             if (Boolean.TRUE.equals(currentlyParsing.get())) {
-//                 // if this is called from the inner context.deserialize(...) invocation, return null so the vanilla
-//                 // model is parsed instead
-//                 return null;
-//             }
-//             try {
-//                 currentlyParsing.set(Boolean.TRUE);
-//
+        public CustomItemRendererWrapperModel read(JsonObject json, JsonDeserializationContext context) {
             // remove the loader field and parse it again as a normal vanilla model
             json.remove("loader");
 
             return new CustomItemRendererWrapperModel(context.deserialize(json, BlockModel.class));
-//             } finally {
-//                 currentlyParsing.remove();
-//             }
         }
     }
 
-    /**
-     * Use this to add the model type to an item model generator, like this:
-     * <pre>{@code
-     *      prov.withExistingParent(ctx::get, ctx.id())
-     *              .customLoader(CustomItemRendererModel.Builder::begin).end()
-     *              // ...
-     * }</pre>
-     */
     public static final class Builder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
         public Builder(T parent, ExistingFileHelper existingFileHelper) {
-            super(TYPE_ID, parent, existingFileHelper);
+            super(ID, parent, existingFileHelper);
         }
 
         public static <T extends ModelBuilder<T>> Builder<T> begin(T parent, ExistingFileHelper existingFileHelper) {
             return new Builder<>(parent, existingFileHelper);
         }
-
     }
 }
