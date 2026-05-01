@@ -473,7 +473,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         group.addWidget((Widget) filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         if (this instanceof RobotArmCover robotArmCover) {
-            RobotArmCoverUI.buildAdditionalUI(robotArmCover, group);
+            robotArmCover.buildAdditionalUI(group);
         }
 
         return group;

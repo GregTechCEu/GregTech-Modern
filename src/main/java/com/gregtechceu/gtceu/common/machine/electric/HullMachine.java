@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -113,7 +115,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.buttonCheck(); // temporary (until there's a texture that is not fully 16x16 for
                                                     // this)
     }

@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -207,7 +208,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.buttonCheck(); // temporary
     }
 

@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.misc.MonitorComponentIcons;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 public class HPCAEmptyPartMachine extends HPCAComponentPartMachine {
 
     public HPCAEmptyPartMachine(BlockEntityCreationInfo info) {
@@ -16,7 +18,7 @@ public class HPCAEmptyPartMachine extends HPCAComponentPartMachine {
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.hpcaEmptyComponent();
     }
 }

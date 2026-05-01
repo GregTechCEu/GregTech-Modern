@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -183,7 +184,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.dataModule();
     }
 

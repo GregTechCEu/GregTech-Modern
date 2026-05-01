@@ -22,7 +22,12 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.network.chat.Component;
 
@@ -279,13 +284,16 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
-    public static void addEUToStartLabel(GTRecipe recipe, Object group) {
+    public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
         long euToStart = recipe.data.getLongOr("eu_to_start", 0L);
         if (euToStart <= 0) return;
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
-        FusionReactorMachineUI.addEUToStartLabel(group, euToStart, FUSION_NAMES.get(tier));
+        group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
+                LocalizationUtils.format("gtceu.recipe.eu_to_start",
+                        FormattingUtil.formatNumberReadable2F(euToStart, false),
+                        FUSION_NAMES.get(tier))));
     }
 
     //////////////////////////////////////

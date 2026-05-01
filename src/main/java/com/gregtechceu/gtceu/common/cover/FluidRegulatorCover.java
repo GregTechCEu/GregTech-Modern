@@ -4,11 +4,16 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,8 +44,8 @@ public class FluidRegulatorCover extends PumpCover {
     protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
 
-    Object transferSizeInput;
-    Object transferBucketModeInput;
+    IntInputWidget transferSizeInput;
+    EnumSelectorWidget<BucketMode> transferBucketModeInput;
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                                int maxTransferRate) {
@@ -150,7 +155,13 @@ public class FluidRegulatorCover extends PumpCover {
         this.transferBucketMode = transferBucketMode;
         syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
         if (transferSizeInput != null) {
-            FluidRegulatorCoverUI.configureTransferSizeInputValue(this, oldMultiplier, newMultiplier);
+            if (oldMultiplier > newMultiplier) {
+                transferSizeInput.setValue(getCurrentBucketModeTransferSize());
+            }
+            transferSizeInput.setMax(MAX_STACK_SIZE / getTransferBucketMode().multiplier);
+            if (newMultiplier > oldMultiplier) {
+                transferSizeInput.setValue(getCurrentBucketModeTransferSize());
+            }
         }
     }
 
@@ -202,9 +213,28 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     void configureTransferSizeInput() {
-        if (this.transferSizeInput != null && this.transferBucketModeInput != null) {
-            FluidRegulatorCoverUI.configureTransferSizeInputVisibility(this);
-        }
+        if (transferSizeInput == null || transferBucketModeInput == null) return;
+        transferSizeInput.setVisible(shouldShowTransferSize());
+        transferBucketModeInput.setVisible(shouldShowTransferSize());
+    }
+
+    void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), getTransferMode(),
+                        this::setTransferMode,
+                        TransferMode::getTooltip, CoverModeTextures::getTransferModeIcon));
+
+        transferSizeInput = new IntInputWidget(35, 45, 84, 20,
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize);
+        transferSizeInput.setMin(0);
+        transferSizeInput.setMax(Integer.MAX_VALUE);
+        configureTransferSizeInput();
+        group.addWidget(transferSizeInput);
+
+        transferBucketModeInput = new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(),
+                getTransferBucketMode(), this::setTransferBucketMode, BucketMode::getTooltip,
+                CoverModeTextures::getBucketModeIcon);
+        group.addWidget(transferBucketModeInput);
     }
 
     boolean shouldShowTransferSize() {

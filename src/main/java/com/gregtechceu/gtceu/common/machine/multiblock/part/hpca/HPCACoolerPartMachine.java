@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.gui.misc.MonitorComponentIcons;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import lombok.Getter;
 
 public class HPCACoolerPartMachine extends HPCAComponentPartMachine {
@@ -27,7 +29,7 @@ public class HPCACoolerPartMachine extends HPCAComponentPartMachine {
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.hpcaCoolerComponent(advanced);
     }
 }

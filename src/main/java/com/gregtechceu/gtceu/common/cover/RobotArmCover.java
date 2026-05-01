@@ -5,10 +5,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +41,7 @@ public class RobotArmCover extends ConveyorCover {
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
-    Object stackSizeInput;
+    IntInputWidget stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                          int maxTransferRate) {
@@ -177,9 +182,23 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     void configureStackSizeInput() {
-        if (this.stackSizeInput != null) {
-            RobotArmCoverUI.configureStackSizeInput(this);
-        }
+        if (stackSizeInput == null) return;
+        stackSizeInput.setVisible(shouldShowStackSize());
+        stackSizeInput.setMin(1);
+        stackSizeInput.setMax(transferMode.maxStackSize);
+    }
+
+    void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode,
+                        this::setTransferMode,
+                        TransferMode::getTooltip, CoverModeTextures::getTransferModeIcon));
+
+        stackSizeInput = new IntInputWidget(64, 45, 80, 20,
+                () -> globalTransferLimit, val -> globalTransferLimit = val);
+        configureStackSizeInput();
+
+        group.addWidget(stackSizeInput);
     }
 
     boolean shouldShowStackSize() {

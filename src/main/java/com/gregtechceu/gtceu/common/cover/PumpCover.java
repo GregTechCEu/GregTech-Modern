@@ -11,6 +11,9 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IOSelectorTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -19,15 +22,19 @@ import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -40,6 +47,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class PumpCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
@@ -77,7 +85,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     @SyncToClient
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
-    Object transferRateWidget;
+    IntInputWidget transferRateWidget;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                      int maxTransferRate) {
@@ -177,7 +185,21 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         this.bucketMode = bucketMode;
         syncDataHolder.markClientSyncFieldDirty("bucketMode");
         if (transferRateWidget != null) {
-            PumpCoverUI.configureTransferRateWidget(this, oldMultiplier, newMultiplier);
+            configureTransferRateWidget(oldMultiplier, newMultiplier);
+        }
+    }
+
+    private void configureTransferRateWidget(int oldMultiplier, int newMultiplier) {
+        if (transferRateWidget == null) return;
+
+        if (oldMultiplier > newMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
+        }
+
+        transferRateWidget.setMax(maxFluidTransferRate / bucketMode.multiplier);
+
+        if (newMultiplier > oldMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
         }
     }
 
@@ -264,7 +286,44 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
     @Override
     public Widget createUIWidget() {
-        return PumpCoverUI.createUIWidget(this);
+        final var group = new WidgetGroup(0, 0, 176, 137);
+        group.addWidget(
+                new LabelWidget(10, 5,
+                        Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
+
+        transferRateWidget = new IntInputWidget(10, 20, 134, 20,
+                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate);
+        transferRateWidget.setMin(0);
+        configureTransferRateWidget(bucketMode.multiplier, bucketMode.multiplier);
+        group.addWidget(transferRateWidget);
+
+        group.addWidget(new EnumSelectorWidget<>(
+                146, 20, 20, 20,
+                Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxFluidTransferRate).toList(),
+                bucketMode, this::setBucketMode, BucketMode::getTooltip,
+                CoverModeTextures::getBucketModeIcon).setTooltipSupplier(this::getBucketModeTooltip));
+
+        group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo,
+                IO::getTooltip, IOSelectorTextures::getIcon));
+
+        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode, ManualIOMode::getTooltip,
+                CoverModeTextures::getManualIOModeIcon)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        group.addWidget((Widget) filterHandler.createFilterSlotUI(125, 108));
+        group.addWidget((Widget) filterHandler.createFilterConfigUI(10, 72, 156, 60));
+
+        if (this instanceof FluidRegulatorCover fluidRegulatorCover) {
+            fluidRegulatorCover.buildAdditionalUI(group);
+        }
+
+        return group;
+    }
+
+    private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
+        return List.of(
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick")));
     }
 
     int getCurrentBucketModeTransferRate() {

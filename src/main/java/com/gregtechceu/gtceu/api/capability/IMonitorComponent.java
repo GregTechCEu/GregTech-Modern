@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -11,7 +13,7 @@ public interface IMonitorComponent {
         return false;
     }
 
-    Object getComponentIcon();
+    IGuiTexture getComponentIcon();
 
     BlockPos getBlockPos();
 

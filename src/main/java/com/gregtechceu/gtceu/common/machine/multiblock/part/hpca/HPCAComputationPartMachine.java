@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.gui.misc.MonitorComponentIcons;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 
@@ -32,7 +34,7 @@ public class HPCAComputationPartMachine extends HPCAComponentPartMachine {
     }
 
     @Override
-    public Object getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return MonitorComponentIcons.hpcaComputationComponent(advanced, hpcaComponentTrait.isDamaged());
     }
 }
