@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.client.bloom.EffectRenderContext;
-import com.gregtechceu.gtceu.client.bloom.IBloomEffect;
+import com.gregtechceu.gtceu.client.bloom.*;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -23,12 +21,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.serialization.Codec;
 import lombok.RequiredArgsConstructor;
+import org.lwjgl.opengl.GL11;
 
 import static net.minecraft.util.FastColor.ARGB32.*;
 
@@ -64,10 +60,11 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         }
 
         if (machine.getRegisteredBloomTicket().isValid() && !machine.isFormed()) {
-            machine.setRegisteredBloomTicket(BloomRenderTicket.INVALID);
+            machine.getRegisteredBloomTicket().invalidate();
         }
         if (!machine.getRegisteredBloomTicket().isValid() && BloomShaderManager.isBloomShaderInUse()) {
-            BloomRenderTicket ticket = BloomUtil.registerBloomRender(null, new FusionBloomEffect(machine), machine);
+            BloomRenderTicket ticket = BloomUtil.registerBloomRender(FusionBloomEffect.SETUP,
+                    new FusionBloomEffect(machine), machine);
 
             machine.setRegisteredBloomTicket(ticket);
         }
@@ -78,6 +75,10 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     @OnlyIn(Dist.CLIENT)
     private void renderLightRing(FusionReactorMachine machine, float partialTicks,
                                  PoseStack stack, VertexConsumer buffer) {
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+
         float alpha = 1f;
         if (machine.recipeLogic.isWorking()) {
             lastColor = machine.getColor();
@@ -105,6 +106,10 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
                 back.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
                 r, g, b, alpha, axis);
+
+        RenderSystem.enableCull();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     @Override
@@ -122,27 +127,38 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
         private final FusionReactorMachine machine;
 
-        private static final BufferBuilder lightRingBuffer = new BufferBuilder(
-                GTRenderTypes.getLightRing().bufferSize());
+        private static final BufferBuilder lightRingBuffer = new BufferBuilder(GTRenderTypes.lightRing().bufferSize());
+
+        private static final IRenderSetup SETUP = new IRenderSetup() {
+
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void preDraw(BufferBuilder buffer) {
+                lightRingBuffer.begin(GTRenderTypes.lightRing().mode(), GTRenderTypes.lightRing().format());
+            }
+
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void postDraw(BufferBuilder buffer) {
+                ShaderInstance lastShader = RenderSystem.getShader();
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+                BufferUploader.drawWithShader(lightRingBuffer.end());
+
+                RenderSystem.setShader(() -> lastShader);
+            }
+        };
 
         @Override
         public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
             BlockPos pos = machine.getBlockPos();
 
-            lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
             FusionRingRender.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer);
 
             poseStack.popPose();
-
-            ShaderInstance lastShader = RenderSystem.getShader();
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-            BufferUploader.drawWithShader(lightRingBuffer.end());
-
-            RenderSystem.setShader(() -> lastShader);
         }
 
         @Override

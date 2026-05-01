@@ -53,7 +53,7 @@ public class GTRenderTypes extends RenderType {
                     .createCompositeState(false));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
-                RenderType.TRANSIENT_BUFFER_SIZE, true, false,
+                RenderType.TRANSIENT_BUFFER_SIZE, false, false,
                 RenderType.CompositeState.builder()
                         .setShaderState(RENDERTYPE_ENTITY_BLOOM_SHADER)
                         .setOutputState(BLOOM_TARGET)
@@ -87,7 +87,7 @@ public class GTRenderTypes extends RenderType {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 
-    public static RenderType getLightRing() {
+    public static RenderType lightRing() {
         return LIGHT_RING;
     }
 

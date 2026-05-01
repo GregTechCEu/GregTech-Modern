@@ -185,7 +185,7 @@ public class BloomUtil {
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
-        // if safe mode is enabled, don't draw block bloom the 'normal' way
+        // safe mode disabled -> use deeper, faster hackery
         if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
                     camPos.x, camPos.y, camPos.z, projectionMatrix);
@@ -193,7 +193,7 @@ public class BloomUtil {
             // have to re-setup here. so sad. very aw.
             GTRenderTypes.bloom().setupRenderState();
         }
-        // use BloomSafeMode.drawBlockBloom instead
+        // safe mode enabled -> don't draw block bloom the 'normal' way; use BloomSafeMode.drawBlockBloom instead
         else {
             BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
         }
@@ -500,17 +500,17 @@ public class BloomUtil {
         /**
          * Do post-draw cleanup such as removing invalidated draw tickets.
          *
-         * @return Whether this list is empty and should thus be removed from the tracking map.
+         * @return Whether this list should be removed from the tracking map.
          */
         private boolean postDraw() {
             if (this.isEmpty()) return true;
 
-            if (!this.removeIf(ticket -> {
+            boolean removedAny = this.removeIf(ticket -> {
                 ticket.checkValidity();
                 return !ticket.isValid();
-            })) {
-                return true;
-            }
+            });
+            if (!removedAny) return false;
+
             return this.isEmpty();
         }
     }
