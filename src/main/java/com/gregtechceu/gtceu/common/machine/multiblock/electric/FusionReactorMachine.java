@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.bloom.BloomRenderTicket;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -84,7 +85,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     @Getter
     @Setter
-    protected boolean registeredBloomTicket;
+    protected BloomRenderTicket registeredBloomTicket = BloomRenderTicket.INVALID;
 
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);

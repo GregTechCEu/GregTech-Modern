@@ -57,26 +57,27 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     }
 
     @Override
-    public void render(FusionReactorMachine machine, float partialTick,
-                       PoseStack poseStack, MultiBufferSource buffer,
+    public void render(FusionReactorMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!machine.recipeLogic.isWorking() && delta <= 0) {
             return;
         }
 
-        if (machine.isRegisteredBloomTicket() && !machine.isFormed()) {
-            machine.setRegisteredBloomTicket(false);
+        if (machine.getRegisteredBloomTicket().isValid() && !machine.isFormed()) {
+            machine.setRegisteredBloomTicket(BloomRenderTicket.INVALID);
         }
-        if (!machine.isRegisteredBloomTicket()) {
-            machine.setRegisteredBloomTicket(true);
-            BloomUtil.registerBloomRender(null, new FusionBloomEffect(machine), machine.self());
+        if (!machine.getRegisteredBloomTicket().isValid() && BloomShaderManager.isBloomShaderInUse()) {
+            BloomRenderTicket ticket = BloomUtil.registerBloomRender(null, new FusionBloomEffect(machine), machine);
+
+            machine.setRegisteredBloomTicket(ticket);
         }
-        renderLightRing(machine, partialTick, poseStack, buffer.getBuffer(GTRenderTypes.getLightRing()));
+
+        renderLightRing(machine, partialTick, poseStack, buffer.getBuffer(GTRenderTypes.lightRing()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
-                                 VertexConsumer buffer) {
+    private void renderLightRing(FusionReactorMachine machine, float partialTicks,
+                                 PoseStack stack, VertexConsumer buffer) {
         float alpha = 1f;
         if (machine.recipeLogic.isWorking()) {
             lastColor = machine.getColor();
@@ -87,15 +88,17 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
             delta -= Minecraft.getInstance().getDeltaFrameTime();
         }
 
-        final float lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
         Direction front = machine.getFrontFacing();
         Direction upwards = machine.getUpwardsFacing();
         boolean flipped = machine.isFlipped();
         Direction back = RelativeDirection.BACK.getRelative(front, upwards, flipped);
         Direction.Axis axis = RelativeDirection.UP.getRelative(front, upwards, flipped).getAxis();
+
+        float lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
         float r = Mth.lerp(lerpFactor, red(lastColor), 255) / 255f;
         float g = Mth.lerp(lerpFactor, green(lastColor), 255) / 255f;
         float b = Mth.lerp(lerpFactor, blue(lastColor), 255) / 255f;
+
         RenderBufferHelper.renderRing(stack, buffer,
                 back.getStepX() * 7 + 0.5F,
                 back.getStepY() * 7 + 0.5F,

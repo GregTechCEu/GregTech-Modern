@@ -14,5 +14,5 @@ public abstract class GTBloomParticle extends GTParticle implements IBloomEffect
         BloomUtil.registerBloomRender(getBloomRenderSetup(), this, this);
     }
 
-    protected @Nullable abstract IRenderSetup getBloomRenderSetup();
+    protected abstract @Nullable IRenderSetup getBloomRenderSetup();
 }

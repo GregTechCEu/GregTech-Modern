@@ -25,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import com.mojang.blaze3d.vertex.*;
@@ -45,7 +43,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.*;
 
-@OnlyIn(Dist.CLIENT)
 @UtilityClass
 public class BloomUtil {
 
@@ -462,46 +459,6 @@ public class BloomUtil {
 
     // endregion
 
-    public static final class BloomRenderTicket {
-
-        public static final BloomRenderTicket INVALID = new BloomRenderTicket();
-
-        private final @Nullable IRenderSetup renderSetup;
-        private final IBloomEffect render;
-        private final @Nullable Predicate<BloomRenderTicket> validityChecker;
-        private final @Nullable Supplier<@Nullable Level> worldContext;
-
-        private boolean invalidated;
-
-        private BloomRenderTicket() {
-            this(null, (p, b, c) -> {}, null, null);
-            this.invalidated = true;
-        }
-
-        BloomRenderTicket(@Nullable IRenderSetup renderSetup, IBloomEffect render,
-                          @Nullable Predicate<BloomRenderTicket> validityChecker,
-                          @Nullable Supplier<@Nullable Level> worldContext) {
-            this.renderSetup = renderSetup;
-            this.render = Objects.requireNonNull(render, "render == null");
-            this.validityChecker = validityChecker;
-            this.worldContext = worldContext;
-        }
-
-        public boolean isValid() {
-            return !this.invalidated;
-        }
-
-        public void invalidate() {
-            this.invalidated = true;
-        }
-
-        private void checkValidity() {
-            if (!this.invalidated && this.validityChecker != null && !this.validityChecker.test(this)) {
-                invalidate();
-            }
-        }
-    }
-
     private static class BloomRenderList extends ArrayList<BloomRenderTicket> {
 
         private final @Nullable IRenderSetup renderSetup;
@@ -513,6 +470,9 @@ public class BloomUtil {
 
         private void draw(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
             boolean initialized = false;
+
+            poseStack.pushPose();
+            poseStack.translate(-context.camPos().x(), -context.camPos().y(), -context.camPos().z());
 
             for (BloomRenderTicket ticket : this) {
                 ticket.checkValidity();
@@ -526,10 +486,11 @@ public class BloomUtil {
                 }
 
                 poseStack.pushPose();
-                poseStack.translate(-context.camPos().x(), -context.camPos().y(), -context.camPos().z());
                 ticket.render.renderBloomEffect(poseStack, buffer, context);
                 poseStack.popPose();
             }
+
+            poseStack.popPose();
 
             if (initialized && this.renderSetup != null) {
                 this.renderSetup.postDraw(buffer);
