@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
@@ -50,7 +52,7 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public Object openConfigurator(int x, int y) {
+        public Widget openConfigurator(int x, int y) {
             throw new NotImplementedException("Not available for empty item filter");
         }
 

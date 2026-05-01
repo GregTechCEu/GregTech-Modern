@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
@@ -80,7 +81,7 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
-    public Object openConfigurator(int x, int y) {
+    public Widget openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
         fluidStorageSlots = new CustomFluidTank[9];
         for (int i = 0; i < 3; i++) {
