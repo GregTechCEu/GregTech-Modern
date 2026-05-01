@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.client.model.ctm.GTTextureMetadata;
 
 import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.TriState;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -70,9 +72,16 @@ public class TextureMetadataHelper {
             return true;
         }
         var metadata = getMetadata(quad.getSprite());
-        if (metadata.isPresent() && metadata.get().bloom()) {
-            return true;
-        } else if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
+        if (metadata.isPresent()) {
+            TriState bloomValue = metadata.get().bloom();
+            if (bloomValue == TriState.TRUE) return true;
+            // Explicitly disable bloom if it's set to FALSE in the metadata
+            else if (bloomValue == TriState.FALSE) return false;
+
+            // fall through to emissivity config check if default
+        }
+
+        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
             return isEmissive(quad, ambientPackedLights);
         }
 
