@@ -20,7 +20,6 @@
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
-        "ldlib.WorldSceneRendererMixin",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
