@@ -3,15 +3,23 @@ package com.gregtechceu.gtceu.api.gui.misc;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TagUtil;
+
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
@@ -44,7 +53,7 @@ public abstract class ProspectorMode<T> {
     public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
 
         private final Map<BlockState, String> BLOCK_CACHE = new HashMap<>();
-        private final Map<String, Object> ICON_CACHE = new HashMap<>();
+        private final Map<String, IGuiTexture> ICON_CACHE = new HashMap<>();
 
         @Override
         public void scan(String[][][] storage, LevelChunk chunk) {
@@ -83,8 +92,23 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public Object getItemIcon(String item) {
-            return ICON_CACHE.computeIfAbsent(item, ProspectorModeUI::oreIcon);
+        public IGuiTexture getItemIcon(String item) {
+            return ICON_CACHE.computeIfAbsent(item, name -> {
+                if (name.startsWith("material_")) {
+                    var mat = GTMaterials.get(name.substring(9));
+                    if (!mat.isNull()) {
+                        var list = new ArrayList<ItemStack>();
+                        for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
+                            for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
+                                list.add(new ItemStack(block));
+                            }
+                        }
+                        return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
+                    }
+                }
+                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.getValue(Identifier.parse(name))))
+                        .scale(0.8f);
+            });
         }
 
         @Override
@@ -194,8 +218,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public Object getItemIcon(FluidInfo item) {
-            return ProspectorModeUI.fluidIcon(item);
+        public IGuiTexture getItemIcon(FluidInfo item) {
+            return new ItemStackTexture(item.fluid().getBucket());
         }
 
         @Override
@@ -238,7 +262,17 @@ public abstract class ProspectorMode<T> {
         @Override
         @OnlyIn(Dist.CLIENT)
         public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
-            ProspectorModeUI.drawFluidGrid(graphics, items, x, y, width, height);
+            if (items.length > 0) {
+                var item = items[0];
+                double progress = item.left() * 1.0 / Math.max(Math.min(item.left(), 100), 1);
+                float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
+                float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
+                float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
+                float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
+                DrawerHelper.drawFluidForGui(graphics, new FluidStack(item.fluid(), item.left()),
+                        (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
+                        ((int) (height * drawnHeight)));
+            }
         }
     };
 
@@ -270,8 +304,15 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public Object getItemIcon(OreInfo item) {
-            return ProspectorModeUI.bedrockOreIcon(item);
+        public IGuiTexture getItemIcon(OreInfo item) {
+            var material = item.material();
+            ItemStack stack = GTUtil.getFirstNonEmpty(
+                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
+                    ChemicalHelper.get(TagPrefix.crushed, material),
+                    ChemicalHelper.get(TagPrefix.gem, material),
+                    ChemicalHelper.get(TagPrefix.ore, material),
+                    ChemicalHelper.get(TagPrefix.dust, material));
+            return new ItemStackTexture(stack).scale(0.8f);
         }
 
         @Override
@@ -332,7 +373,7 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract Object getItemIcon(T item);
+    public abstract IGuiTexture getItemIcon(T item);
 
     public abstract MutableComponent getDescription(T item);
 
