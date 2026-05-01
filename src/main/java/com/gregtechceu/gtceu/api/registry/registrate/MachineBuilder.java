@@ -717,9 +717,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @FunctionalInterface
     public interface ModelInitializer {
 
-        void configureModel(@NotNull DataGenContext<Block, ? extends Block> context,
-                            @NotNull GTBlockstateProvider provider,
-                            @NotNull MachineModelBuilder<BlockModelBuilder> builder);
+        void configureModel(DataGenContext<Block, ? extends Block> context, GTBlockstateProvider provider,
+                            MachineModelBuilder<BlockModelBuilder> builder);
 
         default ModelInitializer andThen(ModelInitializer after) {
             Objects.requireNonNull(after);
