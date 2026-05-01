@@ -35,7 +35,6 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.*;
@@ -48,7 +47,6 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -76,24 +74,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation")
 @ApiStatus.Internal
 public class MixinHelpers {
-
-    /**
-     * This is set at the start of:
-     * <ul>
-     * <li>{@link BlockEntity#loadAdditional(CompoundTag, HolderLookup.Provider)}
-     * <li>{@link BlockEntity#saveAdditional(CompoundTag, HolderLookup.Provider)}
-     * </ul>
-     * and cleared when the method exits.
-     */
-    public static final ThreadLocal<HolderLookup.Provider> CURRENT_BE_SAVE_LOAD_REGISTRIES = new ThreadLocal<>();
-
-    /**
-     * @return the registry access provided to the currently saving/loading block entity
-     *         or null if no saving or loading is happening.
-     */
-    public static HolderLookup.Provider getCurrentBERegistries() {
-        return CURRENT_BE_SAVE_LOAD_REGISTRIES.get();
-    }
 
     public static <T> void generateGTDynamicTags(Map<Identifier, List<TagLoader.EntryWithSource>> tagMap,
                                                  Registry<T> registry) {

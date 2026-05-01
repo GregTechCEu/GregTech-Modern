@@ -30,7 +30,6 @@
     ],
     "mixins": [
         "BlockBehaviourAccessor",
-        "BlockEntityMixin",
         "BlockMixin",
         "BlockPropertiesAccessor",
         "ChunkGeneratorMixin",

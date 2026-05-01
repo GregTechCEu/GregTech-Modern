@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
-import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -653,7 +652,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                     ListTag cacheTag = new ListTag();
                     for (var entry : cache.object2IntEntrySet()) {
                         CompoundTag compoundTag = new CompoundTag();
-                        var obj = cap.toNbt(entry.getKey(), MixinHelpers.getCurrentBERegistries());
+                        var obj = cap.toNbt(entry.getKey(), context.lookup());
                         compoundTag.put("entry", obj);
                         compoundTag.putInt("cached_chance", entry.getIntValue());
                         cacheTag.add(compoundTag);
