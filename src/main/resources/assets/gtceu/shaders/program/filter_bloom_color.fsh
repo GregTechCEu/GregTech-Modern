@@ -2,6 +2,7 @@
 
 uniform sampler2D DiffuseSampler;
 uniform sampler2D DiffuseDepthSampler;
+uniform sampler2D MainSampler;
 uniform sampler2D MainDepthSampler;
 uniform bool EnableFilter;
 
@@ -22,12 +23,17 @@ float linearizeDepth(float depth) {
 void main() {
     fragColor = texture(DiffuseSampler, texCoord);
     if (EnableFilter) {
+        vec4 mainColor = texture(MainSampler, texCoord);
+
         // calculate linear depth
         float mainDepth = linearizeDepth(texture(MainDepthSampler, texCoord).r);
         float diffuseDepth = linearizeDepth(texture(DiffuseDepthSampler, texCoord).r);
-
         // clear bloom color fragment if the main sampler's depth isn't the same as the bloom sampler's depth
         if (abs(mainDepth - diffuseDepth) > 0.01) {
+            fragColor = vec4(0.0);
+        }
+        // also clear it if the main sampler's color is off by too much
+        else if (distance((mainColor.rgb * fragColor.a), fragColor.rgb) > 0.05) {
             fragColor = vec4(0.0);
         }
     }
