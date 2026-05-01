@@ -90,7 +90,7 @@ public class BloomEventListeners {
                 block = GTRenderTypes.bloom();
                 entity = GTRenderTypes.entityBloomBlockSheet();
             }
-            event.register("gtceu:bloom", block, entity);
+            event.register("bloom", block, entity);
         }
     }
 }
