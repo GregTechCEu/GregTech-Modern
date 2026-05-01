@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/GregTechCEu/Branding/refs/heads/master/gregtech_ceu_modern_logo_large_modern.png" alt="Logo"></p>
 <h1 align="center">GregTech CEu: Modern</h1>
-<p align="center">GregTech:CEu for modern Minecraft versions MinecraftForge (1.20.1) & NeoForge (1.21.1+).</p>
+<p align="center">GregTech:CEu for modern Minecraft versions MinecraftForge (1.20.1) & NeoForge (1.21.1, 26.1.2).</p>
 <h1 align="center">
     <a href="https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern"><img src="https://img.shields.io/badge/Available%20for-MC%201.20.1+%20-informational?style=for-the-badge" alt="Supported Versions"></a>
     <a href="https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/LICENSE"><img src="https://img.shields.io/github/license/GregTechCEu/GregTech?style=for-the-badge" alt="License"></a>
@@ -15,7 +15,7 @@
 
 ## Required dependencies (NeoForge 26.1.2)
 
-The 26.1.2 build of GTCEu: Modern requires a patched build of [LowDragLib2](https://github.com/Low-Drag-MC/LDLib2). The patched jar (`ldlib2-neoforge-26.1.2-gtceu.1.jar`) ships in `libs/ldlib2/` of this repository and is also attached to GTCEu releases. End users must install it alongside `gtceu-*.jar` in their `mods/` folder; the mod will refuse to load otherwise.
+The NeoForge 26.1.2 build requires a patched build of [LowDragLib2](https://github.com/Low-Drag-MC/LDLib2), since the upstream LDLib2 jar does not yet ship a 26.1.2 build. The patched jar (`ldlib2-neoforge-26.1.2-gtceu.1.jar`) is bundled in `libs/ldlib2/` of this repository — end users must install it alongside `gtceu-*.jar` in their `mods/` folder. The mod is declared as a hard dependency on LDLib2 and will refuse to load without it.
 
 ## Developers
 
