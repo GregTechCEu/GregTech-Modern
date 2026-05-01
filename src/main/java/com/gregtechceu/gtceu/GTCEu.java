@@ -97,9 +97,18 @@ public class GTCEu {
     }
 
     private static void registerGameTestBootstrap(IEventBus modBus) {
-        // Test source set is on the launch classpath only for `gameTestServer` /
-        // `gameTestClient`; on other runs ServiceLoader silently finds no provider
-        // and the bootstrap is a no-op.
+        // `gradle/scripts/moddevgradle.gradle` registers `sourceSets.test` as part of the
+        // gtceu mod for IDE-attach reasons, so MDG puts the test resources (including the
+        // ServiceLoader provider file) on every dev run's classpath — including `runClient`.
+        // The `TEST` environment variable is set only by the `gameTestServer` /
+        // `gameTestClient` run configs, so it's the actual discriminator. Without this gate,
+        // `runClient` would invoke `GTGameTestBootstrap.registerTests`, which calls
+        // `Class#getDeclaredMethods` on every test class — eagerly resolving parameter types
+        // including `net.neoforged.testframework.gametest.GameTestPlayer`, a class that
+        // lives only on the test source set's classpath, blowing up mod loading.
+        if (System.getenv("TEST") == null) {
+            return;
+        }
         ServiceLoader.load(IGTGameTestBootstrap.class, GTCEu.class.getClassLoader())
                 .findFirst()
                 .ifPresent(bootstrap -> bootstrap.init(modBus));
