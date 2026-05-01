@@ -76,7 +76,7 @@ public class BloomSafeMode {
         }
 
         if (chunkOffset != null) {
-            chunkOffset.set(0, 0, 0);
+            chunkOffset.set(0.0f, 0.0f, 0.0f);
         }
         shader.clear();
         VertexBuffer.unbind();
