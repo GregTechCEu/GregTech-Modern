@@ -35,17 +35,19 @@ public abstract class LevelRendererMixin {
         BloomShaderManager.initPostShaders();
     }
 
-    @Definition(id = "renderChunkLayer",
-            method = "Lnet/minecraft/client/renderer/LevelRenderer;renderChunkLayer(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/PoseStack;DDDLorg/joml/Matrix4f;)V")
-    @Definition(id = "tripwire",
-            method = "Lnet/minecraft/client/renderer/RenderType;tripwire()Lnet/minecraft/client/renderer/RenderType;")
-    @Expression("this.renderChunkLayer(tripwire(), ?, ?, ?, ?, ?)")
+    @Definition(id = "renderBuffers",
+                field = "Lnet/minecraft/client/renderer/LevelRenderer;renderBuffers:Lnet/minecraft/client/renderer/RenderBuffers;")
+    @Definition(id = "crumblingBufferSource",
+                method = "Lnet/minecraft/client/renderer/RenderBuffers;crumblingBufferSource()Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;")
+    @Definition(id = "endBatch", method = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V")
+    @Expression("this.renderBuffers.crumblingBufferSource().endBatch()")
     @Inject(method = "renderLevel", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
-    private void gtceu$renderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
-                                   boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
-                                   LightTexture lightTexture, Matrix4f projectionMatrix,
-                                   CallbackInfo ci,
-                                   @Local Frustum frustum, @Local ProfilerFiller profilerFiller) {
+    private void gtceu$renderBloomBeforeTranslucent(PoseStack poseStack, float partialTick, long finishNanoTime,
+                                                    boolean renderBlockOutline, Camera camera,
+                                                    GameRenderer gameRenderer,
+                                                    LightTexture lightTexture, Matrix4f projectionMatrix,
+                                                    CallbackInfo ci,
+                                                    @Local Frustum frustum, @Local ProfilerFiller profilerFiller) {
         BloomUtil.renderBloom(camera, poseStack, frustum, projectionMatrix, partialTick,
                 (LevelRenderer) (Object) this, profilerFiller);
     }
