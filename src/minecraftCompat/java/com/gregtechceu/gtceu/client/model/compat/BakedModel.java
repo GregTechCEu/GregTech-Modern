@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.model.compat;
 
-import com.gregtechceu.gtceu.client.color.GTItemColors;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -32,8 +30,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public interface BakedModel extends DynamicBlockStateModel, net.minecraft.client.renderer.item.ItemModel {
+
+    /**
+     * Pluggable per-tint-layer color resolver. Returns the ARGB value to push
+     * into a {@link ItemStackRenderState.LayerRenderState} for {@code tintIndex}
+     * on {@code stack}, or {@code -1} if the layer should not be tinted.
+     * Default is a no-op so the compat layer has no reverse dependency on
+     * gtceu's tint registry; gtceu installs its
+     * {@code GTItemColors::getColor} implementation at client init.
+     */
+    AtomicReference<TintResolver> TINT_RESOLVER = new AtomicReference<>((stack, tintIndex) -> -1);
+
+    @FunctionalInterface
+    interface TintResolver {
+
+        int getColor(ItemStack stack, int tintIndex);
+    }
 
     default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return getQuads(state, side, rand, ModelData.EMPTY, null);
@@ -172,8 +187,9 @@ public interface BakedModel extends DynamicBlockStateModel, net.minecraft.client
         }
 
         IntList tintLayers = layer.tintLayers();
+        TintResolver resolver = TINT_RESOLVER.get();
         for (int tintIndex = 0; tintIndex <= maxTintIndex; tintIndex++) {
-            int tint = GTItemColors.getColor(stack, tintIndex);
+            int tint = resolver.getColor(stack, tintIndex);
             tintLayers.add(tint);
             renderState.appendModelIdentityElement(tint);
         }

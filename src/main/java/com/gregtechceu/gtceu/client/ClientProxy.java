@@ -88,6 +88,11 @@ public class ClientProxy {
 
     public static void init(IEventBus modBus) {
         modBus.register(ClientProxy.class);
+        // Wire the legacy `BakedModel` compat bridge into gtceu's tint registry.
+        // The bridge defaults to a no-op so that compat shim stays gtceu-free;
+        // gtceu's per-tint-layer color resolver gets installed here.
+        com.gregtechceu.gtceu.client.model.compat.BakedModel.TINT_RESOLVER
+                .set(com.gregtechceu.gtceu.client.color.GTItemColors::getColor);
         if (!GTCEu.isDataGen()) {
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
