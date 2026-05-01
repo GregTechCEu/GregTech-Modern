@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class GTEarlyConfig {
 
-    public static final String SAFE_MODE_CONFIG_NAME = "client.bloom.safe_mode";
+    public static final String SAFE_MODE_CONFIG_NAME = "client.bloom.safe_mode.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -29,14 +29,16 @@ public class GTEarlyConfig {
 
         // Defines the default rules which can be configured by the user or other mods.
         // You must manually add a rule for any new mixins not covered by an existing package rule.
-        Option option = addMixinRule(SAFE_MODE_CONFIG_NAME, false);
+        final String safeModeConfig = "client.bloom.safe_mode"; // no trailing dot
+
+        Option option = addMixinRule(safeModeConfig, false);
         option.addComment(
                 "Whether to use a 'safe mode' for bloom rendering",
-                "NOTE: considerably slower than the normal process, but likely fixes compatibility issues with other mods.",
+                "NOTE: considerably slower than the normal logic, but likely fixes compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
 
-        addDelegateRule("client.bloom.safemode", SAFE_MODE_CONFIG_NAME, false);
-        addDelegateRule("client.bloom.normal", SAFE_MODE_CONFIG_NAME, true);
+        addDelegateRule("client.bloom.safemode", safeModeConfig, false);
+        addDelegateRule("client.bloom.normal", safeModeConfig, true);
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
@@ -49,7 +51,8 @@ public class GTEarlyConfig {
 
         final String[] EMBEDDIUM_MOD_IDS = { "embeddium", "sodium" };
         final String[] OCULUS_MOD_IDS = { "oculus", "iris" };
-        enableIfModPresent("client.embeddium", EMBEDDIUM_MOD_IDS);
+        enableIfModPresent("embeddium", EMBEDDIUM_MOD_IDS);
+        enableIfModPresent("oculus", OCULUS_MOD_IDS);
         enableIfModPresent("client.bloom.normal.embeddium", EMBEDDIUM_MOD_IDS);
         enableIfModPresent("client.bloom.normal.oculus", OCULUS_MOD_IDS);
         enableIfModPresent("client.bloom.safemode.embeddium", EMBEDDIUM_MOD_IDS);
@@ -92,16 +95,14 @@ public class GTEarlyConfig {
     private void enableIfModPresent(String configName, String... ids) {
         Option option = this.options.get(configName);
         if (option == null) {
-            option = addMixinRule(configName, true);
+            option = addMixinRule(configName, false);
         }
         option.setHidden(true);
 
         for (String id : ids) {
             if (isModLoaded(id)) {
-                option.clearModsDefiningValue();
-                break;
+                option.addModOverride(true, id);
             }
-            option.addModOverride(false, id);
         }
     }
 
@@ -289,7 +290,7 @@ public class GTEarlyConfig {
                 writer.write("#\n");
                 if (option.getComment() != null) {
                     for (String commentLine : option.getComment()) {
-                        writer.write("# " + commentLine + "\n");
+                        writer.write("#  # " + commentLine + "\n");
                     }
                 }
                 writer.write("#  " + line + extraContext + "\n");
