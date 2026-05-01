@@ -3,10 +3,6 @@ package com.gregtechceu.gtceu.client.bloom;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
-import com.mojang.blaze3d.pipeline.RenderCall;
-import com.mojang.blaze3d.shaders.Uniform;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -16,6 +12,11 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
+
+import com.mojang.blaze3d.pipeline.RenderCall;
+import com.mojang.blaze3d.shaders.Uniform;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -150,8 +151,7 @@ public class BloomSafeMode {
         builder.setQuadSorting(VertexSorting.byDistance(
                 (float) camPos.x() - sectionPos.minBlockX(),
                 (float) camPos.y() - sectionPos.minBlockY(),
-                (float) camPos.z() - sectionPos.minBlockZ()
-        ));
+                (float) camPos.z() - sectionPos.minBlockZ()));
 
         finishBloomBuffer(sectionPos, builder);
     }
@@ -161,7 +161,7 @@ public class BloomSafeMode {
         ShaderInstance shader = RenderSystem.getShader();
         assert shader != null;
 
-        for(int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 12; ++i) {
             int textureId = RenderSystem.getShaderTexture(i);
             shader.setSampler("Sampler" + i, textureId);
         }

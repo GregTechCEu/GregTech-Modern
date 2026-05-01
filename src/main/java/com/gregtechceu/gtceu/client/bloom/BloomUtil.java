@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.LevelRendererAcce
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
-import lombok.experimental.UtilityClass;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -34,6 +33,7 @@ import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;

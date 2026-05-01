@@ -38,7 +38,6 @@ public class BloomShaderManager {
 
     @ApiStatus.Internal
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
                 GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
                 shader -> rendertypeBloomShader = shader);

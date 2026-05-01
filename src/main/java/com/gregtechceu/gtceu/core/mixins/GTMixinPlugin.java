@@ -52,7 +52,8 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
         });
 
         if (OPTIFINE_PRESENT) {
-            LOGGER.fatal("OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of Forge features.");
+            LOGGER.fatal(
+                    "OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of Forge features.");
         }
     }
 

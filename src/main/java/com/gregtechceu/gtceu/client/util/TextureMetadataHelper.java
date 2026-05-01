@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.ctm.GTTextureMetadata;
-
 import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.TriState;

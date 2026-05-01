@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.oculus;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.integration.iris.GTIrisHooks;
 
 import net.irisshaders.iris.pipeline.WorldRenderingPhase;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import net.minecraft.client.renderer.RenderType;
 

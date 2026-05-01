@@ -4,16 +4,16 @@ import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.phys.Vec3;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import me.jellysquid.mods.sodium.client.model.light.data.QuadLightData;
 import me.jellysquid.mods.sodium.client.model.quad.BakedQuadView;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuilder;
@@ -53,9 +53,9 @@ public class BlockRendererMixin {
 
     @Inject(method = "writeGeometry",
             at = @At(value = "FIELD",
-                    target = "Lme/jellysquid/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;light:I",
-                    opcode = Opcodes.PUTFIELD,
-                    shift = At.Shift.AFTER))
+                     target = "Lme/jellysquid/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;light:I",
+                     opcode = Opcodes.PUTFIELD,
+                     shift = At.Shift.AFTER))
     private void gtceu$captureBloomQuads(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
                                          Material material, BakedQuadView quad, int[] colors, QuadLightData light,
                                          CallbackInfo ci,

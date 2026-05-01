@@ -12,7 +12,8 @@ import java.util.*;
 
 /**
  * An early (e.g. mixin) config handler based on the one from <a
- * href="https://github.com/embeddedt/ModernFix/blob/4e3ecf9b6d7ab3ebecbc0604db916cd4922689fc/src/main/java/org/embeddedt/modernfix/core/config/ModernFixEarlyConfig.java">ModernFix</a>
+ * href=
+ * "https://github.com/embeddedt/ModernFix/blob/4e3ecf9b6d7ab3ebecbc0604db916cd4922689fc/src/main/java/org/embeddedt/modernfix/core/config/ModernFixEarlyConfig.java">ModernFix</a>
  */
 public class GTEarlyConfig {
 
@@ -32,12 +33,10 @@ public class GTEarlyConfig {
         option.addComment(
                 "Whether to use a 'safe mode' for bloom rendering",
                 "NOTE: considerably slower than the normal process, but likely fixes compatibility issues with other mods.",
-                "Requires restarting the client to take effect."
-        );
+                "Requires restarting the client to take effect.");
 
         addDelegateRule("client.bloom.safemode", SAFE_MODE_CONFIG_NAME, false);
         addDelegateRule("client.bloom.normal", SAFE_MODE_CONFIG_NAME, true);
-
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
@@ -60,7 +59,6 @@ public class GTEarlyConfig {
         enableIfModPresent("ftbchunks", "ftbchunks");
         enableIfModPresent("xaerominimap", "xaerominimap");
         enableIfModPresent("xaeroworldmap", "xaeroworldmap");
-
 
         // bind non-empty parents
         for (Map.Entry<String, Option> entry : this.options.entrySet()) {
@@ -111,7 +109,7 @@ public class GTEarlyConfig {
      * Defines a Mixin rule which can be configured by users and other mods.
      *
      * @param configName The name of the mixin package which will be controlled by this rule
-     * @param enabled True if the rule will be enabled by default, otherwise false
+     * @param enabled    True if the rule will be enabled by default, otherwise false
      *
      * @throws IllegalStateException If a rule with that name already exists
      */
@@ -127,7 +125,7 @@ public class GTEarlyConfig {
      * Defines a Mixin rule which can be configured by users and other mods.
      *
      * @param configName The name of the mixin package which will be controlled by this rule
-     * @param enabled True if the rule will be enabled by default, otherwise false
+     * @param enabled    True if the rule will be enabled by default, otherwise false
      *
      * @throws IllegalStateException If a rule with that name already exists
      */
@@ -140,11 +138,11 @@ public class GTEarlyConfig {
     /**
      * Defines a Mixin rule which directly relegates to another (existing) mixin rule.
      *
-     * @param configName The name of the mixin package which will be controlled by this rule
+     * @param configName   The name of the mixin package which will be controlled by this rule
      * @param delegateName The name of the (existing) rule which this rule delegates to
-     * @param invert Whether to invert {@code delegateName}'s enabled state
+     * @param invert       Whether to invert {@code delegateName}'s enabled state
      *
-     * @throws IllegalStateException If a rule with that name already exists
+     * @throws IllegalStateException    If a rule with that name already exists
      * @throws IllegalArgumentException If a rule named {@code delegateName} doesn't already exist
      */
     private Option addDelegateRule(String configName, String delegateName, boolean invert) {
@@ -264,7 +262,8 @@ public class GTEarlyConfig {
         try (Writer writer = new FileWriter(configFile)) {
             writer.write("# This is the early configuration file for GregTech CEu Modern.\n");
             writer.write("# The following options can be enabled or disabled if there is a compatibility issue.\n");
-            writer.write("# Add a line with your option name and =true or =false at the bottom of the file to enable\n");
+            writer.write(
+                    "# Add a line with your option name and =true or =false at the bottom of the file to enable\n");
             writer.write("# or disable a rule. For example:\n");
             writer.write("#   client.bloom.safe_mode=true\n");
             writer.write("# Do not include the #. You may reset to defaults by deleting this file.\n");
@@ -281,7 +280,8 @@ public class GTEarlyConfig {
 
                 String extraContext;
                 if (!option.isUserDefined()) {
-                    extraContext = "=" + option.isEnabled() + " # " + (option.isModDefined() ? "(overridden for mod compat)" : "(default)");
+                    extraContext = "=" + option.isEnabled() + " # " +
+                            (option.isModDefined() ? "(overridden for mod compat)" : "(default)");
                 } else {
                     extraContext = "=" + option.isDefaultEnabled() + " # (default)";
                 }
@@ -339,8 +339,7 @@ public class GTEarlyConfig {
         try {
             Class.forName("optifine.OptiFineTransformationService");
             hasOfClass = true;
-        } catch (Throwable ignored) {
-        }
+        } catch (Throwable ignored) {}
 
         OPTIFINE_PRESENT = hasOfClass;
     }

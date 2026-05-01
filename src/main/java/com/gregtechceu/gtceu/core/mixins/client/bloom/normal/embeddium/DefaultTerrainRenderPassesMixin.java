@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.RenderType;

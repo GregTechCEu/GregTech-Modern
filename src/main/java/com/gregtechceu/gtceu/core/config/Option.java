@@ -79,7 +79,8 @@ public class Option {
      * by the parent rule being disabled.
      */
     public boolean isEffectivelyDisabledByParent() {
-        return this.parent != null && (!this.parent.enabled || this.parent.isEffectivelyDisabledByParent()) != parentValueInverted;
+        return this.parent != null &&
+                (!this.parent.enabled || this.parent.isEffectivelyDisabledByParent()) != parentValueInverted;
     }
 
     public boolean isOverridden() {

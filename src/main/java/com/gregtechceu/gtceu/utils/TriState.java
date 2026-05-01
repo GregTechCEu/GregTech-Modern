@@ -17,6 +17,7 @@ import java.util.function.Function;
  * Represents a boolean value that can be {@code true}, {@code false} or refer to a default value.
  */
 public enum TriState implements StringRepresentable {
+
     /**
      * Represents the boolean value {@code true}.
      */

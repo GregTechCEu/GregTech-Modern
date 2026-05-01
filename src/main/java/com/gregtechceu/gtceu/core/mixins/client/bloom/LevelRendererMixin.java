@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
+import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
