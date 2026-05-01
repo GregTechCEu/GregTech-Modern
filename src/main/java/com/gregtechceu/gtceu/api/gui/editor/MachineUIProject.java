@@ -157,7 +157,6 @@ public class MachineUIProject extends UIProject {
     }
 
     private static @Nullable EditableMachineUI editableUI(MachineDefinition definition) {
-        Object editableUI = LazyEditableMachineUI.resolve(definition.getEditableUI());
-        return editableUI instanceof EditableMachineUI machineUI ? machineUI : null;
+        return definition.getEditableUI();
     }
 }

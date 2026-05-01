@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.chat.Component;
@@ -27,7 +28,7 @@ final class WorkableElectricMultiblockMachineUI {
 
     private WorkableElectricMultiblockMachineUI() {}
 
-    static Object createUIWidget(WorkableElectricMultiblockMachine machine) {
+    static Widget createUIWidget(WorkableElectricMultiblockMachine machine) {
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117)
                 .setBackground(IDisplayUIMachineUI.screenTexture(machine.getScreenTexture()))
@@ -44,10 +45,7 @@ final class WorkableElectricMultiblockMachineUI {
         return new ModularUI(198, 208, machine, entityPlayer).widget(new FancyMachineUIWidget(machine, 198, 208));
     }
 
-    static void attachConfigurators(WorkableElectricMultiblockMachine machine, Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    static void attachConfigurators(WorkableElectricMultiblockMachine machine, ConfiguratorPanel configuratorPanel) {
         IVoidableUI.attachConfigurators(configuratorPanel, machine);
         if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList list &&
                 Arrays.stream(list.getModifiers()).anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
@@ -62,10 +60,7 @@ final class WorkableElectricMultiblockMachineUI {
         }
     }
 
-    static void attachTooltips(WorkableElectricMultiblockMachine machine, Object tooltipsPanelObject) {
-        if (!(tooltipsPanelObject instanceof TooltipsPanel tooltipsPanel)) {
-            return;
-        }
+    static void attachTooltips(WorkableElectricMultiblockMachine machine, TooltipsPanel tooltipsPanel) {
         for (IMultiPart part : machine.getParts()) {
             part.attachFancyTooltipsToController(machine, tooltipsPanel);
         }

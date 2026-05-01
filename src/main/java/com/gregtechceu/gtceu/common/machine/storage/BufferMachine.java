@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import lombok.Getter;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
     ////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return BufferMachineUI.createUIWidget(this);
     }
 

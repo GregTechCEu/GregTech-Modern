@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -199,7 +200,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public @NotNull Object createUIWidget() {
+    public @NotNull Widget createUIWidget() {
         return ActiveTransformerMachineUI.createUIWidget(this);
     }
 

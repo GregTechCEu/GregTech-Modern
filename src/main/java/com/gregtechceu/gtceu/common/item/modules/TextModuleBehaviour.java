@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.common.item.datacomponents.TextLineList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -55,7 +57,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     @Override
-    public Object createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return TextModuleBehaviourUI.create(stack, machine, group);
     }
 

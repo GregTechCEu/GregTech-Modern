@@ -21,10 +21,7 @@ public interface IAutoPullPart extends IMultiPart {
     void setAutoPullTest(Predicate<GenericStack> test);
 
     @Override
-    default void attachConfigurators(Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_AUTO_PULL.getSubTexture(0, 0, 1, 0.5),
                 GuiTextures.BUTTON_AUTO_PULL.getSubTexture(0, 0.5, 1, 0.5),

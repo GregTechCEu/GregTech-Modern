@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -80,7 +82,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     //////////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return BatteryBufferMachineUI.createUIWidget(this);
     }
 

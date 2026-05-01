@@ -25,6 +25,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -290,7 +292,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return CentralMonitorMachineUI.createUIWidget(this, super.createUIWidget());
     }
 

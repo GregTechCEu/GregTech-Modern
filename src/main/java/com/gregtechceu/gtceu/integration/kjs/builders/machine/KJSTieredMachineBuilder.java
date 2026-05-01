@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -51,7 +52,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient boolean isGenerator = false;
 
-    public transient BiFunction<Identifier, GTRecipeType, Object> editableUI;
+    public transient BiFunction<Identifier, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(GTResourceLocation.implicitAsGtceu(id));
@@ -61,7 +62,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     }
 
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
-                                   BiFunction<Identifier, GTRecipeType, Object> editableUI,
+                                   BiFunction<Identifier, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
         super(GTResourceLocation.implicitAsGtceu(id));
         this.machine = machine;

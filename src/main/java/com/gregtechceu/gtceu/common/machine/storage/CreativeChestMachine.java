@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.InteractionResult;
@@ -71,7 +73,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return CreativeChestMachineUI.createUIWidget(this);
     }
 

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -262,7 +262,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    public static BiFunction<Identifier, Integer, Object> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new LazyEditableMachineUI(
-                    () -> BlockBreakerMachineUI.createEditableUI(path, inventorySize)));
+    public static BiFunction<Identifier, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, inventorySize) -> BlockBreakerMachineUI.createEditableUI(path, inventorySize));
 }

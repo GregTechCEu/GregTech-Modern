@@ -2,10 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -17,19 +14,7 @@ final class ItemBusPartMachineUI {
 
     private ItemBusPartMachineUI() {}
 
-    static void attachConfigurators(ItemBusPartMachine machine, Object configuratorPanelObject) {
-        if (machine.getIo().support(IO.OUT)) {
-            ((IDistinctPart) machine).superAttachConfigurators(configuratorPanelObject);
-        } else if (machine.getIo().support(IO.IN)) {
-            ((IDistinctPart) machine).attachConfigurators(configuratorPanelObject);
-            if (machine.hasCircuitSlot && machine.isCircuitSlotEnabled() &&
-                    configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel) {
-                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(machine.circuitInventory.storage));
-            }
-        }
-    }
-
-    static Object createUIWidget(ItemBusPartMachine machine) {
+    static Widget createUIWidget(ItemBusPartMachine machine) {
         int rowSize = (int) Math.sqrt(machine.getInventorySize());
         int colSize = rowSize;
         if (machine.getInventorySize() == 8) {

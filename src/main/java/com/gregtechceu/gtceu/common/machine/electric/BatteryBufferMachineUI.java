@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -12,7 +13,7 @@ final class BatteryBufferMachineUI {
 
     private BatteryBufferMachineUI() {}
 
-    static Object createUIWidget(BatteryBufferMachine machine) {
+    static Widget createUIWidget(BatteryBufferMachine machine) {
         int rowSize = (int) Math.sqrt(machine.getInventorySize());
         int colSize = rowSize;
         if (machine.getInventorySize() == 8) {

@@ -23,7 +23,7 @@ final class PumpCoverUI {
 
     private PumpCoverUI() {}
 
-    static Object createUIWidget(PumpCover cover) {
+    static Widget createUIWidget(PumpCover cover) {
         final var group = new WidgetGroup(0, 0, 176, 137);
         group.addWidget(
                 new LabelWidget(10, 5,

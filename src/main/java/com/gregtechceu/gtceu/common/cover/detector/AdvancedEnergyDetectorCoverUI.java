@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -17,7 +18,7 @@ final class AdvancedEnergyDetectorCoverUI {
 
     private AdvancedEnergyDetectorCoverUI() {}
 
-    static Object createUIWidget(AdvancedEnergyDetectorCover cover) {
+    static Widget createUIWidget(AdvancedEnergyDetectorCover cover) {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 105);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_energy_detector.label"));
 

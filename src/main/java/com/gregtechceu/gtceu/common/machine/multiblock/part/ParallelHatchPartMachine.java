@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ParallelHatchPartMachineUI.createUIWidget(this);
     }
 

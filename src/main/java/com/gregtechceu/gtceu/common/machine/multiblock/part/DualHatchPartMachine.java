@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -146,7 +148,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     ///////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return DualHatchPartMachineUI.createUIWidget(this);
     }
 }

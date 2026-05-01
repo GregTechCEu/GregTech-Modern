@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
@@ -13,12 +16,12 @@ public interface IFancyUIProvider {
     /**
      * Create the main page ui.
      */
-    Object createMainPage(Object widget);
+    Widget createMainPage(FancyMachineUIWidget widget);
 
     /**
      * Get the tab icon of this page.
      */
-    Object getTabIcon();
+    IGuiTexture getTabIcon();
 
     /**
      * Get the title of this page.
@@ -28,17 +31,17 @@ public interface IFancyUIProvider {
     /**
      * Attach configurators to the left subtab list.
      */
-    default void attachSideTabs(Object configuratorPanel) {}
+    default void attachSideTabs(TabsWidget sideTabs) {}
 
     /**
      * Attach configurators to the left panel.
      */
-    default void attachConfigurators(Object configuratorPanel) {}
+    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {}
 
     /**
      * Attach tooltips to the right panel
      */
-    default void attachTooltips(Object tooltipsPanel) {}
+    default void attachTooltips(TooltipsPanel tooltipsPanel) {}
 
     default boolean hasPlayerInventory() {
         return true;

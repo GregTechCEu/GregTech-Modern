@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChang
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ final class ImageModuleBehaviourUI {
 
     private ImageModuleBehaviourUI() {}
 
-    static Object create(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    static Widget create(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         TextFieldWidget textField = new TextFieldWidget(0, 0, 100, 10, null, null);
         textField.setCurrentString(stack.getOrDefault(GTDataComponents.IMAGE_MODULE_URL, null));

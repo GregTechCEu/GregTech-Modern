@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
@@ -75,7 +77,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ObjectHolderMachineUI.createUIWidget(this);
     }
 

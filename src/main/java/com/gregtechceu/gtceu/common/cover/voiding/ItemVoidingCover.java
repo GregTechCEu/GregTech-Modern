@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -76,7 +78,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     //////////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ItemVoidingCoverUI.createUIWidget(this);
     }
 

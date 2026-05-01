@@ -9,6 +9,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ final class ComputerMonitorCoverUI {
 
     private ComputerMonitorCoverUI() {}
 
-    static Object createUIWidget(ComputerMonitorCover cover) {
+    static Widget createUIWidget(ComputerMonitorCover cover) {
         int textFieldWidth = 160, horizontalPadding = 10, verticalPadding = 2;
         final WidgetGroup group = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
         final WidgetGroup mainPage = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -129,7 +130,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean allowCoverOnFront = false;
     private @Nullable Supplier<BlockState> appearance;
     @Getter // getter for KJS
-    private @Nullable Object editableUI;
+    private @Nullable EditableMachineUI editableUI;
     @Getter // getter for KJS
     private @Nullable String langValue = null;
 
@@ -276,7 +277,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE editableUI(@Nullable Object editableUI) {
+    public TYPE editableUI(@Nullable EditableMachineUI editableUI) {
         this.editableUI = editableUI;
         return getThis();
     }

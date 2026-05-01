@@ -19,7 +19,7 @@ final class BlockBreakerMachineUI {
 
     private BlockBreakerMachineUI() {}
 
-    static Object createEditableUI(Identifier path, int inventorySize) {
+    static EditableMachineUI createEditableUI(Identifier path, int inventorySize) {
         return new EditableMachineUI("misc", path, () -> {
             var template = createTemplate(inventorySize).createDefault();
             var energyBar = TieredEnergyMachineUI.createEnergyBar().createDefault();

@@ -25,7 +25,7 @@ final class SimpleGeneratorMachineUI {
 
     private SimpleGeneratorMachineUI() {}
 
-    static Object createEditableUI(Identifier path, GTRecipeType recipeType) {
+    static EditableMachineUI createEditableUI(Identifier path, GTRecipeType recipeType) {
         return new EditableMachineUI("generator", path, () -> {
             WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
             WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 4 + 8,

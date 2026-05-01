@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -105,7 +107,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     //////////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return AdvancedFluidDetectorCoverUI.createUIWidget(this);
     }
 

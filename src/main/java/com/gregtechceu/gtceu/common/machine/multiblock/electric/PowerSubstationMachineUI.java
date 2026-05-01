@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +19,7 @@ final class PowerSubstationMachineUI {
 
     private PowerSubstationMachineUI() {}
 
-    static Object createUIWidget(PowerSubstationMachine machine) {
+    static Widget createUIWidget(PowerSubstationMachine machine) {
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117)
                 .setBackground(IDisplayUIMachineUI.screenTexture(machine.getScreenTexture()))
@@ -34,10 +35,7 @@ final class PowerSubstationMachineUI {
         return new ModularUI(198, 208, machine, entityPlayer).widget(new FancyMachineUIWidget(machine, 198, 208));
     }
 
-    static void attachTooltips(PowerSubstationMachine machine, Object tooltipsPanelObject) {
-        if (!(tooltipsPanelObject instanceof TooltipsPanel tooltipsPanel)) {
-            return;
-        }
+    static void attachTooltips(PowerSubstationMachine machine, TooltipsPanel tooltipsPanel) {
         for (IMultiPart part : machine.getParts()) {
             part.attachFancyTooltipsToController(machine, tooltipsPanel);
         }

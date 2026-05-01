@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -101,7 +103,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     //////////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return AdvancedItemDetectorCoverUI.createUIWidget(this);
     }
 

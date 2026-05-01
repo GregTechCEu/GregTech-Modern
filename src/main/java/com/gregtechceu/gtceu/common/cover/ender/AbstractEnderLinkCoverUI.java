@@ -40,17 +40,17 @@ final class AbstractEnderLinkCoverUI {
 
     private AbstractEnderLinkCoverUI() {}
 
-    static Object createUIWidget(AbstractEnderLinkCover<?> cover) {
+    static Widget createUIWidget(AbstractEnderLinkCover<?> cover) {
         return new VirtualEntryWidget(cover);
     }
 
-    static void updateVirtualEntryWidget(Object widget) {
+    static void updateVirtualEntryWidget(Widget widget) {
         if (widget instanceof VirtualEntryWidget virtualEntryWidget) {
             virtualEntryWidget.update();
         }
     }
 
-    static Object createEmptyVirtualEntryWidget(int x, int y, int width, int height) {
+    static Widget createEmptyVirtualEntryWidget(int x, int y, int width, int height) {
         return new WidgetGroup(x, y, width, height);
     }
 

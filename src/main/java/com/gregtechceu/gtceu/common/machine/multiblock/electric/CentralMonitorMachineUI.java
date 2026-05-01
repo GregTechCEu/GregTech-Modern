@@ -29,9 +29,9 @@ final class CentralMonitorMachineUI {
 
     private CentralMonitorMachineUI() {}
 
-    static Object createUIWidget(CentralMonitorMachine machine, Object builderObject) {
-        if (!(builderObject instanceof WidgetGroup builder)) {
-            return builderObject;
+    static Widget createUIWidget(CentralMonitorMachine machine, Widget builderWidget) {
+        if (!(builderWidget instanceof WidgetGroup builder)) {
+            return builderWidget;
         }
         machine.updateStructureDimensions();
         machine.selectedComponents.clear();

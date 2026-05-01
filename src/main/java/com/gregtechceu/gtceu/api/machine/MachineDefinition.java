@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -122,7 +123,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Nullable
     @Getter
     @Setter
-    private Object editableUI;
+    private EditableMachineUI editableUI;
     @Getter
     @Setter
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();

@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +58,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @SyncToClient
     @RerenderOnChanged
     protected IO io = IO.OUT;
-    protected Object virtualEntryWidget;
+    protected Widget virtualEntryWidget;
     @SyncToClient
     boolean isAnyChanged = false;
 
@@ -113,7 +115,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public @NotNull Object createUIWidget() {
+    public @NotNull Widget createUIWidget() {
         virtualEntryWidget = AbstractEnderLinkCoverUI.createUIWidget(this);
         return virtualEntryWidget;
     }

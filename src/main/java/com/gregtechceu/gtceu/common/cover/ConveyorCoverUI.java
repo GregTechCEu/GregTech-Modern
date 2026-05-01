@@ -24,7 +24,7 @@ final class ConveyorCoverUI {
 
     private ConveyorCoverUI() {}
 
-    static Object createUIWidget(ConveyorCover cover) {
+    static Widget createUIWidget(ConveyorCover cover) {
         final var group = new WidgetGroup(0, 0, 176, 137);
         group.addWidget(
                 new LabelWidget(10, 5,

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
@@ -19,6 +20,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
+
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -228,7 +231,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return RotorHolderPartMachineUI.createUIWidget(this);
     }
 
@@ -247,13 +250,13 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     // ******* FANCY GUI ********//
     //////////////////////////////////////
     @Override
-    public void attachFancyTooltipsToController(MultiblockControllerMachine controller, Object tooltipsPanel) {
+    public void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
     @Override
-    public void attachTooltips(Object tooltipsPanelObject) {
-        RotorHolderPartMachineUI.attachTooltips(this, tooltipsPanelObject);
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        RotorHolderPartMachineUI.attachTooltips(this, tooltipsPanel);
     }
 
     /**

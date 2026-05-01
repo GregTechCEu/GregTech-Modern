@@ -28,7 +28,7 @@ final class TextModuleBehaviourUI {
 
     private TextModuleBehaviourUI() {}
 
-    static Object create(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    static Widget create(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
         TextFieldWidget scaleInput = new TextFieldWidget(

@@ -13,7 +13,7 @@ final class ItemFilterCoverUI {
 
     private ItemFilterCoverUI() {}
 
-    static Object createUIWidget(ItemFilterCover cover) {
+    static Widget createUIWidget(ItemFilterCover cover) {
         final var group = new WidgetGroup(0, 0, 178, 85);
         group.addWidget(new LabelWidget(60, 5, cover.getAttachItem().getItem().getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,

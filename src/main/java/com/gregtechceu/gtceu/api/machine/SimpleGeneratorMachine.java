@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -117,7 +117,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<Identifier, GTRecipeType, Object> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new LazyEditableMachineUI(
-                    () -> SimpleGeneratorMachineUI.createEditableUI(path, recipeType)));
+    public static BiFunction<Identifier, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, recipeType) -> SimpleGeneratorMachineUI.createEditableUI(path, recipeType));
 }

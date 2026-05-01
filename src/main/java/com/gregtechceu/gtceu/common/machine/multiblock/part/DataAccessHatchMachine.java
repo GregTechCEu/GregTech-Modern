@@ -20,6 +20,8 @@ import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -73,7 +75,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return DataAccessHatchMachineUI.createUIWidget(this);
     }
 

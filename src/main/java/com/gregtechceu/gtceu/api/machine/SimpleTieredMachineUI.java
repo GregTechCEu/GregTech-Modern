@@ -42,11 +42,7 @@ final class SimpleTieredMachineUI {
 
     private SimpleTieredMachineUI() {}
 
-    static void attachConfigurators(SimpleTieredMachine machine, Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
-
+    static void attachConfigurators(SimpleTieredMachine machine, ConfiguratorPanel configuratorPanel) {
         if (machine.autoOutput.supportsAutoOutputFluids()) {
             configuratorPanel.attachConfigurators(createAutoOutputFluidConfigurator(machine));
         }
@@ -75,11 +71,10 @@ final class SimpleTieredMachineUI {
                 (cd, nextState) -> machine.autoOutput.setAllowAutoOutputItems(nextState));
     }
 
-    private static IFancyConfigurator createAutoOutputConfigurator(Object modesButtonTextureObject,
+    private static IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture,
                                                                    String tooltipBaseLangKey,
                                                                    BooleanSupplier stateSupplier,
                                                                    BiConsumer<ClickData, Boolean> onToggle) {
-        var modesButtonTexture = (ResourceTexture) modesButtonTextureObject;
         var toggle = new IFancyConfiguratorButton.Toggle(
                 new GuiTextureGroup(
                         GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
@@ -98,7 +93,7 @@ final class SimpleTieredMachineUI {
         return toggle;
     }
 
-    static Object createEditableUI(Identifier path, GTRecipeType recipeType) {
+    static EditableMachineUI createEditableUI(Identifier path, GTRecipeType recipeType) {
         return new EditableMachineUI("simple", path, () -> {
             WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
             SlotWidget batterySlot = createBatterySlot().createDefault();

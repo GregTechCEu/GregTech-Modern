@@ -3,13 +3,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 final class DataAccessHatchMachineUI {
 
     private DataAccessHatchMachineUI() {}
 
-    static Object createUIWidget(DataAccessHatchMachine machine) {
+    static Widget createUIWidget(DataAccessHatchMachine machine) {
         int rowSize = (int) Math.sqrt(machine.getInventorySize());
         int xOffset = 18 * rowSize / 2;
         WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);

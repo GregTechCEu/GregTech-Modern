@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;

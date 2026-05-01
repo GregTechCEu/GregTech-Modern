@@ -189,7 +189,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
                 !this.previousPages.isEmpty(),
                 this.allPages.size() > 1 && this.currentPage != this.pageSwitcher);
 
-        if (!(fancyUI.createMainPage(this) instanceof Widget page)) {
+        Widget page = fancyUI.createMainPage(this);
+        if (page == null) {
             return;
         }
 

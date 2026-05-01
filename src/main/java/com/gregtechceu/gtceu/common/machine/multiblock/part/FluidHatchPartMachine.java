@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -18,6 +19,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
+
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -252,13 +255,13 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
     //////////////////////////////////////
 
     @Override
-    public void attachConfigurators(Object configuratorPanelObject) {
-        super.attachConfigurators(configuratorPanelObject);
-        FluidHatchPartMachineUI.attachConfigurators(this, configuratorPanelObject);
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        super.attachConfigurators(configuratorPanel);
+        FluidHatchPartMachineUI.attachConfigurators(this, configuratorPanel);
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return FluidHatchPartMachineUI.createUIWidget(this);
     }
 

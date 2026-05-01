@@ -4,13 +4,14 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 final class BufferMachineUI {
 
     private BufferMachineUI() {}
 
-    static Object createUIWidget(BufferMachine machine) {
+    static Widget createUIWidget(BufferMachine machine) {
         int invTier = BufferMachine.getTankSize(machine.getTier());
         var group = new WidgetGroup(0, 0, 18 * (invTier + 1) + 16, 18 * invTier + 16);
         var container = new WidgetGroup(4, 4, 18 * (invTier + 1) + 8, 18 * invTier + 8);

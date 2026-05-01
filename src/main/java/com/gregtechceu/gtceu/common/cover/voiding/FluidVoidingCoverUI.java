@@ -11,7 +11,7 @@ final class FluidVoidingCoverUI {
 
     private FluidVoidingCoverUI() {}
 
-    static Object createUIWidget(FluidVoidingCover cover) {
+    static Widget createUIWidget(FluidVoidingCover cover) {
         final var group = new WidgetGroup(0, 0, 176, 120);
         group.addWidget(new LabelWidget(10, 5, cover.getUITitle()));
 

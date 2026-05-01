@@ -89,11 +89,8 @@ public class TitleBarWidget extends WidgetGroup {
                 .setType(TextTexture.TextType.ROLL);
         titleText.setRollSpeed(ROLL_SPEED);
 
-        if (currentPage.getTabIcon() instanceof IGuiTexture icon) {
-            tabIcon.setImage(icon);
-        } else {
-            tabIcon.setImage(IGuiTexture.EMPTY);
-        }
+        IGuiTexture icon = currentPage.getTabIcon();
+        tabIcon.setImage(icon != null ? icon : IGuiTexture.EMPTY);
         tabTitle.setImage(titleText);
 
         backButton.setVisible(showBackButton);

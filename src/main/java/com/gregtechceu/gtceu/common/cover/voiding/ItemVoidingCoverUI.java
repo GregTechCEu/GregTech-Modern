@@ -11,7 +11,7 @@ final class ItemVoidingCoverUI {
 
     private ItemVoidingCoverUI() {}
 
-    static Object createUIWidget(ItemVoidingCover cover) {
+    static Widget createUIWidget(ItemVoidingCover cover) {
         final var group = new WidgetGroup(0, 0, 176, 120);
         group.addWidget(new LabelWidget(10, 5, cover.getUITitle()));
 

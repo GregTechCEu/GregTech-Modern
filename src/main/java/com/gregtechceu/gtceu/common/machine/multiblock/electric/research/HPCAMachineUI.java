@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.level.Level;
@@ -16,7 +17,7 @@ final class HPCAMachineUI {
 
     private HPCAMachineUI() {}
 
-    static Object createUIWidget(HPCAMachine machine, Object superWidget) {
+    static Widget createUIWidget(HPCAMachine machine, Object superWidget) {
         WidgetGroup builder = (WidgetGroup) superWidget;
         // Create the hover grid.
         builder.addWidget(new ExtendedProgressWidget(

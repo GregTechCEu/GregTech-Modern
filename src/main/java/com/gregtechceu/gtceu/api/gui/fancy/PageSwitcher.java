@@ -34,7 +34,7 @@ public class PageSwitcher implements IFancyUIProvider {
     }
 
     @Override
-    public Object createMainPage(Object widget) {
+    public Widget createMainPage(FancyMachineUIWidget widget) {
         var container = new WidgetGroup(0, 0, 176, 166);
 
         var scrollableGroup = new DraggableScrollableWidgetGroup(10, 10, 156, 146);
@@ -65,7 +65,7 @@ public class PageSwitcher implements IFancyUIProvider {
                         pageWidget.addWidget(new ButtonWidget(0, 0, 25, 25, GuiTextures.BACKGROUND,
                                 clickData -> onPageSwitched.accept(page)));
                         pageWidget.addWidget(new ImageWidget(4, 4, 17, 17,
-                                page.getTabIcon() instanceof IGuiTexture icon ? icon : IGuiTexture.EMPTY));
+                                page.getTabIcon() != null ? page.getTabIcon() : IGuiTexture.EMPTY));
                         // For some reason, this doesn't work in any other way:
                         pageWidget.widgets.getFirst().setHoverTooltips(page.getTitle());
                         scrollableGroup.addWidget(pageWidget);
@@ -80,7 +80,7 @@ public class PageSwitcher implements IFancyUIProvider {
     }
 
     @Override
-    public Object getTabIcon() {
+    public IGuiTexture getTabIcon() {
         return new TextTexture("+").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor());
     }
 

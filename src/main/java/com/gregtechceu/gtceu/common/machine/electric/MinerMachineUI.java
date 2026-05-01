@@ -22,7 +22,7 @@ final class MinerMachineUI {
 
     private MinerMachineUI() {}
 
-    static Object createEditableUI(Identifier path, int inventorySize) {
+    static EditableMachineUI createEditableUI(Identifier path, int inventorySize) {
         return new EditableMachineUI("misc", path, () -> {
             WidgetGroup template = createTemplate(inventorySize).createDefault();
             SlotWidget batterySlot = createBatterySlot().createDefault();

@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.InteractionResult;
@@ -119,7 +121,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return CreativeTankMachineUI.createUIWidget(this);
     }
 

@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +17,7 @@ final class ActiveTransformerMachineUI {
 
     private ActiveTransformerMachineUI() {}
 
-    static Object createUIWidget(ActiveTransformerMachine machine) {
+    static Widget createUIWidget(ActiveTransformerMachine machine) {
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117)
                 .setBackground(IDisplayUIMachineUI.screenTexture(machine.getScreenTexture()))

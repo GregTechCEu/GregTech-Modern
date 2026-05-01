@@ -154,15 +154,12 @@ public interface IMaintenanceMachine extends IMultiPart {
     //////////////////////////////////////
 
     @Override
-    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, Object tooltipsPanel) {
+    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
     @Override
-    default void attachTooltips(Object tooltipsPanelObject) {
-        if (!(tooltipsPanelObject instanceof TooltipsPanel tooltipsPanel)) {
-            return;
-        }
+    default void attachTooltips(TooltipsPanel tooltipsPanel) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(() -> GuiTextures.MAINTENANCE_ICON, () -> {
                 var tooltips = new ArrayList<Component>();

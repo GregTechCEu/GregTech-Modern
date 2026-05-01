@@ -16,10 +16,7 @@ public final class IVoidableUI {
 
     private IVoidableUI() {}
 
-    public static void attachConfigurators(Object configuratorPanelObject, IVoidable controller) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    public static void attachConfigurators(ConfiguratorPanel configuratorPanel, IVoidable controller) {
         configuratorPanel.attachConfigurators(new VoidableModeConfigurator(controller));
     }
 

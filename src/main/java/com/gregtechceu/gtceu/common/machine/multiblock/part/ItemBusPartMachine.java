@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -21,6 +23,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
+
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -277,12 +281,21 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public void attachConfigurators(Object configuratorPanelObject) {
-        ItemBusPartMachineUI.attachConfigurators(this, configuratorPanelObject);
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        if (this.getIo().support(IO.OUT)) {
+            // OUT bus: skip the distinct toggle from IDistinctPart.
+            attachBaseConfigurators(configuratorPanel);
+        } else if (this.getIo().support(IO.IN)) {
+            IDistinctPart.super.attachConfigurators(configuratorPanel);
+            if (this.hasCircuitSlot && this.isCircuitSlotEnabled()) {
+                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(this.circuitInventory.storage));
+            }
+        }
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ItemBusPartMachineUI.createUIWidget(this);
     }
 }

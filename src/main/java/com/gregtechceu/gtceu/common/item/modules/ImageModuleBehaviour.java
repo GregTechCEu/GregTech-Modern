@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.world.item.ItemStack;
 
 public class ImageModuleBehaviour implements IMonitorModuleItem {
@@ -17,7 +19,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
     }
 
     @Override
-    public Object createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return ImageModuleBehaviourUI.create(stack, machine, group);
     }
 

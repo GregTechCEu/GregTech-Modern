@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -21,34 +23,34 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
      * We should not override this method in general, and use {@link IFancyUIMachine#createUIWidget()} instead,
      */
     @Override
-    default Object createMainPage(Object widget) {
+    default Widget createMainPage(FancyMachineUIWidget widget) {
         return FancyUIMachineUI.createMainPage(this, widget);
     }
 
     /**
      * Create the core widget of this machine.
      */
-    default Object createUIWidget() {
+    default Widget createUIWidget() {
         return FancyUIMachineUI.createDefaultWidget(this);
     }
 
     @Override
-    default Object getTabIcon() {
+    default IGuiTexture getTabIcon() {
         return FancyUIMachineUI.getTabIcon(this);
     }
 
     @Override
-    default void attachSideTabs(Object sideTabs) {
+    default void attachSideTabs(TabsWidget sideTabs) {
         FancyUIMachineUI.attachSideTabs(this, sideTabs);
     }
 
     @Override
-    default void attachConfigurators(Object configuratorPanel) {
+    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         FancyUIMachineUI.attachConfigurators(this, configuratorPanel);
     }
 
     @Override
-    default void attachTooltips(Object tooltipsPanel) {
+    default void attachTooltips(TooltipsPanel tooltipsPanel) {
         FancyUIMachineUI.attachTooltips(this, tooltipsPanel);
     }
 

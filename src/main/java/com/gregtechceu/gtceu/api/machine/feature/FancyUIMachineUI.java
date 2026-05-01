@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
@@ -11,9 +10,11 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfi
 import com.gregtechceu.gtceu.core.compat.GuiGraphics;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
@@ -37,12 +38,9 @@ final class FancyUIMachineUI {
         return new ModularUI(176, 166, machine, entityPlayer).widget(new FancyMachineUIWidget(machine, 176, 166));
     }
 
-    static Object createMainPage(IFancyUIMachine machine, Object widgetObject) {
-        if (!(widgetObject instanceof FancyMachineUIWidget widget)) {
-            return createDefaultWidget(machine);
-        }
-        Object editableUIObject = LazyEditableMachineUI.resolve(machine.self().getDefinition().getEditableUI());
-        if (editableUIObject instanceof EditableMachineUI editableUI) {
+    static Widget createMainPage(IFancyUIMachine machine, FancyMachineUIWidget widget) {
+        EditableMachineUI editableUI = machine.self().getDefinition().getEditableUI();
+        if (editableUI != null) {
             var template = editableUI.createCustomUI();
             if (template == null) {
                 template = editableUI.createDefault();
@@ -53,7 +51,7 @@ final class FancyUIMachineUI {
         return machine.createUIWidget();
     }
 
-    static Object createDefaultWidget(IFancyUIMachine machine) {
+    static WidgetGroup createDefaultWidget(IFancyUIMachine machine) {
         var group = new WidgetGroup(0, 0, 100, 100);
         if (machine.isRemote()) {
             group.addWidget(new ImageWidget((100 - 48) / 2, 60, 48, 16, GuiTextures.SCENE));
@@ -86,14 +84,11 @@ final class FancyUIMachineUI {
         return group;
     }
 
-    static Object getTabIcon(IFancyUIMachine machine) {
+    static IGuiTexture getTabIcon(IFancyUIMachine machine) {
         return new ItemStackTexture(machine.self().getDefinition().getItem());
     }
 
-    static void attachSideTabs(IFancyUIMachine machine, Object sideTabsObject) {
-        if (!(sideTabsObject instanceof TabsWidget sideTabs)) {
-            return;
-        }
+    static void attachSideTabs(IFancyUIMachine machine, TabsWidget sideTabs) {
         sideTabs.setMainTab(machine);
 
         if (machine instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
@@ -104,10 +99,7 @@ final class FancyUIMachineUI {
             sideTabs.attachSubTab(directionalConfigurator);
     }
 
-    static void attachConfigurators(IFancyUIMachine provider, Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    static void attachConfigurators(IFancyUIMachine provider, ConfiguratorPanel configuratorPanel) {
         if (provider instanceof IControllable controllable) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
@@ -128,10 +120,7 @@ final class FancyUIMachineUI {
         }
     }
 
-    static void attachTooltips(IFancyUIMachine provider, Object tooltipsPanelObject) {
-        if (!(tooltipsPanelObject instanceof TooltipsPanel tooltipsPanel)) {
-            return;
-        }
+    static void attachTooltips(IFancyUIMachine provider, TooltipsPanel tooltipsPanel) {
         tooltipsPanel.attachTooltips(provider.self());
         provider.self().getTraitHolder().getAllTraits().stream().filter(IFancyTooltip.class::isInstance)
                 .map(IFancyTooltip.class::cast)

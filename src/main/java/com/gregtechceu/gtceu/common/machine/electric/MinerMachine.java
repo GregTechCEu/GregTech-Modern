@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -130,9 +130,8 @@ public class MinerMachine extends WorkableTieredMachine
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    public static BiFunction<Identifier, Integer, Object> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new LazyEditableMachineUI(
-                    () -> MinerMachineUI.createEditableUI(path, inventorySize)));
+    public static BiFunction<Identifier, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, inventorySize) -> MinerMachineUI.createEditableUI(path, inventorySize));
 
     void addDisplayText(@NotNull List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());

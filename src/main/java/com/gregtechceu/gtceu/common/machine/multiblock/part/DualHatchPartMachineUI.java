@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
@@ -12,7 +13,7 @@ final class DualHatchPartMachineUI {
 
     private DualHatchPartMachineUI() {}
 
-    static Object createUIWidget(DualHatchPartMachine machine) {
+    static Widget createUIWidget(DualHatchPartMachine machine) {
         int slots = machine.getInventorySize();
         int tanks = (int) Math.sqrt(slots);
         var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);

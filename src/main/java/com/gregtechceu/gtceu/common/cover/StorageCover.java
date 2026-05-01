@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
@@ -60,7 +62,7 @@ public class StorageCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return StorageCoverUI.createUIWidget(this);
     }
 

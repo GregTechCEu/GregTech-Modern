@@ -16,7 +16,7 @@ final class StorageCoverUI {
 
     private StorageCoverUI() {}
 
-    static Object createUIWidget(StorageCover cover) {
+    static Widget createUIWidget(StorageCover cover) {
         final var group = new WidgetGroup(0, 0, 126, 87);
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(cover.getUITitle())));

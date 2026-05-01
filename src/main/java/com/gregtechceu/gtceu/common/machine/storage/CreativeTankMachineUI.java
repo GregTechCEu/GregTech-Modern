@@ -10,13 +10,14 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 final class CreativeTankMachineUI {
 
     private CreativeTankMachineUI() {}
 
-    static Object createUIWidget(CreativeTankMachine machine) {
+    static Widget createUIWidget(CreativeTankMachine machine) {
         var group = new WidgetGroup(0, 0, 176, 131);
         group.addWidget(new PhantomFluidWidget(machine.cache, 0, 36, 6, 18, 18,
                 machine::getStored, machine::updateStored)

@@ -274,10 +274,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public void attachConfigurators(Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));

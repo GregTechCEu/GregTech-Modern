@@ -16,7 +16,7 @@ final class AdvancedFluidDetectorCoverUI {
 
     private AdvancedFluidDetectorCoverUI() {}
 
-    static Object createUIWidget(AdvancedFluidDetectorCover cover) {
+    static Widget createUIWidget(AdvancedFluidDetectorCover cover) {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
 

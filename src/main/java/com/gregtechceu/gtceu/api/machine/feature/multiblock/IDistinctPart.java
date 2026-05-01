@@ -17,11 +17,8 @@ public interface IDistinctPart extends IMultiPart {
     void setDistinct(boolean isDistinct);
 
     @Override
-    default void attachConfigurators(Object configuratorPanelObject) {
-        superAttachConfigurators(configuratorPanelObject);
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        attachBaseConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_DISTINCT_BUSES.getSubTexture(0, 0.5, 1, 0.5),
                 GuiTextures.BUTTON_DISTINCT_BUSES.getSubTexture(0, 0, 1, 0.5),
@@ -33,7 +30,12 @@ public interface IDistinctPart extends IMultiPart {
                                         "gtceu.multiblock.universal.distinct.no")))));
     }
 
-    default void superAttachConfigurators(Object configuratorPanel) {
+    /**
+     * Attach the base IMultiPart configurators without the IDistinctPart distinct toggle.
+     * Subclasses (e.g. {@code ItemBusPartMachine} for OUT-only buses) call this when they want
+     * to skip the distinct toggle but keep the rest of the chain.
+     */
+    default void attachBaseConfigurators(ConfiguratorPanel configuratorPanel) {
         IMultiPart.super.attachConfigurators(configuratorPanel);
     }
 }

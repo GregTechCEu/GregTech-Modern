@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -407,7 +409,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     // *********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ConveyorCoverUI.createUIWidget(this);
     }
 

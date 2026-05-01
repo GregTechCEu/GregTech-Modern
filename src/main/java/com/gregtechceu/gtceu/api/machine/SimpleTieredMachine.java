@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
@@ -18,6 +19,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ISubscription;
+
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
@@ -132,18 +135,17 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Override
-    public void attachConfigurators(Object configuratorPanelObject) {
-        IFancyUIMachine.super.attachConfigurators(configuratorPanelObject);
-        SimpleTieredMachineUI.attachConfigurators(this, configuratorPanelObject);
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+        SimpleTieredMachineUI.attachConfigurators(this, configuratorPanel);
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<Identifier, GTRecipeType, Object> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new LazyEditableMachineUI(
-                    () -> SimpleTieredMachineUI.createEditableUI(path, recipeType)));
+    public static BiFunction<Identifier, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, recipeType) -> SimpleTieredMachineUI.createEditableUI(path, recipeType));
 
     // Method provided to override
-    protected Object getCircuitSlotOverlay() {
+    protected IGuiTexture getCircuitSlotOverlay() {
         return GuiTextures.INT_CIRCUIT_OVERLAY;
     }
 }

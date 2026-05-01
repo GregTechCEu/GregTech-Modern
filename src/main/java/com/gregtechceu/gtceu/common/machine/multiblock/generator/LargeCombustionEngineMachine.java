@@ -220,11 +220,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     @Override
-    public void attachTooltips(Object tooltipsPanelObject) {
-        super.attachTooltips(tooltipsPanelObject);
-        if (!(tooltipsPanelObject instanceof TooltipsPanel tooltipsPanel)) {
-            return;
-        }
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        super.attachTooltips(tooltipsPanel);
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
                 () -> List.of(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed")

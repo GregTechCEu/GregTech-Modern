@@ -20,16 +20,13 @@ final class FluidHatchPartMachineUI {
 
     private FluidHatchPartMachineUI() {}
 
-    static void attachConfigurators(FluidHatchPartMachine machine, Object configuratorPanelObject) {
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    static void attachConfigurators(FluidHatchPartMachine machine, ConfiguratorPanel configuratorPanel) {
         if (machine.isCircuitSlotEnabled() && machine.getIo().support(IO.IN)) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(machine.circuitInventory.storage));
         }
     }
 
-    static Object createUIWidget(FluidHatchPartMachine machine) {
+    static Widget createUIWidget(FluidHatchPartMachine machine) {
         if (machine.slots == 1) {
             return createSingleSlotGUI(machine);
         }

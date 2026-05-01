@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.editor.LazyEditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -274,7 +274,6 @@ public class FisherMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public static BiFunction<Identifier, Integer, Object> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new LazyEditableMachineUI(
-                    () -> FisherMachineUI.createEditableUI(path, inventorySize)));
+    public static BiFunction<Identifier, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, inventorySize) -> FisherMachineUI.createEditableUI(path, inventorySize));
 }

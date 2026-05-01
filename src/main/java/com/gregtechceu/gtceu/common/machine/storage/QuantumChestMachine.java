@@ -20,6 +20,8 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
@@ -225,7 +227,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return QuantumChestMachineUI.createUIWidget(this);
     }
 

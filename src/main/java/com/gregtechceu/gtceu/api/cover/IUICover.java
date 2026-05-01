@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 public interface IUICover {
 
     default CoverBehavior self() {
@@ -14,7 +16,7 @@ public interface IUICover {
         return self().coverHolder.isRemote();
     }
 
-    Object createUIWidget();
+    Widget createUIWidget();
 
     default void onUIClosed() {}
 }

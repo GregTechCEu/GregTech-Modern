@@ -255,7 +255,8 @@ public class TabsWidget extends Widget {
             tabTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
         // render icon
-        if (tab.getTabIcon() instanceof IGuiTexture icon) {
+        IGuiTexture icon = tab.getTabIcon();
+        if (icon != null) {
             icon.draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
         }
     }

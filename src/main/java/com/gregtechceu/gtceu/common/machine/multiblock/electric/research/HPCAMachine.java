@@ -30,6 +30,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -240,7 +242,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return HPCAMachineUI.createUIWidget(this, super.createUIWidget());
     }
 

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -344,7 +346,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return PowerSubstationMachineUI.createUIWidget(this);
     }
 
@@ -360,8 +362,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void attachTooltips(Object tooltipsPanelObject) {
-        PowerSubstationMachineUI.attachTooltips(this, tooltipsPanelObject);
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        PowerSubstationMachineUI.attachTooltips(this, tooltipsPanel);
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {

@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -97,7 +99,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return AdvancedEnergyDetectorCoverUI.createUIWidget(this);
     }
 

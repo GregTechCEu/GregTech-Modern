@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,7 @@ final class QuantumChestMachineUI {
 
     private QuantumChestMachineUI() {}
 
-    static Object createUIWidget(QuantumChestMachine machine) {
+    static Widget createUIWidget(QuantumChestMachine machine) {
         var group = new WidgetGroup(0, 0, 109, 63);
         var importItems = machine.createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))

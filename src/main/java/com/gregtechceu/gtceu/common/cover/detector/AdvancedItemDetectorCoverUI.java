@@ -16,7 +16,7 @@ final class AdvancedItemDetectorCoverUI {
 
     private AdvancedItemDetectorCoverUI() {}
 
-    static Object createUIWidget(AdvancedItemDetectorCover cover) {
+    static Widget createUIWidget(AdvancedItemDetectorCover cover) {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
 

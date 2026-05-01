@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -18,6 +20,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMac
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -128,7 +131,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return WorkableElectricMultiblockMachineUI.createUIWidget(this);
     }
 
@@ -143,14 +146,14 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void attachConfigurators(Object configuratorPanelObject) {
-        WorkableElectricMultiblockMachineUI.attachConfigurators(this, configuratorPanelObject);
-        IFancyUIMachine.super.attachConfigurators(configuratorPanelObject);
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        WorkableElectricMultiblockMachineUI.attachConfigurators(this, configuratorPanel);
+        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
     }
 
     @Override
-    public void attachTooltips(Object tooltipsPanelObject) {
-        WorkableElectricMultiblockMachineUI.attachTooltips(this, tooltipsPanelObject);
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        WorkableElectricMultiblockMachineUI.attachTooltips(this, tooltipsPanel);
     }
 
     //////////////////////////////////////

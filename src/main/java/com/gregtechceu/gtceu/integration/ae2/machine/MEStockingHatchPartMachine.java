@@ -126,10 +126,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    public void attachSideTabs(Object sideTabsObject) {
-        if (!(sideTabsObject instanceof TabsWidget sideTabs)) {
-            return;
-        }
+    public void attachSideTabs(TabsWidget sideTabs) {
         sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
@@ -239,12 +236,9 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ///////////////////////////////
 
     @Override
-    public void attachConfigurators(Object configuratorPanelObject) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanelObject);
-        super.attachConfigurators(configuratorPanelObject);
-        if (!(configuratorPanelObject instanceof ConfiguratorPanel configuratorPanel)) {
-            return;
-        }
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IMEStockingPart.super.attachConfigurators(configuratorPanel);
+        super.attachConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 

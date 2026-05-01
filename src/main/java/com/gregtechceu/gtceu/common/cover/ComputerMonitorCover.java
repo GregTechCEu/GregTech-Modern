@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -117,7 +119,7 @@ public class ComputerMonitorCover extends CoverBehavior
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ComputerMonitorCoverUI.createUIWidget(this);
     }
 

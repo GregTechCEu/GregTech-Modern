@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -81,7 +83,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Object createUIWidget() {
+    public Widget createUIWidget() {
         return ItemFilterCoverUI.createUIWidget(this);
     }
 

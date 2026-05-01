@@ -9,13 +9,14 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 final class QuantumTankMachineUI {
 
     private QuantumTankMachineUI() {}
 
-    static Object createUIWidget(QuantumTankMachine machine) {
+    static Widget createUIWidget(QuantumTankMachine machine) {
         var group = new WidgetGroup(0, 0, 90, 63);
         group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
