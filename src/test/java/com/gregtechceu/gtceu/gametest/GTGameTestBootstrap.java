@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.gametest;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.gametest.IGTGameTestBootstrap;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogicTest;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializerTest;
 import com.gregtechceu.gtceu.api.recipe.InputSeparationTest;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class GTGameTestBootstrap {
+public final class GTGameTestBootstrap implements IGTGameTestBootstrap {
 
     private static final List<Class<?>> TEST_CLASSES = List.of(
             RealWorldItemUsage.class,
@@ -87,9 +88,11 @@ public final class GTGameTestBootstrap {
 
     private static boolean initialized;
 
-    private GTGameTestBootstrap() {}
+    /** Public no-arg constructor for {@link java.util.ServiceLoader}. */
+    public GTGameTestBootstrap() {}
 
-    public static void init(IEventBus modBus) {
+    @Override
+    public void init(IEventBus modBus) {
         if (initialized) {
             return;
         }

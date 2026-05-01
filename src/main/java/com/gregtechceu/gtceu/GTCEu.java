@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistry;
+import com.gregtechceu.gtceu.api.gametest.IGTGameTestBootstrap;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.nio.file.Path;
+import java.util.ServiceLoader;
 
 @Mod(GTCEu.MOD_ID)
 public class GTCEu {
@@ -95,18 +97,12 @@ public class GTCEu {
     }
 
     private static void registerGameTestBootstrap(IEventBus modBus) {
-        if (System.getenv("TEST") == null) {
-            return;
-        }
-        try {
-            Class.forName("com.gregtechceu.gtceu.gametest.GTGameTestBootstrap")
-                    .getMethod("init", IEventBus.class)
-                    .invoke(null, modBus);
-        } catch (ClassNotFoundException ignored) {
-            // Test sources are only present for GameTest runs.
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Failed to initialize GTCEu GameTests", e);
-        }
+        // Test source set is on the launch classpath only for `gameTestServer` /
+        // `gameTestClient`; on other runs ServiceLoader silently finds no provider
+        // and the bootstrap is a no-op.
+        ServiceLoader.load(IGTGameTestBootstrap.class, GTCEu.class.getClassLoader())
+                .findFirst()
+                .ifPresent(bootstrap -> bootstrap.init(modBus));
     }
 
     /**
