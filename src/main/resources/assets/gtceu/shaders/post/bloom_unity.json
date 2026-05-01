@@ -20,7 +20,7 @@
         },
         {
             "name": "blit",
-            "intarget": "final",
+            "intarget": "filter",
             "outtarget": "swap_a2"
         },
         {
