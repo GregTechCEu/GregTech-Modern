@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_on",
+  "parent": "gtceu:block/cube/emissive/all",
   "textures": {
-    "active": "gtceu:block/lamps/light_blue"
+    "all": "gtceu:block/lamps/light_blue_on"
   }
 }

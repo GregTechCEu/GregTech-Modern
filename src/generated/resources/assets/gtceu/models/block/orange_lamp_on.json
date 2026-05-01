@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_on",
+  "parent": "gtceu:block/cube/emissive/all",
   "textures": {
-    "active": "gtceu:block/lamps/orange"
+    "all": "gtceu:block/lamps/orange_on"
   }
 }

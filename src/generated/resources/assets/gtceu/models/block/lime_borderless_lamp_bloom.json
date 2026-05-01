@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_borderless_bloom",
+  "parent": "gtceu:block/cube/emissive/all",
   "textures": {
-    "active": "gtceu:block/lamps/lime_borderless"
+    "all": "gtceu:block/lamps/lime_borderless_bloom"
   }
 }

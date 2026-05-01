@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_on",
+  "parent": "gtceu:block/cube/emissive/all",
   "textures": {
-    "active": "gtceu:block/lamps/pink"
+    "all": "gtceu:block/lamps/pink_on"
   }
 }
