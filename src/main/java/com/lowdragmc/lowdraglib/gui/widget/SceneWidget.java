@@ -1,11 +1,13 @@
 package com.lowdragmc.lowdraglib.gui.widget;
 
-import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
+import com.gregtechceu.gtceu.core.compat.GuiGraphics;
+
 import com.lowdragmc.lowdraglib.client.scene.ParticleManager;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.lowdragmc.lowdraglib2.client.scene.ISceneBlockRenderHook;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -178,6 +180,20 @@ public class SceneWidget extends WidgetGroup {
             renderer.addRenderedBlocks(core, hook);
         }
         return this;
+    }
+
+    @Override
+    public void drawInBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
+        currentMouseX = mouseX;
+        currentMouseY = mouseY;
+        if (renderer != null) {
+            var position = getPosition();
+            var size = getSize();
+            // LDLib2's render() expects a 3D PoseStack (not the GUI's Matrix3x2fStack).
+            renderer.render(new PoseStack(), position.x, position.y, size.width, size.height, mouseX, mouseY);
+            renderBlockOverLay(renderer);
+        }
     }
 
     public void renderBlockOverLay(WorldSceneRenderer renderer) {}

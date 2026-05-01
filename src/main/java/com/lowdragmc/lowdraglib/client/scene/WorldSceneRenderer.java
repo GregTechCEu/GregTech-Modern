@@ -1,73 +1,46 @@
 package com.lowdragmc.lowdraglib.client.scene;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3f;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-
-public abstract class WorldSceneRenderer {
-
-    public final Level world;
-    protected int maxProgress;
-    protected int progress;
-    private Set<BlockPos> blocked;
-    private Consumer<WorldSceneRenderer> afterWorldRender;
-    private float fov = 45;
+/**
+ * Compatibility facade for legacy gtceu callers that imported the pre-26.1
+ * {@code com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer}. Inherits
+ * the real implementation from
+ * {@link com.lowdragmc.lowdraglib2.client.scene.WorldSceneRenderer} so calls
+ * like {@link #addRenderedBlocks}, {@link #getLastTraceResult},
+ * {@link #setAfterWorldRender} actually do something — pre-rewire this class
+ * was a no-op shim and the multiblock pattern preview rendered nothing.
+ *
+ * <p>
+ * The only behaviour this facade still owns is the legacy four-arg
+ * {@code setCameraLookAt(center, zoom, pitch, yaw)}: LDLib2's orbital
+ * overload is {@code setCameraLookAt(lookAt, radius, yaw, pitch)} — same
+ * semantics but yaw/pitch are reversed.
+ * </p>
+ */
+public abstract class WorldSceneRenderer extends com.lowdragmc.lowdraglib2.client.scene.WorldSceneRenderer {
 
     public WorldSceneRenderer(Level world) {
-        this.world = world;
+        super(world);
     }
 
-    public WorldSceneRenderer addRenderedBlocks(Collection<BlockPos> blocks, ISceneBlockRenderHook hook) {
-        return this;
-    }
-
-    public WorldSceneRenderer setAfterWorldRender(Consumer<WorldSceneRenderer> consumer) {
-        this.afterWorldRender = consumer;
-        return this;
-    }
-
-    public Consumer<WorldSceneRenderer> getAfterWorldRender() {
-        return afterWorldRender;
-    }
-
-    public void setBlocked(Set<BlockPos> blocked) {
-        this.blocked = blocked == null ? null : new HashSet<>(blocked);
-    }
-
-    public Set<BlockPos> getBlocked() {
-        return blocked;
-    }
-
-    public BlockHitResult getLastTraceResult() {
-        return null;
-    }
-
-    public Vector3f getEyePos() {
-        return new Vector3f();
-    }
-
+    /**
+     * Legacy four-arg signature. Delegates to LDLib2's orbital overload with
+     * the yaw/pitch order corrected.
+     *
+     * @param center world-space point the camera looks at
+     * @param zoom   camera radius (smaller = closer)
+     * @param pitch  pitch in radians
+     * @param yaw    yaw in radians
+     */
     public WorldSceneRenderer setCameraLookAt(Vector3f center, float zoom, double pitch, double yaw) {
+        super.setCameraLookAt(center, zoom, yaw, pitch);
         return this;
     }
 
-    public WorldSceneRenderer setFov(float fov) {
-        this.fov = fov;
-        return this;
-    }
-
-    public float getFov() {
-        return fov;
-    }
-
-    public interface VertexConsumerWrapper extends VertexConsumer {
+    public interface VertexConsumerWrapper extends com.mojang.blaze3d.vertex.VertexConsumer {
 
         default void addOffset(int x, int y, int z) {}
 

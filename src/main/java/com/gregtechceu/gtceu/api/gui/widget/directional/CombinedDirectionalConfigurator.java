@@ -80,7 +80,9 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
                     List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
                     null);
 
-            sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
+            // setAfterWorldRender is inherited from LDLib2's WorldSceneRenderer with a
+            // Consumer of the LDLib2 type; cast back to the local subclass for the hook.
+            sceneWidget.getRenderer().setAfterWorldRender(wsr -> renderOverlays((WorldSceneRenderer) wsr));
 
             var playerRotation = gui.entityPlayer.getRotationVector();
             sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
