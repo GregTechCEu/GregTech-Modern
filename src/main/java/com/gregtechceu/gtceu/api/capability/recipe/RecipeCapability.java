@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
@@ -196,7 +198,7 @@ public abstract class RecipeCapability<T> {
     }
 
     @Nullable("null when getWidgetClass() == null")
-    public Object createWidget() {
+    public Widget createWidget() {
         return null;
     }
 

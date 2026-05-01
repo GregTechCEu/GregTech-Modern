@@ -26,8 +26,8 @@ public final class ContentOverlays {
 
     private ContentOverlays() {}
 
-    public static Object createOverlay(Content content, boolean perTick, int recipeTier, int chanceTier,
-                                       @Nullable ChanceBoostFunction function) {
+    public static IGuiTexture createOverlay(Content content, boolean perTick, int recipeTier, int chanceTier,
+                                            @Nullable ChanceBoostFunction function) {
         return new IGuiTexture() {
 
             @Override

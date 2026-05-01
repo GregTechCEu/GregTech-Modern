@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
@@ -431,7 +432,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @NotNull
     @Override
-    public Object createWidget() {
+    public Widget createWidget() {
         SlotWidget slot = new SlotWidget();
         slot.initTemplate();
         return slot;

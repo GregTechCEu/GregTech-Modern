@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +27,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     private transient GTRecipeType recipeType;
     @Setter
     @Nullable
-    private transient Object icon;
+    private transient IGuiTexture icon;
     @Setter
     private transient boolean isXEIVisible;
     @Setter

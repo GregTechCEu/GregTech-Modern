@@ -28,6 +28,8 @@ import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -607,7 +609,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     @Override
-    public Object getFancyTooltipIcon() {
+    public IGuiTexture getFancyTooltipIcon() {
         if (showFancyTooltip()) {
             return GuiTextures.INSUFFICIENT_INPUT;
         }

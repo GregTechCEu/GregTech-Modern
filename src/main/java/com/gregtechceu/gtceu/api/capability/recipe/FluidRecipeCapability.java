@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
@@ -377,7 +378,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @NotNull
     @Override
-    public Object createWidget() {
+    public Widget createWidget() {
         TankWidget tank = new TankWidget();
         tank.initTemplate();
         tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);

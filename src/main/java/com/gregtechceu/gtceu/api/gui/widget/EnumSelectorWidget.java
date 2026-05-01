@@ -30,7 +30,7 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
 
         String getTooltip();
 
-        Object getIcon();
+        IGuiTexture getIcon();
     }
 
     public final CycleButtonWidget buttonWidget;
@@ -38,7 +38,7 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
     public final List<T> values;
     public final Consumer<T> onChanged;
     private final Function<T, String> tooltipGetter;
-    private final Function<T, Object> iconGetter;
+    private final Function<T, IGuiTexture> iconGetter;
 
     public int selected = 0;
 
@@ -61,14 +61,14 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
 
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue,
                               Consumer<T> onChanged, Function<T, String> tooltipGetter,
-                              Function<T, Object> iconGetter) {
+                              Function<T, IGuiTexture> iconGetter) {
         this(xPosition, yPosition, width, height, Arrays.asList(values), initialValue, onChanged, tooltipGetter,
                 iconGetter);
     }
 
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue,
                               Consumer<T> onChanged, Function<T, String> tooltipGetter,
-                              Function<T, Object> iconGetter) {
+                              Function<T, IGuiTexture> iconGetter) {
         super(xPosition, yPosition, width, height);
 
         this.values = values;
@@ -101,7 +101,7 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
 
     public IGuiTexture getTexture(int selected) {
         var selectedValue = values.get(selected);
-        return textureSupplier.apply(selectedValue, (IGuiTexture) iconGetter.apply(selectedValue));
+        return textureSupplier.apply(selectedValue, iconGetter.apply(selectedValue));
     }
 
     private void onSelected(int selected) {
@@ -113,7 +113,7 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
         this.textureSupplier = textureSupplier;
 
         T selectedValue = getCurrentValue();
-        buttonWidget.setBackground(textureSupplier.apply(selectedValue, (IGuiTexture) iconGetter.apply(selectedValue)));
+        buttonWidget.setBackground(textureSupplier.apply(selectedValue, iconGetter.apply(selectedValue)));
 
         return this;
     }
@@ -153,7 +153,7 @@ public class EnumSelectorWidget<T extends Enum<T>> extends WidgetGroup {
         throw new IllegalArgumentException(value + " does not provide a selector tooltip.");
     }
 
-    private static Object getSelectableIcon(Enum<?> value) {
+    private static IGuiTexture getSelectableIcon(Enum<?> value) {
         if (value instanceof SelectableEnum selectable) {
             return selectable.getIcon();
         }

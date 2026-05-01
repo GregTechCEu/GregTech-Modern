@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeCategoryIcons;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
@@ -31,7 +33,7 @@ public class GTRecipeCategory {
     @Getter
     private final String languageKey;
     @Nullable
-    private Supplier<?> icon = null;
+    private Supplier<IGuiTexture> icon = null;
     @Getter
     @Setter
     private boolean isXEIVisible = true;
@@ -56,19 +58,19 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public Object getIcon() {
+    public IGuiTexture getIcon() {
         if (icon == null) {
             icon = () -> GTRecipeCategoryIcons.defaultIcon(recipeType);
         }
         return icon.get();
     }
 
-    public GTRecipeCategory setIcon(Object icon) {
+    public GTRecipeCategory setIcon(IGuiTexture icon) {
         this.icon = () -> icon;
         return this;
     }
 
-    public GTRecipeCategory setIcon(Supplier<?> icon) {
+    public GTRecipeCategory setIcon(Supplier<IGuiTexture> icon) {
         this.icon = icon;
         return this;
     }

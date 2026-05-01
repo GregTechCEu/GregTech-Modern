@@ -48,6 +48,8 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
@@ -848,7 +850,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ******** GUI *********//
     //////////////////////////////////////
     @Override
-    public Object getFancyTooltipIcon() {
+    public IGuiTexture getFancyTooltipIcon() {
         return ToolGridIcons.info();
     }
 
