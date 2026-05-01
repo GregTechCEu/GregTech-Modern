@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.ModelBakingUtil;
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
-import com.gregtechceu.gtceu.client.model.compat.ModelState;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedModel;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.client.resources.model.sprite.Material;

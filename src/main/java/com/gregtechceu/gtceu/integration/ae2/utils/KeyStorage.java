@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;

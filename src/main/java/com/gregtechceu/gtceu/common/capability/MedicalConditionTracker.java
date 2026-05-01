@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.capability;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
-import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -15,6 +14,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import com.mojang.serialization.Codec;

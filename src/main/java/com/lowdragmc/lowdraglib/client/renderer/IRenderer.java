@@ -2,7 +2,6 @@ package com.lowdragmc.lowdraglib.client.renderer;
 
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ModelResourceLocation;
-import com.gregtechceu.gtceu.client.model.compat.TriState;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -12,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;

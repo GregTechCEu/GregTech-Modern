@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.nbt.INBTSerializable;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.Tag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 

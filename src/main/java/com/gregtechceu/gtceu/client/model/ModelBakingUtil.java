@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.client.model;
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ChunkRenderTypeSet;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
-import com.gregtechceu.gtceu.client.model.compat.ModelState;
 import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 import com.gregtechceu.gtceu.client.model.machine.variant.VariantState;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;

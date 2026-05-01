@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.client.model.compat.ChunkRenderTypeSet;
 import com.gregtechceu.gtceu.client.model.compat.IDynamicBakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
 import com.gregtechceu.gtceu.client.model.compat.ItemTransforms;
-import com.gregtechceu.gtceu.client.model.compat.TriState;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -18,6 +17,7 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.strategy.IdentityStrategy;

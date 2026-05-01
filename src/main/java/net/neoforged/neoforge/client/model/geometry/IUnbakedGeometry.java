@@ -2,8 +2,8 @@ package net.neoforged.neoforge.client.model.geometry;
 
 import com.gregtechceu.gtceu.client.model.compat.BakedModel;
 import com.gregtechceu.gtceu.client.model.compat.ItemOverrides;
-import com.gregtechceu.gtceu.client.model.compat.ModelState;
 
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.UnbakedModel;
