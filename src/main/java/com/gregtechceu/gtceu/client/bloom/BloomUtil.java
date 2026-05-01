@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
-import com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.LevelRendererAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.normal.LevelRendererAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
