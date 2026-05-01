@@ -4,12 +4,17 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 import com.gregtechceu.gtceu.utils.GTMath;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,9 +44,9 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
     @Nullable
-    Object stackSizeInput;
+    IntInputWidget stackSizeInput;
     @Nullable
-    Object stackSizeBucketModeInput;
+    EnumSelectorWidget<BucketMode> stackSizeBucketModeInput;
 
     public AdvancedFluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -104,7 +109,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
 
         if (stackSizeInput != null) {
-            AdvancedFluidVoidingCoverUI.setNumberInputValue(stackSizeInput, getCurrentBucketModeTransferSize());
+            stackSizeInput.setValue(getCurrentBucketModeTransferSize());
         }
     }
 
@@ -136,9 +141,28 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     void configureStackSizeInput() {
-        if (this.stackSizeInput != null && this.stackSizeBucketModeInput != null) {
-            AdvancedFluidVoidingCoverUI.configureStackSizeInput(this);
-        }
+        if (stackSizeInput == null || stackSizeBucketModeInput == null) return;
+        stackSizeInput.setVisible(shouldShowStackSize());
+        stackSizeBucketModeInput.setVisible(shouldShowStackSize());
+    }
+
+    void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), getVoidingMode(),
+                        this::setVoidingMode,
+                        VoidingMode::getTooltip, CoverModeTextures::getVoidingModeIcon));
+
+        stackSizeInput = new IntInputWidget(35, 20, 84, 20,
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize);
+        stackSizeInput.setMin(1);
+        stackSizeInput.setMax(Integer.MAX_VALUE);
+        configureStackSizeInput();
+        group.addWidget(stackSizeInput);
+
+        stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(),
+                getTransferBucketMode(), this::setTransferBucketMode, BucketMode::getTooltip,
+                CoverModeTextures::getBucketModeIcon);
+        group.addWidget(stackSizeBucketModeInput);
     }
 
     boolean shouldShowStackSize() {

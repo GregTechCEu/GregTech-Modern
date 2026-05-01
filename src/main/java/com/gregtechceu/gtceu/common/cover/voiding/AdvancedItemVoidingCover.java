@@ -4,9 +4,14 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +35,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Getter
     protected int globalVoidingLimit = 1;
 
-    Object stackSizeInput;
+    IntInputWidget stackSizeInput;
 
     public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -117,9 +122,23 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     void configureStackSizeInput() {
-        if (this.stackSizeInput != null) {
-            AdvancedItemVoidingCoverUI.configureStackSizeInput(this);
-        }
+        if (stackSizeInput == null) return;
+        stackSizeInput.setVisible(shouldShowStackSize());
+        stackSizeInput.setMin(1);
+        stackSizeInput.setMax(getVoidingMode().maxStackSize);
+    }
+
+    void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), getVoidingMode(),
+                        this::setVoidingMode,
+                        VoidingMode::getTooltip, CoverModeTextures::getVoidingModeIcon));
+
+        stackSizeInput = new IntInputWidget(64, 20, 80, 20,
+                () -> globalVoidingLimit, val -> globalVoidingLimit = val);
+        configureStackSizeInput();
+
+        group.addWidget(stackSizeInput);
     }
 
     boolean shouldShowStackSize() {

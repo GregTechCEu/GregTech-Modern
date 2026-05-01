@@ -86,7 +86,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
-    Object ioModeSwitch;
+    SwitchWidget ioModeSwitch;
 
     @SaveField
     @SyncToClient
@@ -441,21 +441,21 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
-                    if (ioModeSwitch instanceof Widget switchWidget) {
-                        switchWidget.setHoverTooltips(
+                    if (ioModeSwitch != null) {
+                        ioModeSwitch.setHoverTooltips(
                                 LocalizationUtils.format("conveyor.mode",
                                         LocalizationUtils.format(io.tooltip)));
                     }
-                })
-                .setTexture(
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
-                                (IGuiTexture) IOSelectorTextures.getIcon(IO.OUT)),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
-                                (IGuiTexture) IOSelectorTextures.getIcon(IO.IN)))
-                .setPressed(io == IO.IN)
-                .setHoverTooltips(
-                        LocalizationUtils.format("conveyor.mode", LocalizationUtils.format(io.tooltip)));
-        group.addWidget((Widget) ioModeSwitch);
+                });
+        ioModeSwitch.setTexture(
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
+                        (IGuiTexture) IOSelectorTextures.getIcon(IO.OUT)),
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
+                        (IGuiTexture) IOSelectorTextures.getIcon(IO.IN)));
+        ioModeSwitch.setPressed(io == IO.IN);
+        ioModeSwitch.setHoverTooltips(
+                LocalizationUtils.format("conveyor.mode", LocalizationUtils.format(io.tooltip)));
+        group.addWidget(ioModeSwitch);
 
         if (shouldDisplayDistributionMode()) {
             group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,

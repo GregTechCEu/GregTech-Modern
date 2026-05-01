@@ -98,7 +98,7 @@ public class FluidVoidingCover extends PumpCover {
         group.addWidget((Widget) getVoidingFilterHandler().createFilterConfigUI(10, 50, 126, 60));
 
         if (this instanceof AdvancedFluidVoidingCover advancedCover) {
-            AdvancedFluidVoidingCoverUI.buildAdditionalUI(advancedCover, group);
+            advancedCover.buildAdditionalUI(group);
         }
 
         return group;

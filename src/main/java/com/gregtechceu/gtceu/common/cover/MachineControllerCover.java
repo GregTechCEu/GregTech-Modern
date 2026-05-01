@@ -6,17 +6,29 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +44,7 @@ import java.util.stream.Collectors;
 public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     CustomItemStackHandler sideCoverSlot;
-    Object modeButton;
+    ButtonWidget modeButton;
 
     @SaveField
     @Getter
@@ -184,7 +196,43 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        return MachineControllerCoverUI.createUIWidget(this);
+        if (getControllerMode() != null && getControllable(getControllerMode().side) == null) {
+            setControllerMode(null);
+        }
+        WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
+
+        group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
+        group.addWidget(new IntInputWidget(10, 20, 131, 20,
+                this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
+
+        modeButton = new ButtonWidget(10, 45, 131, 20,
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
+                cd -> selectNextMode());
+        group.addWidget(modeButton);
+
+        group.addWidget(new ToggleButtonWidget(
+                146, 20, 20, 20,
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
+                .isMultiLang()
+                .setTooltipText("cover.machine_controller.invert"));
+
+        group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
+        group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
+                this::preventPowerFail, this::setPreventPowerFail));
+
+        sideCoverSlot = new CustomItemStackHandler(1);
+        group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
+
+            @Override
+            public ItemStack slotClickPhantom(Slot slot, int mouseButton, ContainerInput clickTypeIn,
+                                              ItemStack stackHeld) {
+                return sideCoverSlot.getStackInSlot(0);
+            }
+        });
+
+        updateUI();
+
+        return group;
     }
 
     void selectNextMode() {
@@ -200,7 +248,38 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     private void updateUI() {
-        MachineControllerCoverUI.updateUI(this);
+        updateModeButton();
+        updateCoverSlot();
+    }
+
+    private void updateModeButton() {
+        if (modeButton == null) {
+            return;
+        }
+        modeButton.setButtonTexture(new GuiTextureGroup(
+                GuiTextures.VANILLA_BUTTON,
+                new TextTexture(getControllerMode() != null ?
+                        getControllerMode().localeName : ControllerMode.nullLocaleName)));
+    }
+
+    private void updateCoverSlot() {
+        if (sideCoverSlot == null) {
+            return;
+        }
+
+        if (getControllerMode() == null) {
+            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
+        } else {
+            var side = getControllerMode().side;
+            if (side == null && coverHolder instanceof MachineCoverContainer coverContainer) {
+                sideCoverSlot.setStackInSlot(0, coverContainer.getMachine().getDefinition().asStack());
+            } else {
+                var attachedCover = coverHolder.getCoverAtSide(side);
+                sideCoverSlot.setStackInSlot(0,
+                        attachedCover != null ? attachedCover.getAttachItem().copy() : ItemStack.EMPTY);
+            }
+        }
+        sideCoverSlot.onContentsChanged(0);
     }
 
     void setPreventPowerFail(boolean preventPowerFail) {
