@@ -6,7 +6,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachineUI;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -14,6 +17,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -119,7 +125,20 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return SteamSolidBoilerMachineUI.create(this, entityPlayer);
+        return SteamBoilerMachineUI.create(this, entityPlayer)
+                .widget(new SlotWidget(fuelHandler.storage, 0, 115, 62)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure),
+                                GuiTextures.COAL_OVERLAY_STEAM.get(isHighPressure))))
+                .widget(new SlotWidget(ashHandler.storage, 0, 115, 26, true, false)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure),
+                                GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure))))
+                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 115, 44, 18, 18)
+                        .setProgressTexture(
+                                GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure)
+                                        .getSubTexture(0, 0, 1, 0.5),
+                                GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure)
+                                        .getSubTexture(0, 0.5, 1, 0.5))
+                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
     }
 
     @Override

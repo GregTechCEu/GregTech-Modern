@@ -1,6 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -74,7 +80,41 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     public Object openConfigurator(int x, int y) {
-        return SimpleItemFilterUI.openConfigurator(this, x, y);
+        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                final int index = i * 3 + j;
+
+                var handler = new CustomItemStackHandler(matches[index]);
+
+                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setMaxStackSize(maxStackSize);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setMaxStackSize(maxStackSize);
+                    }
+                };
+
+                slot.setChangeListener(() -> {
+                    matches[index] = handler.getStackInSlot(0);
+                    onUpdated.accept(this);
+                }).setBackground(GuiTextures.SLOT);
+
+                group.addWidget(slot);
+            }
+        }
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
+        return group;
     }
 
     @Override

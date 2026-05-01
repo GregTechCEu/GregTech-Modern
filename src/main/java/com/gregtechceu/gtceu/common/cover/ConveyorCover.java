@@ -11,23 +11,35 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IOSelectorTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -410,7 +422,61 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-        return ConveyorCoverUI.createUIWidget(this);
+        final var group = new WidgetGroup(0, 0, 176, 137);
+        group.addWidget(
+                new LabelWidget(10, 5,
+                        Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
+
+        group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> transferRate, this::setTransferRate)
+                .setMin(1).setMax(maxItemTransferRate));
+
+        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
+                DistributionMode.values(), distributionMode, this::setDistributionMode,
+                DistributionMode::getTooltip,
+                CoverModeTextures::getDistributionModeIcon);
+
+        distributionSelector.setVisible(shouldRespectDistributionMode());
+        group.addWidget(distributionSelector);
+
+        ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
+                (clickData, value) -> {
+                    setIo(value ? IO.IN : IO.OUT);
+                    if (ioModeSwitch instanceof Widget switchWidget) {
+                        switchWidget.setHoverTooltips(
+                                LocalizationUtils.format("conveyor.mode",
+                                        LocalizationUtils.format(io.tooltip)));
+                    }
+                })
+                .setTexture(
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
+                                (IGuiTexture) IOSelectorTextures.getIcon(IO.OUT)),
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
+                                (IGuiTexture) IOSelectorTextures.getIcon(IO.IN)))
+                .setPressed(io == IO.IN)
+                .setHoverTooltips(
+                        LocalizationUtils.format("conveyor.mode", LocalizationUtils.format(io.tooltip)));
+        group.addWidget((Widget) ioModeSwitch);
+
+        if (shouldDisplayDistributionMode()) {
+            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
+                    DistributionMode.VALUES, distributionMode, this::setDistributionMode,
+                    DistributionMode::getTooltip,
+                    CoverModeTextures::getDistributionModeIcon));
+        }
+
+        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode, ManualIOMode::getTooltip,
+                CoverModeTextures::getManualIOModeIcon)
+                .setHoverTooltips("universal.manual_import_export.mode.description"));
+
+        group.addWidget((Widget) filterHandler.createFilterSlotUI(125, 108));
+        group.addWidget((Widget) filterHandler.createFilterConfigUI(10, 72, 156, 60));
+
+        if (this instanceof RobotArmCover robotArmCover) {
+            RobotArmCoverUI.buildAdditionalUI(robotArmCover, group);
+        }
+
+        return group;
     }
 
     boolean shouldDisplayDistributionMode() {

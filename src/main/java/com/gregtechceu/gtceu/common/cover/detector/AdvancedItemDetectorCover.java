@@ -6,11 +6,18 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -104,7 +111,34 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
 
     @Override
     public Widget createUIWidget() {
-        return AdvancedItemDetectorCoverUI.createUIWidget(this);
+        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
+        group.addWidget(new LabelWidget(10, 5, "advanced_item_detector.label"));
+
+        group.addWidget(new TextBoxWidget(10, 55, 65,
+                List.of(LocalizationUtils.format("advanced_item_detector.min"))));
+
+        group.addWidget(new TextBoxWidget(10, 80, 65,
+                List.of(LocalizationUtils.format("advanced_item_detector.max"))));
+
+        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
+        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
+
+        group.addWidget(new ToggleButtonWidget(
+                9, 20, 20, 20,
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
+                .isMultiLang()
+                .setTooltipText("advanced_item_detector.invert"));
+
+        group.addWidget(new ToggleButtonWidget(31, 21, 18, 18,
+                GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
+                .setShouldUseBaseBackground()
+                .isMultiLang()
+                .setTooltipText("advanced_detector.latch"));
+
+        group.addWidget((Widget) filterHandler.createFilterSlotUI(148, 100));
+        group.addWidget((Widget) filterHandler.createFilterConfigUI(10, 100, 156, 60));
+
+        return group;
     }
 
     @Override

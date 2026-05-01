@@ -7,7 +7,10 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.misc.MonitorComponentIcons;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -16,7 +19,10 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -83,7 +89,40 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     @Override
     public Widget createUIWidget() {
-        return BatteryBufferMachineUI.createUIWidget(this);
+        int rowSize = (int) Math.sqrt(getInventorySize());
+        int colSize = rowSize;
+        if (getInventorySize() == 8) {
+            rowSize = 4;
+            colSize = 2;
+        }
+        var template = new WidgetGroup(0, 0, 18 * rowSize + 8, 18 * colSize + 8);
+        template.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        int index = 0;
+        for (int y = 0; y < colSize; y++) {
+            for (int x = 0; x < rowSize; x++) {
+                template.addWidget(new SlotWidget(getBatteryInventory(), index++, 4 + x * 18, 4 + y * 18,
+                        true, true)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)));
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        var editableUI = (EditableUI) BatteryBufferMachine.createBatteryEnergyBar();
+        var energyBar = editableUI.createDefault();
+
+        var group = new WidgetGroup(0, 0,
+                Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
+                Math.max(template.getSize().height + 8, energyBar.getSize().height + 8));
+        var size = group.getSize();
+        energyBar.setSelfPosition(new Position(3, (size.height - energyBar.getSize().height) / 2));
+        template.setSelfPosition(new Position(
+                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 +
+                        energyBar.getSize().width + 2,
+                (size.height - template.getSize().height) / 2));
+        group.addWidget(energyBar);
+        group.addWidget(template);
+        editableUI.setupUI(group, this);
+        return group;
     }
 
     static Object createBatteryEnergyBar() {

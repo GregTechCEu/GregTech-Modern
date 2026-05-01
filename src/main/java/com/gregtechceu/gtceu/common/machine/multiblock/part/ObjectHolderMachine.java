@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -10,7 +12,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +83,14 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
 
     @Override
     public Widget createUIWidget() {
-        return ObjectHolderMachineUI.createUIWidget(this);
+        return new WidgetGroup(new Position(0, 0))
+                .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
+                .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)
+                        .setIsBlocked(this::isLocked)
+                        .setBackground(GuiTextures.SLOT, GuiTextures.RESEARCH_STATION_OVERLAY))
+                .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 36)
+                        .setIsBlocked(this::isLocked)
+                        .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.common.machine.steam;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachineUI;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -11,6 +14,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -67,7 +71,11 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return SteamLiquidBoilerMachineUI.create(this, entityPlayer);
+        return SteamBoilerMachineUI.create(this, entityPlayer)
+                .widget(new TankWidget(fuelTank.getStorages()[0], 119, 26, 10, 54, true, true)
+                        .setShowAmount(false)
+                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)));
     }
 
     @Override

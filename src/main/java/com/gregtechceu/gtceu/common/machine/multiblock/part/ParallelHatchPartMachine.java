@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.util.Mth;
 
@@ -41,7 +43,11 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     @Override
     public Widget createUIWidget() {
-        return ParallelHatchPartMachineUI.createUIWidget(this);
+        WidgetGroup parallelAmountGroup = new WidgetGroup(0, 0, 100, 20);
+        parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
+                .setMin(ParallelHatchPartMachine.MIN_PARALLEL)
+                .setMax(maxParallel));
+        return parallelAmountGroup;
     }
 
     @Override

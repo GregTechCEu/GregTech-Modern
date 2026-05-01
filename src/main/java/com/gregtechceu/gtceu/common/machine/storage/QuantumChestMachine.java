@@ -3,6 +3,10 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.datacomponents.LargeItemContent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -17,10 +21,18 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.editor.Icons;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -228,7 +240,48 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
 
     public Widget createUIWidget() {
-        return QuantumChestMachineUI.createUIWidget(this);
+        var group = new WidgetGroup(0, 0, 109, 63);
+        var importItems = createImportItems();
+        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
+                .addWidget(new LabelWidget(8, 8, "gtceu.quantum_chest.items_stored"))
+                .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
+                        .setTextColor(-1)
+                        .setDropShadow(true))
+                .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
+                .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
+                        .setItemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
+                        .setBackgroundTexture(GuiTextures.SLOT))
+                .addWidget(new ButtonWidget(87, 42, 18, 18,
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
+                            if (!cd.isRemote && !stored.isEmpty()) {
+                                var extracted = cache.extractItem(0,
+                                        (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
+                                if (!group.getGui().entityPlayer.addItem(extracted)) {
+                                    net.minecraft.world.level.block.Block.popResource(
+                                            group.getGui().entityPlayer.level(),
+                                            group.getGui().entityPlayer.getOnPos(), extracted);
+                                }
+                            }
+                        }))
+                .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
+                        stack -> stored.isEmpty() || ItemStack.isSameItemSameComponents(stack, stored))
+                        .setMaxStackSize(1))
+                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
+                        GuiTextures.BUTTON_ITEM_OUTPUT, autoOutput::isAutoOutputItems,
+                        autoOutput::setAllowAutoOutputItems)
+                        .setShouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
+                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
+                        GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
+                        .setShouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.item_lock.tooltip"))
+                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
+                        GuiTextures.BUTTON_VOID, () -> isVoiding, b -> isVoiding = b)
+                        .setShouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 
     CustomItemStackHandler createImportItems() {

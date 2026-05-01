@@ -1,7 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -76,7 +81,46 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     public Object openConfigurator(int x, int y) {
-        return SimpleFluidFilterUI.openConfigurator(this, x, y);
+        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        fluidStorageSlots = new CustomFluidTank[9];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                final int index = i * 3 + j;
+
+                fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
+                fluidStorageSlots[index].setFluid(matches[index]);
+
+                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18,
+                        18,
+                        () -> fluidStorageSlots[index].getFluid(),
+                        fluid -> fluidStorageSlots[index].setFluid(fluid)) {
+
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+                };
+
+                tank.setChangeListener(() -> {
+                    matches[index] = fluidStorageSlots[index].getFluidInTank(0);
+                    onUpdated.accept(this);
+                }).setBackground(GuiTextures.SLOT);
+
+                group.addWidget(tank);
+            }
+        }
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
+        return group;
     }
 
     @Override

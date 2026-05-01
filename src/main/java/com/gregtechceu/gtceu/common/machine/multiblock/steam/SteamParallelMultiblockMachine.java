@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachineUI;
@@ -22,6 +24,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -158,6 +163,17 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return SteamParallelMultiblockMachineUI.createUI(this, entityPlayer);
+        boolean steel = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
+        var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121)
+                .setBackground(IDisplayUIMachineUI.screenTexture(getScreenTexture()));
+        screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
+        screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                .setMaxWidthLimit(150)
+                .clickHandler(this::handleDisplayClick));
+        return new ModularUI(176, 216, this, entityPlayer)
+                .background(GuiTextures.BACKGROUND_STEAM.get(steel))
+                .widget(screen)
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
+                        GuiTextures.SLOT_STEAM.get(steel), 7, 134, true));
     }
 }

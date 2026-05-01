@@ -6,15 +6,19 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
+import com.gregtechceu.gtceu.common.cover.data.CoverModeTextures;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -84,7 +88,16 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        return ItemFilterCoverUI.createUIWidget(this);
+        final var group = new WidgetGroup(0, 0, 178, 85);
+        group.addWidget(new LabelWidget(60, 5, getAttachItem().getItem().getDescriptionId()));
+        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
+                FilterMode.VALUES, filterMode, this::setFilterMode, FilterMode::getTooltip,
+                CoverModeTextures::getFilterModeIcon));
+        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow,
+                this::setAllowFlow,
+                ManualIOMode::getTooltip, CoverModeTextures::getManualIOModeIcon));
+        group.addWidget((Widget) getItemFilter().openConfigurator(62, 25));
+        return group;
     }
 
     private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {
