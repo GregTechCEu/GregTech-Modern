@@ -184,25 +184,28 @@ public class BloomUtil {
         profilerFiller.popPush("gtceu:bloom");
         BloomUtil.setupBloomShaderUniforms();
 
-        // if safe mode is enabled, don't draw block bloom the 'normal' way
-        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
-            BloomUtil.setFilterToggleUniform(true);
-            ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
-                    camPos.x, camPos.y, camPos.z, projectionMatrix);
-            BloomUtil.setFilterToggleUniform(false);
-        }
-
-        // have to re-setup here. so sad. very aw.
         GTRenderTypes.bloom().setupRenderState();
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
-        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
-            BloomUtil.setFilterToggleUniform(true);
-            BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
-            BloomUtil.setFilterToggleUniform(false);
-        }
-        BloomUtil.processPostEffect(partialTicks, profilerFiller);
 
+        // if safe mode is enabled, don't draw block bloom the 'normal' way
+        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
+            ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
+                    camPos.x, camPos.y, camPos.z, projectionMatrix);
+
+            // have to re-setup here. so sad. very aw.
+            GTRenderTypes.bloom().setupRenderState();
+        }
+        // use BloomSafeMode.drawBlockBloom instead
+        else {
+            BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
+        }
+
+        BloomUtil.setFilterToggleUniform(true);
+        BloomUtil.processPostEffect(partialTicks, profilerFiller);
+        BloomUtil.setFilterToggleUniform(false);
+
+        // clear state. again.
         GTRenderTypes.bloom().clearRenderState();
 
         // profiler section is popped by popPush() in the calling function; don't pop it here
