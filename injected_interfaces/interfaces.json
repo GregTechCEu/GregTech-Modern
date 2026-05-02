@@ -3,7 +3,10 @@
         "com/gregtechceu/gtceu/core/IGTBakedQuad"
     ],
     "com/mojang/blaze3d/vertex/VertexConsumer": [
-        "com/gregtechceu/gtceu/core/IGTVertexConsumer"
+        "com/gregtechceu/gtceu/core/VertexConsumerExt"
+    ],
+    "net/minecraftforge/client/model/lighting/QuadLighter": [
+        "com/gregtechceu/gtceu/core/QuadLighterExt"
     ],
     "net/minecraft/world/entity/Entity": [
         "com/gregtechceu/gtceu/core/IFireImmuneEntity",

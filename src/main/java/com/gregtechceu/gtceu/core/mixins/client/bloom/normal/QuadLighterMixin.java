@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.core.IGTQuadLighter;
+import com.gregtechceu.gtceu.core.QuadLighterExt;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @SuppressWarnings("SameReturnValue")
 @Mixin(value = QuadLighter.class, remap = false)
-public class QuadLighterMixin implements IGTQuadLighter {
+public class QuadLighterMixin implements QuadLighterExt {
 
     @Shadow
     private BlockPos pos;

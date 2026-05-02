@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.*;
 
-public interface IGTVertexConsumer {
+public interface VertexConsumerExt {
 
     private VertexConsumer self() {
         return (VertexConsumer) this;

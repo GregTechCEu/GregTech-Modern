@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
-import com.gregtechceu.gtceu.core.IGTQuadLighter;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -35,10 +33,10 @@ public class ForgeModelBlockRendererMixin {
                                                        @Local(name = "flatLighter") QuadLighter flatLighter) {
         if (flatLighter != null) {
             // this is always in the flatLighter init block
-            ((IGTQuadLighter) flatLighter).gtceu$setRenderType(renderType);
+            flatLighter.gtceu$setRenderType(renderType);
         } else {
             // and this _should_ always be outside of it
-            ((IGTQuadLighter) lighter).gtceu$setRenderType(renderType);
+            lighter.gtceu$setRenderType(renderType);
         }
     }
 }

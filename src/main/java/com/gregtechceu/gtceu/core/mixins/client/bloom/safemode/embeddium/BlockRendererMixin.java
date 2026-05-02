@@ -36,11 +36,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BlockRendererMixin {
 
     @Inject(method = "writeGeometry", at = @At(value = "HEAD"))
-    private void gtceu$captureBloomQuads$initLocals(BlockRenderContext ctx, ChunkModelBuilder builder,
-                                                    Vec3 offset, Material material, BakedQuadView quad,
-                                                    int[] colors, QuadLightData light,
-                                                    CallbackInfo ci,
-                                                    @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
+    private void gtceu$copyBloomQuads$initLocals(BlockRenderContext ctx, ChunkModelBuilder builder,
+                                                 Vec3 offset, Material material, BakedQuadView quad,
+                                                 int[] colors, QuadLightData light,
+                                                 CallbackInfo ci,
+                                                 @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (!BloomShaderManager.isBloomActive() || !TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
             bufferBuilderRef.set(null);
@@ -56,12 +56,12 @@ public class BlockRendererMixin {
                      target = "Lme/jellysquid/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;light:I",
                      opcode = Opcodes.PUTFIELD,
                      shift = At.Shift.AFTER))
-    private void gtceu$captureBloomQuads(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
-                                         Material material, BakedQuadView quad, int[] colors, QuadLightData light,
-                                         CallbackInfo ci,
-                                         @Local(name = "srcIndex") int srcIndex,
-                                         @Local(name = "out") ChunkVertexEncoder.Vertex v,
-                                         @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
+    private void gtceu$copyBloomQuads(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
+                                      Material material, BakedQuadView quad, int[] colors, QuadLightData light,
+                                      CallbackInfo ci,
+                                      @Local(name = "srcIndex") int srcIndex,
+                                      @Local(name = "out") ChunkVertexEncoder.Vertex v,
+                                      @Share("bufferBuilder") LocalRef<BufferBuilder> bufferBuilderRef) {
         BufferBuilder bufferBuilder = bufferBuilderRef.get();
         // bufferBuilder is null if bloom isn't available or the quad's texture doesn't have bloom
         if (bufferBuilder == null) return;

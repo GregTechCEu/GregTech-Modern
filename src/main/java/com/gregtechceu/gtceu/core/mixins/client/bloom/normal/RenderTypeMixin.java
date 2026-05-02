@@ -20,6 +20,7 @@ public class RenderTypeMixin {
     private static ImmutableList<RenderType> gtceu$forceAddBloomToChunkBufferLayers(ImmutableList<RenderType> original) {
         // don't bother checking if bloom can be loaded here; Bloom can't be used with OptiFine installed and shaders
         // aren't loaded when this class is loaded.
+        // This mixin is also only applied if bloom safe mode is disabled.
         if (GTEarlyConfig.OPTIFINE_PRESENT) return original;
 
         return ImmutableList.<RenderType>builder()
