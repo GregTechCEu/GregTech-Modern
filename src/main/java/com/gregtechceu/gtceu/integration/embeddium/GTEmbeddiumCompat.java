@@ -21,7 +21,7 @@ public class GTEmbeddiumCompat {
 
     public static final TerrainRenderPass BLOOM_RENDER_PASS = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
     public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS,
-            AlphaCutoffParameter.ONE_TENTH, false);
+            AlphaCutoffParameter.ONE_TENTH, true);
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);

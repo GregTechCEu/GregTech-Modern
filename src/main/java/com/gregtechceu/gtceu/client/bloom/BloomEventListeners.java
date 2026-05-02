@@ -92,7 +92,7 @@ public class BloomEventListeners {
             if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME) ||
                     !BloomShaderManager.isBloomAvailable()) {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
-                block = RenderType.cutout();
+                block = RenderType.cutoutMipped();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
             } else {
                 block = GTRenderTypes.bloom();
