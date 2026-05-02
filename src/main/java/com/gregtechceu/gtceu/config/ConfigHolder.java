@@ -3,13 +3,22 @@ package com.gregtechceu.gtceu.config;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.client.bloom.BloomAlgorithm;
+import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import dev.toma.configuration.Configuration;
+import dev.toma.configuration.client.IValidationHandler;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
+import dev.toma.configuration.config.validate.ValidationResult;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.nio.file.Path;
 
 @Config(id = GTCEu.MOD_ID)
 public class ConfigHolder {
@@ -17,10 +26,14 @@ public class ConfigHolder {
     public static ConfigHolder INSTANCE;
     private static final Object LOCK = new Object();
 
+    @ApiStatus.Internal
+    public static dev.toma.configuration.config.ConfigHolder<ConfigHolder> INTERNAL_INSTANCE;
+
     public static void init() {
         synchronized (LOCK) {
             if (INSTANCE == null) {
-                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+                INTERNAL_INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml());
+                INSTANCE = INTERNAL_INSTANCE.getConfigInstance();
             }
         }
     }
@@ -831,10 +844,13 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Bloom Algorithm",
+                    "Requires reloading all chunks ",
                     "UNITY - Unity-like Bloom (rescale)",
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
+            @Configurable.ValueUpdateCallback(method = "onBloomTypeOptionChange")
+            // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 3.x
             public BloomAlgorithm bloomType = BloomAlgorithm.UNREAL;
 
             @Configurable
@@ -878,6 +894,27 @@ public class ConfigHolder {
             @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
             @Configurable.DecimalRange(min = 0)
             public float step = 1.0f;
+
+            // used by bloomType field's value update callback
+            @SuppressWarnings("unused")
+            private void onBloomTypeOptionChange(BloomAlgorithm bloomType, IValidationHandler validationHandler) {
+                if (!BloomShaderManager.initPostShaders()) {
+                    // failed to load post shaders
+
+                    Path gameDir = FMLPaths.GAMEDIR.get().toAbsolutePath();
+                    Path logFile = gameDir.resolve(Path.of("logs", "latest.log"));
+                    Component latestLogClickable = Component.literal(gameDir.relativize(logFile).toString())
+                            .withStyle((style) -> style.withUnderlined(true)
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE,
+                                            logFile.toFile().toString())));
+
+                    validationHandler.setValidationResult(ValidationResult.warn(Component.translatable(
+                            "config.gtceu.option.bloomType.load_error", latestLogClickable)));
+                } else {
+                    // post shader loaded successfully
+                    validationHandler.setOkStatus();
+                }
+            }
         }
 
         public static class RendererOptions {

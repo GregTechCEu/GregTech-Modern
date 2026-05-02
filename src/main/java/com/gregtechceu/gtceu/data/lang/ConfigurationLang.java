@@ -16,6 +16,9 @@ import java.util.Set;
 public class ConfigurationLang {
 
     public static void init(RegistrateLangProvider provider) {
+        provider.add("config.gtceu.option.bloomType.load_error",
+                "Could not load shaders for the bloom effect, see %s for details");
+
         dfs(provider, new HashSet<>(),
                 Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getValueMap());
     }

@@ -46,14 +46,15 @@ public class BloomShaderManager {
                 shader -> rendertypeEntityBloomShader = shader);
     }
 
+    /// @return whether the post effect was loaded successfully
     @ApiStatus.Internal
-    public static void initPostShaders() {
+    public static boolean initPostShaders() {
         deinitPostShaders();
 
         // forcefully update availability on (re-)load
         bloomAvailable = updateBloomShaderAvailability();
 
-        if (!isBloomAvailable()) return;
+        if (!isBloomAvailable()) return false;
 
         ResourceLocation id = null;
 
@@ -61,14 +62,14 @@ public class BloomShaderManager {
             case UNITY -> id = GTCEu.id("shaders/post/bloom_unity.json");
             case UNREAL -> id = GTCEu.id("shaders/post/bloom_unreal.json");
             case DISABLED -> {
-                return;
+                return true;
             }
             // skip adding a default branch in favor of the if statement below
         }
         if (id == null) {
             GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.bloom.bloomType);
             ConfigHolder.INSTANCE.client.bloom.bloomType = BloomAlgorithm.DISABLED;
-            return;
+            return false;
         }
 
         try {
@@ -77,18 +78,12 @@ public class BloomShaderManager {
             BLOOM_CHAIN = new PostChain(mc.getTextureManager(), mc.getResourceManager(), mc.getMainRenderTarget(), id);
             BLOOM_CHAIN.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
             BLOOM_TARGET = BLOOM_CHAIN.getTempTarget("final");
-        } catch (IOException e) {
-            GTCEu.LOGGER.error("Failed to load shader {}:", id, e);
+            return true;
+        } catch (Exception e) {
+            GTCEu.LOGGER.error("Failed to {} shader {}:", e instanceof JsonSyntaxException ? "parse" : "load", id, e);
             BLOOM_CHAIN = null;
             BLOOM_TARGET = null;
-        } catch (JsonSyntaxException e) {
-            GTCEu.LOGGER.error("Failed to parse shader {}:", id, e);
-            BLOOM_CHAIN = null;
-            BLOOM_TARGET = null;
-        } catch (RuntimeException e) {
-            GTCEu.LOGGER.error("Unexpected error loading shader {}:", id, e);
-            BLOOM_CHAIN = null;
-            BLOOM_TARGET = null;
+            return false;
         }
     }
 
