@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.oculus;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.integration.iris.GTIrisHooks;
 
 import net.irisshaders.iris.pipeline.WorldRenderingPhase;
 import net.minecraft.client.renderer.RenderType;
@@ -33,6 +32,7 @@ public class WorldRenderingPhaseMixin {
     static {
         // don't bother checking if bloom can be loaded here; Oculus won't load with OptiFine installed and shaders
         // aren't loaded when this class is loaded.
+        // This mixin is also only applied if bloom safe mode is disabled.
         GTCEU$BLOOM = gtceu$callInit("GTCEU$BLOOM", $VALUES.length);
         $VALUES = ArrayUtils.add($VALUES, GTCEU$BLOOM);
     }
@@ -43,7 +43,7 @@ public class WorldRenderingPhaseMixin {
         if (!BloomShaderManager.isBloomAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
-            cir.setReturnValue(GTIrisHooks.getBloomRenderingPhase());
+            cir.setReturnValue(GTCEU$BLOOM);
         }
     }
 }
