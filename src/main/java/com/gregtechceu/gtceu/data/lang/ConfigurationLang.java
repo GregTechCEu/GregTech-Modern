@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -12,6 +13,8 @@ import java.util.Set;
 public class ConfigurationLang {
 
     public static void init(final RegistrateLangProvider provider) {
+        provider.add("config.screen.gtceu", GTCEu.NAME + " Configuration");
+
         final Set<String> added = new HashSet<>();
         ConfigHolder.INTERNAL_INSTANCE.values()
                 .forEach((value) -> addTranslation(provider, added, value));
