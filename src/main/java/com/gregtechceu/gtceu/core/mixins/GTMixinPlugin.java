@@ -29,7 +29,7 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
         }
 
         try {
-            CONFIG = GTEarlyConfig.load(new File("./config/gtceu-early-config.properties"));
+            CONFIG = GTEarlyConfig.load(new File("./config/gtceu-early.properties"));
         } catch (Exception e) {
             throw new RuntimeException("Could not load mixin configuration file for GTCEu", e);
         }
