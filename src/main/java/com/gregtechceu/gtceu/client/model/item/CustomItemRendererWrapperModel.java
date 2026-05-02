@@ -5,11 +5,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
@@ -19,6 +17,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.function.Function;
 
@@ -40,22 +39,27 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
 
     public static final ResourceLocation ID = GTCEu.id("custom_item_renderer_wrapper");
 
-    private final BlockModel parent;
+    private final BlockModel baseModel;
 
-    public CustomItemRendererWrapperModel(BlockModel parent) {
-        this.parent = parent;
+    public CustomItemRendererWrapperModel(BlockModel baseModel) {
+        this.baseModel = baseModel;
     }
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BlockModel owner = parent;
+        BlockModel owner = baseModel;
         if (context instanceof BlockGeometryBakingContext blockContext) owner = blockContext.owner;
 
-        BakedModel originalModel = parent.bake(baker, owner, spriteGetter, modelState, modelLocation,
+        BakedModel originalModel = baseModel.bake(baker, owner, spriteGetter, modelState, modelLocation,
                 context.isGui3d());
         return new Baked(originalModel);
+    }
+
+    @Override
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
+        baseModel.resolveParents(modelGetter);
     }
 
     public static final class Baked extends BakedModelWrapper<BakedModel> {
@@ -67,6 +71,13 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
         @Override
         public boolean isCustomRenderer() {
             return true;
+        }
+
+        @Override
+        public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack poseStack,
+                                         boolean applyLeftHandTransform) {
+            super.applyTransform(cameraTransformType, poseStack, applyLeftHandTransform);
+            return this;
         }
     }
 
