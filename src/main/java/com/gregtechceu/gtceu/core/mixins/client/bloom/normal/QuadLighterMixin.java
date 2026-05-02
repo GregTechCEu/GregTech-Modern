@@ -29,12 +29,11 @@ public class QuadLighterMixin implements IGTQuadLighter {
 
     @WrapWithCondition(method = "process",
                        at = @At(value = "INVOKE",
-                                target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
-    private boolean gtceu$skipBloomyQuadsFromModel(VertexConsumer instance, PoseStack.Pose poseEntry,
-                                                   BakedQuad quad, float[] brightness,
-                                                   float red, float green, float blue,
-                                                   int[] packedLights, int packedOverlay,
-                                                   boolean mulColor) {
+                                target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V",
+                                remap = true))
+    private boolean gtceu$copyBloomQuads(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
+                                         float[] brightness, float red, float green, float blue,
+                                         int[] packedLights, int packedOverlay, boolean mulColor) {
         if (!BloomShaderManager.isBloomShaderInUse()) return true;
 
         BloomUtil.captureBloomQuad(quad, this.gtceu$renderType, this.pos, poseEntry.pose(),

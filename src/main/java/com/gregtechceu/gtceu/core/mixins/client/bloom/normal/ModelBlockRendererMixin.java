@@ -34,11 +34,11 @@ public class ModelBlockRendererMixin {
             "tesselateWithAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
             "tesselateWithoutAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V"
     }, remap = false)
-    private void gtceu$captureBloomQuads$1(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
-                                           PoseStack poseStack, VertexConsumer consumer, boolean checkSides,
-                                           RandomSource random, long seed, int packedOverlay,
-                                           ModelData modelData, RenderType renderType,
-                                           Operation<Void> original) {
+    private void gtceu$copyBloomQuads$1(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
+                                        PoseStack poseStack, VertexConsumer consumer, boolean checkSides,
+                                        RandomSource random, long seed, int packedOverlay,
+                                        ModelData modelData, RenderType renderType,
+                                        Operation<Void> original) {
         try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
             original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                     modelData, renderType);
@@ -48,9 +48,9 @@ public class ModelBlockRendererMixin {
     @WrapWithCondition(method = "putQuadData",
                        at = @At(value = "INVOKE",
                                 target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
-    private boolean gtceu$captureBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
-                                              float[] brightness, float red, float green, float blue,
-                                              int[] packedLights, int packedOverlay, boolean mulColor) {
+    private boolean gtceu$copyBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
+                                           float[] brightness, float red, float green, float blue,
+                                           int[] packedLights, int packedOverlay, boolean mulColor) {
         if (!BloomShaderManager.isBloomShaderInUse()) return true;
 
         CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
