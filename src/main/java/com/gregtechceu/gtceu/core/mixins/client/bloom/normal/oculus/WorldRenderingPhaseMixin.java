@@ -8,10 +8,7 @@ import net.irisshaders.iris.pipeline.WorldRenderingPhase;
 import net.minecraft.client.renderer.RenderType;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,17 +22,19 @@ public class WorldRenderingPhaseMixin {
     @Mutable
     private static WorldRenderingPhase[] $VALUES;
 
-    @SuppressWarnings("SameParameterValue")
+    @Unique
+    private static final WorldRenderingPhase GTCEU$BLOOM;
+
     @Invoker("<init>")
     private static WorldRenderingPhase gtceu$callInit(String name, int ordinal) {
         throw new AssertionError();
     }
 
     static {
-        if (BloomShaderManager.isBloomShaderAvailable()) {
-            GTIrisHooks.BLOOM_RENDERING_PHASE = gtceu$callInit("GTCEU:BLOOM", $VALUES.length);
-            $VALUES = ArrayUtils.add($VALUES, GTIrisHooks.BLOOM_RENDERING_PHASE);
-        }
+        // don't bother checking if bloom can be loaded here; Oculus won't load with OptiFine installed and shaders
+        // aren't loaded when this class is loaded.
+        GTCEU$BLOOM = gtceu$callInit("GTCEU$BLOOM", $VALUES.length);
+        $VALUES = ArrayUtils.add($VALUES, GTCEU$BLOOM);
     }
 
     @Inject(method = "fromTerrainRenderType", at = @At(value = "HEAD"), cancellable = true)

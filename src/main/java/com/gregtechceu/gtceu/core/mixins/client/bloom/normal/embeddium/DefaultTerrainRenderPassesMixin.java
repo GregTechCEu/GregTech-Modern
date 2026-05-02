@@ -27,8 +27,8 @@ public class DefaultTerrainRenderPassesMixin {
     public static TerrainRenderPass[] ALL;
 
     static {
-        if (BloomShaderManager.isBloomShaderAvailable()) {
-            ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
-        }
+        // don't bother checking if bloom can be loaded here; Embeddium won't load with OptiFine installed and shaders
+        // aren't loaded when this class is loaded.
+        ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
     }
 }
