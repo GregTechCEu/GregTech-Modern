@@ -12,9 +12,13 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 void main() {
-    vec4 highlight = texture(HighlightSampler, texCoord);
     vec4 bloom = BloomStrength * texture(DiffuseSampler, texCoord);
+//    if (bloom.a < 0.1) {
+//        fragColor = vec4(0.0);
+//        return;
+//    }
 
+    vec4 highlight = texture(HighlightSampler, texCoord);
     vec4 background = texture(MainSampler, texCoord);
     background.rgb = background.rgb * (1 - highlight.a) + highlight.a * highlight.rgb;
 
@@ -22,5 +26,6 @@ void main() {
     float max = max(background.r, max(background.g, background.b));
     float backgroundBrightness = (max + min) / 2.0;
 
+    // fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
     fragColor = vec4(background.rgb + bloom.rgb * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness)), background.a);
 }

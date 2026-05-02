@@ -1,12 +1,10 @@
 {
     "blend": {
-        "func": "add",
+        "func": "add",s
         "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha",
-        "srcalpha": "zero",
-        "dstalpha": "one"
+        "dstrgb": "1-srcalpha"
     },
-    "vertex": "blit",
+    "vertex": "gtceu:blit_copy_depth",
     "fragment": "gtceu:up_sampling",
     "attributes": [ "Position" ],
     "samplers": [

@@ -53,6 +53,10 @@ void main() {
     lerpBloomFactor(0.8) * texture(BlurTexture2, texCoord) +
     lerpBloomFactor(0.6) * texture(BlurTexture3, texCoord) +
     lerpBloomFactor(0.4) * texture(BlurTexture4, texCoord));
+//    if (bloom.a < 0.1) {
+//        fragColor = vec4(0.0);
+//        return;
+//    }
     bloom.rgb = jodieReinhardTonemap(bloom.rgb);
 
     vec4 background = texture(DiffuseSampler, texCoord);
@@ -63,5 +67,6 @@ void main() {
     float max = max(background.r, max(background.g, background.b));
     float backgroundBrightness = (max + min) / 2.0;
 
+    // fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
     fragColor = vec4(background.rgb + bloom.rgb * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness)), background.a);
 }

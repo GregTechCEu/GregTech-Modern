@@ -2,9 +2,7 @@
     "blend": {
         "func": "add",
         "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha",
-        "srcalpha": "zero",
-        "dstalpha": "one"
+        "dstrgb": "1-srcalpha"
     },
     "vertex": "blit",
     "fragment": "gtceu:down_sampling",
