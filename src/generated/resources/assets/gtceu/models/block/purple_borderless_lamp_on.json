@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/cube/emissive/all",
+  "textures": {
+    "all": "gtceu:block/lamps/purple_borderless_on"
+  }
+}

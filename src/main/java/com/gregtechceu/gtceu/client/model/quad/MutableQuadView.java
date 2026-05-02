@@ -26,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.QuadTransformers;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 

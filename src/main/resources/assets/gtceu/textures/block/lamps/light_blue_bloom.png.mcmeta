@@ -1,0 +1,6 @@
+{
+    "gtceu": {
+        "connection_texture": "gtceu:block/lamps/light_blue_ctm_emissive",
+        "bloom": true
+    }
+}
