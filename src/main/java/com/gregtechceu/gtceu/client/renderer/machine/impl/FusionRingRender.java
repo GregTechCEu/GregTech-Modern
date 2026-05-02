@@ -62,7 +62,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         if (machine.getRegisteredBloomTicket().isValid() && !machine.isFormed()) {
             machine.getRegisteredBloomTicket().invalidate();
         }
-        if (!machine.getRegisteredBloomTicket().isValid() && BloomShaderManager.isBloomShaderInUse()) {
+        if (!machine.getRegisteredBloomTicket().isValid() && BloomShaderManager.isBloomActive()) {
             BloomRenderTicket ticket = BloomUtil.registerBloomRender(FusionBloomEffect.SETUP,
                     new FusionBloomEffect(machine), machine);
 

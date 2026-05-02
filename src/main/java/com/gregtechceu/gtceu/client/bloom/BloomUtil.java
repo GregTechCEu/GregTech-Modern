@@ -159,7 +159,7 @@ public class BloomUtil {
     public static BloomRenderTicket registerBloomRender(@Nullable IRenderSetup setup, IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
                                                         @Nullable Supplier<@Nullable Level> worldContext) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return BloomRenderTicket.INVALID;
+        if (!BloomShaderManager.isBloomActive()) return BloomRenderTicket.INVALID;
 
         BloomRenderTicket ticket = new BloomRenderTicket(setup, render, validityChecker, worldContext);
         BLOOM_RENDER_LOCK.writeLock().lock();
@@ -174,7 +174,7 @@ public class BloomUtil {
     @ApiStatus.Internal
     public static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
                                    float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomActive()) return;
 
         Vec3 camPos = camera.getPosition();
 

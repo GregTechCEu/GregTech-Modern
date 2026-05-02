@@ -51,9 +51,9 @@ public class BloomShaderManager {
         deinitPostShaders();
 
         // forcefully update availability on (re-)load
-        bloomShaderAvailable = updateBloomShaderAvailability();
+        bloomAvailable = updateBloomShaderAvailability();
 
-        if (!isBloomShaderAvailable()) return;
+        if (!isBloomAvailable()) return;
 
         ResourceLocation id = null;
 
@@ -102,13 +102,13 @@ public class BloomShaderManager {
         }
     }
 
-    public static boolean isBloomShaderInUse() {
+    public static boolean isBloomActive() {
         return BLOOM_CHAIN != null && BLOOM_TARGET != null &&
-                ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && isBloomShaderAvailable();
+                ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && isBloomAvailable();
     }
 
     @Getter
-    private static boolean bloomShaderAvailable = updateBloomShaderAvailability();
+    private static boolean bloomAvailable = updateBloomShaderAvailability();
 
     @ApiStatus.Internal
     public static void updateShaderAvailability(TickEvent.ClientTickEvent event) {
@@ -118,7 +118,7 @@ public class BloomShaderManager {
         // only update bloom availability once a second so every frame isn't bogged down with mod loaded checks
         if (tick % 20 != 0) return;
 
-        bloomShaderAvailable = updateBloomShaderAvailability();
+        bloomAvailable = updateBloomShaderAvailability();
     }
 
     private static boolean updateBloomShaderAvailability() {

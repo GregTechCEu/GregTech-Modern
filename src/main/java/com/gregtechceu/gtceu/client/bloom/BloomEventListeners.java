@@ -40,7 +40,7 @@ public class BloomEventListeners {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null) return;
-        if (!BloomShaderManager.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomActive()) return;
 
         BloomShaderManager.BLOOM_TARGET.clear(Minecraft.ON_OSX);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
@@ -58,7 +58,7 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomActive()) return;
 
         ChunkAccess chunk = event.getChunk();
         LevelAccessor level = chunk.getWorldForge();
@@ -90,7 +90,7 @@ public class BloomEventListeners {
         public void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
             RenderType block, entity;
             if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME) ||
-                    !BloomShaderManager.isBloomShaderAvailable()) {
+                    !BloomShaderManager.isBloomAvailable()) {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
                 block = RenderType.cutout();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

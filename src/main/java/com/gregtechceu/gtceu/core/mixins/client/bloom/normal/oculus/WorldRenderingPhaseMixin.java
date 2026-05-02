@@ -40,7 +40,7 @@ public class WorldRenderingPhaseMixin {
     @Inject(method = "fromTerrainRenderType", at = @At(value = "HEAD"), cancellable = true)
     private static void gtceu$fixBloomLayerError(RenderType renderType,
                                                  CallbackInfoReturnable<WorldRenderingPhase> cir) {
-        if (!BloomShaderManager.isBloomShaderAvailable()) return;
+        if (!BloomShaderManager.isBloomAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
             cir.setReturnValue(GTIrisHooks.getBloomRenderingPhase());

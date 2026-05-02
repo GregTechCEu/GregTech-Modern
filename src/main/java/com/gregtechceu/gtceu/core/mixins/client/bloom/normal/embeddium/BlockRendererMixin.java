@@ -36,7 +36,7 @@ public class BlockRendererMixin {
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         original.call(instance, ctx, originalBuilder, offset, material, quad, vertexColors, lightData);
 
-        if (!BloomShaderManager.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomActive()) return;
 
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
         if (chunkContext != null && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {

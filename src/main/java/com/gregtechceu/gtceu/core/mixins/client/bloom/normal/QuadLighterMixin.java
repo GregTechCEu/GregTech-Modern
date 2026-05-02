@@ -34,7 +34,7 @@ public class QuadLighterMixin implements IGTQuadLighter {
     private boolean gtceu$copyBloomQuads(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                          float[] brightness, float red, float green, float blue,
                                          int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return true;
+        if (!BloomShaderManager.isBloomActive()) return true;
 
         BloomUtil.captureBloomQuad(quad, this.gtceu$renderType, this.pos, poseEntry.pose(),
                 packedLights, packedOverlay, brightness, red, green, blue);

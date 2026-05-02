@@ -51,7 +51,7 @@ public class ModelBlockRendererMixin {
     private boolean gtceu$copyBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                            float[] brightness, float red, float green, float blue,
                                            int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return true;
+        if (!BloomShaderManager.isBloomActive()) return true;
 
         CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
         if (!currentData.isSet()) return true;

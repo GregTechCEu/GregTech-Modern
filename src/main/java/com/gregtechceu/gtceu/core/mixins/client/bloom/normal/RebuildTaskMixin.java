@@ -34,7 +34,7 @@ public abstract class RebuildTaskMixin {
                                             CallbackInfoReturnable<Object> cir,
                                             @Local(ordinal = 0) BlockPos sectionOrigin,
                                             @Local Set<RenderType> usedRenderTypes) {
-        if (!BloomShaderManager.isBloomShaderInUse()) return;
+        if (!BloomShaderManager.isBloomActive()) return;
 
         long sectionPos = SectionPos.asLong(sectionOrigin);
         if (!BloomUtil.chunkSectionHasBloomQuads(sectionPos)) return;
