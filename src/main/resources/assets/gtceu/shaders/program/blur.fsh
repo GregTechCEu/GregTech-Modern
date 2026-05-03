@@ -24,13 +24,11 @@ float gaussianPdf(float x, float sigma) {
 
 void main() {
     vec2 invSize = 1.0 / OutSize;
-    float weightSum = gaussianPdf(0.0, Radius);
 
+    float weightSum = gaussianPdf(0.0, Radius);
     vec4 diffuseSum = texture(DiffuseSampler, texCoord) * weightSum;
 
-    float iRadius = int(Radius);
-    for(int i = 1; i < iRadius; i++) {
-        float x = float(i);
+    for(float x = 1; x < Radius; x += 1.0) {
         float w = gaussianPdf(x, Radius);
         vec2 uvOffset = BlurDir * invSize * x;
 
