@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.core;
+package com.gregtechceu.gtceu.core.util.extensions;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.*;
 
+@SuppressWarnings("unused")
 public interface VertexConsumerExt {
 
     private VertexConsumer self() {
@@ -10,12 +11,12 @@ public interface VertexConsumerExt {
     }
 
     default VertexConsumer gtceu$vertex(Matrix4f poseMatrix, Vector3fc pos) {
-        pos = poseMatrix.transformPosition(pos, MixinHelpers.scratch.get());
+        pos = poseMatrix.transformPosition(pos, ExtensionHelpers.scratch.get());
         return self().vertex(pos.x(), pos.y(), pos.z());
     }
 
     default VertexConsumer gtceu$normal(Matrix3f normalMatrix, Vector3fc normal) {
-        normal = normalMatrix.transform(normal, MixinHelpers.scratch.get());
+        normal = normalMatrix.transform(normal, ExtensionHelpers.scratch.get());
         return self().normal(normal.x(), normal.y(), normal.z());
     }
 }

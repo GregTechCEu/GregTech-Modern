@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
-import com.gregtechceu.gtceu.core.PostPassExt;
+import com.gregtechceu.gtceu.core.util.extensions.PostPassExt;
 
 import net.minecraft.client.renderer.PostPass;
 

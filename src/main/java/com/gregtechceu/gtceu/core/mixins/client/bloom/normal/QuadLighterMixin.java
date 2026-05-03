@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.core.QuadLighterExt;
+import com.gregtechceu.gtceu.core.util.extensions.QuadLighterExt;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

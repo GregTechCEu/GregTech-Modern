@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
-import com.gregtechceu.gtceu.core.IGTBakedQuad;
+import com.gregtechceu.gtceu.core.util.extensions.BakedQuadExt;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.*;
 import java.util.Arrays;
 
 @Mixin(BakedQuad.class)
-public class BakedQuadMixin implements IGTBakedQuad {
+public class BakedQuadMixin implements BakedQuadExt {
 
     @Unique
     private String gtceu$textureKey = null;
