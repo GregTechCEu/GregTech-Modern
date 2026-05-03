@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
@@ -186,11 +187,18 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
 
     private class InventorySlot extends ItemSlot {
 
+        private Integer index = null;
+
+        public InventorySlot index(int index) {
+            this.index = index;
+            return this;
+        }
+
         @Override
         public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
             if (inventoryUnlocked)
                 return super.onMousePressed(mouseX, mouseY, button);
-            selectedSlotSyncValue.setValue(this.getSlot().getSlotIndex());
+            selectedSlotSyncValue.setValue(index != null ? index : this.getSlot().getSlotIndex());
             dynamicSyncHandler.notifyUpdate(buf -> {});
             return Result.SUCCESS;
         }
@@ -206,7 +214,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         protected void drawOverlay(ModularGuiContext context) {
             if (inventoryUnlocked)
                 super.drawOverlay(context);
-            if (this.getSlot().getSlotIndex() == selectedSlot) {
+            if ((index != null ? index : this.getSlot().getSlotIndex()) == selectedSlot) {
                 GuiDraw.drawBorder(context.getGraphics(), 0, 0, 17, 17, 0xFFFFFF00, 1);
             }
         }
@@ -220,7 +228,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         }
     }
 
-    private SlotGroupWidget playerInventory() {
+    private Flow playerInventory() {
         SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
         slotGroupWidget.coverChildren();
         slotGroupWidget.name("player_inventory");
@@ -237,6 +245,19 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                     .pos(i % 9 * 18, i / 9 * 18)
                     .name("slot_" + (i + 9)));
         }
-        return slotGroupWidget.bottom(7).leftRel(.5f);
+        SlotGroupWidget armorGroup = new SlotGroupWidget();
+        armorGroup.coverChildren();
+        armorGroup.name("player_armor");
+        PlayerArmorInvWrapper inv = new PlayerArmorInvWrapper(player.getInventory());
+        for (int i = 0; i < 4; i++) {
+            armorGroup.child(new InventorySlot()
+                    .index(36 + i)
+                    .slot(inv, i)
+                    .pos(0, (3 - i) * 18)
+                    .name("slot_" + (i + 36)));
+        }
+        return Flow.row()
+                .child(slotGroupWidget.bottom(7).leftRel(.5f))
+                .child(armorGroup.bottom(7).leftRelOffset(.5f, 162 / 2 + 20));
     }
 }

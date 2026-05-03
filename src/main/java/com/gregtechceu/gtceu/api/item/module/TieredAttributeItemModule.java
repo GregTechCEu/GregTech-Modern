@@ -39,6 +39,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
                 if (attributeModifier != null && attributeModifier.getId().equals(uuid)) it.remove();
             }
         }
+        appliedItemModule.getTag().remove("modifierUUID");
     }
 
     @Override
