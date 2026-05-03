@@ -10,24 +10,23 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiDraw;
-import brachy.modularui.drawable.text.TextIcon;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.WidgetThemeEntry;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DynamicSyncHandler;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.*;
@@ -47,7 +46,9 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
 
     private final Player player;
     private boolean inventoryUnlocked = false;
+    private IntSyncValue selectedSlotSyncValue = null;
     private int selectedSlot = -1;
+    private int panelCount = 0;
     private DynamicSyncHandler dynamicSyncHandler = null;
 
     public ModularItemUIHolder(Player player) {
@@ -57,9 +58,8 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
     private void registerSyncValues(PanelSyncManager syncManager) {
         dynamicSyncHandler = new DynamicSyncHandler();
         dynamicSyncHandler.widgetProvider(this::getStackInfoWidget);
-        syncManager.syncValue("inventoryUnlocked",
-                SyncHandlers.bool(this::isInventoryUnlocked, this::setInventoryUnlocked));
-        syncManager.syncValue("selectedSlot", SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot));
+        selectedSlotSyncValue = SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot);
+        syncManager.syncValue("selectedSlot", selectedSlotSyncValue);
     }
 
     @Override
@@ -112,18 +112,67 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                                 return new ButtonWidget<>()
                                         .height(10)
                                         .widthRel(0.5f)
-                                        .overlay(
-                                                new TextIcon(Component.translatable("metaarmor.tooltip.modifier.empty"),
-                                                        100, 10, 0.75f, Alignment.CENTER));
+                                        .backgroundOverlay(slots.get(index).getSlotTexture())
+                                        .overlay(IKey.lang("metaarmor.tooltip.modifier.empty").scale(0.5f));
                             } else {
                                 ItemModule module = appliedModule.getModule();
+                                IPanelHandler panelHandler = psm.syncedPanel("module" + index, false,
+                                        (psm1, handler) -> createPanelForModule(psm1, handler, index));
                                 return new ButtonWidget<>()
+                                        .onMousePressed((x, y, button) -> {
+                                            panelHandler.openPanel();
+                                            return false;
+                                        })
                                         .height(10)
                                         .widthRel(0.5f)
-                                        .overlay(new TextIcon(module.getDisplayName(appliedModule), 100, 10, 0.75f,
-                                                Alignment.CENTER));
+                                        .overlay(IKey.dynamic(() -> module.getDisplayName(appliedModule)).scale(0.5f))
+                                        .backgroundOverlay(slots.get(index).getSlotTexture())
+                                        .addTooltipElement(IKey.dynamic(module::getInfo));
                             }
                         }));
+    }
+
+    private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IPanelHandler panelHandler, int index) {
+        ItemStack stack = getSelectedItem();
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+        assert modularItem != null;
+        AppliedItemModule appliedModule = modularItem.getModuleInSlot(index);
+        assert appliedModule != null;
+        ItemModule module = appliedModule.getModule();
+        ItemStack moduleItem = appliedModule.getModuleItem();
+        return new ModularPanel<>("module" + index)
+                .onCloseAction(() -> panelCount--)
+                .leftRelOffset(0.2f, 250 + 2 - 134 * (panelCount / 3))
+                .topRelOffset(0.5f, -83 + 80 * (panelCount++ % 3) + 2)
+                .width(134)
+                .height(80)
+                .child(Flow.col()
+                        .left(0)
+                        .childPadding(3)
+                        .childIf(moduleItem == null || moduleItem.isEmpty(),
+                                () -> new TextWidget<>(IKey.dynamic(() -> module.getDisplayName(appliedModule)))
+                                        .scale(0.75f)
+                                        .horizontalCenter())
+                        .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
+                            assert moduleItem != null;
+                            return Flow.row()
+                                    .coverChildren()
+                                    .padding(4)
+                                    .childPadding(4)
+                                    .child(new ItemDisplayWidget().item(moduleItem))
+                                    .child(Flow.col()
+                                            .coverChildrenWidth()
+                                            .childPadding(2)
+                                            .heightRel(1)
+                                            .child(new TextWidget<>(
+                                                    IKey.dynamic(() -> module.getDisplayName(appliedModule)))
+                                                    .scale(0.75f)
+                                                    .left(0))
+                                            .child(new TextWidget<>(IKey.dynamic(moduleItem::getHoverName))
+                                                    .scale(0.6f)
+                                                    .left(0)));
+                        })
+                        .children(module.getSettings(appliedModule, psm, index)));
     }
 
     private ItemStack getSelectedItem() {
@@ -141,7 +190,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
             if (inventoryUnlocked)
                 return super.onMousePressed(mouseX, mouseY, button);
-            selectedSlot = this.getSlot().getSlotIndex();
+            selectedSlotSyncValue.setValue(this.getSlot().getSlotIndex());
             dynamicSyncHandler.notifyUpdate(buf -> {});
             return Result.SUCCESS;
         }
