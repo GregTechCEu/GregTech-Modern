@@ -245,9 +245,7 @@ public class BloomUtil {
 
         profilerFiller.push("processPostEffect");
 
-        BloomUtil.setFilterToggleUniform(true);
         BloomShaderManager.BLOOM_CHAIN.process(partialTicks);
-        BloomUtil.setFilterToggleUniform(false);
 
         mainTarget.bindWrite(false);
 
@@ -308,14 +306,6 @@ public class BloomUtil {
             shader.safeGetUniform("BaseBrightness").set(config.baseBrightness);
             shader.safeGetUniform("MinBrightness").set(config.minBrightness);
             shader.safeGetUniform("MaxBrightness").set(config.maxBrightness);
-        });
-    }
-
-    public static void setFilterToggleUniform(final boolean fragmentFilterEnabled) {
-        modifyBloomPostShaders((index, shader) -> {
-            if (shader.getName().contains("filter_bloom_color")) {
-                shader.safeGetUniform("EnableFilter").set(fragmentFilterEnabled ? 1 : 0);
-            }
         });
     }
 
