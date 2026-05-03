@@ -26,7 +26,7 @@ void main() {
         float mainDepth = linearizeDepth(texture(MainDepthSampler, texCoord).r);
         float diffuseDepth = linearizeDepth(texture(DiffuseDepthSampler, texCoord).r);
         // clear bloom color fragment if the main sampler's depth isn't the same as the bloom sampler's depth
-        if (abs(mainDepth - diffuseDepth) > 0.01) {
+        if (abs(mainDepth - diffuseDepth) > 1.0e-5) {
             fragColor = vec4(0.0);
         }
     }
