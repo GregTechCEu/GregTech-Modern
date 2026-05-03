@@ -15,9 +15,7 @@
             "outtarget": "filter",
             "auxtargets": [
                 { "id": "final:depth",          "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main",       "name": "MainSampler" },
-                { "id": "minecraft:main:depth", "name": "MainDepthSampler" },
-                { "id": "minecraft:main:depth", "name": "DepthSampler" }
+                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
             ]
         },
         {

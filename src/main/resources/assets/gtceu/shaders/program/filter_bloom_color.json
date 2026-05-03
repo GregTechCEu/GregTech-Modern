@@ -10,7 +10,6 @@
 	"samplers": [
 		{ "name": "DiffuseSampler" },
 		{ "name": "DiffuseDepthSampler" },
-		{ "name": "MainSampler" },
 		{ "name": "MainDepthSampler" }
 	],
 	"uniforms": [
