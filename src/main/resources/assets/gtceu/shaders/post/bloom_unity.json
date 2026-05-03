@@ -68,16 +68,7 @@
             "auxtargets": [
                 { "id": "filter",         "name": "HighlightSampler" },
                 { "id": "minecraft:main", "name": "MainSampler" }
-            ],
-
-            "copy_depth_from": "minecraft:main"
-        },
-        {
-            "name": "blit",
-            "intarget": "final",
-            "outtarget": "minecraft:main",
-
-            "copy_depth_from": "final"
+            ]
         }
     ]
 }

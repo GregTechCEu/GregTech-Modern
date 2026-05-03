@@ -31,8 +31,6 @@
         "client.bloom.GameRendererAccessor",
         "client.bloom.LevelRendererMixin",
         "client.bloom.PostChainAccessor",
-        "client.bloom.PostChainMixin",
-        "client.bloom.PostPassMixin",
         "client.bloom.normal.ForgeModelBlockRendererMixin",
         "client.bloom.normal.LevelRendererAccessor",
         "client.bloom.normal.ModelBlockRendererMixin",

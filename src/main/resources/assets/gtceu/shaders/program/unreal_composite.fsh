@@ -39,8 +39,7 @@ vec3 jodieReinhard2Tonemap(const vec3 color) {
 
     float channelMax = max(max(max(mappedColor.r, mappedColor.g), mappedColor.b), 1.0);
 
-    // this is just the simplified/optimised math
-    // of the more human readable version below
+    // this is just the simplified/optimised math of the more human readable version linked above
     return (
         (mappedLuma * mappedColor - mappedColor) -
         (channelMax * mappedLuma - mappedLuma)
@@ -53,20 +52,15 @@ void main() {
     lerpBloomFactor(0.8) * texture(BlurTexture2, texCoord) +
     lerpBloomFactor(0.6) * texture(BlurTexture3, texCoord) +
     lerpBloomFactor(0.4) * texture(BlurTexture4, texCoord));
-//    if (bloom.a < 0.1) {
-//        fragColor = vec4(0.0);
-//        return;
-//    }
     bloom.rgb = jodieReinhardTonemap(bloom.rgb);
 
     vec4 background = texture(DiffuseSampler, texCoord);
     vec4 highlight = texture(HighlightSampler, texCoord);
-    background.rgb = background.rgb * (1 - highlight.a) + highlight.a * highlight.rgb;
+    background.rgb = background.rgb * (1 - highlight.a) + highlight.rgb * highlight.a;
 
     float min = min(background.r, min(background.g, background.b));
     float max = max(background.r, max(background.g, background.b));
     float backgroundBrightness = (max + min) / 2.0;
 
-    // fragColor = bloom * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness));
-    fragColor = vec4(background.rgb + bloom.rgb * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness)), background.a);
+    fragColor = vec4(background.rgb + bloom.rgb * (MinBrightness + BaseBrightness + (1.0 - backgroundBrightness) * (MaxBrightness - MinBrightness)), bloom.a);
 }

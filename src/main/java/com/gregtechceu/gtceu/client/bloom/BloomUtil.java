@@ -27,6 +27,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -37,11 +41,14 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.*;
+
+import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
 
 @UtilityClass
 public class BloomUtil {
@@ -198,9 +205,7 @@ public class BloomUtil {
             BloomSafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
         }
 
-        BloomUtil.setFilterToggleUniform(true);
         BloomUtil.processPostEffect(partialTicks, profilerFiller);
-        BloomUtil.setFilterToggleUniform(false);
 
         // clear state. again.
         GTRenderTypes.bloom().clearRenderState();
@@ -235,13 +240,26 @@ public class BloomUtil {
     }
 
     public static void processPostEffect(float partialTicks, ProfilerFiller profilerFiller) {
+        Minecraft minecraft = Minecraft.getInstance();
+        RenderTarget mainTarget = minecraft.getMainRenderTarget();
+
         profilerFiller.push("processPostEffect");
 
-        // render state is set up & cleared in calling function
-
+        BloomUtil.setFilterToggleUniform(true);
         BloomShaderManager.BLOOM_CHAIN.process(partialTicks);
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-        VertexBuffer.unbind();
+        BloomUtil.setFilterToggleUniform(false);
+
+        mainTarget.bindWrite(false);
+
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA,
+                SourceFactor.ZERO, DestFactor.ONE);
+
+        BLOOM_TARGET.blitToScreen(mainTarget.viewWidth, mainTarget.viewHeight, false);
+        BLOOM_TARGET.unbindRead();
+
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
 
         profilerFiller.pop();
     }
