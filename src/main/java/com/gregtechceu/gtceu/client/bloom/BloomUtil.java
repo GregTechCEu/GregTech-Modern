@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.bloom;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
@@ -11,6 +10,7 @@ import com.gregtechceu.gtceu.core.mixins.client.RenderStateShardAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.normal.LevelRendererAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.ScopedValue;
 import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
 import net.minecraft.client.Camera;
@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
@@ -32,16 +31,15 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -357,111 +355,26 @@ public class BloomUtil {
 
     // region vanilla-only code paths for automagic block bloom
 
-    /// @implNote map values are {@link LinkedHashSet}s for iteration order stability
-    private static final ThreadLocal<@Nullable Long2ObjectMap<@Nullable Set<QuadCacheEntry>>> quadCache_tl = new ThreadLocal<>();
-
-    private static @Nullable Long2ObjectMap<@Nullable Set<QuadCacheEntry>> getThreadQuadCache() {
-        return quadCache_tl.get();
-    }
-
-    private static Long2ObjectMap<@Nullable Set<QuadCacheEntry>> getOrCreateThreadQuadCache() {
-        var quadCache = getThreadQuadCache();
-        if (quadCache == null) {
-            quadCache = new Long2ObjectOpenHashMap<>();
-            quadCache_tl.set(quadCache);
-        }
-        return quadCache;
-    }
-
-    public static boolean chunkSectionHasBloomQuads(long sectionPos) {
-        BLOOM_RENDER_LOCK.readLock().lock();
-        try {
-            var quadCache = getThreadQuadCache();
-            if (quadCache == null) return false;
-
-            return quadCache.containsKey(sectionPos);
-        } finally {
-            BLOOM_RENDER_LOCK.readLock().unlock();
-        }
-    }
-
-    private static final ThreadLocal<PoseStack> poseStack_tl = ThreadLocal.withInitial(PoseStack::new);
-
-    public static void drawBlockBloomForChunk(long sectionPos,
-                                              Function<RenderType, VertexConsumer> vertexConsumerProvider) {
-        BLOOM_RENDER_LOCK.readLock().lock();
-        try {
-            var quadCache = getThreadQuadCache();
-            if (quadCache == null) {
-                return;
-            }
-
-            Set<QuadCacheEntry> quads = quadCache.remove(sectionPos);
-            if (quads == null || quads.isEmpty()) {
-                return;
-            }
-            if (quadCache.isEmpty()) {
-                // remove the thread local's value if this thread's map is empty so GC can work on it
-                quadCache_tl.remove();
-            }
-
-            VertexConsumer bloomVertexConsumer = null;
-            VertexConsumer cutoutVertexConsumer = null;
-
-            PoseStack poseStack = poseStack_tl.get();
-            for (QuadCacheEntry quad : quads) {
-                poseStack.pushPose();
-                // push the transformation & normal matrices directly into poseStack.last()
-                quad.transformation.get(poseStack.last().pose());
-                quad.transformation.normal(poseStack.last().normal());
-
-                if (quad.renderType == GTRenderTypes.bloom()) {
-                    if (cutoutVertexConsumer == null)
-                        cutoutVertexConsumer = vertexConsumerProvider.apply(RenderType.cutout());
-
-                    // copy quads that are already on the bloom layer to cutout
-                    cutoutVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
-                            quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
-                } else {
-                    if (bloomVertexConsumer == null)
-                        bloomVertexConsumer = vertexConsumerProvider.apply(GTRenderTypes.bloom());
-
-                    // copy everything else to bloom
-                    bloomVertexConsumer.putBulkData(poseStack.last(), quad.quad, quad.brightness,
-                            quad.tintG, quad.tintG, quad.tintB, quad.packedLights, quad.packedOverlay, true);
-                }
-
-                poseStack.popPose();
-            }
-        } finally {
-            BLOOM_RENDER_LOCK.readLock().unlock();
-        }
-    }
-
-    /// Helper function for skipping bloom quads drawn with non-bloom render types
+    @Accessors(fluent = true)
+    @Getter
     @ApiStatus.Internal
-    public static void captureBloomQuad(BakedQuad quad, @Nullable RenderType renderType, BlockPos pos,
-                                        Matrix4fc transformation, int[] packedLights, int packedOverlay,
-                                        float[] brightness, float tintR, float tintG, float tintB) {
+    private static final ThreadLocal<ScopedValue.Object<Supplier<VertexConsumer>>> bloomChunkContext = ThreadLocal
+            .withInitial(ScopedValue.Object::new);
+
+    /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
+    @ApiStatus.Internal
+    public static void copyBloomQuad(BakedQuad quad, int[] packedLights, @Nullable RenderType renderType,
+                                     Consumer<VertexConsumer> drawConsumer) {
         if (renderType == null || renderType == GTRenderTypes.bloom() ||
                 renderType == GTRenderTypes.entityBloomBlockSheet()) {
             return;
         }
 
         if (TextureMetadataHelper.hasBloom(quad, packedLights)) {
-            QuadCacheEntry entry = new QuadCacheEntry(quad, renderType, transformation,
-                    packedLights, packedOverlay, brightness, tintR, tintG, tintB);
+            Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().get().getValue();
+            if (currentVertexConsumer == null) return;
 
-            BLOOM_RENDER_LOCK.writeLock().lock();
-            try {
-                Set<QuadCacheEntry> sectionQuads = getOrCreateThreadQuadCache()
-                        .computeIfAbsent(SectionPos.asLong(pos), $ -> new LinkedHashSet<>());
-                if (!sectionQuads.add(entry)) {
-                    GTCEu.LOGGER.warn("Duplicate quad {} on block [{}]???", entry, pos.toShortString());
-                }
-            } finally {
-                BLOOM_RENDER_LOCK.writeLock().unlock();
-            }
+            drawConsumer.accept(currentVertexConsumer.get());
         }
     }
 
@@ -520,63 +433,6 @@ public class BloomUtil {
             if (!removedAny) return false;
 
             return this.isEmpty();
-        }
-    }
-
-    @ApiStatus.Internal
-    private record QuadCacheEntry(BakedQuad quad, @Nullable RenderType renderType,
-                                  Matrix4fc transformation, int[] packedLights, int packedOverlay,
-                                  float[] brightness, float tintR, float tintG, float tintB) {
-
-        @Override
-        public String toString() {
-            int[][] unpackedLights = Arrays.stream(packedLights)
-                    .mapToObj(packed -> new int[] { LightTexture.block(packed), LightTexture.sky(packed) })
-                    .toArray(int[][]::new);
-
-            return "{ " +
-                    "renderType=" + (renderType != null ? ((RenderStateShardAccessor) renderType).getName() : null) +
-                    ", transformation=" + FormattingUtil.matrixToSingleLineString(transformation) +
-                    ", lights=" + Arrays.deepToString(unpackedLights) +
-                    ", packedOverlay=" + packedOverlay +
-                    ", brightness=" + Arrays.toString(brightness) +
-                    ", tint=[" + tintR + ", " + tintG + ", " + tintB + ']' +
-                    " }";
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-
-            QuadCacheEntry that = (QuadCacheEntry) o;
-            return this.renderType == that.renderType &&
-                    this.packedOverlay() == that.packedOverlay &&
-                    Float.floatToIntBits(this.tintR) == Float.floatToIntBits(that.tintR) &&
-                    Float.floatToIntBits(this.tintG) == Float.floatToIntBits(that.tintG) &&
-                    Float.floatToIntBits(this.tintB) == Float.floatToIntBits(that.tintB) &&
-
-                    this.transformation.equals(that.transformation) &&
-                    Arrays.equals(this.packedLights, that.packedLights) &&
-                    Arrays.equals(this.brightness, that.brightness) &&
-                    // quad is compared last because it has the slowest equals()
-                    this.quad.equals(that.quad);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = this.quad.hashCode();
-            result = 31 * result + Objects.hashCode(this.renderType);
-            result = 31 * result + this.transformation.hashCode();
-
-            result = 31 * result + Arrays.hashCode(this.packedLights);
-            result = 31 * result + this.packedOverlay;
-
-            result = 31 * result + Arrays.hashCode(this.brightness);
-            result = 31 * result + Float.hashCode(this.tintR);
-            result = 31 * result + Float.hashCode(this.tintG);
-            result = 31 * result + Float.hashCode(this.tintB);
-
-            return result;
         }
     }
 }

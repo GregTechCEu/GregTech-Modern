@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
-import com.gregtechceu.gtceu.core.util.CapturedQuadData;
+import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -14,9 +14,9 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ModelBlockRendererMixin {
 
     @Unique
-    private static final ThreadLocal<CapturedQuadData> gtceu$currentRenderType_tl = ThreadLocal
-            .withInitial(CapturedQuadData::new);
+    private static final ThreadLocal<ScopedValue.Object<RenderType>> gtceu$currentRenderType = ThreadLocal
+            .withInitial(ScopedValue.Object::new);
 
     @WrapMethod(method = {
             "tesselateWithAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
@@ -39,25 +39,30 @@ public class ModelBlockRendererMixin {
                                         RandomSource random, long seed, int packedOverlay,
                                         ModelData modelData, RenderType renderType,
                                         Operation<Void> original) {
-        try (var $ = gtceu$currentRenderType_tl.get().with(renderType, pos)) {
+        try (var $ = gtceu$currentRenderType.get().with(renderType)) {
             original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                     modelData, renderType);
         }
     }
 
-    @WrapWithCondition(method = "putQuadData",
+    // The arguments don't have locals, so there's no good way to capture them except a @WarpWith(Condition) injector
+    @WrapOperation(method = "putQuadData",
                        at = @At(value = "INVOKE",
                                 target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
-    private boolean gtceu$copyBloomQuads$2(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
-                                           float[] brightness, float red, float green, float blue,
-                                           int[] packedLights, int packedOverlay, boolean mulColor) {
-        if (!BloomShaderManager.isBloomActive()) return true;
+    private void gtceu$copyBloomQuads(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
+                                      float[] colorMuls, float red, float green, float blue,
+                                      int[] combinedLights, int combinedOverlay, boolean mulColor,
+                                      Operation<Void> original) {
+        original.call(consumer, pose, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
 
-        CapturedQuadData currentData = gtceu$currentRenderType_tl.get();
-        if (!currentData.isSet()) return true;
+        if (!BloomShaderManager.isBloomActive()) return;
 
-        BloomUtil.captureBloomQuad(quad, currentData.renderType(), currentData.pos(), poseEntry.pose(),
-                packedLights, packedOverlay, brightness, red, green, blue);
-        return true;
+        RenderType renderType = gtceu$currentRenderType.get().getValue();
+        if (renderType == null) return;
+
+        BloomUtil.copyBloomQuad(quad, combinedLights, renderType, bloomVertexConsumer -> {
+            original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue,
+                    combinedLights, combinedOverlay, mulColor);
+        });
     }
 }

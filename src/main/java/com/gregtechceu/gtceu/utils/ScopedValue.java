@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * "recreations" of Java 25 scoped values using {@link AutoCloseable AutoCloseables}.
@@ -12,26 +15,33 @@ public abstract class ScopedValue implements AutoCloseable {
      * Scoped object value. Resets to {@code null} when exiting scope.
      * @param <T> The type of the object.
      */
+    @RequiredArgsConstructor
     public static final class Object<T> extends ScopedValue {
+
+        private final @Nullable T initialValue;
 
         /**
          * Current value in this scope
          */
         @Getter
-        private T current;
+        private @Nullable T value;
+
+        public Object() {
+            this(null);
+        }
 
         /**
          * Set {@code current} to {@code value} within this scope.
          * @return this
          */
-        public Object<T> with(T object) {
-            this.current = object;
+        public Object<T> with(T value) {
+            this.value = value;
             return this;
         }
 
         @Override
         public void close() {
-            this.current = null;
+            this.value = this.initialValue;
         }
     }
 
