@@ -13,22 +13,23 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public abstract class TieredAttributeItemModule extends TieredItemModule {
+    private static final String MODIFIER_UUID_KEY = "modifier_id";
 
     public TieredAttributeItemModule(ResourceLocation id, int tier) {
         super(id, tier);
     }
 
     private void attachAttribute(AppliedItemModule appliedItemModule) {
-        if (appliedItemModule.getTag().contains("modifierUUID")) return;
+        if (appliedItemModule.getTag().contains(MODIFIER_UUID_KEY)) return;
         if (appliedItemModule.getAppliedTo() == null) return;
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(appliedItemModule.getAppliedTo());
         AttributeModifier attributeModifier = getAttributeModifier(appliedItemModule);
         appliedItemModule.getAppliedTo().addAttributeModifier(getAttribute(appliedItemModule), attributeModifier, slot);
-        appliedItemModule.getTag().putUUID("modifierUUID", attributeModifier.getId());
+        appliedItemModule.getTag().putUUID(MODIFIER_UUID_KEY, attributeModifier.getId());
     }
 
     private void detachAttribute(AppliedItemModule appliedItemModule) {
-        UUID uuid = appliedItemModule.getTag().getUUID("modifierUUID");
+        UUID uuid = appliedItemModule.getTag().getUUID(MODIFIER_UUID_KEY);
         ListTag listTag = appliedItemModule.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
                 Tag.TAG_COMPOUND);
         Iterator<Tag> it = listTag.iterator();
@@ -39,7 +40,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
                 if (attributeModifier != null && attributeModifier.getId().equals(uuid)) it.remove();
             }
         }
-        appliedItemModule.getTag().remove("modifierUUID");
+        appliedItemModule.getTag().remove(MODIFIER_UUID_KEY);
     }
 
     @Override
