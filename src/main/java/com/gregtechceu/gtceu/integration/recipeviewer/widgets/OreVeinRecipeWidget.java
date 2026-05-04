@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -7,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -24,10 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.FluidDisplayWidget;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.ItemSlot;
-import brachy.modularui.widgets.slot.ModularSlot;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,8 +51,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
     public OreVeinRecipeWidget(BedrockFluidDefinition fluid) {
         this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter);
-        drawUI(Flow.row().child(new FluidDisplayWidget().value(new FluidStack(fluid.getStoredFluid().get(), 1000))
-                .recipeSlotRole(RecipeSlotRole.OUTPUT)));
+        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create().value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
+
     }
 
     public OreVeinRecipeWidget(GTOreDefinition oreDefinition) {
@@ -66,10 +64,9 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
         containedOresAsItemStacks.addAll(getRawMaterialList(oreDefinition));
 
         var slots = Flow.row().coverChildren();
-        var oreStacks = new CustomItemStackHandler(containedOresAsItemStacks);
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            ItemSlot oreSlot = new ItemSlot().slot(new ModularSlot(oreStacks, i).accessibility(false, false))
-                    .recipeRole(RecipeSlotRole.OUTPUT);
+            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
+                    .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
             oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.get(finalI))));
             slots.child(oreSlot);
@@ -85,10 +82,9 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
         containedOresAsItemStacks.addAll(getRawMaterialList(bedrockOre));
 
         var slots = Flow.row().coverChildren();
-        var oreStacks = new CustomItemStackHandler(containedOresAsItemStacks);
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            ItemSlot oreSlot = new ItemSlot().slot(new ModularSlot(oreStacks, i).accessibility(false, false))
-                    .recipeRole(RecipeSlotRole.OUTPUT);
+            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
+                    .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
             oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.getInt(finalI))));
             slots.child(oreSlot);
@@ -98,30 +94,19 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
     private void drawUI(Flow contentsRow) {
         var col = Flow.col().sizeRel(1f)
-                .child(Text.lang(nameLang).asWidget())
-                .child(contentsRow)
-                .childIf(range != null, () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget())
-                .childIf(range != null, () -> Text.str(Objects.requireNonNull(range)).asWidget())
-                .child(Text.lang("gtceu.jei.ore_vein_diagram.weight", weight).asWidget())
+                .child(Text.lang(nameLang).asWidget().marginBottom(3))
+                .child(contentsRow.marginBottom(3))
+                .childIf(range != null, () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
+                .childIf(range != null, () -> Text.str(Objects.requireNonNull(range)).asWidget().marginBottom(3))
+                .child(Text.lang("gtceu.jei.ore_vein_diagram.weight", weight).asWidget().marginBottom(3))
                 .child(Text.lang("gtceu.jei.ore_vein_diagram.dimensions").asWidget());
 
         if (this.dimensionFilter != null) {
 
             Flow row = Flow.row().coverChildren().padding(2);
 
-            DimensionMarker[] dimMarkers = dimensionFilter.stream()
-                    .map(ResourceKey::location)
-                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc,
-                            new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
-                    .sorted(Comparator.comparingInt(DimensionMarker::getTier))
-                    .toArray(DimensionMarker[]::new);
-
-            var handler = new CustomItemStackHandler(dimMarkers.length);
-            for (int i = 0; i < dimMarkers.length; i++) {
-                var dimMarker = dimMarkers[i];
-                var icon = dimMarker.getIcon();
-                ItemSlot dimSlot = new ItemSlot().slot(new ModularSlot(handler, i)).recipeRole(RecipeSlotRole.CATALYST);
-                handler.setStackInSlot(i, icon);
+            for (DimensionMarker dimMarker : getDimensionMarkers(dimensionFilter)) {
+                RecipeViewerSlotWidget<?> dimSlot = RecipeViewerSlotWidget.create().value(dimMarker.getIcon()).recipeSlotRole(RecipeSlotRole.CATALYST).background(IDrawable.NONE);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.overlay(
                             Text.str("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)));
@@ -171,6 +156,16 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
         return bedrockOreDefinition.materials().stream()
                 .map(entry -> ChemicalHelper.get(TagPrefix.rawOre, entry.material()))
                 .toList();
+    }
+
+    public static DimensionMarker[] getDimensionMarkers(Set<ResourceKey<Level>> dimensionFilter) {
+        return dimensionFilter.stream()
+                .map(ResourceKey::location)
+                .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc,
+                        new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
+                .sorted(Comparator.comparingInt(DimensionMarker::getTier))
+                .toArray(DimensionMarker[]::new);
+
     }
 
     public static String getOreName(GTOreDefinition oreDefinition) {

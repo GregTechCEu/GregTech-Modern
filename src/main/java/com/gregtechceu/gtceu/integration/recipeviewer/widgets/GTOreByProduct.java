@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import lombok.Getter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,8 +51,11 @@ public class GTOreByProduct {
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
     private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
+    @Getter
     protected final List<ItemEntryList> itemInputs = new ArrayList<>();
+    @Getter
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
+    @Getter
     protected final List<FluidEntryList> fluidInputs = new ArrayList<>();
     private boolean hasDirectSmelt = false;
     private boolean hasChemBath = false;

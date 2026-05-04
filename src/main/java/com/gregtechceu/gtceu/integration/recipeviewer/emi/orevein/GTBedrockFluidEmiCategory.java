@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
@@ -16,6 +17,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.FluidEmiStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
@@ -58,8 +60,13 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
         }
 
         @Override
+        public List<EmiIngredient> getInputs() {
+            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(fluid.dimensionFilter)).map(v -> (EmiIngredient)EmiStack.of(v.getIcon())).toList();
+        }
+
+        @Override
         public @NotNull List<EmiStack> getOutputs() {
-            return List.of(FluidEmiStack.of(fluid.getStoredFluid().get()));
+            return List.of(EmiStack.of(fluid.getStoredFluid().get()));
         }
     }
 }

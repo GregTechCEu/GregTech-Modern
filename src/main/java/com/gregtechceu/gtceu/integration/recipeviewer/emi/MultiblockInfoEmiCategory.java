@@ -71,7 +71,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public @Nullable ResourceLocation getId() {
-            return definition.getId();
+            return definition.getId().withPrefix("/multi_info/");
         }
 
         @Override

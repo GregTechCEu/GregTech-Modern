@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
@@ -15,6 +16,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GTOreVeinEmiCategory extends EmiRecipeCategory {
@@ -55,6 +57,11 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
         @Override
         public EmiRecipeCategory getCategory() {
             return GTOreVeinEmiCategory.CATEGORY;
+        }
+
+        @Override
+        public List<EmiIngredient> getInputs() {
+            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(oreDefinition.dimensionFilter())).map(v -> (EmiIngredient)EmiStack.of(v.getIcon())).toList();
         }
 
         @Override

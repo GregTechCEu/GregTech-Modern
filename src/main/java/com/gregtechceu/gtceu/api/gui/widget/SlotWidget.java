@@ -240,18 +240,6 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         return List.of(realStack);
     }
 
-    private List<Object> getXEIIngredients(CycleItemEntryHandler handler, int index) {
-        ItemEntryList entryList = handler.getEntry(index);
-        if (GTCEu.Mods.isJEILoaded()) {
-            return JEICallWrapper.getJEIIngredients(entryList, this::getRealStack);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            return REICallWrapper.getREIIngredients(entryList, this::getRealStack);
-        } else if (GTCEu.Mods.isEMILoaded()) {
-            return EMICallWrapper.getEMIIngredients(entryList, getXEIChance(), this::getRealStack);
-        }
-        return Collections.emptyList();
-    }
-
     private List<Object> getXEIIngredientsClickable(CycleItemEntryHandler handler, int index) {
         ItemEntryList entryList = handler.getEntry(index);
         if (GTCEu.Mods.isJEILoaded()) {

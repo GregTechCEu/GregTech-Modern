@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
+import brachy.modularui.integration.emi.EmiRecipeViewerSlot;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -7,8 +8,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreProcessingRecipeWidget;
 
+import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -71,10 +74,11 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static class GTEmiOreProcessingWrapper extends ModularUIEmiRecipe {
 
         final Material material;
-
+        final GTOreByProduct byProduct;
         public GTEmiOreProcessingWrapper(Material material) {
-            super(material.getResourceLocation(), () -> new OreProcessingRecipeWidget(material));
+            super(material.getResourceLocation().withPrefix("/ore_proc/"), () -> new OreProcessingRecipeWidget(material));
             this.material = material;
+            byProduct = new GTOreByProduct(material);
         }
 
         @Override
@@ -83,8 +87,18 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
         }
 
         @Override
-        public @Nullable ResourceLocation getId() {
-            return material.getResourceLocation();
+        public List<EmiIngredient> getInputs() {
+            var items = byProduct.getItemInputs();
+            var fluids = byProduct.getFluidInputs();
+            List<EmiIngredient> ingredients = new ArrayList<>();
+            ingredients.addAll(items.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1, $ -> $)).toList());
+            ingredients.addAll(fluids.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1)).toList());
+            return ingredients;
+        }
+
+        @Override
+        public List<EmiStack> getOutputs() {
+            return byProduct.getItemOutputs().stream().map(EmiStack::of).toList();
         }
 
         @Override
