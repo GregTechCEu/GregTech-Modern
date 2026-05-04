@@ -74,7 +74,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
-
+        padding(3);
         coverChildrenWidth(134);
         coverChildrenHeight();
 
@@ -195,7 +195,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private ButtonWidget<?> buildOverclockButton() {
         return new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
-                .bottom(5).right(10)
+                .bottom(0).right(10)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang("gtceu.oc.tooltip", GTValues.VNF[minTier])))
                 .onMousePressed((ctx, b) -> {
@@ -204,9 +204,11 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                     OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
 
                     if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                        tier = Mth.clamp(tier + 1, minTier, GTValues.MAX);
+                        if (tier == GTValues.MAX) return true;
+                        tier++;
                     } else if (b == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                        tier = Mth.clamp(tier - 1, minTier, GTValues.MAX);
+                        if (tier == minTier) return true;
+                        tier--;
                     } else if (b == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
                         tier = minTier;
                     }
@@ -229,14 +231,13 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
             if (minTier == ULV) ocs--;
             var params = new OverclockingLogic.OCParams(inputEUt.voltage(), recipe.duration, ocs, 1);
             var result = logic.runOverclockingLogic(params, V[tier]);
-            duration = (int) (duration * result.durationMultiplier());
+            duration = (int) (recipe.duration * result.durationMultiplier());
             EUt = inputEUt.multiplyVoltage(result.eutMultiplier());
-            euTotal = EUt.getTotalEU()*duration;
         } else {
             duration = recipe.duration;
             EUt = RecipeHelper.getRealEUt(recipe);
-            euTotal = EUt.getTotalEU()*duration;
         }
+        euTotal = EUt.getTotalEU()*duration;
 
     }
 
