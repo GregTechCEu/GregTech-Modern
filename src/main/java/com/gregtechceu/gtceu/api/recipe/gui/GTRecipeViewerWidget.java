@@ -157,7 +157,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private void buildAdditionalRecipeContent() {
 
         if (!recipe.data.getBoolean("hide_duration")) {
-            textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget().size(100, 10));
+            textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget());
         }
 
         var eu = RecipeHelper.getRealEUtWithIO(recipe);
@@ -170,9 +170,9 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                         .map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
                 textComponents.child(Text.dynamic(() ->
                         Component.translatable("gtceu.recipe.max_eu",
-                        FormattingUtil.formatNumbers(euTotal / minimumCWUt))).asWidget().size(100, 10));
+                        FormattingUtil.formatNumbers(euTotal / minimumCWUt))).asWidget());
             } else {
-                textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal))).asWidget().size(100, 10));
+                textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal))).asWidget());
             }
 
             textComponents.child(Text.dynamic(() -> {
@@ -180,7 +180,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 float minAmperage = (float) EUt.getTotalEU() / GTValues.V[minVoltageTier];
                 return Component.translatable(eu.isInput() ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
                         FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier]);
-            }).asWidget().size(100, 10).tooltip(r -> r.addLine(Text.dynamic(() -> Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(EUt.getTotalEU()))
+            }).asWidget().tooltip(r -> r.addLine(Text.dynamic(() -> Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(EUt.getTotalEU()))
                     .withStyle(ChatFormatting.UNDERLINE)))));
         }
 
