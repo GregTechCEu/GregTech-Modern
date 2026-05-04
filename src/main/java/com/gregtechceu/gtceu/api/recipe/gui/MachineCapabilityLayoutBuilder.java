@@ -42,6 +42,17 @@ public interface MachineCapabilityLayoutBuilder {
 
         var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.name + "_" + io.name(), 3);
 
+        if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
+            var slot = new ItemSlot()
+                    .slot(new ModularSlot(itemHandler, 0)
+                            .slotGroup(slotGroup)
+                            .accessibility(io == IO.IN, true))
+                    .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0));
+            if (io == IO.IN) widget.inputColumn.child(slot);
+            else widget.outputColumn.child(slot);
+            return;
+        }
+
         var slotGroupWidget = SlotGroupWidget
                 .builder()
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getMachineGrid(io, machine))
@@ -51,7 +62,8 @@ public interface MachineCapabilityLayoutBuilder {
                                 .accessibility(io == IO.IN, true))
                         .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
-                .coverChildren();
+                .size(18, 18)
+                .coverChildren(18, 18);
 
         if (io == IO.IN) widget.inputColumn.child(slotGroupWidget);
         else widget.outputColumn.child(slotGroupWidget);
@@ -65,12 +77,22 @@ public interface MachineCapabilityLayoutBuilder {
         NotifiableFluidTank fluidTank = FluidRecipeCapability.CAP.getCapabilityHandler(machine, io);
         if (fluidTank == null || layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 0) return;
 
+        if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
+            var slot = new FluidSlot()
+                    .tank(fluidTank.getStorages()[0])
+                    .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0));
+            if (io == IO.IN) widget.inputColumn.child(slot);
+            else widget.outputColumn.child(slot);
+            return;
+        }
+
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new FluidSlot()
                         .tank(fluidTank.getStorages()[i])
                         .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
+                .size(18, 18)
                 .coverChildren();
 
         if (io == IO.IN) widget.inputColumn.child(slotGroupWidget);

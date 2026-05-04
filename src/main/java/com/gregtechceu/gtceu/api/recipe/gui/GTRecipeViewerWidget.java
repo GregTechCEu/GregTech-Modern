@@ -4,6 +4,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
@@ -44,7 +45,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private final GTRecipeType recipeType;
     private final GTRecipeTypeUILayout uiLayout;
 
-    public final Flow textComponents = Flow.col().coverChildrenHeight().leftRel(0).marginLeft(5);
+    public final Flow textComponents = Flow.col().crossAxisAlignment(Alignment.CrossAxis.START).coverChildrenHeight().leftRel(0).marginLeft(5);
     public final Flow inputColumn = Flow.col().coverChildren();
     public final Flow outputColumn = Flow.col().coverChildren();
     public final Flow recipeContentRow;
@@ -70,9 +71,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         euTotal = RecipeHelper.getRealEUtWithIO(recipe).getTotalEU()*duration;
         EUt = RecipeHelper.getRealEUt(recipe);
         boolean isEnergyIn = RecipeHelper.getRealEUtWithIO(recipe).isInput();
-        Flow mainColumn = Flow.col().sizeRel(1f);
-
-        overlay(new Rectangle().color(Color.RED.main));
+        Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
 
@@ -91,7 +90,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
-                .posRel(0.85f, 0.85f)
+                .right(2).bottom(20)
                 .size(15, 15)
                 .tooltip(r -> r.addLine("Click to copy recipe ID: " + recipe.id))
                 .onMousePressed((ctx, b) -> {
@@ -158,7 +157,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private void buildAdditionalRecipeContent() {
 
         if (!recipe.data.getBoolean("hide_duration")) {
-            textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", duration/20)).asWidget().size(100, 10));
+            textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget().size(100, 10));
         }
 
         var eu = RecipeHelper.getRealEUtWithIO(recipe);
@@ -196,6 +195,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private ButtonWidget<?> buildOverclockButton() {
         return new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
+                .bottom(5).right(10)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang("gtceu.oc.tooltip", GTValues.VNF[minTier])))
                 .onMousePressed((ctx, b) -> {

@@ -32,6 +32,15 @@ public interface RecipeViewerCapabilityLayoutBuilder {
 
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 0) return;
 
+        if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
+            var slot = Objects.requireNonNull(layout.capabilityInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+                    .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0))
+                    .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, io, 0));
+            if (io == IO.IN) widget.inputColumn.child(slot);
+            else widget.outputColumn.child(slot);
+            return;
+        }
+
         var slotGroupWidget = SlotGroupWidget
                 .builder()
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
@@ -41,7 +50,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                                 .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, io, i))
                 )
                 .build()
-                .coverChildren();
+                .coverChildren(18, 18);
 
         if (io == IO.IN) widget.inputColumn.child(slotGroupWidget);
         else widget.outputColumn.child(slotGroupWidget);
@@ -54,6 +63,16 @@ public interface RecipeViewerCapabilityLayoutBuilder {
 
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 0) return;
 
+        if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
+            var slot = Objects.requireNonNull(layout.capabilityInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+                    .background(GuiTextures.SLOT_FLUID, layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0))
+                    .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, io, 0));
+            if (io == IO.IN) widget.inputColumn.child(slot);
+            else widget.outputColumn.child(slot);
+            return;
+        }
+
+
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
@@ -62,7 +81,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                                 .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, io, i))
                 )
                 .build()
-                .coverChildren();
+                .coverChildren(18, 18);
 
         if (io == IO.IN) widget.inputColumn.child(slotGroupWidget);
         else widget.outputColumn.child(slotGroupWidget);
