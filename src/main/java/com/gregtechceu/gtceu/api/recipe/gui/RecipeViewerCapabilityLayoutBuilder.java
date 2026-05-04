@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -36,7 +37,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
                         Objects.requireNonNull(layout.capabilityInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
-                        .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
+                        .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
                 .coverChildren();
 
@@ -55,7 +56,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
                         Objects.requireNonNull(layout.capabilityInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
-                                .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i))
+                                .background(GuiTextures.SLOT_FLUID, layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i))
                 )
                 .build()
                 .coverChildren();

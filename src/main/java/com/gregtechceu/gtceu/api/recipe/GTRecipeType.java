@@ -101,7 +101,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private int minRecipeConditions = 0;
 
     @Getter
-    private @Nullable GTRecipeTypeUILayout uiLayout;
+    private GTRecipeTypeUILayout uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;

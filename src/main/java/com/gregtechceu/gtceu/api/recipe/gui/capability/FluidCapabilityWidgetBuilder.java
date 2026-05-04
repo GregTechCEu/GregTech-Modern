@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.gui.capability;
 
-import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import net.minecraftforge.fluids.FluidStack;
 
 public class FluidCapabilityWidgetBuilder implements CapabilityWidgetBuilder<RecipeViewerSlotWidget<?>> {
 
@@ -12,7 +13,7 @@ public class FluidCapabilityWidgetBuilder implements CapabilityWidgetBuilder<Rec
 
     @Override
     public RecipeViewerSlotWidget<?> buildDefaultWidget() {
-        return RecipeViewerSlotWidget.create().background(GuiTextures.SLOT_FLUID);
+        return RecipeViewerSlotWidget.create().value(FluidStackList.of(FluidStack.EMPTY));
     }
 
     @Override

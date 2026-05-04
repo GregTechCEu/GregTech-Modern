@@ -29,15 +29,19 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         uiLayout = Objects.requireNonNull(recipe.getType().getUiLayout());
         textComponents = Flow.col();
 
-        if (uiLayout.getCustomUIBuilder() == null) {
-            recipeContentRow = buildDefaultLayout();
-        } else {
-            recipeContentRow = uiLayout.getCustomUIBuilder().apply(recipe);
-        }
+        coverChildrenHeight();
+
+        recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
+        child(recipeContentRow);
+
+        loadContentIntoSlots();
+
+
     }
 
     private Flow buildDefaultLayout() {
         var row = Flow.row();
+        row.coverChildren();
         row.childPadding((uiLayout.getProgressSize() / 2) + 2);
         row.child(inputColumn);
         row.child(uiLayout.getProgressWidgetSupplier().get(uiLayout, DoubleValue.simulateProgress(2000)));
@@ -60,4 +64,5 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private void loadContentIntoSlots() {
 
     }
+
 }
