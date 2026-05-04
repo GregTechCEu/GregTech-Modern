@@ -192,7 +192,6 @@ public abstract class RecipeCapability<T> {
 
     public void applyWidgetInfo(@NotNull Widget widget,
                                 int index,
-                                boolean isXEI,
                                 IO io,
                                 @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,

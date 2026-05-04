@@ -361,7 +361,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public void applyWidgetInfo(@NotNull Widget widget,
                                 int index,
-                                boolean isXEI,
                                 IO io,
                                 GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
@@ -373,16 +372,16 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 tank.setFluidTank(fluidHandler, index);
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-            tank.setAllowClickFilled(!isXEI);
-            tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
-            if (isXEI) tank.setShowAmount(false);
+            tank.setAllowClickFilled(false);
+            tank.setAllowClickDrained(false);
+            tank.setShowAmount(false);
             if (content != null) {
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance();
                 tank.setXEIChance(chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content());
-                    if (!isXEI && ingredient.getStacks().length > 0) {
+                    if (ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }

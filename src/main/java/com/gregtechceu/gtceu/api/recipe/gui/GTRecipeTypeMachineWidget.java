@@ -54,7 +54,6 @@ public class GTRecipeTypeMachineWidget extends Flow {
             var layoutFunc = layout.capabilityInfo(entry.getKey()).machineLayoutBuilder;
             if (layoutFunc == null || entry.getIntValue() == 0) continue;
             layoutFunc.createCapabilityUILayout(machine, layout, this, IO.OUT);
-
         }
     }
 }

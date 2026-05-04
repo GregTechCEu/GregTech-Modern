@@ -2,10 +2,14 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 
 import brachy.modularui.api.value.IDoubleValue;
 import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.gui.capability.CapabilityWidgetBuilder;
+import com.gregtechceu.gtceu.api.recipe.gui.capability.FluidCapabilityWidgetBuilder;
+import com.gregtechceu.gtceu.api.recipe.gui.capability.ItemCapabilityWidgetBuilder;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -41,12 +45,17 @@ public class GTRecipeTypeUILayout {
 
     @Getter
     private final List<RecipeUIModifier> recipeUIModifiers;
+    @Getter
+    private final @Nullable Function<GTRecipe, Flow> customUIBuilder;
 
-    public GTRecipeTypeUILayout(GTRecipeType recipeType, Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo, List<RecipeUIModifier> recipeUIModifiers, ProgressWidgetSupplier progressWidgetSupplier) {
+    public GTRecipeTypeUILayout(GTRecipeType recipeType, Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo,
+                                List<RecipeUIModifier> recipeUIModifiers, ProgressWidgetSupplier progressWidgetSupplier,
+                                @Nullable Function<GTRecipe, Flow> customUIBuilder) {
         this.recipeType = recipeType;
         this.capabilityInfo = capabilityInfo;
         this.recipeUIModifiers = recipeUIModifiers;
         this.progressWidgetSupplier = progressWidgetSupplier;
+        this.customUIBuilder = customUIBuilder;
     }
 
     public CapabilityUIInfo capabilityInfo(RecipeCapability<?> cap) {
@@ -61,6 +70,8 @@ public class GTRecipeTypeUILayout {
         private final Map<IO, MachineCapabilityGridBuilder> machineLayoutGridBuilders = new EnumMap<>(IO.class);
 
         public @Nullable MachineCapabilityLayoutBuilder machineLayoutBuilder;
+
+        public @Nullable CapabilityWidgetBuilder<?> capabilityWidgetBuilder;
 
         private final Map<IO, RecipeViewerCapabilityGridBuilder> recipeViewerLayoutGridBuilders = new EnumMap<>(IO.class);
 
@@ -114,11 +125,19 @@ public class GTRecipeTypeUILayout {
         private final GTRecipeType recipeType;
         private final List<RecipeUIModifier> recipeUIModifiers = new ObjectArrayList<>();
         private @Nullable ProgressWidgetSupplier progressWidgetSupplier = null;
+
+        private @Nullable Function<GTRecipe, Flow> customUIBuilder;
+
         public Builder(GTRecipeType recipeType) {
             this.recipeType = recipeType;
 
             getCapInfo(ItemRecipeCapability.CAP).machineLayoutBuilder = MachineCapabilityLayoutBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).machineLayoutBuilder = MachineCapabilityLayoutBuilder.FLUID;
+            getCapInfo(ItemRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.ITEM;
+            getCapInfo(FluidRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.FLUID;
+
+            getCapInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder = ItemCapabilityWidgetBuilder.INSTANCE;
+            getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = FluidCapabilityWidgetBuilder.INSTANCE;
         }
 
         private CapabilityUIInfo getCapInfo(RecipeCapability<?> cap) {
@@ -255,6 +274,11 @@ public class GTRecipeTypeUILayout {
             throw new NotImplementedException();
         }
 
+        public Builder customRecipeTypeUI(Function<GTRecipe, Flow> customUIBuilder) {
+            this.customUIBuilder = customUIBuilder;
+            return this;
+        }
+
         /**
          * For the recipe viewer UI, sets a function that builds the ui for a specific capability type.
          *
@@ -310,7 +334,7 @@ public class GTRecipeTypeUILayout {
                     .size(l.getProgressSize())
                     .direction(l.getProgressDirection());
 
-            var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier);
+            var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier, customUIBuilder);
             layout.progressSize = progressSize;
             layout.progressDirection = fillDirection;
             layout.progressBar = progressBar;

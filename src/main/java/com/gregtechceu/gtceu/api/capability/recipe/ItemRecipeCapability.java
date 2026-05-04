@@ -423,7 +423,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public void applyWidgetInfo(@NotNull Widget widget,
                                 int index,
-                                boolean isXEI,
                                 IO io,
                                 GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
@@ -435,12 +434,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 if (index >= 0 && index < items.getSlots()) {
                     slot.setHandlerSlot(items, index);
                     slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-                    slot.setCanTakeItems(!isXEI);
-                    slot.setCanPutItems(!isXEI && io.support(IO.IN));
+                    slot.setCanTakeItems(false);
+                    slot.setCanPutItems(false);
                 }
                 // 1 over container size.
                 // If in a recipe viewer and a research slot can be added, add it.
-                if (isXEI && recipeType.isHasResearchSlot() && index == items.getSlots()) {
+                if (recipeType.isHasResearchSlot() && index == items.getSlots()) {
                     if (ConfigHolder.INSTANCE.machines.enableResearch) {
                         ResearchCondition condition = recipeHolder.conditions().stream()
                                 .filter(ResearchCondition.class::isInstance).findAny()

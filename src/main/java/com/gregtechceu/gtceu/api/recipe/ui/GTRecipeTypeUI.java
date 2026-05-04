@@ -278,7 +278,7 @@ public class GTRecipeTypeUI {
                         WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                                 widget -> {
                                     var index = WidgetUtils.widgetIdIndex(widget);
-                                    cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null,
+                                    cap.applyWidgetInfo(widget, index, io, recipeHolder, recipeType, null, null,
                                             storage, 0, 0);
                                 });
                     }

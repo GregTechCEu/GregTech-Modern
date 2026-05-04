@@ -130,7 +130,7 @@ public class GTRecipeWidget extends WidgetGroup {
             capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
-        for (RecipeCondition condition : recipe.conditions) {
+        for (RecipeCondition<?> condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
                 addWidget(dimCondition
@@ -441,7 +441,7 @@ public class GTRecipeWidget extends WidgetGroup {
                                 var index = WidgetUtils.widgetIdIndex(widget);
                                 if (index >= 0 && index < contents.size()) {
                                     var content = contents.get(index);
-                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                    cap.applyWidgetInfo(widget, index, io, null, recipe.getType(), recipe,
                                             content,
                                             null, minTier, tier);
                                     widget.setOverlay(new ContentOverlay(content, index >= nonTickCount, minTier, tier,
