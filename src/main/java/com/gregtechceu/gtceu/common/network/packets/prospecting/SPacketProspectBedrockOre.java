@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.network.packets.prospecting;
 
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;

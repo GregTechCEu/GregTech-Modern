@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui.misc;
+package com.gregtechceu.gtceu.api.mui.prospector;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -9,18 +9,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
+import com.gregtechceu.gtceu.common.mui.drawable.CycleDrawable;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockStateAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +35,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.api.drawable.IIcon;
+import brachy.modularui.drawable.FluidDrawable;
+import brachy.modularui.drawable.GuiDraw;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.screen.viewport.GuiContext;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AllArgsConstructor;
@@ -61,7 +60,7 @@ public abstract class ProspectorMode<T> {
         private static final String MATERIAL_PREFIX = "material_";
 
         private final Map<BlockState, Either<Material, BlockState>> BLOCK_CACHE = new HashMap<>();
-        private final Map<Either<Material, BlockState>, IGuiTexture> ICON_CACHE = new HashMap<>();
+        private final Map<Either<Material, BlockState>, IIcon> ICON_CACHE = new HashMap<>();
 
         @Override
         public void scan(Either<Material, BlockState>[][][] storage, LevelChunk chunk) {
@@ -94,7 +93,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(Either<Material, BlockState> item) {
+        public IIcon getItemIcon(Either<Material, BlockState> item) {
             return ICON_CACHE.computeIfAbsent(item, either -> {
                 List<ItemLike> items = either.map(material -> {
                     List<ItemLike> oreItems = ChemicalHelper.getItems(new MaterialEntry(TagPrefix.rawOre, material));
@@ -116,11 +115,12 @@ public abstract class ProspectorMode<T> {
                     }
                     return oreItems;
                 });
-                ItemStack[] stacks = items.stream()
+                ItemDrawable[] drawables = items.stream()
                         .map(itemLike -> itemLike.asItem().getDefaultInstance())
-                        .toArray(ItemStack[]::new);
+                        .map(ItemDrawable::new)
+                        .toArray(ItemDrawable[]::new);
 
-                return new ItemStackTexture(stacks).scale(0.8f);
+                return new CycleDrawable(drawables).asIcon().size(12);
             });
         }
 
@@ -178,7 +178,7 @@ public abstract class ProspectorMode<T> {
                 }
             }
             counter.forEach((item, count) -> tooltips
-                    .add(getDescription(item).copy().append(" --- %s".formatted(count))));
+                    .add(Component.empty().append(getDescription(item)).append(" --- %s".formatted(count))));
         }
     };
 
@@ -193,6 +193,10 @@ public abstract class ProspectorMode<T> {
         @Getter
         @Setter
         private int left;
+
+        public FluidStack asStack() {
+            return new FluidStack(this.fluid, this.yield);
+        }
 
         public static FluidInfo fromNbt(CompoundTag tag) {
             Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
@@ -236,7 +240,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public int getItemColor(FluidInfo item) {
-            var fluidStack = new FluidStack(item.fluid, item.yield);
+            var fluidStack = item.asStack();
             if (fluidStack.getFluid() == Fluids.LAVA) {
                 return 0xFFFF7000;
             }
@@ -244,13 +248,13 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(FluidInfo item) {
-            return new ItemStackTexture(item.fluid.getBucket());
+        public IIcon getItemIcon(FluidInfo item) {
+            return new FluidDrawable(item.asStack()).asIcon();
         }
 
         @Override
         public Component getDescription(FluidInfo item) {
-            return new FluidStack(item.fluid, item.yield).getDisplayName();
+            return item.asStack().getDisplayName();
         }
 
         @Override
@@ -280,7 +284,7 @@ public abstract class ProspectorMode<T> {
         public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
                 for (FluidInfo item : array) {
-                    tooltips.add(getDescription(item).copy()
+                    tooltips.add(Component.empty().append(getDescription(item))
                             .append(" --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
@@ -288,19 +292,16 @@ public abstract class ProspectorMode<T> {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
-            if (items.length > 0) {
-                var item = items[0];
-                double progress = item.left * 1.0 / Math.max(Math.min(item.left, 100), 1);
-                float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
-                float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
-                float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
-                float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
-                DrawerHelper.drawFluidForGui(graphics,
-                        FluidHelperImpl.toFluidStack(new FluidStack(item.fluid(), item.left)), 100,
-                        (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
-                        ((int) (height * drawnHeight)));
+        public void drawSpecialGrid(GuiContext context, FluidInfo[] items, int x, int y, int width, int height) {
+            if (items.length == 0) {
+                return;
             }
+            FluidInfo item = items[0];
+            float filled = item.left / Math.max(Math.min(item.left, 100.0f), 1.0f);
+
+            GuiDraw.drawFluidTexture(context.getGraphics(), item.asStack(),
+                    x * width, y + (1.0f - filled) * height, width, height * filled,
+                    context.getCurrentDrawingZ());
         }
     };
 
@@ -331,7 +332,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(BedrockOreInfo item) {
+        public IIcon getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
                     ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
@@ -339,7 +340,7 @@ public abstract class ProspectorMode<T> {
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),
                     ChemicalHelper.get(TagPrefix.dust, material));
-            return new ItemStackTexture(stack).scale(0.8f);
+            return new ItemDrawable(stack).asIcon().size(12);
         }
 
         @Override
@@ -379,7 +380,7 @@ public abstract class ProspectorMode<T> {
                 int totalWeight = Arrays.stream(array).mapToInt(BedrockOreInfo::weight).sum();
                 for (BedrockOreInfo item : array) {
                     float chance = (float) item.weight / totalWeight * 100;
-                    tooltips.add(getDescription(item).copy()
+                    tooltips.add(Component.empty().append(getDescription(item))
                             .append(" (")
                             .append(Component.translatable("gtceu.gui.content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
@@ -401,7 +402,7 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract IGuiTexture getItemIcon(T item);
+    public abstract IIcon getItemIcon(T item);
 
     public abstract Component getDescription(T item);
 
@@ -416,5 +417,5 @@ public abstract class ProspectorMode<T> {
     public abstract void appendTooltips(List<T[]> items, List<Component> tooltips, String selected);
 
     @OnlyIn(Dist.CLIENT)
-    public void drawSpecialGrid(GuiGraphics graphics, T[] items, int x, int y, int width, int height) {}
+    public void drawSpecialGrid(GuiContext graphics, T[] items, int x, int y, int width, int height) {}
 }

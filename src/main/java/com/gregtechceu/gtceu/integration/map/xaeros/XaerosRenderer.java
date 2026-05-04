@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 

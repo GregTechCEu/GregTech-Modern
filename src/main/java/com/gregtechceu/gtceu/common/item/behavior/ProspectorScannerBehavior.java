@@ -2,18 +2,13 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
+import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.prospector.ProspectorMapHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +21,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import brachy.modularui.api.IThemeApi;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.StringValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +40,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionItem, IAddInformation {
+public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionItem, IAddInformation {
+
+    private static final UITexture DARK_MODE_BUTTON_INACTIVE = GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL
+            .getSubArea(0, 0.5f, 1, 0.5f);
+    private static final UITexture DARK_MODE_BUTTON_ACTIVE = GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL
+            .getSubArea(0, 0, 1, 0.5f);
 
     private final int radius;
     private final long cost;
@@ -86,25 +98,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
             player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
             return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
-        return IItemUIFactory.super.use(item, level, player, usedHand);
-    }
-
-    @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        ProspectorMode<?> mode = this.getMode(entityPlayer.getItemInHand(InteractionHand.MAIN_HAND));
-        ProspectingMapWidget<?> map = new ProspectingMapWidget<>(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
-        return new ModularUI(332, 200, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(map)
-                .widget(new SwitchWidget(-20, 4, 18, 18, (cd, pressed) -> map.setDarkMode(pressed))
-                        .setSupplier(map::isDarkMode)
-                        .setTexture(
-                                new GuiTextureGroup(GuiTextures.BUTTON,
-                                        GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
-                                                .getSubTexture(0, 0.5, 1, 0.5).scale(0.8f)),
-                                new GuiTextureGroup(GuiTextures.BUTTON,
-                                        GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
-                                                .getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
+        return IItemUIHolder.super.use(item, level, player, usedHand);
     }
 
     @Override
@@ -117,5 +111,57 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
                     .append(Component.translatable(mode.unlocalizedName))
                     .withStyle(ChatFormatting.RED));
         }
+    }
+
+    @Override
+    public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> guiData, PanelSyncManager panelSyncManager,
+                                   UISettings settings) {
+        ProspectorMode<?> mode = getMode(guiData.getPlayer().getItemInHand(InteractionHand.MAIN_HAND));
+        final int diameter = radius * 2 - 1;
+
+        StringValue searchValue = new StringValue("");
+
+        DynamicSyncedWidget<?> searchList;
+
+        var panel = ModularPanel.defaultPanel("prospector_scanner", 332, 200)
+                .margin(4)
+                .child(Flow.col()
+                        .leftRel(1.0f)
+                        .child(new TextFieldWidget()
+                                .value(searchValue)
+                                .height(16)
+                                .widthRel(1f)
+                                .autoUpdateOnChange(true))
+                        .child(searchList = new DynamicSyncedWidget<>()));
+
+        ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, radius, 1, searchValue, searchList,
+                panelSyncManager);
+
+        panel.child(Flow.col()
+                .topRel(0.5f).leftRel(0.0f)
+                .size(diameter)
+                .margin(2)
+                .background(GTGuiTextures.BACKGROUND_INVERSE)
+                .child(mapHandler)
+                .child(new ButtonWidget<>().widgetTheme(IThemeApi.BUTTON)
+                        .top(0).leftRelAnchor(0.0f, 1.0f)
+                        .margin(2)
+                        .backgroundOverlay(new DynamicDrawable(() -> {
+                            if (mapHandler.getTexture().isDarkMode()) {
+                                return DARK_MODE_BUTTON_ACTIVE;
+                            } else {
+                                return DARK_MODE_BUTTON_INACTIVE;
+                            }
+                        }))
+                        .onMousePressed((mouseX, mouseY, button) -> {
+                            if (button == 0 || button == 1) {
+                                mapHandler.getTexture().toggleDarkMode();
+                                return true;
+                            }
+                            return false;
+                        }))
+        );
+
+        return panel;
     }
 }
