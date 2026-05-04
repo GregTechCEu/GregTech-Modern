@@ -137,22 +137,22 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
 
         // player rotation & red lines are drawn separately
         /*
-
-        TransformTexture arrow = ARROW.rotate(this.direction / 2);
-        arrow.draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
-
-        // draw red vertical line
-        if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(graphics, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
-        } else {
-            DrawerHelper.drawSolidRect(graphics, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
-        }
-        // draw red horizontal line
-        if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(graphics, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
-        } else {
-            DrawerHelper.drawSolidRect(graphics, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
-        }
+         * 
+         * TransformTexture arrow = ARROW.rotate(this.direction / 2);
+         * arrow.draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+         * 
+         * // draw red vertical line
+         * if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
+         * DrawerHelper.drawSolidRect(graphics, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
+         * } else {
+         * DrawerHelper.drawSolidRect(graphics, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
+         * }
+         * // draw red horizontal line
+         * if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
+         * DrawerHelper.drawSolidRect(graphics, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
+         * } else {
+         * DrawerHelper.drawSolidRect(graphics, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
+         * }
          */
     }
 

@@ -106,7 +106,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
                                 return new ButtonWidget<>().widgetTheme(IThemeApi.BUTTON)
                                         .onMousePressed((x, y, button) -> {
-                                            if (button == InputConstants.MOUSE_BUTTON_LEFT || button == InputConstants.MOUSE_BUTTON_RIGHT) {
+                                            if (button == InputConstants.MOUSE_BUTTON_LEFT ||
+                                                    button == InputConstants.MOUSE_BUTTON_RIGHT) {
                                                 this.texture.setSelected(uniqueId);
                                                 return true;
                                             }
@@ -229,9 +230,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         }
 
         // If the cursor is over an ore use its name
-        T[] hoveredItem = this.texture.data
-                [chunkX * mode.cellSize + (offsetX * mode.cellSize / 16)]
-                [chunkZ * mode.cellSize + (offsetZ * mode.cellSize / 16)];
+        T[] hoveredItem = this.texture.data[chunkX * mode.cellSize + (offsetX * mode.cellSize / 16)][chunkZ *
+                mode.cellSize + (offsetZ * mode.cellSize / 16)];
         if (hoveredItem != null && hoveredItem.length != 0) {
             String uniqueId = mode.getUniqueId(hoveredItem[0]);
             Component name = mode.getDescription(hoveredItem[0]);
@@ -243,7 +243,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         if (mode == ProspectorMode.ORE) {
             var veins = GTClientCache.instance.getNearbyVeins(player.level().dimension(), pos, 32);
             if (veins.isEmpty()) {
-                return new WaypointItem(pos, null, Component.translatable("gtceu.minimap.ore_vein.depleted"), 0xFF990000);
+                return new WaypointItem(pos, null, Component.translatable("gtceu.minimap.ore_vein.depleted"),
+                        0xFF990000);
             }
             veins.sort((o1, o2) -> {
                 int o1Dist = (int) o1.center().distToCenterSqr(x, o1.center().getY(), z);
