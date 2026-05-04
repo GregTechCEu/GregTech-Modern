@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.api.item.module;
 
-import brachy.modularui.value.sync.SyncHandler;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.SliderWidget;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +25,15 @@ import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandler;
 import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.SliderWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -186,6 +188,7 @@ public abstract class ItemModule {
     }
 
     public static final class Settings extends ArrayList<IWidget> {
+
         private final PanelSyncManager psm;
         private final int id;
         private int current = 0;
@@ -208,7 +211,7 @@ public abstract class ItemModule {
         }
 
         private <W extends IWidget> W last() {
-            //noinspection unchecked
+            // noinspection unchecked
             return (W) get(size() - 1);
         }
 
@@ -247,23 +250,26 @@ public abstract class ItemModule {
                             .width(50)
                             .stopper(1))
                     .<Flow>last()
-                    .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
+                    .child(new TextWidget<>(
+                            IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
             return this;
         }
 
         public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max) {
-            return num(label, getter, setter, min, max, "%.2f");
+            return num(label, getter, setter, min, max, "%.2f"::formatted);
         }
 
-        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max, String sliderLabel) {
+        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max,
+                            DoubleFunction<String> sliderLabel) {
             custom(label,
                     SyncHandlers.doubleNumber(getter, setter),
                     new SliderWidget()
                             .bounds(min, max)
                             .width(50)
-                            .stopper((max - min)/10))
+                            .stopper((max - min) / 10))
                     .<Flow>last()
-                    .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsDouble())))));
+                    .child(new TextWidget<>(
+                            IKey.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble())))));
             return this;
         }
 
@@ -271,6 +277,18 @@ public abstract class ItemModule {
             return custom(label,
                     SyncHandlers.string(getter, setter),
                     new TextFieldWidget());
+        }
+
+        public Settings progress(IKey label, DoubleSupplier getter, DoubleFunction<String> rightLabel) {
+            custom(label, SyncHandlers.doubleNumber(getter, null), new ProgressWidget()
+                    .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
+                            GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
+                    .direction(ProgressWidget.Direction.RIGHT)
+                    .width(50))
+                    .<Flow>last()
+                    .child(new TextWidget<>(
+                            IKey.dynamic(() -> Component.literal(rightLabel.apply(getter.getAsDouble())))));
+            return this;
         }
     }
 }

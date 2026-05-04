@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
-import brachy.modularui.utils.Alignment;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -27,10 +26,8 @@ import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.WidgetThemeEntry;
-import brachy.modularui.value.sync.DynamicSyncHandler;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
@@ -74,7 +71,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                         GTGuiTextures.BACKGROUND))
                 .child(playerInventory())
                 .child(new ToggleButton()
-                        .syncHandler("inventoryUnlocked")
+                        .value(new BooleanSyncValue(this::isInventoryUnlocked, this::setInventoryUnlocked))
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .invertSelected(true)
@@ -143,10 +140,9 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         ItemModule module = appliedModule.getModule();
         ItemStack moduleItem = appliedModule.getModuleItem();
         return new ModularPanel<>("module" + index)
-                .onCloseAction(() -> panelCount--)
-                .leftRelOffset(0.2f, 250 + 2 - 134 * (panelCount / 3))
+                .leftRelOffset(0.2f, 250 + 2 - 154 * (panelCount / 3))
                 .topRelOffset(0.5f, -83 + 80 * (panelCount++ % 3) + 2)
-                .width(134)
+                .width(154)
                 .height(80)
                 .child(Flow.col()
                         .crossAxisAlignment(Alignment.CrossAxis.START)
@@ -197,11 +193,15 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
             return this;
         }
 
+        private int getIndex() {
+            return index == null ? getSlot().getSlotIndex() : index;
+        }
+
         @Override
         public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
             if (inventoryUnlocked)
                 return super.onMousePressed(mouseX, mouseY, button);
-            selectedSlotSyncValue.setValue(index != null ? index : this.getSlot().getSlotIndex());
+            selectedSlotSyncValue.setValue(getIndex());
             dynamicSyncHandler.notifyUpdate(buf -> {});
             return Result.SUCCESS;
         }
@@ -217,14 +217,14 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         protected void drawOverlay(ModularGuiContext context) {
             if (inventoryUnlocked)
                 super.drawOverlay(context);
-            if ((index != null ? index : this.getSlot().getSlotIndex()) == selectedSlot) {
+            if (getIndex() == selectedSlot) {
                 GuiDraw.drawBorder(context.getGraphics(), 0, 0, 17, 17, 0xFFFFFF00, 1);
             }
         }
 
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            if (!inventoryUnlocked && !isHovering() && this.getSlot().getSlotIndex() != selectedSlot) {
+            if (!inventoryUnlocked && !isHovering() && getIndex() != selectedSlot) {
                 GuiDraw.drawRect(context.getGraphics(), 1, 1, 15, 15, 0x88444444);
             }
             super.draw(context, widgetTheme);

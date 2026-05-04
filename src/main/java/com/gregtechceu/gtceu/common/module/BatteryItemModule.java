@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
 import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -134,5 +137,15 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     public InteractionResultHolder<ItemStack> use(AppliedItemModule module, Level level, Player player,
                                                   InteractionHand hand) {
         return module.getModuleItem().use(level, player, hand);
+    }
+
+    @Override
+    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
+        if (electricItem == null) return super.getSettings(module, psm, id);
+        return super.getSettings(module, psm, id)
+                .progress(IKey.lang("gtceu.module.gui.charge"),
+                        () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
+                        x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }
 }

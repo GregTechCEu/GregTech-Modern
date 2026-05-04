@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.item.module;
 
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.value.sync.PanelSyncManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -11,10 +9,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.value.sync.PanelSyncManager;
+
 import java.util.Iterator;
 import java.util.UUID;
 
 public abstract class TieredAttributeItemModule extends TieredItemModule {
+
     private static final String MODIFIER_UUID_KEY = "modifier_id";
     private static final String MODIFIER_AMOUNT_KEY = "modifier_amount";
 
@@ -26,7 +28,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         if (appliedItemModule.getTag().contains(MODIFIER_UUID_KEY)) return;
         if (appliedItemModule.getAppliedTo() == null) return;
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(appliedItemModule.getAppliedTo());
-        AttributeModifier attributeModifier = applySettingsToModifier(appliedItemModule, getAttributeModifier(appliedItemModule));
+        AttributeModifier attributeModifier = applySettingsToModifier(appliedItemModule,
+                getAttributeModifier(appliedItemModule));
         appliedItemModule.getAppliedTo().addAttributeModifier(getAttribute(appliedItemModule), attributeModifier, slot);
         appliedItemModule.getTag().putUUID(MODIFIER_UUID_KEY, attributeModifier.getId());
     }
@@ -81,10 +84,10 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         attachAttribute(module);
     }
 
-    protected String getSliderFormatString(AppliedItemModule module) {
+    protected String getSliderString(AppliedItemModule module, double value) {
         return switch (getAttributeModifier(module).getOperation()) {
-            case ADDITION -> "+%.2f";
-            case MULTIPLY_BASE, MULTIPLY_TOTAL -> "+%.2f%%";
+            case ADDITION -> "+%.2f".formatted(value);
+            case MULTIPLY_BASE, MULTIPLY_TOTAL -> "+%.2f%%".formatted(value * 100);
         };
     }
 
@@ -95,7 +98,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
                         () -> getModifier(module),
                         x -> setModifier(module, x),
                         getMinModifier(module), getMaxModifier(module),
-                        getSliderFormatString(module));
+                        x -> getSliderString(module, x));
     }
 
     @Override
