@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
+import brachy.modularui.utils.Alignment;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -148,7 +149,8 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                 .width(134)
                 .height(80)
                 .child(Flow.col()
-                        .left(0)
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .left(5)
                         .childPadding(3)
                         .childIf(moduleItem == null || moduleItem.isEmpty(),
                                 () -> new TextWidget<>(IKey.dynamic(() -> module.getDisplayName(appliedModule)))
@@ -159,6 +161,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                             return Flow.row()
                                     .coverChildren()
                                     .padding(4)
+                                    .paddingLeft(0)
                                     .childPadding(4)
                                     .child(new ItemDisplayWidget().item(moduleItem))
                                     .child(Flow.col()

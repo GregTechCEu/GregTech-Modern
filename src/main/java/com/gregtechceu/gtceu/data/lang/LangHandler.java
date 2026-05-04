@@ -462,6 +462,8 @@ public class LangHandler {
         provider.add("gtceu.module.wireless_charging.short", "%s blocks, 1A %s max");
         provider.add("gtceu.module.block_reach.short", "... by %s blocks");
         provider.add("gtceu.module.gui.enabled", "Enabled:");
+        provider.add("gtceu.module.gui.jump_boost", "Boost:");
+        provider.add("gtceu.module.gui.power", "Power:");
         provider.add("emi.category.gtceu.equipment_foundry", "Equipment Foundry");
         provider.add("gtceu.equipment_foundry.gui.applied_to", "Applied to:");
         provider.add("gtceu.equipment_foundry.gui.module_item", "Module item:");

@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import brachy.modularui.value.sync.SyncHandler;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.SliderWidget;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.*;
 
 public abstract class ItemModule {
 
@@ -172,18 +177,100 @@ public abstract class ItemModule {
         return InteractionResult.PASS;
     }
 
-    public List<IWidget> getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         psm.syncValue("module_enabled", id,
                 SyncHandlers.intNumber(() -> isEnabled(module) ? 0 : 1, x -> setEnabled(module, x == 0)));
-        List<IWidget> list = new ArrayList<>();
-        list.add(Flow.row()
-                .coverChildren()
-                .childPadding(5)
-                .child(new TextWidget<>(IKey.lang("gtceu.module.gui.enabled")))
-                .child(new ToggleButton()
-                        .invertSelected(true)
-                        .overlay(false, GuiTextures.CHECKMARK)
-                        .syncHandler("module_enabled", id)));
-        return list;
+        Settings settings = new Settings(psm, id);
+        return settings
+                .bool(IKey.lang("gtceu.module.gui.enabled"), () -> isEnabled(module), b -> setEnabled(module, b));
+    }
+
+    public static final class Settings extends ArrayList<IWidget> {
+        private final PanelSyncManager psm;
+        private final int id;
+        private int current = 0;
+
+        private Settings(PanelSyncManager psm, int id) {
+            this.psm = psm;
+            this.id = id;
+        }
+
+        private String registerSyncValue(SyncHandler syncHandler) {
+            String key = "module_setting" + current;
+            current++;
+            psm.syncValue(key, id, syncHandler);
+            return key;
+        }
+
+        private Settings pop() {
+            remove(size() - 1);
+            return this;
+        }
+
+        private <W extends IWidget> W last() {
+            //noinspection unchecked
+            return (W) get(size() - 1);
+        }
+
+        private static Flow wrap(IKey label, IWidget widget) {
+            return Flow.row()
+                    .coverChildren()
+                    .childPadding(5)
+                    .child(new TextWidget<>(label))
+                    .child(widget);
+        }
+
+        public Settings custom(IKey label, SyncHandler syncHandler, Widget<?> widget) {
+            String key = registerSyncValue(syncHandler);
+            add(wrap(label, widget
+                    .syncHandler(key, id)));
+            return this;
+        }
+
+        public Settings bool(IKey label, BooleanSupplier getter, Consumer<Boolean> setter) {
+            return custom(label,
+                    SyncHandlers.intNumber(() -> getter.getAsBoolean() ? 0 : 1, x -> setter.accept(x == 0)),
+                    new ToggleButton()
+                            .invertSelected(true)
+                            .overlay(false, GuiTextures.CHECKMARK));
+        }
+
+        public Settings num(IKey label, IntSupplier getter, IntConsumer setter, int min, int max) {
+            return num(label, getter, setter, min, max, "%d");
+        }
+
+        public Settings num(IKey label, IntSupplier getter, IntConsumer setter, int min, int max, String sliderLabel) {
+            custom(label,
+                    SyncHandlers.intNumber(getter, setter),
+                    new SliderWidget()
+                            .bounds(min, max)
+                            .width(50)
+                            .stopper(1))
+                    .<Flow>last()
+                    .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
+            return this;
+        }
+
+        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max) {
+            return num(label, getter, setter, min, max, "%.2f");
+        }
+
+        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max, String sliderLabel) {
+            custom(label,
+                    SyncHandlers.doubleNumber(getter, setter),
+                    new SliderWidget()
+                            .bounds(min, max)
+                            .width(50)
+                            .stopper((max - min)/10))
+                    .<Flow>last()
+                    .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsDouble())))));
+            return this;
+        }
+
+        public Settings str(IKey label, Supplier<String> getter, Consumer<String> setter) {
+            return custom(label,
+                    SyncHandlers.string(getter, setter),
+                    new TextFieldWidget());
+        }
     }
 }
