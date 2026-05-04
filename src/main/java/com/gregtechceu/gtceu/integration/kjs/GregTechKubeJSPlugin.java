@@ -34,7 +34,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -335,8 +334,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
-        // GUI related
-        event.add("GuiTextures", GuiTextures.class);
         // Client/Server data related
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);

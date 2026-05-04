@@ -3,16 +3,13 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.Tag;
@@ -25,7 +22,6 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -166,38 +162,6 @@ public abstract class RecipeCapability<T> {
 
     public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput, MutableInt yOffset) {}
-
-    @NotNull
-    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        return new ArrayList<>();
-    }
-
-    @Nullable
-    public Object createXEIContainer(List<?> contents) {
-        return null;
-    }
-
-    @Nullable("null when getWidgetClass() == null")
-    public Widget createWidget() {
-        return null;
-    }
-
-    /**
-     * Return the class of the supported widget that should be used to display this capability.
-     */
-    @Nullable
-    public Class<? extends Widget> getWidgetClass() {
-        return null;
-    }
-
-    public void applyWidgetInfo(@NotNull Widget widget,
-                                int index,
-                                IO io,
-                                @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
-                                @NotNull GTRecipeType recipeType,
-                                @Nullable("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {}
 
     /**
      * Create a cache map for chanced outputs

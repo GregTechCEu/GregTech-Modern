@@ -41,8 +41,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
     public GTRecipeREICategory(@NotNull GTRecipeCategory category) {
         this.category = category;
         var recipeType = category.getRecipeType();
-        var size = recipeType.getRecipeUI().getJEISize();
-        this.size = new Size(size.width + 8, size.height + 8);
+        this.size = new Size(8, 8);
         this.icon = IGui2Renderer.toDrawable(category.getIcon());
     }
 

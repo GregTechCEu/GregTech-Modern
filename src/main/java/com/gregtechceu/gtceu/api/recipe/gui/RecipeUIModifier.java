@@ -16,7 +16,7 @@ public interface RecipeUIModifier {
      * @return Recipe ui modifier
      */
     static RecipeUIModifier textLine(Text text) {
-        return (recipe, widget) -> widget.textComponents.child(text.asWidget());
+        return (recipe, widget) -> widget.textComponents.child(text.asWidget().size(100, 10));
     }
 
     default RecipeUIModifier then(RecipeUIModifier... modifiers) {

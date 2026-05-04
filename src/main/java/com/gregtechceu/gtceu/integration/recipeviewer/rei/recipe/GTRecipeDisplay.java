@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
@@ -21,7 +20,7 @@ public class GTRecipeDisplay extends ModularDisplay<WidgetGroup> {
     protected List<EntryIngredient> allInputs;
 
     public GTRecipeDisplay(GTRecipe recipe, CategoryIdentifier<?> category) {
-        super(() -> new GTRecipeWidget(recipe), category);
+        super(WidgetGroup::new, category);
         this.recipe = recipe;
         allInputs = new ArrayList<>(inputs);
         allInputs.addAll(catalysts);
