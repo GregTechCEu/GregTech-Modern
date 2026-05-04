@@ -37,7 +37,9 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
                         Objects.requireNonNull(layout.capabilityInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
-                        .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
+                        .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i))
+                                .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, io, i))
+                )
                 .build()
                 .coverChildren();
 
@@ -57,6 +59,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                 .key('s', i ->
                         Objects.requireNonNull(layout.capabilityInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
                                 .background(GuiTextures.SLOT_FLUID, layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i))
+                                .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, io, i))
                 )
                 .build()
                 .coverChildren();

@@ -1,13 +1,20 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public record Content(Object content, int chance, int maxChance, int tierChanceBoost) {
 
@@ -78,4 +85,55 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
         int fixed = Math.round(Math.abs(chanceBoost) / error);
         return chanceBoost < 0 ? -fixed : fixed;
     }
+
+    public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic, int recipeTier,
+                                         int chanceTier, ChanceBoostFunction function) {
+        if (content.chance() < ChanceLogic.getMaxChancedValue()) {
+            int boostedChance = function.getBoostedChance(content, recipeTier, chanceTier);
+            if (boostedChance == 0) {
+                tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
+            } else {
+                float baseChanceFloat = 100f * content.chance() / content.maxChance();
+                if (content.tierChanceBoost() != 0) {
+                    float boostedChanceFloat = 100f * boostedChance / content.maxChance();
+
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_base_logic",
+                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base",
+                                        baseChanceFloat));
+                    }
+
+                    String key = "gtceu.gui.content.chance_tier_boost_" +
+                            ((content.tierChanceBoost() > 0) ? "plus" : "minus");
+                    tooltip.addLine(FormattingUtil.formatPercentage2Places(key,
+                            Math.abs(100f * content.tierChanceBoost() / content.maxChance())));
+
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_boosted_logic",
+                                        FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
+                                        boostedChanceFloat));
+                    }
+                } else {
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
+                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                                        baseChanceFloat));
+                    }
+                }
+            }
+        }
+    }
+
 }

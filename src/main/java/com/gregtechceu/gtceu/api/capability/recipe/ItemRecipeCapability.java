@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.forge.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -357,7 +356,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         List<Object> entryLists = contents.stream()
                 .map(Content::content)
                 .map(this::of)
-                .map(ItemRecipeCapability::mapItem)
+                .map(ItemRecipeCapability::mapIngredientToEntryList)
                 .collect(Collectors.toList());
 
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
@@ -467,9 +466,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance();
                 slot.setXEIChance(chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
-                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     // spotless:off
                     if (this.of(content.content()) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
@@ -496,7 +492,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     // Maps ingredients to an ItemEntryList for XEI: either an ItemTagList or an ItemStackList
-    private static ItemEntryList mapItem(final Ingredient ingredient) {
+    public static ItemEntryList mapIngredientToEntryList(final Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
             var mapped = tryMapInner(sizedIngredient.getInner(), amount);
@@ -543,7 +539,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         List<Ingredient> children = ((IntersectionIngredientAccessor) intersection).getChildren();
         if (children.isEmpty()) return new ItemStackList();
 
-        var childList = mapItem(children.get(0));
+        var childList = mapIngredientToEntryList(children.get(0));
         ItemStackList stackList = new ItemStackList();
         for (var stack : childList.getStacks()) {
             if (children.stream().skip(1).allMatch(child -> child.test(stack))) {

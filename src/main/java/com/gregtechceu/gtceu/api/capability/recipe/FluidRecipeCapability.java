@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.valueprovider.*;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -330,7 +329,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         List<Object> entryLists = contents.stream()
                 .map(Content::content)
                 .map(this::of)
-                .map(FluidRecipeCapability::mapFluid)
+                .map(FluidRecipeCapability::mapIngredientToEntryList)
                 .collect(Collectors.toList());
 
         while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
@@ -391,9 +390,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
-                    GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
-                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
@@ -406,7 +402,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
-    public static FluidEntryList mapFluid(FluidIngredient ingredient) {
+    public static FluidEntryList mapIngredientToEntryList(FluidIngredient ingredient) {
         int amount;
         if (ingredient instanceof IntProviderFluidIngredient) {
             amount = 1;
