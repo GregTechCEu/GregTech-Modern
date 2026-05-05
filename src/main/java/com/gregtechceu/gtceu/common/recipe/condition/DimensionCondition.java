@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -74,7 +75,9 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
                     ItemDisplayWidget displayWidget = new ItemDisplayWidget()
                             .item(icon)
                             .recipeSlotRole(RecipeSlotRole.CATALYST)
-                            .posRel(0.75f, 0.75f);
+                            .posRel(0.9f, 0.75f)
+                            .background(IDrawable.NONE)
+                            .hoverBackground(IDrawable.NONE);
 
                     if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                         displayWidget.overlay(Text.str(dimTier).scale(0.75f));
