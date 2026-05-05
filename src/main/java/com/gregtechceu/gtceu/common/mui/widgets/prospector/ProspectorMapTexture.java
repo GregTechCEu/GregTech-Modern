@@ -47,7 +47,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     public final T[][][] data;
 
     @Getter
-    private boolean darkMode = false;
+    private boolean darkMode = true;
 
     public ProspectorMapTexture(ProspectorMapHandler<T> mapHandler) {
         this.mapHandler = mapHandler;
