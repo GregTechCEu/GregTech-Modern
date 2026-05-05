@@ -25,6 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import org.joml.Quaternionf;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -157,10 +158,18 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
 
         PoseStack poseStack = context.graphicsPose();
 
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+
         poseStack.pushPose();
+        poseStack.translate(x + playerXGui, y + playerYGui, 0f);
         poseStack.mulPose(rotationQuat.rotationZ(Mth.DEG_TO_RAD * playerRotationDeg));
-        ARROW.draw(context, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+        poseStack.translate(4, 0, 0);
+        ARROW.draw(context, -10, -10, 20, 20);
         poseStack.popPose();
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     @Override
