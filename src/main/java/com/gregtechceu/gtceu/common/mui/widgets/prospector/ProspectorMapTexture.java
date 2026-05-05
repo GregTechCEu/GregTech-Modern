@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,11 +18,9 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -40,24 +37,18 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     public final T[][][] data;
 
     @Getter
-    private @Nullable String selected = null;
-    @Getter
     private boolean darkMode = false;
 
-    public ProspectorMapTexture(ProspectorMapHandler<T> mapHandler, ChunkPos playerChunkPos) {
+    public ProspectorMapTexture(ProspectorMapHandler<T> mapHandler) {
         this.mapHandler = mapHandler;
 
-        int diameter = mapHandler.getChunkRadius() * 2 - 1;
         ProspectorMode<T> mode = mapHandler.getMode();
+        int diameter = mapHandler.getChunkRadius() * 2 - 1;
 
         this.imageWidth = this.imageHeight = diameter * 16;
         // noinspection unchecked
         this.data = (T[][][]) Array.newInstance(mode.getItemClass(),
                 diameter * mode.cellSize, diameter * mode.cellSize, 0);
-    }
-
-    public void toggleDarkMode() {
-        this.darkMode = !this.darkMode;
     }
 
     public void updateTexture(ProspectingUpdatePacket<T> packet) {
@@ -86,16 +77,21 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         for (int x = 0; x < this.imageWidth; x++) {
             for (int z = 0; z < this.imageHeight; z++) {
                 T[] items = this.data[x * mode.cellSize / 16][z * mode.cellSize / 16];
-                // draw background color
-                image.setPixelRGBA(x, z, (darkMode ? 0xFF666666 : 0xFFFFFFFF));
 
+                boolean drewColor = false;
                 // draw items
                 for (T item : items) {
-                    if (selected != null && !selected.equals(mode.getUniqueId(item))) continue;
+                    if (mapHandler.getSelected() == null || mapHandler.getSelected().equals(mode.getUniqueId(item))) {
+                        int color = mode.getItemColor(item);
+                        image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
 
-                    int color = mode.getItemColor(item);
-                    image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
-                    break;
+                        drewColor = true;
+                        break;
+                    }
+                }
+                if (!drewColor) {
+                    // draw background color
+                    image.setPixelRGBA(x, z, (darkMode ? 0xFF666666 : 0xFFFFFFFF));
                 }
                 // draw grid
                 if (x % 16 == 0 || z % 16 == 0) {
@@ -162,13 +158,6 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     public void setDarkMode(boolean darkMode) {
         if (this.darkMode != darkMode) {
             this.darkMode = darkMode;
-            loadToImage();
-        }
-    }
-
-    public void setSelected(String uniqueID) {
-        if (!Objects.equals(this.selected, uniqueID)) {
-            this.selected = uniqueID;
             loadToImage();
         }
     }

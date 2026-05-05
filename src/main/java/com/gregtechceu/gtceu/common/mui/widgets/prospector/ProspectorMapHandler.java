@@ -22,25 +22,21 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import brachy.modularui.api.IThemeApi;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.api.widget.Interactable;
-import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.DynamicSyncedWidget;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.ScrollingTextWidget;
+import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
-import com.mojang.blaze3d.platform.InputConstants;
-import info.journeymap.shaded.org.eclipse.jetty.util.ConcurrentHashSet;
+import com.google.common.base.Strings;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> implements Interactable {
 
@@ -63,15 +59,14 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     private final ProspectorMapTexture<T> texture;
 
     // runtime
-    private final Queue<ProspectingUpdatePacket<T>> packetQueue = new LinkedBlockingQueue<>();
-    private final Set<T> items = new ConcurrentHashSet<>();
-
-    // runtime
+    @Getter
+    private @Nullable String selected = null;
+    private final Set<T> items = new HashSet<>();
     private int chunkIndex = 0;
 
     public ProspectorMapHandler(ProspectorMode<T> mode, int chunkRadius, int scanInterval,
                                 StringValue searchValue, DynamicSyncedWidget<?> searchListWidget,
-                                PanelSyncManager panelSyncManager) {
+                                PanelSyncManager panelSyncManager, Player player) {
         super();
         this.mode = mode;
         this.chunkRadius = chunkRadius;
@@ -80,66 +75,65 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         this.searchValue = searchValue;
         this.syncHandler = createListSyncHandler();
         searchListWidget.syncHandler(this.syncHandler);
-        panelSyncManager.onServerTick(this::scanOres);
 
-        this.player = panelSyncManager.getPlayer();
+        this.player = player;
         this.playerChunkPos = player.chunkPosition();
 
-        this.texture = new ProspectorMapTexture<>(this, this.player.chunkPosition());
+        this.texture = new ProspectorMapTexture<>(this);
         background(this.texture);
+        size(this.texture.getImageWidth(), this.texture.getImageHeight());
+
+        panelSyncManager.onServerTick(this::scanOres);
     }
 
     private DynamicSyncHandler createListSyncHandler() {
         return new DynamicSyncHandler()
                 .widgetProvider((syncManager, buf) -> {
                     ProspectingUpdatePacket<T> packet = ProspectingUpdatePacket.read(this.mode, buf);
-                    this.texture.updateTexture(packet);
+                    if (syncManager.isClient()) {
+                        this.texture.updateTexture(packet);
+                    }
                     this.addOresToList(packet.data);
 
                     return new ListWidget<>()
                             .collapseDisabledChildren()
                             .expanded()
-                            .widthRel(1f)
+                            .sizeRel(1f)
                             .children(this.items, item -> {
                                 String uniqueId = mode.getUniqueId(item);
                                 Component description = mode.getDescription(item);
 
-                                return new ButtonWidget<>().widgetTheme(IThemeApi.BUTTON)
-                                        .onMousePressed((x, y, button) -> {
-                                            if (button == InputConstants.MOUSE_BUTTON_LEFT ||
-                                                    button == InputConstants.MOUSE_BUTTON_RIGHT) {
-                                                this.texture.setSelected(uniqueId);
+                                BoolValue.Dynamic selected = new BoolValue.Dynamic(
+                                        () -> Objects.equals(this.getSelected(), uniqueId),
+                                        v -> this.setSelected(v ? uniqueId : null, syncManager.isClient()));
+
+                                return new ToggleButton().widgetTheme(IThemeApi.TOGGLE_BUTTON)
+                                        .value(selected)
+                                        .widthRel(1f).height(18)
+                                        .background(GuiTextures.BUTTON_CLEAN)
+                                        .selectedBackground(WHITE_BORDER)
+                                        .setEnabledIf(w -> {
+                                            String searched = searchValue.getStringValue();
+                                            if (Strings.isNullOrEmpty(searched)) {
                                                 return true;
-                                            }
-                                            return false;
-                                        })
-                                        .backgroundOverlay(new DynamicDrawable(() -> {
-                                            if (Objects.equals(this.texture.getSelected(), uniqueId)) {
-                                                return WHITE_BORDER;
                                             } else {
-                                                return null;
+                                                return description.getString().toLowerCase().contains(searched);
                                             }
-                                        }))
+                                        })
                                         .child(Flow.row()
-                                                .height(15).widthRel(1f)
-                                                .padding(2)
-                                                .marginBottom(-1)
-                                                .widgetTheme(IThemeApi.BUTTON)
+                                                .sizeRel(1f)
+                                                .padding(4, 0)
+                                                // .marginBottom(-1)
                                                 .mainAxisAlignment(Alignment.MainAxis.SPACE_BETWEEN)
-                                                .setEnabledIf(w -> {
-                                                    String searched = searchValue.getStringValue();
-                                                    if (searched == null) {
-                                                        return true;
-                                                    } else {
-                                                        return description.getString().toLowerCase().contains(searched);
-                                                    }
-                                                })
-                                                .child(mode.getItemIcon(item).asWidget())
+                                                .child(mode.getItemIcon(item).asWidget()
+                                                        .verticalCenter().leftRel(0f)
+                                                        .size(12))
                                                 .child(new ScrollingTextWidget(IKey.lang(description))
-                                                        .widgetTheme(IThemeApi.BUTTON)
-                                                        .textAlign(Alignment.CENTER)
-                                                        .expanded()
-                                                        .height(16)
+                                                        .textAlign(Alignment.CenterLeft)
+                                                        .verticalCenter()
+                                                        // .expanded()
+                                                        .margin(1)
+                                                        .left(20).right(2)
                                                         .invisible()));
                             });
                 });
@@ -151,7 +145,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         Level level = this.player.level();
         int chunkDiameter = this.chunkRadius * 2 - 1;
 
-        if (getContext().getTick() % this.scanInterval == 0 && this.chunkIndex < chunkDiameter * chunkDiameter) {
+        if (this.player.tickCount % this.scanInterval == 0 && this.chunkIndex < chunkDiameter * chunkDiameter) {
             int row = this.chunkIndex / chunkDiameter;
             int column = this.chunkIndex % chunkDiameter;
 
@@ -164,8 +158,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
             }
 
             ProspectingUpdatePacket<T> packet = new ProspectingUpdatePacket<>(this.playerChunkPos.x + ox,
-                    this.playerChunkPos.z + oz,
-                    mode);
+                    this.playerChunkPos.z + oz, mode);
             mode.scan(packet.data, chunk);
             this.syncHandler.notifyUpdate(packet::writePacketData);
 
@@ -177,6 +170,16 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
                 Collections.addAll(this.items, data[x][z]);
+            }
+        }
+    }
+
+    public void setSelected(@Nullable String uniqueID, boolean isClient) {
+        if (!Objects.equals(this.selected, uniqueID)) {
+            this.selected = uniqueID;
+
+            if (isClient) {
+                this.texture.loadToImage();
             }
         }
     }
@@ -218,10 +221,10 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
         BlockPos pos = new BlockPos(x, y, z);
         // If the ores are filtered use its name
-        if (this.texture.getSelected() != null) {
+        if (this.getSelected() != null) {
             for (T item : this.items) {
                 String uniqueId = mode.getUniqueId(item);
-                if (!this.texture.getSelected().equals(uniqueId)) continue;
+                if (!this.getSelected().equals(uniqueId)) continue;
 
                 Component name = mode.getDescription(item);
                 int color = mode.getItemColor(item);

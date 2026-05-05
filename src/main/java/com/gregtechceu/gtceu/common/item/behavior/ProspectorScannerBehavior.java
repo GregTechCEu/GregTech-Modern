@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.prospector.ProspectorMapHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -21,16 +21,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import brachy.modularui.api.IThemeApi;
-import brachy.modularui.drawable.DynamicDrawable;
-import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.NotNull;
@@ -41,11 +40,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionItem, IAddInformation {
-
-    private static final UITexture DARK_MODE_BUTTON_INACTIVE = GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL
-            .getSubArea(0, 0.5f, 1, 0.5f);
-    private static final UITexture DARK_MODE_BUTTON_ACTIVE = GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL
-            .getSubArea(0, 0, 1, 0.5f);
 
     private final int radius;
     private final long cost;
@@ -117,50 +111,42 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> guiData, PanelSyncManager panelSyncManager,
                                    UISettings settings) {
         ProspectorMode<?> mode = getMode(guiData.getPlayer().getItemInHand(InteractionHand.MAIN_HAND));
-        final int diameter = radius * 2 - 1;
 
         StringValue searchValue = new StringValue("");
+        DynamicSyncedWidget<?> searchList = new DynamicSyncedWidget<>();
 
-        DynamicSyncedWidget<?> searchList;
+        ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, this.radius, 1, searchValue, searchList,
+                panelSyncManager, guiData.getPlayer());
 
-        var panel = ModularPanel.defaultPanel("prospector_scanner", 332, 200)
+        return ModularPanel.defaultPanel("prospector_scanner", 332, 200)
                 .margin(4)
-                .child(Flow.col()
-                        .leftRel(1.0f)
-                        .child(new TextFieldWidget()
-                                .value(searchValue)
-                                .height(16)
-                                .widthRel(1f)
-                                .autoUpdateOnChange(true))
-                        .child(searchList = new DynamicSyncedWidget<>()));
-
-        ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, radius, 1, searchValue, searchList,
-                panelSyncManager);
-
-        panel.child(Flow.col()
-                .topRel(0.5f).leftRel(0.0f)
-                .size(diameter)
-                .margin(2)
-                .background(GTGuiTextures.BACKGROUND_INVERSE)
-                .child(mapHandler)
-                .child(new ButtonWidget<>().widgetTheme(IThemeApi.BUTTON)
-                        .top(0).leftRelAnchor(0.0f, 1.0f)
-                        .margin(2)
-                        .backgroundOverlay(new DynamicDrawable(() -> {
-                            if (mapHandler.getTexture().isDarkMode()) {
-                                return DARK_MODE_BUTTON_ACTIVE;
-                            } else {
-                                return DARK_MODE_BUTTON_INACTIVE;
-                            }
-                        }))
-                        .onMousePressed((mouseX, mouseY, button) -> {
-                            if (button == 0 || button == 1) {
-                                mapHandler.getTexture().toggleDarkMode();
-                                return true;
-                            }
-                            return false;
-                        })));
-
-        return panel;
+                .child(new ToggleButton()
+                        .size(18)
+                        .top(4).leftRelAnchor(0f, 1f)
+                        .decoration()
+                        .stateBackground(GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL)
+                        .value(new BoolValue.Dynamic(mapHandler.getTexture()::isDarkMode,
+                                mapHandler.getTexture()::setDarkMode)))
+                .child(Flow.row()
+                        .childPadding(10)
+                        .margin(6)
+                        .mainAxisAlignment(Alignment.MainAxis.SPACE_BETWEEN)
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .child(mapHandler
+                                .verticalCenter().left(0))
+                        .child(Flow.col()
+                                .coverChildrenWidth(136)
+                                .top(0).right(0)
+                                .child(new TextFieldWidget()
+                                        .value(searchValue)
+                                        .right(0)
+                                        .widthRel(1f).height(16)
+                                        .autoUpdateOnChange(true))
+                                .child(searchList
+                                        .right(0)
+                                        .padding(2)
+                                        .expanded()
+                                        .widthRel(1f)
+                                        .background(GTGuiTextures.BACKGROUND_INVERSE))));
     }
 }

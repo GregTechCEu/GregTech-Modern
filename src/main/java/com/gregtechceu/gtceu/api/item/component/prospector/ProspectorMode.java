@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
-import brachy.modularui.api.drawable.IIcon;
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.FluidDrawable;
 import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.drawable.ItemDrawable;
@@ -60,7 +60,7 @@ public abstract class ProspectorMode<T> {
         private static final String MATERIAL_PREFIX = "material_";
 
         private final Map<BlockState, Either<Material, BlockState>> BLOCK_CACHE = new HashMap<>();
-        private final Map<Either<Material, BlockState>, IIcon> ICON_CACHE = new HashMap<>();
+        private final Map<Either<Material, BlockState>, IDrawable> ICON_CACHE = new HashMap<>();
 
         @Override
         public void scan(Either<Material, BlockState>[][][] storage, LevelChunk chunk) {
@@ -93,7 +93,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IIcon getItemIcon(Either<Material, BlockState> item) {
+        public IDrawable getItemIcon(Either<Material, BlockState> item) {
             return ICON_CACHE.computeIfAbsent(item, either -> {
                 List<ItemLike> items = either.map(material -> {
                     List<ItemLike> oreItems = ChemicalHelper.getItems(new MaterialEntry(TagPrefix.rawOre, material));
@@ -120,7 +120,7 @@ public abstract class ProspectorMode<T> {
                         .map(ItemDrawable::new)
                         .toArray(ItemDrawable[]::new);
 
-                return new CycleDrawable(drawables).asIcon().size(12);
+                return new CycleDrawable(drawables);
             });
         }
 
@@ -248,8 +248,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IIcon getItemIcon(FluidInfo item) {
-            return new FluidDrawable(item.asStack()).asIcon();
+        public IDrawable getItemIcon(FluidInfo item) {
+            return new FluidDrawable(item.asStack());
         }
 
         @Override
@@ -332,7 +332,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IIcon getItemIcon(BedrockOreInfo item) {
+        public IDrawable getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
                     ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
@@ -340,7 +340,7 @@ public abstract class ProspectorMode<T> {
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),
                     ChemicalHelper.get(TagPrefix.dust, material));
-            return new ItemDrawable(stack).asIcon().size(12);
+            return new ItemDrawable(stack);
         }
 
         @Override
@@ -402,7 +402,7 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract IIcon getItemIcon(T item);
+    public abstract IDrawable getItemIcon(T item);
 
     public abstract Component getDescription(T item);
 

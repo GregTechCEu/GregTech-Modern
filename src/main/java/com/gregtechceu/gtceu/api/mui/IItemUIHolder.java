@@ -27,20 +27,22 @@ public interface IItemUIHolder extends IUIHolder<PlayerInventoryGuiData<?>>, IIn
 
     @Override
     default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        if (!shouldOpenUI())
-            return IInteractionItem.super.use(item, level, player, usedHand);
-        if (level.isClientSide)
-            PlayerInventoryUIFactory.INSTANCE.openFromHandClient(usedHand);
+        if (!shouldOpenUI()) return IInteractionItem.super.use(item, level, player, usedHand);
+
+        if (!level.isClientSide) {
+            PlayerInventoryUIFactory.INSTANCE.openFromHand(player, usedHand);
+        }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
     }
 
     @Override
     default InteractionResult useOn(UseOnContext context) {
-        if (!shouldOpenUI())
-            return IInteractionItem.super.useOn(context);
-        if (context.getLevel().isClientSide)
-            PlayerInventoryUIFactory.INSTANCE.openFromHandClient(context.getHand());
-        return InteractionResult.SUCCESS;
+        if (!shouldOpenUI()) return IInteractionItem.super.useOn(context);
+
+        if (!context.getLevel().isClientSide) {
+            PlayerInventoryUIFactory.INSTANCE.openFromHand(context.getPlayer(), context.getHand());
+        }
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
     }
 
     @Override
