@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -121,17 +120,5 @@ public record ContentOverlay(Content content, boolean perTick, int recipeTier, i
                 (int) ((y + (height / 3f) + 6) * 2 - height + (content.chance() == ChanceLogic.getMaxChancedValue() ? 0 : 10)),
                 color);
         graphics.pose().popPose();
-    }
-
-    @Deprecated(forRemoval = true)
-    public IGuiTexture createOverlayLDLib() {
-        return (graphics, mouseX, mouseY, x, y, width, height) -> {
-            drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
-            drawRangeAmount(graphics, x, y, width, height);
-            drawFluidAmount(graphics, x, y, width, height);
-            if (perTick) {
-                drawTick(graphics, x, y, width, height);
-            }
-        };
     }
 }

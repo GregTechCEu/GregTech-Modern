@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -49,8 +47,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
             .widthRel(1f)
             .coverChildrenHeight()
             .crossAxisAlignment(Alignment.CrossAxis.START);
-    public final Flow inputColumn = Flow.col().coverChildren();
-    public final Flow outputColumn = Flow.col().coverChildren();
+    public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
+    public final Flow outputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
     public final Flow recipeContentRow;
     public final ParentWidget<?> additionalRecipeContent = new ParentWidget<>()
             .coverChildrenHeight().widthRel(1f);
@@ -83,7 +81,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         // Attach duration here so it is always the first text row
         textComponents.childIf(!recipe.data.getBoolean("hide_duration"),
-                () -> Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget());
+                () -> Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers((double)duration /20))).asWidget());
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
         mainColumn.child(recipeContentRow.marginTop(5));
@@ -208,7 +206,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
     private ButtonWidget<?> buildOverclockButton() {
         return new ButtonWidget<>().background(IDrawable.NONE)
-                .hoverBackground(IDrawable.NONE)
+                //.hoverBackground(IDrawable.NONE)
+                .size(25, 15)
                 .bottom(0).right(5)
                 .decoration()
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))

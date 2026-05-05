@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
 import brachy.modularui.api.GuiAxis;
+import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
@@ -16,8 +17,8 @@ import java.util.function.DoubleSupplier;
  */
 public class GTRecipeTypeMachineWidget extends Flow {
 
-    public final Flow inputColumn = Flow.col().coverChildren();
-    public final Flow outputColumn = Flow.col().coverChildren();
+    public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
+    public final Flow outputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
 
     public GTRecipeTypeMachineWidget(GTRecipeType recipeType, PanelSyncManager syncManager,
                                      MetaMachine machine,
