@@ -146,15 +146,9 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         ChunkPos playerChunkPos = player.chunkPosition();
         int chunkRadius = this.mapHandler.getChunkRadius();
 
-        float playerRotationDeg = (player.getVisualRotationYInDegrees() + 180f) / 2f;
+        float playerRotationDeg = ((player.getVisualRotationYInDegrees() % 360.0f) + 180f) - 90.0f;
         int playerXGui = player.getBlockX() - (playerChunkPos.x - chunkRadius + 1) * 16;
         int playerYGui = player.getBlockZ() - (playerChunkPos.z - chunkRadius + 1) * 16;
-
-        // these are the same colors the F3 debug overlay uses for X and Z
-        // draw red vertical line
-        GuiDraw.drawRect(context.getGraphics(), x + playerXGui, y, 1, imageHeight, 0xFFFF0000);
-        // draw bluish horizontal line
-        GuiDraw.drawRect(context.getGraphics(), x, y + playerYGui, imageWidth, 1, 0xFF7F7FFF);
 
         PoseStack poseStack = context.graphicsPose();
 
@@ -164,8 +158,9 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         poseStack.pushPose();
         poseStack.translate(x + playerXGui, y + playerYGui, 0f);
         poseStack.mulPose(rotationQuat.rotationZ(Mth.DEG_TO_RAD * playerRotationDeg));
-        poseStack.translate(4, 0, 0);
-        ARROW.draw(context, -10, -10, 20, 20);
+        poseStack.translate(-5.f, -5.f, 0.0f);
+
+        ARROW.draw(context, 0, 0, 10, 10);
         poseStack.popPose();
 
         RenderSystem.enableDepthTest();
