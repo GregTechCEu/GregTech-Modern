@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.mui.widgets.prospector;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.mui.prospector.ProspectingUpdatePacket;
-import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePacket;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;

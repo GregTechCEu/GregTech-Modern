@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.mui.prospector;
+package com.gregtechceu.gtceu.api.item.component.prospector;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;

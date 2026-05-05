@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.layer.builtin;
 
-import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
 

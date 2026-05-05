@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
-import com.gregtechceu.gtceu.api.mui.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.prospector.ProspectorMapHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
