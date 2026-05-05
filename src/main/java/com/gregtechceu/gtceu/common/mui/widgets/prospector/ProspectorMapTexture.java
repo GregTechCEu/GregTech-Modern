@@ -7,17 +7,24 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiDraw;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.theme.WidgetTheme;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+import org.joml.Quaternionf;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -28,6 +35,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawable {
+
+    private static final UITexture ARROW = GuiTextures.PLAY;
+    private static final Quaternionf rotationQuat = new Quaternionf();
 
     private final ProspectorMapHandler<T> mapHandler;
     @Getter
@@ -131,25 +141,26 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
             }
         }
 
-        // player rotation & red lines are drawn separately
-        /*
-         * 
-         * TransformTexture arrow = ARROW.rotate(this.direction / 2);
-         * arrow.draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
-         * 
-         * // draw red vertical line
-         * if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
-         * DrawerHelper.drawSolidRect(graphics, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
-         * } else {
-         * DrawerHelper.drawSolidRect(graphics, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
-         * }
-         * // draw red horizontal line
-         * if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
-         * DrawerHelper.drawSolidRect(graphics, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
-         * } else {
-         * DrawerHelper.drawSolidRect(graphics, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
-         * }
-         */
+        Player player = this.mapHandler.getPlayer();
+        ChunkPos playerChunkPos = player.chunkPosition();
+        int chunkRadius = this.mapHandler.getChunkRadius();
+
+        float playerRotationDeg = (player.getVisualRotationYInDegrees() + 180f) / 2f;
+        int playerXGui = player.getBlockX() - (playerChunkPos.x - chunkRadius + 1) * 16;
+        int playerYGui = player.getBlockZ() - (playerChunkPos.z - chunkRadius + 1) * 16;
+
+        // these are the same colors the F3 debug overlay uses for X and Z
+        // draw red vertical line
+        GuiDraw.drawRect(context.getGraphics(), x + playerXGui, y, 1, imageHeight, 0xFFFF0000);
+        // draw bluish horizontal line
+        GuiDraw.drawRect(context.getGraphics(), x, y + playerYGui,  imageWidth, 1, 0xFF7F7FFF);
+
+        PoseStack poseStack = context.graphicsPose();
+
+        poseStack.pushPose();
+        poseStack.mulPose(rotationQuat.rotationZ(Mth.DEG_TO_RAD * playerRotationDeg));
+        ARROW.draw(context, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+        poseStack.popPose();
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * Note that the atlas JSON <i>should</i> be kept, as MC 1.21 only adds textures in gui/sprites to the atlas. We want
  * all of them.
  */
+// TODO delete, handled in MUI
 public class GuiSpriteManager extends TextureAtlasHolder {
 
     public static final ResourceLocation LOCATION_GUI = GTCEu.id("textures/atlas/gui.png");
