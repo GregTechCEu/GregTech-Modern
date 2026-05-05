@@ -154,7 +154,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         // draw red vertical line
         GuiDraw.drawRect(context.getGraphics(), x + playerXGui, y, 1, imageHeight, 0xFFFF0000);
         // draw bluish horizontal line
-        GuiDraw.drawRect(context.getGraphics(), x, y + playerYGui,  imageWidth, 1, 0xFF7F7FFF);
+        GuiDraw.drawRect(context.getGraphics(), x, y + playerYGui, imageWidth, 1, 0xFF7F7FFF);
 
         PoseStack poseStack = context.graphicsPose();
 
