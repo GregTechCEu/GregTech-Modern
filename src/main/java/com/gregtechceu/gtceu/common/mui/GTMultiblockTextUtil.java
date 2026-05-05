@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -38,6 +39,16 @@ import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
+    public static TextWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine, PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+
+        return Text.lang("gtceu.multiblock.invalid_structure")
+                .withStyle(ChatFormatting.RED)
+                .asWidget()
+                .setEnabledIf(w -> !isFormed.getBoolValue());
+    }
+
     public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
                                                    PanelSyncManager syncManager) {
         LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
@@ -50,7 +61,7 @@ public class GTMultiblockTextUtil {
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> weMachine.getRecipeLogic().isActive()));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        var widget = Text.dynamic(() -> {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
             byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
@@ -66,7 +77,9 @@ public class GTMultiblockTextUtil {
                     .withStyle(ChatFormatting.WHITE);
         })
                 .asWidget()
-                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+                .setEnabledIf($ -> isFormed.getBoolValue() && isActive.getBoolValue());
+
+        return widget;
     }
 
     public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
@@ -84,7 +97,7 @@ public class GTMultiblockTextUtil {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             if (energyUsage.getLongValue() <= 0) return Component.empty();
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
             // wrap in text component to keep it from being formatted
@@ -125,7 +138,7 @@ public class GTMultiblockTextUtil {
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             int progress = (int) (progressPercent.getDoubleValue() * 100.f);
             float current = (float) currentProgress.getDoubleValue() / 20.f;
             float max = (float) maxProgress.getDoubleValue() / 20.f;
@@ -146,7 +159,7 @@ public class GTMultiblockTextUtil {
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
             return Component.translatable("gtceu.multiblock.progress_percent", currentProgress)
                     .withStyle(ChatFormatting.WHITE);
@@ -163,7 +176,7 @@ public class GTMultiblockTextUtil {
         IntSyncValue tier = syncManager.getOrCreateSyncHandler("energyTier", IntSyncValue.class,
                 () -> new IntSyncValue(rlMachine::getTier));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
             return Component.translatable(
                     "gtceu.multiblock.max_recipe_tier",
@@ -182,7 +195,7 @@ public class GTMultiblockTextUtil {
                     return rlMachine.getRecipeLogic().getLastRecipe().parallels;
                 }));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.parallel";
@@ -201,7 +214,7 @@ public class GTMultiblockTextUtil {
                     return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
                 }));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.batch_enabled";
@@ -219,7 +232,7 @@ public class GTMultiblockTextUtil {
                     return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
                 }));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.subtick_parallels";
@@ -236,7 +249,7 @@ public class GTMultiblockTextUtil {
                     return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
                 }));
 
-        return (TextWidget<?>) Text.dynamic(() -> {
+        return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.total_runs";
@@ -262,7 +275,7 @@ public class GTMultiblockTextUtil {
         BooleanSyncValue hasSteamHandler = syncManager.getOrCreateSyncHandler("hasSteam", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> steamRH != null));
 
-        return (TextWidget<?>) Text
+        return Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
                         FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                         FormattingUtil.formatNumbers(steamCapacity.getIntValue())).withStyle(ChatFormatting.WHITE))
@@ -299,7 +312,7 @@ public class GTMultiblockTextUtil {
                 BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWorkingEnabled()));
 
-        return (TextWidget<?>) Text
+        return Text
                 .dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
                     if (!isWorkingEnabled.getBoolValue()) {
@@ -314,9 +327,10 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf((w) -> isFormed.getBoolValue());
     }
 
+    @SuppressWarnings("unchecked")
     public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                         PanelSyncManager syncManager) {
-        GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
+        GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>)syncManager.getOrCreateSyncHandler("GTRecipe",
                 GenericSyncValue.class,
                 () -> GenericSyncValue.builder(GTRecipe.class)
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())

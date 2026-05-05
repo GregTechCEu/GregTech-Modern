@@ -64,8 +64,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public RecipeUIModifier modifyUI() {
-        return super.modifyUI()
-                .then((recipe, widget) -> {
+        return (recipe, widget) -> {
                     DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension.location(),
                             new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
                                     this.dimension.toString()));
@@ -74,14 +73,14 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
                     ItemDisplayWidget displayWidget = new ItemDisplayWidget()
                             .item(icon)
-                            .recipeSlotRole(RecipeSlotRole.INPUT)
+                            .recipeSlotRole(RecipeSlotRole.CATALYST)
                             .posRel(0.75f, 0.75f);
 
                     if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                         displayWidget.overlay(Text.str(dimTier).scale(0.75f));
                     }
                     widget.child(displayWidget);
-                });
+                };
     }
 
     @Override

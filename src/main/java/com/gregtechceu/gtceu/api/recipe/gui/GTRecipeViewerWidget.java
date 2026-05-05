@@ -10,6 +10,8 @@ import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.WidgetTree;
 import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -30,7 +32,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,7 +46,10 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private final GTRecipeType recipeType;
     private final GTRecipeTypeUILayout uiLayout;
 
-    public final Flow textComponents = Flow.col().crossAxisAlignment(Alignment.CrossAxis.START).coverChildrenHeight().leftRel(0).marginLeft(5);
+    public final ListWidget<IWidget, ?> textComponents = new ListWidget<>()
+            .widthRel(1f)
+            .coverChildrenHeight()
+            .crossAxisAlignment(Alignment.CrossAxis.START);
     public final Flow inputColumn = Flow.col().coverChildren();
     public final Flow outputColumn = Flow.col().coverChildren();
     public final Flow recipeContentRow;
@@ -76,21 +80,22 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         child(mainColumn);
         padding(3);
         coverChildrenWidth(134);
-        coverChildrenHeight();
+        coverChildrenHeight(60);
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
         mainColumn.child(recipeContentRow.marginTop(5));
 
         loadContentIntoSlots();
 
-        mainColumn.child(additionalRecipeContent.child(textComponents).marginTop(5));
+        mainColumn.child(additionalRecipeContent.child(textComponents));
         buildAdditionalRecipeContent();
 
         childIf(isEnergyIn, this::buildOverclockButton);
 
         childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
-                .right(2).bottom(20)
+                .decoration()
+                .top(3).right(3)
                 .size(15, 15)
                 .tooltip(r -> r.addLine("Click to copy recipe ID: " + recipe.id))
                 .onMousePressed((ctx, b) -> {
@@ -104,6 +109,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         var row = Flow.row()
         .horizontalCenter()
         .coverChildren()
+        .margin(10, 10, 0, 0)
         .childPadding((uiLayout.getProgressSize() / 2) + 2)
         .child(inputColumn)
         .child(uiLayout.getProgressWidgetSupplier().get(uiLayout, DoubleValue.simulateProgress(2000)))
@@ -195,7 +201,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private ButtonWidget<?> buildOverclockButton() {
         return new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
-                .bottom(0).right(10)
+                .bottom(0).right(5)
+                .decoration()
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang("gtceu.oc.tooltip", GTValues.VNF[minTier])))
                 .onMousePressed((ctx, b) -> {

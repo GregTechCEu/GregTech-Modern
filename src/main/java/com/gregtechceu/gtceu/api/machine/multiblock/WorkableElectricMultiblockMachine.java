@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -106,6 +107,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
                 .posRel(Alignment.CenterLeft);
         parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
 
@@ -123,6 +125,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
