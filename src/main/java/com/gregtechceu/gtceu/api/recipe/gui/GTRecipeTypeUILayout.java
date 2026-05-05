@@ -7,9 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.gui.capability.CapabilityWidgetBuilder;
-import com.gregtechceu.gtceu.api.recipe.gui.capability.FluidCapabilityWidgetBuilder;
-import com.gregtechceu.gtceu.api.recipe.gui.capability.ItemCapabilityWidgetBuilder;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -71,7 +68,7 @@ public class GTRecipeTypeUILayout {
 
         public @Nullable MachineCapabilityLayoutBuilder machineLayoutBuilder;
 
-        public @Nullable CapabilityWidgetBuilder<?> capabilityWidgetBuilder;
+        public @Nullable CapabilityContentBuilder capabilityWidgetBuilder;
 
         private final Map<IO, RecipeViewerCapabilityGridBuilder> recipeViewerLayoutGridBuilders = new EnumMap<>(IO.class);
 
@@ -136,8 +133,8 @@ public class GTRecipeTypeUILayout {
             getCapInfo(ItemRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.FLUID;
 
-            getCapInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder = ItemCapabilityWidgetBuilder.INSTANCE;
-            getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = FluidCapabilityWidgetBuilder.INSTANCE;
+            getCapInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.ITEM;
+            getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.FLUID;
         }
 
         private CapabilityUIInfo getCapInfo(RecipeCapability<?> cap) {

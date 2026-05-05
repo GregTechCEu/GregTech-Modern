@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
 import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import brachy.modularui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Objects;
 
@@ -33,7 +38,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 0) return;
 
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
-            var slot = Objects.requireNonNull(layout.capabilityInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+            var slot = RecipeViewerSlotWidget.create().value(ItemStackList.of(ItemStack.EMPTY))
                     .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0))
                     .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
@@ -45,7 +50,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
                 .builder()
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
-                        Objects.requireNonNull(layout.capabilityInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+                        RecipeViewerSlotWidget.create().value(ItemStackList.of(ItemStack.EMPTY))
                         .background(GuiTextures.SLOT_ITEM, layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i))
                                 .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, io, i))
                 )
@@ -64,7 +69,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 0) return;
 
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
-            var slot = Objects.requireNonNull(layout.capabilityInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+            var slot = RecipeViewerSlotWidget.create().value(FluidStackList.of(FluidStack.EMPTY))
                     .background(GuiTextures.SLOT_FLUID, layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0))
                     .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
@@ -76,7 +81,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getRecipeViewerGrid(io, recipe))
                 .key('s', i ->
-                        Objects.requireNonNull(layout.capabilityInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder).buildDefaultWidget()
+                        RecipeViewerSlotWidget.create().value(FluidStackList.of(FluidStack.EMPTY))
                                 .background(GuiTextures.SLOT_FLUID, layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i))
                                 .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, io, i))
                 )

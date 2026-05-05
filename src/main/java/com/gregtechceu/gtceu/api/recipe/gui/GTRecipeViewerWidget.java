@@ -3,15 +3,12 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.WidgetTree;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -29,6 +26,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -81,6 +80,10 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         padding(3);
         coverChildrenWidth(134);
         coverChildrenHeight(60);
+
+        // Attach duration here so it is always the first text row
+        textComponents.childIf(!recipe.data.getBoolean("hide_duration"),
+                () -> Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget());
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
         mainColumn.child(recipeContentRow.marginTop(5));
@@ -162,10 +165,6 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
     private void buildAdditionalRecipeContent() {
 
-        if (!recipe.data.getBoolean("hide_duration")) {
-            textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", (double)duration /20)).asWidget());
-        }
-
         var eu = RecipeHelper.getRealEUtWithIO(recipe);
 
         if (eu.voltage() > 0) {
@@ -185,12 +184,21 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 var minVoltageTier = GTUtil.getTierByVoltage(EUt.voltage());
                 float minAmperage = (float) EUt.getTotalEU() / GTValues.V[minVoltageTier];
                 return Component.translatable(eu.isInput() ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
-                        FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier]);
-            }).asWidget().tooltip(r -> r.addLine(Text.dynamic(() -> Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(EUt.getTotalEU()))
+                        FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier]).withStyle(ChatFormatting.UNDERLINE);
+            }).asWidget().tooltip(
+                    r -> r.addLine(Text.dynamic(() -> Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(EUt.getTotalEU()))
                     .withStyle(ChatFormatting.UNDERLINE)))));
         }
 
-
+        if (recipe.tickInputs.get(CWURecipeCapability.CAP) != null) {
+            if (CWURecipeCapability.CAP.isTickSlot(0, IO.IN, recipe)) {
+                int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum();
+                textComponents.child(Text.lang("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu)).asWidget());
+            }
+            if (recipe.data.getBoolean("duration_is_total_cwu")) {
+                textComponents.child(Text.lang("gtceu.recipe.total_computation", FormattingUtil.formatNumbers(recipe.duration)).asWidget());
+            }
+        }
 
 
         for (var condition: recipe.conditions) {
