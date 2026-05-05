@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import brachy.modularui.api.drawable.IKey;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
@@ -12,9 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.value.sync.PanelSyncManager;
+
 import java.util.List;
 
 public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostItemModule {
+
     private static final String JUMP_BOOST_KEY = "jump_boost";
 
     public JumpBoostItemModule(ResourceLocation id, int tier) {

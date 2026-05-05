@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.IKey;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandler;
 import brachy.modularui.value.sync.SyncHandlers;
@@ -280,14 +281,15 @@ public abstract class ItemModule {
         }
 
         public Settings progress(IKey label, DoubleSupplier getter, DoubleFunction<String> rightLabel) {
-            custom(label, SyncHandlers.doubleNumber(getter, null), new ProgressWidget()
+            DoubleSyncValue syncValue = SyncHandlers.doubleNumber(getter, null);
+            custom(label, syncValue, new ProgressWidget()
                     .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                             GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                     .direction(ProgressWidget.Direction.RIGHT)
                     .width(50))
                     .<Flow>last()
                     .child(new TextWidget<>(
-                            IKey.dynamic(() -> Component.literal(rightLabel.apply(getter.getAsDouble())))));
+                            IKey.dynamic(() -> Component.literal(rightLabel.apply(syncValue.getValue())))));
             return this;
         }
     }
