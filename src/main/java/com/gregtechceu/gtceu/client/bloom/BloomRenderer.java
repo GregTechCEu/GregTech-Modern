@@ -71,7 +71,7 @@ public class BloomRenderer {
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
         // safe mode disabled -> use deeper, faster hackery
-        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
+        if (!BloomRenderer.SafeMode.enabled()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
                     camPos.x, camPos.y, camPos.z, projectionMatrix);
 
@@ -213,8 +213,8 @@ public class BloomRenderer {
         public static Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
         public static Map<SectionPos, BufferBuilder.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
-        public static boolean isActive() {
-            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME);
+        public static boolean enabled() {
+            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
         }
 
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,

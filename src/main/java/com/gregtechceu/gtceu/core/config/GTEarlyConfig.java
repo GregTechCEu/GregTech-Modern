@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.core.config;
 
 import net.minecraftforge.fml.loading.FMLLoader;
 
-import com.google.common.collect.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +16,7 @@ import java.util.*;
  */
 public class GTEarlyConfig {
 
-    public static final String SAFE_MODE_CONFIG_NAME = "client.bloom.safe_mode.";
+    public static final String SAFE_MODE = "client.bloom.safe_mode.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -29,16 +28,15 @@ public class GTEarlyConfig {
 
         // Defines the default rules which can be configured by the user or other mods.
         // You must manually add a rule for any new mixins not covered by an existing package rule.
-        final String safeModeConfig = "client.bloom.safe_mode"; // no trailing dot
 
-        Option option = addMixinRule(safeModeConfig, false);
+        Option option = addMixinRule(SAFE_MODE, false);
         option.addComment(
                 "Whether to use a 'safe mode' for bloom rendering",
                 "NOTE: considerably slower than the normal logic, but likely fixes compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
 
-        addDelegateRule("client.bloom.safemode", safeModeConfig, false);
-        addDelegateRule("client.bloom.normal", safeModeConfig, true);
+        addDelegateRule("client.bloom.safemode", SAFE_MODE, false);
+        addDelegateRule("client.bloom.normal", SAFE_MODE, true);
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
@@ -115,6 +113,8 @@ public class GTEarlyConfig {
      * @throws IllegalStateException If a rule with that name already exists
      */
     private Option addMixinRule(String configName, boolean enabled) {
+        if (configName.endsWith(".")) configName = configName.substring(0, configName.length() - 2);
+
         Option option = new Option(configName, enabled, false);
         if (this.options.putIfAbsent(configName, option) != null) {
             throw new IllegalStateException("Mixin rule already defined: " + configName);
@@ -147,6 +147,8 @@ public class GTEarlyConfig {
      * @throws IllegalArgumentException If a rule named {@code delegateName} doesn't already exist
      */
     private Option addDelegateRule(String configName, String delegateName, boolean invert) {
+        if (delegateName.endsWith(".")) delegateName = delegateName.substring(0, delegateName.length() - 2);
+
         Option delegateOption = this.options.get(delegateName);
         if (delegateOption == null) {
             throw new IllegalArgumentException("Delegate rule not defined: " + delegateName);

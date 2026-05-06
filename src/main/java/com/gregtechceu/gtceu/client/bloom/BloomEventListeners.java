@@ -53,7 +53,7 @@ public class BloomEventListeners {
     public static void onLevelUnload(LevelEvent.Unload event) {
         BloomHandler.invalidateLevelData(event.getLevel());
 
-        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
+        if (BloomRenderer.SafeMode.enabled()) {
             BloomRenderer.SafeMode.invalidateLevelData();
         }
     }
@@ -66,7 +66,7 @@ public class BloomEventListeners {
         LevelAccessor level = chunk.getWorldForge();
         if (level == null) return;
 
-        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) return;
+        if (!BloomRenderer.SafeMode.enabled()) return;
 
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
@@ -83,14 +83,13 @@ public class BloomEventListeners {
         @SubscribeEvent
         public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
             RenderType block, entity;
-            if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME) ||
-                    !BloomShaderManager.isBloomAvailable()) {
+            if (!BloomRenderer.SafeMode.enabled() && BloomShaderManager.isBloomAvailable()) {
+                block = GTRenderTypes.bloom();
+                entity = GTRenderTypes.entityBloomBlockSheet();
+            } else {
                 // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
                 block = RenderType.cutoutMipped();
                 entity = ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
-            } else {
-                block = GTRenderTypes.bloom();
-                entity = GTRenderTypes.entityBloomBlockSheet();
             }
             event.register("bloom", block, entity);
         }

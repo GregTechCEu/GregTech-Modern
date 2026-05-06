@@ -42,12 +42,13 @@ public abstract class RebuildTaskMixin {
         if (!BloomShaderManager.isBloomActive()) return;
 
         Supplier<VertexConsumer> provider = () -> {
-            if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
+            if (!BloomRenderer.SafeMode.enabled()) {
                 BufferBuilder buffer = builders.builder(GTRenderTypes.bloom());
                 // no existing geometry on this layer
                 if (usedRenderTypes.add(GTRenderTypes.bloom())) this$1.beginLayer(buffer);
                 return buffer;
             } else {
+                // safe mode path
                 return BloomRenderer.SafeMode.getOrStartBloomBuffer(SectionPos.of(sectionOrigin));
             }
         };
@@ -62,7 +63,7 @@ public abstract class RebuildTaskMixin {
                                              @Local(ordinal = 0) BlockPos sectionOrigin) {
         if (!BloomShaderManager.isBloomActive()) return;
 
-        if (GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) {
+        if (BloomRenderer.SafeMode.enabled()) {
             BloomRenderer.SafeMode.bakeBloomChunkBuffers(SectionPos.of(sectionOrigin), camX, camY, camZ);
         }
 

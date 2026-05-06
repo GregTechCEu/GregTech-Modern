@@ -29,7 +29,7 @@ public class GTEmbeddiumCompat {
 
     @SubscribeEvent
     public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
-        if (!GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE_CONFIG_NAME)) return;
+        if (!BloomRenderer.SafeMode.enabled()) return;
         if (!BloomShaderManager.isBloomActive()) return;
 
         event.addMeshAppender(context -> {
