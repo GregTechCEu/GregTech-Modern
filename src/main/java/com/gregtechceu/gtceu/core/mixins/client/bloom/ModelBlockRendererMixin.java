@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
+import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.client.renderer.RenderType;
@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@SuppressWarnings("SameReturnValue")
 @Mixin(ModelBlockRenderer.class)
 public class ModelBlockRendererMixin {
 
@@ -58,9 +57,7 @@ public class ModelBlockRendererMixin {
         if (!BloomShaderManager.isBloomActive()) return;
 
         RenderType renderType = gtceu$currentRenderType.get().getValue();
-        if (renderType == null) return;
-
-        BloomUtil.copyBloomQuad(quad, combinedLights, renderType, bloomVertexConsumer -> {
+        BloomRenderer.copyBloomQuad(quad, combinedLights, renderType, bloomVertexConsumer -> {
             original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue,
                     combinedLights, combinedOverlay, mulColor);
         });

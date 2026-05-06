@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 /**
- * Render callback interface for {@link BloomUtil#registerBloomRender(IRenderSetup, IBloomEffect, BlockEntity)}.
+ * Render callback interface for {@link BloomHandler#registerBloomRender(IRenderSetup, IBloomEffect, BlockEntity)}.
  */
 @FunctionalInterface
 public interface IBloomEffect {

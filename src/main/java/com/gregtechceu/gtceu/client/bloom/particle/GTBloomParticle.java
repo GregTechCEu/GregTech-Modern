@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.bloom.particle;
 
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
+import com.gregtechceu.gtceu.client.bloom.BloomHandler;
 import com.gregtechceu.gtceu.client.bloom.IBloomEffect;
 import com.gregtechceu.gtceu.client.bloom.IRenderSetup;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
@@ -11,7 +11,7 @@ public abstract class GTBloomParticle extends GTParticle implements IBloomEffect
 
     public GTBloomParticle(double posX, double posY, double posZ) {
         super(posX, posY, posZ);
-        BloomUtil.registerBloomRender(getBloomRenderSetup(), this, this);
+        BloomHandler.registerBloomRender(getBloomRenderSetup(), this, this);
     }
 
     protected abstract @Nullable IRenderSetup getBloomRenderSetup();

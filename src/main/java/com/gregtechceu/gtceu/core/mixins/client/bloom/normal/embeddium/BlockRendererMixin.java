@@ -49,10 +49,9 @@ public abstract class BlockRendererMixin {
                                       @Local(name = "vertexColors") int[] vertexColors,
                                       @Local(name = "lightData") QuadLightData lightData,
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
-        if (!BloomShaderManager.isBloomActive()) return;
-
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
-        if (chunkContext != null && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
+        if (BloomShaderManager.isBloomActive() && chunkContext != null &&
+                TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
             var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.BLOOM_RENDER_PASS);
             bloomBuilderRef.set(bloomBuilder);
 

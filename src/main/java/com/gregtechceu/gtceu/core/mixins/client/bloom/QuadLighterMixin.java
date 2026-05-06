@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
+import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.core.util.extensions.QuadLighterExt;
 
 import net.minecraft.client.renderer.RenderType;
@@ -37,7 +37,7 @@ public class QuadLighterMixin implements QuadLighterExt {
         if (this.gtceu$renderType == null) return;
         if (!BloomShaderManager.isBloomActive()) return;
 
-        BloomUtil.copyBloomQuad(quad, combinedLights, this.gtceu$renderType, bloomVertexConsumer -> {
+        BloomRenderer.copyBloomQuad(quad, combinedLights, this.gtceu$renderType, bloomVertexConsumer -> {
             original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue,
                     combinedLights, combinedOverlay, mulColor);
         });

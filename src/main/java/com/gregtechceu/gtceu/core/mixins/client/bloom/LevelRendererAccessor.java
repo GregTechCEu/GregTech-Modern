@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal;
+package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;

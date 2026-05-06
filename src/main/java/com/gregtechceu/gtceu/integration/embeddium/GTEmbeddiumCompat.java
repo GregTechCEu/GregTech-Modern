@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.embeddium;
 
-import com.gregtechceu.gtceu.client.bloom.BloomSafeMode;
+import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
@@ -34,13 +34,13 @@ public class GTEmbeddiumCompat {
 
         event.addMeshAppender(context -> {
             SectionPos sectionOrigin = context.sectionOrigin();
-            if (!BloomSafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
+            if (!BloomRenderer.SafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
                 return;
             }
 
             Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-            BloomSafeMode.CURRENT_RENDERING_SECTION.set(sectionOrigin);
-            BloomSafeMode.bakeBloomChunkBuffers(sectionOrigin, camPos);
+            BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionOrigin,
+                    (float) camPos.x, (float) camPos.y, (float) camPos.z);
         });
     }
 }

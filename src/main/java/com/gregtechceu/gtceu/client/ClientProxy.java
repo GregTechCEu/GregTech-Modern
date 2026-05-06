@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.client.bloom.BloomUtil;
+import com.gregtechceu.gtceu.client.bloom.BloomHandler;
 import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
@@ -74,8 +74,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.*;
-
 public class ClientProxy extends CommonProxy {
 
     public static final BiMap<ResourceLocation, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
@@ -94,7 +92,7 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
 
-            BloomUtil.init();
+            BloomHandler.init();
             if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
                 GTEmbeddiumCompat.init();
             }
