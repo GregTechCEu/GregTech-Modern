@@ -141,8 +141,6 @@ public interface CapabilityContentBuilder {
       var existingCompTickWidget = WidgetTree.findFirstWithNameNullable(flow, "comp_tick");
       var existingCompTotal = WidgetTree.findFirstWithNameNullable(flow, "comp_total");
 
-      flow.getChildren().forEach(flow::remove);
-
       if (recipe.tickInputs.get(CWURecipeCapability.CAP) != null) {
             if (CWURecipeCapability.CAP.isTickSlot(0, IO.IN, recipe)) {
                 int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum();
@@ -162,8 +160,6 @@ public interface CapabilityContentBuilder {
 
     CapabilityContentBuilder EU = (widget, content, io, perTick, recipeType, recipe, chanceTier, recipeTier) -> {
         if (!(widget instanceof Flow flow)) return;
-
-        flow.getChildren().forEach(flow::remove);
 
         var eu = RecipeHelper.getRealEUt(recipe);
 
@@ -194,7 +190,8 @@ public interface CapabilityContentBuilder {
             var euText = Text.lang(io == IO.IN ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
                     .withStyle(ChatFormatting.UNDERLINE);
 
-            Consumer<RichTooltip> tooltip = r -> r.addLine(Text.lang("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
+            RichTooltip tooltip = new RichTooltip();
+            tooltip.addLine(Text.lang("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
                     .withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>)euWidget).value(euText).tooltip(tooltip);

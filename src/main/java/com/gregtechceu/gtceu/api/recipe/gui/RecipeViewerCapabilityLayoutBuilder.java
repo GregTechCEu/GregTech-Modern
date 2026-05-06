@@ -92,7 +92,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
         // I don't think we need to support computation IO out.
         if (layout.getRecipeType().getMaxSlots(CWURecipeCapability.CAP, io) == 0 || io == IO.OUT) return;
 
-        var computationInfo = Flow.row()
+        var computationInfo = Flow.col()
                 .coverChildrenHeight()
                 .widthRel(1f)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
@@ -102,7 +102,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
     };
 
     RecipeViewerCapabilityLayoutBuilder EU = (layout, widget, io) ->
-            widget.textComponents.child(Flow.row()
+            widget.textComponents.child(Flow.col()
             .coverChildrenHeight()
             .widthRel(1f)
             .crossAxisAlignment(Alignment.CrossAxis.START)
