@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
+import lombok.experimental.UtilityClass;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
@@ -60,7 +61,7 @@ public class BloomShaderManager {
 
         ResourceLocation id = null;
 
-        switch (ConfigHolder.INSTANCE.client.bloom.bloomType) {
+        switch (ConfigHolder.INSTANCE.client.bloom.type) {
             case UNITY -> id = GTCEu.id("shaders/post/bloom_unity.json");
             case UNREAL -> id = GTCEu.id("shaders/post/bloom_unreal.json");
             case DISABLED -> {
@@ -69,8 +70,8 @@ public class BloomShaderManager {
             // skip adding a default branch in favor of the if statement below
         }
         if (id == null) {
-            GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.bloom.bloomType);
-            ConfigHolder.INSTANCE.client.bloom.bloomType = BloomAlgorithm.DISABLED;
+            GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.bloom.type);
+            ConfigHolder.INSTANCE.client.bloom.type = BloomType.DISABLED;
             return false;
         }
 
@@ -101,7 +102,7 @@ public class BloomShaderManager {
 
     public static boolean isBloomActive() {
         return BLOOM_CHAIN != null && BLOOM_TARGET != null &&
-                ConfigHolder.INSTANCE.client.bloom.bloomType != BloomAlgorithm.DISABLED && isBloomAvailable();
+                ConfigHolder.INSTANCE.client.bloom.type != BloomType.DISABLED && isBloomAvailable();
     }
 
     @Getter

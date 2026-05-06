@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.client.bloom.BloomAlgorithm;
+import com.gregtechceu.gtceu.client.bloom.BloomType;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.commands.Commands;
@@ -849,9 +849,9 @@ public class ConfigHolder {
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
-            @Configurable.ValueUpdateCallback(method = "onBloomTypeOptionChange")
+            @Configurable.ValueUpdateCallback(method = "typeOptionChanged")
             // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 3.x
-            public BloomAlgorithm bloomType = BloomAlgorithm.UNREAL;
+            public BloomType type = BloomType.UNREAL;
 
             @Configurable
             @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
@@ -897,7 +897,7 @@ public class ConfigHolder {
 
             // used by bloomType field's value update callback
             @SuppressWarnings("unused")
-            private void onBloomTypeOptionChange(BloomAlgorithm bloomType, IValidationHandler validationHandler) {
+            private void typeOptionChanged(BloomType newType, IValidationHandler validationHandler) {
                 if (!BloomShaderManager.initPostShaders()) {
                     // failed to load post shaders
 

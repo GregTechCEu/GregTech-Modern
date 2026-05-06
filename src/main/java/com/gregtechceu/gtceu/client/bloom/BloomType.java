@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.bloom;
 
-public enum BloomAlgorithm {
+public enum BloomType {
 
     /**
      * Unity Bloom (rescale)
