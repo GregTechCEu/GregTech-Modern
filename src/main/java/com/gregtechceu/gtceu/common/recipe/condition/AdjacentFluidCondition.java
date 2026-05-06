@@ -1,9 +1,15 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidHolderSetList;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
@@ -99,6 +105,25 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
             tooltips.append(" ").append(id);
         });
         return tooltips;
+    }
+
+    @Override
+    public RecipeUIModifier modifyUI() {
+        return (recipe, widget) -> {
+            var row = Flow.row().coverChildrenHeight().widthRel(1);
+
+            row.child(Text.lang("recipe.condition.adjacent_fluid.tooltip").asWidget());
+
+            for (HolderSet<Fluid> set : resolvedFluids) {
+                if (set.size() == 0) {
+                    continue;
+                }
+                row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
+                        .value(FluidHolderSetList.of(set, 1000, null)));
+            }
+
+            widget.textComponents.child(row);
+        };
     }
 
     @Override

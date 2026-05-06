@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
 import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.utils.Alignment;
@@ -48,6 +49,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     public final ListWidget<IWidget, ?> textComponents = new ListWidget<>()
             .widthRel(1f)
             .coverChildrenHeight()
+            .childSeparator(IIcon.EMPTY_2PX)
             .crossAxisAlignment(Alignment.CrossAxis.START)
             .collapseDisabledChildren();
     public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
@@ -177,6 +179,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         for (var condition: baseRecipe.conditions) {
             condition.modifyUI().buildRecipeUI(baseRecipe, this);
         }
+
+        uiLayout.getRecipeUIModifiers().forEach(v -> v.buildRecipeUI(baseRecipe, this));
     }
 
     private ButtonWidget<?> buildOverclockButton() {

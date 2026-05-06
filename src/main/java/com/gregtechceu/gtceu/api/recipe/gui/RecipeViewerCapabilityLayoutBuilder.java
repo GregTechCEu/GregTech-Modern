@@ -91,7 +91,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
     RecipeViewerCapabilityLayoutBuilder COMPUTATION = (layout, widget, io) -> {
         if (layout.getRecipeType().getMaxSlots(CWURecipeCapability.CAP, io) == 0) return;
 
-        var computationInfo = Flow.col()
+        var computationInfo = Flow.col().childPadding(2)
                 .coverChildrenHeight()
                 .widthRel(1f)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
@@ -103,7 +103,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
     RecipeViewerCapabilityLayoutBuilder EU = (layout, widget, io) -> {
         if (layout.getRecipeType().getMaxSlots(EURecipeCapability.CAP, io) == 0) return;
 
-        widget.textComponents.child(Flow.col()
+        widget.textComponents.child(Flow.col().childPadding(2)
                 .coverChildrenHeight()
                 .widthRel(1f)
                 .crossAxisAlignment(Alignment.CrossAxis.START)

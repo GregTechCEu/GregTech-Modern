@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.widgets.ItemDisplayWidget;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -72,18 +73,23 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
                     ItemStack icon = dimMarker.getIcon();
                     String dimTier = "T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier);
 
-                    ItemDisplayWidget displayWidget = new ItemDisplayWidget()
-                            .item(icon)
+                    Flow dimConditionRow = Flow.row().coverChildrenHeight().widthRel(1f);
+
+                    dimConditionRow.child(Text.lang("recipe.condition.dimension.tooltip", "").asWidget());
+
+                    RecipeViewerSlotWidget<?> displayWidget = RecipeViewerSlotWidget.create()
+                            .value(icon)
+                            .marginLeft(2)
                             .recipeSlotRole(RecipeSlotRole.CATALYST)
-                            .posRel(0.9f, 0.75f)
                             .background(IDrawable.NONE)
                             .hoverBackground(IDrawable.NONE);
 
                     if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                         displayWidget.overlay(Text.str(dimTier).scale(0.75f));
                     }
-                    widget.child(displayWidget);
-                };
+            dimConditionRow.child(displayWidget);
+            widget.textComponents.child(dimConditionRow);
+        };
     }
 
     @Override

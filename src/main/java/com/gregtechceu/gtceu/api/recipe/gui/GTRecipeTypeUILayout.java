@@ -238,6 +238,10 @@ public class GTRecipeTypeUILayout {
             return this;
         }
 
+        /**
+         * Sets a supplier which returns a widget to be used as a progress bar
+         * @param progressBarSupplier Progress widget supplier
+         */
         public Builder setProgressBarSupplier(ProgressWidgetSupplier progressBarSupplier) {
             this.progressWidgetSupplier = progressBarSupplier;
             return this;
@@ -270,7 +274,7 @@ public class GTRecipeTypeUILayout {
 
         /**
          * Loads a recipe type UI from a file.<br>
-         * <b>Loading a recipe type UI from a file will override all other builder options.</b>
+         * <b>Loading a recipe type UI from a file will override some other builder options.</b>
          *
          * @param fileName Filename
          */
@@ -278,6 +282,11 @@ public class GTRecipeTypeUILayout {
             throw new NotImplementedException();
         }
 
+        /**
+         * Sets a custom function which returns a flow to be used as the recipe viewer UI.<br>
+         * <b>Using a custom UI builder will override some other builder options.</b>
+         * @param customUIBuilder Custom UI builder
+         */
         public Builder customRecipeTypeUI(Function<GTRecipe, Flow> customUIBuilder) {
             this.customUIBuilder = customUIBuilder;
             return this;
@@ -326,6 +335,17 @@ public class GTRecipeTypeUILayout {
          */
         public Builder addRecipeUIModifier(RecipeUIModifier recipeUIModifier) {
             recipeUIModifiers.add(recipeUIModifier);
+            return this;
+        }
+
+        /**
+         * Defines a function used to map recipe contents to their slots.<br>
+         * This should only be used for custom capabilities.
+         * @param cap Recipe capability
+         * @param contentBuilder Capability content builder
+         */
+        public Builder setCapabilityContentBuilder(RecipeCapability<?> cap, CapabilityContentBuilder contentBuilder) {
+            getCapInfo(cap).capabilityWidgetBuilder = contentBuilder;
             return this;
         }
 

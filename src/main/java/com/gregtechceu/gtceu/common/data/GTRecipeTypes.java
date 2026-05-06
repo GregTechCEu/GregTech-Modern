@@ -506,27 +506,6 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_MACERATE, 20)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
-                    .addRecipeUIModifier((recipe, widget) -> {
-                        List<HolderSet<Fluid>> fluids = new ArrayList<>();
-                        for (RecipeCondition<?> condition : recipe.conditions) {
-                            if (condition instanceof AdjacentFluidCondition adjacentFluid) {
-                                fluids.addAll(adjacentFluid.getOrInitFluids(recipe));
-                            }
-                        }
-                        if (fluids.isEmpty()) {
-                            return;
-                        }
-
-                        var fluidRow = Flow.row().coverChildren().childPadding(3).bottomRel(30).rightRel(10);
-
-                        for (HolderSet<Fluid> set : fluids) {
-                            if (set.size() == 0) {
-                                continue;
-                            }
-                            fluidRow.child(RecipeViewerSlotWidget.create().recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
-                                    .value(FluidHolderSetList.of(set, 1000, null)));
-                        }
-                    })
             )
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
             .setSound(GTSoundEntries.FIRE);
