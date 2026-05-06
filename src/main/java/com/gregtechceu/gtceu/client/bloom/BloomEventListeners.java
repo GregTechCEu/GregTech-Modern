@@ -11,9 +11,9 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
-import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.ChunkEvent;
@@ -23,9 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import lombok.experimental.UtilityClass;
 
-import java.io.IOException;
-
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 @UtilityClass
 public class BloomEventListeners {
 
@@ -78,19 +76,9 @@ public class BloomEventListeners {
     }
 
     // Merge into parent class in 1.21, event listener discovery is smarter there
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     @UtilityClass
     public static class ModBus {
-
-        @SubscribeEvent
-        public static void registerShaders(RegisterShadersEvent event) throws IOException {
-            BloomShaderManager.onRegisterShaders(event);
-        }
-
-        @SubscribeEvent
-        public static void registerLevelRenderStages(RenderLevelStageEvent.RegisterStageEvent event) {
-            BloomHandler.AFTER_BLOOM_RENDER_STAGE = event.register(GTCEu.id("after_bloom"), GTRenderTypes.bloom());
-        }
 
         @SubscribeEvent
         public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {

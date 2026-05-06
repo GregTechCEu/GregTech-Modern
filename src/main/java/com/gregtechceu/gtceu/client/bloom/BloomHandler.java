@@ -25,12 +25,20 @@ import static com.gregtechceu.gtceu.client.bloom.BloomRenderer.BLOOM_RENDER_LOCK
 @UtilityClass
 public class BloomHandler {
 
-    public static RenderLevelStageEvent.@UnknownNullability Stage AFTER_BLOOM_RENDER_STAGE;
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @UtilityClass
+    public static class RenderStage {
+
+        public static RenderLevelStageEvent.@UnknownNullability Stage AFTER_BLOOM;
+
+        @SubscribeEvent
+        public static void registerLevelRenderStages(RenderLevelStageEvent.RegisterStageEvent event) {
+            AFTER_BLOOM = event.register(GTCEu.id("after_bloom"), GTRenderTypes.bloom());
+        }
+    }
 
     static final Map<@Nullable IRenderSetup, BloomRenderList> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
     static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
-
-    public static void init() {}
 
     /**
      * Register a custom bloom render callback for subsequent world render. The render call persists until the
