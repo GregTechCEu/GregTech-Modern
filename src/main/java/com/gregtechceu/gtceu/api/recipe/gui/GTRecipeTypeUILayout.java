@@ -90,8 +90,8 @@ public class GTRecipeTypeUILayout {
             return GTMuiWidgets.createGrid(slots, Math.min(3, slots), io.support(IO.OUT), 's');
         }
 
-        public String[] getRecipeViewerGrid(IO io, GTRecipe recipe) {
-            if (recipeViewerLayoutGridBuilders.containsKey(io)) return recipeViewerLayoutGridBuilders.get(io).buildGrid(recipe, layout);
+        public String[] getRecipeViewerGrid(IO io) {
+            if (recipeViewerLayoutGridBuilders.containsKey(io)) return recipeViewerLayoutGridBuilders.get(io).buildGrid(layout);
             return GTMuiWidgets.createGrid(layout.recipeType.getMaxSlots(cap, io),
                     Math.min(3, layout.recipeType.getMaxSlots(cap, io)), io.support(IO.OUT), 's');
         }
@@ -104,7 +104,7 @@ public class GTRecipeTypeUILayout {
 
     @FunctionalInterface
     public interface RecipeViewerCapabilityGridBuilder {
-        String[] buildGrid(GTRecipe recipe, GTRecipeTypeUILayout layout);
+        String[] buildGrid(GTRecipeTypeUILayout layout);
     }
 
     @FunctionalInterface
@@ -128,13 +128,20 @@ public class GTRecipeTypeUILayout {
         public Builder(GTRecipeType recipeType) {
             this.recipeType = recipeType;
 
+            // Setup defaults
+
             getCapInfo(ItemRecipeCapability.CAP).machineLayoutBuilder = MachineCapabilityLayoutBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).machineLayoutBuilder = MachineCapabilityLayoutBuilder.FLUID;
+
             getCapInfo(ItemRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.FLUID;
+            getCapInfo(CWURecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.COMPUTATION;
+            getCapInfo(EURecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.EU;
 
             getCapInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.FLUID;
+            getCapInfo(CWURecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.COMPUTATION;
+            getCapInfo(EURecipeCapability.CAP).capabilityWidgetBuilder =  CapabilityContentBuilder.EU;
         }
 
         private CapabilityUIInfo getCapInfo(RecipeCapability<?> cap) {
@@ -307,7 +314,7 @@ public class GTRecipeTypeUILayout {
          * @param gridBuilder Function that returns a {@code String[]}, where 's' should be used to denote a slot.
          */
         public Builder setLayoutGridBuilder(RecipeCapability<?> cap, IO io, Function<GTRecipeTypeUILayout, String[]> gridBuilder) {
-            setRecipeViewerLayoutGridBuilder(cap, io, (r, l) -> gridBuilder.apply(l));
+            setRecipeViewerLayoutGridBuilder(cap, io, gridBuilder::apply);
             setMachineLayoutGridBuilder(cap, io, (m, l) -> gridBuilder.apply(l));
             return this;
         }
