@@ -181,7 +181,7 @@ public interface CapabilityContentBuilder {
                 maxEu = Text.lang("gtceu.recipe.max_eu",
                         FormattingUtil.formatNumbers(eu.getTotalEU() / minimumCWUt));
             } else {
-                maxEu = Text.lang("gtceu.recipe.total", FormattingUtil.formatNumbers(eu.getTotalEU()));
+                maxEu = Text.lang("gtceu.recipe.total", FormattingUtil.formatNumbers(eu.getTotalEU()* recipe.duration));
             }
 
             if (maxEuWidget != null) ((TextWidget<?>)maxEuWidget).value(maxEu);

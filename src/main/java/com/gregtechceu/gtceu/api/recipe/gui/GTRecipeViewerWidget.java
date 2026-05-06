@@ -85,10 +85,10 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
         mainColumn.child(recipeContentRow.marginTop(5));
+        mainColumn.child(additionalRecipeContent.child(textComponents));
 
         loadContentIntoSlots();
 
-        mainColumn.child(additionalRecipeContent.child(textComponents));
         buildAdditionalRecipeContent();
 
         childIf(isEnergyIn, this::buildOverclockButton);
