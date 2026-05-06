@@ -89,8 +89,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
     };
 
     RecipeViewerCapabilityLayoutBuilder COMPUTATION = (layout, widget, io) -> {
-        // I don't think we need to support computation IO out.
-        if (layout.getRecipeType().getMaxSlots(CWURecipeCapability.CAP, io) == 0 || io == IO.OUT) return;
+        if (layout.getRecipeType().getMaxSlots(CWURecipeCapability.CAP, io) == 0) return;
 
         var computationInfo = Flow.col()
                 .coverChildrenHeight()
@@ -101,10 +100,13 @@ public interface RecipeViewerCapabilityLayoutBuilder {
         widget.textComponents.child(computationInfo);
     };
 
-    RecipeViewerCapabilityLayoutBuilder EU = (layout, widget, io) ->
-            widget.textComponents.child(Flow.col()
-            .coverChildrenHeight()
-            .widthRel(1f)
-            .crossAxisAlignment(Alignment.CrossAxis.START)
-            .name(GTRecipeViewerWidget.capabilityWidgetName(EURecipeCapability.CAP, io, 0)));
+    RecipeViewerCapabilityLayoutBuilder EU = (layout, widget, io) -> {
+        if (layout.getRecipeType().getMaxSlots(EURecipeCapability.CAP, io) == 0) return;
+
+        widget.textComponents.child(Flow.col()
+                .coverChildrenHeight()
+                .widthRel(1f)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .name(GTRecipeViewerWidget.capabilityWidgetName(EURecipeCapability.CAP, io, 0)));
+    };
 }
