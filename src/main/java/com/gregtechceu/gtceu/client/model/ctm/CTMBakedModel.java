@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.util.quad.CTMHelper;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -45,7 +43,7 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
         CTMCache ctmCache = CTMCache.getInstance();
         ctmCache.fillSubmapCache(level, pos, state, side);
-        return CTMHelper.buildCTMQuads(ctmCache, super.getQuads(state, side, rand, parentModelData, renderType), side);
+        return CTMMeshBuilder.buildCTMQuads(ctmCache, super.getQuads(state, side, rand, parentModelData, renderType), side);
     }
 
     @Override

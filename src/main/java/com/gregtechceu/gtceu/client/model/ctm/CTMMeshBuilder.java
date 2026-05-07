@@ -1,8 +1,5 @@
-package com.gregtechceu.gtceu.client.util.quad;
+package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.model.ctm.CTMCache;
-import com.gregtechceu.gtceu.client.model.ctm.ISubmap;
-import com.gregtechceu.gtceu.client.model.ctm.Submap;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
@@ -24,7 +21,7 @@ import java.util.List;
 import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
 import static com.gregtechceu.gtceu.client.util.ModelEventHelper.*;
 
-public class CTMHelper {
+public class CTMMeshBuilder {
 
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                                 List<BakedQuad> quads, Direction cullFace) {
@@ -98,9 +95,9 @@ public class CTMHelper {
         submap = submap.unitScale();
 
         // cache UVs
-        Vector2f[] uvs = CTMHelper.uvs.get();
+        Vector2f[] uvs = CTMMeshBuilder.uvs.get();
 
-        Vector2f maxUV = CTMHelper.uvExtremes.get()[0];
+        Vector2f maxUV = CTMMeshBuilder.uvExtremes.get()[0];
         maxUV.set(Float.MIN_VALUE, Float.MIN_VALUE);
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
@@ -137,9 +134,9 @@ public class CTMHelper {
         // nominalFace should never be null here; MutableQuadView.fromVanilla updates it
         assert normal != null;
 
-        Vector2f[] xy = CTMHelper.xy.get();
-        Vector2f[] newXy = CTMHelper.newXy.get();
-        Vector3f position = CTMHelper.position.get();
+        Vector2f[] xy = CTMMeshBuilder.xy.get();
+        Vector2f[] newXy = CTMMeshBuilder.newXy.get();
+        Vector3f position = CTMMeshBuilder.position.get();
         for (int i = 0; i < 4; i++) {
             // updates position
             quad.copyPos(i, position);
@@ -215,7 +212,7 @@ public class CTMHelper {
     }
 
     public static Vector2f[] getUVExtremes(Vector2f[] uvs) {
-        Vector2f[] uvExtremes = CTMHelper.uvExtremes.get();
+        Vector2f[] uvExtremes = CTMMeshBuilder.uvExtremes.get();
         uvExtremes[0].set(Float.MAX_VALUE, Float.MAX_VALUE);
         uvExtremes[1].set(Float.MIN_VALUE, Float.MIN_VALUE);
 
