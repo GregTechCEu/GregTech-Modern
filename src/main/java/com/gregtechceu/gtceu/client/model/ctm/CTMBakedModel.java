@@ -41,9 +41,9 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             return super.getQuads(state, side, rand, parentModelData, renderType);
         }
 
-        CTMCache ctmCache = CTMCache.getInstance();
-        ctmCache.fillSubmapCache(level, pos, state, side);
-        return CTMMeshBuilder.buildCTMQuads(ctmCache, super.getQuads(state, side, rand, parentModelData, renderType), side);
+        TextureConnections connections = TextureConnections.getInstance();
+        connections.fillSubmapCache(level, pos, state, side);
+        return CTMMeshBuilder.buildCTMQuads(connections, super.getQuads(state, side, rand, parentModelData, renderType), side);
     }
 
     @Override

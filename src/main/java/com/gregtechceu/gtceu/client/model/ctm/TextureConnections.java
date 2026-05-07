@@ -86,7 +86,7 @@ import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
  */
 // spotless:on
 @Accessors(fluent = true, chain = true)
-public class CTMCache {
+public class TextureConnections {
 
     @FunctionalInterface
     public interface StateComparisonCallback {
@@ -124,14 +124,15 @@ public class CTMCache {
     protected byte connectionMap;
     protected Vector2ic[][] submapCache = ArrayHelpers.deepCopy(defaultSubmapCache);
 
-    public static CTMCache getInstance() {
-        return new CTMCache();
+    public static TextureConnections getInstance() {
+        return new TextureConnections();
     }
 
     /**
-     * Indeces are in counter-clockwise order starting at bottom left.
+     * Calculate the indices of the typical 4x4 submap to use for the given face at the given location.
+     * Indices are in counter-clockwise order starting at bottom left.
      *
-     * @return The indeces of the typical 4x4 submap to use for the given face at the given location.
+     * @return The indices of the typical 4x4 submap to use for the given face at the given location.
      */
     public Vector2ic[][] fillSubmapCache(@Nullable BlockAndTintGetter level, BlockPos pos,
                                          BlockState state, Direction side) {
@@ -272,7 +273,7 @@ public class CTMCache {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CTMCache other)) return false;
+        if (!(obj instanceof TextureConnections other)) return false;
         return this.connectionMap == other.connectionMap;
     }
 }

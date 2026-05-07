@@ -17,7 +17,7 @@
  */
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.model.ctm.CTMCache.StateComparisonCallback;
+import com.gregtechceu.gtceu.client.model.ctm.TextureConnections.StateComparisonCallback;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

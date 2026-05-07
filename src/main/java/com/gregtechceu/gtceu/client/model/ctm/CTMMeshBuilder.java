@@ -25,15 +25,13 @@ public class CTMMeshBuilder {
 
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                                 List<BakedQuad> quads, Direction cullFace) {
-        CTMCache ctmCache = CTMCache.getInstance();
-        if (cullFace != null) {
-            ctmCache.fillSubmapCache(level, pos, state, cullFace);
-        }
+        TextureConnections connections = TextureConnections.getInstance();
+        connections.fillSubmapCache(level, pos, state, cullFace);
 
-        return buildCTMQuads(ctmCache, quads, cullFace);
+        return buildCTMQuads(connections, quads, cullFace);
     }
 
-    public static List<BakedQuad> buildCTMQuads(CTMCache cachedConnections, List<BakedQuad> base, Direction cullFace) {
+    public static List<BakedQuad> buildCTMQuads(TextureConnections connections, List<BakedQuad> base, Direction cullFace) {
         List<BakedQuad> result = new LinkedList<>();
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
@@ -47,11 +45,11 @@ public class CTMMeshBuilder {
                 continue;
             }
 
-            Vector2ic[][] submapIndices = cachedConnections.getCachedSubmapIndices();
+            Vector2ic[][] submapIndices = connections.getCachedSubmapIndices();
 
             for (int xQuadrant = 0; xQuadrant < 2; xQuadrant++) {
                 for (int yQuadrant = 0; yQuadrant < 2; yQuadrant++) {
-                    boolean defaultTexture = CTMCache.isDefaultTexture(submapIndices[xQuadrant][yQuadrant]);
+                    boolean defaultTexture = TextureConnections.isDefaultTexture(submapIndices[xQuadrant][yQuadrant]);
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
@@ -59,7 +57,7 @@ public class CTMMeshBuilder {
 
                     // slice quad into the current quadrant
                     subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
-                    normalizeQuadrantUVs(emitter, CTMCache.getSubmapFor(submapIndices[xQuadrant][yQuadrant]));
+                    normalizeQuadrantUVs(emitter, TextureConnections.getSubmapFor(submapIndices[xQuadrant][yQuadrant]));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
