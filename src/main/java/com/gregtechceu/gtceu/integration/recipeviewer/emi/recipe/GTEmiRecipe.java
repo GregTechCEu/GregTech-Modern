@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
-import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.integration.emi.EmiRecipeViewerSlot;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
-import brachy.modularui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
