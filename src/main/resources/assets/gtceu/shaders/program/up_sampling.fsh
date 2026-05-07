@@ -19,7 +19,7 @@ vec4 average(vec4 center, vec4 left, vec4 right, vec4 up, vec4 down, bool accoun
                     + (right.rgb * right.a)
                     + (up.rgb * up.a)
                     + (down.rgb * down.a)
-                    + (center.rgb * center.a * accountCenterColor);
+                    + (center.rgb * center.a * float(accountCenterColor));
 
     return vec4(totalColor, totalAlpha);
 }

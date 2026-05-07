@@ -20,12 +20,11 @@ vec2 outTexelInv = vec2(-outTexel.x, outTexel.y);
 
 vec4 average(vec4 center, vec4 left, vec4 right, vec4 up, vec4 down, bool accountCenterColor) {
     float totalAlpha = abs(center.a - left.a) + abs(center.a - right.a) + abs(center.a - up.a) + abs(center.a - down.a);
-    totalAlpha = clamp(totalAlpha, 0.0, 1.0);
     vec3 totalColor = (left.rgb * left.a)
-    + (right.rgb * right.a)
-    + (up.rgb * up.a)
-    + (down.rgb * down.a)
-    + (center.rgb * center.a * accountCenterColor);
+                    + (right.rgb * right.a)
+                    + (up.rgb * up.a)
+                    + (down.rgb * down.a)
+                    + (center.rgb * center.a * float(accountCenterColor));
 
     return vec4(totalColor, totalAlpha);
 }

@@ -92,7 +92,6 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
 
-            BloomHandler.init();
             if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
                 GTEmbeddiumCompat.init();
             }

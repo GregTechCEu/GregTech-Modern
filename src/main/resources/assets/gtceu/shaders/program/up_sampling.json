@@ -6,7 +6,7 @@
         "srcalpha": "zero",
         "dstalpha": "one"
     },
-    "vertex": "gtceu:blit_copy_depth",
+    "vertex": "blit",
     "fragment": "gtceu:up_sampling",
     "attributes": [ "Position" ],
     "samplers": [

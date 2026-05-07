@@ -113,7 +113,7 @@ public class GTEarlyConfig {
      * @throws IllegalStateException If a rule with that name already exists
      */
     private Option addMixinRule(String configName, boolean enabled) {
-        if (configName.endsWith(".")) configName = configName.substring(0, configName.length() - 2);
+        if (configName.endsWith(".")) configName = configName.substring(0, configName.length() - 1);
 
         Option option = new Option(configName, enabled, false);
         if (this.options.putIfAbsent(configName, option) != null) {
@@ -147,7 +147,7 @@ public class GTEarlyConfig {
      * @throws IllegalArgumentException If a rule named {@code delegateName} doesn't already exist
      */
     private Option addDelegateRule(String configName, String delegateName, boolean invert) {
-        if (delegateName.endsWith(".")) delegateName = delegateName.substring(0, delegateName.length() - 2);
+        if (delegateName.endsWith(".")) delegateName = delegateName.substring(0, delegateName.length() - 1);
 
         Option delegateOption = this.options.get(delegateName);
         if (delegateOption == null) {
