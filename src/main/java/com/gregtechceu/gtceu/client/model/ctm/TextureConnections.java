@@ -88,16 +88,6 @@ import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
 @Accessors(fluent = true, chain = true)
 public class TextureConnections {
 
-    @FunctionalInterface
-    public interface StateComparisonCallback {
-
-        StateComparisonCallback DEFAULT = (connectionCheck, from, to, dir) -> {
-            return connectionCheck.ignoreStates() ? from.getBlock() == to.getBlock() : from == to;
-        };
-
-        boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
-    }
-
     /** Hardcoded offset values for the different submap indices */
     // store the full table(s) to reduce non-required allocations
     protected static final Vector2ic[][] submapOffsets = {
@@ -110,8 +100,6 @@ public class TextureConnections {
             { new Vector2i(4, 4), new Vector2i(4, 5), },
             { new Vector2i(5, 4), new Vector2i(5, 5), },
     };
-
-    public ConnectionCheck connectionCheck = new ConnectionCheck();
 
     // spotless:off
     // Mapping the different corner indices to their respective dirs
@@ -203,7 +191,7 @@ public class TextureConnections {
             // Note: We can't cache the state that we are checking about connection for as we want to ensure that
             // we can take into account the side of the block we want to know the "state" of as if the block is
             // a facade of some sort it might return different results based on where it is being queried from
-            setConnectedState(dir, dir.isConnected(this.connectionCheck, world, pos, state, side));
+            setConnectedState(dir, dir.isConnected(world, pos, state, side));
         }
     }
 
