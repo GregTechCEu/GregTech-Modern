@@ -115,22 +115,19 @@ public enum OctagonalOrientation implements StringRepresentable {
     /**
      * Finds if this block is connected for the given side in this OctagonalOrientation.
      *
-     * @param ctm   The ConnectionCheck instance to use for logic.
      * @param level The level the block is in.
      * @param pos   The position of your block.
      * @param state The state of your block.
      * @param side  The side of the current face.
      * @return True if the block is connected in the given OctagonalOrientation, false otherwise.
      */
-    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state,
-                               Direction side) {
-        return ctm.isConnected(level, pos, state, applyConnection(pos, side), side);
+    public boolean isConnected(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side) {
+        return ConnectionCheck.isConnected(level, pos, state, applyConnection(pos, side), side);
     }
 
     /**
      * Finds if this block is connected for the given side in this OctagonalOrientation.
      *
-     * @param ctm             The ConnectionCheck instance to use for logic.
      * @param level           The level the block is in.
      * @param pos             The position of your block.
      * @param state           The state of your block.
@@ -138,9 +135,9 @@ public enum OctagonalOrientation implements StringRepresentable {
      * @param connectionState The state to check for connection with.
      * @return True if the block is connected in the given OctagonalOrientation, false otherwise.
      */
-    public boolean isConnected(ConnectionCheck ctm, BlockAndTintGetter level, BlockPos pos, BlockState state,
+    public boolean isConnected(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                Direction side, BlockState connectionState) {
-        return ctm.isConnected(level, pos, state, applyConnection(pos, side), side, connectionState);
+        return ConnectionCheck.isConnected(level, pos, state, applyConnection(pos, side), side, connectionState);
     }
 
     /**

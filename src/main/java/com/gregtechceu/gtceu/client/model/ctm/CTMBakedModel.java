@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.model.ctm;
 
-import com.gregtechceu.gtceu.client.util.quad.CTMHelper;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -16,13 +14,10 @@ import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.gregtechceu.gtceu.client.model.GTModelProperties.*;
 
 public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
-
-    private final Map<Direction, Map<CTMCache, List<BakedQuad>>> sideCache = new EnumMap<>(Direction.class);
 
     public CTMBakedModel(T parent) {
         super(parent);
@@ -46,11 +41,10 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
             return super.getQuads(state, side, rand, parentModelData, renderType);
         }
 
-        CTMCache ctmCache = CTMCache.getInstance();
-        ctmCache.fillSubmapCache(level, pos, state, side);
-        return this.sideCache.computeIfAbsent(side, $ -> new ConcurrentHashMap<>())
-                .computeIfAbsent(ctmCache, cache -> CTMHelper.buildCTMQuads(cache,
-                        super.getQuads(state, side, rand, parentModelData, renderType), side));
+        TextureConnections connections = TextureConnections.getInstance();
+        connections.fillSubmapCache(level, pos, state, side);
+        return CTMMeshBuilder.buildCTMQuads(connections, super.getQuads(state, side, rand, parentModelData, renderType),
+                side);
     }
 
     @Override

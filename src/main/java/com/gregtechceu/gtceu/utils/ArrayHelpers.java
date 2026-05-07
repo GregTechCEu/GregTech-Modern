@@ -24,8 +24,8 @@ public class ArrayHelpers {
      * @return a copy of the specified array object, deeply copying multidimensional arrays, or null if the object is
      *         null
      */
-    @Contract(value = "!null -> !null; null -> null", pure = true)
-    public static <T> @Nullable T @Nullable [] deepCopy(@Nullable T @Nullable [] array) {
+    @Contract(value = "!null -> !null; _ -> null", pure = true)
+    public static <T> T @Nullable [] deepCopy(T @Nullable [] array) {
         if (array == null) {
             return null;
         }

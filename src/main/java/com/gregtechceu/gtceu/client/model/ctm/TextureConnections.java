@@ -86,17 +86,7 @@ import static com.gregtechceu.gtceu.client.model.ctm.OctagonalOrientation.*;
  */
 // spotless:on
 @Accessors(fluent = true, chain = true)
-public class CTMCache {
-
-    @FunctionalInterface
-    public interface StateComparisonCallback {
-
-        StateComparisonCallback DEFAULT = (connectionCheck, from, to, dir) -> {
-            return connectionCheck.ignoreStates() ? from.getBlock() == to.getBlock() : from == to;
-        };
-
-        boolean connects(ConnectionCheck instance, BlockState from, BlockState to, Direction dir);
-    }
+public class TextureConnections {
 
     /** Hardcoded offset values for the different submap indices */
     // store the full table(s) to reduce non-required allocations
@@ -111,8 +101,6 @@ public class CTMCache {
             { new Vector2i(5, 4), new Vector2i(5, 5), },
     };
 
-    public ConnectionCheck connectionCheck = new ConnectionCheck();
-
     // spotless:off
     // Mapping the different corner indices to their respective dirs
     protected static final OctagonalOrientation[][][] submapMap = {
@@ -124,14 +112,15 @@ public class CTMCache {
     protected byte connectionMap;
     protected Vector2ic[][] submapCache = ArrayHelpers.deepCopy(defaultSubmapCache);
 
-    public static CTMCache getInstance() {
-        return new CTMCache();
+    public static TextureConnections getInstance() {
+        return new TextureConnections();
     }
 
     /**
-     * Indeces are in counter-clockwise order starting at bottom left.
+     * Calculate the indices of the typical 4x4 submap to use for the given face at the given location.
+     * Indices are in counter-clockwise order starting at bottom left.
      *
-     * @return The indeces of the typical 4x4 submap to use for the given face at the given location.
+     * @return The indices of the typical 4x4 submap to use for the given face at the given location.
      */
     public Vector2ic[][] fillSubmapCache(@Nullable BlockAndTintGetter level, BlockPos pos,
                                          BlockState state, Direction side) {
@@ -154,12 +143,20 @@ public class CTMCache {
         return this.submapCache;
     }
 
-    public static boolean isDefaultTexture(int id) {
-        return (id == 16 || id == 17 || id == 18 || id == 19);
+    public Vector2ic getSubmapCoordinatesFor(int quadrantX, int quadrantY) {
+        return this.submapCache[quadrantX][quadrantY];
+    }
+
+    public boolean isDefaultTexture(int quadrantX, int quadrantY) {
+        return isDefaultTexture(getSubmapCoordinatesFor(quadrantX, quadrantY));
     }
 
     public static boolean isDefaultTexture(Vector2ic id) {
         return id.x() >= 4 && id.y() >= 4;
+    }
+
+    public ISubmap getSubmapFor(int quadrantX, int quadrantY) {
+        return getSubmapFor(getSubmapCoordinatesFor(quadrantX, quadrantY));
     }
 
     public static ISubmap getSubmapFor(Vector2ic coordinates) {
@@ -194,7 +191,7 @@ public class CTMCache {
             // Note: We can't cache the state that we are checking about connection for as we want to ensure that
             // we can take into account the side of the block we want to know the "state" of as if the block is
             // a facade of some sort it might return different results based on where it is being queried from
-            setConnectedState(dir, dir.isConnected(this.connectionCheck, world, pos, state, side));
+            setConnectedState(dir, dir.isConnected(world, pos, state, side));
         }
     }
 
@@ -276,7 +273,7 @@ public class CTMCache {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CTMCache other)) return false;
+        if (!(obj instanceof TextureConnections other)) return false;
         return this.connectionMap == other.connectionMap;
     }
 }

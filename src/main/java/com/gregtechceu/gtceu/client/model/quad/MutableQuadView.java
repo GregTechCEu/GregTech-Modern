@@ -82,6 +82,12 @@ public abstract class MutableQuadView extends QuadView {
     public static final int BAKE_LOCK_UV = 0b000100;
 
     /**
+     * When enabled, texture coordinates are cycled so that vertex 0's UVs are the smallest.
+     * Pass in bakeFlags parameter to {@link TextureHelper#unbakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
+     */
+    public static final int BAKE_DEROTATE_UV = 0b000100;
+
+    /**
      * When set, U texture coordinates for the given sprite are flipped as part of baking. Can be useful for some
      * randomization and texture mapping scenarios. Results are different from what can be obtained via rotation and
      * both can be applied. Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
@@ -235,6 +241,16 @@ public abstract class MutableQuadView extends QuadView {
      */
     public MutableQuadView spriteBake(@Nullable TextureAtlasSprite sprite, int bakeFlags) {
         TextureHelper.bakeSprite(this, sprite, bakeFlags);
+        return this;
+    }
+
+    /**
+     * Normalizes this quad's u,v coordinates based on the given sprite.
+     * Can handle UV rotation, interpolation, etc.
+     * Control this behavior by passing additive combinations of the BAKE_ flags defined in this interface.
+     */
+    public MutableQuadView spriteUnbake(@Nullable TextureAtlasSprite sprite, int bakeFlags) {
+        TextureHelper.unbakeSprite(this, sprite, bakeFlags);
         return this;
     }
 
