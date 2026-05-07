@@ -27,19 +27,6 @@ import static com.gregtechceu.gtceu.client.util.ModelEventHelper.*;
 
 public class CTMHelper {
 
-    public static Vector2f[] findMinMaxUVs(Vector2f[] uvs) {
-        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE, maxU = Float.MIN_VALUE, maxV = Float.MIN_VALUE;
-
-        for (int i = 0; i < 4; i++) {
-            Vector2f uv = uvs[i];
-            minU = Math.min(minU, uv.x());
-            minV = Math.min(minV, uv.y());
-            maxU = Math.max(maxU, uv.x());
-            maxV = Math.max(maxV, uv.y());
-        }
-        return new Vector2f[] { new Vector2f(minU, minV), new Vector2f(maxU, maxV) };
-    }
-
     public static List<BakedQuad> buildCTMQuads(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                                 List<BakedQuad> quads, Direction cullFace) {
         CTMCache ctmCache = CTMCache.getInstance();
@@ -92,23 +79,14 @@ public class CTMHelper {
         return result;
     }
 
-    private static void growQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
-        float minUInterp = maxUV.x > 0.5f ? 0.5f : 0.0f,
-                minVInterp = maxUV.y > 0.5f ? 0.5f : 0.0f;
-        float maxUInterp = maxUV.x > 0.5f ? 1.0f : 0.5f,
-                maxVInterp = maxUV.y > 0.5f ? 1.0f : 0.5f;
-
-        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[0]);
-        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[1]);
-        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[2]);
-        normalize(minUInterp, minVInterp, maxUInterp, maxVInterp, uvs[3]);
-    }
-
     // these are only used within the below methods, but are stored here as consts to reduce allocations
     // because they can be reused infinitely. DO NOT USE OUTSIDE subsect()/transformUVs()!!
 
     // filled in first copyUv() calls
     private static final ThreadLocal<Vector2f[]> uvs = ThreadLocal.withInitial(() -> new Vector2f[4]);
+    private static final ThreadLocal<Vector2f[]> uvExtremes = ThreadLocal.withInitial(() -> {
+        return new Vector2f[] { new Vector2f(), new Vector2f() };
+    });
     // set in copyPos() calls
     private static final ThreadLocal<Vector3f> position = ThreadLocal.withInitial(Vector3f::new);
     private static final ThreadLocal<Vector2f[]> xy = ThreadLocal.withInitial(() -> {
@@ -145,16 +123,20 @@ public class CTMHelper {
 
         // cache UVs
         Vector2f[] uvs = CTMHelper.uvs.get();
+
+        Vector2f maxUV = CTMHelper.uvExtremes.get()[0];
+        maxUV.set(Float.MIN_VALUE, Float.MIN_VALUE);
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
+            maxUV.max(uvs[i]);
         }
         // scale the quadrants' UVs to the full block range
-        Vector2f[] minMaxUVs = findMinMaxUVs(uvs);
-        growQuadrantUVs(uvs, minMaxUVs[1]);
+        normalizeQuadrantUVs(uvs, maxUV);
 
         // recompute min & max UVs
-        minMaxUVs = findMinMaxUVs(uvs);
-        Vector2f minUV = minMaxUVs[0], maxUV = minMaxUVs[1];
+        Vector2f[] uvExtremes = getUVExtremes(uvs);
+        Vector2f minUV = uvExtremes[0];
+        maxUV = uvExtremes[1];
 
         float width = maxUV.x - minUV.x;
         float height = maxUV.y - minUV.y;
@@ -167,10 +149,10 @@ public class CTMHelper {
         float maxU = minU + (width * submap.getWidth());
         float maxV = minV + (height * submap.getHeight());
 
-        quad.uv(0, uvs[0].x == minUV.x ? minU : maxU, uvs[0].y == minUV.y ? minV : maxV);
-        quad.uv(1, uvs[1].x == minUV.x ? minU : maxU, uvs[1].y == minUV.y ? minV : maxV);
-        quad.uv(2, uvs[2].x == minUV.x ? minU : maxU, uvs[2].y == minUV.y ? minV : maxV);
-        quad.uv(3, uvs[3].x == minUV.x ? minU : maxU, uvs[3].y == minUV.y ? minV : maxV);
+        quad.uv(0, uvs[0].x <= minUV.x ? minU : maxU, uvs[0].y <= minUV.y ? minV : maxV);
+        quad.uv(1, uvs[1].x <= minUV.x ? minU : maxU, uvs[1].y <= minUV.y ? minV : maxV);
+        quad.uv(2, uvs[2].x <= minUV.x ? minU : maxU, uvs[2].y <= minUV.y ? minV : maxV);
+        quad.uv(3, uvs[3].x <= minUV.x ? minU : maxU, uvs[3].y <= minUV.y ? minV : maxV);
     }
 
     // TODO simplify, this is quite long
@@ -254,10 +236,29 @@ public class CTMHelper {
         return quad;
     }
 
-    /// scale {@code value} to a 0-1 range component-wise based on {@code min} and {@code max}
-    private static Vector2f normalize(float minU, float minV, float maxU, float maxV, Vector2f value) {
-        value.set(normalize(value.x, minU, maxU), normalize(value.y, minV, maxV));
-        return value;
+    public static Vector2f[] getUVExtremes(Vector2f[] uvs) {
+        Vector2f[] uvExtremes = CTMHelper.uvExtremes.get();
+        uvExtremes[0].set(Float.MAX_VALUE, Float.MAX_VALUE);
+        uvExtremes[1].set(Float.MIN_VALUE, Float.MIN_VALUE);
+
+        for (int i = 0; i < 4; i++) {
+            Vector2f vertexUV = uvs[i];
+            uvExtremes[0].min(vertexUV);
+            uvExtremes[1].max(vertexUV);
+        }
+        return uvExtremes;
+    }
+
+    private static void normalizeQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
+        float minU = maxUV.x() - 0.5f > Mth.EPSILON ? 0.5f : 0.0f,
+                minV = maxUV.y() - 0.5f > Mth.EPSILON ? 0.5f : 0.0f;
+        float maxU = maxUV.x() - 0.5f > Mth.EPSILON ? 1.0f : 0.5f,
+                maxV = maxUV.y() - 0.5f > Mth.EPSILON ? 1.0f : 0.5f;
+
+        for (int i = 0; i < 4; i++) {
+            // scale u,v to a 0-1 range
+            uvs[i].set(normalize(uvs[i].x, minU, maxU), normalize(uvs[i].y, minV, maxV));
+        }
     }
 
     /// scale {@code delta} to a 0-1 range based on {@code min} and {@code max}
