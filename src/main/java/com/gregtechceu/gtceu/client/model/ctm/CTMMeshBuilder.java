@@ -45,11 +45,9 @@ public class CTMMeshBuilder {
                 continue;
             }
 
-            Vector2ic[][] submapIndices = connections.getCachedSubmapIndices();
-
             for (int xQuadrant = 0; xQuadrant < 2; xQuadrant++) {
                 for (int yQuadrant = 0; yQuadrant < 2; yQuadrant++) {
-                    boolean defaultTexture = TextureConnections.isDefaultTexture(submapIndices[xQuadrant][yQuadrant]);
+                    boolean defaultTexture = connections.isDefaultTexture(xQuadrant, yQuadrant);
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
@@ -57,7 +55,7 @@ public class CTMMeshBuilder {
 
                     // slice quad into the current quadrant
                     subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
-                    normalizeQuadrantUVs(emitter, TextureConnections.getSubmapFor(submapIndices[xQuadrant][yQuadrant]));
+                    normalizeQuadrantUVs(emitter, connections.getSubmapFor(xQuadrant, yQuadrant));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 

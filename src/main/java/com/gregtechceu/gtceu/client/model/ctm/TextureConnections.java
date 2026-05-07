@@ -155,8 +155,20 @@ public class TextureConnections {
         return this.submapCache;
     }
 
+    public Vector2ic getSubmapCoordinatesFor(int quadrantX, int quadrantY) {
+        return this.submapCache[quadrantX][quadrantY];
+    }
+
+    public boolean isDefaultTexture(int quadrantX, int quadrantY) {
+        return isDefaultTexture(getSubmapCoordinatesFor(quadrantX, quadrantY));
+    }
+
     public static boolean isDefaultTexture(Vector2ic id) {
         return id.x() >= 4 && id.y() >= 4;
+    }
+
+    public ISubmap getSubmapFor(int quadrantX, int quadrantY) {
+        return getSubmapFor(getSubmapCoordinatesFor(quadrantX, quadrantY));
     }
 
     public static ISubmap getSubmapFor(Vector2ic coordinates) {
