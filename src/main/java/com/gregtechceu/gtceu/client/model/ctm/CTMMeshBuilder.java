@@ -30,7 +30,8 @@ public class CTMMeshBuilder {
         return buildCTMQuads(connections, quads, cullFace);
     }
 
-    public static List<BakedQuad> buildCTMQuads(TextureConnections connections, List<BakedQuad> base, Direction cullFace) {
+    public static List<BakedQuad> buildCTMQuads(TextureConnections connections, List<BakedQuad> base,
+                                                Direction cullFace) {
         List<BakedQuad> result = new LinkedList<>();
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();

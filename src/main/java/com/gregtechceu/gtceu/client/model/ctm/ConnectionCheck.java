@@ -45,7 +45,7 @@ public class ConnectionCheck {
      * @return True if the given block can connect to the given location on the given side.
      */
     public static boolean isConnected(BlockAndTintGetter level, BlockPos current, BlockState currentState,
-                                     BlockPos connection, Direction dir) {
+                                      BlockPos connection, Direction dir) {
         BlockState state = getConnectionState(level, current, currentState,
                 dir, connection, level.getBlockState(connection));
         return isConnected(level, current, currentState, connection, dir, state);
@@ -62,8 +62,9 @@ public class ConnectionCheck {
      * @param state      The state to check against for connection.
      * @return True if the given block can connect to the given location on the given side.
      */
-    public static boolean isConnected(BlockAndTintGetter level, BlockPos current, BlockState currentState, BlockPos connection,
-                               Direction dir, BlockState state) {
+    public static boolean isConnected(BlockAndTintGetter level, BlockPos current, BlockState currentState,
+                                      BlockPos connection,
+                                      Direction dir, BlockState state) {
         BlockState connectionState = getConnectionState(level, connection, level.getBlockState(connection), dir,
                 current, currentState);
         BlockPos obscuringPos = connection.relative(dir);
@@ -75,7 +76,8 @@ public class ConnectionCheck {
     }
 
     public static BlockState getConnectionState(BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                         @Nullable Direction side, BlockPos connection, BlockState connectionState) {
+                                                @Nullable Direction side, BlockPos connection,
+                                                BlockState connectionState) {
         if (side != null) {
             return state.getAppearance(level, pos, side, connectionState, connection);
         }
