@@ -154,10 +154,6 @@ public class CTMCache {
         return this.submapCache;
     }
 
-    public static boolean isDefaultTexture(int id) {
-        return (id == 16 || id == 17 || id == 18 || id == 19);
-    }
-
     public static boolean isDefaultTexture(Vector2ic id) {
         return id.x() >= 4 && id.y() >= 4;
     }

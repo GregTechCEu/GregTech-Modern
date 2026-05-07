@@ -50,19 +50,19 @@ public class CTMHelper {
                 continue;
             }
 
-            Vector2ic[][] ctm = cachedConnections.getCachedSubmapIndices();
+            Vector2ic[][] submapIndices = cachedConnections.getCachedSubmapIndices();
 
-            for (int x = 0; x < 2; x++) {
-                for (int y = 0; y < 2; y++) {
-                    boolean defaultTexture = CTMCache.isDefaultTexture(ctm[x][y]);
+            for (int xQuadrant = 0; xQuadrant < 2; xQuadrant++) {
+                for (int yQuadrant = 0; yQuadrant < 2; yQuadrant++) {
+                    boolean defaultTexture = CTMCache.isDefaultTexture(submapIndices[xQuadrant][yQuadrant]);
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
                     emitter.spriteUnbake(originalSprite, BAKE_NORMALIZED | BAKE_DEROTATE_UV);
 
                     // slice quad into the current quadrant
-                    subsect(emitter, Submap.X2[x][y]);
-                    transformUVs(emitter, CTMCache.getSubmapFor(ctm[x][y]));
+                    subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
+                    normalizeQuadrantUVs(emitter, CTMCache.getSubmapFor(submapIndices[xQuadrant][yQuadrant]));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
@@ -94,7 +94,7 @@ public class CTMHelper {
         return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
     });
 
-    private static void transformUVs(MutableQuadView quad, ISubmap submap) {
+    private static void normalizeQuadrantUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
 
         // cache UVs
@@ -134,6 +134,8 @@ public class CTMHelper {
     // TODO simplify, this is quite long
     public static MutableQuadView subsect(final MutableQuadView quad, ISubmap submap) {
         Direction normal = quad.nominalFace();
+        // nominalFace should never be null here; MutableQuadView.fromVanilla updates it
+        assert normal != null;
 
         Vector2f[] xy = CTMHelper.xy.get();
         Vector2f[] newXy = CTMHelper.newXy.get();
