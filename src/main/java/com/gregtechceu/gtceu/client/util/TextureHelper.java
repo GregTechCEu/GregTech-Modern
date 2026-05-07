@@ -144,6 +144,10 @@ public class TextureHelper {
             // Scales from 0-1 to 0-16
             applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * DENORMALIZER, q.v(i) * DENORMALIZER));
         }
+        if ((BAKE_DEROTATE_UV & bakeFlags) != 0) {
+            // Cycles texture coordinates so that vertex 0's UVs are the smallest
+            derotateUV(quad);
+        }
     }
 
     /**
@@ -159,6 +163,20 @@ public class TextureHelper {
         for (int i = 0; i < 4; i++) {
             q.uv(i, (q.u(i) - uMin) / uSpan, (q.v(i) - vMin) / vSpan);
         }
+    }
+
+    private static void derotateUV(MutableQuadView quad) {
+        int minIndex = 0;
+        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
+
+        for (int i = 0; i < 4; i++) {
+            if (quad.u(i) <= minU && quad.v(i) <= minV) {
+                minIndex = i;
+                minU = quad.u(i);
+                minV = quad.v(i);
+            }
+        }
+        applyModifier(quad, ROTATIONS[minIndex]);
     }
 
     @FunctionalInterface

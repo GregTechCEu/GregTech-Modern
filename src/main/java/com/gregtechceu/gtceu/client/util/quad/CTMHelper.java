@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.client.model.ctm.ISubmap;
 import com.gregtechceu.gtceu.client.model.ctm.Submap;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
-import com.gregtechceu.gtceu.client.util.TextureHelper;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -59,10 +58,9 @@ public class CTMHelper {
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
-                    TextureHelper.unbakeSprite(emitter, originalSprite, BAKE_NORMALIZED);
+                    emitter.spriteUnbake(originalSprite, BAKE_NORMALIZED | BAKE_DEROTATE_UV);
 
                     // slice quad into the current quadrant
-                    derotateUVs(emitter);
                     subsect(emitter, Submap.X2[x][y]);
                     transformUVs(emitter, CTMCache.getSubmapFor(ctm[x][y]));
 
@@ -95,28 +93,6 @@ public class CTMHelper {
     private static final ThreadLocal<Vector2f[]> newXy = ThreadLocal.withInitial(() -> {
         return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
     });
-
-    public static void derotateUVs(MutableQuadView quad) {
-        int minIndex = 0;
-        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
-
-        // cache UVs
-        Vector2f[] uvs = CTMHelper.uvs.get();
-        for (int i = 0; i < 4; i++) {
-            uvs[i] = quad.copyUv(i, uvs[i]);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            if (uvs[i].x <= minU && uvs[i].y <= minV) {
-                minIndex = i;
-                minU = uvs[i].x;
-                minV = uvs[i].y;
-            }
-        }
-        for (int i = 0; i < 4; i++) {
-            quad.uv(i, uvs[(i + minIndex) % 4]);
-        }
-    }
 
     private static void transformUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
