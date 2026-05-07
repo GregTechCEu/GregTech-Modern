@@ -12,7 +12,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.joml.Vector2f;
-import org.joml.Vector2ic;
 import org.joml.Vector3f;
 
 import java.util.LinkedList;
@@ -55,7 +54,7 @@ public class CTMMeshBuilder {
 
                     // slice quad into the current quadrant
                     subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
-                    normalizeQuadrantUVs(emitter, connections.getSubmapFor(xQuadrant, yQuadrant));
+                    remapUVs(emitter, connections.getSubmapFor(xQuadrant, yQuadrant));
 
                     emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
 
@@ -87,20 +86,20 @@ public class CTMMeshBuilder {
         return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
     });
 
-    private static void normalizeQuadrantUVs(MutableQuadView quad, ISubmap submap) {
+    private static void remapUVs(MutableQuadView quad, ISubmap submap) {
         submap = submap.unitScale();
-
-        // cache UVs
-        Vector2f[] uvs = CTMMeshBuilder.uvs.get();
 
         Vector2f maxUV = CTMMeshBuilder.uvExtremes.get()[0];
         maxUV.set(Float.MIN_VALUE, Float.MIN_VALUE);
+
+        // cache UVs
+        Vector2f[] uvs = CTMMeshBuilder.uvs.get();
         for (int i = 0; i < 4; i++) {
             uvs[i] = quad.copyUv(i, uvs[i]);
             maxUV.max(uvs[i]);
         }
-        // scale the quadrants' UVs to the full block range
-        normalizeQuadrantUVs(uvs, maxUV);
+        // scale the quadrants' UVs to the quadrant's area
+        scaleUVCoordinatesToQuadrant(uvs, maxUV);
 
         // recompute min & max UVs
         Vector2f[] uvExtremes = getUVExtremes(uvs);
@@ -220,7 +219,7 @@ public class CTMMeshBuilder {
         return uvExtremes;
     }
 
-    private static void normalizeQuadrantUVs(Vector2f[] uvs, Vector2f maxUV) {
+    private static void scaleUVCoordinatesToQuadrant(Vector2f[] uvs, Vector2f maxUV) {
         float minU = maxUV.x() - 0.5f > Mth.EPSILON ? 0.5f : 0.0f,
                 minV = maxUV.y() - 0.5f > Mth.EPSILON ? 0.5f : 0.0f;
         float maxU = maxUV.x() - 0.5f > Mth.EPSILON ? 1.0f : 0.5f,
