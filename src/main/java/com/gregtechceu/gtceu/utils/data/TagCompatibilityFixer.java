@@ -6,8 +6,18 @@ import net.minecraft.nbt.Tag;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TagCompatibilityFixer {
+
+    public static void fixBatterySlotTag(CompoundTag tag) {
+        if (tag.contains("chargerInventory")) {
+            var newTag = new CompoundTag();
+            newTag.put("storage", Objects.requireNonNull(tag.get("chargerInventory")));
+            tag.put("batterySlot", newTag);
+        }
+    }
 
     public static void fixMachineAutoOutputTag(CompoundTag machineTag) {
         if (!machineTag.contains("autoOutput")) {

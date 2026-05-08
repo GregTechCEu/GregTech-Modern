@@ -2,37 +2,22 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
 import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.ISubscription;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.*;
 
 /**
  * All simple single machines are implemented here.
  */
-public class SimpleTieredMachine extends WorkableTieredMachine
-                                 implements IHasBatterySlot {
+public class SimpleTieredMachine extends WorkableTieredMachine {
 
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
-    @Nullable
-    protected TickableSubscription batterySubs;
-    @Nullable
-    protected ISubscription energySubs;
     @SaveField
     @SyncToClient
     public final AutoOutputTrait autoOutput;
@@ -41,68 +26,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SaveField
     protected final ProgrammableCircuitSlotTrait circuitSlot;
 
+    @Getter
+    @SaveField
+    protected final BatterySlotTrait batterySlot;
+
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
         super(info, tier, tankScalingFunction);
 
         this.autoOutput = attachTrait(new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
-
-        this.chargerInventory = new CustomItemStackHandler() {
-
-            public int getSlotLimit(int slot) {
-                return 1;
-            }
-        };
-        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            updateBatterySubscription();
-            energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
-            chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (energySubs != null) {
-            energySubs.unsubscribe();
-            energySubs = null;
-        }
-    }
-
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        } else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
-            updateBatterySubscription();
-        }
-    }
-
-    //////////////////////////////////////
-    // ********** MISC ***********//
-    //////////////////////////////////////
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        this.batterySlot = attachTrait(new BatterySlotTrait(energyContainer));
     }
 
     /////////////////////////////////////
