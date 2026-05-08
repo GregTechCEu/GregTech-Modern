@@ -27,8 +27,7 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import lombok.Getter;
 
-public class CrateMachine extends MetaMachine implements IMuiMachine,
-                          IDropSaveMachine {
+public class CrateMachine extends MetaMachine implements IMuiMachine {
 
     @Getter
     private final Material material;
@@ -105,8 +104,8 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
-        if (isTaped) tag.put("inventory", inventory.storage.serializeNBT());
+    public void saveToItem(CompoundTag tag, boolean clone) {
+        if (isTaped && !clone) tag.put("inventory", inventory.storage.serializeNBT());
     }
 
     @Override
@@ -114,10 +113,5 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
         if (tag.contains("inventory")) {
             this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
         }
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return isTaped;
     }
 }

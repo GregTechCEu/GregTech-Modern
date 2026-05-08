@@ -206,6 +206,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public void modifyDrops(List<ItemStack> drops) {}
 
+    /**
+     * Saves machine data to an item stack tag.
+     *
+     * @param tag The tag to save to.
+     * @param clone If this data is being save to an item stack created by cloning the block (pick block)
+     */
+    public void saveToItem(CompoundTag tag, boolean clone) {}
+
+    /**
+     * Loads machine data from an item stack tag.
+     */
+    public void loadFromItem(CompoundTag tag) {}
+
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
