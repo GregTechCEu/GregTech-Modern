@@ -38,7 +38,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     public HullMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
-            this.gridNodeHost = attachTrait(new GridNodeHostTrait(this));
+            this.gridNodeHost = GridNodeHostTransformer.attachToMachine(this);
         } else {
             this.gridNodeHost = null;
         }
@@ -81,6 +81,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     //////////////////////////////////////
 
     private static class GridNodeHostTransformer implements ValueTransformer<Object> {
+
+        private static Object attachToMachine(HullMachine machine) {
+            return machine.attachTrait(new GridNodeHostTrait(machine));
+        }
 
         @Override
         public Tag serializeNBT(Object value, TransformerContext<Object> context) {
