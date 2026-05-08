@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.mui;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -68,10 +67,6 @@ public class MachineUIPanelBuilder {
         var attachMain = panel.getMainContents();
 
         if (addDefaultConfigurators) {
-            if (machine instanceof IHasCircuitSlot circuitSlot && circuitSlot.isCircuitSlotEnabled()) {
-                attachLeft.child(GTMuiWidgets.createCircuitSlotPanel(circuitSlot, panel, syncManager));
-            }
-
             if (machine instanceof IControllable controllable) {
                 attachRight.child(GTMuiWidgets.createPowerButton(controllable));
             }

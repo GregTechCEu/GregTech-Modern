@@ -135,6 +135,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
             }
         }
+
+        getAllTraits().forEach(t -> t.removedFromController(controller));
+
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");
     }
 
@@ -149,6 +152,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
         }
+
+        getAllTraits().forEach(t -> t.addedToController(controller));
     }
 
     @Override

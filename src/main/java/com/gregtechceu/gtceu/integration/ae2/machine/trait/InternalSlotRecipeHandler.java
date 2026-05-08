@@ -43,7 +43,7 @@ public final class InternalSlotRecipeHandler {
             super(IO.IN);
             itemRecipeHandler = buffer.attachTrait(new SlotItemRecipeHandler(slot, idx));
             fluidRecipeHandler = buffer.attachTrait(new SlotFluidRecipeHandler(slot, idx));
-            addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
+            addHandlers(buffer.getCircuitSlot(), buffer.getShareInventory(), buffer.getShareTank(),
                     itemRecipeHandler, fluidRecipeHandler);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }

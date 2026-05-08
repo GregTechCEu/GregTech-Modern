@@ -65,7 +65,7 @@ public final class ProxySlotRecipeHandler {
         }
 
         public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
-            circuit.setProxy(buffer.getCircuitInventory());
+            circuit.setProxy(buffer.getCircuitSlot());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
             slotItem.setProxy(slotRHL.getItemRecipeHandler());

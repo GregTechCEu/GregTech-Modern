@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -204,12 +205,10 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             tag.putBoolean(MUFFLED, mufflableMachine.isMuffled());
         }
 
-        if (machine instanceof IHasCircuitSlot circuitMachine) {
-            var circuit = IntCircuitBehaviour
-                    .getCircuitConfiguration(circuitMachine.getCircuitInventory().getStackInSlot(0));
-            if (circuitMachine.isCircuitSlotEnabled() && circuit != 0) {
-                tag.putInt(CIRCUIT, circuit);
-            }
+        var circuit = machine.getTrait(ProgrammableCircuitSlotTrait.TYPE);
+
+        if (circuit != null && circuit.isEnabled() && circuit.getCurrentCircuit() != 0) {
+            tag.putInt(CIRCUIT, circuit.getCurrentCircuit());
         }
 
         tag.put(COVER, machine.getCoverContainer().copyConfig(new CompoundTag()));
@@ -242,9 +241,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBoolean(MUFFLED));
         }
 
-        if (machine instanceof IHasCircuitSlot circuitMachine) {
-            if (tag.contains(CIRCUIT))
-                circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
+        if (tag.contains(CIRCUIT)) {
+            machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)
+                    .ifPresent(t -> t.setCurrentCircuit(tag.getInt(CIRCUIT)));
         }
 
         machine.getCoverContainer().pasteConfig(player, tag.getCompound(COVER));

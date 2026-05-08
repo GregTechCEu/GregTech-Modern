@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -137,6 +138,20 @@ public abstract class MachineTrait implements ISyncManaged {
      * Called when the machine is destroyed.
      */
     public void onMachineDestroyed() {}
+
+    /**
+     * Called when the machine is attached to a controller<br>
+     * Only called if this trait is attached to a multiblock part machine.
+     * @param controller The multiblock controller
+     */
+    public void addedToController(MultiblockControllerMachine controller) {}
+
+    /**
+     * Called when the machine is removed from a controller<br>
+     * Only called if this trait is attached to a multiblock part machine.
+     * @param controller The multiblock controller
+     */
+    public void removedFromController(MultiblockControllerMachine controller) {}
 
     /**
      * Called when a neighboring block is updated.

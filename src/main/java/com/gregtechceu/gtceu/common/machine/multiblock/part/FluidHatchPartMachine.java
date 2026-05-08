@@ -5,20 +5,16 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -31,7 +27,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
@@ -58,7 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMachine, IHasCircuitSlot, IPaintable {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMachine, IPaintable {
 
     public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
@@ -75,24 +70,17 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @SaveField
     @SyncToClient
     protected boolean circuitSlotEnabled;
-    @Getter
+
     @SaveField
-    protected final NotifiableItemStackHandler circuitInventory;
+    protected final ProgrammableCircuitSlotTrait circuitSlot;
 
     public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int initialCapacity, int slots) {
         super(info, tier, io);
         this.slots = slots;
         this.tank = attachTrait(createTank(initialCapacity, slots));
 
-        if (io == IO.IN) {
-            this.circuitSlotEnabled = true;
-            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE))
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false)
-                    .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit);
-        } else {
-            this.circuitSlotEnabled = false;
-            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(0, IO.NONE)).shouldSearchContent(false);
-        }
+        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
+        circuitSlot.setEnabled(io == IO.IN);
     }
 
     //////////////////////////////////////
@@ -129,30 +117,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @Override
     public void onPaintingColorChanged(int color) {
         getHandlerList().setColor(color, true);
-    }
-
-    @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        if (!controller.allowCircuitSlots()) {
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                circuitInventory.dropInventoryInWorld();
-            } else {
-                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            }
-            setCircuitSlotEnabled(false);
-        }
-        super.addedToController(controller);
-    }
-
-    @Override
-    public void removedFromController(MultiblockControllerMachine controller) {
-        super.removedFromController(controller);
-        for (var c : controllers) {
-            if (!c.allowCircuitSlots()) {
-                return;
-            }
-        }
-        setCircuitSlotEnabled(true);
     }
 
     @Override

@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -39,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEInputHatchPartMachine extends MEHatchPartMachine
-                                     implements IDataStickInteractable, IHasCircuitSlot {
+                                     implements IDataStickInteractable {
 
     protected ExportOnlyAEFluidList aeFluidHandler;
 
@@ -234,8 +232,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             CompoundTag stackTag = GenericStack.writeTag(config);
             configStacks.put(Integer.toString(i), stackTag);
         }
-        tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+        tag.putByte("GhostCircuit", (byte)circuitSlot.getCurrentCircuit());
         return tag;
     }
 
@@ -253,7 +250,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
         }
     }
 }

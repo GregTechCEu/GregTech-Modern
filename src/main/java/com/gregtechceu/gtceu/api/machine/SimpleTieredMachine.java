@@ -5,12 +5,10 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -26,14 +24,11 @@ import java.util.function.*;
  * All simple single machines are implemented here.
  */
 public class SimpleTieredMachine extends WorkableTieredMachine
-                                 implements IHasCircuitSlot, IHasBatterySlot {
+                                 implements IHasBatterySlot {
 
     @Getter
     @SaveField
     protected final CustomItemStackHandler chargerInventory;
-    @Getter
-    @SaveField
-    protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription batterySubs;
     @Nullable
@@ -42,10 +37,15 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SyncToClient
     public final AutoOutputTrait autoOutput;
 
+    @Getter
+    @SaveField
+    protected final ProgrammableCircuitSlotTrait circuitSlot;
+
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
         super(info, tier, tankScalingFunction);
 
         this.autoOutput = attachTrait(new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
+        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
 
         this.chargerInventory = new CustomItemStackHandler() {
 
@@ -56,10 +56,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-
-        this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
-                .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
     }
 
     //////////////////////////////////////
