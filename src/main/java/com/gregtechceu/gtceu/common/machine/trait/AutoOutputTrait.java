@@ -48,6 +48,9 @@ import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
+/**
+ * A machine trait which handles the auto output behaviour that most singleblock machines use.
+ */
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait,
                              IAttachConfiguratorsTrait {
 
@@ -236,18 +239,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     private boolean shouldKeepItemSubscription() {
         if (!supportsAutoOutputItems()) return false;
 
-        if (!isAutoOutputItems() || getItemOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection()))
-            return false;
-        return true;
+        return isAutoOutputItems() && getItemOutputDirection() != null &&
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection());
     }
 
     private boolean shouldKeepFluidSubscription() {
         if (!supportsAutoOutputFluids()) return false;
-        if (!isAutoOutputFluids() || getFluidOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection()))
-            return false;
-        return true;
+        return isAutoOutputFluids() && getFluidOutputDirection() != null &&
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection());
     }
 
     protected void updateItemOutputSubscription() {

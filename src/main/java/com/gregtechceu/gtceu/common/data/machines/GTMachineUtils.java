@@ -203,7 +203,7 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition[] registerTieredMachines(String name,
-                                                             BiFunction<BlockEntityCreationInfo, Integer, MetaMachine> factory,
+                                                             MachineInstanceFactory.Tiered factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         return registerTieredMachines(REGISTRATE, name, factory, builder, tiers);
@@ -211,14 +211,14 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
                                                              String name,
-                                                             BiFunction<BlockEntityCreationInfo, Integer, MetaMachine> factory,
+                                                             MachineInstanceFactory.Tiered factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
                     .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                            info -> factory.apply(info, tier))
+                            info -> factory.buildMachine(info, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
         }

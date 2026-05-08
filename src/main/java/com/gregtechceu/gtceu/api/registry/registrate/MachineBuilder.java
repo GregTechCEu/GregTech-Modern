@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -89,7 +89,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory;
+    protected final MachineInstanceFactory blockEntityFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
     @Nullable
@@ -159,7 +159,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                           Function<ResourceLocation, DEFINITION> definition,
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                          Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+                          MachineInstanceFactory blockEntityFactory) {
         super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
@@ -680,7 +680,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
 
         var blockEntityBuilder = registrate
                 .blockEntity(
-                        (type, pos, state) -> blockEntityFactory.apply(new BlockEntityCreationInfo(type, pos, state)))
+                        (type, pos, state) -> blockEntityFactory.buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {

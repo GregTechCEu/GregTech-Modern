@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import lombok.Getter;
 
 import java.util.*;
 
@@ -18,24 +16,16 @@ import java.util.*;
  */
 public class SimpleTieredMachine extends WorkableTieredMachine {
 
-    @SaveField
-    @SyncToClient
-    public final AutoOutputTrait autoOutput;
-
-    @Getter
-    @SaveField
-    protected final ProgrammableCircuitSlotTrait circuitSlot;
-
-    @Getter
-    @SaveField
-    protected final BatterySlotTrait batterySlot;
-
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
         super(info, tier, tankScalingFunction);
 
-        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
-        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
-        this.batterySlot = attachTrait(new BatterySlotTrait(energyContainer));
+        attachPersistentTrait("autoOutput", new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
+        attachPersistentTrait("circuit", new ProgrammableCircuitSlotTrait());
+        attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
+    }
+
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier) {
+        this(info, tier, GTMachineUtils.defaultTankSizeFunction);
     }
 
     /////////////////////////////////////

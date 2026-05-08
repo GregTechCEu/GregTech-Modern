@@ -87,6 +87,7 @@ public final class MachineTraitHolder {
         if (trait.getMachine() != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
         if (traitsToSave.containsKey(traitName))
             throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
+        trait.setTraitName(traitName);
         traitsToSave.put(traitName, trait);
         return this;
     }

@@ -42,6 +42,9 @@ public abstract class MachineTrait implements ISyncManaged {
     @Setter
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
 
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private @Nullable String traitName;
     /**
      * The trait's callback priority. Traits with a higher priority will have their events fired
      * first, which may prevent traits with a lower priority from handling some events.

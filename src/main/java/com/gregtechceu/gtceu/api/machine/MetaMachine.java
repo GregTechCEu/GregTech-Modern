@@ -152,8 +152,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public void load(CompoundTag tag) {
-        TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
-        TagCompatibilityFixer.fixBatterySlotTag(tag);
+        TagCompatibilityFixer.fixTraitTags(this, tag);
         super.load(tag);
     }
 
