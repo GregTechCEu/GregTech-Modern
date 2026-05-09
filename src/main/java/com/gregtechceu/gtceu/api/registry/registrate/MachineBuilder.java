@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -89,7 +90,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final MachineInstanceFactory blockEntityFactory;
+    protected final MachineInstanceFactory<MetaMachine> instanceFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
     @Nullable
@@ -159,13 +160,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                           Function<ResourceLocation, DEFINITION> definition,
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                          MachineInstanceFactory blockEntityFactory) {
+                          MachineInstanceFactory<MetaMachine> instanceFactory) {
         super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
         this.blockFactory = blockFactory;
         this.itemFactory = itemFactory;
-        this.blockEntityFactory = blockEntityFactory;
+        this.instanceFactory = instanceFactory;
         this.definition = definition;
     }
 
@@ -652,6 +653,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         definition.registerDefaultState(defaultState);
     }
 
+
     @HideFromJS
     public DEFINITION register() {
         this.registrate.object(name);
@@ -680,7 +682,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
 
         var blockEntityBuilder = registrate
                 .blockEntity(
-                        (type, pos, state) -> blockEntityFactory.buildMachine(new BlockEntityCreationInfo(type, pos, state)))
+                        (type, pos, state) -> instanceFactory.buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {
@@ -733,7 +735,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @FunctionalInterface
     public interface ModelInitializer {
 
-        void configureModel(DataGenContext<Block, ? extends Block> context, GTBlockstateProvider provider,
+        void configureModel(DataGenContext<Block, ? extends Block> context,
+                            GTBlockstateProvider provider,
                             MachineModelBuilder<BlockModelBuilder> builder);
 
         default ModelInitializer andThen(ModelInitializer after) {

@@ -32,7 +32,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -61,7 +60,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Getter
     @Setter
-    private @NotNull GTRecipeType @NotNull [] recipeTypes;
+    private GTRecipeType [] recipeTypes;
     @Getter
     @Setter
     private int tier;
@@ -74,19 +73,15 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
-    @NotNull
     @Getter
     @Setter
     private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @NotNull
     @Getter
     @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
