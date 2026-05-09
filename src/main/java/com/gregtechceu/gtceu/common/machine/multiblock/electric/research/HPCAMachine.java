@@ -427,8 +427,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // cached gui info
         // holding these values past the computation clear because GUI is too "late" to read the state in time
         @SyncToClient
-        private long cachedEUt;
-        @SyncToClient
         private int cachedCWUt;
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
@@ -472,8 +470,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 cachedCWUt = allocatedCWUt;
                 syncDataHolder.markClientSyncFieldDirty("cachedCWUt");
             }
-            cachedEUt = getCurrentEUt();
-            syncDataHolder.markClientSyncFieldDirty("cachedEUt");
             if (allocatedCWUt != 0) {
                 allocatedCWUt = 0;
             }
@@ -795,12 +791,12 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         @Override
         public void markAsChanged() {
-            controller.markAsChanged();
+            if (controller != null) controller.markAsChanged();
         }
 
         @Override
         public void scheduleRenderUpdate() {
-            controller.scheduleRenderUpdate();
+            if (controller != null) controller.scheduleRenderUpdate();
         }
     }
 }

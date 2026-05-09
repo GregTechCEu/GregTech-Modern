@@ -78,19 +78,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
-@SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends MachineBuilder<DEFINITION, TYPE>>
+public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine, SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
                            extends BuilderBase<DEFINITION> {
 
     protected final GTRegistrate registrate;
     protected final String name;
+
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final MachineInstanceFactory<MetaMachine> instanceFactory;
+    protected final MachineInstanceFactory<MACHINE> instanceFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
     @Nullable
@@ -103,6 +103,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
     private VoxelShape shape = Shapes.block();
     private RotationState rotationState = RotationState.NON_Y_AXIS;
+
     /**
      * Whether this machine can be rotated or face upwards.
      */
@@ -160,7 +161,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                           Function<ResourceLocation, DEFINITION> definition,
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                          MachineInstanceFactory<MetaMachine> instanceFactory) {
+                          MachineInstanceFactory<MACHINE> instanceFactory) {
         super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
@@ -171,146 +172,146 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     @SuppressWarnings("unchecked")
-    public TYPE getThis() {
-        return (TYPE) this;
+    public SELF getThis() {
+        return (SELF) this;
     }
 
-    public TYPE blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
+    public SELF blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         this.blockModel = blockModel;
         return getThis();
     }
 
-    public TYPE shape(VoxelShape shape) {
+    public SELF shape(VoxelShape shape) {
         this.shape = shape;
         return getThis();
     }
 
-    public TYPE rotationState(RotationState rotationState) {
+    public SELF rotationState(RotationState rotationState) {
         this.rotationState = rotationState;
         return getThis();
     }
 
-    public TYPE allowExtendedFacing(boolean allowExtendedFacing) {
+    public SELF allowExtendedFacing(boolean allowExtendedFacing) {
         this.allowExtendedFacing = allowExtendedFacing;
         return getThis();
     }
 
-    public TYPE hasBER(boolean hasBER) {
+    public SELF hasBER(boolean hasBER) {
         this.hasBER = hasBER;
         return getThis();
     }
 
-    public TYPE renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
+    public SELF renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
         this.renderMultiblockWorldPreview = renderMultiblockWorldPreview;
         return getThis();
     }
 
-    public TYPE renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
+    public SELF renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
         this.renderMultiblockXEIPreview = renderMultiblockXEIPreview;
         return getThis();
     }
 
-    public TYPE blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
+    public SELF blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
         this.blockProp = blockProp;
         return getThis();
     }
 
-    public TYPE itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
+    public SELF itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
         this.itemProp = itemProp;
         return getThis();
     }
 
-    public TYPE blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
+    public SELF blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         this.blockBuilder = blockBuilder;
         return getThis();
     }
 
-    public TYPE itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
+    public SELF itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
         this.itemBuilder = itemBuilder;
         return getThis();
     }
 
-    public TYPE onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+    public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
         this.onBlockEntityRegister = onBlockEntityRegister;
         return getThis();
     }
 
-    public TYPE tier(int tier) {
+    public SELF tier(int tier) {
         this.tier = tier;
         return getThis();
     }
 
-    public TYPE recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> recipeOutputLimits) {
+    public SELF recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> recipeOutputLimits) {
         this.recipeOutputLimits = recipeOutputLimits;
         return getThis();
     }
 
-    public TYPE paintingColor(int paintingColor) {
+    public SELF paintingColor(int paintingColor) {
         this.paintingColor = paintingColor;
         return getThis();
     }
 
-    public TYPE itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
+    public SELF itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
         this.itemColor = itemColor;
         return getThis();
     }
 
-    public TYPE tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public SELF tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         this.tooltipBuilder = tooltipBuilder;
         return getThis();
     }
 
-    public TYPE alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
+    public SELF alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
         return getThis();
     }
 
-    public TYPE beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public SELF beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
         this.beforeWorking = beforeWorking;
         return getThis();
     }
 
-    public TYPE onWorking(Predicate<IRecipeLogicMachine> onWorking) {
+    public SELF onWorking(Predicate<IRecipeLogicMachine> onWorking) {
         this.onWorking = onWorking;
         return getThis();
     }
 
-    public TYPE onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
+    public SELF onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
         this.onWaiting = onWaiting;
         return getThis();
     }
 
-    public TYPE afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
+    public SELF afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
         this.afterWorking = afterWorking;
         return getThis();
     }
 
-    public TYPE regressWhenWaiting(boolean regressWhenWaiting) {
+    public SELF regressWhenWaiting(boolean regressWhenWaiting) {
         this.regressWhenWaiting = regressWhenWaiting;
         return getThis();
     }
 
-    public TYPE allowCoverOnFront(boolean allowCoverOnFront) {
+    public SELF allowCoverOnFront(boolean allowCoverOnFront) {
         this.allowCoverOnFront = allowCoverOnFront;
         return getThis();
     }
 
-    public TYPE appearance(Supplier<BlockState> appearance) {
+    public SELF appearance(Supplier<BlockState> appearance) {
         this.appearance = appearance;
         return getThis();
     }
 
-    public TYPE ui(PanelFactory ui) {
+    public SELF ui(PanelFactory ui) {
         this.ui = ui;
         return getThis();
     }
 
-    public TYPE langValue(String langValue) {
+    public SELF langValue(String langValue) {
         this.langValue = langValue;
         return getThis();
     }
 
-    public TYPE recipeType(GTRecipeType type) {
+    public SELF recipeType(GTRecipeType type) {
         // noinspection ConstantValue
         if (type == null) {
             GTCEu.LOGGER.error(
@@ -324,7 +325,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     @Tolerate
-    public TYPE recipeTypes(GTRecipeType... types) {
+    public SELF recipeTypes(GTRecipeType... types) {
         List<GTRecipeType> typeList = new ArrayList<>();
         Collections.addAll(typeList, this.recipeTypes);
 
@@ -352,37 +353,37 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         }
     }
 
-    public TYPE model(MachineBuilder.ModelInitializer model) {
+    public SELF model(MachineBuilder.ModelInitializer model) {
         this.model = model;
         return getThis();
     }
 
-    public TYPE simpleModel(ResourceLocation modelName) {
+    public SELF simpleModel(ResourceLocation modelName) {
         return model(createBasicMachineModel(modelName));
     }
 
-    public TYPE defaultModel() {
+    public SELF defaultModel() {
         return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
     }
 
-    public TYPE tieredHullModel(ResourceLocation model) {
+    public SELF tieredHullModel(ResourceLocation model) {
         return model(createTieredHullMachineModel(model));
     }
 
-    public TYPE overlayTieredHullModel(String name) {
+    public SELF overlayTieredHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlayTieredHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
-    public TYPE overlayTieredHullModel(ResourceLocation overlayModel) {
+    public SELF overlayTieredHullModel(ResourceLocation overlayModel) {
         return model(createOverlayTieredHullMachineModel(overlayModel));
     }
 
-    public TYPE colorOverlayTieredHullModel(String overlay) {
+    public SELF colorOverlayTieredHullModel(String overlay) {
         return colorOverlayTieredHullModel(overlay, null, null);
     }
 
-    public TYPE colorOverlayTieredHullModel(String overlay,
+    public SELF colorOverlayTieredHullModel(String overlay,
                                             @Nullable String pipeOverlay,
                                             @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
@@ -394,33 +395,33 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return colorOverlayTieredHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
-    public TYPE colorOverlayTieredHullModel(ResourceLocation overlay) {
+    public SELF colorOverlayTieredHullModel(ResourceLocation overlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return colorOverlayTieredHullModel(overlay, null, null);
     }
 
-    public TYPE colorOverlayTieredHullModel(ResourceLocation overlay,
+    public SELF colorOverlayTieredHullModel(ResourceLocation overlay,
                                             @Nullable ResourceLocation pipeOverlay,
                                             @Nullable ResourceLocation emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlayTieredHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
-    public TYPE overlaySteamHullModel(String name) {
+    public SELF overlaySteamHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlaySteamHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
-    public TYPE overlaySteamHullModel(ResourceLocation overlayModel) {
+    public SELF overlaySteamHullModel(ResourceLocation overlayModel) {
         modelProperty(GTMachineModelProperties.IS_STEEL_MACHINE, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
-    public TYPE colorOverlaySteamHullModel(String overlay) {
+    public SELF colorOverlaySteamHullModel(String overlay) {
         return colorOverlaySteamHullModel(overlay, (String) null, null);
     }
 
-    public TYPE colorOverlaySteamHullModel(String overlay,
+    public SELF colorOverlaySteamHullModel(String overlay,
                                            @Nullable String pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
@@ -432,7 +433,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
-    public TYPE colorOverlaySteamHullModel(String overlay,
+    public SELF colorOverlaySteamHullModel(String overlay,
                                            @Nullable ResourceLocation pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
@@ -444,92 +445,92 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
-    public TYPE colorOverlaySteamHullModel(ResourceLocation overlay) {
+    public SELF colorOverlaySteamHullModel(ResourceLocation overlay) {
         return colorOverlaySteamHullModel(overlay, null, null);
     }
 
-    public TYPE colorOverlaySteamHullModel(ResourceLocation overlay,
+    public SELF colorOverlaySteamHullModel(ResourceLocation overlay,
                                            @Nullable ResourceLocation pipeOverlay,
                                            @Nullable ResourceLocation emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlaySteamHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
-    public TYPE workableTieredHullModel(ResourceLocation workableModel) {
+    public SELF workableTieredHullModel(ResourceLocation workableModel) {
         modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
-    public TYPE simpleGeneratorModel(ResourceLocation workableModel) {
+    public SELF simpleGeneratorModel(ResourceLocation workableModel) {
         modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSimpleGeneratorModel(workableModel));
     }
 
-    public TYPE workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
+    public SELF workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
-    public TYPE workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+    public SELF workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
         modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
-    public TYPE sidedOverlayCasingModel(ResourceLocation baseCasing,
+    public SELF sidedOverlayCasingModel(ResourceLocation baseCasing,
                                         ResourceLocation workableModel) {
         return model(createSidedOverlayCasingMachineModel(baseCasing, workableModel));
     }
 
-    public TYPE sidedWorkableCasingModel(ResourceLocation baseCasing,
+    public SELF sidedWorkableCasingModel(ResourceLocation baseCasing,
                                          ResourceLocation workableModel) {
         modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSidedWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
-    public TYPE appearanceBlock(Supplier<? extends Block> block) {
+    public SELF appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
         return getThis();
     }
 
-    public TYPE tooltips(@Nullable Component... components) {
+    public SELF tooltips(@Nullable Component... components) {
         return tooltips(Arrays.asList(components));
     }
 
-    public TYPE tooltips(List<? extends @Nullable Component> components) {
+    public SELF tooltips(List<? extends @Nullable Component> components) {
         tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
         return getThis();
     }
 
-    public TYPE conditionalTooltip(Component component, BooleanSupplier condition) {
+    public SELF conditionalTooltip(Component component, BooleanSupplier condition) {
         return conditionalTooltip(component, condition.getAsBoolean());
     }
 
-    public TYPE conditionalTooltip(Component component, boolean condition) {
+    public SELF conditionalTooltip(Component component, boolean condition) {
         if (condition)
             tooltips.add(component);
         return getThis();
     }
 
-    public TYPE abilities(PartAbility... abilities) {
+    public SELF abilities(PartAbility... abilities) {
         this.abilities = abilities;
         return getThis();
     }
 
-    public TYPE themeId(String themeId) {
+    public SELF themeId(String themeId) {
         this.themeId = themeId;
         return getThis();
     }
 
-    public TYPE themeId(Function<Integer, String> themeId) {
+    public SELF themeId(Function<Integer, String> themeId) {
         this.themeId = themeId.apply(tier);
         return getThis();
     }
 
-    public TYPE modelProperty(Property<?> property) {
+    public SELF modelProperty(Property<?> property) {
         return modelProperty(property, null);
     }
 
-    public <T extends Comparable<T>> TYPE modelProperty(Property<T> property,
+    public <T extends Comparable<T>> SELF modelProperty(Property<T> property,
                                                         @Nullable T defaultValue) {
         this.modelProperties.put(property, defaultValue);
         return getThis();
@@ -538,26 +539,26 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     // KJS helpers for model property defaults
     // These don't need to be copied to the multiblock builder because KJS doesn't care about the return type downgrade
 
-    public TYPE kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
+    public SELF kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
         return modelProperty(property, defaultValue);
     }
 
-    public TYPE kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
+    public SELF kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
         return modelProperty(property, defaultValue);
     }
 
-    public <T extends Enum<T> & Comparable<T>> TYPE kjs$modelPropertyEnum(Property<T> property,
+    public <T extends Enum<T> & Comparable<T>> SELF kjs$modelPropertyEnum(Property<T> property,
                                                                           T defaultValue) {
         return modelProperty(property, defaultValue);
     }
 
     @Tolerate
-    public TYPE modelProperties(Property<?>... properties) {
+    public SELF modelProperties(Property<?>... properties) {
         return this.modelProperties(List.of(properties));
     }
 
     @Tolerate
-    public TYPE modelProperties(Collection<Property<?>> properties) {
+    public SELF modelProperties(Collection<Property<?>> properties) {
         for (Property<?> prop : properties) {
             this.modelProperties.put(prop, null);
         }
@@ -565,54 +566,54 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     @Tolerate
-    public TYPE modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
+    public SELF modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
         this.modelProperties.putAll(properties);
         return getThis();
     }
 
-    public TYPE removeModelProperty(Property<?> property) {
+    public SELF removeModelProperty(Property<?> property) {
         this.modelProperties.remove(property);
         return getThis();
     }
 
-    public TYPE clearModelProperties() {
+    public SELF clearModelProperties() {
         this.modelProperties.clear();
         return getThis();
     }
 
-    public TYPE recipeModifier(RecipeModifier recipeModifier) {
+    public SELF recipeModifier(RecipeModifier recipeModifier) {
         this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
                 new RecipeModifierList(recipeModifier);
         return getThis();
     }
 
-    public TYPE recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
+    public SELF recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
         return this.recipeModifier(recipeModifier);
     }
 
-    public TYPE recipeModifiers(RecipeModifier... recipeModifiers) {
+    public SELF recipeModifiers(RecipeModifier... recipeModifiers) {
         this.recipeModifier = new RecipeModifierList(recipeModifiers);
         return getThis();
     }
 
-    public TYPE recipeModifiers(boolean alwaysTryModifyRecipe,
+    public SELF recipeModifiers(boolean alwaysTryModifyRecipe,
                                 RecipeModifier... recipeModifiers) {
         return this.recipeModifier(new RecipeModifierList(recipeModifiers), alwaysTryModifyRecipe);
     }
 
-    public TYPE noRecipeModifier() {
+    public SELF noRecipeModifier() {
         this.recipeModifier = new RecipeModifierList(RecipeModifier.NO_MODIFIER);
         this.alwaysTryModifyRecipe = false;
         return getThis();
     }
 
-    public TYPE addOutputLimit(RecipeCapability<?> capability, int limit) {
+    public SELF addOutputLimit(RecipeCapability<?> capability, int limit) {
         this.recipeOutputLimits.put(capability, limit);
         return getThis();
     }
 
-    public TYPE multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+    public SELF multiblockPreviewRenderer(boolean multiBlockWorldPreview,
                                           boolean multiBlockXEIPreview) {
         this.renderMultiblockWorldPreview = multiBlockWorldPreview;
         this.renderMultiblockXEIPreview = multiBlockXEIPreview;
@@ -772,7 +773,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     // spotless:off
     protected static class BlockBuilderWrapper {
 
-        public static <DEFINITION extends MachineDefinition> BlockBuilder<Block, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION, ?> builder,
+        public static <DEFINITION extends MachineDefinition> BlockBuilder<Block, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION, ?, ?> builder,
                                                                                                                                    DEFINITION definition) {
             return builder.registrate.block(properties -> makeBlock(builder, definition, properties))
                     .color(() -> () -> MetaMachineBlock::colorTinted)
@@ -784,7 +785,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
 
-        private static <DEFINITION extends MachineDefinition> Block makeBlock(MachineBuilder<DEFINITION, ?> builder, DEFINITION definition,
+        private static <DEFINITION extends MachineDefinition> Block makeBlock(MachineBuilder<DEFINITION, ?, ?> builder, DEFINITION definition,
                                                                               BlockBehaviour.Properties properties) {
             MachineDefinition.setBuilt(definition);
             var b = builder.blockFactory.apply(properties, definition);
@@ -795,7 +796,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
 
     protected static class ItemBuilderWrapper {
 
-        public static <DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, ? extends AbstractRegistrate<?>> makeItemBuilder(MachineBuilder<DEFINITION, ?> builder,
+        public static <DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, ? extends AbstractRegistrate<?>> makeItemBuilder(MachineBuilder<DEFINITION, ?, ?> builder,
                                                                                                                                            BlockEntry<Block> block) {
             return builder.registrate
                     .item(properties -> builder.itemFactory.apply((MetaMachineBlock) block.get(), properties))
@@ -812,7 +813,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     protected static final class KJSCallWrapper {
 
         public static <D extends MachineDefinition> void generateAssetJsons(@Nullable AssetJsonGenerator generator,
-                                                                            MachineBuilder<D, ?> builder,
+                                                                            MachineBuilder<D, ?, ?> builder,
                                                                             D definition) {
             if (builder.model() == null && builder.blockModel() == null) return;
 

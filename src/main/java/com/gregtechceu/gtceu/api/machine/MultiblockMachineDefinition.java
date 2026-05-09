@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +29,6 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private boolean generator;
     @Setter
     @Getter
-    @NonNull
     private Supplier<BlockPattern> patternFactory;
     @Setter
     @Getter

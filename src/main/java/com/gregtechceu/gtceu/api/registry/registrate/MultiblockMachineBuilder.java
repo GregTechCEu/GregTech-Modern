@@ -34,8 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
-        TYPE extends MultiblockMachineBuilder<DEFINITION, TYPE>> extends MachineBuilder<DEFINITION, TYPE> {
+public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition, MACHINE extends MultiblockControllerMachine,
+        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>> extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
@@ -47,13 +47,14 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
     private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    MachineInstanceFactory blockEntityFactory) {
+                                    MachineInstanceFactory<MACHINE> blockEntityFactory) {
         super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
                 blockFactory,
                 itemFactory, blockEntityFactory);
@@ -63,59 +64,59 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public TYPE generator(boolean generator) {
+    public SELF generator(boolean generator) {
         this.generator = generator;
         return getThis();
     }
 
-    public TYPE pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
+    public SELF pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
         this.pattern = pattern;
         return getThis();
     }
 
-    public TYPE allowFlip(boolean allowFlip) {
+    public SELF allowFlip(boolean allowFlip) {
         this.allowFlip = allowFlip;
         return getThis();
     }
 
-    public TYPE partSorter(Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter) {
+    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public TYPE partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public SELF partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public TYPE additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
+    public SELF additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }
 
-    public TYPE shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
+    public SELF shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
         this.shapeInfos.add(d -> List.of(shape.apply(d)));
         return getThis();
     }
 
-    public TYPE shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
+    public SELF shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
         this.shapeInfos.add(shapes);
         return getThis();
     }
 
-    public TYPE recoveryItems(Supplier<ItemLike[]> items) {
+    public SELF recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
         return getThis();
     }
 
-    public TYPE recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public SELF recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return getThis();
     }
 
     @Tolerate
-    public TYPE partSorter(Comparator<IMultiPart> sorter) {
+    public SELF partSorter(Comparator<IMultiPart> sorter) {
         this.partSorter = $ -> sorter;
         return getThis();
     }

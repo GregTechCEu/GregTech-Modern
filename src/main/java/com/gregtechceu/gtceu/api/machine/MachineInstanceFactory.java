@@ -29,4 +29,9 @@ public interface MachineInstanceFactory<T extends MetaMachine> {
             };
         }
     }
+
+    @FunctionalInterface
+    interface Steam<T extends MetaMachine> {
+        T buildMachine(BlockEntityCreationInfo info, boolean isHighPressure);
+    }
 }

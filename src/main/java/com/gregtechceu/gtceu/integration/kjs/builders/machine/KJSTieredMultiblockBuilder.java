@@ -26,7 +26,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition[]> {
 
-    private final MultiblockMachineBuilder[] builders = new MultiblockMachineBuilder[TIER_COUNT];
+    private final MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -48,7 +48,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         super.generateAssetJsons(generator);
         for (int tier : this.tiers) {
-            MultiblockMachineBuilder builder = this.builders[tier];
+            MultiblockMachineBuilder<?, ?, ?> builder = this.builders[tier];
             if (builder != null) {
                 builder.generateAssetJsons(generator);
             }
@@ -59,7 +59,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : tiers) {
-            MultiblockMachineBuilder builder = this.builders[tier];
+            MultiblockMachineBuilder<?, ?, ?> builder = this.builders[tier];
             if (builder != null) {
                 builder.generateLang(lang);
             }
@@ -77,7 +77,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder builder = GTRegistration.REGISTRATE.multiblock(
+            MultiblockMachineBuilder<?, ?, ?> builder = GTRegistration.REGISTRATE.multiblock(
                     String.format("%s_%s", tierName, this.id.getPath()),
                     holder -> machine.create(holder, tier));
 
@@ -99,6 +99,6 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?> builder);
+        void apply(int tier, MachineBuilder<?, ?, ?> builder);
     }
 }

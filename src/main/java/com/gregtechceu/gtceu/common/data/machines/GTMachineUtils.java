@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -202,17 +201,17 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MachineDefinition[] registerTieredMachines(String name,
-                                                             MachineInstanceFactory.Tiered factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
+    public static <MACHINE extends MetaMachine> MachineDefinition[] registerTieredMachines(String name,
+                                                             MachineInstanceFactory.Tiered<MACHINE> factory,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         return registerTieredMachines(REGISTRATE, name, factory, builder, tiers);
     }
 
-    public static MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
+    public static <MACHINE extends MetaMachine> MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
                                                              String name,
-                                                             MachineInstanceFactory.Tiered factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
+                                                             MachineInstanceFactory.Tiered<MACHINE> factory,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
@@ -225,21 +224,21 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name,
-                                                                                   BiFunction<BlockEntityCreationInfo, Boolean, MetaMachine> factory,
-                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder) {
+    public static <MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name,
+                                                                                   MachineInstanceFactory.Steam<MACHINE> factory,
+                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder) {
         return registerSteamMachines(REGISTRATE, name, factory, builder);
     }
 
-    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate, String name,
-                                                                                   BiFunction<BlockEntityCreationInfo, Boolean, MetaMachine> factory,
-                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder) {
+    public static <MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate, String name,
+                                                                                   MachineInstanceFactory.Steam<MACHINE> factory,
+                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false,
-                registrate.machine("lp_%s".formatted(name), holder -> factory.apply(holder, false))
+                registrate.machine("lp_%s".formatted(name), holder -> factory.buildMachine(holder, false))
                         .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
                         .tier(0));
         MachineDefinition highTier = builder.apply(true,
-                registrate.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
+                registrate.machine("hp_%s".formatted(name), holder -> factory.buildMachine(holder, true))
                         .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                         .tier(1));
         return Pair.of(lowTier, highTier);
@@ -617,7 +616,7 @@ public class GTMachineUtils {
                                                                      Supplier<? extends Block> casing,
                                                                      Supplier<? extends Block> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
         return registerMultiblockTank(REGISTRATE, name, displayName, capacity, casing, valve, filter, rendererSetup);
     }
 
@@ -626,8 +625,8 @@ public class GTMachineUtils {
                                                                      Supplier<? extends Block> casing,
                                                                      Supplier<? extends Block> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder<?, ?> builder = registrate
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<?, ?, ?> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
@@ -661,14 +660,14 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition registerTankValve(String name, String displayName, boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
+                                                      BiConsumer<MachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
         return registerTankValve(REGISTRATE, name, displayName, isMetal, rendererSetup);
     }
 
     public static MachineDefinition registerTankValve(GTRegistrate registrate, String name, String displayName,
                                                       boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
-        MachineBuilder<MachineDefinition, ?> builder = registrate
+                                                      BiConsumer<MachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
+        MachineBuilder<MachineDefinition, ?, ?> builder = registrate
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
@@ -678,22 +677,22 @@ public class GTMachineUtils {
         return builder.register();
     }
 
-    public static MultiblockMachineDefinition[] registerTieredMultis(String name,
-                                                                     BiFunction<BlockEntityCreationInfo, Integer, MultiblockControllerMachine> factory,
-                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, ?>, MultiblockMachineDefinition> builder,
+    public static <MACHINE extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(String name,
+                                                                                                                   MachineInstanceFactory.Tiered<MACHINE> factory,
+                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, MACHINE, ?>, MultiblockMachineDefinition> builder,
                                                                      int... tiers) {
         return registerTieredMultis(REGISTRATE, name, factory, builder, tiers);
     }
 
-    public static MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate, String name,
-                                                                     BiFunction<BlockEntityCreationInfo, Integer, MultiblockControllerMachine> factory,
-                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, ?>, MultiblockMachineDefinition> builder,
+    public static  <MACHINE extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate, String name,
+                                                                     MachineInstanceFactory.Tiered<MACHINE> factory,
+                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, MACHINE, ?>, MultiblockMachineDefinition> builder,
                                                                      int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
                     .multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                            holder -> factory.apply(holder, tier))
+                            holder -> factory.buildMachine(holder, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
         }
