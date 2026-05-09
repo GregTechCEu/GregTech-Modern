@@ -105,7 +105,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public final AutoOutputTrait autoOutput;
 
     public ItemCollectorMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
         this.output = attachTrait(createOutputItemHandler());

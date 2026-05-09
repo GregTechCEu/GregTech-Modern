@@ -4,12 +4,16 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.TieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import brachy.modularui.drawable.UITexture;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +31,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ConverterMachine extends TieredEnergyMachine {
+public class ConverterMachine extends TieredMachine {
 
-    public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
+    @SaveField
+    @SyncToClient
+    public final NotifiableEnergyContainer energyContainer;
+
+    @Getter
+    protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 
     public ConverterMachine(BlockEntityCreationInfo info, int tier, int amps) {
-        super(info, tier, t -> new ConverterTrait((ConverterMachine) t, tier, amps));
+        super(info, tier);
+
+        energyContainer = attachTrait(new ConverterTrait(this, tier, amps));
+        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0));
+
     }
 
     //////////////////////////////////////
@@ -100,15 +113,5 @@ public class ConverterMachine extends TieredEnergyMachine {
                     GTGuiTextures.TOOL_SWITCH_CONVERTER_EU;
         }
         return super.sideTips(player, pos, state, toolTypes, side);
-    }
-
-    @Override
-    protected long getMaxInputOutputAmperage() {
-        return getConverterTrait().getAmps();
-    }
-
-    @Override
-    protected boolean isEnergyEmitter() {
-        return getConverterTrait().isFeToEu();
     }
 }

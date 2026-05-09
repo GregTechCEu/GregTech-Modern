@@ -75,7 +75,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
     public final AutoOutputTrait autoOutput;
 
     public PumpMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.cache = attachTrait(
                 new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                         IO.OUT));

@@ -68,7 +68,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     private boolean isWorkingEnabled = true;
 
     public BlockBreakerMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.cache = attachTrait(createCacheItemHandler());
         this.batterySlot = attachTrait(new BatterySlotTrait(energyContainer));

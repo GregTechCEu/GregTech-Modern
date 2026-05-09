@@ -17,7 +17,7 @@ import java.util.*;
 public class SimpleTieredMachine extends WorkableTieredMachine {
 
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
-        super(info, tier, tankScalingFunction);
+        super(info, tier, false, tankScalingFunction);
 
         attachPersistentTrait("autoOutput", new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
         attachPersistentTrait("circuit", new ProgrammableCircuitSlotTrait());
@@ -27,10 +27,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine {
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier) {
         this(info, tier, GTMachineUtils.defaultTankSizeFunction);
     }
-
-    /////////////////////////////////////
-    // ****** RECIPE LOGIC *******//
-    /////////////////////////////////////
 
     @Override
     public long getDisplayRecipeVoltage() {

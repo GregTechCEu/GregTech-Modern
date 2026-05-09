@@ -38,7 +38,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * The base class for all multiblock controllers
+ * The base class for all multiblock controllers.
  */
 public class MultiblockControllerMachine extends MetaMachine {
 

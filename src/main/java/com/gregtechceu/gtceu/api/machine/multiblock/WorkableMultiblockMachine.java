@@ -36,6 +36,9 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
+/**
+ * The base class for multiblocks with recipe logic.
+ */
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine
                                                 implements IWorkableMultiController, IMufflableMachine {
 

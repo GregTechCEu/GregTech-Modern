@@ -109,7 +109,7 @@ public class FisherMachine extends TieredEnergyMachine
     public final AutoOutputTrait autoOutput;
 
     public FisherMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];

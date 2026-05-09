@@ -24,7 +24,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
                                   float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
-        super(info, tier, tankScalingFunction);
+        super(info, tier, true, tankScalingFunction);
 
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardEmitter = attachTrait(
@@ -38,12 +38,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    protected boolean isEnergyEmitter() {
-        return true;
-    }
 
     @Override
     public int tintColor(int index) {

@@ -11,8 +11,6 @@ import net.minecraft.util.Mth;
 
 import lombok.Getter;
 
-import java.util.function.Function;
-
 /**
  * A singleblock tiered machine with an energy container.
  */
@@ -25,6 +23,15 @@ public class TieredEnergyMachine extends TieredMachine {
     @Getter
     protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 
+    /**
+     * Creates a {@link TieredEnergyMachine} using the given energy container.<br>
+     *
+     *
+     * @param info {@link BlockEntityCreationInfo}
+     * @param tier Machine/voltage tier
+     * @param energyContainer The enegery container to attach
+     * @see NotifiableEnergyContainer
+     */
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
                                NotifiableEnergyContainer energyContainer) {
         super(info, tier);
@@ -33,57 +40,26 @@ public class TieredEnergyMachine extends TieredMachine {
                 () -> energyContainer.getEnergyStored() > 0));
     }
 
-    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
-                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainer) {
-        super(info, tier);
-        this.energyContainer = attachTrait(energyContainer.apply(this));
-        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
-                () -> this.energyContainer.getEnergyStored() > 0));
+    /**
+     * Creates a {@link TieredEnergyMachine} with a default energy container.<br>
+     * Defaults to a container with a capacity of 64A @ the given voltage tier, and a max input/output amperage of 1A @ the given voltage tier.
+     *
+     * @param info {@link BlockEntityCreationInfo}
+     * @param tier Machine/voltage tier
+     * @param emitsEnergy If the energy container should receive or emit energy.
+     * @see NotifiableEnergyContainer
+     */
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier, boolean emitsEnergy) {
+        this(info, tier, emitsEnergy ? NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                1) : NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                1));
     }
 
-    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
-
-        long tierVoltage = GTValues.V[tier];
-        if (isEnergyEmitter()) {
-            energyContainer = attachTrait(NotifiableEnergyContainer.emitterContainer(tierVoltage * 64L, tierVoltage,
-                    getMaxInputOutputAmperage()));
-        } else {
-            energyContainer = attachTrait(NotifiableEnergyContainer.receiverContainer(tierVoltage * 64L, tierVoltage,
-                    getMaxInputOutputAmperage()));
-        }
-        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
-                () -> energyContainer.getEnergyStored() > 0));
-    }
-
-    //////////////////////////////////////
-    // ********** MISC ***********//
-    //////////////////////////////////////
     @Override
     public int getAnalogOutputSignal() {
         long energyStored = energyContainer.getEnergyStored();
         long energyCapacity = energyContainer.getEnergyCapacity();
         float f = energyCapacity == 0L ? 0.0f : energyStored / (energyCapacity * 1.0f);
         return Mth.floor(f * 14.0f) + (energyStored > 0 ? 1 : 0);
-    }
-
-    /**
-     * Determines max input or output amperage used by this machine
-     * if emitter, it determines size of energy packets it will emit at once
-     * if receiver, it determines max input energy per request
-     *
-     * @return max amperage received or emitted by this machine
-     */
-    protected long getMaxInputOutputAmperage() {
-        return 1L;
-    }
-
-    /**
-     * Determines if this machine is in energy receiver or emitter mode
-     *
-     * @return true if machine emits energy to network, false it it accepts energy from network
-     */
-    protected boolean isEnergyEmitter() {
-        return false;
     }
 }
