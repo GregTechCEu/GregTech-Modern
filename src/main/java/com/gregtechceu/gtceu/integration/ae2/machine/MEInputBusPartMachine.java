@@ -41,7 +41,12 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     protected ExportOnlyAEItemList aeItemHandler;
 
     public MEInputBusPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new ExportOnlyAEItemList(CONFIG_SIZE));
+        aeItemHandler = (ExportOnlyAEItemList)getInventory();
+    }
+
+    public MEInputBusPartMachine(BlockEntityCreationInfo info, NotifiableItemStackHandler inventory) {
+        super(info, IO.IN, inventory);
     }
 
     /////////////////////////////////
@@ -51,12 +56,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     @Override
     public void onMachineDestroyed() {
         flushInventory();
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.aeItemHandler = new ExportOnlyAEItemList(CONFIG_SIZE);
-        return this.aeItemHandler;
     }
 
     /////////////////////////////////

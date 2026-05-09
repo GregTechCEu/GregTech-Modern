@@ -18,14 +18,10 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final int INITIAL_TANK_CAPACITY = 64 * FluidType.BUCKET_VOLUME;
 
     public SteamHatchPartMachine(BlockEntityCreationInfo info) {
-        super(info, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1);
-        circuitSlot.setEnabled(false);
-    }
+        super(info, 0, IO.IN, new NotifiableFluidTank(1, INITIAL_TANK_CAPACITY, IO.IN));
 
-    @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        return super.createTank(initialCapacity, slots)
-                .setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        tank.setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        circuitSlot.setEnabled(false);
     }
 
     // By returning false here, we don't allow shift-clicking

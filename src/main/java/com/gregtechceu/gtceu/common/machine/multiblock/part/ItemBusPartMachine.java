@@ -53,10 +53,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter
     @SaveField
     @SyncToClient
-    protected boolean circuitSlotEnabled;
-    @Getter
-    @SaveField
-    @SyncToClient
     private boolean isDistinct = false;
     @SaveField
     @SyncToClient
@@ -67,9 +63,26 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SaveField
     protected final ProgrammableCircuitSlotTrait circuitSlot;
 
+    /**
+     * Creates an item bus with the default number of slots
+     * @param info {@link BlockEntityCreationInfo}
+     * @param tier Machine tier.
+     * @param io IO mode of this item bus.
+     */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        this(info, tier, io, new NotifiableItemStackHandler(getInventorySize(tier), io));
+    }
+
+    /**
+     * Creates an item bus with a custom {@link NotifiableItemStackHandler}.
+     * @param info {@link BlockEntityCreationInfo}
+     * @param tier Machine tier.
+     * @param io IO mode of this item bus.
+     * @param inventory The {@link NotifiableItemStackHandler} to attach
+     */
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io, NotifiableItemStackHandler inventory) {
         super(info, tier, io);
-        this.inventory = attachTrait(createInventory());
+        this.inventory = attachTrait(inventory);
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
         filterHandler = FilterHandlers.item(this);
 
@@ -80,13 +93,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected int getInventorySize() {
-        int sizeRoot = 1 + Math.min(9, getTier());
+    protected static int getInventorySize(int tier) {
+        int sizeRoot = 1 + Math.min(9, tier);
         return sizeRoot * sizeRoot;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(getInventorySize(), io);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
@@ -231,7 +240,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        int rowSize = (int) Math.sqrt(getInventorySize());
+        int rowSize = (int) Math.sqrt(getInventorySize(tier));
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
         mainWidget.child(new Grid()

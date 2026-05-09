@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +30,7 @@ import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,18 +48,13 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.OUT);
+        super(info, IO.OUT, new InaccessibleInfiniteHandler());
+        internalBuffer = ((InaccessibleInfiniteHandler)getInventory()).getInternalBuffer();
     }
 
     /////////////////////////////////
     // ***** Machine LifeCycle ****//
     /////////////////////////////////
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler();
-    }
 
     @Override
     public void onMachineDestroyed() {
@@ -131,12 +129,17 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         mainWidget.child(flow);
     }
 
-    private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+    private static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+        @Getter
+        private KeyStorage internalBuffer;
 
         public InaccessibleInfiniteHandler() {
             super(1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
+            internalBuffer = new KeyStorage();
+            ((ItemStackHandlerDelegate)storage).setKeyStorage(internalBuffer);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
+
 
         @Override
         public List<Object> getContents() {
@@ -155,7 +158,11 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     @NoArgsConstructor
-    private class ItemStackHandlerDelegate extends CustomItemStackHandler {
+    private static class ItemStackHandlerDelegate extends CustomItemStackHandler {
+
+        @Getter
+        @Setter
+        @Nullable KeyStorage keyStorage = null;
 
         // Necessary for InaccessibleInfiniteHandler
         public ItemStackHandlerDelegate(Integer integer) {
@@ -184,14 +191,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (keyStorage == null) return stack;
+
             var key = AEItemKey.of(stack);
             int count = stack.getCount();
-            long oldValue = internalBuffer.storage.getOrDefault(key, 0);
+            long oldValue = keyStorage.storage.getOrDefault(key, 0);
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
             if (changeValue > 0) {
                 if (!simulate) {
-                    internalBuffer.storage.put(key, oldValue + changeValue);
-                    internalBuffer.onChanged();
+                    keyStorage.storage.put(key, oldValue + changeValue);
+                    keyStorage.onChanged();
                 }
                 return stack.copyWithCount((int) (count - changeValue));
             } else {
