@@ -18,16 +18,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.WidgetTree;
 import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.lwjgl.glfw.GLFW;
 
@@ -47,10 +47,11 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private final GTRecipeType recipeType;
     private final GTRecipeTypeUILayout uiLayout;
 
-    public final ListWidget<IWidget, ?> textComponents = new ListWidget<>()
+    public final Flow textComponents = Flow.col()
             .widthRel(1f)
             .coverChildrenHeight()
-            .childSeparator(IIcon.EMPTY_2PX)
+            .childPadding(1)
+            .background(new Rectangle().color(Color.RED.brighter(2)))
             .crossAxisAlignment(Alignment.CrossAxis.START)
             .collapseDisabledChildren();
     public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);

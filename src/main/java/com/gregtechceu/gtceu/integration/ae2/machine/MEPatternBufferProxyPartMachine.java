@@ -35,7 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine implements IMuiMachine, IDataStickInteractable {
+public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
+                                             implements IMuiMachine, IDataStickInteractable {
 
     @Getter
     private final ProxySlotRecipeHandler proxySlotRecipeHandler;

@@ -1,22 +1,22 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IGuiAction;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-
-import brachy.modularui.api.GuiAxis;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.DoubleSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
+
+import brachy.modularui.api.GuiAxis;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import dev.emi.emi.api.EmiApi;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 
@@ -85,21 +85,22 @@ public class GTRecipeTypeMachineWidget extends Flow {
         }
     }
 
-
     private static class EmiCallWrapper {
+
         public static void openRecipeCategory(GTRecipeCategory category) {
             EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
         }
     }
 
     private static class JeiCallWrapper {
+
         public static void openRecipeCategory(GTRecipeCategory category) {
             GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
         }
-
     }
 
     private static class ReiCallWrapper {
+
         public static void openRecipeCategory(GTRecipeCategory category) {
             ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
         }

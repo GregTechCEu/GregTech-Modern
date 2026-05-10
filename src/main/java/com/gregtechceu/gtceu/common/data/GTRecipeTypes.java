@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.ModLoader;
 
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
@@ -573,10 +574,12 @@ public class GTRecipeTypes {
                             widget.textComponents.child(new TextWidget<>(
                                     Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
+                            Flow coilRow = Flow.row();
+
                             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                             if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                                coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
                                         Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
                                                 .getString())));
                             }
@@ -585,10 +588,13 @@ public class GTRecipeTypes {
                                     .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                                     .map(coil -> new ItemStack(coil.getValue().get())).toList();
 
-                            widget.child(RecipeViewerSlotWidget.create()
+                            coilRow.child(RecipeViewerSlotWidget.create()
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
-                                    .posRel(0.80f, 0.80f));
+                                    .background(IDrawable.EMPTY)
+                                    .right(4));
+
+                            widget.textComponents.child(coilRow);
                         }
                     }))
             .setSound(GTSoundEntries.FURNACE);

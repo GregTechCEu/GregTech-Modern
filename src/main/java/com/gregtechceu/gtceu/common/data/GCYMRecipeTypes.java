@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
@@ -60,7 +61,8 @@ public class GCYMRecipeTypes {
                             coilRow.child(RecipeViewerSlotWidget.create()
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
-                            /* .posRel(0.85f, 1.0f) */);
+                                    .background(IDrawable.EMPTY)
+                                    .right(4));
 
                             widget.textComponents.child(coilRow);
                         }
