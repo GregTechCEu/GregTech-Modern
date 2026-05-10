@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.gui;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
-import brachy.modularui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -53,20 +52,23 @@ public class GTRecipeTypeMachineWidget extends Flow {
         center();
         childPadding((layout.getProgressSize() / 2) + 2);
         child(inputColumn);
-        child(layout.getProgressWidgetSupplier().get(layout, progressPercent).listenGuiAction(new IGuiAction.MousePressed() {
-            @Override
-            public boolean press(GuiContext guiContext, int i) {
-                if (!recipeType.getCategory().isXEIVisible()) return false;
-                if (GTCEu.Mods.isEMILoaded()) {
-                    EmiCallWrapper.openRecipeCategory(recipeType.getCategory());
-                } else if (GTCEu.Mods.isJEILoaded()) {
-                    JeiCallWrapper.openRecipeCategory(recipeType.getCategory());
-                } else if (GTCEu.Mods.isREILoaded()) {
-                    ReiCallWrapper.openRecipeCategory(recipeType.getCategory());
-                }
-                return true;
+
+        var progressWidget = layout.getProgressWidgetSupplier().get(layout, progressPercent);
+
+        progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
+            if (!guiContext.isMouseAbove(progressWidget)) return false;
+            if (!recipeType.getCategory().isXEIVisible()) return false;
+            if (GTCEu.Mods.isEMILoaded()) {
+                EmiCallWrapper.openRecipeCategory(recipeType.getCategory());
+            } else if (GTCEu.Mods.isJEILoaded()) {
+                JeiCallWrapper.openRecipeCategory(recipeType.getCategory());
+            } else if (GTCEu.Mods.isREILoaded()) {
+                ReiCallWrapper.openRecipeCategory(recipeType.getCategory());
             }
-        }).tooltip(r -> r.addLine(Text.lang("gtceu.recipe_type.show_recipes"))));
+            return true;
+        });
+
+        child(progressWidget.tooltip(r -> r.addLine(Text.lang("gtceu.recipe_type.show_recipes"))));
         child(outputColumn);
 
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
@@ -102,5 +104,4 @@ public class GTRecipeTypeMachineWidget extends Flow {
             ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
         }
     }
-
 }
