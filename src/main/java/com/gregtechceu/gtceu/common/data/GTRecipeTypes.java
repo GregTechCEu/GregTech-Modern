@@ -1,10 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -23,30 +18,28 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMac
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fml.ModLoader;
 
-import brachy.modularui.integration.recipeviewer.entry.fluid.FluidHolderSetList;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +61,8 @@ public class GTRecipeTypes {
     //////////////////////////////////////
     public final static GTRecipeType STEAM_BOILER_RECIPES = register("steam_boiler", STEAM)
             .setMaxIOSize(1, 0, 1, 1)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL, 18, ProgressWidget.Direction.UP))
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL, 18,
+                    ProgressWidget.Direction.UP))
             .onRecipeBuild((builder, provider) -> {
                 // all LBB recipes' duration is 1/4 the small boiler recipe's duration
                 int duration = builder.duration / 4;
@@ -99,7 +93,8 @@ public class GTRecipeTypes {
     public final static GTRecipeType ARC_FURNACE_RECIPES = register("arc_furnace", ELECTRIC).setMaxIOSize(1, 4, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW, 20)
-                    .setLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, l -> GTMuiWidgets.createGrid(4, 2, true, 's')))
+                    .setLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT,
+                            l -> GTMuiWidgets.createGrid(4, 2, true, 's')))
             .setSound(GTSoundEntries.ARC)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() &&
@@ -145,18 +140,26 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_MACERATE, 20)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, (machine, layout) -> {
                         var slots = layout.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
-
+                        var width = 3;
                         if (machine instanceof ITieredMachine tieredMachine) {
-                            if (tieredMachine.getTier() < GTValues.HV) slots = 1;
-                            else if (tieredMachine.getTier() == GTValues.HV) slots = 3;
-                            else slots = 4;
+                            if (tieredMachine.getTier() < GTValues.HV) {
+                                slots = 1;
+                                width = 1;
+                            } else if (tieredMachine.getTier() == GTValues.HV) {
+                                slots = 3;
+                                width = 3;
+                            } else {
+                                slots = 4;
+                                width = 2;
+                            }
                         }
 
-                        return GTMuiWidgets.createGrid(slots, Math.min(3, slots), true, 's');
+                        return GTMuiWidgets.createGrid(slots, width, true, 's');
                     })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 3, GTGuiTextures.DUST_OVERLAY)
-                    .addRecipeUIModifier(RecipeUIModifier.textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
+                    .addRecipeUIModifier(RecipeUIModifier
+                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR);
@@ -347,16 +350,13 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_HAMMER, 20, ProgressWidget.Direction.DOWN)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.HAMMER_OVERLAY)
-                    .setProgressBarSupplier((layout, value) ->
-                            Flow.col().coverChildren().child(new ProgressWidget()
-                                            .value(value)
-                                            .name("progressBar")
-                                            .texture(layout.getProgressBar(), 20)
-                                            .size(layout.getProgressSize())
-                                            .direction(layout.getProgressDirection()))
-                                    .child(GTGuiTextures.PROGRESS_BAR_HAMMER_BASE.asWidget().height(5))
-                    )
-            )
+                    .setProgressBarSupplier((layout, value) -> Flow.col().coverChildren().child(new ProgressWidget()
+                            .value(value)
+                            .name("progressBar")
+                            .texture(layout.getProgressBar(), 20)
+                            .size(layout.getProgressSize())
+                            .direction(layout.getProgressDirection()))
+                            .child(GTGuiTextures.PROGRESS_BAR_HAMMER_BASE.asWidget().height(5))))
             .setIconSupplier(() -> GTMachines.FORGE_HAMMER[GTValues.LV].asStack())
             .setSound(GTSoundEntries.FORGE_HAMMER);
 
@@ -372,16 +372,13 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)
                     .setItemSlotOverlay(IO.OUT, 1, GTGuiTextures.DUST_OVERLAY)
-                    .setProgressBarSupplier((layout, value) ->
-                        Flow.row().coverChildren().child(new ProgressWidget()
-                                .value(value)
-                                .name("progressBar")
-                                .texture(layout.getProgressBar(), 20)
-                                .size(layout.getProgressSize())
-                                .direction(layout.getProgressDirection()))
-                                .child(GTGuiTextures.PROGRESS_BAR_LATHE_BASE.asWidget().width(5))
-                    )
-            )
+                    .setProgressBarSupplier((layout, value) -> Flow.row().coverChildren().child(new ProgressWidget()
+                            .value(value)
+                            .name("progressBar")
+                            .texture(layout.getProgressBar(), 20)
+                            .size(layout.getProgressSize())
+                            .direction(layout.getProgressDirection()))
+                            .child(GTGuiTextures.PROGRESS_BAR_LATHE_BASE.asWidget().width(5))))
             .setSound(GTSoundEntries.CUT);
 
     public final static GTRecipeType MIXER_RECIPES = register("mixer", ELECTRIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
@@ -505,8 +502,7 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_MACERATE, 20)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
-                    .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
-            )
+                    .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY))
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
             .setSound(GTSoundEntries.FIRE);
 
@@ -551,7 +547,8 @@ public class GTRecipeTypes {
     //////////////////////////////////////
     public final static GTRecipeType LARGE_BOILER_RECIPES = register("large_boiler", MULTIBLOCK)
             .setMaxIOSize(1, 0, 1, 1)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL, 18, ProgressWidget.Direction.UP))
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL, 18,
+                    ProgressWidget.Direction.UP))
             .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 
@@ -573,12 +570,15 @@ public class GTRecipeTypes {
                         if (recipe.data.contains("ebf_temp")) {
                             int temp = recipe.data.getInt("ebf_temp");
 
-                            widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
+                            widget.textComponents.child(new TextWidget<>(
+                                    Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
                             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                             if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier", Component.translatable(requiredCoil.getMaterial().getUnlocalizedName()).getString())));
+                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                                        Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
+                                                .getString())));
                             }
 
                             List<ItemStack> items = GTCEuAPI.HEATING_COILS.entrySet().stream()
@@ -588,17 +588,16 @@ public class GTRecipeTypes {
                             widget.child(RecipeViewerSlotWidget.create()
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
-                                    .posRel(0.80f, 0.80f)
-                            );
+                                    .posRel(0.80f, 0.80f));
                         }
-                    })
-            )
+                    }))
             .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK)
             .setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
             .setSound(GTSoundEntries.CHEMICAL)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, 20, ProgressWidget.Direction.RIGHT))
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, 20,
+                    ProgressWidget.Direction.RIGHT))
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
@@ -679,7 +678,8 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType CRACKING_RECIPES = register("cracker", MULTIBLOCK).setMaxIOSize(1, 0, 2, 2)
             .setEUIO(IO.IN)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_CRACKING, 20, ProgressWidget.Direction.RIGHT)
+            .UI(builder -> builder
+                    .setProgressBar(GTGuiTextures.PROGRESS_BAR_CRACKING, 20, ProgressWidget.Direction.RIGHT)
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CRACKING_OVERLAY_1)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.CRACKING_OVERLAY_2)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CIRCUIT_OVERLAY))
@@ -688,12 +688,11 @@ public class GTRecipeTypes {
     public final static GTRecipeType IMPLOSION_RECIPES = register("implosion_compressor", MULTIBLOCK)
             .setMaxIOSize(3, 2, 0, 0).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(20).EUt(GTValues.VA[GTValues.LV]))
-            .UI(builder ->  builder
+            .UI(builder -> builder
                     .setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW, 20, ProgressWidget.Direction.RIGHT)
                     .setItemSlotOverlay(IO.IN, 2, GTGuiTextures.IMPLOSION_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.IMPLOSION_OVERLAY_2)
-                    .setItemSlotOverlay(IO.OUT, 1, GTGuiTextures.DUST_OVERLAY)
-            )
+                    .setItemSlotOverlay(IO.OUT, 1, GTGuiTextures.DUST_OVERLAY))
             .setSound(new ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS));
 
     public final static GTRecipeType VACUUM_RECIPES = register("vacuum_freezer", MULTIBLOCK).setMaxIOSize(1, 1, 2, 1)
@@ -718,8 +717,7 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.IN, 2, GTGuiTextures.MOLECULAR_OVERLAY_4)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
-                    .setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, 20, ProgressWidget.Direction.RIGHT)
-            )
+                    .setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, 20, ProgressWidget.Direction.RIGHT))
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 

@@ -1,25 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IIcon;
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Rectangle;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
-import brachy.modularui.utils.MouseData;
-import brachy.modularui.value.DoubleValue;
-import brachy.modularui.widget.WidgetTree;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.ListWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -28,9 +13,23 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.loading.FMLLoader;
+
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IIcon;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.DoubleValue;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.WidgetTree;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.layout.Flow;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashSet;
@@ -70,7 +69,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         modifiedRecipe = recipe;
 
-        uiLayout = Objects.requireNonNull(recipe.getType().getUiLayout(), "No recipe type UI declared, add one to your recipe type definition.");
+        uiLayout = Objects.requireNonNull(recipe.getType().getUiLayout(),
+                "No recipe type UI declared, add one to your recipe type definition.");
 
         minTier = RecipeHelper.getRecipeEUtTier(recipe);
         tier = minTier;
@@ -83,12 +83,14 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         coverChildrenHeight(60);
 
         // Attach duration here so it is always the first text row
-        textComponents.child(Text.dynamic(() -> Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers((double)modifiedRecipe.duration/20)))
+        textComponents.child(Text
+                .dynamic(() -> Component.translatable("gtceu.recipe.duration",
+                        FormattingUtil.formatNumbers((double) modifiedRecipe.duration / 20)))
                 .asWidget()
-                .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration"))
-        );
+                .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));
 
-        recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() : uiLayout.getCustomUIBuilder().apply(recipe);
+        recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
+                uiLayout.getCustomUIBuilder().apply(recipe);
         mainColumn.child(recipeContentRow.marginTop(5).marginBottom(3));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
@@ -107,24 +109,24 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .onMousePressed((ctx, b) -> {
                     Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
                     return true;
-                })
-        );
+                }));
     }
 
     private Flow buildDefaultLayout() {
         var row = Flow.row()
-        .horizontalCenter()
-        .coverChildren()
-        .child(inputColumn)
-        .child(uiLayout.getProgressWidgetSupplier().get(uiLayout, DoubleValue.simulateProgress(2000)).paddingLeft(2 + uiLayout.getProgressSize()/2))
-        .child(outputColumn);
-        for (var entry: recipeType.maxInputs.object2IntEntrySet()) {
+                .horizontalCenter()
+                .coverChildren()
+                .child(inputColumn)
+                .child(uiLayout.getProgressWidgetSupplier().get(uiLayout, DoubleValue.simulateProgress(2000))
+                        .paddingLeft(2 + uiLayout.getProgressSize() / 2))
+                .child(outputColumn);
+        for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
             var layoutFunc = uiLayout.capabilityInfo(entry.getKey()).recipeViewerLayoutBuilder;
             if (layoutFunc == null || entry.getIntValue() == 0) continue;
             layoutFunc.createCapabilityUILayout(uiLayout, this, IO.IN);
         }
 
-        for (var entry: recipeType.maxOutputs.object2IntEntrySet()) {
+        for (var entry : recipeType.maxOutputs.object2IntEntrySet()) {
             var layoutFunc = uiLayout.capabilityInfo(entry.getKey()).recipeViewerLayoutBuilder;
             if (layoutFunc == null || entry.getIntValue() == 0) continue;
             layoutFunc.createCapabilityUILayout(uiLayout, this, IO.OUT);
@@ -142,33 +144,37 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         var allOutputCaps = new HashSet<>(modifiedRecipe.outputs.keySet());
         allOutputCaps.addAll(modifiedRecipe.tickOutputs.keySet());
 
-        for (var cap: allInputCaps) {
+        for (var cap : allInputCaps) {
             loadCapContent(cap, IO.IN);
         }
 
-        for (var cap: allOutputCaps) {
+        for (var cap : allOutputCaps) {
             loadCapContent(cap, IO.OUT);
         }
     }
 
     private void loadCapContent(RecipeCapability<?> cap, IO io) {
-        List<Content> contents = io == IO.IN ? modifiedRecipe.getInputContents(cap) : modifiedRecipe.getOutputContents(cap);
-        List<Content> tickContents = io == IO.IN ? modifiedRecipe.getTickInputContents(cap) : modifiedRecipe.getTickOutputContents(cap);
+        List<Content> contents = io == IO.IN ? modifiedRecipe.getInputContents(cap) :
+                modifiedRecipe.getOutputContents(cap);
+        List<Content> tickContents = io == IO.IN ? modifiedRecipe.getTickInputContents(cap) :
+                modifiedRecipe.getTickOutputContents(cap);
 
         var widgetBuilder = uiLayout.capabilityInfo(cap).capabilityWidgetBuilder;
         if (widgetBuilder == null) return;
 
         int currentContentIndex = 0;
 
-        for (var content: contents) {
-            IWidget widget = WidgetTree.findFirstWithNameNullable(this, capabilityWidgetName(cap, io, currentContentIndex));
+        for (var content : contents) {
+            IWidget widget = WidgetTree.findFirstWithNameNullable(this,
+                    capabilityWidgetName(cap, io, currentContentIndex));
             if (widget == null) continue;
             widgetBuilder.buildWidgetContent(widget, content, io, false, recipeType, modifiedRecipe, tier, tier);
             currentContentIndex++;
         }
 
-        for (var tickContent: tickContents) {
-            IWidget widget = WidgetTree.findFirstWithNameNullable(this, capabilityWidgetName(cap, io, currentContentIndex));
+        for (var tickContent : tickContents) {
+            IWidget widget = WidgetTree.findFirstWithNameNullable(this,
+                    capabilityWidgetName(cap, io, currentContentIndex));
             if (widget == null) continue;
             widgetBuilder.buildWidgetContent(widget, tickContent, io, true, recipeType, modifiedRecipe, tier, tier);
             currentContentIndex++;
@@ -176,7 +182,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     }
 
     private void buildAdditionalRecipeContent() {
-        for (var condition: baseRecipe.conditions) {
+        for (var condition : baseRecipe.conditions) {
             condition.modifyUI().buildRecipeUI(baseRecipe, this);
         }
 
@@ -236,5 +242,4 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         loadContentIntoSlots();
     }
-
 }

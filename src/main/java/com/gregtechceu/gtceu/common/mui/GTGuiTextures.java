@@ -223,7 +223,7 @@ public interface GTGuiTextures {
     UITexture BUTTON_VOID_PARTIAL = fullImage("textures/gui/widget/button_void_partial.png");
 
     UITexture[] BUTTON_VOID_MULTIBLOCK = slice("textures/gui/widget/button_void_multiblock.png",
-            16, 48, 16, 16, ColorType.DEFAULT);
+            16, 64, 16, 16, ColorType.DEFAULT);
 
     UITexture[] FILTER_MODE_OVERLAY = slice(
             "textures/gui/overlay/filter_mode_overlay.png",

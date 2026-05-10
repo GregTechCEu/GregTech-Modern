@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.screen.viewport.GuiContext;
-import brachy.modularui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -11,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,11 +17,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.screen.viewport.GuiContext;
+import brachy.modularui.theme.WidgetTheme;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public record ContentOverlay(Content content, boolean perTick, int recipeTier, int chanceTier,
-                             @Nullable ChanceBoostFunction function) implements IDrawable {
+                             @Nullable ChanceBoostFunction function)
+        implements IDrawable {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
@@ -34,7 +37,6 @@ public record ContentOverlay(Content content, boolean perTick, int recipeTier, i
         if (perTick) {
             drawTick(context.getGraphics(), x, y, width, height);
         }
-
     }
 
     public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
@@ -117,7 +119,8 @@ public record ContentOverlay(Content content, boolean perTick, int recipeTier, i
         int color = 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
-                (int) ((y + (height / 3f) + 6) * 2 - height + (content.chance() == ChanceLogic.getMaxChancedValue() ? 0 : 10)),
+                (int) ((y + (height / 3f) + 6) * 2 - height +
+                        (content.chance() == ChanceLogic.getMaxChancedValue() ? 0 : 10)),
                 color);
         graphics.pose().popPose();
     }

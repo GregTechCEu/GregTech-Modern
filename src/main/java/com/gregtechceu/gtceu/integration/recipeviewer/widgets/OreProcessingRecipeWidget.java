@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.gui.ContentOverlay;
@@ -11,7 +9,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidEntryList;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemEntryList;
 import brachy.modularui.widget.ParentWidget;
@@ -115,10 +115,10 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
         ParentWidget<?> itemStackGroup = new ParentWidget<>().sizeRel(1f);
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             itemStackGroup.child(RecipeViewerSlotWidget.create()
-                            .recipeSlotRole(RecipeSlotRole.INPUT)
-                            .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
-                            .tooltipBuilder(recipeWrapper.getTooltip(i / 2))
-                    .value(itemInputs.get(i/2))
+                    .recipeSlotRole(RecipeSlotRole.INPUT)
+                    .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
+                    .tooltipBuilder(recipeWrapper.getTooltip(i / 2))
+                    .value(itemInputs.get(i / 2))
                     .background(i == 0 ? GuiTextures.SLOT_ITEM : IDrawable.NONE));
         }
 
@@ -139,7 +139,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
                     .recipeSlotRole(RecipeSlotRole.OUTPUT)
                     .tooltip(recipeWrapper.getTooltip(slotIndex + itemInputs.size()))
                     .overlay(overlay)
-                    .value(itemOutputs.get(i/2)));
+                    .value(itemOutputs.get(i / 2)));
         }
 
         List<FluidEntryList> fluidInputs = recipeWrapper.fluidInputs;
@@ -150,8 +150,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
                 fluidStackGroup.child(RecipeViewerSlotWidget.create()
                         .recipeSlotRole(RecipeSlotRole.INPUT)
                         .pos(FLUID_LOCATIONS.getInt(i), FLUID_LOCATIONS.getInt(i + 1))
-                        .value(fluidInputs.get(slotIndex))
-                );
+                        .value(fluidInputs.get(slotIndex)));
             }
         }
 

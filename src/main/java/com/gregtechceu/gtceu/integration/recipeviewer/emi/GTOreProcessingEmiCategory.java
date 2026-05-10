@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
-import brachy.modularui.integration.emi.EmiRecipeViewerSlot;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -11,16 +10,15 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreProcessingRecipeWidget;
 
-import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
+import brachy.modularui.integration.emi.EmiRecipeViewerSlot;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +73,10 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
 
         final Material material;
         final GTOreByProduct byProduct;
+
         public GTEmiOreProcessingWrapper(Material material) {
-            super(material.getResourceLocation().withPrefix("/ore_proc/"), () -> new OreProcessingRecipeWidget(material));
+            super(material.getResourceLocation().withPrefix("/ore_proc/"),
+                    () -> new OreProcessingRecipeWidget(material));
             this.material = material;
             byProduct = new GTOreByProduct(material);
         }
@@ -91,8 +91,10 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
             var items = byProduct.getItemInputs();
             var fluids = byProduct.getFluidInputs();
             List<EmiIngredient> ingredients = new ArrayList<>();
-            ingredients.addAll(items.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1, $ -> $)).toList());
-            ingredients.addAll(fluids.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1)).toList());
+            ingredients.addAll(items.stream()
+                    .map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1, $ -> $)).toList());
+            ingredients.addAll(
+                    fluids.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1)).toList());
             return ingredients;
         }
 

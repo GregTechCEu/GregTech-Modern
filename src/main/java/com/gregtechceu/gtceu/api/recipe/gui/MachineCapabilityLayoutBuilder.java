@@ -27,10 +27,12 @@ public interface MachineCapabilityLayoutBuilder {
      * @param machine The singleblock machine, will be either a {@link SimpleTieredMachine} or
      *                {@link SimpleSteamMachine}.
      * @param layout  The {@link GTRecipeTypeUILayout} which holds UI layout data.
-     * @param widget The recipe type widget. Generally, UIs should be attached to either {@link GTRecipeTypeMachineWidget#inputColumn} or {@link GTRecipeTypeMachineWidget#outputColumn}.
+     * @param widget  The recipe type widget. Generally, UIs should be attached to either
+     *                {@link GTRecipeTypeMachineWidget#inputColumn} or {@link GTRecipeTypeMachineWidget#outputColumn}.
      * @param io      The IO mode widgets are being created for.
      */
-    void createCapabilityUILayout(MetaMachine machine, GTRecipeTypeUILayout layout, GTRecipeTypeMachineWidget widget, IO io);
+    void createCapabilityUILayout(MetaMachine machine, GTRecipeTypeUILayout layout, GTRecipeTypeMachineWidget widget,
+                                  IO io);
 
     /**
      * The default UI layout for item slots.

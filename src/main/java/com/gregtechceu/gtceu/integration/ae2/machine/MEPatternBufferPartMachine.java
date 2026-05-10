@@ -87,8 +87,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class
-MEPatternBufferPartMachine extends MEBusPartMachine
+public class MEPatternBufferPartMachine extends MEBusPartMachine
                                         implements ICraftingProvider, PatternContainer, IDataStickInteractable {
 
     protected static final int MAX_PATTERN_COUNT = 27;

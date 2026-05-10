@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -22,8 +20,10 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -51,8 +51,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
     public OreVeinRecipeWidget(BedrockFluidDefinition fluid) {
         this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter);
-        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create().value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
-
+        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create()
+                .value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
     }
 
     public OreVeinRecipeWidget(GTOreDefinition oreDefinition) {
@@ -96,7 +96,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
         var col = Flow.col().sizeRel(1f)
                 .child(Text.lang(nameLang).asWidget().marginBottom(3))
                 .child(contentsRow.marginBottom(3))
-                .childIf(range != null, () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
+                .childIf(range != null,
+                        () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
                 .childIf(range != null, () -> Text.str(Objects.requireNonNull(range)).asWidget().marginBottom(3))
                 .child(Text.lang("gtceu.jei.ore_vein_diagram.weight", weight).asWidget().marginBottom(3))
                 .child(Text.lang("gtceu.jei.ore_vein_diagram.dimensions").asWidget());
@@ -106,7 +107,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
             Flow row = Flow.row().coverChildren().padding(2);
 
             for (DimensionMarker dimMarker : getDimensionMarkers(dimensionFilter)) {
-                RecipeViewerSlotWidget<?> dimSlot = RecipeViewerSlotWidget.create().value(dimMarker.getIcon()).recipeSlotRole(RecipeSlotRole.CATALYST).background(IDrawable.NONE);
+                RecipeViewerSlotWidget<?> dimSlot = RecipeViewerSlotWidget.create().value(dimMarker.getIcon())
+                        .recipeSlotRole(RecipeSlotRole.CATALYST).background(IDrawable.NONE);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.overlay(
                             Text.str("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)));
@@ -165,7 +167,6 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                         new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
                 .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                 .toArray(DimensionMarker[]::new);
-
     }
 
     public static String getOreName(GTOreDefinition oreDefinition) {

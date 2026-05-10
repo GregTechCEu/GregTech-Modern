@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -104,6 +105,11 @@ public class GTGuiTheme {
 
     private void buildJson() {
         elementBuilder.forEach(c -> c.accept(jsonBuilder));
+    }
+
+    public static void registerThemes() {
+        MinecraftForge.EVENT_BUS.register(GTGuiTheme.class);
+        THEMES.forEach(GTGuiTheme::register);
     }
 
     @SubscribeEvent

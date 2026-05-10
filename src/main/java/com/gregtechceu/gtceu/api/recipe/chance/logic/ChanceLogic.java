@@ -176,7 +176,8 @@ public abstract class ChanceLogic {
                 if (orig.maxChance() == getMaxChancedValue()) {
                     chancesOutOfTenThousand.add(orig.chance());
                 } else {
-                    chancesOutOfTenThousand.add((int) ((orig.chance() / (float) orig.maxChance()) * getMaxChancedValue()));
+                    chancesOutOfTenThousand
+                            .add((int) ((orig.chance() / (float) orig.maxChance()) * getMaxChancedValue()));
                 }
             }
 

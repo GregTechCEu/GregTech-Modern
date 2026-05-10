@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
+import brachy.modularui.screen.RichTooltip;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public record Content(Object content, int chance, int maxChance, int tierChanceBoost) {
 
@@ -27,13 +25,13 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
         return RecordCodecBuilder.create(instance -> instance.group(
-                        capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
-                        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
-                                .forGetter(val -> val.chance),
-                        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
-                                .forGetter(val -> val.maxChance),
-                        Codec.INT.optionalFieldOf("tierChanceBoost", 0)
-                                .forGetter(val -> val.tierChanceBoost))
+                capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
+                        .forGetter(val -> val.chance),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
+                        .forGetter(val -> val.maxChance),
+                Codec.INT.optionalFieldOf("tierChanceBoost", 0)
+                        .forGetter(val -> val.tierChanceBoost))
                 .apply(instance, Content::new));
     }
 
@@ -99,7 +97,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
 
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltip.addLine(Component.translatable("gtceu.gui.content.chance_base_logic",
-                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltip.addLine(
@@ -114,7 +112,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
 
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltip.addLine(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                                        FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltip.addLine(
@@ -124,7 +122,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
                 } else {
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
-                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltip.addLine(
@@ -135,5 +133,4 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
             }
         }
     }
-
 }

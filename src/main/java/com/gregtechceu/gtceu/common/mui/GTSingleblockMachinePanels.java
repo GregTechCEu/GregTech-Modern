@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeMachineWidget;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeMachineWidget;
 
 public class GTSingleblockMachinePanels {
 
@@ -44,9 +44,11 @@ public class GTSingleblockMachinePanels {
             return new ModularPanel<>(machine.getDefinition().getName());
         }
 
-        var builder = isSteam ? MachineUIPanelBuilder.panelBuilder(machine).drawGTLogo(true) : MachineUIPanelBuilder.defaultSteamMachinePanelBuilder(machine);
+        var builder = !isSteam ? MachineUIPanelBuilder.panelBuilder(machine).drawGTLogo(true) :
+                MachineUIPanelBuilder.defaultSteamMachinePanelBuilder(machine);
         return builder.mainContents(
-                (parent) -> parent.child(new GTRecipeTypeMachineWidget(type, syncManager, machine, recipeLogic::getProgressPercent)))
+                (parent) -> parent.child(
+                        new GTRecipeTypeMachineWidget(type, syncManager, machine, recipeLogic::getProgressPercent)))
                 .build(syncManager, settings)
                 .excludeAreaInRecipeViewer();
     };

@@ -1,14 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.text.ModularComponent;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.widget.WidgetTree;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -22,13 +13,22 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.function.Consumer;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.text.ModularComponent;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.widget.WidgetTree;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 
 /**
  * Fills recipe viewer UI slots with the capability content for a specific recipe.
@@ -60,7 +60,8 @@ public interface CapabilityContentBuilder {
         var innerContent = ItemRecipeCapability.CAP.of(content.content());
 
         recipeViewerSlotWidget.value(ItemRecipeCapability.mapIngredientToEntryList(innerContent));
-        recipeViewerSlotWidget.overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
+        recipeViewerSlotWidget
+                .overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
         recipeViewerSlotWidget.chance(chance);
 
         if (io == IO.IN && (content.chance() == 0 || innerContent instanceof IntCircuitIngredient)) {
@@ -80,16 +81,16 @@ public interface CapabilityContentBuilder {
             if (innerContent instanceof IntProviderIngredient ingredient) {
                 IntProvider countProvider = ingredient.getCountProvider();
                 tooltip.add(Component.translatable("gtceu.gui.content.count_range",
-                                countProvider.getMinValue(), countProvider.getMaxValue())
+                        countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             } else if (innerContent instanceof SizedIngredient sizedIngredient &&
                     sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
 
-                IntProvider countProvider = ingredient.getCountProvider();
-                tooltip.add(Component.translatable("gtceu.gui.content.count_range",
+                        IntProvider countProvider = ingredient.getCountProvider();
+                        tooltip.add(Component.translatable("gtceu.gui.content.count_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
-                        .withStyle(ChatFormatting.GOLD));
-            }
+                                .withStyle(ChatFormatting.GOLD));
+                    }
             if (perTick) {
                 tooltip.add(Component.translatable("gtceu.gui.content.per_tick"));
             }
@@ -105,9 +106,9 @@ public interface CapabilityContentBuilder {
         FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content());
 
         recipeViewerSlotWidget.value(FluidRecipeCapability.mapIngredientToEntryList(ingredient));
-        recipeViewerSlotWidget.overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
+        recipeViewerSlotWidget
+                .overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
         recipeViewerSlotWidget.chance(chance);
-
 
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
             if (ingredient.getStacks().length > 0) {
@@ -117,7 +118,7 @@ public interface CapabilityContentBuilder {
             if (ingredient instanceof IntProviderFluidIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
                 tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",
-                                countProvider.getMinValue(), countProvider.getMaxValue())
+                        countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             }
             if (perTick) {
@@ -136,23 +137,24 @@ public interface CapabilityContentBuilder {
 
     CapabilityContentBuilder COMPUTATION = (widget, content, io, perTick,
                                             recipeType, recipe, chanceTier, recipeTier) -> {
-      if (!(widget instanceof Flow flow)) return;
+        if (!(widget instanceof Flow flow)) return;
 
-      var existingCompTickWidget = WidgetTree.findFirstWithNameNullable(flow, "comp_tick");
-      var existingCompTotal = WidgetTree.findFirstWithNameNullable(flow, "comp_total");
+        var existingCompTickWidget = WidgetTree.findFirstWithNameNullable(flow, "comp_tick");
+        var existingCompTotal = WidgetTree.findFirstWithNameNullable(flow, "comp_total");
 
-      if (recipe.tickInputs.get(CWURecipeCapability.CAP) != null) {
+        if (recipe.tickInputs.get(CWURecipeCapability.CAP) != null) {
             if (CWURecipeCapability.CAP.isTickSlot(0, IO.IN, recipe)) {
-                int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum();
+                int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content)
+                        .mapToInt(CWURecipeCapability.CAP::of).sum();
                 var text = Text.lang("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu));
 
-                if (existingCompTickWidget != null) ((TextWidget<?>)existingCompTickWidget).value(text);
+                if (existingCompTickWidget != null) ((TextWidget<?>) existingCompTickWidget).value(text);
                 else flow.child(text.asWidget().name("comp_tick"));
             }
             if (recipe.data.getBoolean("duration_is_total_cwu")) {
                 var text = Text.lang("gtceu.recipe.total_computation", FormattingUtil.formatNumbers(recipe.duration));
 
-                if (existingCompTotal != null) ((TextWidget<?>)existingCompTotal).value(text);
+                if (existingCompTotal != null) ((TextWidget<?>) existingCompTotal).value(text);
                 else flow.child(text.asWidget().name("comp_total"));
             }
         }
@@ -181,20 +183,23 @@ public interface CapabilityContentBuilder {
                 maxEu = Text.lang("gtceu.recipe.max_eu",
                         FormattingUtil.formatNumbers(eu.getTotalEU() / minimumCWUt));
             } else {
-                maxEu = Text.lang("gtceu.recipe.total", FormattingUtil.formatNumbers(eu.getTotalEU()* recipe.duration));
+                maxEu = Text.lang("gtceu.recipe.total",
+                        FormattingUtil.formatNumbers(eu.getTotalEU() * recipe.duration));
             }
 
-            if (maxEuWidget != null) ((TextWidget<?>)maxEuWidget).value(maxEu);
+            if (maxEuWidget != null) ((TextWidget<?>) maxEuWidget).value(maxEu);
             else flow.child(maxEu.asWidget().name("max_eu"));
 
-            var euText = Text.lang(io == IO.IN ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
+            var euText = Text
+                    .lang(io == IO.IN ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
+                            FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();
             tooltip.addLine(Text.lang("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
                     .withStyle(ChatFormatting.UNDERLINE));
 
-            if (euWidget != null) ((TextWidget<?>)euWidget).value(euText).tooltip(tooltip);
+            if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);
             else flow.child(euText.asWidget().tooltip(tooltip).name("eu"));
         }
 

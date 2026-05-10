@@ -175,7 +175,7 @@ public class GTMuiWidgets {
                 voidable::setVoidingMode);
 
         return new CycleButtonWidget()
-                .overlay(GTGuiTextures.BUTTON_VOID_MULTIBLOCK)
+                .overlay(new DynamicDrawable(() -> GTGuiTextures.BUTTON_VOID_MULTIBLOCK[value.getIntValue()]))
                 .value(value)
                 .tooltipBuilder(
                         r -> r.addLine(Text.dynamic(() -> Component.translatable(value.getValue().getTooltip()))));

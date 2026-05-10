@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -26,6 +22,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -108,19 +108,18 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
 
             List<ItemStack> stacksToDisplay = new ArrayList<>();
             for (HolderSet<Block> set : resolvedBlocks) {
-                for (var blockEntry: set) {
+                for (var blockEntry : set) {
                     stacksToDisplay.add(new ItemStack(blockEntry.value().asItem()));
                 }
             }
 
-            for (var stack: stacksToDisplay) {
+            for (var stack : stacksToDisplay) {
                 row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                         .value(stack));
             }
 
             widget.textComponents.child(row);
         };
-
     }
 
     @Override

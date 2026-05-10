@@ -90,4 +90,8 @@ repositories {
         forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
         filter { includeGroupAndSubgroups("xaero") }
     }
+
+    flatDir {
+        dirs 'libs'
+    }
 }

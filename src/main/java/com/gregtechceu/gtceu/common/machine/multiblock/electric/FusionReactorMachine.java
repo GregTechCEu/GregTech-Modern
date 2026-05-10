@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -32,6 +30,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.widgets.TextWidget;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
@@ -279,8 +279,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
-        widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
-                FUSION_NAMES.get(tier))));
+        widget.textComponents.child(new TextWidget<>(
+                Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
+                        FUSION_NAMES.get(tier))));
     }
 
     //////////////////////////////////////

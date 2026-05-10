@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import java.util.function.DoubleSupplier;
 
@@ -44,14 +45,14 @@ public class GTRecipeTypeMachineWidget extends Flow {
         child(layout.getProgressWidgetSupplier().get(layout, progressPercent));
         child(outputColumn);
 
-        for (var entry: recipeType.maxInputs.object2IntEntrySet()) {
+        for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
             var layoutFunc = layout.capabilityInfo(entry.getKey()).machineLayoutBuilder;
             if (layoutFunc == null || entry.getIntValue() == 0) continue;
             layoutFunc.createCapabilityUILayout(machine, layout, this, IO.IN);
 
         }
 
-        for (var entry: recipeType.maxOutputs.object2IntEntrySet()) {
+        for (var entry : recipeType.maxOutputs.object2IntEntrySet()) {
             var layoutFunc = layout.capabilityInfo(entry.getKey()).machineLayoutBuilder;
             if (layoutFunc == null || entry.getIntValue() == 0) continue;
             layoutFunc.createCapabilityUILayout(machine, layout, this, IO.OUT);

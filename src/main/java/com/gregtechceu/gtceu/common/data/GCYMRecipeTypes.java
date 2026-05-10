@@ -1,10 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -15,7 +10,12 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.TextWidget;
 
 import java.util.List;
 
@@ -39,12 +39,15 @@ public class GCYMRecipeTypes {
                         if (recipe.data.contains("ebf_temp")) {
                             int temp = recipe.data.getInt("ebf_temp");
 
-                            widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
+                            widget.textComponents.child(new TextWidget<>(
+                                    Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
                             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                             if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier", Component.translatable(requiredCoil.getMaterial().getUnlocalizedName()).getString())));
+                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                                        Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
+                                                .getString())));
                             }
 
                             List<ItemStack> items = GTCEuAPI.HEATING_COILS.entrySet().stream()
@@ -54,11 +57,9 @@ public class GCYMRecipeTypes {
                             widget.child(RecipeViewerSlotWidget.create()
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
-                                    .posRel(0.80f, 0.80f)
-                            );
+                                    .posRel(0.80f, 0.80f));
                         }
-                    })
-            )
+                    }))
             .setSound(GTSoundEntries.ARC);
 
     public static void init() {}

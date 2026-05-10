@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.api.value.IDoubleValue;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -10,8 +7,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.value.IDoubleValue;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -62,6 +62,7 @@ public class GTRecipeTypeUILayout {
     }
 
     public static class CapabilityUIInfo {
+
         private final Map<IO, Int2ObjectOpenHashMap<IDrawable>> overlays = new Object2ObjectOpenHashMap<>();
 
         private final Map<IO, MachineCapabilityGridBuilder> machineLayoutGridBuilders = new EnumMap<>(IO.class);
@@ -70,28 +71,33 @@ public class GTRecipeTypeUILayout {
 
         public @Nullable CapabilityContentBuilder capabilityWidgetBuilder;
 
-        private final Map<IO, RecipeViewerCapabilityGridBuilder> recipeViewerLayoutGridBuilders = new EnumMap<>(IO.class);
+        private final Map<IO, RecipeViewerCapabilityGridBuilder> recipeViewerLayoutGridBuilders = new EnumMap<>(
+                IO.class);
 
         public @Nullable RecipeViewerCapabilityLayoutBuilder recipeViewerLayoutBuilder;
 
         private @UnknownNullability GTRecipeTypeUILayout layout;
         private final RecipeCapability<?> cap;
+
         private CapabilityUIInfo(RecipeCapability<?> cap) {
             this.cap = cap;
         }
 
         public IDrawable getOverlay(IO io, int index) {
-            return overlays.computeIfAbsent(io, $ -> new Int2ObjectOpenHashMap<>()).getOrDefault(index, IDrawable.EMPTY);
+            return overlays.computeIfAbsent(io, $ -> new Int2ObjectOpenHashMap<>()).getOrDefault(index,
+                    IDrawable.EMPTY);
         }
 
         public String[] getMachineGrid(IO io, MetaMachine machine) {
-            if (machineLayoutGridBuilders.containsKey(io)) return machineLayoutGridBuilders.get(io).buildGrid(machine, layout);
+            if (machineLayoutGridBuilders.containsKey(io))
+                return machineLayoutGridBuilders.get(io).buildGrid(machine, layout);
             var slots = layout.recipeType.getMaxSlots(cap, io);
             return GTMuiWidgets.createGrid(slots, Math.min(3, slots), io.support(IO.OUT), 's');
         }
 
         public String[] getRecipeViewerGrid(IO io) {
-            if (recipeViewerLayoutGridBuilders.containsKey(io)) return recipeViewerLayoutGridBuilders.get(io).buildGrid(layout);
+            if (recipeViewerLayoutGridBuilders.containsKey(io))
+                return recipeViewerLayoutGridBuilders.get(io).buildGrid(layout);
             return GTMuiWidgets.createGrid(layout.recipeType.getMaxSlots(cap, io),
                     Math.min(3, layout.recipeType.getMaxSlots(cap, io)), io.support(IO.OUT), 's');
         }
@@ -99,16 +105,19 @@ public class GTRecipeTypeUILayout {
 
     @FunctionalInterface
     public interface MachineCapabilityGridBuilder {
+
         String[] buildGrid(MetaMachine machine, GTRecipeTypeUILayout layout);
     }
 
     @FunctionalInterface
     public interface RecipeViewerCapabilityGridBuilder {
+
         String[] buildGrid(GTRecipeTypeUILayout layout);
     }
 
     @FunctionalInterface
     public interface ProgressWidgetSupplier {
+
         Widget<?> get(GTRecipeTypeUILayout layout, IDoubleValue<Double> value);
     }
 
@@ -135,13 +144,14 @@ public class GTRecipeTypeUILayout {
 
             getCapInfo(ItemRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.FLUID;
-            getCapInfo(CWURecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.COMPUTATION;
+            getCapInfo(
+                    CWURecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.COMPUTATION;
             getCapInfo(EURecipeCapability.CAP).recipeViewerLayoutBuilder = RecipeViewerCapabilityLayoutBuilder.EU;
 
             getCapInfo(ItemRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.ITEM;
             getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.FLUID;
             getCapInfo(CWURecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.COMPUTATION;
-            getCapInfo(EURecipeCapability.CAP).capabilityWidgetBuilder =  CapabilityContentBuilder.EU;
+            getCapInfo(EURecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.EU;
         }
 
         private CapabilityUIInfo getCapInfo(RecipeCapability<?> cap) {
@@ -158,7 +168,7 @@ public class GTRecipeTypeUILayout {
          */
         public Builder setSlotOverlay(IO ioMode, int slotIndex, RecipeCapability<?> cap, IDrawable overlay) {
             getCapInfo(cap).overlays.computeIfAbsent(ioMode, $ -> new Int2ObjectOpenHashMap<>())
-                            .put(slotIndex, overlay);
+                    .put(slotIndex, overlay);
             return this;
         }
 
@@ -240,6 +250,7 @@ public class GTRecipeTypeUILayout {
 
         /**
          * Sets a supplier which returns a widget to be used as a progress bar
+         * 
          * @param progressBarSupplier Progress widget supplier
          */
         public Builder setProgressBarSupplier(ProgressWidgetSupplier progressBarSupplier) {
@@ -285,6 +296,7 @@ public class GTRecipeTypeUILayout {
         /**
          * Sets a custom function which returns a flow to be used as the recipe viewer UI.<br>
          * <b>Using a custom UI builder will override some other builder options.</b>
+         * 
          * @param customUIBuilder Custom UI builder
          */
         public Builder customRecipeTypeUI(Function<GTRecipe, Flow> customUIBuilder) {
@@ -318,18 +330,22 @@ public class GTRecipeTypeUILayout {
 
         /**
          * Sets a function that builds the slot grid layout for both machine and recipe viewer UI
-         * @param cap The capability
-         * @param io IO
+         * 
+         * @param cap         The capability
+         * @param io          IO
          * @param gridBuilder Function that returns a {@code String[]}, where 's' should be used to denote a slot.
          */
-        public Builder setLayoutGridBuilder(RecipeCapability<?> cap, IO io, Function<GTRecipeTypeUILayout, String[]> gridBuilder) {
+        public Builder setLayoutGridBuilder(RecipeCapability<?> cap, IO io,
+                                            Function<GTRecipeTypeUILayout, String[]> gridBuilder) {
             setRecipeViewerLayoutGridBuilder(cap, io, gridBuilder::apply);
             setMachineLayoutGridBuilder(cap, io, (m, l) -> gridBuilder.apply(l));
             return this;
         }
 
         /**
-         * Adds a {@link RecipeUIModifier}, which modifies the recipe viewer UI after creation. Useful for adding extra information to recipe viewer recipes.
+         * Adds a {@link RecipeUIModifier}, which modifies the recipe viewer UI after creation. Useful for adding extra
+         * information to recipe viewer recipes.
+         * 
          * @param recipeUIModifier Recipe UI modifier.
          * @see RecipeUIModifier
          */
@@ -341,7 +357,8 @@ public class GTRecipeTypeUILayout {
         /**
          * Defines a function used to map recipe contents to their slots.<br>
          * This should only be used for custom capabilities.
-         * @param cap Recipe capability
+         * 
+         * @param cap            Recipe capability
          * @param contentBuilder Capability content builder
          */
         public Builder setCapabilityContentBuilder(RecipeCapability<?> cap, CapabilityContentBuilder contentBuilder) {
@@ -358,7 +375,8 @@ public class GTRecipeTypeUILayout {
                     .size(l.getProgressSize())
                     .direction(l.getProgressDirection());
 
-            var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier, customUIBuilder);
+            var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier,
+                    customUIBuilder);
             layout.progressSize = progressSize;
             layout.progressDirection = fillDirection;
             layout.progressBar = progressBar;

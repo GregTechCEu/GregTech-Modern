@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -39,7 +38,8 @@ import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
-    public static TextWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
+                                                   PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
 
@@ -330,7 +330,8 @@ public class GTMultiblockTextUtil {
     @SuppressWarnings("unchecked")
     public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                         PanelSyncManager syncManager) {
-        GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>)syncManager.getOrCreateSyncHandler("GTRecipe",
+        GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(
+                "GTRecipe",
                 GenericSyncValue.class,
                 () -> GenericSyncValue.builder(GTRecipe.class)
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
