@@ -135,12 +135,4 @@ public class CokeOvenHatch extends MultiblockPartMachine {
             updateAutoIOSubscription();
         }
     }
-
-    //////////////////////////////////////
-    // ********* GUI *********//
-    //////////////////////////////////////
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
 }

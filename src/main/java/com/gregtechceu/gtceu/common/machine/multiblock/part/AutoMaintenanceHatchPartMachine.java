@@ -48,9 +48,4 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
 
     @Override
     public void setTimeActive(int time) {}
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
 }

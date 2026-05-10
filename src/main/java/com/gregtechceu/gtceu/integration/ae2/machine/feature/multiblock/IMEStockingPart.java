@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -26,7 +27,7 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.Nullable;
 
-public interface IMEStockingPart extends IAutoPullPart {
+public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
 
     @Override
     default void addedToController(MultiblockControllerMachine controller) {

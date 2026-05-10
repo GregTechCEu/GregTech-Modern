@@ -18,7 +18,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-public interface IMultiPart extends IMachineFeature, IMuiMachine {
+public interface IMultiPart extends IMachineFeature {
 
     /**
      * Can it be shared among multi multiblock.

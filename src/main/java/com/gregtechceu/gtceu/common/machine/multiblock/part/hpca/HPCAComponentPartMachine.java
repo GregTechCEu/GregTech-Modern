@@ -37,11 +37,6 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     public abstract IDrawable getComponentIcon();
 
     @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
-
-    @Override
     public int getDefaultPaintingColor() {
         return 0xFFFFFF;
     }

@@ -29,11 +29,6 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
         return GTGuiTextures.MONITOR;
     }
 
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
-
     public Vector2d getMousePos(HitResult hitResult) {
         if (hitResult instanceof BlockHitResult hit) {
             Direction direction = RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false);

@@ -54,11 +54,6 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
     }
 
     @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
     }
