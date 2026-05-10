@@ -102,19 +102,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
         PropertyDispatch dispatch;
         if (!allowExtendedFacing) {
-            var disp = PropertyDispatch.property(rotationState.property);
-
-            dispatch = disp.generate((front) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, Direction.NORTH);
-                return applyOrientation(Variant.variant(), orientation);
-            });
+            dispatch = PropertyDispatch.property(rotationState.property)
+                    .generate((front) -> {
+                        var orientation = ExtendedBlockModelRotation.get(front, Direction.NORTH);
+                        return applyOrientation(Variant.variant(), orientation);
+                    });
         } else {
-            var disp = PropertyDispatch.properties(rotationState.property, GTBlockStateProperties.UPWARDS_FACING);
-
-            dispatch = disp.generate((front, up) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, up);
-                return applyOrientation(Variant.variant(), orientation);
-            });
+            dispatch = PropertyDispatch.properties(rotationState.property, GTBlockStateProperties.UPWARDS_FACING)
+                    .generate((front, up) -> {
+                        var orientation = ExtendedBlockModelRotation.get(front, up);
+                        return applyOrientation(Variant.variant(), orientation);
+                    });
         }
         return dispatch;
     }
