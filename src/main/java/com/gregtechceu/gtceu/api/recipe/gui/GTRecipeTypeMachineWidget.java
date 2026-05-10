@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -10,7 +13,15 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
+import dev.emi.emi.api.EmiApi;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -42,7 +53,20 @@ public class GTRecipeTypeMachineWidget extends Flow {
         center();
         childPadding((layout.getProgressSize() / 2) + 2);
         child(inputColumn);
-        child(layout.getProgressWidgetSupplier().get(layout, progressPercent));
+        child(layout.getProgressWidgetSupplier().get(layout, progressPercent).listenGuiAction(new IGuiAction.MousePressed() {
+            @Override
+            public boolean press(GuiContext guiContext, int i) {
+                if (!recipeType.getCategory().isXEIVisible()) return false;
+                if (GTCEu.Mods.isEMILoaded()) {
+                    EmiCallWrapper.openRecipeCategory(recipeType.getCategory());
+                } else if (GTCEu.Mods.isJEILoaded()) {
+                    JeiCallWrapper.openRecipeCategory(recipeType.getCategory());
+                } else if (GTCEu.Mods.isREILoaded()) {
+                    ReiCallWrapper.openRecipeCategory(recipeType.getCategory());
+                }
+                return true;
+            }
+        }).tooltip(r -> r.addLine(Text.lang("gtceu.recipe_type.show_recipes"))));
         child(outputColumn);
 
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
@@ -58,4 +82,25 @@ public class GTRecipeTypeMachineWidget extends Flow {
             layoutFunc.createCapabilityUILayout(machine, layout, this, IO.OUT);
         }
     }
+
+
+    private static class EmiCallWrapper {
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+        }
+    }
+
+    private static class JeiCallWrapper {
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+        }
+
+    }
+
+    private static class ReiCallWrapper {
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
+        }
+    }
+
 }
