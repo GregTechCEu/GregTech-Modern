@@ -278,13 +278,13 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that picking up a surface rock will search for veins in.",
-                    "-1 to disable.", "Default: 24" })
-            @Configurable.Range(min = 1)
+                    "0 to disable.", "Default: 24" })
+            @Configurable.Range(min = 0)
             public int surfaceRockProspectRange = 24;
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that clicking an ore block will search for veins in.",
-                    "-1 to disable", "Default: 24" })
-            @Configurable.Range(min = 1)
+                    "0 to disable", "Default: 24" })
+            @Configurable.Range(min = 0)
             public int oreBlockProspectRange = 24;
 
             @Configurable
