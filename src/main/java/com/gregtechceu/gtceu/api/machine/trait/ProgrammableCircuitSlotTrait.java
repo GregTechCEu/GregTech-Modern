@@ -21,6 +21,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Machine trait which adds a programmable circuit input slot to the side of a machine.
+ */
 public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<Ingredient> implements IAttachConfiguratorsTrait, ICapabilityTrait {
 
     public static final MachineTraitType<ProgrammableCircuitSlotTrait> TYPE = new MachineTraitType<>(ProgrammableCircuitSlotTrait.class);

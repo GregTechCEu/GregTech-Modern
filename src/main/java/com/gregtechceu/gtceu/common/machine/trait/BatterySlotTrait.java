@@ -17,6 +17,9 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Machine trait that adds a battery charger slot to the side of the machine UI
+ */
 public class BatterySlotTrait extends MachineTrait implements IAttachConfiguratorsTrait {
 
     public static final MachineTraitType<BatterySlotTrait> TYPE = new MachineTraitType<>(BatterySlotTrait.class);
@@ -31,6 +34,10 @@ public class BatterySlotTrait extends MachineTrait implements IAttachConfigurato
 
     private final NotifiableEnergyContainer energyContainer;
 
+    /**
+     * Creates a battery charger slot trait
+     * @param energyContainerToUse The energy container which the battery should draw energy from/push energy to.
+     */
     public BatterySlotTrait(NotifiableEnergyContainer energyContainerToUse) {
         energyContainer = energyContainerToUse;
         storage = new CustomItemStackHandler(1);
