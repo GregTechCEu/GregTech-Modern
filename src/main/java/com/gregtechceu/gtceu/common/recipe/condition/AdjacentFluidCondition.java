@@ -111,13 +111,15 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
     public RecipeUIModifier modifyUI() {
         return (recipe, widget) -> {
             var row = Flow.row().coverChildrenHeight().widthRel(1);
+            var fluids = getOrInitFluids(recipe);
 
             row.child(Text.lang("recipe.condition.adjacent_fluid.tooltip").asWidget());
 
-            for (HolderSet<Fluid> set : resolvedFluids) {
+            for (HolderSet<Fluid> set : fluids) {
                 if (set.size() == 0) {
                     continue;
                 }
+                // todo figure out why the fluids arent rendering
                 row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                         .value(FluidHolderSetList.of(set, 1000, null)));
             }

@@ -674,6 +674,7 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven", MULTIBLOCK).setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW, 20, ProgressWidget.Direction.RIGHT))
             .setSound(GTSoundEntries.FIRE);
 
     public final static GTRecipeType CRACKING_RECIPES = register("cracker", MULTIBLOCK).setMaxIOSize(1, 0, 2, 2)
@@ -697,6 +698,7 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType VACUUM_RECIPES = register("vacuum_freezer", MULTIBLOCK).setMaxIOSize(1, 1, 2, 1)
             .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW, 20, ProgressWidget.Direction.RIGHT))
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.MV]))
             .setSound(GTSoundEntries.COOLING);
 

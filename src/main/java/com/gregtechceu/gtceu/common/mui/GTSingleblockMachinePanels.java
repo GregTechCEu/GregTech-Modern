@@ -47,8 +47,16 @@ public class GTSingleblockMachinePanels {
         var builder = !isSteam ? MachineUIPanelBuilder.panelBuilder(machine).drawGTLogo(true) :
                 MachineUIPanelBuilder.defaultSteamMachinePanelBuilder(machine);
         return builder.mainContents(
-                (parent) -> parent.child(
-                        new GTRecipeTypeMachineWidget(type, syncManager, machine, recipeLogic::getProgressPercent)))
+                (parent) -> {
+                    // todo find input column and output column width based on cap size, use to offset the widget in opp
+                    // direction
+                    // float offset = type.maxOutputs.values().intStream().max().getAsInt() -
+                    // type.maxInputs.values().intStream().max().getAsInt();
+
+                    parent.child(
+                            new GTRecipeTypeMachineWidget(type, syncManager, machine, recipeLogic::getProgressPercent));
+                    // .left((int)(offset * ((type.getUiLayout().getProgressSize() / 2.f) + 2)));
+                })
                 .build(syncManager, settings)
                 .excludeAreaInRecipeViewer();
     };

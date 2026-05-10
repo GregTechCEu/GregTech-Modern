@@ -16,6 +16,7 @@ import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 
 import java.util.List;
 
@@ -42,10 +43,12 @@ public class GCYMRecipeTypes {
                             widget.textComponents.child(new TextWidget<>(
                                     Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
+                            Flow coilRow = Flow.row();
+
                             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                             if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                                widget.textComponents.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                                coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
                                         Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
                                                 .getString())));
                             }
@@ -54,10 +57,12 @@ public class GCYMRecipeTypes {
                                     .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                                     .map(coil -> new ItemStack(coil.getValue().get())).toList();
 
-                            widget.child(RecipeViewerSlotWidget.create()
+                            coilRow.child(RecipeViewerSlotWidget.create()
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
-                                    .posRel(0.80f, 0.80f));
+                            /* .posRel(0.85f, 1.0f) */);
+
+                            widget.textComponents.child(coilRow);
                         }
                     }))
             .setSound(GTSoundEntries.ARC);

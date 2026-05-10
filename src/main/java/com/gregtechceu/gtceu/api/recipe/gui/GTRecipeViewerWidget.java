@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -91,7 +90,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);
-        mainColumn.child(recipeContentRow.marginTop(5).marginBottom(3));
+        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
         loadContentIntoSlots();
@@ -115,10 +114,12 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private Flow buildDefaultLayout() {
         var row = Flow.row()
                 .horizontalCenter()
-                .coverChildren()
+                .coverChildrenHeight()
+                .widthRel(1.f)
+                .childPadding((recipeType.getUiLayout().getProgressSize() / 2) + 2)
                 .child(inputColumn)
-                .child(uiLayout.getProgressWidgetSupplier().get(uiLayout, DoubleValue.simulateProgress(2000))
-                        .paddingLeft(2 + uiLayout.getProgressSize() / 2))
+                .child(uiLayout.getProgressWidgetSupplier()
+                        .get(uiLayout, DoubleValue.simulateProgress(2000)))
                 .child(outputColumn);
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
             var layoutFunc = uiLayout.capabilityInfo(entry.getKey()).recipeViewerLayoutBuilder;
@@ -196,12 +197,19 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .bottomRel(0).rightRel(0)
                 .decoration()
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
-                .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang("gtceu.oc.tooltip", GTValues.VNF[minTier])))
+                .tooltipBuilder(tooltip -> {
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
+                })
                 .onMousePressed((ctx, b) -> {
-                    GTCEu.LOGGER.info("Row: {} x {}", recipeContentRow.getArea().w(), recipeContentRow.getArea().h());
-                    GTCEu.LOGGER.info("In: {} x {}", inputColumn.getArea().w(), inputColumn.getArea().h());
-                    GTCEu.LOGGER.info("Out: {} x {}", outputColumn.getArea().w(), outputColumn.getArea().h());
-                    GTCEu.LOGGER.info("Total: {} x {}", getArea().w(), getArea().h());
+                    // GTCEu.LOGGER.info("Row: {} x {}", recipeContentRow.getArea().w(),
+                    // recipeContentRow.getArea().h());
+                    // GTCEu.LOGGER.info("In: {} x {}", inputColumn.getArea().w(), inputColumn.getArea().h());
+                    // GTCEu.LOGGER.info("Out: {} x {}", outputColumn.getArea().w(), outputColumn.getArea().h());
+                    // GTCEu.LOGGER.info("Total: {} x {}", getArea().w(), getArea().h());
                     var mouse = MouseData.create(b);
 
                     OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
@@ -217,6 +225,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                     }
 
                     if (mouse.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
+                    // TODO more contextual oc values based on recipe type or machine
                     if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
                         oc = FusionReactorMachine.FUSION_OC;
                     }
@@ -232,7 +241,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         if (tier > minTier && !inputEUt.isEmpty()) {
             int ocs = tier - minTier;
             if (minTier == ULV) ocs--;
-            var params = new OverclockingLogic.OCParams(inputEUt.voltage(), modifiedRecipe.duration, ocs, 1);
+            var params = new OverclockingLogic.OCParams(inputEUt.voltage(), baseRecipe.duration, ocs, 1);
             var modifier = logic.runOverclockingLogic(params, V[tier]).toModifier();
 
             modifiedRecipe = Objects.requireNonNull(modifier.apply(baseRecipe));
