@@ -4,111 +4,246 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import dev.latvian.mods.kubejs.event.EventResult;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class RegisterWoodsEventJS implements KubeEvent {
 
     public RegisterWoodsEventJS() {
         this.woods = new ArrayList<>();
-        this.builders = new ArrayList<>();
+        this.wrapped = new ArrayList<>();
     }
 
     @HideFromJS
     public ArrayList<WoodTypeEntry> woods;
     @HideFromJS
-    public ArrayList<Builder> builders;
+    public ArrayList<Wrapped> wrapped;
 
-    @Accessors(fluent = true, chain = true)
-    public class Builder {
+    public class Wrapped {
 
-        private final String modId;
-        private final String woodName;
+        RegisterWoodsEventJS evt;
+        String modId;
+        String woodName;
 
         @HideFromJS
-        private Builder(String modId, String woodName) {
+        Wrapped(String modId, String woodName) {
             this.modId = modId;
             this.woodName = woodName;
         }
 
-        @Setter
-        private transient String recipeId;
-        @Setter
-        private transient Item plank;
-        @Setter
-        private transient Item strippedLog;
-        @Setter
-        private transient Item strippedWood;
-        @Setter
-        private transient Item wood;
-        @Setter
-        private transient Item log;
-        @Setter
-        private transient Item door;
-        @Setter
-        private transient Item trapdoor;
-        @Setter
-        private transient Item slab;
-        @Setter
-        private transient Item fence;
-        @Setter
-        private transient Item fenceGate;
-        @Setter
-        private transient Item stairs;
-        @Setter
-        private transient Item boat;
-        @Setter
-        private transient Item chestBoat;
-        @Setter
-        private transient Item sign;
-        @Setter
-        private transient Item hangingSign;
-        @Setter
-        private transient Item button;
-        @Setter
-        private transient Item pressurePlate;
+        private String _recipeId;
+        private Item _plank;
+        private Item _strippedLog;
+        private Item _strippedWood;
+        private Item _wood;
+        private Item _log;
+        private Item _door;
+        private Item _trapdoor;
+        private Item _slab;
+        private Item _fence;
+        private Item _fenceGate;
+        private Item _stairs;
+        private Item _boat;
+        private Item _chestBoat;
+        private Item _sign;
+        private Item _hangingSign;
+        private Item _button;
+        private Item _pressurePlate;
+
+        public Wrapped recipeId(String recipeId) {
+            this._recipeId = recipeId;
+            return this;
+        }
+
+        public Wrapped plank(Item plank) {
+            this._plank = plank;
+            return this;
+        }
+
+        public Wrapped strippedLog(Item strippedLog) {
+            this._strippedLog = strippedLog;
+            return this;
+        }
+
+        public Wrapped strippedWood(Item strippedWood) {
+            this._strippedWood = strippedWood;
+            return this;
+        }
+
+        public Wrapped wood(Item wood) {
+            this._wood = wood;
+            return this;
+        }
+
+        public Wrapped log(Item log) {
+            this._log = log;
+            return this;
+        }
+
+        public Wrapped door(Item door) {
+            this._door = door;
+            return this;
+        }
+
+        public Wrapped trapdoor(Item trapdoor) {
+            this._trapdoor = trapdoor;
+            return this;
+        }
+
+        public Wrapped slab(Item slab) {
+            this._slab = slab;
+            return this;
+        }
+
+        public Wrapped fence(Item fence) {
+            this._fence = fence;
+            return this;
+        }
+
+        public Wrapped fenceGate(Item fenceGate) {
+            this._fenceGate = fenceGate;
+            return this;
+        }
+
+        public Wrapped stairs(Item stairs) {
+            this._stairs = stairs;
+            return this;
+        }
+
+        public Wrapped boat(Item boat) {
+            this._boat = boat;
+            return this;
+        }
+
+        public Wrapped chestBoat(Item chestBoat) {
+            this._chestBoat = chestBoat;
+            return this;
+        }
+
+        public Wrapped sign(Item sign) {
+            this._sign = sign;
+            return this;
+        }
+
+        public Wrapped hangingSign(Item hangingSign) {
+            this._hangingSign = hangingSign;
+            return this;
+        }
+
+        public Wrapped button(Item button) {
+            this._button = button;
+            return this;
+        }
+
+        public Wrapped pressurePlate(Item pressurePlate) {
+            this._pressurePlate = pressurePlate;
+            return this;
+        }
 
         @HideFromJS
         public WoodTypeEntry toEntry() throws IllegalArgumentException {
-            WoodTypeEntry.Builder builder = new WoodTypeEntry.Builder(this.modId, this.woodName);
+            if (this.modId == null) {
+                throw new IllegalArgumentException("Need a modId");
+            }
+            if (this.woodName == null) {
+                throw new IllegalArgumentException("Need a woodName");
+            }
+            if (this._recipeId == null) {
+                throw new IllegalArgumentException("Need a recipeId");
+            }
 
-            if (this.plank != null)
-                builder.planks(this.plank, this.recipeId == null ? null : this.recipeId + "_planks");
-            if (this.log != null) builder.strippedLog(this.log).removeCharcoalRecipe();
-            if (this.strippedLog != null) builder.strippedLog(this.strippedLog);
-            if (this.wood != null) builder.strippedLog(this.wood);
-            if (this.strippedWood != null) builder.strippedWood(this.strippedWood);
-            if (this.door != null) builder.door(this.door, this.recipeId == null ? null : this.recipeId + "_door");
-            if (this.trapdoor != null)
-                builder.trapdoor(this.trapdoor, this.recipeId == null ? null : this.recipeId + "_trapdoor");
-            if (this.slab != null) builder.slab(this.slab, this.recipeId == null ? null : this.recipeId + "_slab");
-            if (this.fence != null) builder.fence(this.fence, this.recipeId == null ? null : this.recipeId + "_fence");
-            if (this.fenceGate != null)
-                builder.fenceGate(this.fenceGate, this.recipeId == null ? null : this.recipeId + "_fence_gate");
-            if (this.stairs != null)
-                builder.stairs(this.stairs, this.recipeId == null ? null : this.recipeId + "_stairs");
-            if (this.boat != null) builder.boat(this.boat, this.recipeId == null ? null : this.recipeId + "_boat");
-            if (this.chestBoat != null)
-                builder.chestBoat(this.chestBoat, this.recipeId == null ? null : this.recipeId + "_chest_boat");
-            if (this.sign != null) builder.sign(this.sign, this.recipeId == null ? null : this.recipeId + "_sign");
-            if (this.hangingSign != null)
-                builder.hangingSign(this.hangingSign, this.recipeId == null ? null : this.recipeId + "_hanging_sign");
-            if (this.button != null)
-                builder.button(this.button, this.recipeId == null ? null : this.recipeId + "_button");
-            if (this.pressurePlate != null) builder.pressurePlate(this.pressurePlate,
-                    this.recipeId == null ? null : this.recipeId + "_pressure_plate");
+            if (this._plank == null) {
+                throw new IllegalArgumentException("Need a plank");
+            }
 
-            return builder.registerMaterialInfo(this.plank != null, this.door != null, this.slab != null,
-                    this.fence != null, this.fenceGate != null, this.stairs != null, this.boat != null,
-                    this.chestBoat != null, this.button != null, this.pressurePlate != null)
+            if (this._strippedLog == null) {
+                throw new IllegalArgumentException("Need a strippedLog");
+            }
+
+            if (this._strippedWood == null) {
+                throw new IllegalArgumentException("Need a strippedWood");
+            }
+
+            if (this._wood == null) {
+                throw new IllegalArgumentException("Need a wood");
+            }
+
+            if (this._log == null) {
+                throw new IllegalArgumentException("Need a log");
+            }
+
+            if (this._door == null) {
+                throw new IllegalArgumentException("Need a door");
+            }
+
+            if (this._trapdoor == null) {
+                throw new IllegalArgumentException("Need a trapdoor");
+            }
+
+            if (this._slab == null) {
+                throw new IllegalArgumentException("Need a slab");
+            }
+
+            if (this._fence == null) {
+                throw new IllegalArgumentException("Need a fence");
+            }
+
+            if (this._fenceGate == null) {
+                throw new IllegalArgumentException("Need a fenceGate");
+            }
+
+            if (this._stairs == null) {
+                throw new IllegalArgumentException("Need a stairs");
+            }
+
+            if (this._boat == null) {
+                throw new IllegalArgumentException("Need a boat");
+            }
+
+            if (this._chestBoat == null) {
+                throw new IllegalArgumentException("Need a chestBoat");
+            }
+
+            if (this._sign == null) {
+                throw new IllegalArgumentException("Need a sign");
+            }
+
+            if (this._hangingSign == null) {
+                throw new IllegalArgumentException("Need a hangingSign");
+            }
+
+            if (this._button == null) {
+                throw new IllegalArgumentException("Need a button");
+            }
+
+            if (this._pressurePlate == null) {
+                throw new IllegalArgumentException("Need a pressurePlate");
+            }
+
+            return new WoodTypeEntry.Builder(this.modId, this.woodName)
+                    .planks(this._plank, this._recipeId + "_planks")
+                    .log(Items.OAK_LOG).removeCharcoalRecipe()
+                    .strippedLog(this._strippedLog)
+                    .wood(this._wood)
+                    .strippedWood(this._strippedWood)
+                    .door(this._door, this._recipeId + "_door")
+                    .trapdoor(this._trapdoor, this._recipeId + "_trapdoor")
+                    .slab(this._slab, this._recipeId + "_slab")
+                    .fence(this._fence, this._recipeId + "_fence")
+                    .fenceGate(this._fenceGate, this._recipeId + "_fence_gate")
+                    .stairs(this._stairs, this._recipeId + "_stairs")
+                    .boat(this._boat, this._recipeId + "_boat")
+                    .chestBoat(this._chestBoat, this._recipeId + "_chest_boat")
+                    .sign(this._sign, this._recipeId + "_sign")
+                    .hangingSign(this._hangingSign, this._recipeId + "_hanging_sign")
+                    .button(this._button, this._recipeId + "_button")
+                    .pressurePlate(this._pressurePlate, this._recipeId + "_pressure_plate")
+                    .registerAllMaterialInfo()
                     .build();
         }
 
@@ -129,20 +264,16 @@ public class RegisterWoodsEventJS implements KubeEvent {
         }
     }
 
-    public Builder register(@NotNull String modId, @NotNull String woodName) {
-        Objects.requireNonNull(modId, "modId");
-        Objects.requireNonNull(woodName, "woodName");
-
-        Builder value = new Builder(modId, woodName);
-
-        this.builders.add(value);
-        return value;
+    public Wrapped register(String modId, String woodName) {
+        var wrap = new Wrapped(modId, woodName);
+        this.wrapped.add(wrap);
+        return wrap;
     }
 
     @Override
     public void afterPosted(EventResult result) {
-        for (Builder builder : this.builders) {
-            builder.register();
+        for (var wrapped : this.wrapped) {
+            wrapped.register();
         }
         KubeEvent.super.afterPosted(result);
     }
