@@ -11,7 +11,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
@@ -21,8 +20,7 @@ import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-@EventBusSubscriber(modid = GTCEu.MOD_ID)
-public class RegistryEventHandler {
+public class KubeGTRegistryEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerAll(RegisterEvent event) {
