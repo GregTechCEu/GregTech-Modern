@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,6 @@ import brachy.modularui.api.drawable.IDrawable;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,9 +23,9 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     protected final HPCAComponentTrait hpcaComponentTrait;
 
     public HPCAComponentPartMachine(BlockEntityCreationInfo info,
-                                    Function<HPCAComponentPartMachine, HPCAComponentTrait> hpcaTraitSupplier) {
+                                    HPCAComponentTrait hpcaTrait) {
         super(info);
-        this.hpcaComponentTrait = hpcaTraitSupplier.apply(this);
+        this.hpcaComponentTrait = attachTrait(hpcaTrait);
     }
 
     public abstract boolean isAdvanced();

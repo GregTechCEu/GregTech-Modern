@@ -8,6 +8,8 @@ repositories {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
             includeGroupAndSubgroups("io.netty")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
         }
     }
 

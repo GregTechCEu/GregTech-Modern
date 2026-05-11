@@ -71,7 +71,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
 
-    public final IRecipeLogicMachine machine;
     public @Nullable List<GTRecipe> lastFailedMatches;
 
     @Getter
@@ -142,9 +141,17 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected @Nullable TickableSubscription subscription;
     protected @Nullable Object workingSound;
 
-    public RecipeLogic(IRecipeLogicMachine machine) {
-        super(machine.self());
-        this.machine = machine;
+    public RecipeLogic() {
+        super();
+    }
+
+    public IRecipeLogicMachine getRLMachine() {
+        return (IRecipeLogicMachine) getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(IRecipeLogicMachine.class);
     }
 
     @SuppressWarnings("unused")
@@ -182,7 +189,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public void updateTickSubscription() {
-        if (isSuspend() || !machine.isRecipeLogicAvailable()) {
+        if (isSuspend() || !getRLMachine().isRecipeLogicAvailable()) {
             if (subscription != null) {
                 subscription.unsubscribe();
                 subscription = null;
@@ -223,7 +230,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 }
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
-            } else if (!machine.keepSubscribing() || getMachine().getOffsetTimer() % 5 == 0) {
+            } else if (!getRLMachine().keepSubscribing() || getMachine().getOffsetTimer() % 5 == 0) {
                 findAndHandleRecipe();
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
@@ -236,7 +243,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         if (isSuspend()) {
             // Machine is paused and can unsubscribe
             unsubscribe = true;
-        } else if (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty &&
+        } else if (lastRecipe == null && isIdle() && !getRLMachine().keepSubscribing() && !recipeDirty &&
                 lastFailedMatches == null) {
                     // No recipes available and the machine wants to unsubscribe until notified
                     unsubscribe = true;
@@ -252,7 +259,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        return RecipeHelper.matchContents(machine, recipe);
+        return RecipeHelper.matchContents(getRLMachine(), recipe);
     }
 
     protected ActionResult checkRecipe(GTRecipe recipe) {
@@ -263,7 +270,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match);
+        var modified = getRLMachine().fullModifyRecipe(match);
         if (modified != null) {
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
@@ -287,7 +294,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             var handleTick = handleTickRecipe(lastRecipe);
             if (handleTick.isSuccess()) {
                 setStatus(Status.WORKING);
-                if (!machine.onWorking()) {
+                if (!getRLMachine().onWorking()) {
                     this.interruptRecipe();
                     return;
                 }
@@ -303,8 +310,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                     runAttempt = (int) GTMath.clamp(runAttempt, 0, 5);
                     if (runAttempt == 5) {
                         boolean preventPowerFail = false;
-                        if (machine instanceof MultiblockControllerMachine) {
-                            var covers = machine.self().getCoverContainer().getCovers();
+                        if (getMachine() instanceof MultiblockControllerMachine) {
+                            var covers = getMachine().getCoverContainer().getCovers();
                             for (var cover : covers) {
                                 if (cover instanceof MachineControllerCover mcc) {
                                     if (mcc.preventPowerFail()) {
@@ -315,7 +322,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                             }
                         }
 
-                        if (machine instanceof MultiblockControllerMachine && !preventPowerFail) {
+                        if (getMachine() instanceof MultiblockControllerMachine && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
                         }
@@ -332,14 +339,14 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     protected void regressRecipe() {
-        if (progress > 0 && machine.regressWhenWaiting()) {
+        if (progress > 0 && getRLMachine().regressWhenWaiting()) {
             this.progress = 1;
             syncDataHolder.markClientSyncFieldDirty("progress");
         }
     }
 
     public Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(machine, r -> true);
+        return getRLMachine().getRecipeType().searchRecipe(getRLMachine(), r -> true);
     }
 
     public void findAndHandleRecipe() {
@@ -385,7 +392,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     public ActionResult handleTickRecipe(GTRecipe recipe) {
         if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
-        var result = RecipeHelper.matchTickRecipe(machine, recipe);
+        var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
         if (!result.isSuccess()) return result;
 
         result = handleTickRecipeIO(recipe, IO.IN);
@@ -396,7 +403,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public void setupRecipe(GTRecipe recipe) {
-        if (!machine.beforeWorking(recipe)) {
+        if (!getRLMachine().beforeWorking(recipe)) {
             setStatus(Status.IDLE);
             consecutiveRecipes = 0;
             progress = 0;
@@ -430,7 +437,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 status = Status.SUSPEND;
                 suspendAfterFinish = false;
             }
-            machine.notifyStatusChanged(this.status, status);
+            getRLMachine().notifyStatusChanged(this.status, status);
             this.status = status;
             syncDataHolder.markClientSyncFieldDirty("status");
             setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
@@ -446,7 +453,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         setStatus(Status.WAITING);
         waitingReason = reason;
         syncDataHolder.markClientSyncFieldDirty("waitingReason");
-        machine.onWaiting();
+        getRLMachine().onWaiting();
     }
 
     /**
@@ -518,7 +525,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public void onRecipeFinish() {
-        machine.afterWorking();
+        getRLMachine().afterWorking();
         if (lastRecipe != null) {
             runAttempt = 0;
             runDelay = 0;
@@ -537,9 +544,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 syncDataHolder.resyncAllFields();
                 return;
             }
-            if (machine.alwaysTryModifyRecipe()) {
+            if (getRLMachine().alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
+                    var modified = getRLMachine().fullModifyRecipe(lastOriginRecipe.copy());
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -566,18 +573,18 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleRecipeIO(getRLMachine(), recipe, io, this.chanceCaches);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleTickRecipeIO(getRLMachine(), recipe, io, this.chanceCaches);
     }
 
     /**
      * Interrupt current recipe without io.
      */
     public void interruptRecipe() {
-        machine.afterWorking();
+        getRLMachine().afterWorking();
         if (lastRecipe != null) {
             setStatus(Status.IDLE);
             progress = 0;
@@ -587,16 +594,13 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
     }
 
-    // Remains for legacy + for subclasses
-    public void inValid() {}
-
     //////////////////////////////////////
     // ******** MISC *********//
     //////////////////////////////////////
     @OnlyIn(Dist.CLIENT)
     public void updateSound() {
-        if (isWorking() && machine.shouldWorkingPlaySound()) {
-            var sound = machine.getRecipeType().getSound();
+        if (isWorking() && getRLMachine().shouldWorkingPlaySound()) {
+            var sound = getRLMachine().getRecipeType().getSound();
             if (workingSound instanceof AutoReleasedSound soundEntry) {
                 if (soundEntry.soundEntry == sound && !soundEntry.isStopped()) {
                     return;
@@ -606,7 +610,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             }
             if (sound != null) {
                 workingSound = sound.playAutoReleasedSound(
-                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
+                        () -> getRLMachine().shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
                                 getMachine().getLevel().isLoaded(getMachine().getBlockPos()) &&
                                 MetaMachine.getMachine(getMachine().getLevel(), getMachine().getBlockPos()) ==
                                         getMachine(),

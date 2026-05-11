@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -22,7 +21,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
@@ -48,15 +46,10 @@ import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMuiMachine, IVoidable {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
@@ -71,7 +64,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     private int steamGenerated;
 
     public LargeBoilerMachine(BlockEntityCreationInfo info, int maxTemperature, int heatSpeed) {
-        super(info, LargeBoilerRecipeLogic::new);
+        super(info, new LargeBoilerRecipeLogic());
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;
         this.throttle = 100;
@@ -120,6 +113,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void updateCurrentTemperature() {
         if (recipeLogic.isWorking()) {
             if (getOffsetTimer() % 10 == 0) {
@@ -210,7 +204,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Large Boiler and recipe
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         return ModifierFunction.IDENTITY;
     }
 
@@ -359,9 +353,19 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         @Getter
         int currentThrottle;
 
-        public LargeBoilerRecipeLogic(IRecipeLogicMachine machine) {
-            super(machine);
+        public LargeBoilerRecipeLogic() {
+            super();
             currentThrottle = 100;
+        }
+
+        @Override
+        public LargeBoilerMachine getMachine() {
+            return (LargeBoilerMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(LargeBoilerMachine.class);
         }
 
         public void setCurrentThrottle(int currentThrottle) {
@@ -373,7 +377,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         public void setupRecipe(GTRecipe recipe) {
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
-                setCurrentThrottle(((LargeBoilerMachine) machine).getThrottle());
+                setCurrentThrottle(getMachine().getThrottle());
                 duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }

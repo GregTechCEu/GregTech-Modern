@@ -102,13 +102,6 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
         return InteractionResult.sidedSuccess(isRemote());
     }
 
-    // TODO: Decide grid behavior
-    @Override
-    public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
-                                    Set<GTToolType> toolTypes) {
-        return super.shouldRenderGrid(player, pos, state, held, toolTypes);
-    }
-
     @Override
     public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                         Direction side) {

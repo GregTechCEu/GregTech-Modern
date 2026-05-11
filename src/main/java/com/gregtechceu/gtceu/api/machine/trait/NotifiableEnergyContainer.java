@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -54,7 +54,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
     @Setter
-    private Predicate<Direction> sideInputCondition, sideOutputCondition;
+    private @Nullable Predicate<Direction> sideInputCondition, sideOutputCondition;
 
     protected long amps, lastTimeStamp;
     @Nullable
@@ -67,9 +67,9 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     protected long energyInputPerSec = 0;
     protected long energyOutputPerSec = 0;
 
-    public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
+    public NotifiableEnergyContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                      long maxOutputVoltage, long maxOutputAmperage) {
-        super(machine);
+        super();
         this.lastTimeStamp = Long.MIN_VALUE;
         this.energyCapacity = maxCapacity;
         this.inputVoltage = maxInputVoltage;
@@ -81,14 +81,14 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         this.handlerIO = (isIn && isOut) ? IO.BOTH : isIn ? IO.IN : isOut ? IO.OUT : IO.NONE;
     }
 
-    public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity,
+    public static NotifiableEnergyContainer emitterContainer(long maxCapacity,
                                                              long maxOutputVoltage, long maxOutputAmperage) {
-        return new NotifiableEnergyContainer(machine, maxCapacity, 0L, 0L, maxOutputVoltage, maxOutputAmperage);
+        return new NotifiableEnergyContainer(maxCapacity, 0L, 0L, maxOutputVoltage, maxOutputAmperage);
     }
 
-    public static NotifiableEnergyContainer receiverContainer(MetaMachine machine, long maxCapacity,
+    public static NotifiableEnergyContainer receiverContainer(long maxCapacity,
                                                               long maxInputVoltage, long maxInputAmperage) {
-        return new NotifiableEnergyContainer(machine, maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
+        return new NotifiableEnergyContainer(maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
     }
 
     public void resetBasicInfo(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage,
@@ -174,8 +174,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             for (Direction side : GTUtil.DIRECTIONS) {
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
-                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                        machine.getBlockPos().relative(side), oppositeSide);
+                var energyContainer = GTCapabilityHelper.getEnergyContainer(getLevel(),
+                        getBlockPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                             outputAmperes - amperesUsed);
@@ -268,9 +268,9 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         }
         if (amps >= getInputAmperage()) return 0;
         long canAccept = getEnergyCapacity() - getEnergyStored();
-        if (voltage > 0L && (side == null || inputsEnergy(side))) {
+        if (voltage > 0L && inputsEnergy(side)) {
             if (voltage > getInputVoltage()) {
-                var explodable = machine.getTraitHolder().getTrait(EnvironmentalExplosionTrait.TYPE);
+                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.TYPE);
                 if (explodable != null)
                     GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                 return Math.min(amperage, getInputAmperage() - amps);
@@ -310,7 +310,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+    public @Nullable List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                                         boolean simulate) {
         for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {

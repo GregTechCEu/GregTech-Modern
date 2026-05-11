@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -47,14 +46,11 @@ import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
                                     implements IEnergyInfoProvider, IMuiMachine, IVoidable {
@@ -74,13 +70,13 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private static final BigInteger BIG_INTEGER_MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
 
-    private IMaintenanceMachine maintenance;
+    private @Nullable IMaintenanceMachine maintenance;
 
     @SaveField
-    private PowerStationEnergyBank energyBank;
+    private final PowerStationEnergyBank energyBank;
 
-    private EnergyContainerList inputHatches;
-    private EnergyContainerList outputHatches;
+    private @Nullable EnergyContainerList inputHatches;
+    private @Nullable EnergyContainerList outputHatches;
     private long passiveDrain;
 
     // Stats tracked for UI display
@@ -96,7 +92,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public PowerSubstationMachine(BlockEntityCreationInfo info) {
         super(info);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
-        this.energyBank = new PowerStationEnergyBank(this, List.of());
+        this.energyBank = attachTrait(new PowerStationEnergyBank(List.of()));
     }
 
     @Override
@@ -148,11 +144,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             onStructureInvalid();
             return;
         }
-        if (this.energyBank == null) {
-            this.energyBank = new PowerStationEnergyBank(this, batteries);
-        } else {
-            this.energyBank = energyBank.rebuild(batteries);
-        }
+        energyBank.rebuild(batteries);
         this.passiveDrain = this.energyBank.getPassiveDrainPerTick();
     }
 
@@ -183,7 +175,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 netOutLastSec = 0;
             }
 
-            if (isWorkingEnabled() && isFormed()) {
+            if (isWorkingEnabled() && isFormed() && inputHatches != null && outputHatches != null) {
                 // Bank from Energy Input Hatches
                 long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
                 inputHatches.changeEnergy(-energyBanked);
@@ -250,6 +242,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         return passiveDrain;
     }
 
+    public String getStored() {
+        return FormattingUtil.formatNumbers(energyBank.getStored());
+    }
+
+    public String getCapacity() {
+        return FormattingUtil.formatNumbers(energyBank.getCapacity());
+    }
+
     @Override
     public EnergyInfo getEnergyInfo() {
         return new EnergyInfo(energyBank.getCapacity(), energyBank.getStored());
@@ -303,11 +303,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         syncManager.syncValue("energyBankExists", energyBankExists);
 
         BigIntegerSyncValue energyStored = new BigIntegerSyncValue(
-                () -> (energyBank == null) ? BigInteger.ZERO : energyBank.getStored(), $ -> {});
+                energyBank::getStored, $ -> {});
         syncManager.syncValue("energyStored", energyStored);
 
         BigIntegerSyncValue capacity = new BigIntegerSyncValue(
-                () -> (energyBank == null) ? BigInteger.ZERO : energyBank.getCapacity(), $ -> {});
+                energyBank::getCapacity, $ -> {});
         syncManager.syncValue("capacity", capacity);
 
         LongSyncValue passiveDrain = new LongSyncValue(this::getPassiveDrain);
@@ -440,8 +440,12 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         private BigInteger capacity;
         private int index;
 
-        public PowerStationEnergyBank(MetaMachine machine, List<IBatteryData> batteries) {
-            super(machine);
+        public PowerStationEnergyBank(List<IBatteryData> batteries) {
+            super();
+            setupBatteries(batteries);
+        }
+
+        public void setupBatteries(List<IBatteryData> batteries) {
             storage = new long[batteries.size()];
             maximums = new long[batteries.size()];
             for (int i = 0; i < batteries.size(); i++) {
@@ -483,15 +487,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          * Will use existing stored power and try to map it onto new batteries.
          * If there was more power before the rebuild operation, it will be lost.
          */
-        public PowerStationEnergyBank rebuild(@NotNull List<IBatteryData> batteries) {
+        public void rebuild(List<IBatteryData> batteries) {
             if (batteries.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild Power Substation power bank with no batteries!");
             }
-            PowerStationEnergyBank newStorage = new PowerStationEnergyBank(this.machine, batteries);
-            for (long stored : storage) {
-                newStorage.fill(stored);
+            long[] oldStorage = storage.clone();
+            setupBatteries(batteries);
+            for (long stored : oldStorage) {
+                fill(stored);
             }
-            return newStorage;
         }
 
         /** @return Amount filled into storage */

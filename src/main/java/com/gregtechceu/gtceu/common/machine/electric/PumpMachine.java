@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -63,7 +63,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
     public static final int EXTRA_PUMP_RADIUS = 4;
     public static final int PUMP_SPEED_BASE = 80;
     private final Set<BlockPos> forbiddenBlocks = new ObjectOpenHashSet<>();
-    private PumpQueue pumpQueue = null;
+    private @Nullable PumpQueue pumpQueue = null;
     @Getter
     @SaveField
     private int pumpHeadY;
@@ -76,10 +76,11 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
 
     public PumpMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
-                IO.OUT);
-        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
+        this.cache = attachTrait(
+                new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
+                        IO.OUT));
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofFluids(cache));
     }
 
     //////////////////////////////////////

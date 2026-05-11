@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -101,13 +100,6 @@ public class FluidVoidingCover extends PumpCover {
                     "cover.voiding.message.enabled" : "cover.voiding.message.disabled"));
         }
         return InteractionResult.sidedSuccess(isRemote());
-    }
-
-    // TODO: Decide grid behavior
-    @Override
-    public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
-                                    Set<GTToolType> toolTypes) {
-        return super.shouldRenderGrid(player, pos, state, held, toolTypes);
     }
 
     @Override

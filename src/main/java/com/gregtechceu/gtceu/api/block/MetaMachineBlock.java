@@ -17,6 +17,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -119,7 +120,16 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (!pLevel.isClientSide) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
-                machine.onMachinePlaced(player, pStack);
+                if (player instanceof ServerPlayer sPlayer) {
+                    machine.setOwnerUUID(sPlayer.getUUID());
+                }
+
+                if (machine instanceof IDropSaveMachine dropSaveMachine) {
+                    CompoundTag tag = pStack.getTag();
+                    if (tag != null) {
+                        dropSaveMachine.loadFromItem(tag);
+                    }
+                }
             }
         }
     }
@@ -273,13 +283,12 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        InteractionResult machineInteractResult;
-        if (itemStack.isEmpty()) {
-            machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
-        } else {
-            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
-        }
+        InteractionResult machineInteractResult = InteractionResult.PASS;
 
+        if (!itemStack.isEmpty())
+            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
+        machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
 
         if (itemStack.getItem() instanceof IGTTool gtToolItem) {
@@ -329,16 +338,14 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return machine.getAnalogOutputSignal();
     }
 
-    /////////
-
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-                                boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
+                                boolean movedByPiston) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine != null) {
-            machine.onNeighborChanged(block, fromPos, isMoving);
+            machine.onNeighborChanged(neighborBlock, neighborPos, movedByPiston);
         }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
     }
 
     @Override

@@ -6,7 +6,7 @@ import brachy.modularui.widgets.layout.Flow;
 
 public interface IAttachConfiguratorsTrait {
 
-    default void attachLeftConfigurators(Flow flow, ModularPanel panel, PanelSyncManager syncManager) {}
+    default void attachLeftConfigurators(Flow flow, ModularPanel<?> panel, PanelSyncManager syncManager) {}
 
-    default void attachRightConfigurators(Flow flow, ModularPanel panel, PanelSyncManager syncManager) {}
+    default void attachRightConfigurators(Flow flow, ModularPanel<?> panel, PanelSyncManager syncManager) {}
 }

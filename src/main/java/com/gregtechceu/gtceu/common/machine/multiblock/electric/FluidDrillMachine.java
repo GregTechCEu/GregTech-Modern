@@ -33,7 +33,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     private final int tier;
 
     public FluidDrillMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, (m) -> new FluidDrillLogic((FluidDrillMachine) m));
+        super(info, new FluidDrillLogic());
         this.tier = tier;
     }
 

@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.common.pipelike.duct.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -112,8 +112,8 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             MetaMachine adjacent = MetaMachine.getMachine(level, relative);
             return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null ||
                     (adjacent != null &&
-                            (adjacent.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
-                                    adjacent.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
+                            (adjacent.getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
+                                    adjacent.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
         }
         return false;
     }

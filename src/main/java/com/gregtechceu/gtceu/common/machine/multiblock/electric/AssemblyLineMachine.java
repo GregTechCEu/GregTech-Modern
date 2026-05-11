@@ -29,7 +29,6 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -45,7 +44,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     protected boolean allowCircuitSlots;
 
     public AssemblyLineMachine(BlockEntityCreationInfo info, boolean allowCircuitSlots) {
-        super(info, machine -> new AsslineRecipeLogic((AssemblyLineMachine) machine));
+        super(info, new AsslineRecipeLogic());
         this.allowCircuitSlots = allowCircuitSlots;
     }
 
@@ -58,7 +57,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
-    private boolean checkItemInputs(@NotNull GTRecipe recipe, boolean isTick) {
+    private boolean checkItemInputs(GTRecipe recipe, boolean isTick) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return true;
@@ -90,7 +89,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeItemContents(@NotNull GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeItemContents(GTRecipe recipe, boolean isTick) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return ActionResult.SUCCESS;
@@ -129,7 +128,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return ActionResult.SUCCESS;
     }
 
-    private boolean checkFluidInputs(@NotNull GTRecipe recipe, boolean isTick) {
+    private boolean checkFluidInputs(GTRecipe recipe, boolean isTick) {
         var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return true;
@@ -160,7 +159,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeFluidContents(@NotNull GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeFluidContents(GTRecipe recipe, boolean isTick) {
         var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return ActionResult.SUCCESS;
@@ -199,7 +198,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return ActionResult.SUCCESS;
     }
 
-    private ActionResult consumeAll(@NotNull GTRecipe recipe, boolean isTick,
+    private ActionResult consumeAll(GTRecipe recipe, boolean isTick,
                                     Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         GTRecipe copyWithItems = recipe.copy();
         copyWithItems.inputs.clear();
@@ -258,43 +257,50 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     private static class AsslineRecipeLogic extends RecipeLogic {
 
-        private final AssemblyLineMachine machine;
+        public AsslineRecipeLogic() {
+            super();
+        }
 
-        public AsslineRecipeLogic(AssemblyLineMachine machine) {
-            super(machine);
-            this.machine = machine;
+        @Override
+        public AssemblyLineMachine getMachine() {
+            return (AssemblyLineMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(AssemblyLineMachine.class);
         }
 
         @Override
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return machine.consumeAll(recipe, false, this.getChanceCaches());
+                return getMachine().consumeAll(recipe, false, this.getChanceCaches());
             }
-            return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
+            return RecipeHelper.handleRecipeIO(getMachine(), recipe, io, this.chanceCaches);
         }
 
         @Override
         protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return machine.consumeAll(recipe, true, this.getChanceCaches());
+                return getMachine().consumeAll(recipe, true, this.getChanceCaches());
             }
-            return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
+            return RecipeHelper.handleTickRecipeIO(getMachine(), recipe, io, this.chanceCaches);
         }
 
         @Override
         protected ActionResult matchRecipe(GTRecipe recipe) {
             // Match by normal inputs first
-            ActionResult normalMatch = RecipeHelper.matchContents(machine, recipe);
+            ActionResult normalMatch = RecipeHelper.matchContents(getMachine(), recipe);
             if (!normalMatch.isSuccess()) return normalMatch;
 
             var config = ConfigHolder.INSTANCE.machines;
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!machine.checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!machine.checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
 
             if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!machine.checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!machine.checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
             return ActionResult.SUCCESS;
         }
     }

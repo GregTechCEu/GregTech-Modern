@@ -10,13 +10,13 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -78,7 +78,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     private final int inventorySize;
 
-    private AABB aabb;
+    private @Nullable AABB aabb;
 
     @SaveField
     @Getter
@@ -108,11 +108,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         super(info, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
-        this.output = createOutputItemHandler();
+        this.output = attachTrait(createOutputItemHandler());
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
-        this.autoOutput = AutoOutputTrait.ofItems(this, output);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(output));
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
     }
@@ -137,7 +137,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     protected NotifiableItemStackHandler createOutputItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
+        return new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT);
     }
 
     @Override
@@ -170,7 +170,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
-        output.dropInventoryInWorld();
     }
 
     //////////////////////////////////////

@@ -233,6 +233,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         // fix desync between two connections.
         // Can happen if a pipe side is blocked, and a new pipe is placed next to it.
+        if (getLevel() == null) {
+            return;
+        }
         if (!getLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HPCABridgePartMachine extends HPCAComponentPartMachine {
 
     public HPCABridgePartMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new HPCAComponentTrait(m, GTValues.VA[GTValues.IV], GTValues.VA[GTValues.IV], false, true));
+        super(info, new HPCAComponentTrait(GTValues.VA[GTValues.IV], GTValues.VA[GTValues.IV], false, true));
     }
 
     @Override

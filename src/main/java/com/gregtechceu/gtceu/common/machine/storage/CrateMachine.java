@@ -14,11 +14,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
@@ -29,12 +26,7 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CrateMachine extends MetaMachine implements IMuiMachine,
                           IDropSaveMachine {
 
@@ -58,7 +50,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
         this.material = material;
         this.inventorySize = inventorySize;
         this.rowLength = rowLength;
-        this.inventory = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH);
+        this.inventory = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH));
     }
 
     @Override
@@ -103,6 +95,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
                     stack.shrink(1);
                 }
                 isTaped = true;
+                inventory.shouldDropInventoryInWorld(false);
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 syncDataHolder.markClientSyncFieldDirty("isTaped");
                 return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
@@ -112,36 +105,19 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
     }
 
     @Override
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        super.onMachinePlaced(player, stack);
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            if (tag.contains("taped") && tag.getBoolean("taped")) {
-                this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
-            }
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
-            syncDataHolder.markClientSyncFieldDirty("isTaped");
-        }
-    }
-
-    @Override
     public void saveToItem(CompoundTag tag) {
         if (isTaped) tag.put("inventory", inventory.storage.serializeNBT());
     }
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+        if (tag.contains("inventory")) {
+            this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+        }
     }
 
     @Override
     public boolean saveBreak() {
         return isTaped;
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        if (!isTaped) inventory.dropInventoryInWorld();
     }
 }

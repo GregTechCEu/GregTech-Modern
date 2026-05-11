@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -35,6 +38,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     default ModularScreen createScreen(SidedPosGuiData data, ModularPanel<?> mainPanel) {
         return new GTGuiScreen(mainPanel);
     }

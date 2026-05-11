@@ -51,7 +51,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
     }
 
     public static long getVoltage(RecipeLogic capability) {
-        long voltage = capability.machine.getDisplayRecipeVoltage();
+        long voltage = capability.getRLMachine().getDisplayRecipeVoltage();
 
         // default display as LV, this shouldn't happen because a machine is either electric or steam
         return voltage == -1 ? GTValues.V[GTValues.LV] : voltage;

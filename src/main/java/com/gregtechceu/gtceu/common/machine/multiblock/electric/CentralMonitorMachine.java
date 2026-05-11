@@ -58,12 +58,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private MultiblockState patternFindingState;
+    private @Nullable MultiblockState patternFindingState;
 
-    private static TraceabilityPredicate MULTI_PREDICATE = null;
+    private static @Nullable TraceabilityPredicate MULTI_PREDICATE = null;
 
-    public CentralMonitorMachine(BlockEntityCreationInfo holder) {
-        super(holder, CentralMonitorLogic::new);
+    public CentralMonitorMachine(BlockEntityCreationInfo info) {
+        super(info, new CentralMonitorLogic());
     }
 
     public static TraceabilityPredicate getMultiPredicate() {

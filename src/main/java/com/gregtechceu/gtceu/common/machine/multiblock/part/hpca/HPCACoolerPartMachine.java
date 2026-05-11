@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCACoolantProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCACoolantProviderTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,15 +21,15 @@ public class HPCACoolerPartMachine extends HPCAComponentPartMachine {
     private final boolean advanced;
 
     public HPCACoolerPartMachine(BlockEntityCreationInfo info, boolean advanced) {
-        super(info, (machine) -> createHPCATrait(machine, advanced));
+        super(info, createHPCATrait(advanced));
         this.advanced = advanced;
     }
 
-    public static HPCAComponentTrait createHPCATrait(HPCAComponentPartMachine machine, boolean isAdvanced) {
+    public static HPCAComponentTrait createHPCATrait(boolean isAdvanced) {
         int upkeepEU = isAdvanced ? GTValues.VA[GTValues.IV] : 0;
         int coolingAmount = isAdvanced ? 2 : 1;
         int maxCoolant = isAdvanced ? 8 : 0;
-        return new HPCACoolantProviderTrait(machine, upkeepEU, upkeepEU, false, false, coolingAmount, maxCoolant,
+        return new HPCACoolantProviderTrait(upkeepEU, upkeepEU, false, false, coolingAmount, maxCoolant,
                 isAdvanced);
     }
 

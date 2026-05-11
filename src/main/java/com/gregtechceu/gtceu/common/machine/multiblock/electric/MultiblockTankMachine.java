@@ -29,7 +29,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,13 +39,12 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
 
     @SaveField
     @Getter
-    @NotNull
     private final NotifiableFluidTank tank;
 
     public MultiblockTankMachine(BlockEntityCreationInfo info, int capacity, @Nullable PropertyFluidFilter filter) {
         super(info);
 
-        this.tank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
+        this.tank = attachTrait(new NotifiableFluidTank(1, capacity, IO.BOTH));
         if (filter != null) tank.setFilter(filter);
     }
 

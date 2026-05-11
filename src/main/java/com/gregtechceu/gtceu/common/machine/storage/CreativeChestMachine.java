@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -10,7 +9,6 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -31,10 +29,6 @@ import brachy.modularui.widgets.slot.PhantomItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreativeChestMachine extends QuantumChestMachine {
 
     @Getter
@@ -53,7 +47,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Override
     protected ItemCache createCacheItemHandler() {
-        return new InfiniteCache(this);
+        return new InfiniteCache();
     }
 
     private InteractionResult updateStored(ItemStack item) {
@@ -165,8 +159,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     private class InfiniteCache extends ItemCache {
 
-        public InfiniteCache(MetaMachine holder) {
-            super(holder);
+        public InfiniteCache() {
+            super();
         }
 
         @Override

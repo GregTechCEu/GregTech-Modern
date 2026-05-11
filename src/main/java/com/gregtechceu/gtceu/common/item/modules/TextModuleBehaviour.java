@@ -36,6 +36,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 group.getTargetCoverSide(),
                 group.getPlaceholderSlotsHandler(),
                 group.getTargetCover(machine.getLevel()),
+                group,
                 null,
                 stack.getOrCreateTag().getUUID("placeholderUUID"));
     }

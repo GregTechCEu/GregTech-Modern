@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -28,7 +27,6 @@ import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -41,7 +39,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                                       implements FluidRecipeCapability.ICustomParallel {
 
     @Getter
-    private List<IFluidHandler> fluidOutputs;
+    private @Nullable List<IFluidHandler> fluidOutputs;
     @Getter
     @Nullable
     private IFluidHandler firstValid = null;
@@ -54,11 +52,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     /**
      * Construct DT Machine
      * 
-     * @param holder  BlockEntity holder
      * @param yOffset The Y difference between the controller and the first fluid output
      */
     public DistillationTowerMachine(BlockEntityCreationInfo info, int yOffset) {
-        super(info, DistillationTowerLogic::new);
+        super(info, new DistillationTowerLogic());
         this.yOffset = yOffset;
     }
 
@@ -170,11 +167,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         @SyncToClient
         GTRecipe workingRecipe = null;
 
-        public DistillationTowerLogic(IRecipeLogicMachine machine) {
-            super(machine);
+        public DistillationTowerLogic() {
+            super();
         }
 
-        @NotNull
         @Override
         public DistillationTowerMachine getMachine() {
             return (DistillationTowerMachine) super.getMachine();
@@ -191,7 +187,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var match = matchDTRecipe(recipe);
             if (!match.isSuccess()) return match;
 
-            return RecipeHelper.matchTickRecipe(this.machine, recipe);
+            return RecipeHelper.matchTickRecipe(getMachine(), recipe);
         }
 
         @Override
@@ -201,18 +197,19 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
+            var result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.inputs,
                     Collections.emptyMap(), false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, Collections.emptyMap(), false, true);
+                result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.OUT, out, Collections.emptyMap(), false,
+                        true);
                 if (!result.isSuccess()) return result;
             }
 
-            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, machine.getVoidingMode())) {
+            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, getMachine().getVoidingMode())) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
                         .append(": ")
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
@@ -254,10 +251,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
+                RecipeHelper.handleRecipe(getMachine(), recipe, io, out, chanceCaches, false, false);
             }
 
-            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {
+            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, getMachine().getVoidingMode())) {
                 workingRecipe = null;
                 return ActionResult.SUCCESS;
             }

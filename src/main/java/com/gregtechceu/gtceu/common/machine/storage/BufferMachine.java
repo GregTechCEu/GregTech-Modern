@@ -4,13 +4,11 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -26,10 +24,6 @@ import lombok.Getter;
 
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BufferMachine extends TieredMachine implements IMuiMachine {
 
     public static final int TANK_SIZE = 64000;
@@ -48,9 +42,9 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
 
     public BufferMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.inventory = createInventory();
-        this.tank = createTank();
-        this.autoOutput = new AutoOutputTrait(this, List.of(inventory), List.of(tank));
+        this.inventory = attachTrait(new NotifiableItemStackHandler(getInventorySize(tier), IO.BOTH));
+        this.tank = attachTrait(new NotifiableFluidTank(getTankSize(tier), TANK_SIZE, IO.BOTH));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(inventory), List.of(tank)));
     }
 
     ////////////////////////////////
@@ -63,14 +57,6 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
 
     public static int getTankSize(int tier) {
         return tier + 2;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, getInventorySize(tier), IO.BOTH);
-    }
-
-    protected NotifiableFluidTank createTank() {
-        return new NotifiableFluidTank(this, getTankSize(tier), TANK_SIZE, IO.BOTH);
     }
 
     ////////////////////////////////
@@ -104,15 +90,5 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
                 .build();
 
         mainWidget.child(slotWidget.center().margin(0, 10));
-    }
-
-    ////////////////////////////////
-    // ********** Misc ***********//
-    ////////////////////////////////
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        inventory.dropInventoryInWorld();
     }
 }

@@ -96,7 +96,7 @@ public class ComputerMonitorCover extends CoverBehavior
                 GTStringUtils.replace(s, "\\{}", tmp),
                 new PlaceholderContext(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide,
                         itemStackHandler,
-                        this, new MultiLineComponent(text), placeholderUUID));
+                        this, null, new MultiLineComponent(text), placeholderUUID));
     }
 
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {

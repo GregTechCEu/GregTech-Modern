@@ -41,8 +41,7 @@ import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents cover instance attached on the specific side of meta tile entity
- * Cover filters out interaction and logic of meta tile entity
+ * Represents a cover instance attached on a specific side of a machine
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -95,7 +94,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     /**
-     * Will be called on server side after the cover attachment to the meta tile entity
+     * Will be called on server side after the cover attachment to the machine
      * Cover can change it's internal state here and return initial data as nbt.
      *
      * @param itemStack the item cover was attached from

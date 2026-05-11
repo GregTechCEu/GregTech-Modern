@@ -29,10 +29,10 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -42,16 +42,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                                                implements IMuiMachine, ITieredMachine, IOverclockMachine, IVoidable {
 
     // runtime
-    protected EnergyContainerList energyContainer;
+    protected @Nullable EnergyContainerList energyContainer;
     @Getter
     protected int tier;
     @SaveField
     @Getter
     protected boolean batchEnabled;
 
-    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info,
-                                             Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
-        super(info, recipeLogicSupplier);
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic) {
+        super(info, recipeLogic);
     }
 
     public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
