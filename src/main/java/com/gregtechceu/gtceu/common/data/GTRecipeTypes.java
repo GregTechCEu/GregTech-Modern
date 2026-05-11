@@ -665,7 +665,7 @@ public class GTRecipeTypes {
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
 
-    private static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
+    protected static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         return register(GTCEu.id(name), group, proxyRecipes);
     }
 
