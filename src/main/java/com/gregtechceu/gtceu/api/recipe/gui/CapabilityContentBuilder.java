@@ -200,7 +200,7 @@ public interface CapabilityContentBuilder {
                     .withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);
-            else flow.child(euText.asWidget().tooltip(tooltip).name("eu"));
+            else flow.child(euText.asWidget().tooltip(tooltip).marginBottom(1).name("eu"));
         }
 
     };

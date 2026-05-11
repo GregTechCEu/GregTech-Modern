@@ -104,7 +104,7 @@ public interface RecipeViewerCapabilityLayoutBuilder {
     RecipeViewerCapabilityLayoutBuilder EU = (layout, widget, io) -> {
         if (layout.getRecipeType().getMaxSlots(EURecipeCapability.CAP, io) == 0) return;
 
-        widget.textComponents.child(Flow.col().childPadding(2)
+        widget.textComponents.child(Flow.col().childPadding(1)
                 .coverChildrenHeight()
                 .widthRel(1f)
                 .crossAxisAlignment(Alignment.CrossAxis.START)

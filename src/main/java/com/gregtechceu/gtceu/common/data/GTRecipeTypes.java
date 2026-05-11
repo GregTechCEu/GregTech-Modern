@@ -574,7 +574,7 @@ public class GTRecipeTypes {
                             widget.textComponents.child(new TextWidget<>(
                                     Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
-                            Flow coilRow = Flow.row();
+                            Flow coilRow = Flow.row().coverChildrenHeight();
 
                             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
@@ -592,7 +592,7 @@ public class GTRecipeTypes {
                                     .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                                     .value(ItemStackList.of(items))
                                     .background(IDrawable.EMPTY)
-                                    .right(4));
+                                    .right(20));
 
                             widget.textComponents.child(coilRow);
                         }
