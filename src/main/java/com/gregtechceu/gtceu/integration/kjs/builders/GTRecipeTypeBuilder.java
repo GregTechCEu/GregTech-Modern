@@ -48,14 +48,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     protected transient int maxTooltips;
 
     @Setter
-    @Nullable
-    private transient GTRecipeType smallRecipeMap;
+    private transient @Nullable GTRecipeType smallRecipeMap;
     @Setter
-    @Nullable
-    private transient Supplier<ItemStack> iconSupplier;
-    @Nullable
+    private transient @Nullable Supplier<ItemStack> iconSupplier;
     @Setter
-    protected transient BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
+    protected transient @Nullable BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
 
     public GTRecipeTypeBuilder(ResourceLocation id) {
         super(id);

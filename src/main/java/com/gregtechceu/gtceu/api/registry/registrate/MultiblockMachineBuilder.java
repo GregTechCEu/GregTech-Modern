@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
@@ -43,7 +44,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+    private @Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
@@ -80,7 +81,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public TYPE partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }

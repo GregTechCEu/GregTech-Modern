@@ -42,7 +42,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    public transient Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
+    public transient @Nullable Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public transient boolean addDefaultTooltips = true;
     @Setter
@@ -50,7 +50,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient boolean isGenerator = false;
 
-    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
+    public transient @Nullable BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(id);

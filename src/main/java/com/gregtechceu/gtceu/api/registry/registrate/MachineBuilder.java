@@ -159,7 +159,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return (TYPE) this;
     }
 
-    public TYPE blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
+    public TYPE blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         this.blockModel = blockModel;
         return getThis();
     }

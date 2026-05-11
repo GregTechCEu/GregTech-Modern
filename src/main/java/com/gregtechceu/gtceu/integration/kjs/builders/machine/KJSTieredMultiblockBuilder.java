@@ -28,7 +28,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable MultiblockMachineDefinition @NotNull []>
                                         implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder[] builders = new MultiblockMachineBuilder[TIER_COUNT];
+    private final MultiblockMachineBuilder<?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
