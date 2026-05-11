@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import it.unimi.dsi.fastutil.objects.Object2ShortMap;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class VirtualRedstone extends VirtualEntry {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(HolderLookup.@NonNull Provider provider) {
         CompoundTag tag = super.serializeNBT(provider);
         CompoundTag tag2 = new CompoundTag();
         for (var entry : members.object2ShortEntrySet())

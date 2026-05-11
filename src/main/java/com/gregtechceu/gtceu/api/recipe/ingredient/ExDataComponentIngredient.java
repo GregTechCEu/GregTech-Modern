@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
+import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;

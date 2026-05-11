@@ -42,16 +42,17 @@ public final class ToolChargeBarRenderer {
         // graphics.fill(RenderType.guiOverlay(), x + BAR_W, y, x + BAR_W - level, y - 1, colorBG);
     }
 
-    public static void renderBarsTool(GuiGraphics graphics, IGTTool tool, ItemStack stack, int xPosition,
-                                      int yPosition) {
-        boolean renderedDurability = false;
+    public static boolean renderBarsTool(GuiGraphics graphics, IGTTool tool, ItemStack stack,
+                                         int xPosition, int yPosition) {
+        boolean rendered = false;
         if (!stack.has(DataComponents.UNBREAKABLE)) {
-            renderedDurability = renderDurabilityBar(graphics, stack.getBarWidth(), xPosition, yPosition);
+            rendered = renderDurabilityBar(graphics, stack.getBarWidth(), xPosition, yPosition);
         }
         if (tool.isElectric()) {
-            renderElectricBar(graphics, tool.getCharge(stack), tool.getMaxCharge(stack), xPosition, yPosition,
-                    renderedDurability);
+            rendered |= renderElectricBar(graphics, tool.getCharge(stack), tool.getMaxCharge(stack),
+                    xPosition, yPosition, rendered);
         }
+        return rendered;
     }
 
     public static boolean renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
@@ -68,8 +69,9 @@ public final class ToolChargeBarRenderer {
     public static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager,
                                               int xPosition, int yPosition) {
         float level = manager.getDurabilityForDisplay(stack);
-        if (level == 0.0 && !manager.showEmptyBar(stack)) return false;
-        if (level == 1.0 && !manager.showFullBar(stack)) return false;
+        if (level <= 0.0f && !manager.showEmptyBar(stack)) return false;
+        if (level >= 1.0f && !manager.showFullBar(stack)) return false;
+
         IntIntPair colors = manager.getDurabilityColorsForDisplay(stack);
         boolean doDepletedColor = manager.doDamagedStateColors(stack);
         int left = colors != null ? colors.leftInt() : colorBarLeftDurability;

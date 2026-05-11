@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -18,8 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
-
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
+import net.neoforged.testframework.annotation.TestHolder;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -52,22 +51,19 @@ public class InputSeparationTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(1, 2, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 0)));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 2, 0));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
         return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1);
     }
 
     // Test for putting both ingredients in the same bus.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationSingleBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -83,6 +79,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses without separation.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithoutSeparationTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -98,6 +95,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with one undyed and one dyed.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithOneColorTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -114,6 +112,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with both dyed the same color.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithTheSameColorTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -131,6 +130,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with two dyed different colors.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesWithDifferentColorsTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -146,6 +146,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with one distinct.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesOneDistinctTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -160,6 +161,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with both distinct.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesTwoDistinctTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -175,6 +177,7 @@ public class InputSeparationTest {
     }
 
     // Test for putting both ingredients in 2 busses with two distinct and dyed different colors.
+    @TestHolder()
     @GameTest(template = "lcr_input_separation", batch = "InputSeparation", setupTicks = 40, timeoutTicks = 200)
     public static void inputSeparationBothBussesTwoDistinctAndColoredTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

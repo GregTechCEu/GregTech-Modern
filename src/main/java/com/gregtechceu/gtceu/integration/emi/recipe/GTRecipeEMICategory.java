@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.integration.emi.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.integration.emi.GTEMIPlugin;
 
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
 
@@ -19,7 +19,6 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -62,23 +61,8 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
         }
     }
 
-    public static Comparator<MachineDefinition> sortDefinition = (a, b) -> {
-        boolean isAMulti = a instanceof MultiblockMachineDefinition;
-        boolean isBMulti = b instanceof MultiblockMachineDefinition;
-        if (isAMulti && !isBMulti) {
-            return 1;
-        } else if (!isAMulti && isBMulti) {
-            return -1;
-        } else {
-            return a.getTier() - b.getTier();
-        }
-    };
-
     public static void registerWorkStations(EmiRegistry registry) {
-        for (MachineDefinition machine : GTRegistries.MACHINES
-                .stream()
-                .sorted(sortDefinition)
-                .toList()) {
+        for (MachineDefinition machine : GTEMIPlugin.SORTED_MACHINES) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !GTCEu.isDev()) continue;

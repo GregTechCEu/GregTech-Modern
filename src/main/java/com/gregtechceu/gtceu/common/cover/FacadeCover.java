@@ -3,12 +3,10 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,27 +16,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 public class FacadeCover extends CoverBehavior {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FacadeCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-    @Setter
     @Getter
-    @DescSynced
-    @Persisted
-    @RequireRerender
+    @SyncToClient
+    @SaveField
+    @RerenderOnChanged
     private BlockState facadeState = Blocks.STONE.defaultBlockState();
 
     public FacadeCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -50,6 +39,11 @@ public class FacadeCover extends CoverBehavior {
     @Override
     public boolean shouldRenderPlate() {
         return facadeState.canOcclude();
+    }
+
+    public void setFacadeState(BlockState state) {
+        facadeState = state;
+        syncDataHolder.markClientSyncFieldDirty("facadeState");
     }
 
     /**

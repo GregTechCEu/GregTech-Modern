@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 
@@ -54,11 +54,6 @@ public class GTToolItem extends TieredItem implements IGTTool {
         definition$init();
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                    IGTToolDefinition definition, Properties properties) {
-        return new GTToolItem(toolType, tier, material, definition, properties);
-    }
-
     @Override
     public ItemStack getDefaultInstance() {
         return get();
@@ -96,7 +91,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
-        return definition$mineBlock(stack, level, state, pos, miningEntity);
+        definition$mineBlock(stack, level, state, pos, miningEntity);
+        return true;
     }
 
     @Override
@@ -116,17 +112,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, BlockState state) {
-        return definition$getDestroySpeed(stack, state);
-    }
-
-    @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         return definition$hurtEnemy(stack, target, attacker);
-    }
-
-    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        return definition$onBlockStartBreak(stack, pos, player);
     }
 
     @Override
@@ -188,10 +175,5 @@ public class GTToolItem extends TieredItem implements IGTTool {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         return definition$use(level, player, usedHand);
-    }
-
-    @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
     }
 }

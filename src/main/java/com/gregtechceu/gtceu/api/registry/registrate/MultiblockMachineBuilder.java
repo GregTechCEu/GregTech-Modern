@@ -1,25 +1,23 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -45,16 +43,15 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
-    private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
+    private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                    BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
-                                    BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)), metaMachine::apply,
+                                    BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                    BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                    Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
                 blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
@@ -83,12 +80,12 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE partAppearance(TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
+    public TYPE partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public TYPE additionalDisplay(BiConsumer<IMultiController, List<Component>> additionalDisplay) {
+    public TYPE additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }

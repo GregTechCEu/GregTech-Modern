@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -21,18 +22,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    public CokeOvenMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public CokeOvenMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
@@ -60,7 +57,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
     @Override
     public void animateTick(RandomSource random) {
         if (this.isActive()) {
-            final BlockPos pos = getPos();
+            final BlockPos pos = getBlockPos();
             float x = pos.getX() + 0.5F;
             float z = pos.getZ() + 0.5F;
 
@@ -87,17 +84,16 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            if (super.onUse(state, world, pos, player, hand, hit) == InteractionResult.SUCCESS) {
+            if (super.onUseWithItem(context) == InteractionResult.SUCCESS) {
                 return InteractionResult.SUCCESS;
             }
-            if (FluidUtil.interactWithFluidHandler(player, hand, exportFluids)) {
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), exportFluids)) {
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(context);
     }
 }

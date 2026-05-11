@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.block;
 
-import org.jetbrains.annotations.NotNull;
-
 public enum StoneBlockType {
 
     STONE("stone", "%s"),
@@ -24,11 +22,11 @@ public enum StoneBlockType {
     public final float hardness;
     public final float resistance;
 
-    StoneBlockType(@NotNull String id, @NotNull String blockId) {
+    StoneBlockType(String id, String blockId) {
         this(id, blockId, 1.5f, 6.0f); // vanilla stone stats
     }
 
-    StoneBlockType(@NotNull String id, @NotNull String blockId, float hardness, float resistance) {
+    StoneBlockType(String id, String blockId, float hardness, float resistance) {
         this.id = id;
         this.blockId = blockId;
         this.hardness = hardness;

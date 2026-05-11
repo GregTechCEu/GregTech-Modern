@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.item.datacomponents.TextLineList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
@@ -22,26 +22,24 @@ import com.lowdragmc.lowdraglib.gui.widget.codeeditor.CodeEditorWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        StringBuilder formatStringLines = new StringBuilder();
-        List<String> tag = stack.get(GTDataComponents.TEXT_MODULE_STRING_LINES);
-        for (String value : tag)
-            formatStringLines.append(value).append('\n');
         if (!stack.has(GTDataComponents.PLACEHOLDER_UUID)) {
             stack.set(GTDataComponents.PLACEHOLDER_UUID, UUID.randomUUID());
         }
@@ -55,7 +53,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                         group.getTargetCover(machine.getLevel()),
                         null,
                         stack.get(GTDataComponents.PLACEHOLDER_UUID)));
-        stack.set(GTDataComponents.TEXT_MODULE_TEXT, text.toImmutable());
+        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY, lines -> lines.withLines(text.toImmutable()));
     }
 
     @Override
@@ -65,10 +63,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack) {
-        return new MonitorTextRenderer(
-                (MultiLineComponent) stack.getOrDefault(GTDataComponents.TEXT_MODULE_TEXT,
-                        List.<MultiLineComponent>of()),
-                Math.max(stack.getOrDefault(GTDataComponents.TEXT_MODULE_SCALE, 1.0).doubleValue(), .0001));
+        TextLineList lines = stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY);
+        return new MonitorTextRenderer(MultiLineComponent.of(lines.lines()), Math.max(lines.scale(), .0001));
     }
 
     @Override
@@ -83,27 +79,40 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 null);
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
-            stack.set(GTDataComponents.TEXT_MODULE_STRING_LINES, editor.getLines());
+            List<Component> lines = editor.getLines().stream()
+                    .map(Component::literal)
+                    .collect(Collectors.toList());
+            float scale = 1.0f;
             try {
-                stack.set(GTDataComponents.TEXT_MODULE_SCALE, Double.parseDouble(scaleInput.getCurrentString()));
+                scale = Float.parseFloat(scaleInput.getCurrentString());
             } catch (NumberFormatException ignored) {}
-            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+            stack.set(GTDataComponents.FORMAT_STRING_LIST, new TextLineList(lines, scale));
+            PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         List<Boolean> tmp = new ArrayList<>();
         Supplier<String> scaleInputSupplier = () -> {
-            if (tmp.isEmpty()) tmp.add(true);
-            else scaleInput.setTextSupplier(null);
-            if (!stack.has(GTDataComponents.TEXT_MODULE_SCALE)) {
-                stack.set(GTDataComponents.TEXT_MODULE_SCALE, 1.0);
-                GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+            if (tmp.isEmpty()) {
+                tmp.add(true);
+            } else {
+                scaleInput.setTextSupplier(null);
+            }
+            if (!stack.has(GTDataComponents.FORMAT_STRING_LIST)) {
+                stack.update(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY,
+                        lines -> lines.withScale(1.0f));
+                PacketDistributor.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
                 return "1";
             }
-            return String.valueOf(Mth.clamp(stack.get(GTDataComponents.TEXT_MODULE_SCALE), .0001, 1000));
+            // noinspection DataFlowIssue
+            return String.valueOf(Mth.clamp(stack.get(GTDataComponents.FORMAT_STRING_LIST).scale(), .0001f, 1000f));
         };
         scaleInput.setTextSupplier(scaleInputSupplier);
         scaleInput.setHoverTooltips(Component.translatable("gtceu.gui.central_monitor.text_scale"));
-        List<String> formatStringLines = stack.getOrDefault(GTDataComponents.TEXT_MODULE_STRING_LINES, List.of());
+        List<String> formatStringLines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY)
+                .lines()
+                .stream()
+                .map(Component::getString)
+                .toList();
         editor.setLines(formatStringLines);
         builder.addWidget(editor);
         builder.addWidget(saveButton);
@@ -120,29 +129,31 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public MultiLineComponent getText(ItemStack stack) {
-        return new MultiLineComponent(stack.get(GTDataComponents.TEXT_MODULE_TEXT).stream()
-                .<MutableComponent>map(m -> MutableComponent.create(m.getContents())).toList());
+        return MultiLineComponent.of(stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY).lines());
     }
 
-    public double getScale(ItemStack stack) {
-        return Math.max(stack.get(GTDataComponents.TEXT_MODULE_SCALE), .0001);
+    public float getScale(ItemStack stack) {
+        return Math.max(stack.getOrDefault(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY).scale(), .0001f);
     }
 
-    public void setScale(ItemStack stack, double scale) {
-        stack.set(GTDataComponents.TEXT_MODULE_SCALE, scale);
+    public void setScale(ItemStack stack, float scale) {
+        stack.update(GTDataComponents.TEXT_LINE_LIST, TextLineList.EMPTY, lines -> lines.withScale(scale));
     }
 
     public void setPlaceholderText(ItemStack stack, String text) {
-        List<String> listTag = new ArrayList<>();
-        for (String line : text.split("\n")) listTag.add(line);
-        stack.set(GTDataComponents.TEXT_MODULE_STRING_LINES, listTag);
+        List<Component> lines = Arrays.stream(text.split("\n"))
+                .map(Component::literal)
+                .map(Component.class::cast)
+                .toList();
+        stack.update(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY,
+                formatStringList -> formatStringList.withLines(lines));
     }
 
     public String getPlaceholderText(ItemStack stack) {
         StringBuilder formatStringLines = new StringBuilder();
-        List<String> tag = stack.get(GTDataComponents.TEXT_MODULE_STRING_LINES);
-        for (String value : tag) {
-            formatStringLines.append(value).append('\n');
+        List<Component> lines = stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY).lines();
+        for (Component line : lines) {
+            formatStringLines.append(line.getString()).append('\n');
         }
         return formatStringLines.toString();
     }
@@ -153,7 +164,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                 TooltipFlag isAdvanced) {
         if (isAdvanced.isAdvanced()) {
             tooltipComponents.add(Component.literal("Placeholder text:").withStyle(ChatFormatting.GOLD));
-            tooltipComponents.addAll(MultiLineComponent.literal(getPlaceholderText(stack)));
+            tooltipComponents
+                    .addAll(stack.getOrDefault(GTDataComponents.FORMAT_STRING_LIST, TextLineList.EMPTY).lines());
             tooltipComponents.add(Component.literal("Processed text:").withStyle(ChatFormatting.GOLD));
             tooltipComponents.addAll(getText(stack));
         }

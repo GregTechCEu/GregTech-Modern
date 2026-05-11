@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -20,12 +20,12 @@ public class DrumMachineItem extends MetaMachineItem {
     @NotNull
     private final Material mat;
 
-    protected DrumMachineItem(IMachineBlock block, Properties properties, @NotNull Material mat) {
+    protected DrumMachineItem(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
         super(block, properties);
         this.mat = mat;
     }
 
-    public static DrumMachineItem create(IMachineBlock block, Properties properties, @NotNull Material mat) {
+    public static DrumMachineItem create(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
         return new DrumMachineItem(block, properties, mat);
     }
 

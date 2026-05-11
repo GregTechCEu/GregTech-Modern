@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
-import com.gregtechceu.gtceu.api.capability.ITurbineMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
@@ -13,37 +13,37 @@ public class TurbineMachinePeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult hasRotor(ITurbineMachine turbine) {
+    public static MethodResult hasRotor(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.hasRotor());
     }
 
     @LuaFunction
-    public static MethodResult getRotorSpeed(ITurbineMachine turbine) {
+    public static MethodResult getRotorSpeed(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getRotorSpeed());
     }
 
     @LuaFunction
-    public static MethodResult getMaxRotorHolderSpeed(ITurbineMachine turbine) {
+    public static MethodResult getMaxRotorHolderSpeed(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getMaxRotorHolderSpeed());
     }
 
     @LuaFunction
-    public static MethodResult getTotalEfficiency(ITurbineMachine turbine) {
+    public static MethodResult getTotalEfficiency(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getTotalEfficiency());
     }
 
     @LuaFunction
-    public static MethodResult getCurrentProduction(ITurbineMachine turbine) {
+    public static MethodResult getCurrentProduction(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getCurrentProduction());
     }
 
     @LuaFunction
-    public static MethodResult getOverclockVoltage(ITurbineMachine turbine) {
+    public static MethodResult getOverclockVoltage(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getOverclockVoltage());
     }
 
     @LuaFunction
-    public static MethodResult getRotorDurabilityPercent(ITurbineMachine turbine) {
+    public static MethodResult getRotorDurabilityPercent(LargeTurbineMachine turbine) {
         return MethodResult.of(turbine.getRotorDurabilityPercent());
     }
 }

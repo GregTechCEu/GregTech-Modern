@@ -17,7 +17,6 @@ dependencies {
     compileOnly(forge.emi)
 
     // WAILA-likes
-    compileOnly(forge.theoneprobe)
     compileOnly(forge.jade)
 
     // Curios
@@ -25,7 +24,6 @@ dependencies {
 
     // AE2
     compileOnly(forge.ae2)
-    compileOnly(forge.ae2wtlib)
 
     // Create
     compileOnly(forge.ponder)
@@ -35,8 +33,7 @@ dependencies {
     // KJS
     compileOnly(forge.bundles.kjs)
 
-    // Shimmer
-    // compileOnly(forge.shimmer)
+    // Rendering / Optimizations
     compileOnly(forge.sodium)
     compileOnly(forge.iris)
     compileOnly(forge.modernfix)
@@ -46,8 +43,8 @@ dependencies {
     compileOnly(forge.ftbteams)
     compileOnly(forge.ftbquests)
     compileOnly(forge.resourcefullib)
-    // compileOnly(forge.argonauts)
-    // compileOnly(forge.heracles)
+    compileOnly(forge.argonauts)
+    compileOnly(forge.heracles)
 
     // Maps
     compileOnly(forge.ftbchunks)

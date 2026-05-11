@@ -1,7 +1,7 @@
 [versions]
-configuration = "3.1.1-neoforge"
 ldlib = "1.0.35.a"
 registrate = "MC1.21-1.3.0+67"
+configuration = "3.1.1-neoforge"
 
 jei = "19.25.1.328"
 rei = "16.0.799"
@@ -11,23 +11,22 @@ kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
-theoneprobe = "1.21_neo-12.0.4-6"
+create = "6.0.8-168"
+ponder = "1.0.64"
+flywheel = "1.0.5"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
-# shimmer = "1.20.1-0.2.4"
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
-ftblibrary = "2101.1.12"
-ftbteams = "2101.1.2"
-ftbquests = "2101.1.8"
-ftbchunks = "2101.1.8"
+ftblibrary = "2101.1.30"
+ftbteams = "2101.1.9"
+ftbquests = "2101.1.21"
+ftbchunks = "2101.1.14"
 ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
-ae2wtlib = "19.2.2"
+# TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
-# FIXME for some reason their maven only has versions up to 1.1.10?
-# heracles = "1.1.13"
 # journeyMapApi = "1.20-1.9-SNAPSHOT"
 # ftblibrary = "2001.2.4"
 # ftbteams = "2001.3.0"
@@ -39,6 +38,8 @@ flywheel = "1.0.5"
 xaerosLib = "1.1.0"
 xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
+# FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
+heracles = "1.1.10"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -53,10 +54,6 @@ trenzalore = "5623160"
 journeyMap = "6383889"
 spark = "6225208"
 observable = "5733591"
-ftblibrary-cm = "6304123"
-ftbteams-cm = "6119437"
-ftbquests-cm = "6371007"
-ftbchunks-cm = "6295696"
 
 
 [libraries]
@@ -83,22 +80,24 @@ create              = { module = "com.simibubi.create:create-1.21.1", version.re
 ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
 flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
 flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
-theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
-# shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-neoforge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-neoforge", version.ref = "ftbchunks" }
 resourcefullib      = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefullib" }
-# gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
+# Keep gamestages around so the code doesn't have to be commented out
+gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1", version.ref = "bookshelf" }
-ae2wtlib            = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wtlib" }
+# Keep odyssey quests/allies around so the code doesn't have to be commented out
 # TODO update these once there's 1.21 versions
-# argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
-# heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }
+argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
+heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }
+# these will be the new names of the projects when they finally update to 1.21
+# argonauts           = { module = "earth.terrarium.odyssey_allies:odyssey_allies-neoforge-1.21.1`", version.ref = "argonauts" }
+# heracles            = { module = "earth.terrarium.odyssey_quests:odyssey_quests-neoforge-1.21.1", version.ref = "heracles" }
 xaeroslib           = { module = "xaero.lib:xaerolib-neoforge-1.21.1", version.ref = "xaerosLib" }
 xaerosworldmap      = { module = "xaero.map:xaeroworldmap-neoforge-1.21.1", version.ref = "xaerosWorldMap" }
 xaerosminimap       = { module = "xaero.minimap:xaerominimap-neoforge-1.21.1", version.ref = "xaerosMinimap" }
@@ -119,11 +118,6 @@ trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = 
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
-## cursemaven as a backup ##
-ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
-ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
-ftbquests-cm        = { module = "curse.maven:ftb-quests-forge-289412", version.ref = "ftbquests-cm" }
-ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]
 jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]

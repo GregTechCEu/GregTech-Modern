@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.*;

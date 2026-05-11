@@ -1,1 +1,1 @@
-com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin
+com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin
