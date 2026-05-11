@@ -15,8 +15,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
 
@@ -24,7 +26,10 @@ import java.util.function.*;
 @Accessors(chain = true)
 public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
-    public transient final TagPrefix base;
+    public final TagPrefix base;
+
+    @Getter
+    private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     public TagPrefixBuilder(ResourceLocation id) {
         super(id);
