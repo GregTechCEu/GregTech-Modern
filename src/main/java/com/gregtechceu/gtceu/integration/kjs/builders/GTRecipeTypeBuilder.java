@@ -31,21 +31,20 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
-    public transient String name, category;
-    public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
-    public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
-    private ProgressTexture progressBarTexture;
-    @Nullable
-    private SteamTexture steamProgressBarTexture;
-    private ProgressTexture.FillDirection steamMoveType;
-    private transient final Byte2ObjectMap<IGuiTexture> slotOverlays;
+    public transient String category;
+    public transient final Object2IntMap<RecipeCapability<?>> maxInputs = new Object2IntOpenHashMap<>();
+    public transient final Object2IntMap<RecipeCapability<?>> maxOutputs = new Object2IntOpenHashMap<>();
+
+    private ProgressTexture progressBarTexture = new ProgressTexture();
+    private @Nullable SteamTexture steamProgressBarTexture = null;
+    private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
+    private transient final Byte2ObjectMap<IGuiTexture> slotOverlays = new Byte2ObjectArrayMap<>();
     @Setter
-    @Nullable
-    protected transient SoundEntry sound;
+    protected transient @Nullable SoundEntry sound = null;
     @Setter
     protected transient boolean hasResearchSlot;
     @Setter
-    protected transient int maxTooltips;
+    protected transient int maxTooltips = 4;
 
     @Setter
     private transient @Nullable GTRecipeType smallRecipeMap;
@@ -56,20 +55,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     public GTRecipeTypeBuilder(ResourceLocation id) {
         super(id);
-        name = this.id.getPath();
         category = "custom";
-        maxInputs = new Object2IntOpenHashMap<>();
-        maxOutputs = new Object2IntOpenHashMap<>();
-        progressBarTexture = new ProgressTexture();
-        steamProgressBarTexture = null;
-        steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
-        slotOverlays = new Byte2ObjectArrayMap<>();
-        this.sound = null;
-        this.hasResearchSlot = false;
-        this.maxTooltips = 4;
-        this.smallRecipeMap = null;
-        this.iconSupplier = null;
-        this.uiBuilder = null;
     }
 
     public GTRecipeTypeBuilder category(String category) {
@@ -135,18 +121,19 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     @Override
     public GTRecipeType createObject() {
         var type = GTRecipeTypes.register(this.id, this.category);
-        type.maxInputs.putAll(maxInputs);
-        type.maxOutputs.putAll(maxOutputs);
-        type.getRecipeUI().getSlotOverlays().putAll(slotOverlays);
-        type.getRecipeUI().setProgressBarTexture(progressBarTexture);
-        type.getRecipeUI().setSteamProgressBarTexture(steamProgressBarTexture);
-        type.getRecipeUI().setSteamMoveType(steamMoveType);
-        type.setSound(sound);
-        type.setHasResearchSlot(hasResearchSlot);
-        type.setMaxTooltips(maxTooltips);
-        type.setSmallRecipeMap(smallRecipeMap);
-        type.setIconSupplier(iconSupplier);
-        type.setUiBuilder(uiBuilder);
+        type.maxInputs.putAll(this.maxInputs);
+        type.maxOutputs.putAll(this.maxOutputs);
+        type.getRecipeUI().getSlotOverlays().putAll(this.slotOverlays);
+        type.getRecipeUI().setProgressBarTexture(this.progressBarTexture);
+        type.getRecipeUI().setSteamProgressBarTexture(this.steamProgressBarTexture);
+        type.getRecipeUI().setSteamMoveType(this.steamMoveType);
+        type.setSound(this.sound);
+        type.setHasResearchSlot(this.hasResearchSlot);
+        type.setMaxTooltips(this.maxTooltips);
+        type.setSmallRecipeMap(this.smallRecipeMap);
+        type.setIconSupplier(this.iconSupplier);
+        type.setUiBuilder(this.uiBuilder);
+
         return type;
     }
 }
