@@ -51,7 +51,6 @@ neoForge {
             sourceSet = sourceSets.clientExtra
             ideName = "Client 1"
 
-            gameDirectory.set(file('run/client'))
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
@@ -60,7 +59,6 @@ neoForge {
             sourceSet = sourceSets.clientExtra
             ideName = "Client 2"
 
-            gameDirectory.set(file('run/client'))
             programArguments.addAll('--username', 'YoungOnion', '--uuid', '3a27782d-6864-4814-a9fe-7c6931f29a8a')
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
@@ -81,7 +79,6 @@ neoForge {
             sourceSet = sourceSets.client
             ideName = "Clean Client"
 
-            gameDirectory.set(file('run/client'))
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 

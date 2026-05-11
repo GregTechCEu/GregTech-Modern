@@ -23,7 +23,6 @@ tasks.register('printVersion') {
 tasks.matching { it.name.startsWith('prepare') }.configureEach {
     doFirst {
         mkdir('run')
-        mkdir('run/client')
         mkdir('run/server')
         mkdir('run/gametest')
         mkdir('run/data')
