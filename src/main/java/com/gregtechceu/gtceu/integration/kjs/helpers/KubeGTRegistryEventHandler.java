@@ -19,6 +19,12 @@ import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 
+/**
+ * This is a copy of KubeJS's {@link dev.latvian.mods.kubejs.registry.RegistryEventHandler} with minor modifications,
+ * licensed LGPL 3. <a
+ * href=
+ * "https://github.com/KubeJS-Mods/KubeJS/blob/4829f956837d50d44dc20e06d06c01028373e57c/src/main/java/dev/latvian/mods/kubejs/registry/RegistryEventHandler.java">Source</a>
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class KubeGTRegistryEventHandler {
 

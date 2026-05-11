@@ -18,6 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * This is a copy of KubeJS's {@link RegistryKubeEvent} with minor modifications, licensed LGPL 3. <a
+ * href=
+ * "https://github.com/KubeJS-Mods/KubeJS/blob/841690e742660596fbb17a480fd13f8638492123/src/main/java/dev/latvian/mods/kubejs/registry/RegistryKubeEvent.java">Source</a>
+ *
+ * @param <T> The type of object to register
+ */
 public class GTRegistryKubeEvent<T> implements KubeStartupEvent, AdditionalObjectRegistry {
 
     private final ResourceKey<Registry<T>> registryKey;
