@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.core.IResourceLocationExtensions;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
@@ -69,9 +68,5 @@ public record GTResourceLocation(ResourceLocation wrapped) {
 
     public GTResourceLocation withSuffix(String pathSuffix) {
         return new GTResourceLocation(wrapped.withSuffix(pathSuffix));
-    }
-
-    public static ResourceLocation implicitAsGtceu(ResourceLocation loc) {
-        return ((IResourceLocationExtensions) (Object) loc).gtm$asNonImplicit();
     }
 }

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.*;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +36,7 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
     public BedrockFluidBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
     }
 
     public static BedrockFluidBuilder from(BedrockFluidDefinition definition, ResourceLocation id) {

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -35,7 +34,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     private transient String langValue;
 
     public GTRecipeCategoryBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;

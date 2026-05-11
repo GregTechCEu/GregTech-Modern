@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -61,7 +60,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
                                            MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.internal = internal;
         this.dummyBuilder = true;
     }
