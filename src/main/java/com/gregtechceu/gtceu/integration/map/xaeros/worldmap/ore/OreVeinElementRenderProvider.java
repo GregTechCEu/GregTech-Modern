@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
@@ -22,10 +23,8 @@ public class OreVeinElementRenderProvider extends MapElementRenderProvider<OreVe
         if (WorldMap.INSTANCE.getConfigs().getClientConfigManager().getEffective(
                 WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS)) {
             ResourceKey<Level> currentDim = Minecraft.getInstance().level.dimension();
-            this.iterator = XaerosRenderer.oreElements.row(currentDim).values()
-                    .stream()
-                    .map(element -> new OreVeinElement(element.getVein(), element.getName()))
-                    .iterator();
+            this.iterator = XaerosRenderer.oreElements.row(currentDim).values().iterator();
+
             context.worldmapWaypointsScale = WorldMap.INSTANCE.getConfigs().getClientConfigManager()
                     .getEffective(WorldMapProfiledConfigOptions.WAYPOINT_SCALE).floatValue();
         } else {

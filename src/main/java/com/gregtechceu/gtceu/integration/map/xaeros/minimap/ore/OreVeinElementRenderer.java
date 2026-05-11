@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,8 +21,6 @@ import xaero.hud.minimap.element.render.MinimapElementRenderLocation;
 import xaero.hud.minimap.element.render.MinimapElementRenderer;
 
 public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElement, OreVeinElementContext> {
-
-    protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
 
     private OreVeinElementRenderer(OreVeinElementReader elementReader,
                                    OreVeinElementRenderProvider provider,
@@ -48,8 +47,8 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         float[] colors = DrawUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
-                true);
+        ResourceLocation oreTexture = MaterialIconType.rawOre
+                .getItemTexturePath(firstMaterial.getMaterialIconSet(), true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
