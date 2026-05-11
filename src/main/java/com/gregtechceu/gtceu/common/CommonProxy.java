@@ -137,11 +137,6 @@ public class CommonProxy {
 
     public static void init(final IEventBus modBus) {
         CommonProxy.modBus = modBus;
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            // initialize this before the class's static listeners
-            // so KubeJS materials are registered before the material registry is closed.
-            modBus.addListener(EventPriority.LOW, GregTechKubeJSPlugin::registerWrappers);
-        }
         modBus.register(CommonProxy.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);

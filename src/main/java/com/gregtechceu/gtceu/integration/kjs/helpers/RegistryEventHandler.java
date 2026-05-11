@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.integration.kjs.helpers;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryKubeEvent;
 
@@ -53,15 +55,23 @@ public class RegistryEventHandler {
         int added = 0;
 
         for (var builder : objStorage) {
-            if (!builder.dummyBuilder) {
+            if (builder.dummyBuilder) {
+                // don't actually register anything here, the wrapper builders register themselves with Registrate
+                builder.createTransformedObject();
+            } else {
                 event.register(registryKey, builder.id, builder::createTransformedObject);
-
-                if (DevProperties.get().logRegistryEventObjects) {
-                    ConsoleJS.STARTUP.info("+ " + registryKey.location() + " | " + builder.id);
-                }
-
-                added++;
             }
+
+            if (DevProperties.get().logRegistryEventObjects) {
+                ConsoleJS.STARTUP.info("+ " + registryKey.location() + " | " + builder.id);
+            }
+            added++;
+
+            // add all registry objects' namespaces to the dynamic packs so their resources are listed as expected.
+            // although usually only one namespace is used, it's easier and faster to
+            // just always add them to the set than to check if they're already added.
+            if (GTCEu.isClientSide()) GTDynamicResourcePack.addNamespace(builder.id.getNamespace());
+            GTDynamicDataPack.addNamespace(builder.id.getNamespace());
         }
 
         if (!objStorage.objects.isEmpty() && DevProperties.get().logRegistryEventObjects) {

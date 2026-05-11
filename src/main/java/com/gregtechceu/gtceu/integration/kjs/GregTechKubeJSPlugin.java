@@ -129,44 +129,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
-    @ApiStatus.Internal
-    public static void registerWrappers(RegisterEvent event) {
-        registerWrappers(event, GTRegistries.MACHINE_REGISTRY);
-        registerWrappers(event, GTRegistries.MATERIAL_REGISTRY);
-    }
-
-    private static <T> void registerWrappers(RegisterEvent event, ResourceKey<Registry<T>> registryKey) {
-        if (event.getRegistryKey() != registryKey) {
-            return;
-        }
-        var objStorage = RegistryObjectStorage.of(registryKey);
-        ResourceLocation registryLoc = registryKey.location();
-
-        int added = 0;
-
-        for (var builder : objStorage) {
-            if (builder.dummyBuilder) {
-                // don't actually register anything here, the wrapper builders register themselves with Registrate
-                builder.createTransformedObject();
-
-                if (DevProperties.get().logRegistryEventObjects) {
-                    ConsoleJS.STARTUP.info("+ " + registryLoc + " | " + builder.id);
-                }
-                added++;
-            }
-
-            // add all registry objects' namespaces to the dynamic packs so their resources are listed as expected.
-            // although usually only one namespace is used, it's easier and faster to
-            // just always add them to the set than to check if they're already added.
-            if (GTCEu.isClientSide()) GTDynamicResourcePack.addNamespace(builder.id.getNamespace());
-            GTDynamicDataPack.addNamespace(builder.id.getNamespace());
-        }
-
-        if (!objStorage.objects.isEmpty() && DevProperties.get().logRegistryEventObjects) {
-            GTCEu.LOGGER.info("Registered {}/{} objects of {}", added, objStorage.objects.size(), registryLoc);
-        }
-    }
-
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.addDefault(GTRegistries.ELEMENT_REGISTRY, ElementBuilder.class, ElementBuilder::new);
