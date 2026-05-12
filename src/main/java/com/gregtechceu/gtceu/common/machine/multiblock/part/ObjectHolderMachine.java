@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMachine  {
+public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMachine {
 
     // purposefully not exposed to automation or capabilities
     @SaveField
