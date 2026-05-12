@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMac
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -567,36 +568,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType BLAST_RECIPES = register("electric_blast_furnace", MULTIBLOCK)
             .setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BAR_ARROW, 20, ProgressWidget.Direction.RIGHT)
-                    .addRecipeUIModifier((recipe, widget) -> {
-                        if (recipe.data.contains("ebf_temp")) {
-                            int temp = recipe.data.getInt("ebf_temp");
-
-                            widget.textComponents.child(new TextWidget<>(
-                                    Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
-
-                            Flow coilRow = Flow.row().coverChildrenHeight();
-
-                            ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
-
-                            if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                                coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
-                                        Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
-                                                .getString())));
-                            }
-
-                            List<ItemStack> items = GTCEuAPI.HEATING_COILS.entrySet().stream()
-                                    .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
-                                    .map(coil -> new ItemStack(coil.getValue().get())).toList();
-
-                            coilRow.child(RecipeViewerSlotWidget.create()
-                                    .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
-                                    .value(ItemStackList.of(items))
-                                    .background(IDrawable.EMPTY)
-                                    .right(20));
-
-                            widget.textComponents.child(coilRow);
-                        }
-                    }))
+                    .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))
             .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK)

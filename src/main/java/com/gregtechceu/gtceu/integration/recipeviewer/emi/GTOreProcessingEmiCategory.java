@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
+import brachy.modularui.integration.emi.EmiStackConverter;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -92,9 +93,9 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
             var fluids = byProduct.getFluidInputs();
             List<EmiIngredient> ingredients = new ArrayList<>();
             ingredients.addAll(items.stream()
-                    .map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1, $ -> $)).toList());
+                    .map(v -> EmiStackConverter.ITEM.convertTo(v, 1)).toList());
             ingredients.addAll(
-                    fluids.stream().map(v -> EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(v, 1)).toList());
+                    fluids.stream().map(v -> EmiStackConverter.FLUID.convertTo(v, 1)).toList());
             return ingredients;
         }
 

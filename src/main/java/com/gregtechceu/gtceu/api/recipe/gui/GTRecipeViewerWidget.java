@@ -66,15 +66,13 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     public GTRecipeViewerWidget(GTRecipe recipe) {
         this.baseRecipe = recipe;
         this.recipeType = recipe.getType();
-
-        modifiedRecipe = recipe;
-
-        uiLayout = Objects.requireNonNull(recipe.getType().getUiLayout(),
+        this.modifiedRecipe = recipe;
+        this.uiLayout = Objects.requireNonNull(recipe.getType().getUiLayout(),
                 "No recipe type UI declared, add one to your recipe type definition.");
+        this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
+        this.tier = minTier;
 
-        minTier = RecipeHelper.getRecipeEUtTier(recipe);
-        tier = minTier;
-        boolean isEnergyIn = RecipeHelper.getRealEUtWithIO(recipe).isInput();
+
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
@@ -91,6 +89,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);
+
+
         mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
@@ -98,18 +98,9 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         buildAdditionalRecipeContent();
 
-        childIf(isEnergyIn, this::buildOverclockButton);
+        attachOverclockButton();
 
-        childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
-                .overlay(Text.str("ID"))
-                .decoration()
-                .top(3).right(3)
-                .size(15, 15)
-                .tooltip(r -> r.addLine("Click to copy recipe ID: " + recipe.id))
-                .onMousePressed((ctx, b) -> {
-                    Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-                    return true;
-                }));
+        attachDebugRecipeIDButton();
     }
 
     private Flow buildDefaultLayout() {
@@ -191,8 +182,21 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         uiLayout.getRecipeUIModifiers().forEach(v -> v.buildRecipeUI(baseRecipe, this));
     }
 
-    private ButtonWidget<?> buildOverclockButton() {
-        return new ButtonWidget<>().background(IDrawable.NONE)
+    private void attachDebugRecipeIDButton() {
+        childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
+                .overlay(Text.str("ID"))
+                .decoration()
+                .top(3).right(3)
+                .size(15, 15)
+                .tooltip(r -> r.addLine("Click to copy recipe ID: " + baseRecipe.id))
+                .onMousePressed((ctx, b) -> {
+                    Minecraft.getInstance().keyboardHandler.setClipboard(baseRecipe.id.toString());
+                    return true;
+                }));
+    }
+
+    private void attachOverclockButton() {
+        childIf(RecipeHelper.getRealEUtWithIO(baseRecipe).isInput(), () -> new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
                 .size(22, 15)
                 .bottomRel(0).rightRel(0)
@@ -206,11 +210,6 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
                 })
                 .onMousePressed((ctx, b) -> {
-                    // GTCEu.LOGGER.info("Row: {} x {}", recipeContentRow.getArea().w(),
-                    // recipeContentRow.getArea().h());
-                    // GTCEu.LOGGER.info("In: {} x {}", inputColumn.getArea().w(), inputColumn.getArea().h());
-                    // GTCEu.LOGGER.info("Out: {} x {}", outputColumn.getArea().w(), outputColumn.getArea().h());
-                    // GTCEu.LOGGER.info("Total: {} x {}", getArea().w(), getArea().h());
                     var mouse = MouseData.create(b);
 
                     OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
@@ -233,7 +232,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
                     applyOverclock(oc);
                     return true;
-                });
+                }));
     }
 
     private void applyOverclock(OverclockingLogic logic) {

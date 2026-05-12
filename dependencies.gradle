@@ -14,7 +14,7 @@ dependencies {
     compileOnly(libs.evalEx.get())
 
     // MUI
-    implementation("libs:modularui-mc1.20.1-3.2.0-dev")
+    jarJar(modImplementation(forge.mui.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })

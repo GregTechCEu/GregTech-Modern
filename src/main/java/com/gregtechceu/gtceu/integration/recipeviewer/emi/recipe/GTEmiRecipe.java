@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
+import brachy.modularui.integration.emi.EmiStackConverter;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -47,7 +48,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
 
-            ingredients.add(EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(mapped, chance, $ -> $));
+            ingredients.add(EmiStackConverter.ITEM.convertTo(mapped, chance));
         }
 
         for (var fluidContent : fluids) {
@@ -59,7 +60,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            ingredients.add(EmiRecipeViewerSlot.EmiIngredientHandler.toEmiIngredient(mapped, chance));
+            ingredients.add(EmiStackConverter.FLUID.convertTo(mapped, chance));
         }
 
         return ingredients;
