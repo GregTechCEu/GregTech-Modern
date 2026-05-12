@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -136,11 +137,14 @@ public final class RecipeDB {
             if (!cap.isRecipeSearchFilter()) {
                 return;
             }
+            var ingredientList = new ObjectOpenHashSet<>();
             for (var handler : handlers) {
-                var compressed = cap.compressIngredients(handler.getContents());
-                for (var ingredient : compressed) {
-                    list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
-                }
+                ingredientList.addAll(handler.getContents());
+            }
+
+            var compressed = cap.compressIngredients(ingredientList);
+            for (var ingredient : compressed) {
+                list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
             }
         });
         if (list.isEmpty()) {
