@@ -26,15 +26,8 @@ public class MaterialRegistry extends GTRegistry.RL<Material> {
     }
 
     public Material get(java.lang.String name) {
-        if (!name.isEmpty()) {
-            if (name.contains(":")) {
-                ResourceLocation resLoc = ResourceLocation.tryParse(name);
-                if (resLoc == null) return GTMaterials.NULL;
-                return get(resLoc);
-            } else {
-                return get(GTCEu.id(name));
-            }
-        }
+        ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
+        if (location != null) return get(location);
         return GTMaterials.NULL;
     }
 
