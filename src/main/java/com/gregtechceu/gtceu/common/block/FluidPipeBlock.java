@@ -133,7 +133,10 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         if (level.isClientSide) return;
         if (level.getBlockEntity(pos) == null) return;
         FluidPipeBlockEntity pipe = (FluidPipeBlockEntity) level.getBlockEntity(pos);
-
+        if (pipe.isInsulated()) {
+            super.entityInside(state, level, pos, entity);
+            return;
+        }
         if (pipe.getOffsetTimer() % 10 == 0) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (pipe.getFluidTanks().length > 1) {

@@ -28,6 +28,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -62,7 +64,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>
-                                  implements IDataInfoProvider {
+        implements IDataInfoProvider {
 
     public static final int FREQUENCY = 5;
 
@@ -71,6 +73,10 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     private final EnumMap<Direction, PipeTankList> tankLists = new EnumMap<>(Direction.class);
     @SaveField(nbtKey = "Fluids")
     private CustomFluidTank[] fluidTanks;
+    @Getter
+    @Setter
+    @SaveField(nbtKey = "Insulated")
+    private boolean insulated = false;
     private long timer = 0L;
     private final int offset = GTValues.RNG.nextInt(20);
 
@@ -501,6 +507,9 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            if (insulated) {
+                list.add(Component.translatable("gtceu.fluid_pipe.insulated"));
+            }
             FluidStack[] fluids = getContainedFluids();
             if (fluids != null) {
                 boolean allTanksEmpty = true;

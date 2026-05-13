@@ -2554,6 +2554,15 @@ public class GTItems {
             .onRegister(attach(new ImageModuleBehaviour()))
             .register();
 
+    public static ItemEntry<ComponentItem> ASBESTOS_INSULATION_WRAPPER = REGISTRATE.item("asbestos_insulation_wrapper",  ComponentItem::create)
+            .lang("Asbestos Insulation Wrapper")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.asbestos_insulation_wrapper.desc"));
+                lines.add(Component.translatable("item.gtceu.asbestos_insulation_wrapper.usage"));
+            })))
+            .onRegister(attach(new InsulationWrapperBehaviour()))
+            .register();
+
     public static void init() {
         GTMaterialItems.generateMaterialItems();
         GTMaterialItems.generateTools();
