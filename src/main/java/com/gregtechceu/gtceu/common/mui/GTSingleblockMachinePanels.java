@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -31,8 +32,11 @@ public class GTSingleblockMachinePanels {
             type = simpleSteamMachine.getRecipeType();
             recipeLogic = simpleSteamMachine.recipeLogic;
             isSteam = true;
+        } else if (machine instanceof SimpleGeneratorMachine simpleGeneratorMachine) {
+            type = simpleGeneratorMachine.getRecipeType();
+            recipeLogic = simpleGeneratorMachine.recipeLogic;
         } else {
-            GTCEu.LOGGER.error("{} is not a SimpleTieredMachine or SimpleSteamMachine, cannot add slots to its content",
+            GTCEu.LOGGER.error("{} is not a SimpleTieredMachine/SimpleGeneratorMachine/SimpleSteamMachine, cannot add slots to its content",
                     machine.getDefinition().getName());
             return new ModularPanel<>(machine.getDefinition().getName());
         }

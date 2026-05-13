@@ -107,7 +107,7 @@ public class MachineUIPanelBuilder {
     }
 
     public static MachineUIPanelBuilder defaultSteamMachinePanelBuilder(MetaMachine machine) {
-        return new MachineUIPanelBuilder(machine).drawGTLogo(true).addDefaultConfigurators(false)
+        return new MachineUIPanelBuilder(machine).addDefaultConfigurators(false)
                 .addTraitConfigurators(false);
     }
 }
