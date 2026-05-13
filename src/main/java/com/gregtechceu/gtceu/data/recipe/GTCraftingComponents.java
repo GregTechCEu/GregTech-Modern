@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -9,8 +11,11 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -18,58 +23,58 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class GTCraftingComponents {
 
-    public static CraftingComponent CIRCUIT;
-    public static CraftingComponent BETTER_CIRCUIT;
-    public static CraftingComponent PUMP;
-    public static CraftingComponent WIRE_ELECTRIC;
-    public static CraftingComponent WIRE_QUAD;
-    public static CraftingComponent WIRE_OCT;
-    public static CraftingComponent WIRE_HEX;
-    public static CraftingComponent CABLE;
-    public static CraftingComponent CABLE_DOUBLE;
-    public static CraftingComponent CABLE_QUAD;
-    public static CraftingComponent CABLE_OCT;
-    public static CraftingComponent CABLE_HEX;
-    public static CraftingComponent CABLE_TIER_UP;
-    public static CraftingComponent CABLE_TIER_UP_DOUBLE;
-    public static CraftingComponent CABLE_TIER_UP_QUAD;
-    public static CraftingComponent CABLE_TIER_UP_OCT;
-    public static CraftingComponent CABLE_TIER_UP_HEX;
-    public static CraftingComponent CASING;
-    public static CraftingComponent HULL;
-    public static CraftingComponent PIPE_NORMAL;
-    public static CraftingComponent PIPE_LARGE;
-    public static CraftingComponent PIPE_NONUPLE;
-    public static CraftingComponent GLASS;
-    public static CraftingComponent PLATE;
-    public static CraftingComponent HULL_PLATE;
-    public static CraftingComponent MOTOR;
-    public static CraftingComponent ROTOR;
-    public static CraftingComponent SENSOR;
-    public static CraftingComponent SENSOR_EMITTER_GEM;
-    public static CraftingComponent GRINDER;
-    public static CraftingComponent SAWBLADE;
-    public static CraftingComponent PISTON;
-    public static CraftingComponent EMITTER;
-    public static CraftingComponent CONVEYOR;
-    public static CraftingComponent ROBOT_ARM;
-    public static CraftingComponent COIL_HEATING;
-    public static CraftingComponent COIL_HEATING_DOUBLE;
-    public static CraftingComponent COIL_ELECTRIC;
-    public static CraftingComponent ROD_MAGNETIC;
-    public static CraftingComponent ROD_DISTILLATION;
-    public static CraftingComponent FIELD_GENERATOR;
-    public static CraftingComponent ROD_ELECTROMAGNETIC;
-    public static CraftingComponent ROD_RADIOACTIVE;
-    public static CraftingComponent PIPE_REACTOR;
-    public static CraftingComponent POWER_COMPONENT;
-    public static CraftingComponent VOLTAGE_COIL;
-    public static CraftingComponent SPRING;
-    public static CraftingComponent CRATE;
-    public static CraftingComponent DRUM;
-    public static CraftingComponent FRAME;
-    public static CraftingComponent SMALL_SPRING_TRANSFORMER;
-    public static CraftingComponent SPRING_TRANSFORMER;
+    public static CraftingComponent<TagKey<Item>> CIRCUIT;
+    public static CraftingComponent<TagKey<Item>> BETTER_CIRCUIT;
+    public static CraftingComponent<ItemStack> PUMP;
+    public static CraftingComponent<MaterialEntry> WIRE_ELECTRIC;
+    public static CraftingComponent<MaterialEntry> WIRE_QUAD;
+    public static CraftingComponent<MaterialEntry> WIRE_OCT;
+    public static CraftingComponent<MaterialEntry> WIRE_HEX;
+    public static CraftingComponent<MaterialEntry> CABLE;
+    public static CraftingComponent<MaterialEntry> CABLE_DOUBLE;
+    public static CraftingComponent<MaterialEntry> CABLE_QUAD;
+    public static CraftingComponent<MaterialEntry> CABLE_OCT;
+    public static CraftingComponent<MaterialEntry> CABLE_HEX;
+    public static CraftingComponent<MaterialEntry> CABLE_TIER_UP;
+    public static CraftingComponent<MaterialEntry> CABLE_TIER_UP_DOUBLE;
+    public static CraftingComponent<MaterialEntry> CABLE_TIER_UP_QUAD;
+    public static CraftingComponent<MaterialEntry> CABLE_TIER_UP_OCT;
+    public static CraftingComponent<MaterialEntry> CABLE_TIER_UP_HEX;
+    public static CraftingComponent<ItemStack> CASING;
+    public static CraftingComponent<ItemStack> HULL;
+    public static CraftingComponent<MaterialEntry> PIPE_NORMAL;
+    public static CraftingComponent<MaterialEntry> PIPE_LARGE;
+    public static CraftingComponent<MaterialEntry> PIPE_NONUPLE;
+    public static CraftingComponent<ItemStack> GLASS;
+    public static CraftingComponent<MaterialEntry> PLATE;
+    public static CraftingComponent<MaterialEntry> HULL_PLATE;
+    public static CraftingComponent<ItemStack> MOTOR;
+    public static CraftingComponent<MaterialEntry> ROTOR;
+    public static CraftingComponent<ItemStack> SENSOR;
+    public static CraftingComponent<ItemStack> SENSOR_EMITTER_GEM;
+    public static CraftingComponent<ItemStack> GRINDER;
+    public static CraftingComponent<MaterialEntry> SAWBLADE;
+    public static CraftingComponent<ItemStack> PISTON;
+    public static CraftingComponent<ItemStack> EMITTER;
+    public static CraftingComponent<ItemStack> CONVEYOR;
+    public static CraftingComponent<ItemStack> ROBOT_ARM;
+    public static CraftingComponent<MaterialEntry> COIL_HEATING;
+    public static CraftingComponent<MaterialEntry> COIL_HEATING_DOUBLE;
+    public static CraftingComponent<MaterialEntry> COIL_ELECTRIC;
+    public static CraftingComponent<MaterialEntry> ROD_MAGNETIC;
+    public static CraftingComponent<MaterialEntry> ROD_DISTILLATION;
+    public static CraftingComponent<ItemStack> FIELD_GENERATOR;
+    public static CraftingComponent<MaterialEntry> ROD_ELECTROMAGNETIC;
+    public static CraftingComponent<MaterialEntry> ROD_RADIOACTIVE;
+    public static CraftingComponent<MaterialEntry> PIPE_REACTOR;
+    public static CraftingComponent<ItemStack> POWER_COMPONENT;
+    public static CraftingComponent<ItemStack> VOLTAGE_COIL;
+    public static CraftingComponent<MaterialEntry> SPRING;
+    public static CraftingComponent<ItemStack> CRATE;
+    public static CraftingComponent<ItemStack> DRUM;
+    public static CraftingComponent<MaterialEntry> FRAME;
+    public static CraftingComponent<MaterialEntry> SMALL_SPRING_TRANSFORMER;
+    public static CraftingComponent<MaterialEntry> SPRING_TRANSFORMER;
 
     public static void init() {
         CraftingComponent.ALL_COMPONENTS.clear();
@@ -355,10 +360,10 @@ public class GTCraftingComponents {
          * Laminated Glass: IV, LuV
          * Fusion: ZPM, UV, UHV
          */
-        GLASS = CraftingComponent.of("glass", Tags.Items.GLASS)
-                .add(ULV, Tags.Items.GLASS)
-                .add(LV, Tags.Items.GLASS)
-                .add(MV, Tags.Items.GLASS)
+        GLASS = CraftingComponent.of("glass", Items.GLASS.getDefaultInstance())
+                .add(ULV, Items.GLASS.getDefaultInstance())
+                .add(LV, Items.GLASS.getDefaultInstance())
+                .add(MV, Items.GLASS.getDefaultInstance())
                 .add(HV, GTBlocks.CASING_TEMPERED_GLASS.asStack())
                 .add(EV, GTBlocks.CASING_TEMPERED_GLASS.asStack())
                 .add(IV, GTBlocks.CASING_LAMINATED_GLASS.asStack())
@@ -403,10 +408,10 @@ public class GTCraftingComponents {
                 .add(UV, rotor, Darmstadtium)
                 .add(UHV, rotor, Darmstadtium);
 
-        GRINDER = CraftingComponent.of("grinder", gem, Diamond)
-                .add(ULV, gem, Diamond)
-                .add(LV, gem, Diamond)
-                .add(MV, gem, Diamond)
+        GRINDER = CraftingComponent.of("grinder", ChemicalHelper.get(gem, Diamond))
+                .add(ULV, ChemicalHelper.get(gem, Diamond))
+                .add(LV, ChemicalHelper.get(gem, Diamond))
+                .add(MV, ChemicalHelper.get(gem, Diamond))
                 .add(HV, GTItems.COMPONENT_GRINDER_DIAMOND.asStack())
                 .add(EV, GTItems.COMPONENT_GRINDER_DIAMOND.asStack())
                 .add(IV, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack())
@@ -513,10 +518,10 @@ public class GTCraftingComponents {
                     .add(OpV, GTItems.SENSOR_OpV.asStack());
         }
 
-        SENSOR_EMITTER_GEM = CraftingComponent.of("sensor_emitter_gem", gem, Quartzite)
-                .add(LV, gem, Quartzite)
-                .add(MV, gemFlawless, Emerald)
-                .add(HV, gem, EnderEye)
+        SENSOR_EMITTER_GEM = CraftingComponent.of("sensor_emitter_gem", ChemicalHelper.get(gem, Quartzite))
+                .add(LV, ChemicalHelper.get(gem, Quartzite))
+                .add(MV, ChemicalHelper.get(gemFlawless, Emerald))
+                .add(HV, ChemicalHelper.get(gem, EnderEye))
                 .add(EV, GTItems.QUANTUM_EYE.asStack())
                 .add(IV, GTItems.QUANTUM_STAR.asStack())
                 .add(LuV, GTItems.QUANTUM_STAR.asStack())
@@ -654,10 +659,10 @@ public class GTCraftingComponents {
                 .add(UV, rod, Tritanium)
                 .add(UHV, rod, Tritanium);
 
-        PIPE_REACTOR = CraftingComponent.of("pipe_reactor", Tags.Items.GLASS)
-                .add(ULV, Tags.Items.GLASS)
-                .add(LV, Tags.Items.GLASS)
-                .add(MV, Tags.Items.GLASS)
+        PIPE_REACTOR = CraftingComponent.of("pipe_reactor", block, Glass)
+                .add(ULV, block, Glass)
+                .add(LV, block, Glass)
+                .add(MV, block, Glass)
                 .add(HV, pipeNormalFluid, Polyethylene)
                 .add(EV, pipeLargeFluid, Polyethylene)
                 .add(IV, pipeHugeFluid, Polyethylene)
@@ -699,8 +704,8 @@ public class GTCraftingComponents {
                 .add(UV, spring, YttriumBariumCuprate)
                 .add(UHV, spring, Europium);
 
-        CRATE = CraftingComponent.of("crate", Tags.Items.CHESTS_WOODEN)
-                .add(ULV, Tags.Items.CHESTS_WOODEN)
+        CRATE = CraftingComponent.of("crate", Items.CHEST.getDefaultInstance())
+                .add(ULV, Items.CHEST.getDefaultInstance())
                 .add(LV, GTMachines.WOODEN_CRATE.asStack())
                 .add(MV, GTMachines.BRONZE_CRATE.asStack())
                 .add(HV, GTMachines.STEEL_CRATE.asStack())
@@ -711,8 +716,8 @@ public class GTCraftingComponents {
                 .add(UV, GTMachines.SUPER_CHEST[1].asStack())
                 .add(UHV, GTMachines.SUPER_CHEST[2].asStack());
 
-        DRUM = CraftingComponent.of("drum", Tags.Items.GLASS)
-                .add(ULV, Tags.Items.GLASS)
+        DRUM = CraftingComponent.of("drum", Items.GLASS.getDefaultInstance())
+                .add(ULV, Items.GLASS.getDefaultInstance())
                 .add(LV, GTMachines.WOODEN_DRUM.asStack())
                 .add(MV, GTMachines.BRONZE_DRUM.asStack())
                 .add(HV, GTMachines.STEEL_DRUM.asStack())

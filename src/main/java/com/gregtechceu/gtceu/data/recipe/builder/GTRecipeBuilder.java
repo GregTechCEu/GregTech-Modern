@@ -301,52 +301,8 @@ public class GTRecipeBuilder {
         return output(CWURecipeCapability.CAP, cwu);
     }
 
-    public GTRecipeBuilder inputItems(Object input) {
-        if (input instanceof Item item) {
-            return inputItems(item);
-        } else if (input instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike item) {
-            return inputItems(item.asItem());
-        } else if (input instanceof ItemStack stack) {
-            return inputItems(stack);
-        } else if (input instanceof Ingredient ingredient) {
-            return inputItems(ingredient);
-        } else if (input instanceof MaterialEntry entry) {
-            return inputItems(entry);
-        } else if (input instanceof TagKey<?> tag) {
-            return inputItems((TagKey<Item>) tag);
-        } else if (input instanceof MachineDefinition machine) {
-            return inputItems(machine);
-        } else {
-            GTCEu.LOGGER.error("""
-                    Input item is not one of:
-                    Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition
-                    id: {}""", id);
-            return this;
-        }
-    }
-
-    public GTRecipeBuilder inputItems(Object input, int count) {
-        if (input instanceof Item item) {
-            return inputItems(item, count);
-        } else if (input instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike item) {
-            return inputItems(item.asItem(), count);
-        } else if (input instanceof ItemStack stack) {
-            return inputItems(stack.copyWithCount(count));
-        } else if (input instanceof Ingredient ingredient) {
-            return inputItems(ingredient, count);
-        } else if (input instanceof MaterialEntry entry) {
-            return inputItems(entry, count);
-        } else if (input instanceof TagKey<?> tag) {
-            return inputItems((TagKey<Item>) tag, count);
-        } else if (input instanceof MachineDefinition machine) {
-            return inputItems(machine, count);
-        } else {
-            GTCEu.LOGGER.error("""
-                    Input item is not one of:
-                    Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition
-                    id: {}""", id);
-            return this;
-        }
+    public GTRecipeBuilder inputItems(ItemStack stack, int count) {
+        return inputItems(stack.copyWithCount(count));
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs) {
@@ -503,44 +459,8 @@ public class GTRecipeBuilder {
         return inputItems(NBTPredicateIngredient.of(stack, predicate));
     }
 
-    public GTRecipeBuilder outputItems(Object output) {
-        if (output instanceof Item item) {
-            return outputItems(item);
-        } else if (output instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike item) {
-            return outputItems(item.asItem());
-        } else if (output instanceof ItemStack stack) {
-            return outputItems(stack);
-        } else if (output instanceof MaterialEntry entry) {
-            return outputItems(entry);
-        } else if (output instanceof MachineDefinition machine) {
-            return outputItems(machine);
-        } else {
-            GTCEu.LOGGER.error("""
-                    Output item is not one of:
-                    Item, Supplier<Item>, ItemStack, MaterialEntry, MachineDefinition
-                    id: {}""", id);
-            return this;
-        }
-    }
-
-    public GTRecipeBuilder outputItems(Object output, int count) {
-        if (output instanceof Item item) {
-            return outputItems(item, count);
-        } else if (output instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike item) {
-            return outputItems(item.asItem(), count);
-        } else if (output instanceof ItemStack stack) {
-            return outputItems(stack.copyWithCount(count));
-        } else if (output instanceof MaterialEntry entry) {
-            return outputItems(entry, count);
-        } else if (output instanceof MachineDefinition machine) {
-            return outputItems(machine, count);
-        } else {
-            GTCEu.LOGGER.error("""
-                    Output item is not one of:
-                    Item, Supplier<Item>, ItemStack, MaterialEntry, MachineDefinition
-                    id: {}""", id);
-            return this;
-        }
+    public GTRecipeBuilder outputItems(ItemStack output, int count) {
+        return outputItems(output.copyWithCount(count));
     }
 
     public GTRecipeBuilder outputItems(ItemStack output) {
