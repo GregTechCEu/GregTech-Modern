@@ -7,9 +7,16 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
+import dev.emi.emi.api.EmiApi;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -757,5 +764,37 @@ public class GTUtil {
         var modelLocation = new ResourceLocation(location.getNamespace(),
                 "models/%s.json".formatted(location.getPath()));
         return resourceExists(modelLocation);
+    }
+
+    public static void openRecipeViewerCategory(GTRecipeCategory category) {
+        if (GTCEu.Mods.isEMILoaded()) {
+            EmiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            JeiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isREILoaded()) {
+            ReiCallWrapper.openRecipeCategory(category);
+        }
+
+    }
+
+    private static class EmiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+        }
+    }
+
+    private static class JeiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+        }
+    }
+
+    private static class ReiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
+        }
     }
 }

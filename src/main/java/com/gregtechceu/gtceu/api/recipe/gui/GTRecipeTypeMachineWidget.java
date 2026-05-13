@@ -17,6 +17,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import dev.emi.emi.api.EmiApi;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 
@@ -58,13 +59,7 @@ public class GTRecipeTypeMachineWidget extends Flow {
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;
             if (!recipeType.getCategory().isXEIVisible()) return false;
-            if (GTCEu.Mods.isEMILoaded()) {
-                EmiCallWrapper.openRecipeCategory(recipeType.getCategory());
-            } else if (GTCEu.Mods.isJEILoaded()) {
-                JeiCallWrapper.openRecipeCategory(recipeType.getCategory());
-            } else if (GTCEu.Mods.isREILoaded()) {
-                ReiCallWrapper.openRecipeCategory(recipeType.getCategory());
-            }
+            GTUtil.openRecipeViewerCategory(recipeType.getCategory());
             return true;
         });
 
@@ -85,24 +80,4 @@ public class GTRecipeTypeMachineWidget extends Flow {
         }
     }
 
-    private static class EmiCallWrapper {
-
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
-        }
-    }
-
-    private static class JeiCallWrapper {
-
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
-        }
-    }
-
-    private static class ReiCallWrapper {
-
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
-        }
-    }
 }

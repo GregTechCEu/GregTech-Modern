@@ -220,7 +220,6 @@ public class GTMuiWidgets {
     }
 
     public static ModularPanel<?> createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
-        syncManager.syncValue("circuit_slot", circuitSyncValue);
         Grid buttonGrid = new Grid()
                 .coverChildren()
                 .gridOfSizeWidth(32, 8, (x, y, i) -> new ToggleButton()
@@ -252,6 +251,7 @@ public class GTMuiWidgets {
                                                          Supplier<ItemStack> circuitGetter,
                                                          PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
+        syncManager.syncValue("circuit_slot", circuitSyncValue);
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }
 
@@ -260,6 +260,8 @@ public class GTMuiWidgets {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
                 i -> machine.getCircuitInventory().setStackInSlot(0, i),
                 () -> machine.getCircuitInventory().getStackInSlot(0));
+
+        syncManager.syncValue("circuit_slot", circuitSyncValue);
         IPanelHandler circuitPanelHandler = syncManager.syncedPanel("circuit_panel", true,
                 (sm, sh) -> createCircuitSlotPanel(circuitSyncValue, sm)
                         .relative(parentPanel)
