@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
-import brachy.modularui.integration.emi.EmiStackConverter;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -14,7 +13,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreProcessingRecip
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
-import brachy.modularui.integration.emi.EmiRecipeViewerSlot;
+import brachy.modularui.integration.emi.EmiStackConverter;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;

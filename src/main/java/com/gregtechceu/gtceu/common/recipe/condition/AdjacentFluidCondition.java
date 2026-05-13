@@ -20,11 +20,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.integration.recipeviewer.entry.fluid.FluidHolderSetList;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
 import brachy.modularui.widgets.layout.Flow;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -119,9 +120,14 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
                 if (set.size() == 0) {
                     continue;
                 }
-                // todo figure out why the fluids arent rendering
-                row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
-                        .value(FluidHolderSetList.of(set, 1000, null)));
+                var fluidTagList = new FluidStackList();
+                set.forEach(fluid -> {
+                    fluidTagList.add(new FluidStack(fluid.value(), 1));
+                });
+                row.child(RecipeViewerSlotWidget.create()
+                        .marginLeft(2)
+                        .recipeSlotRole(RecipeSlotRole.CATALYST)
+                        .value(fluidTagList));
             }
 
             widget.textComponents.child(row);

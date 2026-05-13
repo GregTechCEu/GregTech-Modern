@@ -20,9 +20,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.ParentWidget;
@@ -51,7 +49,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
             .widthRel(1f)
             .coverChildrenHeight()
             .childPadding(1)
-            .background(new Rectangle().color(Color.RED.brighter(2)))
+            // .background(new Rectangle().color(Color.RED.brighter(2)))
             .crossAxisAlignment(Alignment.CrossAxis.START)
             .collapseDisabledChildren();
     public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
@@ -72,7 +70,6 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
         this.tier = minTier;
 
-
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
@@ -89,7 +86,6 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);
-
 
         mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3));
         mainColumn.child(additionalRecipeContent.child(textComponents));
@@ -196,43 +192,44 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     }
 
     private void attachOverclockButton() {
-        childIf(RecipeHelper.getRealEUtWithIO(baseRecipe).isInput(), () -> new ButtonWidget<>().background(IDrawable.NONE)
-                .hoverBackground(IDrawable.NONE)
-                .size(22, 15)
-                .bottomRel(0).rightRel(0)
-                .decoration()
-                .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
-                .tooltipBuilder(tooltip -> {
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
-                })
-                .onMousePressed((ctx, b) -> {
-                    var mouse = MouseData.create(b);
+        childIf(RecipeHelper.getRealEUtWithIO(baseRecipe).isInput(),
+                () -> new ButtonWidget<>().background(IDrawable.NONE)
+                        .hoverBackground(IDrawable.NONE)
+                        .size(22, 15)
+                        .bottomRel(0).rightRel(0)
+                        .decoration()
+                        .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
+                        .tooltipBuilder(tooltip -> {
+                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
+                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
+                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
+                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
+                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
+                        })
+                        .onMousePressed((ctx, b) -> {
+                            var mouse = MouseData.create(b);
 
-                    OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+                            OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
 
-                    if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                        if (tier == GTValues.MAX) return true;
-                        tier++;
-                    } else if (b == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                        if (tier == minTier) return true;
-                        tier--;
-                    } else if (b == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
-                        tier = minTier;
-                    }
+                            if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                                if (tier == GTValues.MAX) return true;
+                                tier++;
+                            } else if (b == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                                if (tier == minTier) return true;
+                                tier--;
+                            } else if (b == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+                                tier = minTier;
+                            }
 
-                    if (mouse.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
-                    // TODO more contextual oc values based on recipe type or machine
-                    if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
-                        oc = FusionReactorMachine.FUSION_OC;
-                    }
+                            if (mouse.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
+                            // TODO more contextual oc values based on recipe type or machine
+                            if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+                                oc = FusionReactorMachine.FUSION_OC;
+                            }
 
-                    applyOverclock(oc);
-                    return true;
-                }));
+                            applyOverclock(oc);
+                            return true;
+                        }));
     }
 
     private void applyOverclock(OverclockingLogic logic) {
