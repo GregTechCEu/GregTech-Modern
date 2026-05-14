@@ -604,7 +604,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     }
                     textures.setTextures(rect, texture);
                     if (component.getDataItems() != null) {
-                        IItemHandler dataItems = component.getDataItems();
+                        ItemHandler dataItems = component.getDataItems();
                         MonitorGroup selectedGroup = null;
                         for (MonitorGroup group : monitorGroups) {
                             for (IMonitorComponent c : selectedComponents) {
