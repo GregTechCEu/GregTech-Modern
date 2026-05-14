@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
@@ -25,21 +23,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class,
-            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
-
     private int biomeModifier = 0;
     private int hatchModifier = 0;
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
 
-    public PrimitivePumpMachine(IMachineBlockEntity holder) {
-        super(holder);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public PrimitivePumpMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
@@ -98,7 +88,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     private void produceWater() {
         if (getOffsetTimer() % 20 == 0 && isFormed() && !getMultiblockState().hasError()) {
             if (biomeModifier == 0) {
-                biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getPos()));
+                biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getBlockPos()));
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
@@ -115,7 +105,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     private Precipitation getBiomePrecipitation() {
-        return getLevel().getBiome(getPos()).value().getPrecipitationAt(getPos());
+        return getLevel().getBiome(getBlockPos()).value().getPrecipitationAt(getBlockPos());
     }
 
     public int getFluidProduction() {

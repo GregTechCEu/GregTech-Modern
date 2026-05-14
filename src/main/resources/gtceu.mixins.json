@@ -25,6 +25,7 @@
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
+        "ldlib.ClickDataMixin",
         "ldlib.ModularWrapperWidgetMixin",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
@@ -63,6 +64,7 @@
         "TagManagerMixin",
         "TagValueAccessor",
         "client.ItemEntityMixin",
+        "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
         "emi.EmiRecipeFillerMixin",
         "emi.FillRecipePacketMixin",
@@ -77,8 +79,7 @@
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",
-        "rei.RecipeFinderMixin",
-        "top.ConfigMixin"
+        "rei.RecipeFinderMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

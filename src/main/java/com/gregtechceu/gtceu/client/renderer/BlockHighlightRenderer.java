@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;

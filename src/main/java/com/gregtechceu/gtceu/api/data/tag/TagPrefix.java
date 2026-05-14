@@ -58,6 +58,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.function.*;
@@ -1035,7 +1036,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, @Unmodifiable Collection<Supplier<? extends ItemLike>>> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -1174,43 +1175,51 @@ public class TagPrefix {
         return PREFIXES.getOrDefault(prefixName, replacement);
     }
 
-    @SuppressWarnings("unchecked")
-    public TagKey<Item>[] getItemParentTags() {
-        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, GTMaterials.NULL))
-                .toArray(TagKey[]::new);
-    }
-
-    @SuppressWarnings("unchecked")
-    public TagKey<Item>[] getItemTags(@NotNull Material mat) {
-        return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat))
+    public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
+        return tags.stream()
+                .filter(TagType::isParentTag)
+                .map(type -> type.getTag(this, GTMaterials.NULL))
                 .filter(Objects::nonNull)
-                .toArray(TagKey[]::new);
+                .toList();
     }
 
-    @SuppressWarnings("unchecked")
-    public TagKey<Item>[] getAllItemTags(@NotNull Material mat) {
-        return tags.stream().map(type -> type.getTag(this, mat)).filter(Objects::nonNull).toArray(TagKey[]::new);
+    public @Unmodifiable List<TagKey<Item>> getItemTags(@NotNull Material mat) {
+        return tags.stream()
+                .filter(type -> !type.isParentTag())
+                .map(type -> type.getTag(this, mat))
+                .filter(Objects::nonNull)
+                .toList();
     }
 
-    @SuppressWarnings("unchecked")
-    public TagKey<Block>[] getBlockTags(@NotNull Material mat) {
-        return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat))
-                .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
+    public @Unmodifiable List<TagKey<Item>> getAllItemTags(@NotNull Material mat) {
+        return tags.stream()
+                .map(type -> type.getTag(this, mat))
+                .filter(Objects::nonNull)
+                .toList();
     }
 
-    @SuppressWarnings("unchecked")
-    public TagKey<Block>[] getAllBlockTags(@NotNull Material mat) {
+    public @Unmodifiable List<TagKey<Block>> getBlockTags(@NotNull Material mat) {
+        return tags.stream()
+                .filter(type -> !type.isParentTag())
+                .map(type -> type.getTag(this, mat))
+                .filter(Objects::nonNull)
+                .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location()))
+                .toList();
+    }
+
+    public @Unmodifiable List<TagKey<Block>> getAllBlockTags(@NotNull Material mat) {
         return tags.stream().map(type -> type.getTag(this, mat))
-                .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
+                .filter(Objects::nonNull)
+                .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location()))
+                .toList();
     }
 
     public boolean hasItemTable() {
         return itemTable != null;
     }
 
-    @SuppressWarnings("unchecked")
-    public Supplier<ItemLike> getItemFromTable(Material material) {
-        return (Supplier<ItemLike>) itemTable.get().get(this, material);
+    public Supplier<? extends ItemLike> getItemFromTable(Material material) {
+        return itemTable.get().get(this, material);
     }
 
     public boolean doGenerateItem() {
@@ -1279,41 +1288,51 @@ public class TagPrefix {
 
     @SafeVarargs
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
+        setIgnored(material, Arrays.asList(items));
+    }
+
+    public final void setIgnored(Material material, Collection<Supplier<? extends ItemLike>> items) {
         ignoredMaterials.put(material, items);
-        if (items.length > 0) {
-            ItemMaterialData.registerMaterialEntries(Arrays.asList(items), this, material);
+        if (!items.isEmpty()) {
+            ItemMaterialData.registerMaterialEntries(items, this, material);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void setIgnored(Material material, ItemLike... items) {
         // go through setIgnoredBlock to wrap if this is a block prefix
+        Collection<Supplier<? extends ItemLike>> collection = new ArrayList<>(items.length);
         if (this.doGenerateBlock()) {
-            this.setIgnoredBlock(material,
-                    Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast).toArray(Block[]::new));
+            for (var item : items) {
+                if (item instanceof Block b) {
+                    collection.add(GTMemoizer.memoizeBlockSupplier(() -> b));
+                }
+            }
         } else {
-            this.setIgnored(material,
-                    Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+            for (var item : items) {
+                collection.add(() -> item);
+            }
         }
+        setIgnored(material, collection);
     }
 
-    @SuppressWarnings("unchecked")
-    public void setIgnoredBlock(Material material, Block... items) {
-        this.setIgnored(material, Arrays.stream(items).map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
-                .toArray(Supplier[]::new));
+    public void setIgnoredBlock(Material material, Block... blocks) {
+        Collection<Supplier<? extends ItemLike>> collection = new ArrayList<>(blocks.length);
+        for (var block : blocks) {
+            collection.add(GTMemoizer.memoizeBlockSupplier(() -> block));
+        }
+        setIgnored(material, collection);
     }
 
-    @SuppressWarnings("unchecked")
     public void setIgnored(Material material) {
-        this.ignoredMaterials.put(material, new Supplier[0]);
+        this.ignoredMaterials.put(material, List.of());
     }
 
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
     }
 
-    public Map<Material, Supplier<? extends ItemLike>[]> getIgnored() {
-        return new HashMap<>(ignoredMaterials);
+    public @Unmodifiable Map<Material, @Unmodifiable Collection<Supplier<? extends ItemLike>>> getIgnored() {
+        return Map.copyOf(ignoredMaterials);
     }
 
     public boolean isAmountModified(Material material) {

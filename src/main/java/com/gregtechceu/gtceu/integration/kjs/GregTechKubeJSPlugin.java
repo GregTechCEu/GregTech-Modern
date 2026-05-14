@@ -473,7 +473,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         });
         typeWrappers.registerSimple(MedicalCondition.class, o -> {
             if (o instanceof MedicalCondition condition) return condition;
-            if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
+            if (o instanceof CharSequence str) return GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(str.toString()));
             return null;
         });
         typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
@@ -515,7 +515,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }
-            gtRecipeType.getAdditionHandler().beginStaging();
+            gtRecipeType.beginStagingRecipes();
             gtRecipeType.getProxyRecipes().forEach((type, list) -> {
                 RecipeManagerHandler.addProxyRecipesToLookup(recipesByName, gtRecipeType, type, list);
             });

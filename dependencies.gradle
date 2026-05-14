@@ -22,8 +22,7 @@ dependencies {
     modCompileOnly(forge.bundles.rei)
     modCompileOnly(forge.emi)
 
-    // WAILA-likes
-    modCompileOnly(forge.theoneprobe)
+    // Jade (WAILA)
     modCompileOnly(forge.jade)
 
     // Curios
@@ -59,6 +58,7 @@ dependencies {
 
     // Maps
     modCompileOnly(forge.ftbchunks)
+    modCompileOnly(forge.xaeroslib)
     modCompileOnly(forge.xaerosminimap)
     modCompileOnly(forge.xaerosworldmap)
     modCompileOnly(forge.journeymap.api)

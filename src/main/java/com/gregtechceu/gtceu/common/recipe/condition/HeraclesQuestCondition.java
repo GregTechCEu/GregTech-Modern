@@ -56,7 +56,7 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        MachineOwner owner = recipeLogic.machine.self().getOwner();
+        MachineOwner owner = recipeLogic.getMachine().getOwner();
         if (owner == null) return false;
         for (var player : owner.getMembers()) {
             QuestsProgress questsProgress = QuestProgressHandler

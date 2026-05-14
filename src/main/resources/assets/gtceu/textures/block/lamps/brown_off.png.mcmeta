@@ -1,5 +1,5 @@
 {
-  "ldlib": {
-    "connection": "gtceu:block/lamps/brown_off_ctm"
-  }
+    "ldlib": {
+        "connection": "gtceu:block/lamps/brown_off_ctm"
+    }
 }

@@ -41,6 +41,7 @@ import java.util.function.*;
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
+    @Getter
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -330,6 +331,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull RecipeDB db() {
         return db;
+    }
+
+    @ApiStatus.Internal
+    public void beginStagingRecipes() {
+        categoryMap.clear();
+        additionHandler.beginStaging();
     }
 
     public interface ICustomRecipeLogic {

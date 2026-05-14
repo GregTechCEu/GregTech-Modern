@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
@@ -30,38 +30,36 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof ChargerMachine ||
-                    blockEntity.getMetaMachine() instanceof BatteryBufferMachine) {
-                CompoundTag serverData = blockAccessor.getServerData();
-                if (serverData.contains("batteries")) {
-                    CompoundTag tag = serverData.getCompound("batteries");
-                    CompoundTag container = tag.getCompound("energy");
-                    long changed = container.getLong("changed"), stored = container.getLong("stored"),
-                            capacity = container.getLong("capacity");
-                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
-                    if (changed > 0L) {
-                        iTooltip.add(Component
-                                .translatable("gtceu.jade.remaining_charge_time",
-                                        getStringRemainTime((capacity - stored) / changed)));
-                    } else if (changed < 0L) {
-                        iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
-                                getStringRemainTime((stored) / -changed)));
-                    }
-                    if (Minecraft.getInstance().player.isShiftKeyDown()) {
-                        CustomItemStackHandler handler = new CustomItemStackHandler();
-                        handler.deserializeNBT(tag.getCompound("storage"));
-                        IElementHelper helper = iTooltip.getElementHelper();
-                        for (int i = 0; i < handler.getSlots(); i++) {
-                            if (handler.getStackInSlot(i).getCount() != 0) {
-                                ItemStack stack = handler.getStackInSlot(i);
-                                iTooltip.add(helper.smallItem(stack));
-                                IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
-                                if (item == null) continue;
-                                iTooltip.append(Component.literal(
-                                        GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
-                                                " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
-                            }
+        if (blockAccessor.getBlockEntity() instanceof ChargerMachine blockEntity ||
+                blockAccessor.getBlockEntity() instanceof BatteryBufferMachine) {
+            CompoundTag serverData = blockAccessor.getServerData();
+            if (serverData.contains("batteries")) {
+                CompoundTag tag = serverData.getCompound("batteries");
+                CompoundTag container = tag.getCompound("energy");
+                long changed = container.getLong("changed"), stored = container.getLong("stored"),
+                        capacity = container.getLong("capacity");
+                iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
+                if (changed > 0L) {
+                    iTooltip.add(Component
+                            .translatable("gtceu.jade.remaining_charge_time",
+                                    getStringRemainTime((capacity - stored) / changed)));
+                } else if (changed < 0L) {
+                    iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+                            getStringRemainTime((stored) / -changed)));
+                }
+                if (Minecraft.getInstance().player.isShiftKeyDown()) {
+                    CustomItemStackHandler handler = new CustomItemStackHandler();
+                    handler.deserializeNBT(tag.getCompound("storage"));
+                    IElementHelper helper = iTooltip.getElementHelper();
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        if (handler.getStackInSlot(i).getCount() != 0) {
+                            ItemStack stack = handler.getStackInSlot(i);
+                            iTooltip.add(helper.smallItem(stack));
+                            IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+                            if (item == null) continue;
+                            iTooltip.append(Component.literal(
+                                    GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
+                                            " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
                         }
                     }
                 }
@@ -79,13 +77,13 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof ChargerMachine machine) {
+        if (blockAccessor.getBlockEntity() instanceof MetaMachine mm) {
+            if (mm instanceof ChargerMachine machine) {
                 CompoundTag tag = new CompoundTag();
                 tag.put("energy", getEnergyData(machine.energyContainer));
                 tag.put("storage", machine.getChargerInventory().serializeNBT());
                 compoundTag.put("batteries", tag);
-            } else if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine machine) {
+            } else if (mm instanceof BatteryBufferMachine machine) {
                 CompoundTag tag = new CompoundTag();
                 IEnergyContainer container = machine.energyContainer;
                 tag.put("energy", getEnergyData(machine.energyContainer));
