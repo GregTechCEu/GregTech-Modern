@@ -49,11 +49,12 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
             .widthRel(1f)
             .coverChildrenHeight()
             .childPadding(1)
-            // .background(new Rectangle().color(Color.RED.brighter(2)))
             .crossAxisAlignment(Alignment.CrossAxis.START)
             .collapseDisabledChildren();
+
     public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
     public final Flow outputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
+
     public final Flow recipeContentRow;
     public final ParentWidget<?> additionalRecipeContent = new ParentWidget<>()
             .coverChildrenHeight().widthRel(1f);
@@ -104,10 +105,10 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .horizontalCenter()
                 .coverChildrenHeight()
                 .widthRel(1.f)
-                .childPadding((recipeType.getUiLayout().getProgressSize() / 2) + 2)
+                .childPadding((recipeType.getUiLayout().getProgressBar().progressSize() / 2) + 2)
                 .child(inputColumn)
                 .child(uiLayout.getProgressWidgetSupplier()
-                        .get(uiLayout, DoubleValue.simulateProgress(2000)))
+                        .get(uiLayout, DoubleValue.simulateProgress(2000), null))
                 .child(outputColumn);
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
             var layoutFunc = uiLayout.capabilityInfo(entry.getKey()).recipeViewerLayoutBuilder;
@@ -209,8 +210,6 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                         .onMousePressed((ctx, b) -> {
                             var mouse = MouseData.create(b);
 
-                            OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
-
                             if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                                 if (tier == GTValues.MAX) return true;
                                 tier++;
@@ -221,15 +220,21 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                                 tier = minTier;
                             }
 
-                            if (mouse.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
-                            // TODO more contextual oc values based on recipe type or machine
-                            if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
-                                oc = FusionReactorMachine.FUSION_OC;
-                            }
-
-                            applyOverclock(oc);
+                            updateOverclock(mouse);
                             return true;
                         }));
+    }
+
+    private void updateOverclock(MouseData data) {
+        OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+        if (data.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
+
+        // TODO more contextual oc values based on recipe type or machine
+        if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+            oc = FusionReactorMachine.FUSION_OC;
+        }
+
+        applyOverclock(oc);
     }
 
     private void applyOverclock(OverclockingLogic logic) {

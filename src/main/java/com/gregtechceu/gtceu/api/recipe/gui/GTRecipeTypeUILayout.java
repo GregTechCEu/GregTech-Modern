@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.value.IDoubleValue;
-import brachy.modularui.drawable.UITexture;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -31,11 +31,8 @@ public class GTRecipeTypeUILayout {
     @Getter
     private final GTRecipeType recipeType;
     @Getter
-    private UITexture progressBar = UITexture.DEFAULT;
-    @Getter
-    private int progressSize = 10;
-    @Getter
-    private ProgressWidget.Direction progressDirection = ProgressWidget.Direction.RIGHT;
+    private ProgressBarTextureSet progressBar;
+
     @Getter
     private final ProgressWidgetSupplier progressWidgetSupplier;
     private final Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo;
@@ -46,7 +43,8 @@ public class GTRecipeTypeUILayout {
     private final @Nullable Function<GTRecipe, Flow> customUIBuilder;
 
     public GTRecipeTypeUILayout(GTRecipeType recipeType, Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo,
-                                List<RecipeUIModifier> recipeUIModifiers, ProgressWidgetSupplier progressWidgetSupplier,
+                                List<RecipeUIModifier> recipeUIModifiers,
+                                ProgressWidgetSupplier progressWidgetSupplier,
                                 @Nullable Function<GTRecipe, Flow> customUIBuilder) {
         this.recipeType = recipeType;
         this.capabilityInfo = capabilityInfo;
@@ -118,14 +116,12 @@ public class GTRecipeTypeUILayout {
     @FunctionalInterface
     public interface ProgressWidgetSupplier {
 
-        Widget<?> get(GTRecipeTypeUILayout layout, IDoubleValue<Double> value);
+        Widget<?> get(GTRecipeTypeUILayout layout, IDoubleValue<Double> value, @Nullable MetaMachine machine);
     }
 
     public static class Builder {
 
-        private UITexture progressBar = UITexture.DEFAULT;
-        private int progressSize = 10;
-        private ProgressWidget.Direction fillDirection = ProgressWidget.Direction.RIGHT;
+        private ProgressBarTextureSet progressBar = GTGuiTextures.PROGRESS_ARROW;
 
         private final Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo = new Object2ObjectOpenHashMap<>();
         private final GTRecipeType recipeType;
@@ -225,26 +221,12 @@ public class GTRecipeTypeUILayout {
         }
 
         /**
-         * Sets the texture and size of the progress bar
-         *
-         * @param progressBar  Progress bar texture
-         * @param progressSize Progress bar size
+         * Sets the progress bar texture
+         * 
+         * @param progressBar {@link ProgressBarTextureSet}, which holds progress texture info.
          */
-        public Builder setProgressBar(UITexture progressBar, int progressSize) {
-            return setProgressBar(progressBar, progressSize, ProgressWidget.Direction.RIGHT);
-        }
-
-        /**
-         * Sets the texture, size and fill direction of the progress bar
-         *
-         * @param progressBar   Progress bar texture
-         * @param progressSize  Progress bar size
-         * @param fillDirection Progress bar fill direction
-         */
-        public Builder setProgressBar(UITexture progressBar, int progressSize, ProgressWidget.Direction fillDirection) {
+        public Builder setProgressBar(ProgressBarTextureSet progressBar) {
             this.progressBar = progressBar;
-            this.progressSize = progressSize;
-            this.fillDirection = fillDirection;
             return this;
         }
 
@@ -368,17 +350,15 @@ public class GTRecipeTypeUILayout {
 
         public GTRecipeTypeUILayout build() {
             var progressWidgetSupplier = this.progressWidgetSupplier;
-            if (progressWidgetSupplier == null) progressWidgetSupplier = (l, v) -> new ProgressWidget()
+            if (progressWidgetSupplier == null) progressWidgetSupplier = (l, v, m) -> new ProgressWidget()
                     .value(v)
                     .name("progressBar")
-                    .texture(l.getProgressBar(), l.getProgressSize())
-                    .size(l.getProgressSize())
-                    .direction(l.getProgressDirection());
+                    .texture(progressBar.get(m), progressBar.progressSize())
+                    .size(progressBar.progressSize())
+                    .direction(progressBar.fillDirection());
 
             var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier,
                     customUIBuilder);
-            layout.progressSize = progressSize;
-            layout.progressDirection = fillDirection;
             layout.progressBar = progressBar;
             return layout;
         }

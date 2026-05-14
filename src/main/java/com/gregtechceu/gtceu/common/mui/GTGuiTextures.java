@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.mui.SteamTextureSet;
+import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,6 +11,7 @@ import brachy.modularui.api.GuiAxis;
 import brachy.modularui.drawable.ColorType;
 import brachy.modularui.drawable.TabTexture;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.widgets.ProgressWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -460,97 +463,107 @@ public interface GTGuiTextures {
     UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
 
     // PROGRESS BARS
+
+    ProgressBarTextureSet PROGRESS_ARROW = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_arrow.png", ColorType.DEFAULT),
+            progressBar("textures/gui/progress_bar/progress_bar_arrow_bronze.png"),
+            progressBar("textures/gui/progress_bar/progress_bar_arrow_steel.png"));
+
+    ProgressBarTextureSet PROGRESS_ARROW_MULTIPLE = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_arrow_multiple.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_ASSEMBLER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_assembler.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_BATH = new ProgressBarTextureSet(20, ProgressWidget.Direction.CIRCULAR_CW,
+            progressBar("textures/gui/progress_bar/progress_bar_bath.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_BENDING = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_bending.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_CANNER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_canner.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_CIRCUIT_ASSEMBLER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_circuit_assembler.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_COMPRESS = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_compress.png", ColorType.DEFAULT),
+            progressBar("textures/gui/progress_bar/progress_bar_compress_bronze.png"),
+            progressBar("textures/gui/progress_bar/progress_bar_compress_steel.png"));
+
+    ProgressBarTextureSet PROGRESS_CRACKING = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_cracking.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_CRYSTALLIZATION = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_crystallization.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_EXTRACT = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_extract.png", ColorType.DEFAULT),
+            progressBar("textures/gui/progress_bar/progress_bar_extract_bronze.png"),
+            progressBar("textures/gui/progress_bar/progress_bar_extract_steel.png"));
+
+    ProgressBarTextureSet PROGRESS_EXTRUDER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_extruder.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_FUSION = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_fusion.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_GAS_COLLECTOR = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_gas_collector.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_HAMMER = new ProgressBarTextureSet(20, ProgressWidget.Direction.DOWN,
+            progressBar("textures/gui/progress_bar/progress_bar_hammer.png", ColorType.DEFAULT),
+            progressBar("textures/gui/progress_bar/progress_bar_hammer_bronze.png"),
+            progressBar("textures/gui/progress_bar/progress_bar_hammer_steel.png"));
+
+    SteamTextureSet PROGRESS_HAMMER_BASE = new SteamTextureSet(
+            fullImage("textures/gui/progress_bar/progress_bar_hammer_base.png", ColorType.DEFAULT),
+            fullImage("textures/gui/progress_bar/progress_bar_hammer_base_bronze.png"),
+            fullImage("textures/gui/progress_bar/progress_bar_hammer_base_steel.png"));
+
+    ProgressBarTextureSet PROGRESS_MACERATE = new ProgressBarTextureSet(20, ProgressWidget.Direction.RIGHT,
+            progressBar("textures/gui/progress_bar/progress_bar_macerate.png", ColorType.DEFAULT),
+            progressBar("textures/gui/progress_bar/progress_bar_macerate_bronze.png"),
+            progressBar("textures/gui/progress_bar/progress_bar_macerate_steel.png"));
+
+    ProgressBarTextureSet PROGRESS_MAGNET = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_magnet.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_MIXER = new ProgressBarTextureSet(20, ProgressWidget.Direction.CIRCULAR_CW,
+            progressBar("textures/gui/progress_bar/progress_bar_mixer.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_SIFTER = new ProgressBarTextureSet(20, ProgressWidget.Direction.DOWN,
+            progressBar("textures/gui/progress_bar/progress_bar_sift.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_CUTTER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_slice.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_PACKER = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_unpacker.png", ColorType.DEFAULT));
+
+    ProgressBarTextureSet PROGRESS_WIREMILL = new ProgressBarTextureSet(
+            progressBar("textures/gui/progress_bar/progress_bar_wiremill.png", ColorType.DEFAULT));
+
+    UITexture PROGRESS_BAR_PACKER = progressBar("textures/gui/progress_bar/progress_bar_packer.png",
+            ColorType.DEFAULT);
+
+    UITexture PROGRESS_BAR_CIRCUIT = progressBar(
+            "textures/gui/progress_bar/progress_bar_circuit.png", ColorType.DEFAULT);
+
+    UITexture PROGRESS_BAR_RECYCLER = progressBar(
+            "textures/gui/progress_bar/progress_bar_recycler.png", ColorType.DEFAULT);
+
+    UITexture PROGRESS_BAR_REPLICATOR = progressBar(
+            "textures/gui/progress_bar/progress_bar_replicator.png", ColorType.DEFAULT);
+
     UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
     UITexture PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR = progressBar(
             "textures/gui/primitive/progress_bar_primitive_blast_furnace.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_ARROW = progressBar("textures/gui/progress_bar/progress_bar_arrow.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_ARROW_BRONZE = progressBar(
-            "textures/gui/progress_bar/progress_bar_arrow_bronze.png");
-    UITexture PROGRESS_BAR_ARROW_STEEL = progressBar(
-            "textures/gui/progress_bar/progress_bar_arrow_steel.png");
-    UITexture PROGRESS_BAR_ARROW_MULTIPLE = progressBar(
-            "textures/gui/progress_bar/progress_bar_arrow_multiple.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_ASSEMBLER = progressBar(
-            "textures/gui/progress_bar/progress_bar_assembler.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_BATH = progressBar("textures/gui/progress_bar/progress_bar_bath.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_BENDING = progressBar(
-            "textures/gui/progress_bar/progress_bar_bending.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_CANNER = progressBar("textures/gui/progress_bar/progress_bar_canner.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_CIRCUIT = progressBar(
-            "textures/gui/progress_bar/progress_bar_circuit.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_CIRCUIT_ASSEMBLER = progressBar(
-            "textures/gui/progress_bar/progress_bar_circuit_assembler.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_COMPRESS = progressBar(
-            "textures/gui/progress_bar/progress_bar_compress.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_COMPRESS_BRONZE = progressBar(
-            "textures/gui/progress_bar/progress_bar_compress_bronze.png");
-    UITexture PROGRESS_BAR_COMPRESS_STEEL = progressBar(
-            "textures/gui/progress_bar/progress_bar_compress_steel.png");
-    UITexture PROGRESS_BAR_CRACKING = progressBar(
-            "textures/gui/progress_bar/progress_bar_cracking.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_CRACKING_INPUT = progressBar(
-            "textures/gui/progress_bar/progress_bar_cracking_2.png", 21, 38, ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_CRYSTALLIZATION = progressBar(
-            "textures/gui/progress_bar/progress_bar_crystallization.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_EXTRACT = progressBar(
-            "textures/gui/progress_bar/progress_bar_extract.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_EXTRACT_BRONZE = progressBar(
-            "textures/gui/progress_bar/progress_bar_extract_bronze.png");
-    UITexture PROGRESS_BAR_EXTRACT_STEEL = progressBar(
-            "textures/gui/progress_bar/progress_bar_extract_steel.png");
-    UITexture PROGRESS_BAR_EXTRUDER = progressBar(
-            "textures/gui/progress_bar/progress_bar_extruder.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_FUSION = progressBar("textures/gui/progress_bar/progress_bar_fusion.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_GAS_COLLECTOR = progressBar(
-            "textures/gui/progress_bar/progress_bar_gas_collector.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_HAMMER = progressBar("textures/gui/progress_bar/progress_bar_hammer.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_HAMMER_BRONZE = progressBar(
-            "textures/gui/progress_bar/progress_bar_hammer_bronze.png");
-    UITexture PROGRESS_BAR_HAMMER_STEEL = progressBar(
-            "textures/gui/progress_bar/progress_bar_hammer_steel.png");
-    UITexture PROGRESS_BAR_HAMMER_BASE = fullImage(
-            "textures/gui/progress_bar/progress_bar_hammer_base.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_HAMMER_BASE_BRONZE = fullImage(
-            "textures/gui/progress_bar/progress_bar_hammer_base_bronze.png");
-    UITexture PROGRESS_BAR_HAMMER_BASE_STEEL = fullImage(
-            "textures/gui/progress_bar/progress_bar_hammer_base_steel.png");
-    UITexture PROGRESS_BAR_LATHE = progressBar("textures/gui/progress_bar/progress_bar_lathe.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_LATHE_BASE = fullImage(
-            "textures/gui/progress_bar/progress_bar_lathe_base.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_MACERATE = progressBar(
-            "textures/gui/progress_bar/progress_bar_macerate.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_MACERATE_BRONZE = progressBar(
-            "textures/gui/progress_bar/progress_bar_macerate_bronze.png");
-    UITexture PROGRESS_BAR_MACERATE_STEEL = progressBar(
-            "textures/gui/progress_bar/progress_bar_macerate_steel.png");
-    UITexture PROGRESS_BAR_MAGNET = progressBar("textures/gui/progress_bar/progress_bar_magnet.png",
-            ColorType.DEFAULT);
+
     UITexture PROGRESS_BAR_MASS_FAB = progressBar(
             "textures/gui/progress_bar/progress_bar_mass_fab.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_MIXER = progressBar("textures/gui/progress_bar/progress_bar_mixer.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_PACKER = progressBar("textures/gui/progress_bar/progress_bar_packer.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_RECYCLER = progressBar(
-            "textures/gui/progress_bar/progress_bar_recycler.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_REPLICATOR = progressBar(
-            "textures/gui/progress_bar/progress_bar_replicator.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_SIFT = progressBar("textures/gui/progress_bar/progress_bar_sift.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_SLICE = progressBar("textures/gui/progress_bar/progress_bar_slice.png",
-            ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_UNPACKER = progressBar(
-            "textures/gui/progress_bar/progress_bar_unpacker.png", ColorType.DEFAULT);
-    UITexture PROGRESS_BAR_WIREMILL = progressBar(
-            "textures/gui/progress_bar/progress_bar_wiremill.png", ColorType.DEFAULT);
 
     // more custom progress bars
     // todo these boiler empty bars can probably be replaced by using a resized steam slot texture
@@ -559,15 +572,30 @@ public interface GTGuiTextures {
             .imageSize(10, 54)
             .adaptable(1)
             .build();
+
     UITexture PROGRESS_BAR_BOILER_EMPTY_STEEL = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/progress_bar/progress_bar_boiler_empty_steel.png")
             .imageSize(10, 54)
             .adaptable(1)
             .build();
+
+    UITexture PROGRESS_BAR_LATHE = progressBar("textures/gui/progress_bar/progress_bar_lathe.png",
+            ColorType.DEFAULT);
+
+    UITexture PROGRESS_BAR_LATHE_BASE = fullImage(
+            "textures/gui/progress_bar/progress_bar_lathe_base.png", ColorType.DEFAULT);
+
     UITexture PROGRESS_BAR_BOILER_FUEL_BRONZE = progressBar(
             "textures/gui/progress_bar/progress_bar_boiler_fuel_bronze.png", 18, 36);
     UITexture PROGRESS_BAR_BOILER_FUEL_STEEL = progressBar(
             "textures/gui/progress_bar/progress_bar_boiler_fuel_steel.png", 18, 36);
+
+    ProgressBarTextureSet PROGRESS_BOILER_FUEL_STEEL = new ProgressBarTextureSet(18, ProgressWidget.Direction.UP,
+            PROGRESS_BAR_BOILER_FUEL_STEEL);
+
+    UITexture PROGRESS_BAR_CRACKING_INPUT = progressBar("textures/gui/progress_bar/progress_bar_cracking_2.png", 21, 38,
+            ColorType.DEFAULT);
+
     UITexture PROGRESS_BAR_BOILER_HEAT = progressBar(
             "textures/gui/progress_bar/progress_bar_boiler_heat.png", ColorType.DEFAULT);
     UITexture PROGRESS_BAR_ASSEMBLY_LINE = progressBar(

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
@@ -50,6 +49,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.*;
 
 public class GTMuiWidgets {
@@ -353,10 +353,6 @@ public class GTMuiWidgets {
         return grid;
     }
 
-    public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
-        return new ParentWidget<>();
-    }
-
     public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
         // Done so the cycle button doesn't create states for every IO enum entry
 
@@ -520,8 +516,6 @@ public class GTMuiWidgets {
             @Override
             public boolean onMouseScrolled(double delta) {
                 long inc = (long) delta * getIncrementValue(MouseData.create(-1), 1);
-                long min = minValue.getAsLong();
-                long max = maxValue.getAsLong();
                 long value = syncValue.getLongValue() + inc;
                 syncValue.setLongValue(GTMath.clamp(value, minValue.getAsLong(), maxValue.getAsLong()),
                         true, true);
@@ -670,7 +664,7 @@ public class GTMuiWidgets {
             if (syncValue != null) {
                 for (var enumVal : enumValue.getEnumConstants()) {
                     var button = new ToggleButton().size(18).marginRight(2)
-                            .value(boolValueOf(syncValue, enumVal));
+                            .value(boolValueOf(Objects.requireNonNull(syncValue), enumVal));
 
                     if (this.background != null && this.background.length > 0)
                         button.background(this.background);

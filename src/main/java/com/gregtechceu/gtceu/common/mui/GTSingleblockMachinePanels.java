@@ -36,7 +36,8 @@ public class GTSingleblockMachinePanels {
             type = simpleGeneratorMachine.getRecipeType();
             recipeLogic = simpleGeneratorMachine.recipeLogic;
         } else {
-            GTCEu.LOGGER.error("{} is not a SimpleTieredMachine/SimpleGeneratorMachine/SimpleSteamMachine, cannot add slots to its content",
+            GTCEu.LOGGER.error(
+                    "{} is not a SimpleTieredMachine/SimpleGeneratorMachine/SimpleSteamMachine, cannot add slots to its content",
                     machine.getDefinition().getName());
             return new ModularPanel<>(machine.getDefinition().getName());
         }

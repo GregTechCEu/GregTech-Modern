@@ -10,13 +10,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
-import dev.emi.emi.api.EmiApi;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -60,8 +58,10 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -774,7 +774,6 @@ public class GTUtil {
         } else if (GTCEu.Mods.isREILoaded()) {
             ReiCallWrapper.openRecipeCategory(category);
         }
-
     }
 
     private static class EmiCallWrapper {

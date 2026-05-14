@@ -4,11 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
-import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.Text;
@@ -17,11 +13,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.utils.GTUtil;
-import dev.emi.emi.api.EmiApi;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 
-import java.util.List;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -51,10 +43,10 @@ public class GTRecipeTypeMachineWidget extends Flow {
 
         coverChildren();
         center();
-        childPadding((layout.getProgressSize() / 2) + 2);
+        childPadding((layout.getProgressBar().progressSize() / 2) + 2);
         child(inputColumn);
 
-        var progressWidget = layout.getProgressWidgetSupplier().get(layout, progressPercent);
+        var progressWidget = layout.getProgressWidgetSupplier().get(layout, progressPercent, machine);
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;
@@ -79,5 +71,4 @@ public class GTRecipeTypeMachineWidget extends Flow {
             layoutFunc.createCapabilityUILayout(machine, layout, this, IO.OUT);
         }
     }
-
 }
