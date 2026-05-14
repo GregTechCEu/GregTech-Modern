@@ -167,3 +167,7 @@ idea {
         downloadJavadoc = true
     }
 }
+
+tasks.named("test", Test).configure {
+    failOnNoDiscoveredTests = false
+}
