@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class GTRecipeJEICategory<T extends Recipe<?>, W extends IWidget>
+public abstract class GTRecipeJEICategory<T extends Recipe<?>>
                                          extends ModularUIRecipeCategory<T> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util

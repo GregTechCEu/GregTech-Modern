@@ -7,13 +7,12 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
-import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
+import brachy.modularui.integration.rei.recipe.ModularUIREIDisplayCategory;
 import lombok.Getter;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
+public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDisplay> {
 
     public static final Function<GTRecipeCategory, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util
             .memoize(c -> CategoryIdentifier.of(c.registryKey));
@@ -42,7 +41,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
         this.category = category;
         var recipeType = category.getRecipeType();
         this.size = new Size(8, 8);
-        this.icon = IGui2Renderer.toDrawable(category.getIcon());
+        this.icon = (Renderer) category.getIcon().get();
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
