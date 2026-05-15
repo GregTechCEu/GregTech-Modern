@@ -4679,6 +4679,8 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <li><code>GTFluidImpl</code> has been merged into <code>GTFluid</code>, use <code>GTFluid.Flowing</code> and <code>GTFluid.Source</code> instead of <code>GTFluidImpl.Flowing</code> and <code>GTFluidImpl.Source</code>.</li>
 <li>Item behaviors have been moved to <code>common/item/behavior</code>, and some items have been moved from <code>api/item</code> to <code>common/item</code>.</li>
 <li>Changed the minimum value of the <code>compat.minimap.surfaceRockProspectRange</code> and <code>compat.minimap.oreBlockProspectRange</code> configs from -1 to 0. The behavior is still disabled with 0. </li>
+<li><code>ChargerMachine</code> has been merged into <code>BatteryBufferMachine</code>.</li>
+<li>Calling the battery buffer constructor with the following args gives the same behaviour as a charger machine: <code>(info, tier, inventorySize, BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0)</code></li>
 </ul>
 
 
