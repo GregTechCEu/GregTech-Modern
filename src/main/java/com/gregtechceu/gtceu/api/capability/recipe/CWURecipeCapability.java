@@ -31,8 +31,8 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
-        return (List<NotifiableComputationContainer>) super.getCapabilityHandlers(machine, io);
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

@@ -430,8 +430,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return machine.getTraits(NotifiableItemStackHandler.TYPE);
     }
 
-    @SuppressWarnings("unchecked")
     public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine, IO io) {
-        return (List<NotifiableItemStackHandler>) super.getCapabilityHandlers(machine, io);
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

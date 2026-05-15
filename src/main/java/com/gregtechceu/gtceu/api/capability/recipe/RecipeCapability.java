@@ -179,10 +179,23 @@ public abstract class RecipeCapability<T> {
         return true;
     }
 
+    /**
+     * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
+     * 
+     * @param machine The machine to get traits from
+     * @return A list containing the traits
+     */
     public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine) {
         return List.of();
     }
 
+    /**
+     * Gets all {@link NotifiableRecipeHandlerTrait} traits with a specific IO that can handle this capability.
+     * 
+     * @param machine The machine to get traits from
+     * @param io      The handler IO of the traits
+     * @return A list containing the traits
+     */
     public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine, IO io) {
         return getCapabilityHandlers(machine).stream()
                 .filter(v -> v.getHandlerIO() == io).toList();

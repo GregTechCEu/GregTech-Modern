@@ -364,6 +364,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @SuppressWarnings("unchecked")
     public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine, IO io) {
-        return (List<NotifiableFluidTank>) super.getCapabilityHandlers(machine, io);
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

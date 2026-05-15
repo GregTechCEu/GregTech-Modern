@@ -133,9 +133,9 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
-        return (List<NotifiableEnergyContainer>) super.getCapabilityHandlers(machine, io);
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 
     /**
