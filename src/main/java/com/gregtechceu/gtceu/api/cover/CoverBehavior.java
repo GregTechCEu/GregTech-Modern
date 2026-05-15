@@ -19,6 +19,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,7 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(CoverBehavior.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -82,7 +84,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 
     @Override

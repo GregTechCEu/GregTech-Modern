@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -44,9 +43,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine, IMachineLife {
 
     public static final long AMPS_PER_ITEM = 4L;
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     public enum State implements StringRepresentable {
 
@@ -90,11 +86,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         return new EnergyBatteryTrait((int) args[0]);

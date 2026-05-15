@@ -13,8 +13,6 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,9 +29,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class CreativeTankMachine extends QuantumTankMachine {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
-            QuantumTankMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -152,11 +147,6 @@ public class CreativeTankMachine extends QuantumTankMachine {
                 .setPressed(isWorkingEnabled()));
 
         return group;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class InfiniteCache extends FluidCache {

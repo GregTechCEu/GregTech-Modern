@@ -17,6 +17,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 
 public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineCoverContainer.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(MachineCoverContainer.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Getter
@@ -58,7 +60,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 
     @Override

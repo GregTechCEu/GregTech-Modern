@@ -17,8 +17,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -42,15 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
                           IDropSaveMachine, IInteractedMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Getter
     private final Material material;

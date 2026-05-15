@@ -24,8 +24,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -52,9 +50,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class ComputerMonitorCover extends CoverBehavior
                                   implements IUICover, IDataStickInteractable, IPlaceholderInfoProviderCover {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
 
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
@@ -126,11 +121,6 @@ public class ComputerMonitorCover extends CoverBehavior
     @Override
     public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
         return () -> renderer;
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

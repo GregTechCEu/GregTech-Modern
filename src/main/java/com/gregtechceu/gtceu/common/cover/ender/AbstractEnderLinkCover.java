@@ -28,8 +28,6 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,8 +47,6 @@ import java.util.regex.Pattern;
 public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends CoverBehavior
                                             implements IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AbstractEnderLinkCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
     public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("^[0-9a-fA-F]{0,8}$");
 
     protected final ConditionalSubscriptionHandler subscriptionHandler;
@@ -134,11 +130,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public Widget createUIWidget() {
         virtualEntryWidget = new VirtualEntryWidget(this);
         return virtualEntryWidget;
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     public void setIo(IO io) {

@@ -26,8 +26,6 @@ import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -65,8 +63,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
-
     public final IRecipeLogicMachine machine;
     public @Nullable List<GTRecipe> lastFailedMatches;
 
@@ -572,11 +568,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     // Remains for legacy + for subclasses
     public void inValid() {}
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     //////////////////////////////////////
     // ******** MISC *********//

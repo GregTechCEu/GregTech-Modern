@@ -36,6 +36,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -380,9 +382,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     // Handles the logic of this structure's specific HPCA component grid
     public static class HPCAGridHandler implements IManaged {
 
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HPCAGridHandler.class);
+        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(HPCAGridHandler.class);
+
         @Getter
         private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+
+        @Override
+        public ManagedFieldHolder getFieldHolder() {
+            return MANAGED_FIELD_HOLDER;
+        }
 
         @Nullable // for testing
         private final HPCAMachine controller;
@@ -747,11 +755,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void clearClientComponents() {
             components.clear();
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
 
         @Override

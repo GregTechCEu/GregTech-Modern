@@ -12,16 +12,11 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class,
-            NotifiableEnergyContainer.MANAGED_FIELD_HOLDER);
 
     /**
      * If TRUE, the front facing of the machine will OUTPUT EU, other sides INPUT FE.
@@ -52,11 +47,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     ////////////////////////////////
     // ***** Initialization ******//
     ////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
@@ -93,8 +83,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     //////////////////////////////
 
     private class FEContainer extends MachineTrait implements IEnergyStorage {
-
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FEContainer.class);
 
         public FEContainer(MetaMachine machine) {
             super(machine);
@@ -146,9 +134,5 @@ public class ConverterTrait extends NotifiableEnergyContainer {
             return feToEu;
         }
 
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
-        }
     }
 }

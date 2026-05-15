@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
@@ -26,8 +24,6 @@ import java.util.EnumSet;
  * Because IGridConnectedMachine has already extended IInWorldGridNodeHost.
  */
 public class GridNodeHolder extends MachineTrait {
-
-    protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHolder.class);
 
     @Getter
     @Persisted
@@ -71,11 +67,6 @@ public class GridNodeHolder extends MachineTrait {
     public void onMachineUnLoad() {
         super.onMachineUnLoad();
         mainNode.destroy();
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @SuppressWarnings("unused")

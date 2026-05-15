@@ -10,8 +10,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedstone> {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderRedstoneLinkCover.class,
-            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @DescSynced
@@ -99,8 +94,4 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
                 attachedSide.getOpposite());
     }
 
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -36,8 +35,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEInputBusPartMachine extends MEBusPartMachine
                                    implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
-            MEBusPartMachine.MANAGED_FIELD_HOLDER);
     protected final static int CONFIG_SIZE = 16;
 
     protected ExportOnlyAEItemList aeItemHandler;
@@ -59,11 +56,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////

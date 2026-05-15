@@ -19,7 +19,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,9 +34,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder, IMachineLife {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ObjectHolderMachine.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     // purposefully not exposed to automation or capabilities
     @Persisted
@@ -113,11 +109,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
                 controller.checkPatternWithLock();
             }
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class ObjectHolderHandler extends NotifiableItemStackHandler {

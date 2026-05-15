@@ -17,6 +17,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
@@ -187,14 +189,14 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FilterHandler.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(FilterHandler.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 
     @Override
