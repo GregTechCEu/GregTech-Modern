@@ -92,35 +92,35 @@ public interface IMultiPart extends IMachineFeature {
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default boolean onWorking(IWorkableMultiController controller) {
+    default boolean onWorking(WorkableMultiblockMachine controller) {
         return true;
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default boolean onWaiting(IWorkableMultiController controller) {
+    default boolean onWaiting(WorkableMultiblockMachine controller) {
         return true;
     }
 
     /**
      * Called in {@link WorkableMultiblockMachine#setWorkingEnabled(boolean)}
      */
-    default boolean onPaused(IWorkableMultiController controller) {
+    default boolean onPaused(WorkableMultiblockMachine controller) {
         return true;
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
-    default boolean afterWorking(IWorkableMultiController controller) {
+    default boolean afterWorking(WorkableMultiblockMachine controller) {
         return true;
     }
 
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)}
      */
-    default boolean beforeWorking(IWorkableMultiController controller) {
+    default boolean beforeWorking(WorkableMultiblockMachine controller) {
         return true;
     }
 
