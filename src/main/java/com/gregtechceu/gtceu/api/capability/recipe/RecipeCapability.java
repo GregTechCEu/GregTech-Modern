@@ -179,7 +179,12 @@ public abstract class RecipeCapability<T> {
         return true;
     }
 
-    public @Nullable NotifiableRecipeHandlerTrait<?> getCapabilityHandler(MetaMachine machine, IO io) {
-        return null;
+    public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine) {
+        return List.of();
+    }
+
+    public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

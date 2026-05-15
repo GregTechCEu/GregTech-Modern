@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
+
+import java.util.List;
 
 public class CWURecipeCapability extends RecipeCapability<Integer> {
 
@@ -19,5 +23,16 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     @Override
     public Integer copyWithModifier(Integer content, ContentModifier modifier) {
         return modifier.apply(content);
+    }
+
+    @Override
+    public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableComputationContainer.TYPE);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return (List<NotifiableComputationContainer>) super.getCapabilityHandlers(machine, io);
     }
 }

@@ -357,8 +357,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return false;
     }
 
-    public @Nullable NotifiableFluidTank getCapabilityHandler(MetaMachine machine, IO io) {
-        var handlers = machine.getTraitHolder().getTraits(NotifiableFluidTank.TYPE);
-        return handlers.stream().filter(v -> v.handlerIO == io).findFirst().orElse(null);
+    @Override
+    public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableFluidTank.TYPE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return (List<NotifiableFluidTank>) super.getCapabilityHandlers(machine, io);
     }
 }

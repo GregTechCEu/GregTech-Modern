@@ -425,8 +425,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return false;
     }
 
-    public @Nullable NotifiableItemStackHandler getCapabilityHandler(MetaMachine machine, IO io) {
-        var handlers = machine.getTraitHolder().getTraits(NotifiableItemStackHandler.TYPE);
-        return handlers.stream().filter(v -> v.handlerIO == io).findFirst().orElse(null);
+    @Override
+    public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableItemStackHandler.TYPE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return (List<NotifiableItemStackHandler>) super.getCapabilityHandlers(machine, io);
     }
 }

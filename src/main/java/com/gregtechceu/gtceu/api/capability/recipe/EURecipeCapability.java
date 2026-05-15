@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -123,6 +125,17 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             sum -= nonConsumable;
             return Math.min(GTMath.saturatedCast(sum / consumable), limit);
         }
+    }
+
+    @Override
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableEnergyContainer.TYPE);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return (List<NotifiableEnergyContainer>) super.getCapabilityHandlers(machine, io);
     }
 
     /**
