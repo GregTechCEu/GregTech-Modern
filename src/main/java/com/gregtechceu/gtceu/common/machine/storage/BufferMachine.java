@@ -37,7 +37,6 @@ public class BufferMachine extends TieredMachine implements IMuiMachine {
     protected final NotifiableFluidTank tank;
     @SaveField
     @SyncToClient
-
     public final AutoOutputTrait autoOutput;
 
     public BufferMachine(BlockEntityCreationInfo info, int tier) {

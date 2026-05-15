@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
@@ -109,7 +110,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE
-            .multiblock("large_chemical_bath", LargeChemicalBathMachine::new)
+            .multiblock("large_chemical_bath", GTMachineInstanceFactories.LARGE_CHEM_BATH)
             .langValue("Large Chemical Bath")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -169,7 +170,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE
-            .multiblock("large_mixer", LargeMixerMachine::new)
+            .multiblock("large_mixer", GTMachineInstanceFactories.LARGE_MIXER)
             .langValue("Large Mixing Vessel")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",

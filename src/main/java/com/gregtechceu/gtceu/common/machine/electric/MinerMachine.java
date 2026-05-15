@@ -2,24 +2,20 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -37,9 +33,7 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,88 +46,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MinerMachine extends WorkableTieredMachine
                           implements IControllable, IMuiMachine, IDataInfoProvider, IMiner {
 
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
-    @Nullable
-    protected TickableSubscription batterySubs;
-    @Nullable
-    protected ISubscription energySubs;
 
     @SaveField
     @SyncToClient
     public final AutoOutputTrait autoOutput;
 
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
-        super(info, tier,
-                new MinerLogic(fortune, speed, maximumRadius),
-                0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
+        super(info, tier, new MinerLogic(fortune, speed, maximumRadius),
+                0, (tier + 1) * (tier + 1), 0,
+                0, false, ($) -> 0);
+
         this.energyPerTick = GTValues.V[tier - 1];
-        this.chargerInventory = createChargerItemHandler();
+
+        attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
+
         this.autoOutput = attachTrait(AutoOutputTrait.ofItems(exportItems));
         autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        // Remove the miner pipes below this miner
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override
     public MinerLogic getRecipeLogic() {
         return (MinerLogic) super.getRecipeLogic();
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            updateBatterySubscription();
-            energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
-            chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (energySubs != null) {
-            energySubs.unsubscribe();
-            energySubs = null;
-        }
-    }
-
-    //////////////////////////////////////
-    // ********** LOGIC **********//
-    //////////////////////////////////////
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        } else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
-            updateBatterySubscription();
-        }
     }
 
     private void addDisplayText(List<Component> textList) {

@@ -327,10 +327,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
-    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait) {
+    public MetaMachine attachPersistentTrait(String traitName, MachineTrait trait) {
         traitHolder.attachTrait(trait);
         traitHolder.registerPersistentTrait(traitName, trait);
-        return trait;
+        return this;
     }
 
     /**
