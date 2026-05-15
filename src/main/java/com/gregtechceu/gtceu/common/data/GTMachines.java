@@ -42,6 +42,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.ModLoader;
@@ -932,7 +933,18 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .modelProperty(IS_FORMED, false)
-            .model(createBasicReplaceableTextureMachineModel(GTCEu.id("block/machine/part/pump_hatch")))
+            .model(createBasicReplaceableTextureMachineModel(GTCEu.id("block/machine/part/pump_hatch"))
+                    .andThen(builder -> {
+                        // UV lock the model so the plank texture doesn't rotate weirdly
+                        builder.replaceForAllStates((state, models) -> {
+                            for (int i = 0; i < models.length; i++) {
+                                models[i] = ConfiguredModel.builder()
+                                        .modelFile(models[i].model).uvLock(true)
+                                        .buildLast();
+                            }
+                            return models;
+                        });
+                    }))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 

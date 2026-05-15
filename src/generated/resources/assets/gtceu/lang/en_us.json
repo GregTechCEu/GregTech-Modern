@@ -1987,6 +1987,7 @@
   "config.jade.plugin_gtceu.steam_boiler_info": "[GTCEu] Steam Boiler Info",
   "config.jade.plugin_gtceu.transformer": "[GTCEu] Transformer Info",
   "config.jade.plugin_gtceu.workable_provider": "[GTCEu] Workable",
+  "config.screen.gtceu": "GregTechCEu Configuration",
   "cover.advanced_detector.latch.disabled.0": "Behavior: Continuous",
   "cover.advanced_detector.latch.disabled.1": "",
   "cover.advanced_detector.latch.disabled.2": "Change the redstone behavior of this Cover.",
