@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.ModLoader;
 
 public class GTRecipeCapabilities {
