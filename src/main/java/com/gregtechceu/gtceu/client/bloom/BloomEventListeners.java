@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -31,7 +29,8 @@ public class BloomEventListeners {
     public static void afterParticlesRendered(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
 
-        BloomRenderer.renderBloom(event.getCamera(), event.getPoseStack(), event.getFrustum(), event.getProjectionMatrix(),
+        BloomRenderer.renderBloom(event.getCamera(), event.getPoseStack(), event.getFrustum(),
+                event.getProjectionMatrix(),
                 event.getPartialTick(), event.getLevelRenderer(), Minecraft.getInstance().getProfiler());
     }
 

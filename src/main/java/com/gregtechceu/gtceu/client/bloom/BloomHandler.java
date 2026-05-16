@@ -8,12 +8,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.experimental.UtilityClass;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -188,7 +188,8 @@ public class BloomHandler {
     static void initializeScheduledRenders() {
         for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
             if (!ticket.isValid()) continue;
-            BloomHandler.BLOOM_RENDERS.computeIfAbsent(ticket.renderSetup, BloomHandler.BloomRenderList::new).add(ticket);
+            BloomHandler.BLOOM_RENDERS.computeIfAbsent(ticket.renderSetup, BloomHandler.BloomRenderList::new)
+                    .add(ticket);
         }
         SCHEDULED_BLOOM_RENDERS.clear();
     }

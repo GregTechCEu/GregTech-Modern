@@ -25,9 +25,9 @@ public class QuadLighterMixin implements QuadLighterExt {
     private @Nullable RenderType gtceu$renderType;
 
     @WrapOperation(method = "process",
-            at = @At(value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V",
-                    remap = true))
+                   at = @At(value = "INVOKE",
+                            target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V",
+                            remap = true))
     private void gtceu$copyBloomQuads(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
                                       float[] colorMuls, float red, float green, float blue,
                                       int[] combinedLights, int combinedOverlay, boolean mulColor,

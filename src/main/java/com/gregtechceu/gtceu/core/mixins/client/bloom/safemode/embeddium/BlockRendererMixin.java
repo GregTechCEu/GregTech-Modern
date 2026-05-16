@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
-import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildContext;
 import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.jellysquid.mods.sodium.client.model.light.data.QuadLightData;
 import me.jellysquid.mods.sodium.client.model.quad.BakedQuadView;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuilder;
@@ -24,7 +21,6 @@ import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRende
 import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
-import org.embeddedt.embeddium.impl.render.chunk.compile.GlobalChunkBuildContext;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,7 +48,6 @@ public class BlockRendererMixin {
         } else {
             bloomBufferRef.set(null);
         }
-
     }
 
     @Inject(method = "writeGeometry",

@@ -5,19 +5,11 @@ import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
-import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.utils.ScopedValue;
 import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
-import com.mojang.blaze3d.pipeline.RenderCall;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.shaders.Uniform;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import lombok.experimental.UtilityClass;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -27,6 +19,16 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
+
+import com.mojang.blaze3d.pipeline.RenderCall;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.shaders.Uniform;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -97,7 +99,6 @@ public class BloomRenderer {
 
         // render state is set up & cleared in calling function
 
-
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             BloomHandler.initializeScheduledRenders();
@@ -139,7 +140,8 @@ public class BloomRenderer {
         mainTarget.bindWrite(false);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
 
         BLOOM_TARGET.blitToScreen(mainTarget.viewWidth, mainTarget.viewHeight, false);
@@ -217,8 +219,9 @@ public class BloomRenderer {
             return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
         }
 
-        private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
-                                          LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
+        private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
+                                           Matrix4f projectionMatrix,
+                                           LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
             Vec3 camPos = camera.getPosition();
             profilerFiller.push("safe_mode");
 

@@ -5,10 +5,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
-import dev.toma.configuration.config.validate.IConfigValueValidator;
-import dev.toma.configuration.config.validate.IValidationResult;
-import dev.toma.configuration.config.value.IConfigValueReadable;
-import lombok.experimental.UtilityClass;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
@@ -19,16 +15,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.event.TickEvent;
-
-import com.google.gson.JsonSyntaxException;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import lombok.Getter;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import dev.toma.configuration.config.validate.IConfigValueValidator;
+import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.value.IConfigValueReadable;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -54,7 +53,8 @@ public class BloomShaderManager {
         // this path must match the config option's path exactly.
         ConfigHolder.INTERNAL_INSTANCE.getConfigValue("client.bloom.type", BloomType.class)
                 .ifPresentOrElse(option -> option.addValidator(new BloomTypeConfigValidator()),
-                        () -> GTCEu.LOGGER.warn("Could not initialize bloom type config update listener! The shaders will not update automatically when the config option is changed."));
+                        () -> GTCEu.LOGGER.warn(
+                                "Could not initialize bloom type config update listener! The shaders will not update automatically when the config option is changed."));
     }
 
     @SubscribeEvent

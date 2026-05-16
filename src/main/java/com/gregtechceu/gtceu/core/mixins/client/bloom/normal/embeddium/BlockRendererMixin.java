@@ -35,12 +35,13 @@ import java.util.List;
 public abstract class BlockRendererMixin {
 
     @Shadow
-    protected abstract void writeGeometry(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset, Material material, BakedQuadView quad, int[] colors, QuadLightData light);
+    protected abstract void writeGeometry(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
+                                          Material material, BakedQuadView quad, int[] colors, QuadLightData light);
 
     @Inject(method = "renderQuadList",
-                   at = @At(value = "INVOKE",
-                            target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;writeGeometry(Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderContext;Lme/jellysquid/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;Lnet/minecraft/world/phys/Vec3;Lme/jellysquid/mods/sodium/client/render/chunk/terrain/material/Material;Lme/jellysquid/mods/sodium/client/model/quad/BakedQuadView;[ILme/jellysquid/mods/sodium/client/model/light/data/QuadLightData;)V",
-                            shift = At.Shift.AFTER))
+            at = @At(value = "INVOKE",
+                     target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;writeGeometry(Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderContext;Lme/jellysquid/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;Lnet/minecraft/world/phys/Vec3;Lme/jellysquid/mods/sodium/client/render/chunk/terrain/material/Material;Lme/jellysquid/mods/sodium/client/model/quad/BakedQuadView;[ILme/jellysquid/mods/sodium/client/model/light/data/QuadLightData;)V",
+                     shift = At.Shift.AFTER))
     private void gtceu$copyBloomQuads(BlockRenderContext ctx, Material material, LightPipeline lighter,
                                       ColorProvider<BlockState> colorizer, Vec3 offset, ChunkModelBuilder builder,
                                       List<BakedQuad> quads, Direction cullFace,
@@ -56,16 +57,17 @@ public abstract class BlockRendererMixin {
             bloomBuilderRef.set(bloomBuilder);
 
             // call the same method again, this time with the bloom chunk model builder
-            this.writeGeometry(ctx, bloomBuilder, offset, GTEmbeddiumCompat.BLOOM_MATERIAL, quad, vertexColors, lightData);
+            this.writeGeometry(ctx, bloomBuilder, offset, GTEmbeddiumCompat.BLOOM_MATERIAL, quad, vertexColors,
+                    lightData);
         } else {
             bloomBuilderRef.set(null);
         }
     }
 
     @Inject(method = "renderQuadList",
-                   at = @At(value = "INVOKE",
-                            target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;addSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V",
-                            shift = At.Shift.AFTER))
+            at = @At(value = "INVOKE",
+                     target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;addSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V",
+                     shift = At.Shift.AFTER))
     private void gtceu$copyBloomSpriteAdds(BlockRenderContext ctx, Material material, LightPipeline lighter,
                                            ColorProvider<BlockState> colorizer, Vec3 offset, ChunkModelBuilder builder,
                                            List<BakedQuad> quads, Direction cullFace,

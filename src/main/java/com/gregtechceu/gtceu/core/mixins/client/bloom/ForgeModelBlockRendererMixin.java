@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ForgeModelBlockRendererMixin {
 
     @Definition(id = "setup",
-            method = "Lnet/minecraftforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V")
+                method = "Lnet/minecraftforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V")
     // we don't really care about the args, but it's better to define them than not; less likely to break this way
     @Definition(id = "level", local = @Local(type = BlockAndTintGetter.class, argsOnly = true))
     @Definition(id = "pos", local = @Local(type = BlockPos.class, argsOnly = true))

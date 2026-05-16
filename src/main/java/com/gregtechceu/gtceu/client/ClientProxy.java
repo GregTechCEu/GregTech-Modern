@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.client.bloom.BloomHandler;
 import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;

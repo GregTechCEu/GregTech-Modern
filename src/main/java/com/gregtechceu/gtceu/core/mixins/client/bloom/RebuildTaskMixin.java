@@ -4,17 +4,15 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
-import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +32,7 @@ public abstract class RebuildTaskMixin {
 
     @Inject(method = "compile",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/Minecraft;getBlockRenderer()Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;"))
+                     target = "Lnet/minecraft/client/Minecraft;getBlockRenderer()Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;"))
     private void gtceu$initBloomContextData(float camX, float camY, float camZ, ChunkBufferBuilderPack builders,
                                             CallbackInfoReturnable<Object> cir,
                                             @Local(ordinal = 0) BlockPos sectionOrigin,

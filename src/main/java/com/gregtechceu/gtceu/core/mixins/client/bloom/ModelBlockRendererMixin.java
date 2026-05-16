@@ -46,8 +46,8 @@ public class ModelBlockRendererMixin {
 
     // The arguments don't have locals, so there's no good way to capture them except a @WarpWith(Condition) injector
     @WrapOperation(method = "putQuadData",
-                       at = @At(value = "INVOKE",
-                                target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
+                   at = @At(value = "INVOKE",
+                            target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
     private void gtceu$copyBloomQuads(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
                                       float[] colorMuls, float red, float green, float blue,
                                       int[] combinedLights, int combinedOverlay, boolean mulColor,

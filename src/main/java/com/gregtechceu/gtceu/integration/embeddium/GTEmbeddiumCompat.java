@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.integration.embeddium;
 import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.SectionPos;

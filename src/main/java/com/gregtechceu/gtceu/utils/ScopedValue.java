@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +11,7 @@ public abstract class ScopedValue implements AutoCloseable {
 
     /**
      * Scoped object value. Resets to {@code null} when exiting scope.
+     * 
      * @param <T> The type of the object.
      */
     @RequiredArgsConstructor
@@ -32,6 +31,7 @@ public abstract class ScopedValue implements AutoCloseable {
 
         /**
          * Set {@code current} to {@code value} within this scope.
+         * 
          * @return this
          */
         public Object<T> with(T value) {
@@ -61,6 +61,7 @@ public abstract class ScopedValue implements AutoCloseable {
 
         /**
          * Set {@code current} to {@code value} within this scope.
+         * 
          * @return this
          */
         public Boolean with(boolean value) {
@@ -70,6 +71,7 @@ public abstract class ScopedValue implements AutoCloseable {
 
         /**
          * Shortcut method that sets {@code current} to {@code !initial}
+         * 
          * @return this
          */
         public Boolean active() {
