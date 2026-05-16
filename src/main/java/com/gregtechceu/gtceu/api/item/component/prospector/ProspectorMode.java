@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui.misc;
+package com.gregtechceu.gtceu.api.item.component.prospector;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -9,27 +9,24 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
-import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.mui.drawable.CycleDrawable;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.BlockStateAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
@@ -38,6 +35,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.FluidDrawable;
+import brachy.modularui.drawable.GuiDraw;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.screen.viewport.GuiContext;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,112 +51,134 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public abstract class ProspectorMode<T> {
 
-    public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
+    public static ProspectorMode<Either<Material, BlockState>> ORE = new ProspectorMode<>(
+            "behavior.prospector.mode.ores", 16) {
 
-        private final Map<BlockState, String> BLOCK_CACHE = new HashMap<>();
-        private final Map<String, IGuiTexture> ICON_CACHE = new HashMap<>();
+        private static final String MATERIAL_PREFIX = "material_";
+
+        private final Map<BlockState, Either<Material, BlockState>> BLOCK_CACHE = new HashMap<>();
+        private final Map<Either<Material, BlockState>, IDrawable> ICON_CACHE = new HashMap<>();
 
         @Override
-        public void scan(String[][][] storage, LevelChunk chunk) {
+        public void scan(Either<Material, BlockState>[][][] storage, LevelChunk chunk) {
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             var oreTag = TagUtil.createBlockTag("ores");
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     for (int y = chunk.getMaxBuildHeight() - 1; y >= chunk.getMinBuildHeight(); y--) {
                         pos.set(x, y, z);
-                        var state = chunk.getBlockState(pos);
-                        if (state.is(oreTag)) {
-                            var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
-                                var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-                                var entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
-                                if (!entry.isEmpty()) {
-                                    name = "material_" + entry.material();
-                                }
-                                return name;
-                            });
-                            storage[x][z] = ArrayUtils.add(storage[x][z], itemName);
-                        }
-                    }
-                }
-            }
-        }
+                        BlockState state = chunk.getBlockState(pos);
+                        if (!state.is(oreTag)) continue;
 
-        @Override
-        public int getItemColor(String item) {
-            if (item.startsWith("material_")) {
-                var mat = GTMaterials.get(item.substring(9));
-                if (!mat.isNull()) {
-                    return mat.getMaterialRGB();
-                }
-            }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).defaultMapColor().col;
-        }
-
-        @Override
-        public IGuiTexture getItemIcon(String item) {
-            return ICON_CACHE.computeIfAbsent(item, name -> {
-                if (name.startsWith("material_")) {
-                    var mat = GTMaterials.get(name.substring(9));
-                    if (!mat.isNull()) {
-                        var list = new ArrayList<ItemStack>();
-                        for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
-                            for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
-                                list.add(new ItemStack(block));
+                        Either<Material, BlockState> item = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
+                            MaterialEntry entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
+                            if (!entry.isEmpty()) {
+                                return Either.left(entry.material());
                             }
-                        }
-                        return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
+                            return Either.right(blockState);
+                        });
+                        storage[x][z] = ArrayUtils.add(storage[x][z], item);
                     }
                 }
-                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(new ResourceLocation(name))))
-                        .scale(0.8f);
+            }
+        }
+
+        @Override
+        public int getItemColor(Either<Material, BlockState> item) {
+            return item.map(Material::getMaterialARGB,
+                    state -> ((BlockStateAccessor) state).gtceu$getDefaultMapColor().col | 0xFF000000);
+        }
+
+        @Override
+        public IDrawable getItemIcon(Either<Material, BlockState> item) {
+            return ICON_CACHE.computeIfAbsent(item, either -> {
+                List<ItemLike> items = either.map(material -> {
+                    List<ItemLike> oreItems = ChemicalHelper.getItems(new MaterialEntry(TagPrefix.rawOre, material));
+                    if (oreItems.isEmpty()) {
+                        oreItems = new ArrayList<>();
+                        for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
+                            oreItems.addAll(ChemicalHelper.getItems(new MaterialEntry(oreTag, material)));
+                        }
+                    }
+                    return oreItems;
+                }, state -> {
+                    MaterialEntry entry = ChemicalHelper.getMaterialEntry(state.getBlock());
+                    List<ItemLike> oreItems = ChemicalHelper.getItems(entry);
+                    if (oreItems.isEmpty()) {
+                        oreItems = List.of(state.getBlock().asItem());
+                        if (oreItems.get(0).asItem() == Items.AIR) {
+                            oreItems = List.of(Items.BARRIER);
+                        }
+                    }
+                    return oreItems;
+                });
+                ItemDrawable[] drawables = items.stream()
+                        .map(itemLike -> itemLike.asItem().getDefaultInstance())
+                        .map(ItemDrawable::new)
+                        .toArray(ItemDrawable[]::new);
+
+                return new CycleDrawable(drawables);
             });
         }
 
         @Override
-        public String getDescriptionId(String item) {
-            if (item.startsWith("material_")) {
-                var mat = GTMaterials.get(item.substring(9));
-                if (!mat.isNull()) {
-                    return mat.getUnlocalizedName();
-                }
+        public Component getDescription(Either<Material, BlockState> item) {
+            return item.map(Material::getLocalizedName, state -> state.getBlock().getName());
+        }
+
+        @Override
+        public String getUniqueId(Either<Material, BlockState> item) {
+            return item.map(material -> MATERIAL_PREFIX + material.getResourceLocation(),
+                    state -> state.getBlockHolder().unwrapKey()
+                            .map(ResourceKey::location)
+                            .map(ResourceLocation::toString)
+                            .orElse("Unknown entry ???"));
+        }
+
+        @Override
+        public void serialize(Either<Material, BlockState> item, FriendlyByteBuf buf) {
+            item.ifLeft(material -> {
+                buf.writeBoolean(true);
+                buf.writeResourceLocation(material.getResourceLocation());
+            }).ifRight(state -> {
+                buf.writeBoolean(false);
+                buf.writeNbt(NbtUtils.writeBlockState(state));
+            });
+        }
+
+        @Override
+        public Either<Material, BlockState> deserialize(FriendlyByteBuf buf) {
+            if (buf.readBoolean()) {
+                return Either.left(GTCEuAPI.materialManager.getMaterial(buf.readResourceLocation()));
+            } else {
+                CompoundTag tag = buf.readNbt();
+                assert tag != null;
+                return Either.right(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag));
             }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Class<Either<Material, BlockState>> getItemClass() {
+            return (Class<Either<Material, BlockState>>) (Class<?>) Either.class;
         }
 
         @Override
-        public String getUniqueID(String item) {
-            return item;
-        }
-
-        @Override
-        public void serialize(String item, FriendlyByteBuf buf) {
-            buf.writeUtf(item);
-        }
-
-        @Override
-        public String deserialize(FriendlyByteBuf buf) {
-            return buf.readUtf();
-        }
-
-        @Override
-        public Class<String> getItemClass() {
-            return String.class;
-        }
-
-        @Override
-        public void appendTooltips(List<String[]> items, List<Component> tooltips, String selected) {
-            Object2IntOpenHashMap<String> counter = new Object2IntOpenHashMap<>();
-            for (var array : items) {
-                for (String item : array) {
-                    if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
+        public void appendTooltips(List<Either<Material, BlockState>[]> items, List<Component> tooltips,
+                                   String selected) {
+            Object2IntOpenHashMap<Either<Material, BlockState>> counter = new Object2IntOpenHashMap<>();
+            for (Either<Material, BlockState>[] array : items) {
+                for (Either<Material, BlockState> item : array) {
+                    if (selected == null || selected.equals(this.getUniqueId(item))) {
                         counter.addTo(item, 1);
                     }
                 }
             }
             counter.forEach((item, count) -> tooltips
-                    .add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
+                    .add(Component.empty().append(getDescription(item)).append(" --- %s".formatted(count))));
         }
     };
 
@@ -168,6 +193,10 @@ public abstract class ProspectorMode<T> {
         @Getter
         @Setter
         private int left;
+
+        public FluidStack asStack() {
+            return new FluidStack(this.fluid, this.yield);
+        }
 
         public static FluidInfo fromNbt(CompoundTag tag) {
             Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
@@ -194,7 +223,7 @@ public abstract class ProspectorMode<T> {
         }
     }
 
-    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
+    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("behavior.prospector.mode.fluid", 1) {
 
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
@@ -211,7 +240,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public int getItemColor(FluidInfo item) {
-            var fluidStack = new FluidStack(item.fluid, item.yield);
+            var fluidStack = item.asStack();
             if (fluidStack.getFluid() == Fluids.LAVA) {
                 return 0xFFFF7000;
             }
@@ -219,17 +248,17 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(FluidInfo item) {
-            return new ItemStackTexture(item.fluid.getBucket());
+        public IDrawable getItemIcon(FluidInfo item) {
+            return new FluidDrawable(item.asStack());
         }
 
         @Override
-        public String getDescriptionId(FluidInfo item) {
-            return new FluidStack(item.fluid, item.yield).getDisplayName().getString();
+        public Component getDescription(FluidInfo item) {
+            return item.asStack().getDisplayName();
         }
 
         @Override
-        public String getUniqueID(FluidInfo item) {
+        public String getUniqueId(FluidInfo item) {
             return BuiltInRegistries.FLUID.getKey(item.fluid).toString();
         }
 
@@ -255,7 +284,7 @@ public abstract class ProspectorMode<T> {
         public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
                 for (FluidInfo item : array) {
-                    tooltips.add(Component.translatable(getDescriptionId(item))
+                    tooltips.add(Component.empty().append(getDescription(item))
                             .append(" --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
@@ -263,31 +292,27 @@ public abstract class ProspectorMode<T> {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
-            if (items.length > 0) {
-                var item = items[0];
-                double progress = item.left * 1.0 / Math.max(Math.min(item.left, 100), 1);
-                float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
-                float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
-                float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
-                float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
-                DrawerHelper.drawFluidForGui(graphics,
-                        FluidHelperImpl.toFluidStack(new FluidStack(item.fluid(), item.left)), 100,
-                        (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
-                        ((int) (height * drawnHeight)));
+        public void drawSpecialGrid(GuiContext context, FluidInfo[] items, int x, int y, int width, int height) {
+            if (items.length == 0) {
+                return;
             }
+            FluidInfo item = items[0];
+            float filled = item.left / Math.max(Math.min(item.left, 100.0f), 1.0f);
+
+            GuiDraw.drawFluidTexture(context.getGraphics(), item.asStack(),
+                    x * width, y + (1.0f - filled) * height, width, height * filled,
+                    context.getCurrentDrawingZ());
         }
     };
 
-    public record OreInfo(Material material, int weight, int left, int yield) {
+    public record BedrockOreInfo(Material material, int weight, int left, int yield) {}
 
-    }
-
-    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore",
+    public static ProspectorMode<BedrockOreInfo> BEDROCK_ORE = new ProspectorMode<>(
+            "behavior.prospector.mode.bedrock_ore",
             1) {
 
         @Override
-        public void scan(OreInfo[][][] storage, LevelChunk chunk) {
+        public void scan(BedrockOreInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x,
                         chunk.getPos().z);
@@ -295,19 +320,19 @@ public abstract class ProspectorMode<T> {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
-                                new OreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
+                                new BedrockOreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }
                 }
             }
         }
 
         @Override
-        public int getItemColor(OreInfo item) {
-            return item.material.getMaterialRGB();
+        public int getItemColor(BedrockOreInfo item) {
+            return item.material.getMaterialARGB();
         }
 
         @Override
-        public IGuiTexture getItemIcon(OreInfo item) {
+        public IDrawable getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
                     ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
@@ -315,21 +340,21 @@ public abstract class ProspectorMode<T> {
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),
                     ChemicalHelper.get(TagPrefix.dust, material));
-            return new ItemStackTexture(stack).scale(0.8f);
+            return new ItemDrawable(stack);
         }
 
         @Override
-        public String getDescriptionId(OreInfo item) {
-            return item.material.getUnlocalizedName();
+        public Component getDescription(BedrockOreInfo item) {
+            return item.material.getLocalizedName();
         }
 
         @Override
-        public String getUniqueID(OreInfo item) {
+        public String getUniqueId(BedrockOreInfo item) {
             return item.material.getName();
         }
 
         @Override
-        public void serialize(OreInfo item, FriendlyByteBuf buf) {
+        public void serialize(BedrockOreInfo item, FriendlyByteBuf buf) {
             buf.writeResourceLocation(item.material.getResourceLocation());
             buf.writeVarInt(item.weight);
             buf.writeVarInt(item.left);
@@ -337,25 +362,26 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public OreInfo deserialize(FriendlyByteBuf buf) {
+        public BedrockOreInfo deserialize(FriendlyByteBuf buf) {
             ResourceLocation materialId = buf.readResourceLocation();
-            return new OreInfo(
+            return new BedrockOreInfo(
                     GTCEuAPI.materialManager.getRegistry(materialId.getNamespace()).get(materialId.getPath()),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 
         @Override
-        public Class<OreInfo> getItemClass() {
-            return OreInfo.class;
+        public Class<BedrockOreInfo> getItemClass() {
+            return BedrockOreInfo.class;
         }
 
         @Override
-        public void appendTooltips(List<OreInfo[]> items, List<Component> tooltips, String selected) {
+        public void appendTooltips(List<BedrockOreInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
-                int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
-                for (OreInfo item : array) {
+                int totalWeight = Arrays.stream(array).mapToInt(BedrockOreInfo::weight).sum();
+                for (BedrockOreInfo item : array) {
                     float chance = (float) item.weight / totalWeight * 100;
-                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (")
+                    tooltips.add(Component.empty().append(getDescription(item))
+                            .append(" (")
                             .append(Component.translatable("gtceu.gui.content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
@@ -376,11 +402,11 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract IGuiTexture getItemIcon(T item);
+    public abstract IDrawable getItemIcon(T item);
 
-    public abstract String getDescriptionId(T item);
+    public abstract Component getDescription(T item);
 
-    public abstract String getUniqueID(T item);
+    public abstract String getUniqueId(T item);
 
     public abstract void serialize(T item, FriendlyByteBuf buf);
 
@@ -391,5 +417,5 @@ public abstract class ProspectorMode<T> {
     public abstract void appendTooltips(List<T[]> items, List<Component> tooltips, String selected);
 
     @OnlyIn(Dist.CLIENT)
-    public void drawSpecialGrid(GuiGraphics graphics, T[] items, int x, int y, int width, int height) {}
+    public void drawSpecialGrid(GuiContext graphics, T[] items, int x, int y, int width, int height) {}
 }

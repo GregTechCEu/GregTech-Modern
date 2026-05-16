@@ -38,6 +38,7 @@
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
+        "BlockStateAccessor",
         "ChunkGeneratorMixin",
         "EntityMixin",
         "GrowingPlantBlockAccessor",

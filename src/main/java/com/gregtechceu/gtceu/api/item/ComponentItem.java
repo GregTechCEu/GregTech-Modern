@@ -7,9 +7,6 @@ import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -52,9 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IComponentItem,
-                           IItemUIHolder {
+public class ComponentItem extends Item implements IComponentItem, IItemUIHolder {
 
     protected int burnTime = -1;
 
@@ -297,17 +292,6 @@ public class ComponentItem extends Item
             }
         }
         return super.getDescriptionId(stack);
-    }
-
-    @Override
-    @Nullable
-    public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        for (IItemComponent component : components) {
-            if (component instanceof IItemUIFactory uiFactory) {
-                return uiFactory.createUI(holder, entityPlayer);
-            }
-        }
-        return null;
     }
 
     @Override
