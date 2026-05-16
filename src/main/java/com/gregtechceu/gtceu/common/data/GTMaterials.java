@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.world.item.Items;
@@ -268,6 +269,15 @@ public class GTMaterials {
 
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
+
+        if (GTCEu.Mods.isAE2Loaded() && ConfigHolder.INSTANCE.compat.ae2.useAE2Certus) {
+            gem.setIgnored(CertusQuartz,
+                    GTMemoizer.memoize(() -> appeng.core.definitions.AEItems.CERTUS_QUARTZ_CRYSTAL.asItem()));
+            dust.setIgnored(CertusQuartz,
+                    GTMemoizer.memoize(() -> appeng.core.definitions.AEItems.CERTUS_QUARTZ_DUST.asItem()));
+            block.setIgnored(CertusQuartz,
+                    GTMemoizer.memoize(() -> appeng.core.definitions.AEBlocks.QUARTZ_BLOCK.asItem()));
+        }
     }
 
     @NotNull
