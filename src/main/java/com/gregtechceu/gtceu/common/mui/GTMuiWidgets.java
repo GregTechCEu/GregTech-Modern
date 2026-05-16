@@ -108,7 +108,7 @@ public class GTMuiWidgets {
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
                                                   String langKey) {
-        var value = new BooleanSyncValue(getter, setter);
+        var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
                 .overlay(texture)
@@ -119,7 +119,7 @@ public class GTMuiWidgets {
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture background,
                                                   UITexture selectedBackground, String langKey) {
-        var value = new BooleanSyncValue(getter, setter);
+        var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
                 .selectedBackground(selectedBackground)
@@ -172,7 +172,7 @@ public class GTMuiWidgets {
 
     public static CycleButtonWidget createVoidingButton(IVoidable voidable) {
         var value = new EnumSyncValue<>(IVoidable.VoidingMode.class, voidable::getVoidingMode,
-                voidable::setVoidingMode);
+                voidable::setVoidingMode).allowC2S();
 
         return new CycleButtonWidget()
                 .overlay(new DynamicDrawable(() -> GTGuiTextures.BUTTON_VOID_MULTIBLOCK[value.getIntValue()]))
@@ -216,7 +216,8 @@ public class GTMuiWidgets {
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
                 (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
-                        IntCircuitBehaviour.stack(v)));
+                        IntCircuitBehaviour.stack(v)))
+                .allowC2S();
     }
 
     public static ModularPanel<?> createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
@@ -356,7 +357,7 @@ public class GTMuiWidgets {
     public static CycleButtonWidget createIOCycleButton(EnumSyncValue<IO> syncValue, boolean allowExtendedIO) {
         // Done so the cycle button doesn't create states for every IO enum entry
 
-        IntSyncValue syncVal = new IntSyncValue(syncValue::getIntValue, syncValue::setIntValue);
+        IntSyncValue syncVal = new IntSyncValue(syncValue::getIntValue, syncValue::setIntValue).allowC2S();
 
         var cycleButton = new CycleButtonWidget()
                 .stateCount(allowExtendedIO ? 4 : 2)
@@ -458,7 +459,7 @@ public class GTMuiWidgets {
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
                                                             IntSupplier maxValue, int step, IDrawable background) {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
-                syncValue::setStringValue);
+                syncValue::setStringValue).allowC2S();
 
         var textField = new TextFieldWidget() {
 
@@ -509,7 +510,7 @@ public class GTMuiWidgets {
     public static ParentWidget<?> createLongInputWithButtons(LongSyncValue syncValue, LongSupplier minValue,
                                                              LongSupplier maxValue, long step, IDrawable background) {
         StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
-                syncValue::setStringValue);
+                syncValue::setStringValue).allowC2S();
 
         var textField = new TextFieldWidget() {
 
@@ -558,7 +559,8 @@ public class GTMuiWidgets {
         StringSyncValue formattedValue = new StringSyncValue(
                 () -> String.valueOf(intSyncValue.getValue()),
                 (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
-                        true));
+                        true))
+                .allowC2S();
 
         var textField = new TextFieldWidget() {
 
