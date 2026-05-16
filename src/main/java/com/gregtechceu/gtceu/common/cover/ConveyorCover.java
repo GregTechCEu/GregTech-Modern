@@ -418,13 +418,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
-                this::getManualIOMode, this::setManualIOMode);
+                this::getManualIOMode, this::setManualIOMode).allowC2S();
 
         EnumSyncValue<DistributionMode> distMode = new EnumSyncValue<>(DistributionMode.class,
-                this::getDistributionMode, this::setDistributionMode);
+                this::getDistributionMode, this::setDistributionMode).allowC2S();
 
-        IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+        IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate).allowC2S();
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("manualMode", manualMode);

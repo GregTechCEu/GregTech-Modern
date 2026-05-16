@@ -268,12 +268,12 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate);
+        IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate).allowC2S();
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
-                this::setBucketMode);
+                this::setBucketMode).allowC2S();
         EnumSyncValue<ManualIOMode> manualIOModeSync = new EnumSyncValue<>(ManualIOMode.class, this::getManualIOMode,
-                this::setManualIOMode);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+                this::setManualIOMode).allowC2S();
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("transferRate", transferRateSync);

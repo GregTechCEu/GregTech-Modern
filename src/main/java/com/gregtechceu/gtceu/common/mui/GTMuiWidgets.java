@@ -688,9 +688,13 @@ public class GTMuiWidgets {
                 }
             }
 
-            if (this.lang != null)
-                row.child(Text.of(lang).asWidget().posRel(Alignment.CenterRight).height(18));
-
+            if (this.lang != null) {
+                row.child(Text.of(lang)
+                        .asWidget()
+                        .verticalCenter()
+                        .rightRel(0.f)
+                        .height(18));
+            }
             return row;
         }
     }

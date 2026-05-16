@@ -166,8 +166,9 @@ public class RobotArmCover extends ConveyorCover {
                                   UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
-        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
-        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v);
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
+                .allowC2S();
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
