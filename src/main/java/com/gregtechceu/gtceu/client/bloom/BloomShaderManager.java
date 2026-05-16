@@ -5,11 +5,16 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
+import dev.toma.configuration.config.validate.IConfigValueValidator;
+import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.value.IConfigValueReadable;
 import lombok.experimental.UtilityClass;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterShadersEvent;
@@ -21,11 +26,15 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import lombok.Getter;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 @UtilityClass
@@ -38,6 +47,15 @@ public class BloomShaderManager {
     private static @Nullable ShaderInstance rendertypeBloomShader;
     @Getter
     private static @Nullable ShaderInstance rendertypeEntityBloomShader;
+
+    @SubscribeEvent
+    public static void clientInit(FMLClientSetupEvent event) {
+        // Add a validator & update listener for the bloom type config option
+        // this path must match the config option's path exactly.
+        ConfigHolder.INTERNAL_INSTANCE.getConfigValue("client.bloom.type", BloomType.class)
+                .ifPresentOrElse(option -> option.addValidator(new BloomTypeConfigValidator()),
+                        () -> GTCEu.LOGGER.warn("Could not initialize bloom type config update listener! The shaders will not update automatically when the config option is changed."));
+    }
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
@@ -128,6 +146,29 @@ public class BloomShaderManager {
 
         private static boolean isShaderActive() {
             return IrisApi.getInstance().isShaderPackInUse();
+        }
+    }
+
+    private static final class BloomTypeConfigValidator implements IConfigValueValidator<BloomType> {
+
+        @Override
+        public IValidationResult validate(BloomType newType, IConfigValueReadable<BloomType> configField) {
+            if (!BloomShaderManager.initPostShaders()) {
+                // failed to load post shaders
+
+                Path gameDir = FMLPaths.GAMEDIR.get().toAbsolutePath();
+                Path logFile = gameDir.resolve(Path.of("logs", "latest.log"));
+                Component latestLogClickable = Component.literal(gameDir.relativize(logFile).toString())
+                        .withStyle((style) -> style.withUnderlined(true)
+                                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE,
+                                        logFile.toFile().toString())));
+
+                return IValidationResult.warning(Component.translatable(
+                        "config.gtceu.option.bloomType.load_error", latestLogClickable));
+            } else {
+                // post shader loaded successfully
+                return IValidationResult.success();
+            }
         }
     }
 }
