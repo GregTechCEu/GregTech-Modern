@@ -65,9 +65,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     /**
      * Creates an item bus with the default number of slots
+     * 
      * @param info {@link BlockEntityCreationInfo}
      * @param tier Machine tier.
-     * @param io IO mode of this item bus.
+     * @param io   IO mode of this item bus.
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         this(info, tier, io, new NotifiableItemStackHandler(getInventorySize(tier), io));
@@ -75,9 +76,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     /**
      * Creates an item bus with a custom {@link NotifiableItemStackHandler}.
-     * @param info {@link BlockEntityCreationInfo}
-     * @param tier Machine tier.
-     * @param io IO mode of this item bus.
+     * 
+     * @param info      {@link BlockEntityCreationInfo}
+     * @param tier      Machine tier.
+     * @param io        IO mode of this item bus.
      * @param inventory The {@link NotifiableItemStackHandler} to attach
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io, NotifiableItemStackHandler inventory) {

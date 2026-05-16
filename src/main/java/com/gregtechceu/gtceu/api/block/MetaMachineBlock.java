@@ -228,12 +228,12 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof MetaMachine machine) {
             machine.modifyDrops(drops);
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        machine.saveToItem(drop.getOrCreateTag(), false);
-                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
-                        break;
-                    }
+            for (ItemStack drop : drops) {
+                if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
+                    machine.saveToItem(drop.getOrCreateTag(), false);
+                    // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                    break;
+                }
             }
         }
         return drops;

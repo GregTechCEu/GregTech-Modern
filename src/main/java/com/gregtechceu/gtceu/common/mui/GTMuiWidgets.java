@@ -9,12 +9,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.trait.ProgrammableCircuitSlotTrait;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
@@ -257,7 +255,8 @@ public class GTMuiWidgets {
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(ProgrammableCircuitSlotTrait circuitTrait, ModularPanel<?> parentPanel,
+    public static ButtonWidget<?> createCircuitSlotPanel(ProgrammableCircuitSlotTrait circuitTrait,
+                                                         ModularPanel<?> parentPanel,
                                                          PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
                 i -> circuitTrait.storage.setStackInSlot(0, i),
@@ -294,7 +293,8 @@ public class GTMuiWidgets {
                             .asIcon().size(16);
                 }))
                 .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(Text.lang("metaitem.int_circuit.configuration", circuitTrait.getCircuit())));
+                .tooltipBuilder((r) -> r
+                        .addLine(Text.lang("metaitem.int_circuit.configuration", circuitTrait.getCurrentCircuit())));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

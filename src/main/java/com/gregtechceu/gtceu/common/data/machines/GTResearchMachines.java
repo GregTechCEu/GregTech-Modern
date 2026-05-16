@@ -434,9 +434,13 @@ public class GTResearchMachines {
                     Component.translatable("gtceu.part_sharing.disabled"))
             .register();
 
-    private static <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerDataHatch(String name, String displayName, int tier,
-                                                                          MachineInstanceFactory<MACHINE> constructor,
-                                                                          String model, PartAbility... abilities) {
+    private static <
+            MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerDataHatch(String name,
+                                                                                                         String displayName,
+                                                                                                         int tier,
+                                                                                                         MachineInstanceFactory<MACHINE> constructor,
+                                                                                                         String model,
+                                                                                                         PartAbility... abilities) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .tier(tier)
@@ -445,9 +449,12 @@ public class GTResearchMachines {
                 .overlayTieredHullModel(model);
     }
 
-    private static <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerHPCAPart(String name, String displayName,
-                                                                         MachineInstanceFactory<MACHINE> constructor,
-                                                                         String texture, boolean isAdvanced) {
+    private static <
+            MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerHPCAPart(String name,
+                                                                                                        String displayName,
+                                                                                                        MachineInstanceFactory<MACHINE> constructor,
+                                                                                                        String texture,
+                                                                                                        boolean isAdvanced) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)

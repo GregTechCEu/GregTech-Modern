@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;

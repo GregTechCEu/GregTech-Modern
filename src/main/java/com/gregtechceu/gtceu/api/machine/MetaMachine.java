@@ -209,7 +209,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Saves machine data to an item stack tag.
      *
-     * @param tag The tag to save to.
+     * @param tag   The tag to save to.
      * @param clone If this data is being save to an item stack created by cloning the block (pick block)
      */
     public void saveToItem(CompoundTag tag, boolean clone) {}
@@ -459,6 +459,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return InteractionResult.PASS;
     }
 
+    @SuppressWarnings("unused")
     protected InteractionResult onCrowbarClick(ExtendedUseOnContext context) {
         return InteractionResult.PASS;
     }

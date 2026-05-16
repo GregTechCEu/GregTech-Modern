@@ -19,6 +19,7 @@ public interface MachineInstanceFactory<T extends MetaMachine> {
 
     @FunctionalInterface
     interface Tiered<T extends MetaMachine> {
+
         T buildMachine(BlockEntityCreationInfo info, int tier);
 
         default Tiered<T> andThen(Consumer<T> modifier) {
@@ -32,6 +33,7 @@ public interface MachineInstanceFactory<T extends MetaMachine> {
 
     @FunctionalInterface
     interface Steam<T extends MetaMachine> {
+
         T buildMachine(BlockEntityCreationInfo info, boolean isHighPressure);
     }
 }

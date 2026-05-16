@@ -118,31 +118,32 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return fluid(this, material, name, langKey, stillTexture, flowingTexture);
     }
 
-    public <DEFINITION extends MachineDefinition, MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                                                     Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
+    public <DEFINITION extends MachineDefinition,
+            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
+                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
+                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MachineBuilder<>(this, name, definitionFactory,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
     public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
+                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MachineBuilder<>(this, name, MachineDefinition::new,
                 MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                            BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                            BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                            MachineInstanceFactory<MACHINE> blockEntityFactory) {
+                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
     public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
+                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
                 blockEntityFactory);
     }

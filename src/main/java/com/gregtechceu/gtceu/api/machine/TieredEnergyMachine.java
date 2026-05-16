@@ -27,8 +27,8 @@ public class TieredEnergyMachine extends TieredMachine {
      * Creates a {@link TieredEnergyMachine} using the given energy container.<br>
      *
      *
-     * @param info {@link BlockEntityCreationInfo}
-     * @param tier Machine/voltage tier
+     * @param info            {@link BlockEntityCreationInfo}
+     * @param tier            Machine/voltage tier
      * @param energyContainer The enegery container to attach
      * @see NotifiableEnergyContainer
      */
@@ -42,17 +42,20 @@ public class TieredEnergyMachine extends TieredMachine {
 
     /**
      * Creates a {@link TieredEnergyMachine} with a default energy container.<br>
-     * Defaults to a container with a capacity of 64A @ the given voltage tier, and a max input/output amperage of 1A @ the given voltage tier.
+     * Defaults to a container with a capacity of 64A @ the given voltage tier, and a max input/output amperage of 1A @
+     * the given voltage tier.
      *
-     * @param info {@link BlockEntityCreationInfo}
-     * @param tier Machine/voltage tier
+     * @param info        {@link BlockEntityCreationInfo}
+     * @param tier        Machine/voltage tier
      * @param emitsEnergy If the energy container should receive or emit energy.
      * @see NotifiableEnergyContainer
      */
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier, boolean emitsEnergy) {
-        this(info, tier, emitsEnergy ? NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
-                1) : NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
-                1));
+        this(info, tier,
+                emitsEnergy ? NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                        1) :
+                        NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                                1));
     }
 
     @Override

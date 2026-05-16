@@ -232,7 +232,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             CompoundTag stackTag = GenericStack.writeTag(config);
             configStacks.put(Integer.toString(i), stackTag);
         }
-        tag.putByte("GhostCircuit", (byte)circuitSlot.getCurrentCircuit());
+        tag.putByte("GhostCircuit", (byte) circuitSlot.getCurrentCircuit());
         return tag;
     }
 

@@ -60,20 +60,22 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     /**
      * Creates a {@link WorkableTieredMachine}.
-     * @param info {@link BlockEntityCreationInfo}
-     * @param tier Machine tier.
-     * @param recipeLogic The recipe logic to use.
-     * @param importSlots The amount of item input slots this machine should have (can be 0).
-     * @param exportSlots The amount of item output slots this machine should have (can be 0).
-     * @param fluidImportSlots The amount of fluid input slots this machine should have (can be 0).
-     * @param fluidExportSlots The amount of fluid output slots this machine should have (can be 0).
-     * @param energyEmitter If this machine should input or output energy.
+     * 
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param recipeLogic         The recipe logic to use.
+     * @param importSlots         The amount of item input slots this machine should have (can be 0).
+     * @param exportSlots         The amount of item output slots this machine should have (can be 0).
+     * @param fluidImportSlots    The amount of fluid input slots this machine should have (can be 0).
+     * @param fluidExportSlots    The amount of fluid output slots this machine should have (can be 0).
+     * @param energyEmitter       If this machine should input or output energy.
      * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
      */
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier,
                                  RecipeLogic recipeLogic, int importSlots,
                                  int exportSlots,
-                                 int fluidImportSlots, int fluidExportSlots, boolean energyEmitter, Int2IntFunction tankScalingFunction) {
+                                 int fluidImportSlots, int fluidExportSlots, boolean energyEmitter,
+                                 Int2IntFunction tankScalingFunction) {
         super(info, tier, energyEmitter);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
@@ -99,12 +101,13 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
      * Creates a {@link WorkableTieredMachine} with default settings.<br>
      * The amount of item and fluid input and output slots is determined by the machine's recipe type.
      *
-     * @param info {@link BlockEntityCreationInfo}
-     * @param tier Machine tier.
-     * @param energyEmitter If this machine should input or output energy.
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param energyEmitter       If this machine should input or output energy.
      * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
      */
-    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter, Int2IntFunction tankScalingFunction) {
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
+                                 Int2IntFunction tankScalingFunction) {
         super(info, tier, energyEmitter);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();

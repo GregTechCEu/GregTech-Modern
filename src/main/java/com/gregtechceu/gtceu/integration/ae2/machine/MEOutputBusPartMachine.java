@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +27,9 @@ import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -49,7 +49,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
     public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
         super(info, IO.OUT, new InaccessibleInfiniteHandler());
-        internalBuffer = ((InaccessibleInfiniteHandler)getInventory()).getInternalBuffer();
+        internalBuffer = ((InaccessibleInfiniteHandler) getInventory()).getInternalBuffer();
     }
 
     /////////////////////////////////
@@ -130,16 +130,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     private static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+
         @Getter
         private KeyStorage internalBuffer;
 
         public InaccessibleInfiniteHandler() {
             super(1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
             internalBuffer = new KeyStorage();
-            ((ItemStackHandlerDelegate)storage).setKeyStorage(internalBuffer);
+            ((ItemStackHandlerDelegate) storage).setKeyStorage(internalBuffer);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
-
 
         @Override
         public List<Object> getContents() {
@@ -162,7 +162,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Getter
         @Setter
-        @Nullable KeyStorage keyStorage = null;
+        @Nullable
+        KeyStorage keyStorage = null;
 
         // Necessary for InaccessibleInfiniteHandler
         public ItemStackHandlerDelegate(Integer integer) {

@@ -145,6 +145,7 @@ public abstract class MachineTrait implements ISyncManaged {
     /**
      * Called when the machine is attached to a controller<br>
      * Only called if this trait is attached to a multiblock part machine.
+     * 
      * @param controller The multiblock controller
      */
     public void addedToController(MultiblockControllerMachine controller) {}
@@ -152,6 +153,7 @@ public abstract class MachineTrait implements ISyncManaged {
     /**
      * Called when the machine is removed from a controller<br>
      * Only called if this trait is attached to a multiblock part machine.
+     * 
      * @param controller The multiblock controller
      */
     public void removedFromController(MultiblockControllerMachine controller) {}

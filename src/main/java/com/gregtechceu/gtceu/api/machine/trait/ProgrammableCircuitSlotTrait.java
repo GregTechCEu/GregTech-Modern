@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -14,9 +11,14 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+
+import net.minecraft.world.item.crafting.Ingredient;
+
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -24,9 +26,11 @@ import java.util.List;
 /**
  * Machine trait which adds a programmable circuit input slot to the side of a machine.
  */
-public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<Ingredient> implements IAttachConfiguratorsTrait, ICapabilityTrait {
+public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<Ingredient>
+                                          implements IAttachConfiguratorsTrait, ICapabilityTrait {
 
-    public static final MachineTraitType<ProgrammableCircuitSlotTrait> TYPE = new MachineTraitType<>(ProgrammableCircuitSlotTrait.class);
+    public static final MachineTraitType<ProgrammableCircuitSlotTrait> TYPE = new MachineTraitType<>(
+            ProgrammableCircuitSlotTrait.class);
 
     @SaveField
     public final CustomItemStackHandler storage;
@@ -68,7 +72,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         var allControllersAllowCircuits = true;
-        for (var c : ((MultiblockPartMachine)getMachine()).getControllers()) {
+        for (var c : ((MultiblockPartMachine) getMachine()).getControllers()) {
             if (!c.allowCircuitSlots()) {
                 allControllersAllowCircuits = false;
                 break;
@@ -90,7 +94,8 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     }
 
     @Override
-    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                        boolean simulate) {
         if (!enabled) return left;
         return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage);
     }

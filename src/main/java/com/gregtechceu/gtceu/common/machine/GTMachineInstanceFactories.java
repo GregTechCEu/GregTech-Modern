@@ -9,8 +9,10 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPa
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.multiblock.MultiblockFluidRendererTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashSet;
@@ -91,31 +93,37 @@ public interface GTMachineInstanceFactories {
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_EMPTY = (info) -> {
         var hpcaTrait = new HPCAComponentTrait(0, 0, false, false);
-        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_EMPTY_COMPONENT, GTGuiTextures.HPCA_EMPTY_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_EMPTY_COMPONENT,
+                GTGuiTextures.HPCA_EMPTY_COMPONENT, hpcaTrait);
     };
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_BRIDGE = (info) -> {
         var hpcaTrait = new HPCAComponentTrait(GTValues.VA[GTValues.IV], GTValues.VA[GTValues.IV], false, true);
-        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_BRIDGE_COMPONENT, GTGuiTextures.HPCA_BRIDGE_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_BRIDGE_COMPONENT,
+                GTGuiTextures.HPCA_BRIDGE_COMPONENT, hpcaTrait);
     };
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_COMPUTATION = (info) -> {
         var hpcaTrait = HPCAComponentPartMachine.createHPCAComputationTrait(false);
-        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_COMPUTATION_COMPONENT, GTGuiTextures.HPCA_DAMAGED_COMPUTATION_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_COMPUTATION_COMPONENT,
+                GTGuiTextures.HPCA_DAMAGED_COMPUTATION_COMPONENT, hpcaTrait);
     };
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_COMPUTATION_ADVANCED = (info) -> {
         var hpcaTrait = HPCAComponentPartMachine.createHPCAComputationTrait(true);
-        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_ADVANCED_COMPUTATION_COMPONENT, GTGuiTextures.HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_ADVANCED_COMPUTATION_COMPONENT,
+                GTGuiTextures.HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT, hpcaTrait);
     };
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_COOLER = (info) -> {
         var hpcaTrait = HPCAComponentPartMachine.createHPCACoolerTrait(false);
-        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_HEAT_SINK_COMPONENT, GTGuiTextures.HPCA_HEAT_SINK_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_HEAT_SINK_COMPONENT,
+                GTGuiTextures.HPCA_HEAT_SINK_COMPONENT, hpcaTrait);
     };
 
     MachineInstanceFactory<HPCAComponentPartMachine> HPCA_COOLER_ADVANCED = (info) -> {
         var hpcaTrait = HPCAComponentPartMachine.createHPCACoolerTrait(true);
-        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_ACTIVE_COOLER_COMPONENT, GTGuiTextures.HPCA_ACTIVE_COOLER_COMPONENT, hpcaTrait);
+        return new HPCAComponentPartMachine(info, true, GTGuiTextures.HPCA_ACTIVE_COOLER_COMPONENT,
+                GTGuiTextures.HPCA_ACTIVE_COOLER_COMPONENT, hpcaTrait);
     };
 }

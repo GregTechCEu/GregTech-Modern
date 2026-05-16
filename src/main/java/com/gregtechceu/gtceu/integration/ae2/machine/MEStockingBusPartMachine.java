@@ -61,8 +61,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public MEStockingBusPartMachine(BlockEntityCreationInfo info) {
         super(info, new ExportOnlyAEStockingItemList(CONFIG_SIZE));
         this.autoPullTest = $ -> false;
-        this.aeItemHandler = (ExportOnlyAEItemList)getInventory();
-        ((ExportOnlyAEStockingItemList)getInventory()).setStockingBusPartMachine(this);
+        this.aeItemHandler = (ExportOnlyAEItemList) getInventory();
+        ((ExportOnlyAEStockingItemList) getInventory()).setStockingBusPartMachine(this);
     }
 
     /////////////////////////////////
@@ -275,7 +275,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("AutoPull", true);
         tag.putByte("GhostCircuit",
-                (byte)circuitSlot.getCurrentCircuit());
+                (byte) circuitSlot.getCurrentCircuit());
         return tag;
     }
 
@@ -295,7 +295,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     private static class ExportOnlyAEStockingItemList extends ExportOnlyAEItemList {
 
         @Getter
-        @Nullable MEStockingBusPartMachine stockingBusPartMachine;
+        @Nullable
+        MEStockingBusPartMachine stockingBusPartMachine;
 
         public ExportOnlyAEStockingItemList(int slots) {
             super(slots, ExportOnlyAEStockingItemSlot::new);
@@ -303,7 +304,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         public void setStockingBusPartMachine(@Nullable MEStockingBusPartMachine stockingBusPartMachine) {
             this.stockingBusPartMachine = stockingBusPartMachine;
-            for (var slot: ((ExportOnlyAEStockingItemSlot[])inventory)) {
+            for (var slot : ((ExportOnlyAEStockingItemSlot[]) inventory)) {
                 slot.setStockingBusPartMachine(stockingBusPartMachine);
             }
         }
@@ -333,7 +334,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         @Getter
         @Setter
-        @Nullable MEStockingBusPartMachine stockingBusPartMachine;
+        @Nullable
+        MEStockingBusPartMachine stockingBusPartMachine;
 
         public ExportOnlyAEStockingItemSlot() {
             super();
@@ -350,7 +352,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                     // Extract the items from the real net to either validate (simulate)
                     // or extract (modulate) when this is called
                     if (!stockingBusPartMachine.isOnline()) return ItemStack.EMPTY;
-                    MEStorage aeNetwork = stockingBusPartMachine.getMainNode().getGrid().getStorageService().getInventory();
+                    MEStorage aeNetwork = stockingBusPartMachine.getMainNode().getGrid().getStorageService()
+                            .getInventory();
 
                     Actionable action = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
                     var key = config.what();

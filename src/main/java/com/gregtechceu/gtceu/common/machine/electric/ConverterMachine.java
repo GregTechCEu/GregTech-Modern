@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.UITexture;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -46,7 +46,6 @@ public class ConverterMachine extends TieredMachine {
         energyContainer = attachTrait(new ConverterTrait(this, tier, amps));
         environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
                 () -> energyContainer.getEnergyStored() > 0));
-
     }
 
     //////////////////////////////////////

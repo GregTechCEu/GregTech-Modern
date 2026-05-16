@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -14,6 +11,10 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ISubscription;
+
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,7 @@ public class BatterySlotTrait extends MachineTrait implements IAttachConfigurato
 
     /**
      * Creates a battery charger slot trait
+     * 
      * @param energyContainerToUse The energy container which the battery should draw energy from/push energy to.
      */
     public BatterySlotTrait(NotifiableEnergyContainer energyContainerToUse) {
@@ -82,7 +84,6 @@ public class BatterySlotTrait extends MachineTrait implements IAttachConfigurato
             updateBatterySubscription();
         }
     }
-
 
     @Override
     public void onMachineDestroyed() {

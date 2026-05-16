@@ -24,8 +24,9 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     public static final int FLUID_AMOUNT = 2_000_000_000;
 
     public ReservoirHatchPartMachine(BlockEntityCreationInfo info) {
-        super(info, GTValues.EV, IO.IN, new NotifiableFluidTank(Collections.singletonList(new InfiniteWaterTank(FLUID_AMOUNT)), IO.IN, IO.BOTH));
-        waterTank = (InfiniteWaterTank)tank.getStorages()[0];
+        super(info, GTValues.EV, IO.IN, new NotifiableFluidTank(
+                Collections.singletonList(new InfiniteWaterTank(FLUID_AMOUNT)), IO.IN, IO.BOTH));
+        waterTank = (InfiniteWaterTank) tank.getStorages()[0];
     }
 
     //////////////////////////////////

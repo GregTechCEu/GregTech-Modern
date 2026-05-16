@@ -78,7 +78,8 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
         if (entity instanceof MetaMachine machine && context.isSecondaryUseActive()) {
-            machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE).ifPresent(t -> t.setCurrentCircuit(circuitSetting));
+            machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)
+                    .ifPresent(t -> t.setCurrentCircuit(circuitSetting));
             return InteractionResult.SUCCESS;
         }
         return IItemUIHolder.super.useOn(context);

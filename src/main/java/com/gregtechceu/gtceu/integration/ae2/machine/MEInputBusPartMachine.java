@@ -42,7 +42,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     public MEInputBusPartMachine(BlockEntityCreationInfo info) {
         super(info, IO.IN, new ExportOnlyAEItemList(CONFIG_SIZE));
-        aeItemHandler = (ExportOnlyAEItemList)getInventory();
+        aeItemHandler = (ExportOnlyAEItemList) getInventory();
     }
 
     public MEInputBusPartMachine(BlockEntityCreationInfo info, NotifiableItemStackHandler inventory) {
@@ -247,7 +247,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             configStacks.put(Integer.toString(i), stackTag);
         }
         tag.putByte("GhostCircuit",
-                (byte)circuitSlot.getCurrentCircuit());
+                (byte) circuitSlot.getCurrentCircuit());
         tag.putBoolean("DistinctBuses", isDistinct());
         return tag;
     }

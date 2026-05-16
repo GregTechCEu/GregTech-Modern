@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
-
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCACoolantProviderTrait;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,7 +29,8 @@ public class HPCAComponentPartMachine extends MultiblockPartMachine {
     protected final IDrawable componentIcon;
     protected final IDrawable damagedComponentIcon;
 
-    public HPCAComponentPartMachine(BlockEntityCreationInfo info, boolean isAdvanced, IDrawable hpcaComponentIcon, IDrawable hpcaComponentIconDamaged,
+    public HPCAComponentPartMachine(BlockEntityCreationInfo info, boolean isAdvanced, IDrawable hpcaComponentIcon,
+                                    IDrawable hpcaComponentIconDamaged,
                                     HPCAComponentTrait hpcaTrait) {
         super(info);
         this.isAdvanced = isAdvanced;

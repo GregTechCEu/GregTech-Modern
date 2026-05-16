@@ -34,8 +34,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition, MACHINE extends MultiblockControllerMachine,
-        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>> extends MachineBuilder<DEFINITION, MACHINE, SELF> {
+public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
+        MACHINE extends MultiblockControllerMachine,
+        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>>
+                                     extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;

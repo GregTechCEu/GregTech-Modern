@@ -26,6 +26,7 @@ import lombok.Setter;
 
 /**
  * Machine trait that adds an exhaust vent to a specific side of a machine.
+ * 
  * @see VentCondition
  */
 public class ExhaustVentMachineTrait extends MachineTrait {

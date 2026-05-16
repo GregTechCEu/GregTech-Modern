@@ -82,7 +82,8 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @MethodsReturnNonnullByDefault
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine, SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
+public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
+        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
                            extends BuilderBase<DEFINITION> {
 
     protected final GTRegistrate registrate;
@@ -654,7 +655,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.registerDefaultState(defaultState);
     }
 
-
     @HideFromJS
     public DEFINITION register() {
         this.registrate.object(name);
@@ -683,7 +683,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
         var blockEntityBuilder = registrate
                 .blockEntity(
-                        (type, pos, state) -> instanceFactory.buildMachine(new BlockEntityCreationInfo(type, pos, state)))
+                        (type, pos, state) -> instanceFactory
+                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {

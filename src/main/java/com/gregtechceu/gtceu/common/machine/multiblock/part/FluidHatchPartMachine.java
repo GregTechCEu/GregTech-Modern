@@ -90,7 +90,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
 
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
         circuitSlot.setEnabled(io == IO.IN);
-
     }
 
     //////////////////////////////////////

@@ -149,7 +149,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     protected TickableSubscription updateSubs;
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
