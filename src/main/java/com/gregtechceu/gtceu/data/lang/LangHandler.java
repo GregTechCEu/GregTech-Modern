@@ -1146,6 +1146,8 @@ public class LangHandler {
         provider.add("gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
         provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
         provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
+        provider.add("gtceu.fluid_pipe.insulated", "§bInsulated");
+        provider.add("gtceu.fluid_pipe.insulated_by_default", "§6Pre-Insulated");
         provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
@@ -1300,6 +1302,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
+        provider.add("config.jade.plugin_gtceu.fluid_pipe_info", "[GTCEu] Fluid Pipe Info");
 
         // gui
         provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");

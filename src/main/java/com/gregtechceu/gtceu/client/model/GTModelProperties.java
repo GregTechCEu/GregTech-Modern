@@ -20,4 +20,6 @@ public class GTModelProperties {
     public static final ModelProperty<Integer> PIPE_BLOCKED_MASK = new ModelProperty<>();
 
     public static final ModelProperty<ModelData> CHILD_MODEL_DATA = new ModelProperty<>(Objects::nonNull);
+
+    public static final ModelProperty<Boolean> PIPE_INSULATED = new ModelProperty<>();
 }

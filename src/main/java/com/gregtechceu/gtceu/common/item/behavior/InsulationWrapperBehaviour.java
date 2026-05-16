@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 
@@ -27,42 +27,39 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
         }
 
         if (!(level.getBlockState(pos).getBlock() instanceof FluidPipeBlock)) {
-            player.displayClientMessage(Component.translatable("gtceu.insulation_wrapper.invalid_pipe"), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.invalid_pipe"), true);
             return InteractionResult.FAIL;
         }
 
-        if (!(level instanceof ServerLevel serverLevel)) return InteractionResult.PASS;
+        if (!(level.getBlockEntity(pos) instanceof FluidPipeBlockEntity first)) return InteractionResult.FAIL;
 
-        LevelFluidPipeNet levelNet = LevelFluidPipeNet.getOrCreate(serverLevel);
-        var net = levelNet.getNetFromPos(pos);
-        if (net == null) return InteractionResult.FAIL;
+        // count available wrappers in inventory
+        int available = player.isCreative() ? Integer.MAX_VALUE : player.getInventory().clearOrCountMatchingItems(
+                itemStack -> itemStack.getItem() == GTItems.INSULATION_WRAPPER.get(),
+                0, player.inventoryMenu.getCraftSlots());
 
-        // get all pipes in the network
+        if (!player.isCreative() && available == 0) {
+            return InteractionResult.FAIL;
+        }
+
+        // get all pipes in the network with amount of available wrappers as the limit, should function similar to spray cans
+        var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, first, level, IPipeNode::getBlockPos,
+                (parent, child, dir) -> parent == null || (parent.isConnected(dir) && child.isConnected(dir.getOpposite())),
+                available, Integer.MAX_VALUE);
+
         List<BlockPos> toInsulate = new ArrayList<>();
-        for (BlockPos pipePos : net.getAllNodes().keySet()) {
-            if (level.getBlockEntity(pipePos) instanceof FluidPipeBlockEntity pipe) {
-                if (!pipe.isInsulated()) {
-                    toInsulate.add(pipePos);
-                }
+        for (var node : collected) {
+            if (node instanceof FluidPipeBlockEntity pipe && !pipe.isInsulated()) {
+                toInsulate.add(pipe.getBlockPos());
             }
         }
 
-        int needed = toInsulate.size();
-
-        if (!player.isCreative()) {
-            // already fully insulated
-            if (toInsulate.isEmpty()) {
-                player.displayClientMessage(Component.translatable("gtceu.insulation_wrapper.already_insulated"), true);
-                return InteractionResult.FAIL;
-            }
-
-            // count available wrappers
-            int available = player.getInventory().clearOrCountMatchingItems(itemStack -> itemStack.getItem() == GTItems.ASBESTOS_INSULATION_WRAPPER.get(), 0, player.inventoryMenu.getCraftSlots());
-            if (available == 0) {
-                return InteractionResult.FAIL;
-            }
-            needed = Math.min(available, toInsulate.size());
+        if (toInsulate.isEmpty()) {
+            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.already_insulated"), true);
+            return InteractionResult.FAIL;
         }
+
+        int needed = Math.min(available, toInsulate.size());
 
         // insulate all pipes
         for (int i = 0; i < needed; i++) {
@@ -73,15 +70,17 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
 
         // clear needed amount from inventory
         if (!player.isCreative()){
-            player.getInventory().clearOrCountMatchingItems(itemStack -> itemStack.getItem() == GTItems.ASBESTOS_INSULATION_WRAPPER.get(), needed, player.inventoryMenu.getCraftSlots());
+            player.getInventory().clearOrCountMatchingItems(
+                    itemStack -> itemStack.getItem() == GTItems.INSULATION_WRAPPER.get(),
+                    needed, player.inventoryMenu.getCraftSlots());
         }
 
         // inform if its fully insulated or partially insulated; if partial, return uninsulated amount
         int remaining = toInsulate.size() - needed;
         if (remaining > 0) {
-            player.displayClientMessage(Component.translatable("gtceu.insulation_wrapper.partial", needed, remaining), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.partial", needed, remaining), true);
         } else {
-            player.displayClientMessage(Component.translatable("gtceu.insulation_wrapper.success", needed), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.success", needed), true);
         }
         return InteractionResult.SUCCESS;
     }

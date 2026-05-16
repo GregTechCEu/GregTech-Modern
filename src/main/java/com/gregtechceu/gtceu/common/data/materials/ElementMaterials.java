@@ -958,7 +958,7 @@ public class ElementMaterials {
                 .element(GTElements.Nq)
                 .rotorStats(160, 105, 4.0f, 1280)
                 .cableProperties(V[ZPM], 2, 2)
-                .fluidPipeProperties(3776, 200, true, false, true, true)
+                .fluidPipeProperties(3776, 200, true, false, true, true, true)
                 .blast(b -> b.temp(5000, GasTier.HIGH)
                         .blastStats(VA[IV], 600)
                         .vacuumStats(VA[EV], 150))
@@ -996,7 +996,7 @@ public class ElementMaterials {
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
-                .fluidPipeProperties(100_000, 5000, true, true, true, true)
+                .fluidPipeProperties(100_000, 5000, true, true, true, true, true)
                 .radioactiveHazard(10)
                 .buildAndRegister();
 
@@ -1019,7 +1019,7 @@ public class ElementMaterials {
                 .element(GTElements.Dr)
                 .toolStats(ToolProperty.Builder.of(14.0F, 12.0F, 8192, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
-                .fluidPipeProperties(9625, 500, true, true, true, true)
+                .fluidPipeProperties(9625, 500, true, true, true, true, true)
                 .buildAndRegister();
 
         Trinium = new Material.Builder(GTCEu.id("trinium"))

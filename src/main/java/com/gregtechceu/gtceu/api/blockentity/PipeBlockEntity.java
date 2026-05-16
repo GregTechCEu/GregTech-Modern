@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -26,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -380,6 +383,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             }
             return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
+            if (this instanceof FluidPipeBlockEntity pipe && pipe.isInsulated() && !pipe.getNodeData().isInsulatedByDefault()) {
+                if (!isRemote()) {
+                    pipe.setInsulated(false);
+                    player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.removed"), true);
+                    Block.popResource(context.getLevel(), this.getBlockPos(),
+                            new ItemStack(GTItems.INSULATION_WRAPPER.get()));
+                }
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
+            }
             if (!frameMaterial.isNull()) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
                         GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/asbestos_insulation_wrapper"
+    "layer0": "gtceu:item/insulation_wrapper"
   }
 }

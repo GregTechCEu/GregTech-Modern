@@ -14,7 +14,9 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -74,7 +76,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @SaveField(nbtKey = "Fluids")
     private CustomFluidTank[] fluidTanks;
     @Getter
-    @Setter
+    @SyncToClient
+    @RerenderOnChanged
     @SaveField(nbtKey = "Insulated")
     private boolean insulated = false;
     private long timer = 0L;
@@ -96,6 +99,10 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Override
     public void onLoad() {
         super.onLoad();
+        if (!insulated && getNodeData().isInsulatedByDefault()) {
+            this.insulated = true;
+            setChanged();
+        }
         if (updateSubs == null) {
             updateSubs = this.subscribeServerTick(this::update);
         }
@@ -499,6 +506,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 world.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
             }
         }
+    }
+
+    public void setInsulated(boolean insulated) {
+        this.insulated = insulated;
+        setChanged();
+        syncDataHolder.markClientSyncFieldDirty("insulated");
     }
 
     @Override

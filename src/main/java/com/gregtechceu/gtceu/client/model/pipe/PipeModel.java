@@ -123,6 +123,8 @@ public class PipeModel {
     public @Nullable ResourceLocation sideSecondary, endSecondary;
     @Setter
     public @Nullable ResourceLocation sideOverlay, endOverlay;
+    @Setter
+    public @Nullable ResourceLocation sideInsulation;
 
     /// Use {@link #getOrCreateBlockModel()} instead of referencing this field directly.
     private BlockModelBuilder blockModel;
@@ -184,13 +186,16 @@ public class PipeModel {
             return this.blockModel;
         }
         // spotless:off
-        return this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
-                // make the "default" model be based on the center part's model
+        var loader = this.provider.models().getBuilder(this.blockId.toString())
                 .parent(this.getOrCreateCenterElement())
                 .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
                     .centerModels(this.getOrCreateCenterElement().getLocation())
-                    .connectionModels(this.getOrCreateConnectionElement().getLocation())
-                .end();
+                    .connectionModels(this.getOrCreateConnectionElement().getLocation());
+            if (this.sideInsulation != null) {
+                loader.insulationTextures(this.sideInsulation);
+            }
+        return this.blockModel = loader.end();
+                // make the "default" model be based on the center part's model
         // spotless:on
     }
 
@@ -408,12 +413,13 @@ public class PipeModel {
                 Objects.equals(sideSecondary, pipeModel.sideSecondary) &&
                 Objects.equals(endSecondary, pipeModel.endSecondary) &&
                 Objects.equals(sideOverlay, pipeModel.sideOverlay) &&
-                Objects.equals(endOverlay, pipeModel.endOverlay);
+                Objects.equals(endOverlay, pipeModel.endOverlay) &&
+                Objects.equals(sideInsulation, pipeModel.sideInsulation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(block, side, end, sideSecondary, endSecondary, sideOverlay, endOverlay);
+        return Objects.hash(block, side, end, sideSecondary, endSecondary, sideOverlay, endOverlay, sideInsulation);
     }
 
     @FunctionalInterface

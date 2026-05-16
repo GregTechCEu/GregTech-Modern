@@ -51,6 +51,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     private final float thickness;
     private final GTBlockstateProvider provider;
     private BlockModelBuilder @Nullable [] restrictors = null;
+    private BlockModelBuilder @Nullable [] insulation = null;
+    private @Nullable ResourceLocation insulationSideTexture = null;
 
     protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper,
                                float thickness, GTBlockstateProvider provider) {
@@ -284,9 +286,17 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
                 ImmutableList.of());
     }
 
+    public PipeModelBuilder<T> insulationTextures(ResourceLocation side) {
+        this.insulationSideTexture = side;
+        return this;
+    }
+
     @Override
     public T end() {
         this.restrictors = getOrCreateRestrictorModels(this.provider.models(), this.thickness);
+        if (this.insulationSideTexture != null) {
+            this.insulation = makeInsulationModels(this.provider.models(), this.thickness, this.insulationSideTexture);
+        }
         return super.end();
     }
 
@@ -319,6 +329,21 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
             json.add("restrictors", restrictors);
         }
 
+        // build json for insulation
+        if (this.insulation != null) {
+            final JsonObject insulation = new JsonObject();
+            for (int i = 0; i < GTUtil.DIRECTIONS.length; i++) {
+                Direction dir = GTUtil.DIRECTIONS[i];
+                insulation.add(dir.getName(), configuredModelToJSON(ConfiguredModel.builder()
+                                .modelFile(new ModelFile.UncheckedModelFile(this.insulation[i].getLocation()))
+                                .buildLast(), false));
+            }
+            insulation.add(PipeModelLoader.PRIMARY_CENTER_KEY, configuredModelToJSON(ConfiguredModel.builder()
+                                .modelFile(new ModelFile.UncheckedModelFile(this.insulation[GTUtil.DIRECTIONS.length].getLocation()))
+                                .buildLast(), false));
+            json.add("insulation", insulation);
+        }
+
         return json;
     }
 
@@ -330,6 +355,66 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
 
     private static final MemoizedBiFunction<BlockModelProvider, Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
+
+    private static BlockModelBuilder[] makeInsulationModels(BlockModelProvider provider, float thickness, ResourceLocation sideTexture) {
+        BlockModelBuilder[] models = new BlockModelBuilder[GTUtil.DIRECTIONS.length + 1];
+
+        float min = (16.0f - thickness) / 2.0f - 0.003f;
+        float max = min + thickness + 0.006f; // offset by 0.003 * 2
+
+        String suffix = sideTexture.getPath().substring(sideTexture.getPath().lastIndexOf('/') + 1);
+
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            String modelPath = "block/pipe/insulation/" + suffix + "/" + dir.getName() + "/thickness_" + thickness;
+            ResourceLocation modelName = GTCEu.id(modelPath);
+            if (provider.generatedModels.containsKey(modelName)) {
+                models[dir.ordinal()] = provider.generatedModels.get(modelName);
+                continue;
+            }
+
+            var coords = GTMath.getCoordinates(dir, min, max);
+            Vector3f minPos = coords.getLeft();
+            Vector3f maxPos = coords.getRight();
+
+            BlockModelBuilder model = provider.getBuilder(modelPath);
+            model.texture("insulation_side", sideTexture)
+                    .renderType(new ResourceLocation("translucent"))
+                    .element()
+                    .from(minPos.x, minPos.y, minPos.z)
+                    .to(maxPos.x, maxPos.y, maxPos.z)
+                    .face(getSideAtBorder(dir, Border.BOTTOM)).end()
+                    .face(getSideAtBorder(dir, Border.TOP)).end()
+                    .face(getSideAtBorder(dir, Border.LEFT)).end()
+                    .face(getSideAtBorder(dir, Border.RIGHT)).end()
+                    .faces((face, builder) -> builder.texture("#insulation_side"))
+                    .end();
+            models[dir.ordinal()] = model;
+        }
+
+        // center overlay
+        String centerPath = "block/pipe/insulation/" + suffix + "/center/thickness_" + thickness;
+        ResourceLocation centerName = GTCEu.id(centerPath);
+        if (provider.generatedModels.containsKey(centerName)) {
+            models[GTUtil.DIRECTIONS.length] = provider.generatedModels.get(centerName);
+        } else {
+            BlockModelBuilder center = provider.getBuilder(centerPath);
+            center.texture("insulation_side", sideTexture)
+                    .renderType(new ResourceLocation("translucent"))
+                    .element()
+                    .from(min, min, min)
+                    .to(max, max, max)
+                    .face(Direction.DOWN).end()
+                    .face(Direction.UP).end()
+                    .face(Direction.NORTH).end()
+                    .face(Direction.SOUTH).end()
+                    .face(Direction.WEST).end()
+                    .face(Direction.EAST).end()
+                    .faces((face, builder) -> builder.texture("#insulation_side"))
+                    .end();
+            models[GTUtil.DIRECTIONS.length] = center;
+        }
+        return models;
+    }
 
     private static BlockModelBuilder[] makeRestrictorModels(BlockModelProvider provider, float thickness) {
         BlockModelBuilder[] models = new BlockModelBuilder[GTUtil.DIRECTIONS.length];

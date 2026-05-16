@@ -1809,6 +1809,27 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add Fluid Pipes to this Material.
+         *
+         * @param maxTemp     The maximum temperature of Fluid that this Pipe can handle before causing damage to the
+         *                    Pipe.
+         * @param throughput  The rate at which Fluid can flow through this Pipe.
+         * @param gasProof    Whether this Pipe can hold Gases. If not, some Gas will be lost as it travels through the
+         *                    Pipe.
+         * @param acidProof   Whether this Pipe can hold Acids. If not, the Pipe may lose fluid or cause damage.
+         * @param cryoProof   Whether this Pipe can hold Cryogenic Fluids (below 120K). If not, the Pipe may lose fluid
+         *                    or cause damage.
+         * @param plasmaProof Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause damage.
+         * @param insulatedByDefault Whether this Pipe is insulated by default. If not, the Pipe may cause damage when storing thermogenics/cryogenics.
+         */
+        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
+                                           boolean cryoProof, boolean plasmaProof, boolean insulatedByDefault) {
+            properties.setProperty(PropertyKey.FLUID_PIPE,
+                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof, insulatedByDefault, 1));
+            return this;
+        }
+
+        /**
          * Add Item Pipes to this Material.
          *
          * @param priority     Priority of this Item Pipe, used for the standard routing mode.

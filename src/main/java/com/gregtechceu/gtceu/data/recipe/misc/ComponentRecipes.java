@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -1132,16 +1131,5 @@ public class ComponentRecipes {
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
                 .addMaterialInfo(true).save(provider);
-
-        // Insulation Wrapper Start-----------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "asbestos_insulation_wrapper", ASBESTOS_INSULATION_WRAPPER.asStack(), "DDD", "WFW", "DDD",
-                'D', new MaterialEntry(dust, Asbestos), 'W', new ItemStack(Items.WHITE_WOOL), 'F', new MaterialEntry(foil, Steel));
-
-        ASSEMBLER_RECIPES.recipeBuilder("asbestos_insulation_wrapper")
-                .inputItems(dust, Asbestos, 6)
-                .inputItems(Items.WHITE_WOOL)
-                .inputItems(foil, Steel, 1)
-                .outputItems(ASBESTOS_INSULATION_WRAPPER)
-                .duration(80).EUt(VA[LV]).save(provider);
     }
 }

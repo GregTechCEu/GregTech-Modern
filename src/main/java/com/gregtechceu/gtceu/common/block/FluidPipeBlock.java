@@ -114,6 +114,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         if (properties.isAcidProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
         if (properties.isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
         if (properties.isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        if (properties.isInsulatedByDefault()) tooltip.add(Component.translatable("gtceu.fluid_pipe.insulated_by_default"));
     }
 
     @Override
@@ -137,6 +138,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
             super.entityInside(state, level, pos, entity);
             return;
         }
+
         if (pipe.getOffsetTimer() % 10 == 0) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (pipe.getFluidTanks().length > 1) {
