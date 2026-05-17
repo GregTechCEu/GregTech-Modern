@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
-import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -38,6 +37,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;

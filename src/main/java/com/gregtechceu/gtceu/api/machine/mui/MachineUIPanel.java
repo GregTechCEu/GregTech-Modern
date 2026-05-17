@@ -65,6 +65,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         panelContents.child(mainContents);
 
         if (attachPlayerInventory) {
+            panelContents.childPadding(2);
             var inventory = SlotGroupWidget.playerInventory((index, slot) -> slot)
                     .marginTop(1)
                     .marginBottom(3);
