@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.drawable.progress.CircularProgressDrawable;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -324,12 +326,13 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .child(new ProgressWidget()
                                                                         .value(progressPercent)
-                                                                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), 20))
-                                                                .child(new ProgressWidget()
-                                                                        .value(progressPercent)
-                                                                        .texture(GTGuiTextures.PROGRESS_MIXER.main(), 20)
-                                                                        .direction(
-                                                                                ProgressWidget.Direction.CIRCULAR_CW))
+                                                                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT))
+                                                                .child(new CircularProgressDrawable()
+                                                                        .emptyTexture(GTGuiTextures.PROGRESS_MIXER[0])
+                                                                        .filledTexture(GTGuiTextures.PROGRESS_MIXER[1])
+                                                                        .clockwise()
+                                                                        .asWidget()
+                                                                        .value(progressPercent))
                                                                 .child(Flow.row().coverChildrenWidth().height(22)
                                                                         .child(new ToggleButton()
                                                                                 .value(new BoolValue.Dynamic(

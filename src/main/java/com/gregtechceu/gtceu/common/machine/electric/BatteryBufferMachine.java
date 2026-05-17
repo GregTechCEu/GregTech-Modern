@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -147,8 +148,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
         flow.child(new ProgressWidget()
                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
-                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
-                .direction(ProgressWidget.Direction.UP)
+                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, ProgressDrawable.Direction.UP)
                 .value(energyPercentage)
                 .marginLeft(5)
                 .size(18, 60)

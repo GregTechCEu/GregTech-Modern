@@ -350,12 +350,13 @@ public class GTRecipeTypeUILayout {
 
         public GTRecipeTypeUILayout build() {
             var progressWidgetSupplier = this.progressWidgetSupplier;
-            if (progressWidgetSupplier == null) progressWidgetSupplier = (l, v, m) -> new ProgressWidget()
-                    .value(v)
-                    .name("progressBar")
-                    .texture(progressBar.get(m), progressBar.progressSize())
-                    .size(progressBar.progressSize())
-                    .direction(progressBar.fillDirection());
+            if (progressWidgetSupplier == null) {
+                progressWidgetSupplier = (l, v, m) -> new ProgressWidget()
+                        .value(v)
+                        .name("progressBar")
+                        .texture(progressBar.get(m), progressBar.fillDirection())
+                        .size(progressBar.progressSize());
+            }
 
             var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier,
                     customUIBuilder);

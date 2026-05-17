@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -139,9 +140,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                         .slot(new ModularSlot(this.fuelHandler, 0)))
                 .child(new ProgressWidget()
                         .size(18)
-                        .texture(progressTexture, 18)
-                        .value(progressPercent)
-                        .direction(ProgressWidget.Direction.UP))
+                        .texture(progressTexture, ProgressDrawable.Direction.UP)
+                        .value(progressPercent))
                 .child(new ItemSlot()
                         .slot(new ModularSlot(this.ashHandler, 0))));
     }

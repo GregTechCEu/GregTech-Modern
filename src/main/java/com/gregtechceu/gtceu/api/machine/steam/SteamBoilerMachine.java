@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -332,10 +333,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .size(14, 54))
                 .child(new ProgressWidget()
                         .texture(progressTexture,
-                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 54)
+                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, ProgressDrawable.Direction.UP)
                         .size(14, 54)
                         .value(tempPercentage)
-                        .direction(ProgressWidget.Direction.UP)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(Text
                                 .lang("gtceu.fluid.temperature", getCurrentTemperature())))));

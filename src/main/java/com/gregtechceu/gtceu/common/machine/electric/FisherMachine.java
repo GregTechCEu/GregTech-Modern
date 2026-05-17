@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -317,7 +318,7 @@ public class FisherMachine extends TieredEnergyMachine
                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
                 .child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), 16)
+                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
                         .value(progressPercent))
                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                         "output_item_inv", cache.getSize(), 'i',
