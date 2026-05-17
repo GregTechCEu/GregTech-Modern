@@ -65,7 +65,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
         super.formStructure(name);
     }
 
-    @Override
+    /*@Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         var coolerState = patternStates.get("cooler");
@@ -77,5 +77,5 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
             var c = coolerState.getError().getErrorInfo();
             textList.addAll(c);
         }
-    }
+    }*/
 }

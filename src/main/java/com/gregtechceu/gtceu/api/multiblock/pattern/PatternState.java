@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -37,10 +37,11 @@ public class PatternState {
     protected MultiblockControllerMachine controller;
     @Getter
     @Setter
-    @DescSynced
+    // TODO proper syncing
+    @SyncToClient
     protected boolean isFormed = false;
     @Getter
-    @DescSynced
+    @SyncToClient
     protected volatile boolean isFlipped = false;
     @Setter
     @Getter
@@ -49,6 +50,7 @@ public class PatternState {
     protected boolean shouldUpdate = true;
     @Setter
     @Getter
+    // TODO sync this
     protected PatternError error;
     @Getter
     @Setter(AccessLevel.PROTECTED)

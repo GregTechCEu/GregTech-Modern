@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.api.multiblock;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
@@ -68,6 +70,16 @@ public class Predicates {
      * new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
      * }
      */
+
+    public static PatternPredicate machines(MachineDefinition... definitions) {
+        ArrayList<MetaMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
+        for (var definition : definitions) {
+            if (definition != null) {
+                machineBlocks.add(definition.get());
+            }
+        }
+        return blocks(machineBlocks.toArray(MetaMachineBlock[]::new));
+    }
 
     public static PatternPredicate blockTag(TagKey<Block> tag) {
         return new PatternPredicate(new PredicateBlockTag(tag));

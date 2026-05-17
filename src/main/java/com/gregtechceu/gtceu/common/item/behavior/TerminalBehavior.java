@@ -1,9 +1,14 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.core.BlockPos;
@@ -17,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-public class TerminalBehavior implements IInteractionItem, IItemUIFactory {
+public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -95,5 +100,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIFactory {
         }
 
         return InteractionResultHolder.pass(heldItem);
+    }
+
+    @Override
+    public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+        return null;
     }
 }

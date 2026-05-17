@@ -106,7 +106,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     private EnergyContainerList inputEnergyContainers;
     @Getter
     @Nullable
-    private Collection<CleanroomReceiverTrait> cleanroomReceivers;
+    private Collection<CleanroomReceiverTrait> cleanroomReceivers = new ArrayList<>();
 
     private final CleanroomProviderTrait cleanroomProviderTrait;
 
@@ -161,10 +161,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             // todo check if be and if it has the cleanroom trait
             //if (!(be instanceof ICleanroomReceiver receiver)) return;
 
-            if (receiver.getCleanroom() != this) {
+            /*if (receiver.getCleanroom() != this) {
                 receiver.setCleanroomProvider(cleanroomProviderTrait);
                 cleanroomReceivers.add(receiver);
-            }
+            }*/
         });
 
         // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
@@ -191,7 +191,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
     }
 
-    @Override
     public boolean shouldAddPartToController(IMultiPart part) {
         var posCache = patternStates.get(DEFAULT_STRUCTURE).getPosCache();
         for (Direction side : GTUtil.DIRECTIONS) {
@@ -548,7 +547,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return PatternError.PLACEHOLDER;
                 }
-                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(receivers::add);
+                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }
             return null;
         }, null);

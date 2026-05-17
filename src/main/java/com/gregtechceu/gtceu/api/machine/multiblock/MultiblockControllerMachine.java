@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -252,7 +254,7 @@ public class MultiblockControllerMachine extends MetaMachine {
      * Get structure pattern.
      * You can override it to create dynamic patterns.
      */
-    IBlockPattern createStructurePattern() {
+    public IBlockPattern createStructurePattern() {
         return getDefinition().getPatternFactory().get();
     }
 
@@ -537,5 +539,30 @@ public class MultiblockControllerMachine extends MetaMachine {
             invalidStructureCaches();
             checkAndFormStructurePatterns();
         }
+    }
+
+    /**
+     *
+     * @return Whether batching is enabled on this multiblock
+     */
+    public boolean isBatchEnabled() {
+        return false;
+    }
+
+    public void setBatchEnabled(boolean batch) {}
+
+    /**
+     * Can be overridden to just add widgets to the black box in the middle instead of overriding the whole UI.
+     * Don't forget to invoke {@code super.getWidgetsForDisplay} to add the default lines (progress, voltage, etc.).
+     *
+     * @param syncManager the sync manager
+     * @return list of widgets to be displayed inside the black box in the middle of a standard multiblock UI
+     */
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        return new ArrayList<>();
+    }
+
+    public boolean allowCircuitSlots() {
+        return true;
     }
 }

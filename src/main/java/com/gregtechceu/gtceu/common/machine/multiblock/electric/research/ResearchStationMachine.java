@@ -88,10 +88,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         var patternState = super.checkStructurePattern(name);
         // var cache = getSubstructure(name).getCache();
         var cache = patternStates.get(name).getCache();
-        IObjectHolder objHolder = null;
+        ObjectHolderMachine objHolder = null;
         for (var entry : cache.long2ObjectEntrySet()) {
-            if (entry.getValue().getBlockState().getBlock() instanceof IObjectHolder) {
-                objHolder = (IObjectHolder) entry.getValue();
+            if (entry.getValue().getBlockEntity() instanceof ObjectHolderMachine objectHolder) {
+                objHolder = objectHolder;
             }
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {

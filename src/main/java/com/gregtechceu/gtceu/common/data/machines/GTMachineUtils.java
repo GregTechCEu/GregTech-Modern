@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;

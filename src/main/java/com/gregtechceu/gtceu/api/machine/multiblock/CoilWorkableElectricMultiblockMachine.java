@@ -61,7 +61,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         }
         if (coilType != null) {
             this.coilType = coilType;
-            this.coilTier = coil.getTier();
+            this.coilTier = coilType.getTier();
             getSyncDataHolder().markClientSyncFieldDirty("coilTier");
         }
     }
