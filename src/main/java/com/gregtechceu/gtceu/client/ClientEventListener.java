@@ -89,8 +89,6 @@ public class ClientEventListener {
 
     @SubscribeEvent
     public static void updateFOV(ComputeFovModifierEvent event) {
-        if (!ConfigHolder.INSTANCE.client.blockFovChange) return;
-
         Player player = event.getPlayer();
 
         AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -99,7 +97,8 @@ public class ClientEventListener {
         float multi = 1;
         var state = player.level().getBlockState(player.getOnPos());
 
-        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+        if (!ConfigHolder.INSTANCE.client.blockFovChange) multi /= 1.3F;
+        else if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
 
         multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
         event.setNewFovModifier(event.getNewFovModifier() * multi);
