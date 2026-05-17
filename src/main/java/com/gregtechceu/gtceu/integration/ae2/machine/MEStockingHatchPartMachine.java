@@ -148,11 +148,14 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public boolean testConfiguredInOtherPart(@Nullable GenericStack config) {
         if (config == null) return false;
         if (!isFormed()) return false;
-
+        // Test for if the fluid is configured in any stocking hatch in the multi (besides ourselves).
+        // Duplicate configurations are allowed for Painted Hatches of different colors.
         for (MultiblockControllerMachine controller : getControllers()) {
             for (IMultiPart part : controller.getParts()) {
                 if (part instanceof MEStockingHatchPartMachine hatch) {
-                    if (hatch == this) continue;
+                    if (hatch == this ||
+                            (hatch.getPaintingColor() != this.getPaintingColor()))
+                        continue;
                     if (hatch.aeFluidHandler.hasStackInConfig(config, false)) {
                         return true;
                     }

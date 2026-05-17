@@ -159,11 +159,14 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         // Otherwise, we need to test for if the item is configured
         // in any stocking bus in the multi (besides ourselves).
+        // Duplicate configurations are allowed for Distinct Buses, and Painted Buses of different colors.
         for (MultiblockControllerMachine controller : getControllers()) {
             for (IMultiPart part : controller.getParts()) {
                 if (part instanceof MEStockingBusPartMachine bus) {
                     // We don't need to check for ourselves, as this case is handled elsewhere.
-                    if (bus == this || bus.isDistinct()) continue;
+                    if (bus == this || bus.isDistinct() ||
+                            (bus.getPaintingColor() != this.getPaintingColor()))
+                        continue;
                     if (bus.aeItemHandler.hasStackInConfig(config, false)) {
                         return true;
                     }
