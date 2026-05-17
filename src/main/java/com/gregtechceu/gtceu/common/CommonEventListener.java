@@ -390,6 +390,8 @@ public class CommonEventListener {
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
+            if (!ConfigHolder.INSTANCE.gameplay.blockSpeedChange) return;
+
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
             var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -88,6 +89,8 @@ public class ClientEventListener {
 
     @SubscribeEvent
     public static void updateFOV(ComputeFovModifierEvent event) {
+        if (!ConfigHolder.INSTANCE.client.blockFovChange) return;
+
         Player player = event.getPlayer();
 
         AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);

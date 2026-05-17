@@ -814,6 +814,9 @@ public class ConfigHolder {
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };
+        @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's speed." })
+        public boolean blockSpeedChange = true;
     }
 
     public static class ClientConfigs {
@@ -869,6 +872,9 @@ public class ConfigHolder {
         public Renderers renderer = new Renderers();
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
+        @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's FOV." })
+        public boolean blockFovChange = true;
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
