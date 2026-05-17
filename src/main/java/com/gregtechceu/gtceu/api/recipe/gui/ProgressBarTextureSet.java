@@ -31,6 +31,6 @@ public class ProgressBarTextureSet extends SteamTextureSet {
     }
 
     public ProgressBarTextureSet(int progressSize, ProgressWidget.Direction fillDirection, UITexture main) {
-        this(20, fillDirection, main, null, null);
+        this(progressSize, fillDirection, main, null, null);
     }
 }

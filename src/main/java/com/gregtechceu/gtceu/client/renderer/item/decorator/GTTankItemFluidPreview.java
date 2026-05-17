@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -101,9 +99,9 @@ public class GTTankItemFluidPreview implements IItemDecorator {
                 renderedCount < getMaxRenderCount(); index++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(index);
             if (!fluidInTank.isEmpty()) {
-                DrawerHelper.drawFluidForGui(
+                RenderUtil.drawFluidForGui(
                         guiGraphics,
-                        FluidHelperImpl.toFluidStack(fluidInTank),
+                        fluidInTank,
                         x + OFFSET[renderedCount][0],
                         y + OFFSET[renderedCount][1],
                         8.0F,

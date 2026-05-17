@@ -9,17 +9,18 @@ import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -46,8 +47,8 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -316,12 +317,73 @@ public class RenderUtil {
                         var texture = RenderUtil.FluidTextureType.STILL.map(clientExt, output);
                         int color = clientExt.getTintColor(output);
 
-                        DrawerHelper.drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
+                        drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    public static void drawFluidTexture(GuiGraphics graphics, float xCoord, float yCoord,
+                                        TextureAtlasSprite textureSprite, float maskTop, float maskRight, float zLevel,
+                                        int fluidColor) {
+        float uMin = textureSprite.getU0();
+        float uMax = textureSprite.getU1();
+        float vMin = textureSprite.getV0();
+        float vMax = textureSprite.getV1();
+        uMax = uMax - maskRight / 16f * (uMax - uMin);
+        vMax = vMax - maskTop / 16f * (vMax - vMin);
+
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        var mat = graphics.pose().last().pose();
+        buffer.vertex(mat, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).color(fluidColor).endVertex();
+        buffer.vertex(mat, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).color(fluidColor).endVertex();
+        buffer.vertex(mat, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).color(fluidColor)
+                .endVertex();
+        buffer.vertex(mat, xCoord, yCoord + maskTop, zLevel).uv(uMin, vMin).color(fluidColor).endVertex();
+
+        BufferUploader.drawWithShader(buffer.end());
+    }
+
+    public static void drawFluidForGui(GuiGraphics graphics, FluidStack contents, float startX, float startY,
+                                       float widthT, float heightT) {
+        ResourceLocation LOCATION_BLOCKS_TEXTURE = InventoryMenu.BLOCK_ATLAS;
+        var texture = IClientFluidTypeExtensions.of(contents.getFluid()).getStillTexture(contents);
+        TextureAtlasSprite fluidStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(texture);
+
+        if (fluidStillSprite == null) {
+            fluidStillSprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    .apply(MissingTextureAtlasSprite.getLocation());
+        }
+        int fluidColor = IClientFluidTypeExtensions.of(contents.getFluid()).getTintColor() | 0xff000000;
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, LOCATION_BLOCKS_TEXTURE);
+
+        final int xTileCount = (int) (widthT / 16);
+        final float xRemainder = widthT - xTileCount * 16;
+        final int yTileCount = (int) (heightT / 16);
+        final float yRemainder = heightT - yTileCount * 16;
+
+        final float yStart = startY + heightT;
+
+        for (int xTile = 0; xTile <= xTileCount; xTile++) {
+            for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                float width = xTile == xTileCount ? xRemainder : 16;
+                float height = yTile == yTileCount ? yRemainder : 16;
+                float x = startX + xTile * 16;
+                float y = yStart - (yTile + 1) * 16;
+                if (width > 0 && height > 0) {
+                    float maskTop = 16 - height;
+                    float maskRight = 16 - width;
+                    drawFluidTexture(graphics, x, y, fluidStillSprite, maskTop, maskRight, 0, fluidColor);
+                }
+            }
+        }
+        RenderSystem.enableBlend();
     }
 }

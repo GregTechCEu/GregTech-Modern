@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 
-import com.lowdragmc.lowdraglib.utils.ColorUtils;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 
+import brachy.modularui.utils.Color;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
@@ -49,14 +48,16 @@ public class DrawUtil {
      */
     private static void fillHorizontalGradient(GuiGraphics graphics, VertexConsumer consumer, int x1, int y1, int x2,
                                                int y2, int z, int colorFrom, int colorTo) {
-        float a1 = ColorUtils.alpha(colorFrom);
-        float r1 = ColorUtils.red(colorFrom);
-        float g1 = ColorUtils.green(colorFrom);
-        float b1 = ColorUtils.blue(colorFrom);
-        float a2 = ColorUtils.alpha(colorTo);
-        float r2 = ColorUtils.red(colorTo);
-        float g2 = ColorUtils.green(colorTo);
-        float b2 = ColorUtils.blue(colorTo);
+        float a1 = Color.getAlpha(colorFrom);
+        float r1 = Color.getRed(colorFrom);
+        float g1 = Color.getGreen(colorFrom);
+        float b1 = Color.getBlue(colorFrom);
+
+        float a2 = Color.getAlpha(colorTo);
+        float r2 = Color.getRed(colorTo);
+        float g2 = Color.getGreen(colorTo);
+        float b2 = Color.getBlue(colorTo);
+
         Matrix4f matrix4f = graphics.pose().last().pose();
         consumer.vertex(matrix4f, (float) x1, (float) y1, (float) z).color(r1, g1, b1, a1).endVertex();
         consumer.vertex(matrix4f, (float) x1, (float) y2, (float) z).color(r1, g1, b1, a1).endVertex();
