@@ -11,7 +11,7 @@ import brachy.modularui.api.GuiAxis;
 import brachy.modularui.drawable.ColorType;
 import brachy.modularui.drawable.TabTexture;
 import brachy.modularui.drawable.UITexture;
-import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -228,9 +228,11 @@ public interface GTGuiTextures {
     UITexture[] BUTTON_VOID_MULTIBLOCK = slice("textures/gui/widget/button_void_multiblock.png",
             16, 64, 16, 16, ColorType.DEFAULT);
 
-    UITexture[] FILTER_MODE_OVERLAY = slice(
-            "textures/gui/overlay/filter_mode_overlay.png",
-            16, 48, 16, 16, ColorType.DEFAULT);
+    UITexture[] FILTER_MODE_OVERLAY = {
+            fullImage("textures/gui/icon/filter_mode/filter_insert.png"),
+            fullImage("textures/gui/icon/filter_mode/filter_extract.png"),
+            fullImage("textures/gui/icon/filter_mode/filter_both.png")
+    };
 
     UITexture[] PRIVATE_MODE_BUTTON = slice(
             "textures/gui/widget/button_public_private.png",
@@ -475,8 +477,8 @@ public interface GTGuiTextures {
     ProgressBarTextureSet PROGRESS_ASSEMBLER = new ProgressBarTextureSet(
             progressBar("textures/gui/progress_bar/progress_bar_assembler.png", ColorType.DEFAULT));
 
-    ProgressBarTextureSet PROGRESS_BATH = new ProgressBarTextureSet(20, ProgressWidget.Direction.CIRCULAR_CW,
-            progressBar("textures/gui/progress_bar/progress_bar_bath.png", ColorType.DEFAULT));
+    UITexture[] PROGRESS_BATH = slice("textures/gui/progress_bar/progress_bar_bath.png",
+            20, 40, 20, 20, ColorType.DEFAULT);
 
     ProgressBarTextureSet PROGRESS_BENDING = new ProgressBarTextureSet(
             progressBar("textures/gui/progress_bar/progress_bar_bending.png", ColorType.DEFAULT));
@@ -512,7 +514,7 @@ public interface GTGuiTextures {
     ProgressBarTextureSet PROGRESS_GAS_COLLECTOR = new ProgressBarTextureSet(
             progressBar("textures/gui/progress_bar/progress_bar_gas_collector.png", ColorType.DEFAULT));
 
-    ProgressBarTextureSet PROGRESS_HAMMER = new ProgressBarTextureSet(20, ProgressWidget.Direction.DOWN,
+    ProgressBarTextureSet PROGRESS_HAMMER = new ProgressBarTextureSet(20, ProgressDrawable.Direction.DOWN,
             progressBar("textures/gui/progress_bar/progress_bar_hammer.png", ColorType.DEFAULT),
             progressBar("textures/gui/progress_bar/progress_bar_hammer_bronze.png"),
             progressBar("textures/gui/progress_bar/progress_bar_hammer_steel.png"));
@@ -522,7 +524,7 @@ public interface GTGuiTextures {
             fullImage("textures/gui/progress_bar/progress_bar_hammer_base_bronze.png"),
             fullImage("textures/gui/progress_bar/progress_bar_hammer_base_steel.png"));
 
-    ProgressBarTextureSet PROGRESS_MACERATE = new ProgressBarTextureSet(20, ProgressWidget.Direction.RIGHT,
+    ProgressBarTextureSet PROGRESS_MACERATE = new ProgressBarTextureSet(20, ProgressDrawable.Direction.RIGHT,
             progressBar("textures/gui/progress_bar/progress_bar_macerate.png", ColorType.DEFAULT),
             progressBar("textures/gui/progress_bar/progress_bar_macerate_bronze.png"),
             progressBar("textures/gui/progress_bar/progress_bar_macerate_steel.png"));
@@ -530,10 +532,10 @@ public interface GTGuiTextures {
     ProgressBarTextureSet PROGRESS_MAGNET = new ProgressBarTextureSet(
             progressBar("textures/gui/progress_bar/progress_bar_magnet.png", ColorType.DEFAULT));
 
-    ProgressBarTextureSet PROGRESS_MIXER = new ProgressBarTextureSet(20, ProgressWidget.Direction.CIRCULAR_CW,
-            progressBar("textures/gui/progress_bar/progress_bar_mixer.png", ColorType.DEFAULT));
+    UITexture[] PROGRESS_MIXER = slice("textures/gui/progress_bar/progress_bar_mixer.png",
+            20, 40, 20, 20, ColorType.DEFAULT);
 
-    ProgressBarTextureSet PROGRESS_SIFTER = new ProgressBarTextureSet(20, ProgressWidget.Direction.DOWN,
+    ProgressBarTextureSet PROGRESS_SIFTER = new ProgressBarTextureSet(20, ProgressDrawable.Direction.DOWN,
             progressBar("textures/gui/progress_bar/progress_bar_sift.png", ColorType.DEFAULT));
 
     ProgressBarTextureSet PROGRESS_CUTTER = new ProgressBarTextureSet(
@@ -590,7 +592,7 @@ public interface GTGuiTextures {
     UITexture PROGRESS_BAR_BOILER_FUEL_STEEL = progressBar(
             "textures/gui/progress_bar/progress_bar_boiler_fuel_steel.png", 18, 36);
 
-    ProgressBarTextureSet PROGRESS_BOILER_FUEL_STEEL = new ProgressBarTextureSet(18, ProgressWidget.Direction.UP,
+    ProgressBarTextureSet PROGRESS_BOILER_FUEL_STEEL = new ProgressBarTextureSet(18, ProgressDrawable.Direction.UP,
             PROGRESS_BAR_BOILER_FUEL_STEEL);
 
     UITexture PROGRESS_BAR_CRACKING_INPUT = progressBar("textures/gui/progress_bar/progress_bar_cracking_2.png", 21, 38,

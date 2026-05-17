@@ -515,8 +515,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public InteractionResult onUse(ExtendedUseOnContext context) {
         if (context.getPlayer().isShiftKeyDown()) {
-            var cover = coverContainer.getCoverAtSide(context.getClickedFace());
-            if (cover != null) cover.onScrewdriverClick(context);
+            var cover = coverContainer.getCoverAtSide(context.getGridSide());
+            if (cover != null) {
+                var result = cover.onScrewdriverClick(context);
+                if (result == InteractionResult.CONSUME) return result;
+            }
         }
 
         for (var trait : getAllTraits()) {

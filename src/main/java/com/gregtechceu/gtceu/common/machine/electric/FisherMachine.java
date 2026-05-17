@@ -38,6 +38,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
 import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
@@ -317,7 +318,7 @@ public class FisherMachine extends TieredEnergyMachine
                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
                 .child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), 16)
+                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
                         .value(progressPercent))
                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                         "output_item_inv", cache.getSize(), 'i',

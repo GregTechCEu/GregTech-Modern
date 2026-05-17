@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
@@ -94,9 +95,8 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .child(new ProgressWidget()
                         .size(18)
-                        .texture(progressTexture, 18)
+                        .texture(progressTexture, ProgressDrawable.Direction.UP)
                         .value(progressPercent)
-                        .direction(ProgressWidget.Direction.UP)
                         .setEnabledIf((w) -> progressPercent.getFloatValue() > -1f))
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])

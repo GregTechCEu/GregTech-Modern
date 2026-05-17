@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -332,10 +333,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .size(14, 54))
                 .child(new ProgressWidget()
                         .texture(progressTexture,
-                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 54)
+                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, ProgressDrawable.Direction.UP)
                         .size(14, 54)
                         .value(tempPercentage)
-                        .direction(ProgressWidget.Direction.UP)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(Text
                                 .lang("gtceu.fluid.temperature", getCurrentTemperature())))));

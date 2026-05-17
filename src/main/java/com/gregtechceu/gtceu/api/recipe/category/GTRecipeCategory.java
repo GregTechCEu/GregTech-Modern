@@ -58,8 +58,11 @@ public class GTRecipeCategory {
 
     public CategoryIcon getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) icon = new CategoryIcon(recipeType.getIconSupplier().get());
-            else icon = new CategoryIcon(new ItemStack(Items.BARRIER));
+            if (recipeType.getIconSupplier() != null) {
+                icon = new CategoryIcon(recipeType.getIconSupplier().get());
+            } else {
+                icon = new CategoryIcon(new ItemStack(Items.BARRIER));
+            }
         }
         return icon;
     }

@@ -147,18 +147,20 @@ public class GTMuiWidgets {
                 "behaviour.soft_hammer");
     }
 
-    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
-                                                   UITexture texture, int size) {
-        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(() -> {
-                    if (workableMachine.getMaxProgress() == 0.0f) return 0.0f;
-                    return workableMachine.getProgress() / (double) workableMachine.getMaxProgress();
-                }));
-
-        return new ProgressWidget()
-                .texture(texture, size)
-                .value(progressPercent);
-    }
+    /*
+     * public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
+     * UITexture texture, int size) {
+     * DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+     * () -> new DoubleSyncValue(() -> {
+     * if (workableMachine.getMaxProgress() == 0.0f) return 0.0f;
+     * return workableMachine.getProgress() / (double) workableMachine.getMaxProgress();
+     * }));
+     * 
+     * return new ProgressWidget()
+     * .texture(texture, size)
+     * .value(progressPercent);
+     * }
+     */
 
     public static FluidSlot createTankWidget() {
         return new FluidSlot().size(20, 58).alwaysShowFull(false);
@@ -616,6 +618,7 @@ public class GTMuiWidgets {
         private @Nullable EnumSyncValue<T> syncValue;
         private final Class<T> enumValue;
         private @Nullable Component lang;
+        private @Nullable Component langTooltip;
         private IDrawable @Nullable [] background;
         private @Nullable IDrawable selectedBackground;
         private IDrawable @Nullable [] overlay;
@@ -631,6 +634,11 @@ public class GTMuiWidgets {
 
         public EnumRowBuilder<T> lang(Component lang) {
             this.lang = lang;
+            return this;
+        }
+
+        public EnumRowBuilder<T> langTooltip(Component tooltip) {
+            this.langTooltip = tooltip;
             return this;
         }
 
@@ -688,9 +696,17 @@ public class GTMuiWidgets {
                 }
             }
 
-            if (this.lang != null)
-                row.child(Text.of(lang).asWidget().posRel(Alignment.CenterRight).height(18));
-
+            if (this.lang != null) {
+                TextWidget<?> text = Text.comp(lang)
+                        .asWidget()
+                        .verticalCenter()
+                        .rightRel(0.f)
+                        .height(18);
+                if(this.langTooltip != null) {
+                    text.tooltip(r -> r.addLine(langTooltip));
+                }
+                row.child(text);
+            }
             return row;
         }
     }

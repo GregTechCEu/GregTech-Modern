@@ -122,10 +122,10 @@ public class SimpleItemFilter implements ItemFilter {
                                     handler.setStackInSlot(i, stack);
                                 }).ignoreMaxStackSize(true).accessibility(true, false))));
 
-        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList);
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
         syncManager.syncValue("blacklist", blacklist);
 
-        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt);
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt).allowC2S();
         syncManager.syncValue("ignoreNBT", ignoreNBT);
 
         Flow filterConfigButtons = Flow.col()

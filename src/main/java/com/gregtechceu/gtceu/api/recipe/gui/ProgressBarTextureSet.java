@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.mui.SteamTextureSet;
 
 import brachy.modularui.drawable.UITexture;
-import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +31,6 @@ public class ProgressBarTextureSet extends SteamTextureSet {
     }
 
     public ProgressBarTextureSet(int progressSize, ProgressDrawable.Direction fillDirection, UITexture main) {
-        this(20, fillDirection, main, null, null);
+        this(progressSize, fillDirection, main, null, null);
     }
 }

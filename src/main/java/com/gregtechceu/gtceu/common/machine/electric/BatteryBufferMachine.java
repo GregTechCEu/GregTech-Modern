@@ -31,6 +31,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -147,8 +148,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
         flow.child(new ProgressWidget()
                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
-                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
-                .direction(ProgressWidget.Direction.UP)
+                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, ProgressDrawable.Direction.UP)
                 .value(energyPercentage)
                 .marginLeft(5)
                 .size(18, 60)
