@@ -359,14 +359,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (player == null) return Pair.of(null, InteractionResult.PASS);
 
         // Prioritize covers
-        var cover = getCoverContainer().getCoverAtSide(context.getClickedFace());
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
         if (cover != null) {
             var result = cover.onToolClick(context);
             if (result.getSecond() != InteractionResult.PASS) return result;
 
-            if (toolType.contains(GTToolType.CROWBAR) && !isRemote()) {
+            if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.SUCCESS);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 
