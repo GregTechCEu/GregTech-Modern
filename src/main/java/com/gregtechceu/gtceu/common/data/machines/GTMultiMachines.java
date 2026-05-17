@@ -35,6 +35,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.gregtechceu.gtceu.common.mui.factory.CentralMonitorUIFactory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -115,6 +117,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
+            .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE
@@ -139,6 +142,7 @@ public class GTMultiMachines {
                                     null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
+            .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE
@@ -603,6 +607,7 @@ public class GTMultiMachines {
             .model(createSidedWorkableCasingMachineModel(GTCEu.id("block/casings/pump_deck"),
                     GTCEu.id("block/multiblock/primitive_pump"))
                     .andThen(builder -> {
+                        // UV lock the model so the plank texture doesn't rotate weirdly
                         builder.replaceForAllStates((state, models) -> {
                             for (int i = 0; i < models.length; i++) {
                                 models[i] = ConfiguredModel.builder()
@@ -618,6 +623,8 @@ public class GTMultiMachines {
             .multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
@@ -641,6 +648,8 @@ public class GTMultiMachines {
             .multiblock("steam_oven", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
+            .themeId(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? GTGuiTheme.STEEL.getId() :
+                    GTGuiTheme.BRONZE.getId())
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
@@ -1185,6 +1194,7 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/central_monitor"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
             .hasBER(true)
+            .ui(CentralMonitorUIFactory.INSTANCE)
             .register();
 
     public static final MultiblockMachineDefinition PCB = REGISTRATE

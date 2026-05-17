@@ -17,29 +17,21 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -66,7 +58,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
+        super(info, new LargeMinerLogic(fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }
@@ -186,61 +178,60 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (this.isFormed()) {
-            int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-            int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-            textList.add(Component.translatable("gtceu.machine.miner.startx",
-                    getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
-            textList.add(Component.translatable("gtceu.machine.miner.starty",
-                    getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
-            textList.add(Component.translatable("gtceu.machine.miner.startz",
-                    getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
-            textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
-                            .append(getRecipeLogic().isSilkTouchMode() ?
-                                    Component.translatable("gtceu.creative.activity.on") :
-                                    Component.translatable("gtceu.creative.activity.off"))
-                            .append(Component.literal("]")), "silk_touch")));
-            textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
-                            .append(getRecipeLogic().isChunkMode() ?
-                                    Component.translatable("gtceu.creative.activity.on") :
-                                    Component.translatable("gtceu.creative.activity.off"))
-                            .append(Component.literal("]")), "chunk_mode")));
-            if (getRecipeLogic().isChunkMode()) {
-                textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks,
-                        workingAreaChunks));
-            } else {
-                textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-            }
-            if (getRecipeLogic().isDone()) {
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-            }
-        }
-    }
-
-    @Override
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
-            if (componentData.equals("chunk_mode")) {
-                getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
-            }
-            if (componentData.equals("silk_touch")) {
-                getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
-            }
-        }
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // super.addDisplayText(textList);
+    // if (this.isFormed()) {
+    // int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
+    // int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
+    // textList.add(Component.translatable("gtceu.machine.miner.startx",
+    // getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
+    // textList.add(Component.translatable("gtceu.machine.miner.starty",
+    // getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
+    // textList.add(Component.translatable("gtceu.machine.miner.startz",
+    // getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
+    // textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
+    // .append(ComponentPanelWidget.withButton(Component.literal("[")
+    // .append(getRecipeLogic().isSilkTouchMode() ?
+    // Component.translatable("gtceu.creative.activity.on") :
+    // Component.translatable("gtceu.creative.activity.off"))
+    // .append(Component.literal("]")), "silk_touch")));
+    // textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
+    // .append(ComponentPanelWidget.withButton(Component.literal("[")
+    // .append(getRecipeLogic().isChunkMode() ?
+    // Component.translatable("gtceu.creative.activity.on") :
+    // Component.translatable("gtceu.creative.activity.off"))
+    // .append(Component.literal("]")), "chunk_mode")));
+    // if (getRecipeLogic().isChunkMode()) {
+    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks,
+    // workingAreaChunks));
+    // } else {
+    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+    // }
+    // if (getRecipeLogic().isDone()) {
+    // textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
+    // .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
+    // }
+    // }
+    // }
+    //
+    // @Override
+    // public void handleDisplayClick(String componentData, ClickData clickData) {
+    // if (!clickData.isRemote) {
+    // if (componentData.equals("chunk_mode")) {
+    // getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
+    // }
+    // if (componentData.equals("silk_touch")) {
+    // getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
+    // }
+    // }
+    // }
 
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction facing,
-                                                BlockHitResult hitResult) {
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote() || !this.isFormed())
             return InteractionResult.SUCCESS;
 
@@ -253,8 +244,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH);
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
-                        workingAreaChunks, workingAreaChunks));
+                context.getPlayer()
+                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                                workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
                     getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
@@ -262,17 +254,16 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH / 2);
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

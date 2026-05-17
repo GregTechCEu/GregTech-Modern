@@ -3,28 +3,36 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.DynamicSyncHandler;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemFilterCover extends CoverBehavior implements IUICover {
+public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
     protected ItemFilter itemFilter;
     @SaveField
@@ -89,14 +97,40 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getItemFilter().openConfigurator(62, 25));
-        return group;
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
+                this::getFilterMode, this::setFilterMode);
+
+        EnumSyncValue<ManualIOMode> ioMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getAllowFlow, this::setAllowFlow);
+
+        syncManager.syncValue("filterMode", filterMode);
+        syncManager.syncValue("ioMode", ioMode);
+
+        var panelHandler = syncManager.syncedPanel("filterPanel", true,
+                (sm, sh) -> itemFilter.getPanel(data, sm, settings));
+
+        DynamicSyncHandler filterButton = new DynamicSyncHandler()
+                .widgetProvider((sm, buf) -> new ButtonWidget<>()
+                        .onMousePressed((context, b) -> {
+                            panelHandler.openPanel();
+                            return true;
+                        }));
+
+        column.child(coverUIRow().child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
+                .value(filterMode)
+                .overlay(16, GTGuiTextures.FILTER_MODE_OVERLAY)
+                .lang(Text.dynamic(() -> Component.translatable(getFilterMode().getTooltip())))
+                .build());
+
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
+                .value(ioMode)
+                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
+                .lang(Text.dynamic(() -> Component.translatable(getAllowFlow().name())))
+                .build());
     }
 
     private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {
@@ -137,5 +171,21 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
             }
             return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("manualIO", getAllowFlow().ordinal());
+        tag.putInt("filterMode", getFilterMode().ordinal());
+        tag.put("filter", attachItem.serializeNBT());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
+        itemFilter = ItemFilter.loadFilter(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
     }
 }

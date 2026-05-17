@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,6 +22,8 @@ import java.lang.Math;
 import static net.minecraft.client.renderer.block.model.FaceBakery.calculateFacing;
 
 public class StaticFaceBakery {
+
+    public static final AABB BLOCK = new AABB(0, 0, 0, 1, 1, 1);
 
     public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f,
             1.001f, 1.001f, 1.001f);
@@ -71,7 +71,7 @@ public class StaticFaceBakery {
 
     public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,
                                      int emissivity, boolean cull, boolean shade) {
-        return bakeFace(FaceQuad.BLOCK, face, sprite, rotation, tintIndex, emissivity, cull, shade);
+        return bakeFace(BLOCK, face, sprite, rotation, tintIndex, emissivity, cull, shade);
     }
 
     public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,

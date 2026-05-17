@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
 import net.minecraft.ChatFormatting;
@@ -31,7 +31,7 @@ public class MultiblockStructureProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMultiController controller) {
+        if (blockAccessor.getBlockEntity() instanceof MultiblockControllerMachine controller) {
             PatternState state = controller.getDefaultPatternState();
             compoundTag.putBoolean("hasError", state.hasError());
         }

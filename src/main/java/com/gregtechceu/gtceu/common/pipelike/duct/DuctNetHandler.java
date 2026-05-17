@@ -4,9 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -65,9 +66,12 @@ public class DuctNetHandler implements IHazardParticleContainer {
                     IHazardParticleContainer handler = path.getHandler(net.getLevel());
                     if (handler == null && path.getTargetPipe().isConnected(path.getTargetFacing())) {
                         if (net.getLevel().getBlockEntity(path.getTargetPipePos()
-                                .relative(path.getTargetFacing())) instanceof IEnvironmentalHazardCleaner cleaner) {
-                            cleaner.cleanHazard(condition, differenceAmount);
-                            break;
+                                .relative(path.getTargetFacing())) instanceof MetaMachine machine) {
+                            var cleanerTrait = machine.getTrait(EnvironmentalHazardCleanerTrait.TYPE);
+                            if (cleanerTrait != null) {
+                                cleanerTrait.cleanHazard(condition, differenceAmount);
+                                break;
+                            }
                         }
 
                         var savedData = EnvironmentalHazardSavedData.getOrCreate(net.getLevel());

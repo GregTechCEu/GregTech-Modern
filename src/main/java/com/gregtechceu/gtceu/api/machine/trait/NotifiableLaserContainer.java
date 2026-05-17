@@ -2,27 +2,39 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
 
-    public NotifiableLaserContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
+    public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
+            NotifiableLaserContainer.class);
+
+    public NotifiableLaserContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
-        super(machine, maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
+        super(maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
     }
 
-    public static NotifiableLaserContainer emitterContainer(MetaMachine machine, long maxCapacity,
+    public static NotifiableLaserContainer emitterContainer(long maxCapacity,
                                                             long maxOutputVoltage, long maxOutputAmperage) {
-        return new NotifiableLaserContainer(machine, maxCapacity, 0L, 0L, maxOutputVoltage, maxOutputAmperage);
+        return new NotifiableLaserContainer(maxCapacity, 0L, 0L, maxOutputVoltage, maxOutputAmperage);
     }
 
-    public static NotifiableLaserContainer receiverContainer(MetaMachine machine, long maxCapacity,
+    public static NotifiableLaserContainer receiverContainer(long maxCapacity,
                                                              long maxInputVoltage, long maxInputAmperage) {
-        return new NotifiableLaserContainer(machine, maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
+        return new NotifiableLaserContainer(maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
+    }
+
+    @Override
+    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
+        return TYPE;
     }
 
     @Override
@@ -38,12 +50,12 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         long amperesUsed = 0;
         for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
-            BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
+            BlockEntity be = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
             Direction oppositeSide = side.getOpposite();
             ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
                     getMachine().getBlockPos().relative(side), oppositeSide);
-            if (tileEntity != null && laserContainer != null) {
-                if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
+            if (be != null && laserContainer != null) {
+                if (!laserContainer.inputsEnergy(oppositeSide)) continue;
                 amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                         outputAmperes - amperesUsed);
                 if (amperesUsed == outputAmperes) break;

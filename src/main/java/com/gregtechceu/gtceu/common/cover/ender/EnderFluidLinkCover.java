@@ -5,26 +5,31 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,9 +38,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     public static final int TRANSFER_RATE = 8000; // mB/t
 
-    @SaveField
-    @SyncToClient
-    protected VirtualTank visualTank;
+    protected VirtualTank visualTank = new VirtualTank();
 
     @Getter
     @SaveField
@@ -47,8 +50,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
-        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance()
-                .getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName()));
     }
 
     @Override
@@ -73,11 +74,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     }
 
     @Override
-    protected String identifier() {
-        return "EFLink#";
-    }
-
-    @Override
     protected void transfer() {
         long timer = coverHolder.getOffsetTimer();
         if (mBLeftToTransferLastSecond > 0) {
@@ -92,6 +88,19 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     protected @Nullable IFluidHandlerModifiable getOwnFluidHandler() {
         return coverHolder.getFluidHandlerCap(attachedSide, false);
+    }
+
+    @Override
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
+        if (!(entry instanceof VirtualTank tank)) return new ParentWidget<>().size(w, h);
+
+        manager.getOrCreateSyncHandler("ender_link_cover_fluid_slot", index, FluidSlotSyncHandler.class,
+                () -> SyncHandlers.fluidSlot(tank.getFluidTank()));
+
+        return new FluidSlot()
+                .syncHandler("ender_link_cover_fluid_slot", index)
+                .marginLeft(3)
+                .size(w, h);
     }
 
     private int doTransferFluids(int platformTransferLimit) {
@@ -110,19 +119,24 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         return 0;
     }
 
-    //////////////////////////////////////
-    // ************ GUI ************ //
-    //////////////////////////////////////
-
     @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        return new TankWidget(((VirtualTank) entry).getFluidTank(), 0, x, y, width, height, canClick, canClick)
-                .setBackground(GuiTextures.FLUID_SLOT);
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
     }
 
-    @NotNull
     @Override
-    protected String getUITitle() {
-        return "cover.ender_fluid_link.title";
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
+        }
+        return list;
     }
 }

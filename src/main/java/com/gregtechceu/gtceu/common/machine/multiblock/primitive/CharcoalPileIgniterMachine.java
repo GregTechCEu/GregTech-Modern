@@ -13,10 +13,12 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.common.machine.trait.CharcoalPileIgniterLogic;
+import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,15 +26,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,7 +51,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private boolean hasAir = false;
 
     public CharcoalPileIgniterMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new CharcoalPileIgniterLogic((CharcoalPileIgniterMachine) m));
+        super(info, new CharcoalRecipeLogic());
     }
 
     @Override
@@ -71,8 +69,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
-    public CharcoalPileIgniterLogic getRecipeLogic() {
-        return (CharcoalPileIgniterLogic) super.getRecipeLogic();
+    public CharcoalRecipeLogic getRecipeLogic() {
+        return (CharcoalRecipeLogic) super.getRecipeLogic();
     }
 
     @Override
@@ -233,12 +231,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (!isFormed() || hasAir) {
-            return super.onUse(state, level, pos, player, hand, hit);
-        }
-        ItemStack stack = player.getItemInHand(hand);
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        var stack = context.getItemInHand();
+        var player = context.getPlayer();
+        var hand = context.getHand();
+
         if (!stack.is(CustomTags.TOOLS_IGNITER)) {
             return InteractionResult.PASS;
         }
@@ -265,12 +262,41 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             if (shouldActivate) {
                 getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
 
-                level.playSound(null, pos,
+                level.playSound(null, getBlockPos(),
                         stack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE,
                         SoundSource.BLOCKS, 1.0f, 1.0f);
                 return InteractionResult.CONSUME;
             }
         }
-        return super.onUse(state, level, pos, player, hand, hit);
+        return super.onUse(context);
+    }
+
+    public static class CharcoalRecipeLogic extends RecipeLogic {
+
+        public CharcoalRecipeLogic() {
+            super();
+        }
+
+        @Override
+        public CharcoalPileIgniterMachine getMachine() {
+            return (CharcoalPileIgniterMachine) super.getMachine();
+        }
+
+        @Override
+        public void serverTick() {
+            super.serverTick();
+            if (isWorking() && duration > 0) {
+                if (++progress >= duration) {
+                    progress = 0;
+                    duration = 0;
+                    getMachine().convertLogBlocks();
+                    setStatus(Status.IDLE);
+                }
+            }
+        }
+
+        public void setDuration(int max) {
+            this.duration = max;
+        }
     }
 }

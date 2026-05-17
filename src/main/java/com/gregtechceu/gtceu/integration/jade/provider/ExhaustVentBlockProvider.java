@@ -1,50 +1,31 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class ExhaustVentBlockProvider extends BlockInfoProvider<IExhaustVentMachine> {
+public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMachineTrait> {
 
     public ExhaustVentBlockProvider() {
-        super(GTCEu.id("exhaust_vent_info"));
-    }
-
-    @Nullable
-    @Override
-    protected IExhaustVentMachine getCapability(Level level, BlockPos blockPos) {
-        if (MetaMachine.getMachine(level, blockPos) instanceof IExhaustVentMachine exhaustVentMachine) {
-            return exhaustVentMachine;
-        }
-        return null;
+        super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.TYPE);
     }
 
     @Override
-    protected boolean allowDisplaying(IExhaustVentMachine capability) {
-        return super.allowDisplaying(capability);
-    }
-
-    @Override
-    protected void write(CompoundTag compoundTag, IExhaustVentMachine iExhaustVentMachine,
-                         BlockAccessor blockAccessor) {
-        var direction = iExhaustVentMachine.getVentingDirection();
+    protected void write(CompoundTag compoundTag, BlockAccessor blockAccessor, ExhaustVentMachineTrait trait) {
+        var direction = trait.getVentingDirection();
         compoundTag.putString("ventDirection", direction.getName());
         var level = blockAccessor.getLevel();
         var pos = blockAccessor.getPosition().relative(direction);
@@ -52,8 +33,8 @@ public class ExhaustVentBlockProvider extends BlockInfoProvider<IExhaustVentMach
             var key = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock());
             compoundTag.putString("ventBlock", key.toString());
         }
-        compoundTag.putBoolean("ventBlocked", iExhaustVentMachine.isVentingBlocked());
-        compoundTag.putBoolean("needsVenting", iExhaustVentMachine.isNeedsVenting());
+        compoundTag.putBoolean("ventBlocked", trait.isVentingBlocked());
+        compoundTag.putBoolean("needsVenting", trait.isNeedsVenting());
     }
 
     @Override

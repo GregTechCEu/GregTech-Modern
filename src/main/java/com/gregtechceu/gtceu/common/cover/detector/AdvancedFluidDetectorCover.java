@@ -2,29 +2,32 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 
 import java.util.List;
@@ -36,7 +39,7 @@ import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeRedstoneBetweenVal
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IUICover {
+public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IMuiCover {
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
@@ -105,46 +108,64 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
 
     public void setMinValue(int minValue) {
         this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
+        if (this.minValue < 0) this.minValue = 0;
     }
 
     public void setMaxValue(int maxValue) {
         this.maxValue = Math.max(maxValue, 0);
+        setMinValue(this.getMinValue());
     }
 
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+    ///
+    @Override
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
+        var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
+
+        syncManager.syncValue("minValue", minValueSync);
+        syncManager.syncValue("maxValue", maxValueSync);
+
+        var buttonRow = coverUIRow()
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                        .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
+                        .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
+                        .tooltip(false, t -> t.add("cover.advanced_fluid_detector.invert.disabled"))
+                        .tooltip(true, t -> t.add("cover.advanced_fluid_detector.invert.enabled")))
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
+                        .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                        .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                        .tooltip(false, t -> t.add("cover.advanced_detector.latch.disabled"))
+                        .tooltip(true, t -> t.add("cover.advanced_detector.latch.enabled")));
+
+        GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
+
+        column.child(coverUIRow().child(Text.lang("cover.advanced_fluid_detector.min").asWidget().width(50))
+                .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
+                .child(coverUIRow().child(Text.lang("cover.advanced_fluid_detector.max").asWidget().width(50))
+                        .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE)
+                                .width(110)))
+                .child(buttonRow);
+    }
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("min", minValue);
+        tag.putInt("max", maxValue);
+        tag.putBoolean("latched", isLatched);
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
+    }
 
-        group.addWidget(new TextBoxWidget(10, 55, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.min"))));
-
-        group.addWidget(new TextBoxWidget(10, 80, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.max"))));
-
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
-
-        // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_fluid_detector.invert"));
-
-        group.addWidget(
-                new ToggleButtonWidget(31, 21, 18, 18, GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
-                        .setShouldUseBaseBackground()
-                        .isMultiLang()
-                        .setTooltipText("cover.advanced_detector.latch"));
-
-        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
-
-        return group;
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setMinValue(tag.getInt("min"));
+        setMaxValue(tag.getInt("max"));
+        setLatched(tag.getBoolean("latched"));
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
     }
 }

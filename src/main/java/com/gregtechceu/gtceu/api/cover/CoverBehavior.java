@@ -1,36 +1,34 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import brachy.modularui.drawable.UITexture;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -43,12 +41,11 @@ import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents cover instance attached on the specific side of meta tile entity
- * Cover filters out interaction and logic of meta tile entity
+ * Represents a cover instance attached on a specific side of a machine
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight, ICopyable {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -79,9 +76,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
 
     @Override
     public void markAsChanged() {
-        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
-            syncEntity.markAsChanged();
-        }
+        coverHolder.markAsChanged();
     }
 
     /**
@@ -99,7 +94,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
     }
 
     /**
-     * Will be called on server side after the cover attachment to the meta tile entity
+     * Will be called on server side after the cover attachment to the machine
      * Cover can change it's internal state here and return initial data as nbt.
      *
      * @param itemStack the item cover was attached from
@@ -108,6 +103,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
         attachItem = itemStack.copy();
         attachItem.setCount(1);
         syncDataHolder.markClientSyncFieldDirty("attachItem");
+        markAsChanged();
     }
 
     public void onLoad() {}
@@ -149,17 +145,28 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
-        if (this instanceof IUICover) {
-            if (playerIn instanceof ServerPlayer serverPlayer) {
-                CoverUIFactory.INSTANCE.openUI(this, serverPlayer);
+
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
+        var toolType = context.getToolType();
+        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+            return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
+        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
+            return Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(context));
+        }
+        return Pair.of(null, InteractionResult.PASS);
+    }
+
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
+        if (this instanceof IMuiCover muiCover) {
+            if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
+                CoverUIFactory.INSTANCE.open(serverPlayer, muiCover);
             }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+            return InteractionResult.sidedSuccess(coverHolder.isRemote());
         }
         return InteractionResult.PASS;
     }
 
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         return InteractionResult.PASS;
     }
 
@@ -181,25 +188,21 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
         return coverDefinition.getCoverRenderer();
     }
 
-    public @Nullable IFancyConfigurator getConfigurator() {
-        return null;
-    }
-
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return toolTypes.contains(GTToolType.CROWBAR) ||
-                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover);
+                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IMuiCover);
     }
 
     @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
+    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                        Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
-            return GuiTextures.TOOL_REMOVE_COVER;
+            return GTGuiTextures.TOOL_REMOVE_COVER;
         }
-        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover) {
-            return GuiTextures.TOOL_COVER_SETTINGS;
+        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IMuiCover) {
+            return GTGuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;
     }
@@ -212,7 +215,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
         return null;
     }
 
-    public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
+    public Supplier<@Nullable IDynamicCoverRenderer> getDynamicRenderer() {
         return () -> null;
     }
 

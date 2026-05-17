@@ -7,13 +7,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableLaserContainer;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,23 +29,18 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
     public LaserHatchPartMachine(BlockEntityCreationInfo info, IO io, int tier, int amperage) {
         super(info, tier, io);
         if (io == IO.OUT) {
-            this.buffer = NotifiableLaserContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,
-                    GTValues.V[tier], amperage);
+            this.buffer = attachTrait(NotifiableLaserContainer.emitterContainer(GTValues.V[tier] * 64L * amperage,
+                    GTValues.V[tier], amperage));
             this.buffer.setSideOutputCondition(s -> s == getFrontFacing());
         } else {
-            this.buffer = NotifiableLaserContainer.receiverContainer(this, GTValues.V[tier] * 64L * amperage,
-                    GTValues.V[tier], amperage);
+            this.buffer = attachTrait(NotifiableLaserContainer.receiverContainer(GTValues.V[tier] * 64L * amperage,
+                    GTValues.V[tier], amperage));
             this.buffer.setSideInputCondition(s -> s == getFrontFacing());
         }
     }
 
     @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
-
-    @Override
-    public boolean canShared(IMultiController controller, String substructureName) {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 

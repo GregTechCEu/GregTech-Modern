@@ -4,14 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -45,6 +43,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import brachy.modularui.integration.recipeviewer.entry.item.ItemEntryList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
+import brachy.modularui.integration.recipeviewer.handlers.item.CycleItemEntryHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.screen.RecipeScreen;
@@ -72,8 +73,8 @@ public class PatternPreviewWidget extends WidgetGroup {
     private final List<BasePredicate> predicates;
     private int index;
     public int layer;
-    private SlotWidget[] slotWidgets;
-    private SlotWidget[] candidates;
+    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] slotWidgets;
+    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
         super(0, 0, 160, 160);
@@ -245,12 +246,14 @@ public class PatternPreviewWidget extends WidgetGroup {
         MBPattern pattern = patterns[index];
         setupScene(pattern);
         if (slotWidgets != null) {
-            for (SlotWidget slotWidget : slotWidgets) {
+            for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget : slotWidgets) {
                 scrollableWidgetGroup.removeWidget(slotWidget);
             }
         }
-        slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
-        var itemHandler = new CycleItemStackHandler(pattern.parts);
+        slotWidgets = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[Math.min(pattern.parts.size(), 18)];
+
+        var itemHandler = new CycleItemEntryHandler(
+                pattern.parts.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
         int xOffset = 0;
         for (int i = 0; i < slotWidgets.length; i++) {
             int padding = 1;
@@ -272,7 +275,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private void onFormedSwitch(boolean isFormed) {
         MBPattern pattern = patterns[index];
-        IMultiController controllerBase = pattern.controllerBase;
+        MultiblockControllerMachine controllerBase = pattern.controllerBase;
         if (isFormed) {
             this.layer = -1;
             loadControllerFormed(pattern.blockMap.keySet(), controllerBase);
@@ -290,7 +293,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             predicates.addAll(predicate.predicateList);
             predicates.removeIf(p -> p == null || p.candidates == null); // why it happens?
             if (candidates != null) {
-                for (SlotWidget candidate : candidates) {
+                for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget candidate : candidates) {
                     removeWidget(candidate);
                 }
             }
@@ -303,13 +306,13 @@ public class PatternPreviewWidget extends WidgetGroup {
                     predicateTips.add(basePredicate.getToolTips(predicate));
                 }
             }
-            candidates = new SlotWidget[candidateStacks.size()];
-            CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
+            candidates = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[candidateStacks.size()];
+            var itemHandler = new CycleItemEntryHandler(
+                    candidateStacks.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false,
-                        false)
+                candidates[i] = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget()
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));
@@ -379,7 +382,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
-        IMultiController controllerBase = null;
+        MultiblockControllerMachine controllerBase = null;
         BlockPos multiPos = locateNextRegion();
 
         BlockInfo[][][] blocks = shapeInfo.getBlocks();
@@ -390,8 +393,8 @@ public class PatternPreviewWidget extends WidgetGroup {
                 for (int z = 0; z < column.length; z++) {
                     BlockState blockState = column[z].getBlockState();
                     BlockPos pos = multiPos.offset(x, y, z);
-                    if (column[z].getBlockEntity(pos) instanceof IMultiController controller) {
-                        controller.self().setLevel(LEVEL);
+                    if (column[z].getBlockEntity(pos) instanceof MultiblockControllerMachine controller) {
+                        controller.setLevel(LEVEL);
                         controllerBase = controller;
                     }
                     blockMap.put(pos, BlockInfo.fromBlockState(blockState));
@@ -401,7 +404,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
-            LEVEL.setInnerBlockEntity(controllerBase.self());
+            LEVEL.setInnerBlockEntity(controllerBase);
         }
 
         Map<ItemStackKey, PartInfo> parts = gatherBlockDrops(blockMap);
@@ -431,7 +434,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 controllerBase);
     }
 
-    private void loadControllerFormed(Collection<BlockPos> positions, IMultiController controllerBase) {
+    private void loadControllerFormed(Collection<BlockPos> positions, MultiblockControllerMachine controllerBase) {
         IBlockPattern pattern = controllerBase.createStructurePattern();
         if (pattern != null /* && pattern.checkPatternAt(controllerBase.getMultiblockState(), true) */) {
             controllerBase.checkAndFormStructurePatterns();
@@ -445,7 +448,7 @@ public class PatternPreviewWidget extends WidgetGroup {
              * positions.removeIf(pos -> modelDisabled.contains(pos.asLong()));
              * }
              * sceneWidget.setRenderedCore(positions, null);
-             * 
+             *
              */
         } else {
             GTCEu.LOGGER.warn("Pattern formed checking failed: {}", controllerBase.self().getDefinition());
@@ -506,12 +509,12 @@ public class PatternPreviewWidget extends WidgetGroup {
         @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
         @NotNull
-        final IMultiController controllerBase;
+        final MultiblockControllerMachine controllerBase;
         final int maxY, minY;
 
         public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts,
                          @NotNull Map<BlockPos, PatternPredicate> predicateMap,
-                         @NotNull IMultiController controllerBase) {
+                         @NotNull MultiblockControllerMachine controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

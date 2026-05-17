@@ -21,14 +21,14 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class BiomeCondition extends RecipeCondition {
+public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
-    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome))
-                    .apply(instance, BiomeCondition::new));
+    // spotless:off
+    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
+    ).apply(instance, BiomeCondition::new));
+    // spotless:on
 
-    public final static BiomeCondition INSTANCE = new BiomeCondition();
     @Getter
     private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, new ResourceLocation("dummy"));
 
@@ -42,7 +42,7 @@ public class BiomeCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<BiomeCondition> getType() {
         return GTRecipeConditions.BIOME;
     }
 
@@ -60,14 +60,13 @@ public class BiomeCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.machine.self().getLevel();
-        if (level == null) return false;
-        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getBlockPos());
+        Level level = recipeLogic.getLevel();
+        Holder<Biome> biome = level.getBiome(recipeLogic.getBlockPos());
         return biome.is(this.biome);
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public BiomeCondition createTemplate() {
         return new BiomeCondition();
     }
 }

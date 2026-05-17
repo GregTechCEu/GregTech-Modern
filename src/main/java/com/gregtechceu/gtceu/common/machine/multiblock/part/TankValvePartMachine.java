@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
@@ -31,12 +31,12 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
         super(info);
 
-        tankProxy = new FluidTankProxyTrait(this, IO.BOTH);
+        tankProxy = attachTrait(new FluidTankProxyTrait(IO.BOTH));
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
     }
 
     @Override
-    public boolean canShared(IMultiController controller, String substructureName) {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
@@ -47,7 +47,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public void addedToController(IMultiController controller, String name) {
+    public void addedToController(MultiblockControllerMachine controller, String name) {
         super.addedToController(controller, name);
 
         if (controller instanceof MultiblockTankMachine multiblockTank) {
@@ -59,7 +59,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
 
         tankProxy.setProxy(null);

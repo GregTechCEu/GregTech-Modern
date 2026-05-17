@@ -16,15 +16,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
-import com.gregtechceu.gtceu.api.item.DrumMachineItem;
-import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
@@ -40,31 +38,33 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
+import com.gregtechceu.gtceu.common.item.DrumMachineItem;
+import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.LaserHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.TankValvePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -73,6 +73,8 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -91,6 +93,7 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine.AMPS_PER_BATTERY_NORMAL;
 import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
@@ -128,36 +131,59 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction, hasPollutionDebuff);
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, hasPollutionDebuff,
-                ELECTRIC_TIERS);
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .registrate(registrate)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction);
+                                                             Int2IntFunction tankScalingFunction,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .panelFactory(panelFactory)
+                .tankScalingFunction(tankScalingFunction)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, false);
+                                                             Int2IntFunction tankScalingFunction,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .registrate(registrate)
+                .panelFactory(panelFactory)
+                .tankScalingFunction(tankScalingFunction)
+                .register();
     }
 
-    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType);
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .panelFactory(panelFactory)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
-                                                             GTRecipeType recipeType) {
-        return registerSimpleMachines(registrate, name, recipeType, defaultTankSizeFunction);
+                                                             GTRecipeType recipeType, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(name, recipeType)
+                .registrate(registrate)
+                .panelFactory(panelFactory)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
@@ -165,34 +191,20 @@ public class GTMachineUtils {
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff,
+                                                             PanelFactory panelFactory,
                                                              int... tiers) {
-        return registerTieredMachines(registrate, name,
-                (info, tier) -> new SimpleTieredMachine(info, tier, tankScalingFunction), (tier, builder) -> {
-                    if (hasPollutionDebuff) {
-                        builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
-                                .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
-                                GTRecipeModifiers.OC_NON_PERFECT)
-                                .conditionalTooltip(defaultEnvironmentRequirement(),
-                                        ConfigHolder.INSTANCE.gameplay.environmentalHazards);
-                    } else {
-                        builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
-                    }
-                    return builder
-                            .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                            .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
-                            .rotationState(RotationState.NON_Y_AXIS)
-                            .recipeType(recipeType)
-                            .workableTieredHullModel(GTCEu.id("block/machines/" + name))
-                            .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                    tankScalingFunction.applyAsInt(tier), true))
-                            .register();
-                },
-                tiers);
+        return new SimpleMachineBuilder(name, recipeType)
+                .registrate(registrate)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .tiers(tiers)
+                .register();
     }
 
     public static MachineDefinition[] registerTieredMachines(String name,
                                                              BiFunction<BlockEntityCreationInfo, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         return registerTieredMachines(REGISTRATE, name, factory, builder, tiers);
     }
@@ -200,7 +212,7 @@ public class GTMachineUtils {
     public static MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
                                                              String name,
                                                              BiFunction<BlockEntityCreationInfo, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
@@ -215,13 +227,13 @@ public class GTMachineUtils {
 
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name,
                                                                                    BiFunction<BlockEntityCreationInfo, Boolean, MetaMachine> factory,
-                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
+                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder) {
         return registerSteamMachines(REGISTRATE, name, factory, builder);
     }
 
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate, String name,
                                                                                    BiFunction<BlockEntityCreationInfo, Boolean, MetaMachine> factory,
-                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
+                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false,
                 registrate.machine("lp_%s".formatted(name), holder -> factory.apply(holder, false))
                         .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
@@ -334,9 +346,9 @@ public class GTMachineUtils {
                         tankScalingFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
@@ -360,6 +372,8 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
+                        .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -371,7 +385,8 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerBatteryBuffer(GTRegistrate registrate, int batterySlotSize) {
         return registerTieredMachines(registrate, "battery_buffer_" + batterySlotSize + "x",
-                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize, AMPS_PER_BATTERY_NORMAL,
+                        batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .model(GTMachineModels.createBatteryBufferModel(batterySlotSize))
@@ -385,7 +400,7 @@ public class GTMachineUtils {
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
-                                        batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
+                                        batterySlotSize * AMPS_PER_BATTERY_NORMAL),
                                 Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
                         .register(),
                 ALL_TIERS);
@@ -397,10 +412,11 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerCharger(GTRegistrate registrate, int itemSlotSize) {
         return registerTieredMachines(registrate, "charger_" + itemSlotSize + "x",
-                (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, itemSlotSize,
+                        BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .modelProperty(GTMachineModelProperties.CHARGER_STATE, ChargerMachine.State.IDLE)
+                        .modelProperty(GTMachineModelProperties.CHARGER_STATE, BatteryBufferMachine.State.IDLE)
                         .model(GTMachineModels.createChargerModel())
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
@@ -410,7 +426,7 @@ public class GTMachineUtils {
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
-                                        itemSlotSize * ChargerMachine.AMPS_PER_ITEM))
+                                        itemSlotSize * BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER))
                         .register(),
                 ALL_TIERS);
     }
@@ -482,15 +498,17 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
-        return registerCrate(REGISTRATE, material, capacity, lang);
+    public static MachineDefinition registerCrate(Material material, int capacity, int rowLength, String lang) {
+        return registerCrate(REGISTRATE, material, capacity, rowLength, lang);
     }
 
     public static MachineDefinition registerCrate(GTRegistrate registrate, Material material, int capacity,
-                                                  String lang) {
+                                                  int rowLength, String lang) {
         final boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        return registrate.machine(material.getName() + "_crate", holder -> new CrateMachine(holder, material, capacity))
+        return registrate
+                .machine(material.getName() + "_crate",
+                        info -> new CrateMachine(info, material, capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -599,7 +617,7 @@ public class GTMachineUtils {
                                                                      Supplier<? extends Block> casing,
                                                                      Supplier<? extends Block> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder, ResourceLocation> rendererSetup) {
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
         return registerMultiblockTank(REGISTRATE, name, displayName, capacity, casing, valve, filter, rendererSetup);
     }
 
@@ -608,15 +626,15 @@ public class GTMachineUtils {
                                                                      Supplier<? extends Block> casing,
                                                                      Supplier<? extends Block> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder builder = registrate
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<?, ?> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
                         Component.translatable("gtceu.machine.multiblock.tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity),
                         (filter != null) ? Component.translatable("gtceu.fluid_pipe.max_temperature",
-                                filter.getMaxFluidTemperature()) : null)
+                                FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
                 .pattern(definition -> FactoryBlockPattern
@@ -629,20 +647,29 @@ public class GTMachineUtils {
                                 .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
+                .shapeInfo(definition -> MultiblockShapeInfo.builder()
+                        .aisle("CCC", "CSC", "CCC")
+                        .aisle("CCC", "C#C", "CVC")
+                        .aisle("CCC", "CCC", "CCC")
+                        .where('S', definition.get(), Direction.NORTH)
+                        .where('C', casing.get().defaultBlockState())
+                        .where('V', (MetaMachineBlock) valve.get(), Direction.UP)
+                        .where('#', Blocks.AIR.defaultBlockState())
+                        .build())
                 .appearanceBlock(casing);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/multiblock_tank"));
         return builder.register();
     }
 
     public static MachineDefinition registerTankValve(String name, String displayName, boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?>, ResourceLocation> rendererSetup) {
+                                                      BiConsumer<MachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
         return registerTankValve(REGISTRATE, name, displayName, isMetal, rendererSetup);
     }
 
     public static MachineDefinition registerTankValve(GTRegistrate registrate, String name, String displayName,
                                                       boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?>, ResourceLocation> rendererSetup) {
-        MachineBuilder<MachineDefinition> builder = registrate
+                                                      BiConsumer<MachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
+        MachineBuilder<MachineDefinition, ?> builder = registrate
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
@@ -654,14 +681,14 @@ public class GTMachineUtils {
 
     public static MultiblockMachineDefinition[] registerTieredMultis(String name,
                                                                      BiFunction<BlockEntityCreationInfo, Integer, MultiblockControllerMachine> factory,
-                                                                     BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
+                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, ?>, MultiblockMachineDefinition> builder,
                                                                      int... tiers) {
         return registerTieredMultis(REGISTRATE, name, factory, builder, tiers);
     }
 
     public static MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate, String name,
                                                                      BiFunction<BlockEntityCreationInfo, Integer, MultiblockControllerMachine> factory,
-                                                                     BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
+                                                                     BiFunction<Integer, MultiblockMachineBuilder<?, ?>, MultiblockMachineDefinition> builder,
                                                                      int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
@@ -873,7 +900,7 @@ public class GTMachineUtils {
     private static PatternPredicate rotorHolder(int tier) {
         return new PatternPredicate(new BasePredicate((worldState) -> {
             if (MetaMachine.getMachine(worldState.getLevel(),
-                    worldState.getPos().immutable()) instanceof IRotorHolderMachine rotorHolder &&
+                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
                     worldState.getLevel()
                             .getBlockState(worldState.getPos().immutable()
                                     .relative(rotorHolder.self().getFrontFacing()))
@@ -897,8 +924,7 @@ public class GTMachineUtils {
     }
 
     public static Component environmentRequirement(MedicalCondition condition) {
-        return Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                Component.translatable("gtceu.medical_condition." + condition.name));
+        return Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName());
     }
 
     public static Component defaultEnvironmentRequirement() {
@@ -943,6 +969,59 @@ public class GTMachineUtils {
                     .add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                             FormattingUtil.formatNumbers(tankCapacity)));
         return tooltipComponents.toArray(Component[]::new);
+    }
+
+    @Accessors(chain = true, fluent = true)
+    public static class SimpleMachineBuilder {
+
+        @Setter
+        private GTRegistrate registrate = REGISTRATE;
+        @Setter
+        private String name;
+        @Setter
+        private GTRecipeType recipeType;
+        @Setter
+        private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
+        @Setter
+        private boolean hasPollutionDebuff = false;
+        @Setter
+        private PanelFactory panelFactory = null;
+        @Setter
+        private int[] tiers = ELECTRIC_TIERS;
+
+        public SimpleMachineBuilder(String name, GTRecipeType recipeType) {
+            // Simple Machines need to have a name and a recipe type.
+            this.name = name;
+            this.recipeType = recipeType;
+        }
+
+        public MachineDefinition[] register() {
+            if (panelFactory == null) {
+                panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
+            }
+            return registerTieredMachines(registrate, name,
+                    (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
+                        if (hasPollutionDebuff) {
+                            builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
+                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
+                                    GTRecipeModifiers.OC_NON_PERFECT)
+                                    .conditionalTooltip(defaultEnvironmentRequirement(),
+                                            ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+                        } else {
+                            builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
+                        }
+                        return builder
+                                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                                .rotationState(RotationState.NON_Y_AXIS)
+                                .recipeType(recipeType)
+                                .workableTieredHullModel(GTCEu.id("block/machines/" + name))
+                                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                        tankScalingFunction.applyAsInt(tier), true))
+                                .ui(panelFactory)
+                                .register();
+                    },
+                    tiers);
+        }
     }
 
     public static void init() {}

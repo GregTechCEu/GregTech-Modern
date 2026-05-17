@@ -2,62 +2,44 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.IHPCAComputationProvider;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import brachy.modularui.api.drawable.IDrawable;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class HPCAComputationPartMachine extends HPCAComponentPartMachine implements IHPCAComputationProvider {
+public class HPCAComputationPartMachine extends HPCAComponentPartMachine {
 
     @Getter
     private final boolean advanced;
 
     public HPCAComputationPartMachine(BlockEntityCreationInfo info, boolean advanced) {
-        super(info);
+        super(info, createHPCATrait(advanced));
         this.advanced = advanced;
     }
 
+    public static HPCAComponentTrait createHPCATrait(boolean isAdvanced) {
+        int upkeepEUt = GTValues.VA[isAdvanced ? GTValues.IV : GTValues.EV];
+        int maxEUt = GTValues.VA[isAdvanced ? GTValues.ZPM : GTValues.LuV];
+        int cooling = isAdvanced ? 4 : 2;
+        int cwu = isAdvanced ? 16 : 4;
+        return new HPCAComputationProviderTrait(upkeepEUt, maxEUt, true, false, cwu, cooling);
+    }
+
     @Override
-    public ResourceTexture getComponentIcon() {
-        if (isDamaged()) {
-            return advanced ? GuiTextures.HPCA_ICON_DAMAGED_ADVANCED_COMPUTATION_COMPONENT :
-                    GuiTextures.HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT;
+    public IDrawable getComponentIcon() {
+        if (hpcaComponentTrait.isDamaged()) {
+            return advanced ? GTGuiTextures.HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT :
+                    GTGuiTextures.HPCA_DAMAGED_COMPUTATION_COMPONENT;
         }
-        return advanced ? GuiTextures.HPCA_ICON_ADVANCED_COMPUTATION_COMPONENT :
-                GuiTextures.HPCA_ICON_COMPUTATION_COMPONENT;
-    }
-
-    @Override
-    public int getUpkeepEUt() {
-        return GTValues.VA[advanced ? GTValues.IV : GTValues.EV];
-    }
-
-    @Override
-    public int getMaxEUt() {
-        return GTValues.VA[advanced ? GTValues.ZPM : GTValues.LuV];
-    }
-
-    @Override
-    public int getCWUPerTick() {
-        if (isDamaged()) return 0;
-        return advanced ? 16 : 4;
-    }
-
-    @Override
-    public int getCoolingPerTick() {
-        return advanced ? 4 : 2;
-    }
-
-    @Override
-    public boolean canBeDamaged() {
-        return true;
+        return advanced ? GTGuiTextures.HPCA_ADVANCED_COMPUTATION_COMPONENT :
+                GTGuiTextures.HPCA_COMPUTATION_COMPONENT;
     }
 }

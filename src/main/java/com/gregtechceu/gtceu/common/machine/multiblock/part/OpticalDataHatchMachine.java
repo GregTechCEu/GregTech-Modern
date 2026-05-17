@@ -1,22 +1,19 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +44,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
         }
 
         if (isTransmitter()) {
-            IMultiController controller = getControllers().first();
+            MultiblockControllerMachine controller = getControllers().first();
             if (!(controller instanceof IWorkableMultiController workable) || !workable.getRecipeLogic().isWorking())
                 return false;
 
@@ -67,12 +64,12 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
             return isRecipeAvailable(dataAccesses, seen, recipe) ||
                     isRecipeAvailable(transmitters, seen, recipe);
         } else {
-            BlockEntity tileEntity = getLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
-            if (tileEntity == null) return false;
+            BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
+            if (blockEntity == null) return false;
 
-            if (tileEntity instanceof OpticalPipeBlockEntity) {
+            if (blockEntity instanceof OpticalPipeBlockEntity) {
                 // noinspection DataFlowIssue
-                IDataAccessHatch cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
+                IDataAccessHatch cap = blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
                         getFrontFacing().getOpposite()).orElse(null);
                 // noinspection ConstantValue
                 return cap != null && cap.isRecipeAvailable(recipe, seen);
@@ -95,11 +92,6 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
 
     @Override
     public boolean isCreative() {
-        return false;
-    }
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return false;
     }
 

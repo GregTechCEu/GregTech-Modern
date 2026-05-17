@@ -5,23 +5,28 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 
 import net.minecraft.network.chat.Component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class ResearchCondition extends RecipeCondition {
+public class ResearchCondition extends RecipeCondition<ResearchCondition> {
 
-    public static final Codec<ResearchCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(ResearchData.CODEC.fieldOf("research").forGetter(val -> val.data))
-                    .apply(instance, ResearchCondition::new));
-    public static final ResearchCondition INSTANCE = new ResearchCondition();
+    // spotless:off
+    public static final Codec<ResearchCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            ResearchData.CODEC.fieldOf("research").forGetter(ResearchCondition::getData)
+    ).apply(instance, ResearchCondition::new));
+    // spotless:on
+
+    @Getter
     public ResearchData data;
 
     public ResearchCondition() {
@@ -49,7 +54,12 @@ public class ResearchCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public ResearchCondition createTemplate() {
         return new ResearchCondition();
+    }
+
+    @Override
+    public RecipeUIModifier modifyUI() {
+        return GTRecipeUIModifiers.RESEARCH_INFO;
     }
 }

@@ -2,19 +2,14 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +35,7 @@ import java.util.function.*;
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
+    @Getter
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -50,9 +47,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     @Setter
     private ChanceBoostFunction chanceFunction = ChanceBoostFunction.NONE;
-    @Getter
-    @Setter
-    private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);
     @Setter
     @Getter
     private GTRecipeType smallRecipeMap;
@@ -79,8 +73,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeCategory category;
     @Getter
     private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
+    private final RecipeDB db = new RecipeDB();
+    @ApiStatus.Internal
     @Getter
-    private final GTRecipeLookup lookup = new GTRecipeLookup(this);
+    private final RecipeAdditionHandler additionHandler = new RecipeAdditionHandler(db);
     @Setter
     @Getter
     private boolean offsetVoltageText = false;
@@ -92,6 +88,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
     @Getter
     private int minRecipeConditions = 0;
+
+    @Getter
+    private GTRecipeTypeUILayout uiLayout;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -133,44 +132,17 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, slotOverlay);
-        return this;
-    }
-
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, isLast, slotOverlay);
-        return this;
-    }
-
-    public GTRecipeType setProgressBar(ResourceTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setProgressBar(progressBar, moveType);
-        return this;
-    }
-
-    public GTRecipeType setSteamProgressBar(SteamTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setSteamProgressBarTexture(progressBar);
-        this.recipeUI.setSteamMoveType(moveType);
-        return this;
-    }
-
-    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
-        this.recipeUI.setUiBuilder(uiBuilder);
+    public GTRecipeType UI(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
+        uiLayout = builder.apply(new GTRecipeTypeUILayout.Builder(this)).build();
         return this;
     }
 
     public GTRecipeType setMaxTooltips(int maxTooltips) {
-        this.recipeUI.setMaxTooltips(maxTooltips);
         return this;
     }
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
         this.category.setXEIVisible(XEIVisible);
-        return this;
-    }
-
-    public GTRecipeType addDataInfo(Function<CompoundTag, String> dataInfo) {
-        this.dataInfos.add(dataInfo);
         return this;
     }
 
@@ -195,7 +167,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
         if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
-        var iterator = getLookup().getRecipeIterator(holder, canHandle);
+        var iterator = db.iterator(holder, canHandle);
+        if (iterator == null) {
+            return Collections.emptyIterator();
+        }
         boolean any = false;
         while (iterator.hasNext()) {
             GTRecipe recipe = iterator.next();
@@ -222,6 +197,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public int getMaxOutputs(RecipeCapability<?> cap) {
         return maxOutputs.getOrDefault(cap, 0);
+    }
+
+    public int getMaxSlots(RecipeCapability<?> cap, IO io) {
+        return io == IO.IN ? getMaxInputs(cap) : getMaxOutputs(cap);
     }
 
     //////////////////////////////////////
@@ -319,6 +298,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
         return Collections.unmodifiableSet(categoryMap.getOrDefault(category, Set.of()));
+    }
+
+    public @NotNull RecipeDB db() {
+        return db;
+    }
+
+    @ApiStatus.Internal
+    public void beginStagingRecipes() {
+        categoryMap.clear();
+        additionHandler.beginStaging();
     }
 
     public interface ICustomRecipeLogic {

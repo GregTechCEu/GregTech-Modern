@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.api.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,20 +38,5 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
     public void setWorkingEnabled(boolean workingEnabled) {
         this.workingEnabled = workingEnabled;
         syncDataHolder.markClientSyncFieldDirty("workingEnabled");
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Nullable
-    @Override
-    public PageGroupingData getPageGroupingData() {
-        return switch (this.io) {
-            case IN -> new PageGroupingData("gtceu.multiblock.page_switcher.io.import", 1);
-            case OUT -> new PageGroupingData("gtceu.multiblock.page_switcher.io.export", 2);
-            case BOTH -> new PageGroupingData("gtceu.multiblock.page_switcher.io.both", 3);
-            case NONE -> null;
-        };
     }
 }

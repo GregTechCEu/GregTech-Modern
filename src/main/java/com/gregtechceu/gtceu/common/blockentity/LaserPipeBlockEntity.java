@@ -1,20 +1,21 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.pipelike.laser.*;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,19 +39,8 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     @Getter
     protected LaserNetHandler defaultHandler;
 
-    private int ticksActive = 0;
-    private int activeDuration = 0;
-    @Getter
-    @SaveField
-    @SyncToClient
-    private boolean active = false;
-
-    protected LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-    }
-
-    public static LaserPipeBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new LaserPipeBlockEntity(type, pos, blockState);
     }
 
     public static void onBlockEntityRegister(BlockEntityType<LaserPipeBlockEntity> cableBlockEntityBlockEntityType) {}
@@ -69,8 +59,6 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
                     LazyOptional.of(() -> handlers.getOrDefault(side, defaultHandler)));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
     }
@@ -122,29 +110,11 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
      * @param duration how long the pipe should be active for
      */
     public void setActive(boolean active, int duration) {
-        if (this.active != active) {
-            this.active = active;
-            syncDataHolder.markClientSyncFieldDirty("active");
-            notifyBlockUpdate();
-            setChanged();
-            if (active && duration != this.activeDuration) {
-                TaskHandler.enqueueServerTask((ServerLevel) getLevel(), this::queueDisconnect, 0);
-            }
-        }
-
-        this.activeDuration = duration;
-        if (duration > 0 && active) {
-            this.ticksActive = 0;
-        }
+        setPipeActive(this, this.getBlockState(), active, duration);
     }
 
-    public boolean queueDisconnect() {
-        if (++this.ticksActive % activeDuration == 0) {
-            this.ticksActive = 0;
-            setActive(false, -1);
-            return false;
-        }
-        return true;
+    public boolean isActive() {
+        return this.getBlockState().getValue(GTBlockStateProperties.ACTIVE);
     }
 
     @Override
@@ -183,6 +153,28 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
+    }
+
+    public static BlockState setPipeActive(PipeBlockEntity<?, ?> blockEntity,
+                                           BlockState state, boolean newActive, int duration) {
+        if (!state.hasProperty(GTBlockStateProperties.ACTIVE) ||
+                state.getValue(GTBlockStateProperties.ACTIVE) == newActive) {
+            return state;
+        }
+        BlockState newState = state.setValue(GTBlockStateProperties.ACTIVE, newActive);
+        if (blockEntity == null || blockEntity.getLevel() == null || blockEntity.isRemoved()) {
+            return newState;
+        }
+        Level level = blockEntity.getLevel();
+
+        level.setBlock(blockEntity.getBlockPos(), newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+        blockEntity.notifyBlockUpdate();
+        blockEntity.setChanged();
+
+        if (newActive && level instanceof ServerLevel serverLevel) {
+            TaskHandler.enqueueServerTask(serverLevel, () -> setPipeActive(blockEntity, newState, false, -1), duration);
+        }
+        return newState;
     }
 
     private static class DefaultLaserContainer implements ILaserContainer {

@@ -6,18 +6,15 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,19 +39,21 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     private final int baseAmp;
 
     public TransformerMachine(BlockEntityCreationInfo info, int tier, int amps) {
-        super(info, tier, (TieredEnergyMachine machine) -> {
-            NotifiableEnergyContainer energyContainer;
-            long tierVoltage = GTValues.V[machine.getTier()];
-            energyContainer = new NotifiableEnergyContainer(machine, tierVoltage * 8L, tierVoltage * 4, amps,
-                    tierVoltage,
-                    4L * amps);
-            return energyContainer;
-        });
+        super(info, tier, getEnergyContainer(tier, amps));
 
         energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         this.isWorkingEnabled = true;
         this.baseAmp = amps;
+    }
+
+    private static NotifiableEnergyContainer getEnergyContainer(int tier, int amps) {
+        NotifiableEnergyContainer energyContainer;
+        long tierVoltage = GTValues.V[tier];
+        energyContainer = new NotifiableEnergyContainer(tierVoltage * 8L, tierVoltage * 4, amps,
+                tierVoltage,
+                4L * amps);
+        return energyContainer;
     }
 
     //////////////////////////////////////
@@ -115,11 +114,10 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             setTransformUp(!isTransformUp());
-            playerIn.sendSystemMessage(Component.translatable(
+            context.getPlayer().sendSystemMessage(Component.translatable(
                     isTransformUp() ? "gtceu.machine.transformer.message_transform_up" :
                             "gtceu.machine.transformer.message_transform_down",
                     energyContainer.getInputVoltage(), energyContainer.getInputAmperage(),

@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -17,6 +17,8 @@ import net.minecraft.util.Mth;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
@@ -35,13 +37,18 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     @SaveField
     private boolean isActiveAndNeedsUpdate;
 
-    public CleanroomLogic(CleanroomMachine machine) {
-        super(machine);
+    public CleanroomLogic() {
+        super();
     }
 
     @Override
     public CleanroomMachine getMachine() {
-        return (CleanroomMachine) machine;
+        return (CleanroomMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(CleanroomMachine.class);
     }
 
     /**
@@ -59,12 +66,12 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
             if (maintenanceMachine == null || maintenanceMachine.getNumMaintenanceProblems() < 6 || zone != null) {
                 // drain the energy
                 if (!consumeEnergy()) {
-                    if (progress > 0 && machine.regressWhenWaiting()) {
+                    if (progress > 0 && getMachine().regressWhenWaiting()) {
                         this.progress = 1;
                     }
 
                     // the cleanroom does not have enough energy, so it looses cleanliness
-                    if (machine.self().getOffsetTimer() % duration == 0) {
+                    if (getMachine().getOffsetTimer() % duration == 0) {
                         adjustCleanAmount(true);
                     }
 
@@ -75,13 +82,13 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                 setStatus(Status.WORKING);
                 // increase progress
                 if (progress++ < getMaxProgress()) {
-                    if (!machine.onWorking()) {
+                    if (!getMachine().onWorking()) {
                         this.interruptRecipe();
                     }
                     return;
                 }
                 progress = 0;
-                if (!machine.beforeWorking(null)) {
+                if (!getMachine().beforeWorking(null)) {
                     return;
                 }
                 adjustCleanAmount(false);
@@ -90,11 +97,11 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                 if (progress > 0) {
                     progress--;
                 }
-                if (machine.self().getOffsetTimer() % duration == 0) {
+                if (getMachine().getOffsetTimer() % duration == 0) {
                     adjustCleanAmount(true);
                 }
                 setStatus(Status.IDLE);
-                machine.afterWorking();
+                getMachine().afterWorking();
             }
         }
     }
@@ -112,11 +119,12 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     }
 
     protected boolean consumeEnergy() {
-        var cleanroom = getMachine();
+        var cleanroomTrait = getMachine().getTrait(CleanroomProviderTrait.TYPE);
+        if (cleanroomTrait == null) return false;
         // clamp to max for VA indexing
-        var tier = Mth.clamp(cleanroom.getTier(), GTValues.ULV, GTValues.MAX);
+        var tier = Mth.clamp(getMachine().getTier(), GTValues.ULV, GTValues.MAX);
         // use 3/16th an amp when fully clean otherwise 15/16th an amp during cleaning
-        long energyToDrain = cleanroom.isClean() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
+        long energyToDrain = cleanroomTrait.isActive() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
                 GTValues.VA[tier];
         if (energyContainer != null) {
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;

@@ -45,13 +45,14 @@ public class PatternBufferTest {
         LCR_RECIPE_TYPE = TestUtils.createRecipeTypeAndInsertRecipe("pattern_buffer_tests",
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_recipe_pattern_buffer"))
                 .id(GTCEu.id("test_recipe_pattern_buffer"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.BROWN_BED))
                 .EUt(GTValues.V[GTValues.EV])
                 .duration(1).buildRawRecipe());
+        LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
@@ -82,6 +83,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferNormalInputBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         helper.succeedWhen(() -> {
             helper.assertTrue(
@@ -96,6 +99,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
 
         IGrid grid = busHolder.patternBuffer.getGrid();
 
@@ -138,6 +143,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDistinctDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setDistinct(true);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
@@ -181,6 +188,8 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDyeingDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setPaintingColor(0xff);
 
         IGrid grid = busHolder.patternBuffer.getGrid();

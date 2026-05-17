@@ -45,7 +45,7 @@ public abstract class ChanceLogic {
                                                          int chanceTier, @Nullable Object2IntMap<?> cache, int times) {
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
             for (Content entry : chancedEntries) {
-                int maxChance = entry.maxChance;
+                int maxChance = entry.maxChance();
 
                 // OR Chanced outputs are deterministic
                 // If a large batch is being done we can calculate how many we expect to get.
@@ -63,7 +63,7 @@ public abstract class ChanceLogic {
                     chance -= maxChance;
                     newChance -= maxChance;
                 }
-                updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                updateCachedChance(entry.content(), cache, newChance / 2 + cached);
             }
             return builder.build();
         }
@@ -96,9 +96,9 @@ public abstract class ChanceLogic {
                     int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
                     int chance = newChance + cached;
-                    if (passesChance(chance, entry.maxChance)) newChance -= entry.maxChance;
+                    if (passesChance(chance, entry.maxChance())) newChance -= entry.maxChance();
                     else failed = true;
-                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    updateCachedChance(entry.content(), cache, newChance / 2 + cached);
                     if (failed) break;
                 }
                 if (!failed) builder.addAll(chancedEntries);
@@ -136,11 +136,11 @@ public abstract class ChanceLogic {
                     int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
                     int chance = newChance + cached;
-                    if (passesChance(chance, entry.maxChance)) {
+                    if (passesChance(chance, entry.maxChance())) {
                         selected = entry;
-                        newChance -= entry.maxChance;
+                        newChance -= entry.maxChance();
                     }
-                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    updateCachedChance(entry.content(), cache, newChance / 2 + cached);
                     if (selected != null) break;
                 }
                 if (selected != null) builder.add(selected);
@@ -173,10 +173,11 @@ public abstract class ChanceLogic {
             IntList chancesOutOfTenThousand = new IntArrayList();
 
             for (Content orig : chancedEntries) {
-                if (orig.maxChance == getMaxChancedValue()) {
-                    chancesOutOfTenThousand.add(orig.chance);
+                if (orig.maxChance() == getMaxChancedValue()) {
+                    chancesOutOfTenThousand.add(orig.chance());
                 } else {
-                    chancesOutOfTenThousand.add((int) ((orig.chance / (float) orig.maxChance) * getMaxChancedValue()));
+                    chancesOutOfTenThousand
+                            .add((int) ((orig.chance() / (float) orig.maxChance()) * getMaxChancedValue()));
                 }
             }
 
@@ -204,8 +205,8 @@ public abstract class ChanceLogic {
             // Finally, generate a new Content list with the changes
             List<Content> normalizedEntries = new ArrayList<>();
             for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
-                normalizedEntries.add(new Content(chancedEntries.get(i).content, chancesOutOfTenThousand.getInt(i),
-                        getMaxChancedValue(), chancedEntries.get(i).tierChanceBoost));
+                normalizedEntries.add(new Content(chancedEntries.get(i).content(), chancesOutOfTenThousand.getInt(i),
+                        getMaxChancedValue(), chancedEntries.get(i).tierChanceBoost()));
             }
 
             // Use the new, normalized list for the logic
@@ -235,7 +236,7 @@ public abstract class ChanceLogic {
                         selected = entry;
                         newChance -= maxChance;
                     }
-                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    updateCachedChance(entry.content(), cache, newChance / 2 + cached);
                     if (selected != null) break;
                     maxChance -= newChance;
                 }
@@ -314,13 +315,13 @@ public abstract class ChanceLogic {
      * @param entry the current entry
      * @param cache the cache of previously rolled chances, can be null
      * @return the cached chance, otherwise a random initial chance
-     *         between 0 and {@link Content#maxChance} (exclusive)
+     *         between 0 and {@link Content#maxChance()} (exclusive)
      */
     static int getCachedChance(Content entry, @Nullable Object2IntMap<?> cache) {
-        if (cache == null || !cache.containsKey(entry.content))
-            return GTValues.RNG.nextInt(entry.maxChance);
+        if (cache == null || !cache.containsKey(entry.content()))
+            return GTValues.RNG.nextInt(entry.maxChance());
 
-        return cache.getInt(entry.content);
+        return cache.getInt(entry.content());
     }
 
     /**

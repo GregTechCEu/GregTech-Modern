@@ -38,6 +38,9 @@ public final class SyncedKeyMappings {
             "gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N);
     public static final SyncedKeyMapping TOOL_AOE_CHANGE = SyncedKeyMapping.createConfigurable(
             "gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V);
+    public static final SyncedKeyMapping STEP_ASSIST_ENABLE = SyncedKeyMapping.createConfigurable(
+            "gtceu.key.enable_step_assist", KeyConflictContext.IN_GAME,
+            InputConstants.KEY_APOSTROPHE);
 
     public static void init() {
         if (GTCEu.isClientSide()) {

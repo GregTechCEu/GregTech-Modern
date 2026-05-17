@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 
@@ -123,7 +122,7 @@ public class MultiblockInWorldPreviewRenderer {
         //MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
 
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
-        IMultiController controllerBase = null;
+        MultiblockControllerMachine controllerBase = null;
         LEVEL = new TrackedDummyWorld();
 
         //BlockInfo[][][] blocks = pattern.
@@ -203,7 +202,7 @@ public class MultiblockInWorldPreviewRenderer {
                         }
                     }
 
-                    if (column[z].getBlockEntity(offset) instanceof IMultiController cont) {
+                    if (column[z].getBlockEntity(offset) instanceof MultiblockControllerMachine cont) {
                         cont.self().setLevel(LEVEL);
                         controllerBase = cont;
                     } else {
@@ -404,7 +403,7 @@ public class MultiblockInWorldPreviewRenderer {
             BlockState state = level.getBlockState(pos);
             FluidState fluidState = state.getFluidState();
             Block block = state.getBlock();
-            BlockEntity te = level.getBlockEntity(pos);
+            BlockEntity be = level.getBlockEntity(pos);
 
             if (block == Blocks.AIR) continue;
 

@@ -1,25 +1,35 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.ColorType;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.SlotGroupWidget;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 public class SmartItemFilter implements ItemFilter {
@@ -27,6 +37,7 @@ public class SmartItemFilter implements ItemFilter {
     protected Consumer<ItemFilter> itemWriter = filter -> {};
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
+    @Getter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
     protected SmartItemFilter() {}
@@ -71,11 +82,23 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
-                SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
-        return group;
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
+                this::getFilterMode, this::setFilterMode);
+
+        syncManager.syncValue("mode", mode);
+
+        return new Dialog<>("smart_item_filter")
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
+                        .value(mode)
+                        .overlay(16, SmartFilteringMode.getTextures())
+                        .lang(Text.dynamic(() -> Component.translatable(filterMode.localeName)))
+                        .build().margin(7))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     @Override
@@ -90,12 +113,13 @@ public class SmartItemFilter implements ItemFilter {
 
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
-        var ingredients = MapIngredientTypeManager.getFrom(copy, ItemRecipeCapability.CAP);
-        var recipe = filterMode.lookup.recurseIngredientTreeFindRecipe(List.of(ingredients),
-                filterMode.lookup.getLookup(), r -> true);
-        if (recipe == null) return 0;
+        var recipe = filterMode.recipeType.db()
+                .find(Collections.singletonMap(ItemRecipeCapability.CAP, Collections.singletonList(copy)), r -> true);
+        if (recipe == null) {
+            return 0;
+        }
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
-            var stacks = ItemRecipeCapability.CAP.of(content.getContent()).getItems();
+            var stacks = ItemRecipeCapability.CAP.of(content.content()).getItems();
             for (var stack : stacks) {
                 if (ItemStack.isSameItem(stack, itemStack)) return stack.getCount();
             }
@@ -113,7 +137,7 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @MethodsReturnNonnullByDefault
-    private enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum {
+    private enum SmartFilteringMode {
 
         ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
         CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
@@ -121,23 +145,24 @@ public class SmartItemFilter implements ItemFilter {
 
         private static final SmartFilteringMode[] VALUES = values();
         private final String localeName;
-        private final GTRecipeLookup lookup;
+        private final GTRecipeType recipeType;
         private final Object2IntOpenCustomHashMap<ItemStack> cache = new Object2IntOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
 
         SmartFilteringMode(String localeName, GTRecipeType type) {
             this.localeName = localeName;
-            this.lookup = type.getLookup();
+            this.recipeType = type;
         }
 
-        @Override
         public String getTooltip() {
             return "cover.item_smart_filter.filtering_mode." + localeName;
         }
 
-        @Override
-        public IGuiTexture getIcon() {
-            return new ResourceTexture("gtceu:textures/block/machines/" + localeName + "/overlay_front.png");
+        public static UITexture[] getTextures() {
+            return Arrays.stream(VALUES)
+                    .map(v -> UITexture.fullImage(GTCEu.MOD_ID,
+                            "textures/block/machines/" + v.localeName + "/overlay_front.png", ColorType.DEFAULT))
+                    .toArray(UITexture[]::new);
         }
     }
 }

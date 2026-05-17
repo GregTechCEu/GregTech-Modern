@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ public class FormattingUtil {
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
     public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E00");
     public static final DecimalFormat DECIMAL_FORMAT_SIC_2F = new DecimalFormat("0.00E00");
+    public static final HexFormat HEX_FORMAT = HexFormat.of().withUpperCase();
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
     private static final int SMALL_UP_NUMBER_BASE = '\u2070';
@@ -98,15 +101,6 @@ public class FormattingUtil {
             if (nextIsUpper || Character.isDigit(curChar) ^ Character.isDigit(nextChar)) result.append('_');
         }
         return result.toString();
-    }
-
-    /**
-     * @deprecated use {@link FormattingUtil#toLowerCaseUnderscore(String) toLowerCaseUnderscore} instead.
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    @Deprecated(since = "7.0.0")
-    public static String toLowerCaseUnder(String string) {
-        return toLowerCaseUnderscore(string);
     }
 
     /**
@@ -276,5 +270,11 @@ public class FormattingUtil {
 
     private static boolean isEmptyComponent(Component component) {
         return component.getContents() == ComponentContents.EMPTY && component.getSiblings().isEmpty();
+    }
+
+    public static String formatTemperature(int temperature) {
+        if (ConfigHolder.INSTANCE.client.temperaturesInCelsius)
+            return formatNumbers(temperature - 273) + " °C";
+        else return formatNumbers(temperature) + " K";
     }
 }

@@ -4,22 +4,23 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidType;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
-                                      implements IMachineLife, IEnvironmentalHazardEmitter {
+public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
@@ -30,12 +31,18 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     @SaveField
     public final NotifiableFluidTank exportFluids;
 
+    @Getter
+    private final EnvironmentalHazardEmitterTrait hazardEmitter;
+
     public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
         super(info);
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
-        this.importFluids = createImportFluidHandler();
-        this.exportFluids = createExportFluidHandler();
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
+        this.importFluids = attachTrait(createImportFluidHandler());
+        this.exportFluids = attachTrait(createExportFluidHandler());
+        this.hazardEmitter = attachTrait(
+                new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                        0.1f));
     }
 
     //////////////////////////////////////
@@ -43,37 +50,26 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     protected NotifiableFluidTank createImportFluidHandler() {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
+        return new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
                 32 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler() {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+        return new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
                 32 * FluidType.BUCKET_VOLUME, IO.OUT);
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
-        clearInventory(exportItems.storage);
-    }
-
-    @Override
-    public float getHazardStrengthPerOperation() {
-        return 0.1f;
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-        spreadEnvironmentalHazard();
+        hazardEmitter.emitHazard();
     }
 }

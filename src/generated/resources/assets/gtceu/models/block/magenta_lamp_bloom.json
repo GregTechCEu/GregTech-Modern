@@ -1,7 +1,7 @@
 {
-  "parent": "gtceu:block/lamp",
+  "parent": "gtceu:block/cube_2_layer/all",
   "textures": {
-    "active": "gtceu:block/lamps/magenta",
-    "active_overlay": "gtceu:block/lamps/magenta_emissive"
+    "bot_all": "gtceu:block/lamps/magenta_on",
+    "top_all": "gtceu:block/lamps/magenta_bloom"
   }
 }

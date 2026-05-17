@@ -4,13 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -19,46 +13,37 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.utils.Position;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 
-import com.google.common.collect.Tables;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaustVentMachine, IUIMachine {
+/**
+ * A singleblock steam machine with recipe logic and item IO.
+ */
+public class SimpleSteamMachine extends SteamWorkableMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
     @SaveField
     public final NotifiableItemStackHandler exportItems;
+
     @Getter
-    @Setter
-    @SaveField
-    private boolean needsVenting;
+    private final ExhaustVentMachineTrait exhaustVentTrait;
 
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
 
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
+        exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
             // outputFacing will always be opposite the front facing on init
@@ -71,40 +56,24 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
+        exhaustVentTrait.setVentingDirection(Objects.requireNonNull(getOutputFacing()));
         // Simulate an EU machine via a SteamEnergyHandler
         this.addHandlerList(RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
-        clearInventory(exportItems.storage);
     }
 
     //////////////////////////////////////
     // ****** Venting Logic ******//
     //////////////////////////////////////
-
-    @Override
-    public float getVentingDamage() {
-        return isHighPressure() ? 12F : 6F;
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    @Override
-    public @NotNull Direction getVentingDirection() {
-        return getOutputFacing();
-    }
 
     public void updateModelVentDirection() {
         MachineRenderState renderState = getRenderState();
@@ -114,17 +83,19 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
                 upwardsDir = upwardsDir.getOpposite();
             }
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(), upwardsDir);
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), exhaustVentTrait.getVentingDirection(),
+                    upwardsDir);
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, relative));
         }
     }
 
     @Override
-    public void setOutputFacing(@NotNull Direction outputFacing) {
+    public void setOutputFacing(Direction outputFacing) {
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
             updateModelVentDirection();
+            exhaustVentTrait.setVentingDirection(outputFacing);
         }
     }
 
@@ -138,17 +109,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         var oldFacing = getUpwardsFacing();
         super.setUpwardsFacing(upwardsFacing);
         if (getUpwardsFacing() != oldFacing) {
             updateModelVentDirection();
         }
-    }
-
-    @Override
-    public void markVentingComplete() {
-        this.needsVenting = false;
     }
 
     public double getConversionRate() {
@@ -170,11 +136,11 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Steam Machine
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.exhaustVentTrait.checkVenting()) {
             return ModifierFunction.NULL;
         }
 
@@ -186,38 +152,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void afterWorking() {
         super.afterWorking();
-        needsVenting = true;
-        checkVenting();
-    }
-
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
-        storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);
-        storages.put(IO.OUT, ItemRecipeCapability.CAP, exportItems.storage);
-
-        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent,
-                storages,
-                new CompoundTag(),
-                Collections.emptyList(),
-                true,
-                isHighPressure);
-        Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4,
-                32);
-        group.setSelfPosition(pos);
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(group)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(pos.x + group.getSize().width / 2 - 9,
-                        pos.y + group.getSize().height / 2 - 9, 18, 18,
-                        GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isWaiting))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
+        exhaustVentTrait.setNeedsVenting(true);
+        exhaustVentTrait.checkVenting();
     }
 }

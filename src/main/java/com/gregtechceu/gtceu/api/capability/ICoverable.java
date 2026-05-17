@@ -1,19 +1,24 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -26,15 +31,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, ISyncManaged {
+public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     IGregtechBlockEntity getHolder();
 
@@ -106,6 +109,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged {
      * @param coverBehavior
      * @param side
      */
+    @ApiStatus.Internal
     void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side);
 
     @Nullable
@@ -253,15 +257,6 @@ public interface ICoverable extends ITickSubscription, ISyncManaged {
         return false;
     }
 
-    class PrimaryBoxData {
-
-        public final boolean usePlacementGrid;
-
-        public PrimaryBoxData(boolean usePlacementGrid) {
-            this.usePlacementGrid = usePlacementGrid;
-        }
-    }
-
     @Nullable
     static Direction traceCoverSide(@Nullable BlockHitResult result) {
         return determineGridSideHit(result);
@@ -306,5 +301,75 @@ public interface ICoverable extends ITickSubscription, ISyncManaged {
             return getCoverAtSide(side).getAppearance(sourceState, sourcePos);
         }
         return null;
+    }
+
+    private CompoundTag createCoverConfigTag(@Nullable CoverBehavior cover) {
+        if (cover == null) return new CompoundTag();
+        var tag = new CompoundTag();
+        tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
+        tag.put("item", cover.getAttachItem().serializeNBT());
+        tag.put("data", cover.copyConfig(new CompoundTag()));
+        return tag;
+    }
+
+    private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
+        if (tag.isEmpty()) return;
+        var def = GTRegistries.COVERS.get(new ResourceLocation(tag.getString("id")));
+        ItemStack stack = ItemStack.of(tag.getCompound("item"));
+        if (def == null) return;
+
+        placeCoverOnSide(dir, stack, def, player);
+
+        CoverBehavior placedCover = getCoverAtSide(dir);
+        if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
+            placedCover.pasteConfig(player, tag.getCompound("data"));
+    }
+
+    @Override
+    default CompoundTag copyConfig(CompoundTag tag) {
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
+        }
+
+        return tag;
+    }
+
+    @Override
+    default void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            removeCover(side, player);
+        }
+
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            applyCoverConfigTag(player, dir, tag.getCompound(dir.getName()));
+        }
+    }
+
+    @Override
+    default List<ItemStack> getItemsRequiredToPaste() {
+        Map<Item, Integer> allDrops = new HashMap<>();
+        List<ItemStack> rawDrops = new ArrayList<>();
+
+        for (Direction side : GTUtil.DIRECTIONS) {
+            var cover = getCoverAtSide(side);
+            if (cover != null) rawDrops.add(cover.getAttachItem());
+        }
+
+        for (Direction side : GTUtil.DIRECTIONS) {
+            var cover = getCoverAtSide(side);
+            if (cover != null) rawDrops.addAll(cover.getAdditionalDrops());
+        }
+
+        for (var drop : rawDrops) {
+            if (allDrops.containsKey(drop.getItem())) {
+                allDrops.put(drop.getItem(), allDrops.get(drop.getItem()) + drop.getCount());
+            } else {
+                allDrops.put(drop.getItem(), drop.getCount());
+            }
+        }
+
+        List<ItemStack> mergedStacks = new ArrayList<>();
+        allDrops.forEach((k, v) -> mergedStacks.add(new ItemStack(k, v)));
+        return mergedStacks;
     }
 }

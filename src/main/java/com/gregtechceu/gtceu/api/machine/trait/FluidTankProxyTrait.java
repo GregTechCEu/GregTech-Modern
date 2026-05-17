@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -12,18 +11,26 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
+
+    public static final MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class);
+
+    @Override
+    public MachineTraitType<FluidTankProxyTrait> getTraitType() {
+        return TYPE;
+    }
 
     @Getter
     public final IO capabilityIO;
     @Setter
     @Getter
-    public IFluidHandlerModifiable proxy;
+    public @Nullable IFluidHandlerModifiable proxy;
 
-    public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
-        super(machine);
+    public FluidTankProxyTrait(IO capabilityIO) {
+        super();
         this.capabilityIO = capabilityIO;
     }
 
