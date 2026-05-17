@@ -10,9 +10,8 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import net.minecraft.core.Direction;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.Direction;
 
 import java.util.UUID;
 
@@ -93,5 +92,4 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
         return coverHolder.getLevel().getSignal(coverHolder.getPos().relative(attachedSide),
                 attachedSide.getOpposite());
     }
-
 }

@@ -63,5 +63,4 @@ public class WirelessTransmitterCover extends CoverBehavior
     public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
         computerCraftTextBuffer.set(line, component);
     }
-
 }

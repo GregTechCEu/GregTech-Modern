@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 

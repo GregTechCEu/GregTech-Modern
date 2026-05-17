@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;

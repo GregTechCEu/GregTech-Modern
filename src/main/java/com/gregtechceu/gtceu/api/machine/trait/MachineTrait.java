@@ -2,12 +2,11 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +25,8 @@ import java.util.function.Predicate;
  */
 public abstract class MachineTrait implements IEnhancedManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(MachineTrait.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
+            .createManagedFieldHolder(MachineTrait.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);

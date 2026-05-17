@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -35,8 +36,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -382,7 +381,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     // Handles the logic of this structure's specific HPCA component grid
     public static class HPCAGridHandler implements IManaged {
 
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(HPCAGridHandler.class);
+        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
+                .createManagedFieldHolder(HPCAGridHandler.class);
 
         @Getter
         private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);

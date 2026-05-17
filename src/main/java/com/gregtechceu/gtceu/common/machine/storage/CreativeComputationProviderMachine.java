@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 
@@ -113,5 +114,4 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
                                         new TextTexture("gtceu.creative.activity.on"))));
     }
-
 }

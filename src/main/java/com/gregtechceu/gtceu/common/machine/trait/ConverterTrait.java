@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -133,6 +134,5 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         public boolean canReceive() {
             return feToEu;
         }
-
     }
 }

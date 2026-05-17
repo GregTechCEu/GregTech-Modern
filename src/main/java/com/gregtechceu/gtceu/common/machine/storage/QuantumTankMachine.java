@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -445,6 +446,5 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
             }
         }
-
     }
 }

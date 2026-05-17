@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
 import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -55,7 +55,8 @@ import java.util.*;
 
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(MetaMachineBlockEntity.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
+            .createManagedFieldHolder(MetaMachineBlockEntity.class);
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter

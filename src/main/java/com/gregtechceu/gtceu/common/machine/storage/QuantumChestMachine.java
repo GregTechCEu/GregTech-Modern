@@ -31,6 +31,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -512,6 +513,5 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         public boolean canInsert(ItemStack stack) {
             return filter.test(stack) && (insertItem(0, stack, true).getCount() != stack.getCount());
         }
-
     }
 }

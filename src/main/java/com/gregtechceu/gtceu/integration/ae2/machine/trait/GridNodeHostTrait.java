@@ -40,5 +40,4 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
-
 }

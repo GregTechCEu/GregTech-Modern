@@ -31,7 +31,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
 
     @Override
     public EnergyStack copyWithModifier(EnergyStack content, ContentModifier modifier) {
-        return content.withVoltage(modifier.apply(content.voltage()));
+        return content.withAmperage(modifier.apply(content.amperage()));
     }
 
     @Override

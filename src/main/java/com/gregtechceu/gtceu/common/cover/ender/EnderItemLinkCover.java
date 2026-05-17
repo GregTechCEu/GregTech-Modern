@@ -16,12 +16,12 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorage> {
@@ -108,5 +108,4 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     protected String getUITitle() {
         return "cover.ender_item_link.title";
     }
-
 }

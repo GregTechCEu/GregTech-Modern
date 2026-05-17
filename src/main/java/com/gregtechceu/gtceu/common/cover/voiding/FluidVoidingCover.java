@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -139,5 +140,4 @@ public class FluidVoidingCover extends PumpCover {
     //////////////////////////////////////
     // ***** LDLib SyncData ******//
     //////////////////////////////////////
-
 }
