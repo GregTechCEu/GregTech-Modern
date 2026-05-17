@@ -816,6 +816,7 @@ public class ConfigHolder {
                 "raw.githubusercontent.com" };
         @Configurable
         @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's speed." })
+        @Configurable.Synchronized
         public boolean blockSpeedChange = true;
     }
 
