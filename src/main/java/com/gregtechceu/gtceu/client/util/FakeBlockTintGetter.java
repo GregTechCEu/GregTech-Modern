@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.renderer.block;
+package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

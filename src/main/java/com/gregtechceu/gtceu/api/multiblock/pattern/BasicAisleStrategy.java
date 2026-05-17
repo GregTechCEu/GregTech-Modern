@@ -16,7 +16,7 @@ import java.util.*;
 
 public class BasicAisleStrategy extends AisleStrategy {
 
-    protected class MultiAisle {
+    protected class MultiblockAisle {
 
         public int minRepeats = -1;
         public int maxRepeats = -1;
@@ -24,7 +24,7 @@ public class BasicAisleStrategy extends AisleStrategy {
         public int endExclusive = -1;
         public int actualRepeats = -1;
 
-        public MultiAisle(int minRepeats, int maxRepeats, int startInclusive, int endExclusive, int actualRepeats) {
+        public MultiblockAisle(int minRepeats, int maxRepeats, int startInclusive, int endExclusive, int actualRepeats) {
             this.minRepeats = minRepeats;
             this.maxRepeats = maxRepeats;
             this.startInclusive = startInclusive;
@@ -39,14 +39,14 @@ public class BasicAisleStrategy extends AisleStrategy {
         }
     }
 
-    protected final List<MultiAisle> multiAisles = new ArrayList<>();
+    protected final List<MultiblockAisle> multiblockAisles = new ArrayList<>();
     protected final List<PatternAisle> aisles = new ArrayList<>();
     protected final int[] result = new int[2];
 
     @Override
     public boolean check(PatternState state, boolean flip) {
         int offset = 0;
-        for (var multiAisle : multiAisles) {
+        for (var multiAisle : multiblockAisles) {
             int result = checkMultiAisle(state, multiAisle, offset, flip);
             if (result == -1) return false;
             offset += result;
@@ -55,18 +55,18 @@ public class BasicAisleStrategy extends AisleStrategy {
     }
 
     public int getMultiAisleRepeats(int index) {
-        return multiAisles.get(index).actualRepeats;
+        return multiblockAisles.get(index).actualRepeats;
     }
 
-    protected int checkMultiAisle(PatternState state, MultiAisle multiAisle, int offset, boolean flip) {
+    protected int checkMultiAisle(PatternState state, MultiblockAisle multiblockAisle, int offset, boolean flip) {
         int aisleOffset = 0;
         int temp = 0;
-        for (int i = 1; i <= multiAisle.maxRepeats; i++) {
-            for (int j = multiAisle.startInclusive; j < multiAisle.endExclusive; j++) {
+        for (int i = 1; i <= multiblockAisle.maxRepeats; i++) {
+            for (int j = multiblockAisle.startInclusive; j < multiblockAisle.endExclusive; j++) {
                 int res = checkRepeatAisle(state, j, offset + temp, flip);
                 if (res == -1) {
-                    if (i <= multiAisle.minRepeats) return -1;
-                    multiAisle.actualRepeats = i - 1;
+                    if (i <= multiblockAisle.minRepeats) return -1;
+                    multiblockAisle.actualRepeats = i - 1;
                     return aisleOffset;
                 }
                 temp += res;
@@ -74,7 +74,7 @@ public class BasicAisleStrategy extends AisleStrategy {
             aisleOffset = temp;
         }
 
-        multiAisle.actualRepeats = multiAisle.maxRepeats;
+        multiblockAisle.actualRepeats = multiblockAisle.maxRepeats;
         return aisleOffset;
     }
 
@@ -94,8 +94,8 @@ public class BasicAisleStrategy extends AisleStrategy {
     @Override
     public int @NotNull [] getDefaultAisles(CompoundTag tag) {
         IntList list = new IntArrayList();
-        for (int i = 0; i < multiAisles.size(); i++) {
-            var multi = multiAisles.get(i);
+        for (int i = 0; i < multiblockAisles.size(); i++) {
+            var multi = multiblockAisles.get(i);
             int multiRepeats = 0;
             if (tag.isEmpty()) {
                 multiRepeats = multi.minRepeats;
@@ -130,35 +130,35 @@ public class BasicAisleStrategy extends AisleStrategy {
 
         BitSet covered = new BitSet(aisles.size());
         int sum = 0;
-        for (var arr : multiAisles) {
+        for (var arr : multiblockAisles) {
             covered.set(arr.startInclusive, arr.endExclusive);
             sum += arr.endExclusive - arr.startInclusive;
         }
 
         if (sum != covered.cardinality()) {
-            GTCEu.LOGGER.error("Overlapping multi-aisles. " +
-                    "Total of {} aisles in the multiAisles but only {} distinct aisles.", sum, covered.cardinality());
+            GTCEu.LOGGER.error("Overlapping multiblock aisles. " +
+                    "Multiblock has {} aisles total but only {} distinct aisles.", sum, covered.cardinality());
             multiAisleError();
         }
         if (sum > aisles.size()) {
-            GTCEu.LOGGER.error("multiAisles out of bounds. total of {} aisles but {} aisles in multiAisles",
+            GTCEu.LOGGER.error("multiAisles out of bounds. {} aisles total but {} aisles in multiAisles",
                     aisles.size(), sum);
             multiAisleError();
         }
 
         int i = covered.nextClearBit(0);
         while ((i = covered.nextClearBit(i)) < aisles.size()) {
-            multiAisles.add(new MultiAisle(1, 1, i, i + 1, -1));
+            multiblockAisles.add(new MultiblockAisle(1, 1, i, i + 1, -1));
             covered.set(i);
         }
 
-        multiAisles.sort(Comparator.comparingInt(a -> a.startInclusive));
+        multiblockAisles.sort(Comparator.comparingInt(a -> a.startInclusive));
     }
 
     protected void multiAisleError() {
         GTCEu.LOGGER.error(
                 "multiAisles in the pattern, formatted as [minRepeats, maxRepeats, startInclusive, endExclusive, actualRepeats]");
-        for (var arr : multiAisles) {
+        for (var arr : multiblockAisles) {
             GTCEu.LOGGER.error(arr.toString());
         }
         throw new IllegalStateException("Illegal multiAisles, see log above.");
@@ -168,7 +168,7 @@ public class BasicAisleStrategy extends AisleStrategy {
         Preconditions.checkArgument(max >= min, "max: %s is less than min: %s", max, min);
         Preconditions.checkArgument(from >= 0, "from argument is negative: %s", from);
         Preconditions.checkArgument(to > 0, "to argument is not positive: %s", to);
-        multiAisles.add(new MultiAisle(min, max, from, to, -1));
+        multiblockAisles.add(new MultiblockAisle(min, max, from, to, -1));
         return this;
     }
 }

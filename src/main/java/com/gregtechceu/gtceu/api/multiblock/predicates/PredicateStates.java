@@ -33,7 +33,7 @@ public class PredicateStates extends BasePredicate {
              * sb.add(bs.toString());
              * }
              */
-            this.debugName = "ERm why are you using block states";
+            // this.debugName = "ERm why are you using block states";
         } else {
             this.debugName = debugName;
         }

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListen
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +36,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
-    protected String substructureName;
+    @Getter
+    protected @Nullable String substructureName;
 
     private @Nullable RecipeHandlerList handlerList;
 
@@ -132,7 +134,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         controllers.remove(controller);
 
         if (controllers.isEmpty()) {
-            substructureName = null;
+            this.substructureName = null;
             MachineRenderState renderState = getRenderState();
             if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
@@ -143,10 +145,10 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void addedToController(MultiblockControllerMachine controller, String name) {
+    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
         controllerPositions.add(controller.self().getBlockPos());
         controllers.add(controller);
-        substructureName = name;
+        this.substructureName = substructureName;
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");
         MachineRenderState renderState = getRenderState();
@@ -180,8 +182,4 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
-    @Override
-    public String getSubstructureName() {
-        return substructureName;
-    }
 }

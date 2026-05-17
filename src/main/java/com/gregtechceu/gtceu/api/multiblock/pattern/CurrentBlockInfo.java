@@ -20,7 +20,7 @@ public class CurrentBlockInfo {
     @Getter
     private BlockState blockState;
     @Getter
-    private BlockEntity tileEntity;
+    private BlockEntity blockEntity;
     private boolean teResolved;
 
     public BlockState retrieveCurrentBlockState() {
@@ -34,11 +34,11 @@ public class CurrentBlockInfo {
         if (!retrieveCurrentBlockState().hasBlockEntity()) {
             return null;
         }
-        if (tileEntity == null && !teResolved && level != null) {
-            tileEntity = level.getBlockEntity(pos);
+        if (blockEntity == null && !teResolved && level != null) {
+            blockEntity = level.getBlockEntity(pos);
             teResolved = true;
         }
-        return tileEntity;
+        return blockEntity;
     }
 
     public void setCurrentPos(BlockPos pos) {
@@ -61,16 +61,16 @@ public class CurrentBlockInfo {
             return;
         }
         blockState = level.getBlockState(pos);
-        tileEntity = level.getBlockEntity(pos);
+        blockEntity = level.getBlockEntity(pos);
         teResolved = true;
     }
 
-    public CurrentBlockInfo copy() {
+    public CurrentBlockInfo shallowCopy() {
         CurrentBlockInfo ret = new CurrentBlockInfo();
         ret.level = level;
         ret.pos = pos;
         ret.blockState = blockState;
-        ret.tileEntity = tileEntity;
+        ret.blockEntity = blockEntity;
         return ret;
     }
 }

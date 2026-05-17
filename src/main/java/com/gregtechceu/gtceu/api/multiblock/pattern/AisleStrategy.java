@@ -28,7 +28,7 @@ public abstract class AisleStrategy {
     public abstract boolean check(PatternState state, boolean flip);
 
     /**
-     * Gets the order in which aisles should be displayed (JEI) or built (terminal auto builder).
+     * Gets the order in which aisles should be displayed (recipe viewers) or built (terminal structure builder).
      *
      * @param tag The tag information, the same one that is passed through
      *            {@link IBlockPattern#autobuild}

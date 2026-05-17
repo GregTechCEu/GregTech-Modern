@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,14 +54,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void formStructure(String name) {
-        var pState = patternStates.get(name);
-        super.formStructure(name);
+    public void formStructure(@NotNull String substructureName) {
+        var pState = patternStates.get(substructureName);
+        super.formStructure(substructureName);
         for (IMultiPart part : getParts()) {
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
-                    pState.setError(new PatternStringError("gtceu.predicate_error.object_holder.direction"));
-                    invalidateStructure(name);
+                    pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
+                    invalidateStructure(substructureName);
                     return;
                 }
                 this.objectHolder = holder;
@@ -73,13 +74,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         // should never happen, but would rather do this than have an obscure NPE
         if (computationProvider == null) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.research.missing_computation"));
-            invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.research.missing_computation")));
+            invalidateStructure(substructureName);
         }
 
         if (objectHolder == null) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.research.missing_object_holder"));
-            invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
+            invalidateStructure(substructureName);
         }
     }
 
@@ -95,7 +96,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             }
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
-            patternState.setError(new PatternStringError("gtceu.predicate_error.object_holder.direction"));
+            patternState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
             invalidateStructure(name);
         }
         return patternState;

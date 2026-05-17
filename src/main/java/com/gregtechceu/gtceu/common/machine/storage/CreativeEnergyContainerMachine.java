@@ -209,10 +209,10 @@ public class CreativeEnergyContainerMachine extends TieredMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         // syncing
-        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v);
-        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = Math.max(a, 1));
-        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t);
-        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b);
+        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v).allowC2S();
+        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = Math.max(a, 1)).allowC2S();
+        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t).allowC2S();
+        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b).allowC2S();
         syncManager.syncValue("tier", tier);
 
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("voltage popup", false,

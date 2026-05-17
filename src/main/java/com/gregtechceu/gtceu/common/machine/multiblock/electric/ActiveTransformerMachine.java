@@ -30,8 +30,6 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -85,9 +83,9 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         // capture all energy containers
         List<IEnergyContainer> powerInput = new ArrayList<>();
         List<IEnergyContainer> powerOutput = new ArrayList<>();
@@ -119,9 +117,9 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
 
         // Invalidate the structure if there is not at least one output and one input
         if (powerInput.isEmpty() || powerOutput.isEmpty()) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.active_transformer.missing_io",
-                    powerInput.isEmpty(), powerOutput.isEmpty()));
-            this.invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.active_transformer.missing_io",
+                    powerInput.isEmpty(), powerOutput.isEmpty())));
+            this.invalidateStructure(substructureName);
         }
 
         this.powerOutput = new EnergyContainerList(powerOutput);

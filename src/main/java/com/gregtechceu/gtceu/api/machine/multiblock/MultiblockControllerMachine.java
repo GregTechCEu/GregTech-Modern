@@ -26,12 +26,7 @@ import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +38,9 @@ import java.util.function.Predicate;
 
 public class MultiblockControllerMachine extends MetaMachine {
 
-    private CurrentBlockInfo controllerBlockInfo;
+    public static final String DEFAULT_STRUCTURE = "main";
+
+    private @Nullable CurrentBlockInfo controllerBlockInfo = null;
     private final List<IMultiPart> parts = new ArrayList<>();
     private @Nullable ParallelHatchPartMachine parallelHatch = null;
     @Getter
@@ -59,10 +56,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     @SyncToClient
     protected boolean isFlipped;
 
-    public static final String DEFAULT_STRUCTURE = "main";
-
     protected final Reference2ObjectMap<String, IBlockPattern> structures = new Reference2ObjectOpenHashMap<>();
-    protected Reference2ObjectMap<String, PatternState> patternStates = new Reference2ObjectOpenHashMap<>();
+    protected final Reference2ObjectMap<String, PatternState> patternStates = new Reference2ObjectOpenHashMap<>();
 
     public MultiblockControllerMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -94,12 +89,12 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     @NotNull
     public CurrentBlockInfo getBlockInfo() {
-        if (controllerBlockInfo == null) {
-            controllerBlockInfo = new CurrentBlockInfo();
-            controllerBlockInfo.setLevel(getLevel());
-            controllerBlockInfo.setCurrentPos(getBlockPos());
+        if (this.controllerBlockInfo == null) {
+            this.controllerBlockInfo = new CurrentBlockInfo();
+            this.controllerBlockInfo.setLevel(getLevel());
+            this.controllerBlockInfo.setCurrentPos(getBlockPos());
         }
-        return controllerBlockInfo;
+        return this.controllerBlockInfo;
     }
 
     public Reference2ObjectMap<String, IBlockPattern> getStructurePatterns() {
@@ -130,11 +125,11 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public List<IMultiPart> getParts() {
         // for the client side, when the chunk unloaded
-        if (parts.size() != this.partPositions.length) {
-            parts.clear();
-            for (var pos : this.partPositions) {
+        if (this.parts.size() != this.partPositions.length) {
+            this.parts.clear();
+            for (BlockPos pos : this.partPositions) {
                 if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
-                    parts.add(part);
+                    this.parts.add(part);
                 }
             }
         }
@@ -232,10 +227,14 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * should add part to the part list.
      */
-    boolean shouldAddPartToController(IMultiPart part) {
+    public boolean shouldAddPartToController(IMultiPart part) {
         return true;
     }
 
+    /**
+     * Returns a list of all substructures this multiblock has.
+     * @return set of substructures used by controller
+     */
     public Set<String> getStructureNames() {
         return structures.keySet();
     }
@@ -258,6 +257,9 @@ public class MultiblockControllerMachine extends MetaMachine {
         return getDefinition().getPatternFactory().get();
     }
 
+    /**
+     * Creates the default pattern and pattern state and populates the state maps
+     */
     public void createStructurePatterns() {
         var defaultPattern = createStructurePattern();
         var defaultPatternState = new PatternState();
@@ -273,109 +275,99 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     public PatternState getDefaultPatternState() {
-        return patternStates.get(DEFAULT_STRUCTURE);
+        return getPatternState(DEFAULT_STRUCTURE);
     }
 
     public PatternState getPatternState(String name) {
-        return patternStates.get(name);
+        return this.patternStates.get(name);
     }
 
-    public PatternState checkStructurePattern() {
+    public PatternState checkDefaultStructurePattern() {
         return checkStructurePattern(DEFAULT_STRUCTURE);
     }
 
-    public PatternState checkStructurePattern(String name) {
-        IBlockPattern pattern = getSubstructure(name);
-        var pState = patternStates.get(name);
-        if (!pState.shouldUpdate() || getLevel() == null) return pState;
+    public PatternState checkStructurePattern(String structureName) {
+        IBlockPattern pattern = getSubstructure(structureName);
+        PatternState state = getPatternState(structureName);
+        if (!state.shouldUpdate() || getLevel() == null) return state;
 
         long time = System.nanoTime();
-        pState.setController(this, getBlockPos());
-        pattern.checkPatternFastAt(getLevel(), pState, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+        state.setController(this, getBlockPos());
+        pattern.checkPatternFastAt(getLevel(), state, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                 allowFlip());
         // patternStates.put(name, pState);
         // pattern.setActivePatternState(pState);
         // GTCEu.LOGGER.info("Structure check for {} took {} ns", self().getDefinition().getName(),
         // (System.nanoTime() - time));
-        return pState;
+        return state;
     }
 
-    public void formStructure(String name) {
-        var patternState = getPatternState(name);
+    public void formStructure(@NotNull String substructureName) {
+        var patternState = getPatternState(substructureName);
         patternState.setFormed(true);
-        if (name.equals(DEFAULT_STRUCTURE)) {
+        if (substructureName.equals(DEFAULT_STRUCTURE)) {
             isFormed = true;
         }
 
-        if (patternState.getState().isValid()) {
+        if (!patternState.getState().isValid()) {
             if (patternState.isFormed()) {
-                if (patternState.getState() == PatternState.CheckState.VALID_UNCACHED) {
-                    forEachMultiPart(name, part -> {
-                        if (parts.contains(part)) return true;
-
-                        if (part.hasController(getBlockPos()) && !part.canShared(this, name)) {
-                            invalidateStructure(name);
-                            return false;
-                        }
-                        return true;
-                    });
-
-                    forEachMultiPart(name, part -> {
-                        if (parts.contains(part)) return true;
-
-                        if (shouldAddPartToController(part)) {
-                            this.parts.add(part);
-                        }
-                        return true;
-                    });
-
-                    // this.parts.sort(GTMemoizer.memoizeFunctionWeakIdent(getDefinition().getPartSorter()));
-                    // this.parts.sort(getDefinition().getPartSorter());
-                    for (var part : parts) {
-                        if (part instanceof ParallelHatchPartMachine pHatch) {
-                            parallelHatch = pHatch;
-                        }
-                        part.addedToController(this, name);
-                    }
-                    updatePartPositions();
-
-                    patternState.setFormed(true);
-                    if (name.equals(DEFAULT_STRUCTURE)) {
-                        isFormed = true;
-                    }
-                    setFlipped(patternState.isFlipped(), patternState);
-                }
-                return;
-            }
-
-            boolean[] valid = new boolean[1];
-            valid[0] = true;
-
-            forEachMultiPart(name, part -> {
-                if (part.hasController(getBlockPos()) && !part.canShared(this, name)) {
-                    valid[0] = false;
-                    return false;
-                }
-                return true;
-            });
-
-            if (!valid[0]) return;
-
-            patternState.setFormed(true);
-            if (name.equals(DEFAULT_STRUCTURE)) {
-                isFormed = true;
-                MachineRenderState renderState = getRenderState();
-                if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
-                    setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
-                }
-            }
-            setFlipped(patternState.isFlipped(), patternState);
-
-        } else {
-            if (patternState.isFormed()) {
-                invalidateStructure(name);
+                invalidateStructure(substructureName);
             }
         }
+
+        if (patternState.isFormed()) {
+            if (patternState.getState() == PatternState.CheckState.VALID_UNCACHED) {
+                forEachMultiPart(substructureName, part -> {
+                    if (parts.contains(part)) return true;
+
+                    if (part.hasController(getBlockPos()) && !part.canShared(this, substructureName)) {
+                        invalidateStructure(substructureName);
+                        return false;
+                    }
+
+                    if (shouldAddPartToController(part)) {
+                        this.parts.add(part);
+                    }
+                    return true;
+                });
+
+                // this.parts.sort(GTMemoizer.memoizeFunctionWeakIdent(getDefinition().getPartSorter()));
+                // this.parts.sort(getDefinition().getPartSorter());
+                for (var part : parts) {
+                    if (part instanceof ParallelHatchPartMachine pHatch) {
+                        this.parallelHatch = pHatch;
+                    }
+                    part.addedToController(this, substructureName);
+                }
+                updatePartPositions();
+
+                patternState.setFormed(true);
+                if (substructureName.equals(DEFAULT_STRUCTURE)) {
+                    this.isFormed = true;
+                }
+                setFlipped(patternState.isFlipped(), patternState);
+            }
+            return;
+        }
+
+        boolean valid = forEachMultiPart(substructureName, part -> {
+            if (part.hasController(getBlockPos()) && !part.canShared(this, substructureName)) {
+                return false;
+            }
+            return true;
+        });
+
+        if (!valid) return;
+
+        patternState.setFormed(true);
+        if (substructureName.equals(DEFAULT_STRUCTURE)) {
+            isFormed = true;
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+                setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
+            }
+        }
+        setFlipped(patternState.isFlipped(), patternState);
     }
 
     public void setFlipped(boolean flipped, PatternState state) {
@@ -415,7 +407,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         updatePartPositions();
     }
 
-    protected void invalidStructureCaches() {
+    protected void invalidateStructureCaches() {
         for (var pState : patternStates.values()) {
             pState.getPosCache().clear();
         }
@@ -425,15 +417,15 @@ public class MultiblockControllerMachine extends MetaMachine {
         return structures.get(name);
     }
 
-    void forEachMultiPart(String name, Predicate<IMultiPart> action) {
-        // var cache = getSubstructure(name).getCache();
+    protected final boolean forEachMultiPart(String name, Predicate<IMultiPart> action) {
         var cache = patternStates.get(name).getCache();
         for (BlockInfo info : cache.values()) {
-            BlockEntity be = info.getBlockEntity();
-            if (be instanceof IMultiPart part) {
-                if (!action.test(part)) return;
+            if (info.getBlockEntity() instanceof IMultiPart part) {
+                if (!action.test(part)) return false;
             }
         }
+
+        return true;
     }
 
     protected void forEachFormed(String name, BiConsumer<BlockInfo, BlockPos.MutableBlockPos> action) {
@@ -467,7 +459,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         if (oldFacing != newFacing && getLevel() instanceof ServerLevel serverLevel) {
             // invalid structure
             // this.onStructureInvalid();
-            invalidStructureCaches();
+            invalidateStructureCaches();
             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
             for (var patternState : patternStates.values()) {
                 // var state = structure.getPatternState();
@@ -489,7 +481,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         return null;
     }
 
-    Comparator<IMultiPart> getPartSorter() {
+    public Comparator<IMultiPart> getPartSorter() {
         return getDefinition().getPartSorter().apply(this);
     }
 
@@ -504,7 +496,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
-                invalidStructureCaches();
+                invalidateStructureCaches();
                 checkAndFormStructurePatterns();
             }
         }
@@ -536,7 +528,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         super.setFrontFacing(facing);
 
         if (getLevel() != null && !getLevel().isClientSide) {
-            invalidStructureCaches();
+            invalidateStructureCaches();
             checkAndFormStructurePatterns();
         }
     }
@@ -548,7 +540,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public boolean isBatchEnabled() {
         return false;
     }
-
+    // TODO move to recipe logic
     public void setBatchEnabled(boolean batch) {}
 
     /**

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -63,17 +64,14 @@ import static brachy.modularui.drawable.GuiTextures.MUI_LOGO;
 
 public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
-    private static final Object2IntMap<Item> handlerSizeMap = new Object2IntOpenHashMap<>() {
-
-        {
-            put(Items.DIAMOND, 9);
-            put(Items.EMERALD, 9);
-            put(Items.GOLD_INGOT, 7);
-            put(Items.IRON_INGOT, 6);
-            put(Items.CLAY_BALL, 2);
-            defaultReturnValue(3);
-        }
-    };
+    private static final Object2IntMap<Item> handlerSizeMap = Util.make(new Object2IntOpenHashMap<>(), map -> {
+            map.put(Items.DIAMOND, 9);
+            map.put(Items.EMERALD, 9);
+            map.put(Items.GOLD_INGOT, 7);
+            map.put(Items.IRON_INGOT, 6);
+            map.put(Items.CLAY_BALL, 2);
+            map.defaultReturnValue(3);
+    });
 
     private final FluidTank fluidTank = new FluidTank(10000);
     private final FluidTank fluidTankPhantom = new FluidTank(500000);

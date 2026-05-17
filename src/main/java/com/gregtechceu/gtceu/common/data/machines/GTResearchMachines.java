@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -65,8 +65,7 @@ public class GTResearchMachines {
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
                     .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
@@ -137,8 +136,7 @@ public class GTResearchMachines {
                             FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH)),
                     Component.translatable("gtceu.machine.data_bank.tooltip.4",
                             FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH_CHAINED)))
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XDDDX", "XDDDX", "XDDDX")
                     .aisle("XDDDX", "XAAAX", "XDDDX")
                     .aisle("XCCCX", "XCSCX", "XCCCX")
@@ -168,8 +166,7 @@ public class GTResearchMachines {
                     Component.translatable("gtceu.machine.network_switch.tooltip.2"),
                     Component.translatable("gtceu.machine.network_switch.tooltip.3",
                             FormattingUtil.formatNumbers(NetworkSwitchMachine.EUT_PER_HATCH)))
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XAX", "XXX")
                     .aisle("XXX", "XSX", "XXX")
@@ -206,8 +203,7 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("AA", "CC", "CC", "CC", "AA")
                     .aisle("VA", "XV", "XV", "XV", "VA")
                     .aisle("VA", "XV", "XV", "XV", "VA")

@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -103,4 +105,17 @@ public interface IBlockPattern {
                            CompoundTag tag, UseOnContext context) {}
 
     default void retrievePatternInformation(String name, MultiblockControllerMachine controller, CompoundTag tag) {}
+
+    static ItemStack tryRemoveItem(Player player, ItemStack stack) {
+        if (stack.isEmpty()) return ItemStack.EMPTY;
+        if (player.isCreative()) return stack;
+
+        for (ItemStack playerItem : player.getInventory().items) {
+            if (ItemStack.isSameItemSameTags(stack, playerItem) && stack.getCount() <= playerItem.getCount()) {
+                playerItem.shrink(stack.getCount());
+                return playerItem;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 }

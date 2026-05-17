@@ -33,8 +33,8 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         updateBounds();
         for (var holder : getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP)) {
             if (holder instanceof IItemHandler ih) {

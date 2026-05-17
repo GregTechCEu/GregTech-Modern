@@ -6,17 +6,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 public class OriginOffset {
-
-    protected final int[] offset = new int[3];
+    private int x, y, z;
 
     public static final OriginOffset ZERO = new OriginOffset();
 
-    public OriginOffset() {}
+    public OriginOffset() {
+        this(0, 0, 0);
+    }
 
-    public OriginOffset(int xi, int yi, int zi) {
-        offset[0] = xi;
-        offset[1] = yi;
-        offset[2] = zi;
+    public OriginOffset(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public static OriginOffset of(int xi, int yi, int zi) {
@@ -38,7 +39,13 @@ public class OriginOffset {
 
     public OriginOffset move(RelativeDirection dir, int amount) {
         amount *= dir.ordinal() % 2 == 0 ? 1 : -1;
-        offset[dir.ordinal() / 2] += amount;
+        switch(dir.ordinal()) {
+            case 0, 1 -> y += amount;
+            case 2, 3 -> x += amount;
+            case 4, 5 -> z += amount;
+            default -> throw new IllegalStateException("Unexpected value: " + dir.ordinal());
+        };
+
         return this;
     }
 
@@ -47,16 +54,32 @@ public class OriginOffset {
     }
 
     public int get(RelativeDirection dir) {
-        return offset[dir.ordinal() / 2] * ((dir.ordinal() % 2 == 0) ? 1 : -1);
+        return switch(dir.ordinal()) {
+            case 0, 1 -> y * (dir.ordinal() == 0 ? 1 : -1);
+            case 2, 3 -> x * (dir.ordinal() == 2 ? 1 : -1);
+            case 4, 5 -> z * (dir.ordinal() == 4 ? 1 : -1);
+            default -> throw new IllegalStateException("Unexpected value: " + dir.ordinal());
+        };
     }
 
+    /**
+     * Applies this offset to {@code pos} based on the front, up and flip values
+     * @param pos BlockPos to modify
+     * @param front front facing direction
+     * @param up upwards facing direction
+     * @param flip whether to flip orientation
+     */
     public void apply(BlockPos.MutableBlockPos pos, Direction front, Direction up, boolean flip) {
-        for (int i = 0; i < 3; i++) {
-            pos.move(RelativeDirection.values()[2 * i].getRelativeFacing(front, up, flip), offset[i]);
-        }
+        pos.move(RelativeDirection.LEFT.getRelativeFacing(front, up, flip), x);
+        pos.move(RelativeDirection.UP.getRelativeFacing(front, up, flip), y);
+        pos.move(RelativeDirection.FRONT.getRelativeFacing(front, up, flip), z);
     }
 
+    /**
+     *
+     * @return BlockPos from values
+     */
     public BlockPos toBlockPos() {
-        return new BlockPos(offset[0], offset[1], offset[2]);
+        return new BlockPos(x, y, z);
     }
 }

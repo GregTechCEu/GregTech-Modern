@@ -35,6 +35,8 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,9 +72,9 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         for (var part : getParts()) {
             if (!PartAbility.STEAM.isApplicable(part.self().getDefinition().getBlock())) continue;
             var handlers = part.getRecipeHandlers();
@@ -90,8 +92,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
             }
         }
         if (steamEnergy == null) { // No steam hatch found
-            pState.setError(new PatternStringError("gtceu.predicate_error.steam.missing_steam_hatch"));
-            invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.steam.missing_steam_hatch")));
+            invalidateStructure(substructureName);
         }
     }
 

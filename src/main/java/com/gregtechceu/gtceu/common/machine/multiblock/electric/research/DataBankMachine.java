@@ -26,9 +26,8 @@ import net.minecraft.world.level.block.Block;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,9 +58,9 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
@@ -84,8 +83,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         this.energyUsage = calculateEnergyUsage();
 
         if (this.maintenance == null) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.databank.missing_maint"));
-            invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.databank.missing_maint")));
+            invalidateStructure(substructureName);
             return;
         }
 

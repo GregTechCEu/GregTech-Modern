@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.QuadFunction;
 
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,13 +36,19 @@ import java.util.function.BiPredicate;
 
 public class ExpandablePattern implements IBlockPattern {
 
-    protected final QuadFunction<Level, BlockPos.MutableBlockPos, Direction, Direction, int[]> boundsFunc;
+    @FunctionalInterface
+    public interface BoundsFunction {
+        int[] apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+    }
+
+    protected final BoundsFunction boundsFunc;
     protected final BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc;
+    @Getter
     protected final OriginOffset offset = new OriginOffset();
 
     protected final RelativeDirection[] directions;
 
-    public ExpandablePattern(@NotNull QuadFunction<Level, BlockPos.MutableBlockPos, Direction, Direction, int[]> boundsFunc,
+    public ExpandablePattern(@NotNull BoundsFunction boundsFunc,
                              @NotNull BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc,
                              @NotNull RelativeDirection[] directions) {
         this.boundsFunc = boundsFunc;
@@ -55,9 +61,9 @@ public class ExpandablePattern implements IBlockPattern {
                                    Direction upwardsFacing, boolean allowsFlip) {
         if (!patternState.cache.isEmpty()) {
             boolean pass = true;
-            BlockPos.MutableBlockPos mbp = new BlockPos.MutableBlockPos();
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             for (var entry : patternState.cache.long2ObjectEntrySet()) {
-                BlockPos pos = mbp.set(entry.getLongKey()).immutable();
+                pos.set(entry.getLongKey());
                 BlockState state = level.getBlockState(pos);
 
                 if (state != entry.getValue().getBlockState()) {
@@ -230,11 +236,6 @@ public class ExpandablePattern implements IBlockPattern {
     }
 
     @Override
-    public OriginOffset getOffset() {
-        return offset;
-    }
-
-    @Override
     public void autobuild(Reference2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, null);
@@ -253,7 +254,7 @@ public class ExpandablePattern implements IBlockPattern {
                 return true;
             }
 
-            var removed = tryRemoveItem(context.getPlayer(), info.getItemStackForm());
+            var removed = IBlockPattern.tryRemoveItem(context.getPlayer(), info.getItemStackForm());
             if (removed.isEmpty()) return false;
 
             level.setBlockAndUpdate(p, info.getBlockState());

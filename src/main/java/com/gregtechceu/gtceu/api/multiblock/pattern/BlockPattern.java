@@ -42,6 +42,7 @@ public class BlockPattern implements IBlockPattern {
 
     @Getter
     protected final int[] dimensions;
+    @Getter
     protected final OriginOffset offset;
 
     protected final boolean hasStartOffset;
@@ -89,7 +90,7 @@ public class BlockPattern implements IBlockPattern {
                 return;
             }
         }
-        throw new IllegalStateException("Failed to find center char:  '" + center + "'");
+        throw new IllegalStateException("Failed to find center symbol:  '" + center + "'");
     }
 
     @Override
@@ -210,14 +211,14 @@ public class BlockPattern implements IBlockPattern {
 
         patternState.layerCount.clear();
 
-        for (int stringI = 0; stringI < dimensions[1]; stringI++) {
-            for (int charI = 0; charI < dimensions[2]; charI++) {
+        for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
+            for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 patternState.cbi.setCurrentPos(charPos);
-                PatternPredicate pred = predicates.get(aisle.charAt(stringI, charI));
+                PatternPredicate pred = predicates.get(aisle.charAt(stringIdx, charIdx));
 
                 if (!pred.equals(PatternPredicate.ANY)) {
-                    var be = patternState.cbi.retrieveCurrentBlockEntity();
-                    var state = patternState.cbi.retrieveCurrentBlockState();
+                    BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
+                    BlockState state = patternState.cbi.retrieveCurrentBlockState();
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, be));
                     patternState.posCache.add(charPos.immutable());
                 }
@@ -246,8 +247,8 @@ public class BlockPattern implements IBlockPattern {
         return true;
     }
 
-    public int getRepetitionCount(int aisleI) {
-        return aisles[aisleI].actualRepeats;
+    public int getRepetitionCount(int aisleIndex) {
+        return aisles[aisleIndex].actualRepeats;
     }
 
     @Override
@@ -281,11 +282,6 @@ public class BlockPattern implements IBlockPattern {
         return map;
     }
 
-    @Override
-    public OriginOffset getOffset() {
-        return offset;
-    }
-
     private BlockPos.MutableBlockPos startPos(BlockPos.MutableBlockPos controllerPos, Direction frontFacing,
                                               Direction upwardsFacing, boolean flip) {
         BlockPos.MutableBlockPos start = controllerPos.mutable();
@@ -312,7 +308,7 @@ public class BlockPattern implements IBlockPattern {
                 return true;
             }
 
-            var removed = tryRemoveItem(context.getPlayer(), info.getItemStackForm());
+            var removed = IBlockPattern.tryRemoveItem(context.getPlayer(), info.getItemStackForm());
             if (removed.isEmpty()) return false;
 
             level.setBlockAndUpdate(p, info.getBlockState());
@@ -421,18 +417,4 @@ public class BlockPattern implements IBlockPattern {
             }
         }
     }
-
-    private static ItemStack tryRemoveItem(Player player, ItemStack stack) {
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (player.isCreative()) return stack.copy();
-
-        for (var item : player.getInventory().items) {
-            if (stack.is(stack.getItem()) && stack.getCount() <= item.getCount()) {
-                item.setCount(item.getCount() - stack.getCount());
-                return item.copy();
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
 }

@@ -14,7 +14,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.ToIntFunction;
 
 /**
- * Relative direction when facing horizontally
+ * Relative direction when facing horizontally and vertically
  */
 public enum RelativeDirection implements StringRepresentable {
 
@@ -25,7 +25,7 @@ public enum RelativeDirection implements StringRepresentable {
     FRONT((f, u) -> f),
     BACK((f, u) -> f.getOpposite());
 
-    final BinaryOperator<Direction> facingFunction;
+    private final BinaryOperator<Direction> facingFunction;
 
     public static final EnumCodec<RelativeDirection> CODEC = StringRepresentable
             .fromEnum(RelativeDirection::values);
@@ -41,7 +41,15 @@ public enum RelativeDirection implements StringRepresentable {
     }
 
     public int oppositeOrdinal() {
-        return ordinal() ^ 1;
+        return switch (ordinal()) {
+            case 0 -> 1;
+            case 1 -> 0;
+            case 2 -> 3;
+            case 3 -> 2;
+            case 4 -> 5;
+            case 5 -> 4;
+            default -> throw new IllegalStateException("Unexpected value: " + ordinal());
+        };
     }
 
     public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing) {

@@ -25,13 +25,12 @@ import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -112,11 +111,11 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         // attach parts' traits
-        // var cache = getSubstructure(name).getCache();
-        var cache = patternStates.get(name).getCache();
+        // var cache = getSubstructure(substructureName).getCache();
+        var cache = patternStates.get(substructureName).getCache();
         for (var entry : cache.long2ObjectEntrySet()) {
             if (entry.getValue().getBlockState().getBlock() instanceof ActiveBlock) {
                 if (activeBlocks == null) activeBlocks = new LongOpenHashSet();

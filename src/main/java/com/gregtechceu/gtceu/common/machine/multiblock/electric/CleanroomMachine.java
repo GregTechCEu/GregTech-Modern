@@ -20,14 +20,13 @@ import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
@@ -41,7 +40,6 @@ import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -67,11 +65,8 @@ import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -79,7 +74,6 @@ import java.util.*;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
-import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.mui.GTByteBufAdapters.COMPONENT;
 
 @ParametersAreNonnullByDefault
@@ -125,13 +119,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         initializeAbilities();
 
         // var cache = getSubstructure(name).getCache();
-        var cache = patternStates.get(name).getCache();
+        var cache = patternStates.get(substructureName).getCache();
         IFilterType filterType = null;
         for (var entry : cache.long2ObjectEntrySet()) {
             var state = entry.getValue().getBlockState();
@@ -142,7 +136,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         if (filterType != filter.getKey()) {
                             pState.setError(new FilterMatchingError(BlockPos.of(entry.getLongKey()), filterType,
                                     filter.getKey()));
-                            invalidateStructure(name);
+                            invalidateStructure(substructureName);
                             return;
                         }
                     }
@@ -156,7 +150,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
         cleanroomProviderTrait.setProvidedTypes(Set.of(this.cleanroomType));
 
-        forEachFormed(name, (info, pos) -> {
+        forEachFormed(substructureName, (info, pos) -> {
             BlockEntity be = info.getBlockEntity();
             // todo check if be and if it has the cleanroom trait
             //if (!(be instanceof ICleanroomReceiver receiver)) return;
@@ -258,13 +252,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         int d = findFloorPos(Direction.DOWN, getBlockPos().mutable());
 
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.cleanroom.too_small"));
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
             invalidateStructure();
             return;
         }
 
         if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
-            pState.setError(new PatternStringError("gtceu.predicate_error.cleanroom.not_centered"));
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
         }
@@ -387,7 +381,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         var innerPredicate = innerPredicate();
         var verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
 
-        return FactoryExpandablePattern.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+        return ExpandableMultiblockPatternBuilder.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
                 .boundsFunction((l, bp, f, u) -> bounds)
                 .predicateFunction((bp, b) -> {
                     if (bp.equals(BlockPos.ZERO))
@@ -542,7 +536,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected PatternPredicate innerPredicate() {
         return new PatternPredicate(blockWorldState -> {
             // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getTileEntity();
+            BlockEntity blockEntity = blockWorldState.getBlockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return PatternError.PLACEHOLDER;

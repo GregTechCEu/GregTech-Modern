@@ -7,17 +7,15 @@ import java.util.List;
 
 public class PatternStringError extends PatternError {
 
-    public final String translateKey;
-    public final Object[] args;
+    public final Component component;
 
-    public PatternStringError(String translateKey, Object... args) {
+    public PatternStringError(Component component) {
         super(null, Collections.emptyList());
-        this.translateKey = translateKey;
-        this.args = args;
+        this.component = component;
     }
 
     @Override
     public List<Component> getErrorInfo() {
-        return List.of(Component.translatable(translateKey, args));
+        return Collections.singletonList(component);
     }
 }

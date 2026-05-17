@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -91,8 +91,7 @@ public class GCYMMachines {
             .recipeType(MACERATOR_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SECURE_MACERATION)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
                     .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
@@ -119,8 +118,7 @@ public class GCYMMachines {
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XTTTX", "X   X")
                     .aisle("XXXXX", "X   X", "X   X")
@@ -152,8 +150,7 @@ public class GCYMMachines {
             .recipeTypes(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "XXXXX", "#XXX#")
                     .aisle("XXXXX", "XAPAX", "XXXXX")
                     .aisle("XXXXX", "XPAPX", "XXXXX")
@@ -181,8 +178,7 @@ public class GCYMMachines {
             .recipeType(MIXER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_REACTION_SAFE)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
                     .aisle("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
                     .aisle("XXXXX", "XPPPX", "XAPAX", "XPPPX", "XAGAX", "FFGFF")
@@ -215,8 +211,7 @@ public class GCYMMachines {
             .recipeType(ELECTROLYZER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XCCCX", "XCCCX")
                     .aisle("XXXXX", "XCCCX", "XCCCX")
@@ -242,8 +237,7 @@ public class GCYMMachines {
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX")
                     .aisle("XCXCX", "XCXCX", "XCXCX")
                     .aisle("XCXCX", "XCXCX", "XCXCX")
@@ -268,8 +262,7 @@ public class GCYMMachines {
             .recipeType(GTRecipeTypes.PACKER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XAX", "XXX")
                     .aisle("XXX", "XAX", "XXX")
@@ -300,8 +293,7 @@ public class GCYMMachines {
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
                     BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX")
                     .aisle("XXXXXXXXX", "XAAAXAAAX", "XGGGXXXXX")
                     .aisle("XXXXXXXXX", "XGGGXXSXX", "XGGGX###X")
@@ -333,8 +325,7 @@ public class GCYMMachines {
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
                     BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
                     .aisle("XXXXXXX", "XPPPPPX", "XGGGGGX")
                     .aisle("XXXXXXX", "XAAAAPX", "XGGGGGX")
@@ -366,8 +357,7 @@ public class GCYMMachines {
             .recipeType(ARC_FURNACE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
                     .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
                     .aisle("XXXXX", "XAAAX", "XAAAX", "XXMXX")
@@ -399,8 +389,7 @@ public class GCYMMachines {
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
                     BATCH_MODE)
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXGXX", "XXGXX", "XXXXX")
                     .aisle("XXXXX", "XAAAX", "XAAAX", "XKKKX")
                     .aisle("XXXXX", "GAAAG", "GACAG", "XKXKX")
@@ -429,8 +418,7 @@ public class GCYMMachines {
             .recipeType(SIFTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#X#X#", "#X#X#", "#XXX#", "XXXXX", "#XXX#")
                     .aisle("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
                     .aisle("#XXX#", "#XAX#", "XKKKX", "XKKKX", "X###X")
@@ -460,8 +448,7 @@ public class GCYMMachines {
             .recipeType(ALLOY_BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                     .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
                     .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXMXX")
@@ -527,8 +514,7 @@ public class GCYMMachines {
             .recipeType(AUTOCLAVE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XTX", "XXX")
                     .aisle("XXX", "XTX", "XXX")
@@ -556,8 +542,7 @@ public class GCYMMachines {
             .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
                     .aisle("XXXXXXX", "XAXGGGX", "XXXXXXX")
                     .aisle("XXXXXXX", "XSXCCCX", "XXXXXXX")
@@ -584,8 +569,7 @@ public class GCYMMachines {
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_CORROSION_PROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
                     .aisle("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
                     .aisle("XXXXX", "XCPCX", "XAPAX", "XAPAX", "#XXX#")
@@ -614,8 +598,7 @@ public class GCYMMachines {
             .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SHOCK_PROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX", "##XXXXX")
                     .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
                     .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
@@ -649,7 +632,7 @@ public class GCYMMachines {
                 if (GTCEu.Mods.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 exportPredicate.setMaxLayerLimited(1);
-                return FactoryBlockPattern.start(UP, BACK, RIGHT)
+                return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
                         .aisleRepeatable(1, 12, "##X##", "#XAX#", "XAPAX", "#XAX#", "##X##")
@@ -732,8 +715,7 @@ public class GCYMMachines {
             .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XCACX", "XXXXX")
                     .aisle("XXXXX", "XXSXX", "XXXXX")
@@ -758,8 +740,7 @@ public class GCYMMachines {
             .recipeType(EXTRUDER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(BACK, UP, LEFT)
+            .pattern(definition -> MultiblockPatternBuilder.start(BACK, UP, LEFT)
                     .aisle("XXXXX", "XSXXX", "XXXXX")
                     .aisle("XXXXX", "XAXPX", "XXXGX")
                     .aisle("XXXXX", "XXXPX", "XXXGX")
@@ -788,8 +769,7 @@ public class GCYMMachines {
             .recipeType(FLUID_SOLIDFICATION_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
                     .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
                     .aisle("XXXXX", "XAAAX", "XAAAX", "XXXXX")
@@ -817,8 +797,7 @@ public class GCYMMachines {
             .recipeType(WIREMILL_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXX##")
                     .aisle("XXXXX", "X#CCX", "XXXXX")
                     .aisle("XXXXX", "XSXXX", "XXX##")
@@ -849,60 +828,22 @@ public class GCYMMachines {
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
                 PatternPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
-                return FactoryBlockPattern
-                        .start(FRONT, UP, RIGHT)
-                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#",
-                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
-                                "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
-                                "###PTAAATP###", "##TPPPMPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
+                return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        // spotless:off
+                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPMPPPT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        // spotless:on
                         .where('S', controller(blocks(definition.get())))
                         .where('X', casing.or(autoAbilities(definition.getRecipeTypes()))
                                 .or(Predicates.autoAbilities(true, false, true)))
@@ -979,20 +920,15 @@ public class GCYMMachines {
             .recipeType(VACUUM_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
-                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPX#VPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####",
-                            "XXXXXXX####")
-                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####",
-                            "###########")
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    // spotless:off
+                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPX#VPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####", "XXXXXXX####")
+                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
+                    // spotless:on
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)
                             .or(autoAbilities(definition.getRecipeTypes()))

@@ -27,7 +27,7 @@ import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -638,8 +638,7 @@ public class GTMachineUtils {
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
-                .pattern(definition -> FactoryBlockPattern
-                        .start(FRONT, UP, RIGHT)
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .aisle("CCC", "CCC", "CCC")
                         .aisle("CCC", "C#C", "CCC")
                         .aisle("CCC", "CSC", "CCC")
@@ -742,7 +741,7 @@ public class GTMachineUtils {
                         fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
                     }
 
-                    return FactoryBlockPattern.start()
+                    return MultiblockPatternBuilder.start()
                             .aisle("XXX", "CCC", "CCC", "CCC")
                             .aisle("XXX", "CPC", "CPC", "CCC")
                             .aisle("XXX", "CSC", "CCC", "CCC")
@@ -794,8 +793,7 @@ public class GTMachineUtils {
                 .generator(true)
                 .recipeModifier(LargeCombustionEngineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .pattern(definition -> FactoryBlockPattern
-                        .start(FRONT, UP, RIGHT)
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .aisle("XXX", "XDX", "XXX")
                         .aisle("XCX", "CGC", "XCX")
                         .aisle("XCX", "CGC", "XCX")
@@ -874,8 +872,7 @@ public class GTMachineUtils {
                 .generator(true)
                 .recipeModifier(LargeTurbineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .pattern(definition -> FactoryBlockPattern
-                        .start(FRONT, UP, RIGHT)
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .aisle("CCCC", "CHHC", "CCCC")
                         .aisle("CHHC", "RGGR", "CHHC")
                         .aisle("CCCC", "CSHC", "CCCC")

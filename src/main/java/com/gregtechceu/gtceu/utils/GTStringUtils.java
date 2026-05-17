@@ -20,6 +20,8 @@ import java.util.Objects;
 
 public class GTStringUtils {
 
+    public static final Component COMMA_SEPERATOR_LITERAL = Component.literal(", ");
+
     /**
      * Better implementation of {@link ItemStack#toString()} which respects the stack-aware
      * {@link net.minecraft.world.item.Item#getDescriptionId(ItemStack)} method.

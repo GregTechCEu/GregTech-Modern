@@ -22,33 +22,37 @@ import java.util.SortedSet;
 public interface IMultiPart extends IMachineFeature {
 
     /**
-     * @return If this multipart can be shared between multiple multiblocks.
+     * @return If this multiblock part can be shared between multiple multiblocks.
      */
     default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return true;
     }
 
     /**
-     * If this multipart belongs to a controller at the given position
+     * If this multiblock part belongs to a controller at the given position
      *
      * @param controllerPos Controller position
-     * @return If this multipart belongs to a controller at the given position
+     * @return If this multiblock part belongs to a controller at the given position
      */
     boolean hasController(BlockPos controllerPos);
 
     /**
-     * @return If this multipart belongs to a formed multiblock.
+     * @return If this multiblock part belongs to a formed multiblock.
      */
     boolean isFormed();
 
     /**
-     * Gets all controllers this multipart belongs to
+     * Gets all controllers this multiblock part belongs to
      * 
      * @return An unmodifiable set containing the controllers.
      */
     @UnmodifiableView
     SortedSet<MultiblockControllerMachine> getControllers();
 
+    /**
+     * Gets the name of the main substructure this multiblock part is attached to.
+     * @return
+     */
     String getSubstructureName();
 
     /**
@@ -63,7 +67,7 @@ public interface IMultiPart extends IMachineFeature {
      *
      * @param controller The controller which this part has been added to
      */
-    void addedToController(MultiblockControllerMachine controller, String name);
+    void addedToController(MultiblockControllerMachine controller, String substructureName);
 
     /**
      * Get all available traits for recipe logic.

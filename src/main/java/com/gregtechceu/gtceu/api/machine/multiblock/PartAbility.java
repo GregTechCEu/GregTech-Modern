@@ -56,7 +56,7 @@ public class PartAbility {
     /**
      * tier -> available blocks
      */
-    private final Int2ObjectMap<List<Block>> registry = new Int2ObjectLinkedOpenHashMap<>();
+    private final Int2ObjectMap<LinkedHashSet<Block>> registry = new Int2ObjectLinkedOpenHashMap<>();
 
     private final Supplier<Collection<Block>> allBlocks = GTMemoizer
             .memoize(() -> registry.values().stream().flatMap(Collection::stream).toList());
@@ -69,7 +69,7 @@ public class PartAbility {
     }
 
     public void register(int tier, Block block) {
-        registry.computeIfAbsent(tier, T -> new ArrayList<>()).add(block);
+        registry.computeIfAbsent(tier, T -> new LinkedHashSet<>()).add(block);
     }
 
     public Collection<Block> getAllBlocks() {

@@ -518,7 +518,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             var cover = coverContainer.getCoverAtSide(context.getGridSide());
             if (cover != null) {
                 var result = cover.onScrewdriverClick(context);
-                if (result == InteractionResult.CONSUME) return result;
+                if (result != InteractionResult.PASS) return result;
             }
         }
 

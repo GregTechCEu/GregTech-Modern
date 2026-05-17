@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.client.renderer.block.FakeBlockTintGetter;
+import com.gregtechceu.gtceu.client.util.FakeBlockTintGetter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +15,7 @@ import lombok.Getter;
 
 public class BlockInfo {
 
-    public static final FakeBlockTintGetter FBTG = new FakeBlockTintGetter();
+    public static final FakeBlockTintGetter FAKE_LEVEL = new FakeBlockTintGetter();
 
     public static final BlockInfo EMPTY = new BlockInfo(Blocks.AIR);
 
@@ -48,7 +48,7 @@ public class BlockInfo {
         this.itemStack = itemStack;
         this.blockEntity = blockEntity;
 
-        FBTG.setState(blockState);
+        FAKE_LEVEL.setState(blockState);
     }
 
     public static BlockInfo fromBlockState(BlockState state) {
@@ -77,9 +77,9 @@ public class BlockInfo {
 
     public ItemStack getItemStackForm(BlockAndTintGetter level, BlockPos pos) {
         if (itemStack != null) return itemStack;
-        FBTG.setParent(level);
-        FBTG.setPos(pos);
-        return blockState.getBlock().getCloneItemStack(FBTG, pos, blockState);
+        FAKE_LEVEL.setParent(level);
+        FAKE_LEVEL.setPos(pos);
+        return blockState.getBlock().getCloneItemStack(FAKE_LEVEL, pos, blockState);
     }
 
     public void apply(Level level, BlockPos pos) {

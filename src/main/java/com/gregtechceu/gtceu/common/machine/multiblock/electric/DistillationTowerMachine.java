@@ -28,6 +28,7 @@ import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -66,9 +67,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         final int startY = getBlockPos().getY() + yOffset;
         List<IMultiPart> parts = getParts().stream()
                 .filter(part -> PartAbility.EXPORT_FLUIDS.isApplicable(part.self().getBlockState().getBlock()))
@@ -99,17 +100,17 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else if (part.self().getBlockPos().getY() > y) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                 } else {
-                    pState.setError(new PatternStringError("gtceu.predicate_error.distillery.unexpected_hatch"));
+                    pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.unexpected_hatch")));
                     GTCEu.LOGGER.error(
                             "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
                             getBlockPos());
-                    invalidateStructure(name);
+                    invalidateStructure(substructureName);
                     return;
                 }
             }
         } else {
-            pState.setError(new PatternStringError("gtceu.predicate_error.distillation.missing_outputs"));
-            invalidateStructure(name);
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillation.missing_outputs")));
+            invalidateStructure(substructureName);
         }
     }
 

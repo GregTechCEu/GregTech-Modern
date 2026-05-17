@@ -18,6 +18,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,13 +36,10 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         super(info);
     }
 
-    //////////////////////////////////////
-    // *** Multiblock LifeCycle ***//
-    //////////////////////////////////////
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var cache = patternStates.get(name).getCache();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var cache = patternStates.get(substructureName).getCache();
         ICoilType coilType = null;
         for (var entry : cache.long2ObjectEntrySet()) {
             var state = entry.getValue().getBlockState();
@@ -50,9 +48,9 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                     if (coilType == null) coilType = coil.coilType;
                     else {
                         if (coilType != coil.coilType) {
-                            patternStates.get(name).setError(
+                            patternStates.get(substructureName).setError(
                                     new CoilMatchingError(BlockPos.of(entry.getLongKey()), coilType, coil.coilType));
-                            invalidateStructure(name);
+                            invalidateStructure(substructureName);
                             return;
                         }
                     }

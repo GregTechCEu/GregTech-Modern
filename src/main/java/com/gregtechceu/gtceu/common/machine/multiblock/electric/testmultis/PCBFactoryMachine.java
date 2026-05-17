@@ -5,16 +5,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-
-import net.minecraft.network.chat.Component;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_GRATE;
 
@@ -26,7 +23,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
 
     @Override
     public IBlockPattern createStructurePattern() {
-        return FactoryBlockPattern.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+        return MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
                 .aisle("CCC", "CCC")
                 .aisle("CCC", "CBC")
                 .aisle("CSC", "CCC")
@@ -44,7 +41,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
         super.createStructurePatterns();
         patternStates.put("cooler", new PatternState());
         structures.put("cooler",
-                FactoryBlockPattern.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+                MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
                         .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
                         .aisle("BBBBBBB", "B#####B", "#######", "#######")
                         .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
@@ -61,8 +58,8 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
     }
 
     /*@Override

@@ -176,13 +176,11 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             }
             if (getDefinition().isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
-                if (frontFacing == Direction.UP || frontFacing == Direction.DOWN) {
+                if (frontFacing.getAxis() == Direction.Axis.Y) {
                     newUpFacing = player.getDirection();
                     state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection());
-                    if (machine != null) {
-                        if (machine instanceof MultiblockControllerMachine controller) {
-                            controller.setUpwardsFacing(newUpFacing);
-                        }
+                    if (machine instanceof MultiblockControllerMachine controller) {
+                        controller.setUpwardsFacing(newUpFacing);
                     }
                 }
             }

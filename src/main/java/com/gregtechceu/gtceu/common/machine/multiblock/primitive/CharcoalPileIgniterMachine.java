@@ -9,11 +9,10 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -23,6 +22,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -30,11 +30,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -55,8 +55,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         hasAir = false;
         forEachFormed(DEFAULT_STRUCTURE, (info, pos) -> {
             if (info.getBlockState().is(BlockTags.LOGS)) {
@@ -100,7 +100,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
         updateDimensions();
 
-        return FactoryExpandablePattern.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+        return ExpandableMultiblockPatternBuilder.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
                 .boundsFunction((l, b, f, u) -> bounds)
                 .predicateFunction((bp, b) -> {
                     if (bp.equals(BlockPos.ZERO))
@@ -135,14 +135,14 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private PatternPredicate wallPredicate() {
         return new PatternPredicate("Wall Blocks",
                 multiblockState -> multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                        null : new PatternStringError("gtceu.predicate_error.charcoal.walls"),
+                        null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls")),
                 null);
     }
 
     private PatternPredicate logPredicate() {
         return new PatternPredicate(multiblockState -> {
             boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
-            return match ? null : new PatternStringError("gtceu.predicate_error.charcoal.logs");
+            return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
         }, null);
     }
 

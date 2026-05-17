@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     @Override
-    public void formStructure(String name) {
+    public void formStructure(@NotNull String name) {
         super.formStructure(name);
         initializeTank();
         produceWaterSubscription = subscribeServerTick(this::produceWater);

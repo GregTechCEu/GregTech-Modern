@@ -46,6 +46,7 @@ import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
@@ -96,9 +97,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void formStructure(String name) {
-        super.formStructure(name);
-        var pState = patternStates.get(name);
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         List<IEnergyContainer> inputs = new ArrayList<>();
         List<IEnergyContainer> outputs = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
@@ -133,7 +134,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
         List<IBatteryData> batteries = new ArrayList<>();
         // var cache = getSubstructure(name).getCache();
-        var cache = patternStates.get(name).getCache();
+        var cache = patternStates.get(substructureName).getCache();
         for (var entry : cache.long2ObjectEntrySet()) {
             var state = entry.getValue();
             if (state.getBlockState().getBlock() instanceof BatteryBlock batteryBlock) {
@@ -155,7 +156,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          */
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
-            pState.setError(new PatternStringError("gtceu.predicate_error.power_substation.missing_batteries"));
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }

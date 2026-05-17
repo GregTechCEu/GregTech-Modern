@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BasicAisleStrategy;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
@@ -105,8 +105,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.COKE_OVEN_RECIPES)
             .appearanceBlock(CASING_COKE_BRICKS)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
                     .aisle("XXX", "XYX", "XXX")
@@ -129,8 +128,7 @@ public class GTMultiMachines {
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createPBFLavaRender)))
             .hasBER(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX", "XXX")
                     .aisle("XXX", "X&X", "X#X", "X#X")
                     .aisle("XXX", "XYX", "XXX", "XXX")
@@ -151,8 +149,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers::ebfOverclock, BATCH_MODE)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "CCC", "CCC", "XXX")
                     .aisle("XXX", "C#C", "C#C", "XMX")
                     .aisle("XSX", "CCC", "CCC", "XXX")
@@ -219,7 +216,7 @@ public class GTMultiMachines {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                         .or(Predicates.autoAbilities(true, false, false));
-                return FactoryBlockPattern.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+                return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
                         .aisle("XXX", "XSX", "XXX")
@@ -281,8 +278,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
             .recipeModifiers(OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STEEL_SOLID)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
                     .aisle("XXX", "XSX", "XXX")
@@ -302,8 +298,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
             .recipeModifiers(GTRecipeModifiers::pyrolyseOvenOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_ULV)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("CCC", "C#C", "CCC")
                     .aisle("CCC", "C#C", "CCC")
@@ -358,8 +353,7 @@ public class GTMultiMachines {
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "CCC", "XXX")
                     .aisle("XXX", "C#C", "XMX")
                     .aisle("XSX", "CCC", "XXX")
@@ -412,8 +406,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.CRACKING_RECIPES)
             .recipeModifiers(GTRecipeModifiers::crackerOverclock, BATCH_MODE)
             .appearanceBlock(CASING_STAINLESS_CLEAN)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("HCHCH", "HCHCH", "HCHCH")
                     .aisle("HCHCH", "H###H", "HCHCH")
                     .aisle("HCHCH", "HCOCH", "HCHCH")
@@ -470,7 +463,7 @@ public class GTMultiMachines {
                 exportPredicate.setMaxLayerLimited(1);
                 PatternPredicate maint = autoAbilities(true, false, false)
                         .setMaxGlobalLimited(1);
-                return FactoryBlockPattern.start(UP, BACK, RIGHT)
+                return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .aisle("YSY", "YYY", "YYY")
                         .aisle("ZZZ", "Z#Z", "ZZZ")
                         .aisleRepeatable(0, 10, "XXX", "X#X", "XXX")
@@ -533,8 +526,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
             .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
                     .aisle("XXX", "XSX", "XXX")
@@ -555,8 +547,7 @@ public class GTMultiMachines {
             .alwaysTryModifyRecipe(true)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, OC_NON_PERFECT)
             .appearanceBlock(CASING_STEEL_SOLID)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(RIGHT, UP, BACK)
+            .pattern(definition -> MultiblockPatternBuilder.start(RIGHT, UP, BACK)
                     .aisle("FIF", "RTR", "SAG", "#Y#")
                     .aisleRepeatable(3, 15, "FIF", "RTR", "DAG", "#Y#")
                     .aisle("FOF", "RTR", "DAG", "#Y#")
@@ -589,8 +580,7 @@ public class GTMultiMachines {
             .multiblock("primitive_pump", PrimitivePumpMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_PUMP_DECK)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXX", "##F#", "##F#")
                     .aisle("XXHX", "F##F", "FFFF")
                     .aisle("SXXX", "##F#", "##F#")
@@ -628,8 +618,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
                     .aisle("XXX", "XSX", "XXX")
@@ -653,8 +642,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("FFF", "XXX", " X ")
                     .aisle("FFF", "X#X", " X ")
                     .aisle("FFF", "XSX", " X ")
@@ -691,8 +679,7 @@ public class GTMultiMachines {
                     .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
                         var casing = blocks(FusionReactorMachine.getCasingState(tier));
-                        return FactoryBlockPattern
-                                .start(FRONT, UP, RIGHT)
+                        return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                                 .aisle("###############", "######OGO######", "###############")
                                 .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
                                 .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
@@ -785,8 +772,7 @@ public class GTMultiMachines {
                                     FluidDrillMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
                     .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
-                    .pattern((definition) -> FactoryBlockPattern
-                            .start(FRONT, UP, RIGHT)
+                    .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                             .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
@@ -811,8 +797,7 @@ public class GTMultiMachines {
                     .langValue("%s Large Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .appearanceBlock(() -> LargeMinerMachine.getCasingState(tier))
-                    .pattern((definition) -> FactoryBlockPattern
-                            .start(FRONT, UP, RIGHT)
+                    .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                             .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
@@ -892,8 +877,7 @@ public class GTMultiMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.hold_ctrl"));
                 }
             })
-            .pattern((definition) -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "X   X", "X   X", "X   X", "XFFFX")
                     .aisle("XXXXX", "X   X", "X   X", "X   X", "XFSFX")
@@ -996,8 +980,7 @@ public class GTMultiMachines {
                      components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
                              .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
                                      .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
-            .pattern((definition) -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
                     .aisle("XXX", "XSX", "XXX")
@@ -1027,8 +1010,7 @@ public class GTMultiMachines {
                              .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
                                      .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
-            .pattern(definition -> FactoryBlockPattern
-                    .start(UP, BACK, RIGHT)
+            .pattern(definition -> MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XCCCX", "XCCCX", "XCCCX", "XXXXX")
                     .aisleRepeatable(1, PowerSubstationMachine.MAX_BATTERY_LAYERS, "GGGGG", "GBBBG", "GBBBG", "GBBBG",
@@ -1091,7 +1073,7 @@ public class GTMultiMachines {
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
-            .pattern((def) -> FactoryBlockPattern.start()
+            .pattern((def) -> MultiblockPatternBuilder.start()
                     .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
                     .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")
                     .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DSD ")
@@ -1126,8 +1108,7 @@ public class GTMultiMachines {
                                     FormattingUtil.formatNumbers(
                                             BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))
                     .appearanceBlock(() -> BedrockOreMinerMachine.getCasingState(tier))
-                    .pattern((definition) -> FactoryBlockPattern
-                            .start(FRONT, UP, RIGHT)
+                    .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                             .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
@@ -1183,7 +1164,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern((definition) -> FactoryBlockPattern.start()
+            .pattern((definition) -> MultiblockPatternBuilder.start()
                     .aisle("BCB", "BBB", "BBB", "BBB")
                     .where('C', Predicates.controller(Predicates.blocks(definition.get())))
                     .where('B', CentralMonitorMachine.getMultiPredicate())
@@ -1202,8 +1183,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
-            .pattern(def -> FactoryBlockPattern
-                    .start(FRONT, UP, RIGHT)
+            .pattern(def -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("CCC", "CCC")
                     .aisle("CCC", "CBC")
                     .aisle("CSC", "CCC")
@@ -1226,7 +1206,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern(def -> FactoryBlockPattern.start(FRONT, UP, RIGHT)
+            .pattern(def -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .aisle("ASB", "CD ")
                     .aisle("EFG", "H  ")
                     .where('A', blocks(WOODEN_CRATE.getBlock()))
@@ -1249,8 +1229,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
-            .pattern(def -> FactoryBlockPattern
-                    .start(RIGHT, FRONT, UP)
+            .pattern(def -> MultiblockPatternBuilder.start(RIGHT, FRONT, UP)
                     .aisle("C")
                     .aisle("C")
                     .aisle("S")
