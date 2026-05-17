@@ -400,14 +400,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         Pair<@Nullable GTToolType, InteractionResult> result = null;
 
         // Prioritize covers
-        var cover = getCoverContainer().getCoverAtSide(context.getClickedFace());
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
         if (cover != null) {
             result = cover.onToolClick(context);
             if (result.getSecond() != InteractionResult.PASS) return result;
 
-            if (toolType.contains(GTToolType.CROWBAR) && !isRemote()) {
+            if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.SUCCESS);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 
