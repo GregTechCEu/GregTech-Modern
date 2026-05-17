@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
@@ -27,7 +26,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -35,7 +33,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -130,7 +127,8 @@ public class ClientEventListener {
 
         double applied = base;
         for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
-            if (mod.id() == GTAttributeModifierIds.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange) continue;
+            if (mod.id() == GTAttributeModifierIds.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange)
+                continue;
             applied += base * mod.amount();
         }
 
