@@ -277,6 +277,8 @@ public class GTMaterials {
                     GTMemoizer.memoize(() -> appeng.core.definitions.AEItems.CERTUS_QUARTZ_DUST.asItem()));
             block.setIgnored(CertusQuartz,
                     GTMemoizer.memoize(() -> appeng.core.definitions.AEBlocks.QUARTZ_BLOCK.asItem()));
+            dust.setIgnored(EnderPearl,
+                    GTMemoizer.memoize(() -> appeng.core.definitions.AEItems.ENDER_DUST.asItem()));
         }
     }
 
