@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -353,9 +354,8 @@ public class GTRecipeTypeUILayout {
             if (progressWidgetSupplier == null) progressWidgetSupplier = (l, v, m) -> new ProgressWidget()
                     .value(v)
                     .name("progressBar")
-                    .texture(progressBar.get(m), progressBar.progressSize())
-                    .size(progressBar.progressSize())
-                    .direction(progressBar.fillDirection());
+                    .texture(progressBar.get(m), ProgressDrawable.Direction.RIGHT)
+                    .size(progressBar.progressSize());
 
             var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier,
                     customUIBuilder);

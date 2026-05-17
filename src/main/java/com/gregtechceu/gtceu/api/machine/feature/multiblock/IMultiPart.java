@@ -22,27 +22,27 @@ import java.util.SortedSet;
 public interface IMultiPart extends IMachineFeature {
 
     /**
-     * @return If this multi part can be shared between multiple multiblocks.
+     * @return If this multipart can be shared between multiple multiblocks.
      */
     default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return true;
     }
 
     /**
-     * If this multi part belongs to a controller at the given position
+     * If this multipart belongs to a controller at the given position
      *
      * @param controllerPos Controller position
-     * @return If this multi part belongs to a controller at the given position
+     * @return If this multipart belongs to a controller at the given position
      */
     boolean hasController(BlockPos controllerPos);
 
     /**
-     * @return If this multi part belongs to a formed multiblock.
+     * @return If this multipart belongs to a formed multiblock.
      */
     boolean isFormed();
 
     /**
-     * Gets all controllers this multi part belongs to
+     * Gets all controllers this multipart belongs to
      * 
      * @return An unmodifiable set containing the controllers.
      */

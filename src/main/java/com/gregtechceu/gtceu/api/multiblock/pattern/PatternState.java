@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
@@ -35,7 +34,7 @@ public class PatternState {
     @Getter
     protected BlockPos controllerPos;
     @Getter
-    protected IMultiController controller;
+    protected MultiblockControllerMachine controller;
     @Getter
     @Setter
     @DescSynced
@@ -64,7 +63,7 @@ public class PatternState {
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
-    public void setController(IMultiController controller, BlockPos controllerPos) {
+    public void setController(MultiblockControllerMachine controller, BlockPos controllerPos) {
         this.controller = controller;
         this.controllerPos = controllerPos;
     }

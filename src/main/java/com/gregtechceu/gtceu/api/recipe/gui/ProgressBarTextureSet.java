@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.mui.SteamTextureSet;
 
 import brachy.modularui.drawable.UITexture;
@@ -13,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 public class ProgressBarTextureSet extends SteamTextureSet {
 
     private final int progressSize;
-    private final ProgressWidget.Direction fillDirection;
+    private final ProgressDrawable.Direction fillDirection;
 
-    public ProgressBarTextureSet(int progressSize, ProgressWidget.Direction fillDirection, UITexture main,
+    public ProgressBarTextureSet(int progressSize, ProgressDrawable.Direction fillDirection, UITexture main,
                                  @Nullable UITexture bronze, @Nullable UITexture steel) {
         super(main, bronze, steel);
         this.progressSize = progressSize;
@@ -23,14 +24,14 @@ public class ProgressBarTextureSet extends SteamTextureSet {
     }
 
     public ProgressBarTextureSet(UITexture main, UITexture bronze, UITexture steel) {
-        this(20, ProgressWidget.Direction.RIGHT, main, bronze, steel);
+        this(20, ProgressDrawable.Direction.RIGHT, main, bronze, steel);
     }
 
     public ProgressBarTextureSet(UITexture main) {
-        this(20, ProgressWidget.Direction.RIGHT, main);
+        this(20, ProgressDrawable.Direction.RIGHT, main);
     }
 
-    public ProgressBarTextureSet(int progressSize, ProgressWidget.Direction fillDirection, UITexture main) {
+    public ProgressBarTextureSet(int progressSize, ProgressDrawable.Direction fillDirection, UITexture main) {
         this(20, fillDirection, main, null, null);
     }
 }

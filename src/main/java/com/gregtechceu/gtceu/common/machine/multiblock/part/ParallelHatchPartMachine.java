@@ -52,7 +52,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
     }
 
     @Override
-    public boolean canShared(IMultiController controller, String substructureName) {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 

@@ -540,11 +540,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    @NotNull
     protected PatternPredicate innerPredicate() {
         return new PatternPredicate(blockWorldState -> {
             // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getBlockEntity();
+            BlockEntity blockEntity = blockWorldState.getTileEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return PatternError.PLACEHOLDER;
