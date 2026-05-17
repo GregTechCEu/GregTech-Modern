@@ -11,10 +11,12 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -97,6 +99,14 @@ public class MachineUIPanelBuilder {
                     attachConfiguratorsTrait.attachRightConfigurators(attachRight, panel, syncManager);
                 }
             }
+        }
+
+        for (var cover : machine.getCoverContainer().getCovers()) {
+            attachLeft.child(new ButtonWidget<>()
+                    .overlay(new ItemDrawable(cover.getAttachItem()))
+                    .onMousePressed((context, button) -> {
+                        return true;
+                    }));
         }
 
         return panel;

@@ -147,7 +147,7 @@ public class GTMuiWidgets {
                 "behaviour.soft_hammer");
     }
 
-    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
+    /*public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
                                                    UITexture texture, int size) {
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> {
@@ -158,7 +158,7 @@ public class GTMuiWidgets {
         return new ProgressWidget()
                 .texture(texture, size)
                 .value(progressPercent);
-    }
+    }*/
 
     public static FluidSlot createTankWidget() {
         return new FluidSlot().size(20, 58).alwaysShowFull(false);

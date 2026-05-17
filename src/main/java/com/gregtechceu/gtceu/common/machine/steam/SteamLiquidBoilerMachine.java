@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -94,9 +95,8 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .child(new ProgressWidget()
                         .size(18)
-                        .texture(progressTexture, 18)
+                        .texture(progressTexture, ProgressDrawable.Direction.UP)
                         .value(progressPercent)
-                        .direction(ProgressWidget.Direction.UP)
                         .setEnabledIf((w) -> progressPercent.getFloatValue() > -1f))
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])

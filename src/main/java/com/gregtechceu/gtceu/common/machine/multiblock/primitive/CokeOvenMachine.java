@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -70,7 +71,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .child(new ProgressWidget()
                         .value(progressPercent)
                         .size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18)
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
                         .margin(4, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(

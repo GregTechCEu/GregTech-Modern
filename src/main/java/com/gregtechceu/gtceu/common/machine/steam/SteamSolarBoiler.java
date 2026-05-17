@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -85,7 +86,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
 
         mainWidget.child(new ProgressWidget()
                 .size(18)
-                .texture(progressTexture, 20)
+                .texture(progressTexture, ProgressDrawable.Direction.UP)
                 .value(canSeeSun));
     }
 
