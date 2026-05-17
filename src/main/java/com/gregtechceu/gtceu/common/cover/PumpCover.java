@@ -289,6 +289,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
                 .value(manualIOModeSync)
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                 .lang(Text.dynamic(() -> Component.translatable(manualIOMode.localeName)))
+                .langTooltip(Text.comp(Component.translatable("cover.universal.manual_import_export.mode.description")))
                 .build());
     }
 

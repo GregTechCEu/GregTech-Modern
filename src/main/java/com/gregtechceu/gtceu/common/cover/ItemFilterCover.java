@@ -129,7 +129,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
                 .value(ioMode)
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                .lang(Text.dynamic(() -> Component.translatable(getAllowFlow().name())))
+                .lang(Text.dynamic(() -> Component.translatable(getAllowFlow().getTooltip())))
                 .build());
     }
 

@@ -618,6 +618,7 @@ public class GTMuiWidgets {
         private @Nullable EnumSyncValue<T> syncValue;
         private final Class<T> enumValue;
         private @Nullable Component lang;
+        private @Nullable Component langTooltip;
         private IDrawable @Nullable [] background;
         private @Nullable IDrawable selectedBackground;
         private IDrawable @Nullable [] overlay;
@@ -633,6 +634,11 @@ public class GTMuiWidgets {
 
         public EnumRowBuilder<T> lang(Component lang) {
             this.lang = lang;
+            return this;
+        }
+
+        public EnumRowBuilder<T> langTooltip(Component tooltip) {
+            this.langTooltip = tooltip;
             return this;
         }
 
@@ -691,13 +697,15 @@ public class GTMuiWidgets {
             }
 
             if (this.lang != null) {
-                row.child(
-                    Text.comp(lang)
+                TextWidget<?> text = Text.comp(lang)
                         .asWidget()
                         .verticalCenter()
                         .rightRel(0.f)
-                        .height(18)
-                 );
+                        .height(18);
+                if(this.langTooltip != null) {
+                    text.tooltip(r -> r.addLine(langTooltip));
+                }
+                row.child(text);
             }
             return row;
         }

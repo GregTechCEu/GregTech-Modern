@@ -228,9 +228,11 @@ public interface GTGuiTextures {
     UITexture[] BUTTON_VOID_MULTIBLOCK = slice("textures/gui/widget/button_void_multiblock.png",
             16, 64, 16, 16, ColorType.DEFAULT);
 
-    UITexture[] FILTER_MODE_OVERLAY = slice(
-            "textures/gui/overlay/filter_mode_overlay.png",
-            16, 48, 16, 16, ColorType.DEFAULT);
+    UITexture[] FILTER_MODE_OVERLAY = {
+            fullImage("textures/gui/icon/filter_mode/filter_insert.png"),
+            fullImage("textures/gui/icon/filter_mode/filter_extract.png"),
+            fullImage("textures/gui/icon/filter_mode/filter_both.png")
+    };
 
     UITexture[] PRIVATE_MODE_BUTTON = slice(
             "textures/gui/widget/button_public_private.png",
