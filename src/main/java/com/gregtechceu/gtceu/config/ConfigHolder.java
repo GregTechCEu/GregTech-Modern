@@ -745,6 +745,9 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's speed." })
+        public boolean blockSpeedChange = true;
     }
 
     public static class ClientConfigs {
@@ -796,6 +799,9 @@ public class ConfigHolder {
         public RendererConfigs renderer = new RendererConfigs();
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
+        @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's FOV." })
+        public boolean blockFovChange = true;
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)

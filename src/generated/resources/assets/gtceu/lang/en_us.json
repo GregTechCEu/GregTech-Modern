@@ -1749,6 +1749,8 @@
     "config.gtceu.option.batchDuration": "batchDuration",
     "config.gtceu.option.bedrockOreDistance": "bedrockOreDistance",
     "config.gtceu.option.bedrockOreDropTagPrefix": "bedrockOreDropTagPrefix",
+    "config.gtceu.option.blockFovChange": "blockFovChange",
+    "config.gtceu.option.blockSpeedChange": "blockSpeedChange",
     "config.gtceu.option.borderColor": "borderColor",
     "config.gtceu.option.bronzeBoilerHeatSpeed": "bronzeBoilerHeatSpeed",
     "config.gtceu.option.bronzeBoilerMaxTemperature": "bronzeBoilerMaxTemperature",

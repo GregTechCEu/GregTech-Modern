@@ -420,6 +420,8 @@ public class CommonEventListener {
     public static void playerTickEvent(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         if (!player.level().isClientSide) {
+            if (!ConfigHolder.INSTANCE.gameplay.blockSpeedChange) return;
+
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
             var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
 import com.gregtechceu.gtceu.data.command.GTClientCommands;
@@ -117,18 +118,22 @@ public class ForgeClientEventListener {
         Map<AttributeModifier.Operation, List<AttributeModifier>> mods = attrib.getModifiers().stream()
                 .collect(Collectors.groupingBy(t -> t.operation()));
 
-        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_VALUE)) {
-            base += mod.amount();
+        if (mods.get(AttributeModifier.Operation.ADD_VALUE) != null) {
+            for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_VALUE)) {
+                base += mod.amount();
+            }
         }
 
         double applied = base;
         for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
-            if (mod.id() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
+            if (mod.id() == BlockAttributes.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange) continue;
             applied += base * mod.amount();
         }
 
-        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
-            applied *= 1 + mod.amount();
+        if (mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) != null) {
+            for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
+                applied *= 1 + mod.amount();
+            }
         }
 
         return attrib.getAttribute().value().sanitizeValue(applied);
