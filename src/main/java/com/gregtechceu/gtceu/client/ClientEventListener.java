@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.common.data.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerSkinAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -99,23 +100,21 @@ public class ClientEventListener {
         if (speedAttribute == null || !speedAttribute.hasModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST)) {
             return;
         }
+        boolean flying = player.getAbilities().flying;
+        float originalFov = flying ? 1.1F : 1.0F;
+        float walkSpeed = player.getAbilities().getWalkingSpeed();
 
-        float multiplier = 1.0f;
-        BlockState state = player.level().getBlockState(player.getOnPos());
-
-        // inverse of the math done with the speed attribute in AbstractClientPlayer
-        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
-            // base speed is 0.1, boost is 0.1*0.6 -> boosted speed = 0.16
-            // the FOV modifier is `1 + (speed / base speed + 1) / 2`, so `1 + (0.16 / 0.1 + 1) / 2 = 1.3`
-            // thus, divide by 1.3 to get back to original FOV before the 'fast block boost' modifier
-            multiplier /= 1.3f;
-        } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
-            // same as above but the speed boost is 0.25
-            multiplier /= 1.125f;
+        originalFov *= ((float) speedAttribute.getBaseValue() / walkSpeed + 1.0F) / 2.0F;
+        if (walkSpeed == 0.0F || Float.isNaN(originalFov) ||
+                Float.isInfinite(originalFov)) {
+            return;
         }
 
-        multiplier = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0, multiplier);
-        event.setNewFovModifier(event.getNewFovModifier() * multiplier);
+        float newFov = flying ? 1.1F : 1.0F;
+        newFov *= ((float) getValueWithoutWalkingBoost(speedAttribute) / walkSpeed + 1.0F) /
+                2.0F;
+
+        event.setNewFovModifier(newFov / originalFov);
     }
 
     private static double getValueWithoutWalkingBoost(AttributeInstance attribute) {
@@ -123,18 +122,22 @@ public class ClientEventListener {
         Map<AttributeModifier.Operation, List<AttributeModifier>> modifiers = attribute.getModifiers().stream()
                 .collect(Collectors.groupingBy(AttributeModifier::operation));
 
-        for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_VALUE)) {
-            base += mod.amount();
+        if (modifiers.get(AttributeModifier.Operation.ADD_VALUE) != null) {
+            for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_VALUE)) {
+                base += mod.amount();
+            }
         }
 
         double applied = base;
         for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
-            if (mod.id() == GTAttributeModifierIds.BLOCK_SPEED_BOOST) continue;
+            if (mod.id() == GTAttributeModifierIds.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange) continue;
             applied += base * mod.amount();
         }
 
-        for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
-            applied *= 1 + mod.amount();
+        if (modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) != null) {
+            for (AttributeModifier mod : modifiers.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
+                applied *= 1 + mod.amount();
+            }
         }
 
         return attribute.getAttribute().value().sanitizeValue(applied);
