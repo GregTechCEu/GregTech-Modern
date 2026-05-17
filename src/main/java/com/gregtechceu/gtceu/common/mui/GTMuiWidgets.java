@@ -689,11 +689,13 @@ public class GTMuiWidgets {
             }
 
             if (this.lang != null) {
-                row.child(Text.of(lang)
+                row.child(
+                    Text.comp(lang)
                         .asWidget()
                         .verticalCenter()
                         .rightRel(0.f)
-                        .height(18));
+                        .height(18)
+                 );
             }
             return row;
         }
