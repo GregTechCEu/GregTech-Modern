@@ -93,15 +93,21 @@ public class ClientEventListener {
 
         AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
+        boolean flying = player.getAbilities().flying;
+        float originalFov = flying ? 1.1F : 1.0F;
+        float walkSpeed = player.getAbilities().getWalkingSpeed();
 
-        float multi = 1;
-        var state = player.level().getBlockState(player.getOnPos());
+        originalFov *= ((float) moveSpeed.getBaseValue() / walkSpeed + 1.0F) / 2.0F;
+        if (walkSpeed == 0.0F || Float.isNaN(originalFov) ||
+                Float.isInfinite(originalFov)) {
+            return;
+        }
 
-        if (!ConfigHolder.INSTANCE.client.blockFovChange) multi /= 1.3F;
-        else if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+        float newFov = flying ? 1.1F : 1.0F;
+        newFov *= ((float) getValueWithoutWalkingBoost(moveSpeed) / walkSpeed + 1.0F) /
+                2.0F;
 
-        multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
-        event.setNewFovModifier(event.getNewFovModifier() * multi);
+        event.setNewFovModifier(originalFov / newFov);
     }
 
     private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
@@ -113,7 +119,7 @@ public class ClientEventListener {
 
         double applied = base;
         for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_BASE)) {
-            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
+            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange) continue;
             applied += base * mod.getAmount();
         }
 
