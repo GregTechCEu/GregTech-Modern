@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
-import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -20,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.api.ITheme;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;

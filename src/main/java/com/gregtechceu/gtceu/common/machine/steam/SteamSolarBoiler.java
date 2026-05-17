@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
-import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -13,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;

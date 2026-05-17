@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.drawable.progress.CircularProgressDrawable;
-import brachy.modularui.drawable.progress.ProgressDrawable;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -28,6 +26,8 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.*;
+import brachy.modularui.drawable.progress.CircularProgressDrawable;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.schema.ArraySchema;
