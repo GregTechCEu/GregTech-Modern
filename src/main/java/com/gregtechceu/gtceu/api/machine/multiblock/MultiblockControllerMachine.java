@@ -57,6 +57,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     protected boolean isFlipped;
 
     protected final Reference2ObjectMap<String, IBlockPattern> structures = new Reference2ObjectOpenHashMap<>();
+    @SyncToClient
     protected final Reference2ObjectMap<String, PatternState> patternStates = new Reference2ObjectOpenHashMap<>();
 
     public MultiblockControllerMachine(BlockEntityCreationInfo info) {
@@ -206,6 +207,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         var defaultPattern = createStructurePattern();
         var defaultPatternState = new PatternState();
         patternStates.put(DEFAULT_STRUCTURE, defaultPatternState);
+        getSyncDataHolder().markClientSyncFieldDirty("patternStates");
         // defaultPattern.setActivePatternState(defaultPatternState);
         structures.put(DEFAULT_STRUCTURE, defaultPattern);
     }

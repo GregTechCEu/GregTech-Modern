@@ -55,7 +55,6 @@ public class PatternState implements ISyncManaged {
     protected boolean shouldUpdate = true;
     @Getter
     @SyncToClient
-    // TODO sync this
     protected PatternError error;
     @Getter
     @SyncToClient
@@ -124,7 +123,9 @@ public class PatternState implements ISyncManaged {
     public void scheduleRenderUpdate() {}
 
     @Override
-    public void markAsChanged() {}
+    public void markAsChanged() {
+        controller.markAsChanged();
+    }
 
     public void setError(PatternError error) {
         this.error = error;
@@ -136,6 +137,7 @@ public class PatternState implements ISyncManaged {
         getSyncDataHolder().markClientSyncFieldDirty("state");
     }
 
+    @Getter
     public enum CheckState {
 
         /**
@@ -165,18 +167,12 @@ public class PatternState implements ISyncManaged {
          */
         UNINITIALIZED(false, false);
 
-        @Getter
         private final boolean valid;
-        @Getter
         private final boolean cached;
 
         CheckState(boolean valid, boolean cached) {
             this.valid = valid;
             this.cached = cached;
         }
-
-        // public boolean isValid() {
-        // return ordinal() < 2;
-        // }
     }
 }
