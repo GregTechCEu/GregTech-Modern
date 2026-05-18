@@ -610,7 +610,10 @@ public class GTMuiWidgets {
                         .right(0)
                         .width(18)
                         .value(bucketModeSyncValue)
-                        .background(BucketMode.BUCKET.getIcon(), BucketMode.MILLI_BUCKET.getIcon()));
+                        .background(GTGuiTextures.BUTTON)
+                        .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
+                        .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16))
+                );
     }
 
     public static class EnumRowBuilder<T extends Enum<T>> {
